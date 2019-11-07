@@ -1,4 +1,4 @@
-project(OpenTera)
+project(OpenTeraPlus)
 
 include(CTest)
 enable_testing()
