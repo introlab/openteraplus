@@ -8,7 +8,7 @@
 
 #include <QMetaProperty>
 
-#include "webapi.h"
+#include "WebAPI.h"
 
 enum TeraDataTypes {
     TERADATA_NONE,

@@ -25,7 +25,7 @@
 #include <QUuid>
 
 #include "Logger.h"
-#include "webapi.h"
+#include "WebAPI.h"
 
 #include "TeraData.h"
 #include "DownloadedFile.h"
