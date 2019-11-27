@@ -109,7 +109,7 @@ QDialog {background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 rgb(64,6
 QLabel {
     border-radius:5px;
     border-width:2px;
-    background-color: rgba(0,0,0,0); 
+    background-color: rgba(0,0,0,0%);
     color:white;
     font: bold large 10px;
  }

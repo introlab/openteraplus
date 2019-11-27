@@ -11,6 +11,12 @@ TeraForm::TeraForm(QWidget *parent) :
     ui->setupUi(this);
 
     m_highlightConditionals = true;
+
+    // TODO: Find out why the global stylesheet isn't correctly used by TeraForm
+    QFile file(":/stylesheet.qss");
+    file.open(QFile::ReadOnly);
+    QString stylesheet = QLatin1String(file.readAll());
+    setStyleSheet(stylesheet);
 }
 
 TeraForm::~TeraForm()

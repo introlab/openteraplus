@@ -281,8 +281,8 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>827</width>
-            <height>198</height>
+            <width>825</width>
+            <height>199</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -292,20 +292,13 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
               <number>3</number>
              </property>
              <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
               <widget class="QToolButton" name="btnPrevCal">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="cursor">
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
@@ -326,7 +319,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                <item>
                 <widget class="QLabel" name="lblMonth1">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -335,12 +328,6 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                   <size>
                    <width>0</width>
                    <height>0</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>190</width>
-                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="text">
@@ -427,16 +414,10 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                <item>
                 <widget class="QLabel" name="lblMonth2">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>190</width>
-                   <height>16777215</height>
-                  </size>
                  </property>
                  <property name="text">
                   <string>Mois 2</string>
@@ -487,16 +468,10 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                <item>
                 <widget class="QLabel" name="lblMonth3">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>190</width>
-                   <height>16777215</height>
-                  </size>
                  </property>
                  <property name="text">
                   <string>Mois 3</string>
@@ -541,6 +516,12 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
              </item>
              <item>
               <widget class="QToolButton" name="btnNextCal">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="cursor">
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
