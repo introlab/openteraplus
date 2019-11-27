@@ -150,7 +150,15 @@ void SessionWidget::updateDeviceData(TeraData *device_data)
     base_item->setText(device_data->getFieldValue("device_name").toString());
     ui->tableData->item(base_item->row(), 1)->setText(device_data->getFieldValue("devicedata_saved_date").toDateTime().toString("dd-MM-yyyy hh:mm:ss"));
     ui->tableData->item(base_item->row(), 2)->setText(device_data->getFieldValue("devicedata_name").toString());
-    ui->tableData->item(base_item->row(), 3)->setText(QString::number((device_data->getFieldValue("devicedata_filesize").toInt() / 1024.0 / 1024.0), 'f', 2) + " MB");
+    int file_size = device_data->getFieldValue("devicedata_filesize").toInt();
+    QString suffix = " MB";
+    if (file_size < 1024*1024){
+        suffix = " KB";
+        file_size /= 1024;
+    }else{
+        file_size /= (1024*1024);
+    }
+    ui->tableData->item(base_item->row(), 3)->setText(QString::number(file_size, 'f', 2) + suffix);
 }
 
 void SessionWidget::updateEvent(TeraData *event)

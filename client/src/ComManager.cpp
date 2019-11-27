@@ -452,7 +452,7 @@ void ComManager::onSocketBinaryMessageReceived(const QByteArray &message)
 /////////////////////////////////////////////////////////////////////////////////////
 void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
-    Q_UNUSED(reply);
+    Q_UNUSED(reply)
     if (m_loggingInProgress){
         LOG_DEBUG("Sending authentication request...", "ComManager::onNetworkAuthenticationRequired");
         authenticator->setUser(m_username);
@@ -466,8 +466,8 @@ void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenti
 
 void ComManager::onNetworkEncrypted(QNetworkReply *reply)
 {
-    Q_UNUSED(reply);
-    qDebug() << "ComManager::onNetworkEncrypted";
+    Q_UNUSED(reply)
+    //qDebug() << "ComManager::onNetworkEncrypted";
 }
 
 void ComManager::onNetworkFinished(QNetworkReply *reply)
