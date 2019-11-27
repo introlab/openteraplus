@@ -79,6 +79,7 @@ void SiteWidget::connectSignals()
     connect(m_comManager, &ComManager::usersReceived, this, &SiteWidget::processUsersReply);
     connect(m_comManager, &ComManager::projectsReceived, this, &SiteWidget::processProjectsReply);
     connect(m_comManager, &ComManager::devicesReceived, this, &SiteWidget::processDevicesReply);
+    connect(m_comManager, &ComManager::postResultsOK, this, &SiteWidget::processPostOKReply);
 
     connect(ui->btnUndo, &QPushButton::clicked, this, &SiteWidget::btnUndo_clicked);
     connect(ui->btnSave, &QPushButton::clicked, this, &SiteWidget::btnSave_clicked);
@@ -280,6 +281,14 @@ void SiteWidget::processDevicesReply(QList<TeraData> devices)
         }
     }
 
+}
+
+void SiteWidget::processPostOKReply(QString path)
+{
+    if (path == WEB_SITEINFO_PATH){
+        // Update current user access list for the newly created site
+        m_comManager->doUpdateCurrentUser();
+    }
 }
 
 void SiteWidget::btnSave_clicked()

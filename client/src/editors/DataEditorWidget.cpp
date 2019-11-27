@@ -22,6 +22,9 @@ DataEditorWidget::DataEditorWidget(ComManager *comMan, const TeraData *data, QWi
 DataEditorWidget::~DataEditorWidget(){
     if (m_data)
         m_data->deleteLater();
+
+    while (QApplication::overrideCursor())
+        QApplication::restoreOverrideCursor();
 }
 
 
@@ -123,6 +126,11 @@ void DataEditorWidget::setLoading(){
 
 void DataEditorWidget::refreshData(){
     updateFieldsValue();
+}
+
+void DataEditorWidget::disconnectSignals()
+{
+    disconnect(m_comManager, nullptr, this, nullptr);
 }
 
 void DataEditorWidget::queryDataRequest(const QString &path, const QUrlQuery &query_args)

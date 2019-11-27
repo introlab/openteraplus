@@ -110,12 +110,18 @@ void DataListWidget::deleteDataFromList(TeraData *data)
     }
 
     data->deleteLater();
+
+    if (ui->lstData->count() == 0){
+        // No more data in list - hide editor
+        showEditor(nullptr);
+    }
 }
 
 void DataListWidget::showEditor(TeraData *data)
 {
     if (m_editor){
         ui->wdgEditor->layout()->removeWidget(m_editor);
+        m_editor->disconnectSignals();
         m_editor->deleteLater();
         m_editor = nullptr;
     }

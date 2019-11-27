@@ -45,6 +45,8 @@ public:
 
     void refreshData();
 
+    virtual void disconnectSignals();
+
     void queryDataRequest(const QString &path, const QUrlQuery &query_args = QUrlQuery());
     bool hasPendingDataRequests();
     void postDataRequest(const QString &path, const QString &query_args);

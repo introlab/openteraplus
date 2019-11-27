@@ -74,6 +74,10 @@ private slots:
      void processGroupsReply(QList<TeraData> groups);
      void processParticipantsReply(QList<TeraData> participants);
 
+     void processItemDeletedReply(QString path, int id);
+
+     void processCurrentUserUpdated();
+
      void currentSiteChanged();
      void currentNavItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
      void navItemExpanded(QTreeWidgetItem* item);

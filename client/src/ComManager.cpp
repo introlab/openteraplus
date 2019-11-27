@@ -505,8 +505,8 @@ void ComManager::onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccess
 
 void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
 {
-    Q_UNUSED(reply);
-    Q_UNUSED(errors);
+    Q_UNUSED(reply)
+    Q_UNUSED(errors)
     LOG_WARNING("Ignoring SSL errors, this is unsafe", "ComManager::onNetworkSslErrors");
     reply->ignoreSslErrors();
     for(QSslError error : errors){

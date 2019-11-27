@@ -85,7 +85,12 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
 {
     switch(data_type){
     case TERADATA_SITE:
-        //TODO
+        // Check if we have that site in the list
+        for(int i=0; i<ui->cmbSites->count(); i++){
+            if (ui->cmbSites->itemData(i).toInt() == id){
+                ui->cmbSites->removeItem(i);
+            }
+        }
         break;
     case TERADATA_PROJECT:
         if (m_projects_items.contains(id)){
@@ -142,6 +147,8 @@ void ProjectNavigator::connectSignals()
     connect(m_comManager, &ComManager::projectsReceived, this, &ProjectNavigator::processProjectsReply);
     connect(m_comManager, &ComManager::groupsReceived, this, &ProjectNavigator::processGroupsReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &ProjectNavigator::processParticipantsReply);
+    connect(m_comManager, &ComManager::deleteResultsOK, this, &ProjectNavigator::deleteItemRequested);
+    connect(m_comManager, &ComManager::currentUserUpdated, this, &ProjectNavigator::processCurrentUserUpdated);
 
     void (QComboBox::* comboIndexChangedSignal)(int) = &QComboBox::currentIndexChanged;
     connect(ui->cmbSites, comboIndexChangedSignal, this, &ProjectNavigator::currentSiteChanged);
@@ -203,6 +210,8 @@ void ProjectNavigator::updateProject(const TeraData *project)
         // Ensure correct project is selected
         ui->treeNavigator->setCurrentItem(item);
     }*/
+
+    updateAvailableActions(nullptr);
 }
 
 void ProjectNavigator::updateGroup(const TeraData *group)
@@ -462,9 +471,24 @@ void ProjectNavigator::processParticipantsReply(QList<TeraData> participants)
     }
 }
 
+void ProjectNavigator::processItemDeletedReply(QString path, int id)
+{
+    if (path == WEB_SITEINFO_PATH){
+        //qDebug() << "Site deleted!";
+        // Check if we need to remove that site from the list
+        removeItem(TERADATA_SITE, id);
+    }
+}
+
+void ProjectNavigator::processCurrentUserUpdated()
+{
+    updateAvailableActions(ui->treeNavigator->currentItem());
+}
+
 void ProjectNavigator::currentSiteChanged()
 {
     m_currentSiteId = ui->cmbSites->currentData().toInt();
+    //qDebug() << "Current Site Changed";
 
     // Clear main display
     emit dataDisplayRequest(TERADATA_NONE, 0);

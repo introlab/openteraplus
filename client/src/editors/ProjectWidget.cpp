@@ -85,6 +85,7 @@ void ProjectWidget::connectSignals()
     connect(m_comManager, &ComManager::groupsReceived, this, &ProjectWidget::processGroupsReply);
     connect(m_comManager, &ComManager::devicesReceived, this, &ProjectWidget::processDevicesReply);
     connect(m_comManager, &ComManager::sessionTypesProjectsReceived, this, &ProjectWidget::processSessionTypesProjectReply);
+    connect(m_comManager, &ComManager::postResultsOK, this, &ProjectWidget::processPostOKReply);
 
     connect(ui->btnUndo, &QPushButton::clicked, this, &ProjectWidget::btnUndo_clicked);
     connect(ui->btnSave, &QPushButton::clicked, this, &ProjectWidget::btnSave_clicked);
@@ -300,6 +301,15 @@ void ProjectWidget::processSessionTypesProjectReply(QList<TeraData> stps)
         if (stps.at(i).getFieldValue("id_project") == m_data->getId()){
             updateSessionType(&stps.at(i));
         }
+    }
+}
+
+void ProjectWidget::processPostOKReply(QString path)
+{
+    if (path == WEB_PROJECTINFO_PATH){
+        qDebug() << "Updating current user...";
+        // Update current user access list for the newly created site
+        m_comManager->doUpdateCurrentUser();
     }
 }
 

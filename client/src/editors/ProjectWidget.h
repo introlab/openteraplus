@@ -32,6 +32,8 @@ private slots:
     void processDevicesReply(QList<TeraData> devices);
     void processSessionTypesProjectReply(QList<TeraData> stps);
 
+    void processPostOKReply(QString path);
+
     void btnSave_clicked();
     void btnUndo_clicked();
     void btnUpdateAccess_clicked();

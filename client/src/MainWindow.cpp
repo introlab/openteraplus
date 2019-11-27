@@ -84,6 +84,7 @@ void MainWindow::initUi()
 void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*data)
 {
     if (m_data_editor){
+        m_data_editor->disconnectSignals();
         m_data_editor->deleteLater();
         m_data_editor = nullptr;
     }
@@ -266,6 +267,10 @@ void MainWindow::processGenericDataReply(QList<TeraData> datas)
         if (m_data_editor->getData()->getDataType() == item_data_type && m_data_editor->getData()->getId()==0){
             // New item that was saved?
             if (m_data_editor->getData()->getName() == datas.first().getName()){
+                if (item_data_type == TERADATA_PROJECT){
+                    // New project - update access!
+                    m_comManager->doUpdateCurrentUser();
+                }
                 // Yes, it is - close data editor
                 showDataEditor(TERADATA_NONE, nullptr);
                 ui->wdgMainMenu->setEnabled(true);
@@ -318,6 +323,7 @@ void MainWindow::com_waitingForReply(bool waiting)
 void MainWindow::com_postReplyOK()
 {
     addMessage(Message::MESSAGE_OK, tr("Données sauvegardées."));
+
 }
 
 void MainWindow::com_deleteResultsOK(QString path, int id)
