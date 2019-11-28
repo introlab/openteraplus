@@ -156,6 +156,7 @@ void ProjectNavigator::connectSignals()
     connect(ui->treeNavigator, &QTreeWidget::currentItemChanged, this, &ProjectNavigator::currentNavItemChanged);
     connect(ui->treeNavigator, &QTreeWidget::itemExpanded, this, &ProjectNavigator::navItemExpanded);
     connect(ui->btnDeleteItem, &QPushButton::clicked, this, &ProjectNavigator::deleteItemRequested);
+    connect(ui->btnRefresh, &QToolButton::clicked, this, &ProjectNavigator::refreshRequested);
 }
 
 void ProjectNavigator::updateSite(const TeraData *site)
@@ -435,6 +436,13 @@ void ProjectNavigator::deleteItemRequested()
         TeraDataTypes item_type = getItemType(ui->treeNavigator->currentItem());
         int id_todel = ui->treeNavigator->currentItem()->data(0, Qt::UserRole).toInt();
         emit dataDeleteRequest(item_type, id_todel);
+    }
+}
+
+void ProjectNavigator::refreshRequested()
+{
+    if (ui->treeNavigator->currentItem()){
+        currentNavItemChanged(ui->treeNavigator->currentItem(), nullptr);
     }
 }
 

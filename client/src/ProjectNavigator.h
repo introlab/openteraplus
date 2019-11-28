@@ -68,6 +68,7 @@ private:
 private slots:
      void newItemRequested();
      void deleteItemRequested();
+     void refreshRequested();
 
      void processSitesReply(QList<TeraData> sites);
      void processProjectsReply(QList<TeraData> projects);
