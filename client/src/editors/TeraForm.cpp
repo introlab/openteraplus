@@ -503,6 +503,10 @@ QWidget *TeraForm::createBooleanWidget(const QVariantMap &structure)
 
     connect(item_check, &QCheckBox::clicked, this, &TeraForm::widgetValueChanged);
 
+    if (structure.contains("default")){
+        item_check->setChecked(structure["default"].toBool());
+    }
+
     return item_check;
 }
 
