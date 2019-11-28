@@ -147,7 +147,7 @@ void ProjectNavigator::connectSignals()
     connect(m_comManager, &ComManager::projectsReceived, this, &ProjectNavigator::processProjectsReply);
     connect(m_comManager, &ComManager::groupsReceived, this, &ProjectNavigator::processGroupsReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &ProjectNavigator::processParticipantsReply);
-    connect(m_comManager, &ComManager::deleteResultsOK, this, &ProjectNavigator::deleteItemRequested);
+    //connect(m_comManager, &ComManager::deleteResultsOK, this, &ProjectNavigator::deleteItemRequested);
     connect(m_comManager, &ComManager::currentUserUpdated, this, &ProjectNavigator::processCurrentUserUpdated);
 
     void (QComboBox::* comboIndexChangedSignal)(int) = &QComboBox::currentIndexChanged;

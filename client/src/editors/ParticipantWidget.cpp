@@ -40,6 +40,8 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
         query.removeQueryItem(WEB_QUERY_ID_PARTICIPANT);
         query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
         queryDataRequest(WEB_DEVICESITEINFO_PATH, query);
+    }else{
+        updateCalendars(QDate::currentDate());
     }
 }
 
