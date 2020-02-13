@@ -107,14 +107,16 @@ void GroupWidget::updateParticipant(TeraData *participant)
     }
     ui->tableParticipants->item(item->row(), 2)->setText(date_val_str);
     date_val_str = tr("Aucune séance");
-    if (!participant->getFieldValue("participant_lastsession").isNull()){
-        QDateTime date_val = participant->getFieldValue("participant_lastsession").toDateTime();
-        date_val_str = date_val.toString("dd MMMM yyyy - hh:mm");
-        if (participant->isEnabled()){
-            // Set background color for last session date
-            QColor back_color = TeraForm::getGradientColor(0, 3, 7, static_cast<int>(date_val.daysTo(QDateTime::currentDateTime())));
-            back_color.setAlphaF(0.5);
-            ui->tableParticipants->item(item->row(), 3)->setBackground(back_color);
+    if (participant->hasFieldName("participant_lastsession")){
+        if (!participant->getFieldValue("participant_lastsession").isNull()){
+            QDateTime date_val = participant->getFieldValue("participant_lastsession").toDateTime();
+            date_val_str = date_val.toString("dd MMMM yyyy - hh:mm");
+            if (participant->isEnabled()){
+                // Set background color for last session date
+                QColor back_color = TeraForm::getGradientColor(0, 3, 7, static_cast<int>(date_val.daysTo(QDateTime::currentDateTime())));
+                back_color.setAlphaF(0.5);
+                ui->tableParticipants->item(item->row(), 3)->setBackground(back_color);
+            }
         }
     }
     ui->tableParticipants->item(item->row(), 3)->setText(date_val_str);

@@ -281,6 +281,7 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
 {
     int id_participant = participant->getId();
     int id_group = participant->getFieldValue("id_participant_group").toInt();
+    int id_project = participant->getFieldValue("id_project").toInt();
 
     QTreeWidgetItem* item;
     if (m_participants_items.contains(id_participant)){
@@ -290,26 +291,63 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
         // Check if we need to change its group
         int id_part_group = m_groups_items.key(item->parent());
         if (id_part_group != id_group){
-            // Participant is not in the correct group, change it
-            QTreeWidgetItem* old_group = m_groups_items[id_part_group];
-            old_group->removeChild(item);
-            if (m_groups_items.contains(id_group)){
-                m_groups_items[id_group]->addChild(item);
+            if (id_part_group > 0){
+                // Participant is not in the correct group, change it
+                QTreeWidgetItem* old_group = m_groups_items[id_part_group];
+                if (old_group)
+                    old_group->removeChild(item);
             }else{
-                // Not in a displayed group, delete it
-                delete item;
-                return;
+                // Participant was in a project before, find and remove it
+                QTreeWidgetItem* parent_project = m_projects_items[id_project];
+                if (parent_project)
+                    parent_project->removeChild(item);
+            }
+
+            if (id_group > 0){
+                // Participant has a group to attach to
+                if (m_groups_items.contains(id_group)){
+                    m_groups_items[id_group]->addChild(item);
+                }else{
+                    // Not in a displayed group, delete it
+                    delete item;
+                    return;
+                }
+            }else{
+                // Participant doesn't have a group, attached to the project itself
+                QTreeWidgetItem* project_item = m_projects_items[id_project];
+                if (project_item){
+                    if (project_item->isExpanded()){
+                        project_item->addChild(item);
+                    }
+                }else{
+                    // Not an expanded project, delete it!
+                    delete item;
+                    return;
+                }
             }
         }
     }else{
         // New participant - add it.
         item = new QTreeWidgetItem();
         item->setData(0, Qt::UserRole, id_participant);
-        QTreeWidgetItem* group_item = m_groups_items[id_group];
-        if (group_item){
-            // In a group currently displayed
-            group_item->addChild(item);
-            m_participants_items[id_participant] = item;
+
+        if (id_group>0){
+            // Participant has a group
+            QTreeWidgetItem* group_item = m_groups_items[id_group];
+            if (group_item){
+                // In a group currently displayed
+                group_item->addChild(item);
+                m_participants_items[id_participant] = item;
+            }
+        }else{
+            // Participant has no group - attach it to its project
+            QTreeWidgetItem* project_item = m_projects_items[id_project];
+            if (project_item){
+                if (project_item->isExpanded()){
+                    project_item->addChild(item);
+                    m_participants_items[id_participant] = item;
+                }
+            }
         }
         //project_item->setExpanded(true);
     }
@@ -577,6 +615,13 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
         query.addQueryItem(WEB_QUERY_LIST, "");
         m_comManager->doQuery(WEB_GROUPINFO_PATH, query);
+
+        // Also loads participant not in a group
+        query.clear();
+        query.addQueryItem(WEB_QUERY_NO_GROUP,"");
+        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
+        m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
+
     }
 
     // PARTICIPANT GROUP

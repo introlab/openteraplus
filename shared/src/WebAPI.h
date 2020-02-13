@@ -46,6 +46,7 @@
 #define WEB_QUERY_ID_SESSION        "id_session"
 #define WEB_QUERY_ID_DEVICE_DATA    "id_device_data"
 #define WEB_QUERY_ID_SESSION_TYPE   "id_session_type"
+#define WEB_QUERY_NO_GROUP          "no_group"
 
 #define WEB_QUERY_AVAILABLE         "available"
 #define WEB_QUERY_PARTICIPANTS      "participants"

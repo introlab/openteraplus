@@ -38,8 +38,10 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
         // Query devices for the current site
         query.removeQueryItem(WEB_QUERY_ID_PARTICIPANT);
-        query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
-        queryDataRequest(WEB_DEVICESITEINFO_PATH, query);
+        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
+        queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);
+        //query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+        //queryDataRequest(WEB_DEVICESITEINFO_PATH, query);
     }else{
         updateCalendars(QDate::currentDate());
     }
@@ -72,7 +74,7 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &ParticipantWidget::processFormsReply);
     connect(m_comManager, &ComManager::sessionsReceived, this, &ParticipantWidget::processSessionsReply);
     connect(m_comManager, &ComManager::sessionTypesReceived, this, &ParticipantWidget::processSessionTypesReply);
-    connect(m_comManager, &ComManager::deviceSitesReceived, this, &ParticipantWidget::processDeviceSitesReply);
+    connect(m_comManager, &ComManager::deviceProjectsReceived, this, &ParticipantWidget::processDeviceProjectsReply);
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &ParticipantWidget::processDeviceParticipantsReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
     connect(m_comManager, &ComManager::downloadCompleted, this, &ParticipantWidget::onDownloadCompleted);
@@ -241,9 +243,9 @@ void ParticipantWidget::updateSession(TeraData *session)
     ui->tableSessions->resizeColumnsToContents();
 }
 
-void ParticipantWidget::updateDeviceSite(TeraData *device_site)
+void ParticipantWidget::updateDeviceProject(TeraData *device_project)
 {
-    int id_device = device_site->getFieldValue("id_device").toInt();
+    int id_device = device_project->getFieldValue("id_device").toInt();
 
     // Check if device is already assigned to this participant
     if (m_listDevices_items.contains(id_device)){
@@ -263,13 +265,13 @@ void ParticipantWidget::updateDeviceSite(TeraData *device_site)
     }
 
     // Update values
-    item->setText(device_site->getFieldValue("device_name").toString());
-    if (device_site->hasFieldName("device_available")){
-        if (!device_site->getFieldValue("device_available").toBool())
+    item->setText(device_project->getFieldValue("device_name").toString());
+    if (device_project->hasFieldName("device_available")){
+        if (!device_project->getFieldValue("device_available").toBool())
             item->setIcon(QIcon("://icons/device_installed.png"));
         else
             item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)));
-        item->setData(Qt::UserRole, device_site->getFieldValue("device_available").toBool());
+        item->setData(Qt::UserRole, device_project->getFieldValue("device_available").toBool());
     }
 }
 
@@ -374,13 +376,13 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
     }
 }
 
-void ParticipantWidget::processDeviceSitesReply(QList<TeraData> device_sites)
+void ParticipantWidget::processDeviceProjectsReply(QList<TeraData> device_projects)
 {
     // Check if device is for us
-    for(TeraData device_site:device_sites){
-        if (device_site.getFieldValue("id_site").toInt() == m_data->getFieldValue("id_site").toInt()){
+    for(TeraData device_project:device_projects){
+        if (device_project.getFieldValue("id_project").toInt() == m_data->getFieldValue("id_project").toInt()){
             // For us! Update device...
-            updateDeviceSite(&device_site);
+            updateDeviceProject(&device_project);
         }
     }
 }

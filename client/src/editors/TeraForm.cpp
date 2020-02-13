@@ -364,7 +364,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
                 if (item_data.contains("condition")){
                     item_widget->setProperty("condition", item_data["condition"]);
                     if (m_highlightConditionals)
-                        item_frame->setStyleSheet("background-color:darkgrey;");
+                        item_frame->setStyleSheet("background-color:rgb(70,70,70);");
                 }
                 if (item_data.contains("readonly")){
                     item_widget->setProperty("readonly", item_data["readonly"].toBool());

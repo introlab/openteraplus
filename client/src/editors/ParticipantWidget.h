@@ -49,7 +49,7 @@ private:
     bool validateData();
 
     void updateSession(TeraData *session);
-    void updateDeviceSite(TeraData* device_site);
+    void updateDeviceProject(TeraData* device_project);
     void updateDeviceParticipant(TeraData* device_participant);
 
     void updateCalendars(QDate left_date);
@@ -60,7 +60,7 @@ private slots:
     void processSessionsReply(QList<TeraData> sessions);
     void processSessionTypesReply(QList<TeraData> session_types);
     //void processDevicesReply(QList<TeraData> devices);
-    void processDeviceSitesReply(QList<TeraData> device_sites);
+    void processDeviceProjectsReply(QList<TeraData> device_projects);
     void processDeviceParticipantsReply(QList<TeraData> device_participants);
     void deleteDataReply(QString path, int id);
     void onDownloadCompleted(DownloadedFile* file);
