@@ -1,5 +1,7 @@
 #include "MainWindow.h"
 #include <QNetworkReply>
+#include <QDesktopWidget>
+#include <QApplication>
 
 #include "ui_MainWindow.h"
 
@@ -423,7 +425,7 @@ void MainWindow::on_btnConfig_clicked()
     m_diag_editor->setCentralWidget(config_editor);
 
     m_diag_editor->setFixedSize(size().width()-50, size().height()-150);
-    //m_diag_editor->move(25,75);
+    m_diag_editor->move(this->x()+25, this->y()+75);
 
     connect(m_diag_editor, &QDialog::finished, this, &MainWindow::editorDialogFinished);
     connect(config_editor, &ConfigWidget::closeRequest, m_diag_editor, &QDialog::accept);

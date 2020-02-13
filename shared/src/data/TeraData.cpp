@@ -177,6 +177,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "session";
     case TERADATA_DEVICESITE:
         return "device_site";
+    case TERADATA_DEVICEPROJECT:
+        return "device_project";
     case TERADATA_DEVICEPARTICIPANT:
         return "device_participant";
     case TERADATA_SESSIONTYPEDEVICETYPE:
@@ -205,6 +207,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_SESSIONINFO_PATH)             return TERADATA_SESSION;
     if (path==WEB_SESSIONTYPE_PATH)             return TERADATA_SESSIONTYPE;
     if (path==WEB_DEVICESITEINFO_PATH)          return TERADATA_DEVICESITE;
+    if (path==WEB_DEVICEPROJECTINFO_PATH)       return TERADATA_DEVICEPROJECT;
     if (path==WEB_DEVICEPARTICIPANTINFO_PATH)   return TERADATA_DEVICEPARTICIPANT;
     if (path==WEB_SESSIONTYPEDEVICETYPE_PATH)   return TERADATA_SESSIONTYPEDEVICETYPE;
     if (path==WEB_DEVICEDATAINFO_PATH)          return TERADATA_DEVICEDATA;

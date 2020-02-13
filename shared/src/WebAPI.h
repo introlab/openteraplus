@@ -11,6 +11,7 @@
 #define WEB_PROJECTACCESS_PATH              "/api/user/projectaccess"
 #define WEB_DEVICEINFO_PATH                 "/api/user/devices"
 #define WEB_DEVICESITEINFO_PATH             "/api/user/devicesites"
+#define WEB_DEVICEPROJECTINFO_PATH          "/api/user/deviceprojects"
 #define WEB_DEVICEPARTICIPANTINFO_PATH      "/api/user/deviceparticipants"
 #define WEB_DEVICEDATAINFO_PATH             "/api/user/data"
 #define WEB_PARTICIPANTINFO_PATH            "/api/user/participants"

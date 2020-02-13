@@ -202,17 +202,25 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Sites</string>
+       <string>Sites / Projets</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QListWidget" name="lstSites">
+        <widget class="QTreeWidget" name="lstSites">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
         </widget>
        </item>
        <item>
@@ -227,7 +235,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>Mettre à jour les sites associés à cet appareil</string>
+          <string>Mettre à jour les projets associés à cet appareil</string>
          </property>
          <property name="icon">
           <iconset resource="../../resources/TeraClient.qrc">

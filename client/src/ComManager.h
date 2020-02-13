@@ -108,6 +108,7 @@ signals:
     void projectAccessReceived(QList<TeraData> access_list);
     void sessionsReceived(QList<TeraData> sessions_list);
     void deviceSitesReceived(QList<TeraData> device_sites_list);
+    void deviceProjectsReceived(QList<TeraData> device_projects_list);
     void deviceParticipantsReceived(QList<TeraData> device_participants_list);
     void sessionTypesDeviceTypesReceived(QList<TeraData> session_types_device_types_list);
     void sessionTypesProjectsReceived(QList<TeraData> session_types_projects_list);

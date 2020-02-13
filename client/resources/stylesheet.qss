@@ -129,6 +129,10 @@ QTreeWidget::branch:open:has-children:has-siblings   {
     image:url(://controls/branch_opened.png);
 }
 
+QTreeWidget::item:selected{
+    color: cyan;
+}
+
 /*
     QLineEdit
 */
@@ -160,6 +164,10 @@ QPlainTextEdit {
 QListWidget {
     background-color: rgba(255,255,255,50%); 
     color: white;
+}
+
+QListWidget::item:selected{
+    color: cyan;
 }
 
 
@@ -271,10 +279,10 @@ QToolButton:!enabled{
     QCheckBox
 */
 
-QCheckBox::indicator:unchecked:!enabled,QListWidget::indicator:unchecked:!enabled { background-color:rgba(128,0,0,100%);}
-QCheckBox::indicator:checked:!enabled, QListWidget::indicator:checked:!enabled { background-color:green;}
-QCheckBox::indicator:unchecked, QListWidget::indicator:unchecked{ background-color:red;border-radius:3px;}
-QCheckBox::indicator:checked, QListWidget::indicator:checked {background-color:rgb(0,255,0);border-radius:3px;}
+QCheckBox::indicator:unchecked:!enabled,QListWidget::indicator:unchecked:!enabled, QTreeWidget::indicator:unchecked:!enabled { background-color:rgba(128,0,0,100%);}
+QCheckBox::indicator:checked:!enabled, QListWidget::indicator:checked:!enabled, QTreeWidget::indicator:checked:!enabled { background-color:green;}
+QCheckBox::indicator:unchecked, QListWidget::indicator:unchecked, QTreeWidget::indicator:unchecked{ background-color:red;border-radius:3px;}
+QCheckBox::indicator:checked, QListWidget::indicator:checked, QTreeWidget::indicator:checked {background-color:rgb(0,255,0);border-radius:3px;}
 QCheckBox:checked{color:lightgreen;background-color:rgba(0,0,0,0%);}
 QCheckBox:!checked{color:red;background-color:rgba(0,0,0,0%);}
 

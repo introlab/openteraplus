@@ -375,6 +375,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_DEVICESITE:
         emit deviceSitesReceived(items);
         break;
+    case TERADATA_DEVICEPROJECT:
+        emit deviceProjectsReceived(items);
+        break;
     case TERADATA_DEVICEPARTICIPANT:
         emit deviceParticipantsReceived(items);
         break;
