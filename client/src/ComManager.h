@@ -93,7 +93,7 @@ signals:
     void formReceived(QString form_type, QString data);
 
     // Generic data signal, emitted for all data type.
-    void dataReceived(QList<TeraData> generic_list);
+    void dataReceived(TeraDataTypes data_type, QList<TeraData> generic_list);
 
     // Specific data signals
     void usersReceived(QList<TeraData> user_list);
@@ -114,6 +114,7 @@ signals:
     void sessionTypesProjectsReceived(QList<TeraData> session_types_projects_list);
     void deviceDatasReceived(QList<TeraData> device_data_list);
     void sessionEventsReceived(QList<TeraData> events_list);
+    void deviceSubtypesReceived(QList<TeraData> device_subtypes_list);
 
     //void queryResultsReceived(QString object, QUrlQuery url_query, QString data);
     //void postResultsReceived(QString path, QString data);

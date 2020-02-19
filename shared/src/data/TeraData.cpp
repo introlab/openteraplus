@@ -181,6 +181,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "device_project";
     case TERADATA_DEVICEPARTICIPANT:
         return "device_participant";
+    case TERADATA_DEVICESUBTYPE:
+        return "device_subtype";
     case TERADATA_SESSIONTYPEDEVICETYPE:
         return "session_type_device_type";
     case TERADATA_DEVICEDATA:
@@ -213,6 +215,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_DEVICEDATAINFO_PATH)          return TERADATA_DEVICEDATA;
     if (path==WEB_SESSIONTYPEPROJECT_PATH)      return TERADATA_SESSIONTYPEPROJECT;
     if (path==WEB_SESSIONEVENT_PATH)            return TERADATA_SESSIONEVENT;
+    if (path==WEB_DEVICESUBTYPE_PATH)           return TERADATA_DEVICESUBTYPE;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 

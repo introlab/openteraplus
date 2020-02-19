@@ -170,6 +170,11 @@ void DataEditorWidget::downloadDataRequest(const QString &save_path, const QStri
     setWaiting();
 }
 
+ComManager *DataEditorWidget::getComManager()
+{
+    return m_comManager;
+}
+
 QString DataEditorWidget::getQueryDataName(const QString &path, const QUrlQuery &query_args)
 {
     QString query_name = path;
@@ -231,7 +236,7 @@ void DataEditorWidget::queryDataReplyOK(const QString &path, const QUrlQuery &qu
 {
     QString query_name = getQueryDataName(path, query_args);
     m_requests.removeOne(query_name);
-    if (!hasPendingDataRequests())
+    if (!hasPendingDataRequests() && isLoading())
         updateFieldsValue();
 
     if (m_requests.isEmpty())

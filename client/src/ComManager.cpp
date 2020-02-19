@@ -384,6 +384,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_SESSIONTYPEDEVICETYPE:
         emit sessionTypesDeviceTypesReceived(items);
         break;
+    case TERADATA_DEVICESUBTYPE:
+        emit deviceSubtypesReceived(items);
+        break;
     case TERADATA_DEVICEDATA:
         emit deviceDatasReceived(items);
         break;
@@ -399,7 +402,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     }
 
     // Always emit generic signal
-    emit dataReceived(items);
+    emit dataReceived(items_type, items);
 
     return true;
 }

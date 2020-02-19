@@ -2,6 +2,7 @@
 #include "ui_TeraForm.h"
 
 #include "Logger.h"
+#include "DataEditorWidget.h"
 #include <QDebug>
 
 TeraForm::TeraForm(QWidget *parent) :
@@ -17,6 +18,13 @@ TeraForm::TeraForm(QWidget *parent) :
     file.open(QFile::ReadOnly);
     QString stylesheet = QLatin1String(file.readAll());
     setStyleSheet(stylesheet);
+
+    // Automatically sets comManager
+    DataEditorWidget* parent_editor = dynamic_cast<DataEditorWidget*>(parent);
+    if (parent_editor){
+        m_comManager = parent_editor->getComManager();
+        connect(m_comManager, &ComManager::dataReceived, this, &TeraForm::hookReplyReceived);
+    }
 }
 
 TeraForm::~TeraForm()
@@ -598,16 +606,18 @@ QWidget *TeraForm::createDurationWidget(const QVariantMap &structure)
     return item_t;
 }
 
-void TeraForm::checkConditions()
+void TeraForm::checkConditions(QWidget *item_triggering)
 {
     for (QWidget* item:m_widgets.values()){
         if (!item)
             continue;
-        checkConditionsForItem(item);
+        if (item == item_triggering)
+            continue;
+        checkConditionsForItem(item, item_triggering);
     }
 }
 
-void TeraForm::checkConditionsForItem(QWidget *item)
+void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
 {
     if (item->property("condition").isValid()){
         // Item has a condition
@@ -627,6 +637,7 @@ void TeraForm::checkConditionsForItem(QWidget *item)
                     // Check if condition is met or not for that item
                     QString op = condition["op"].toString();
                     QVariant value = condition["condition"];
+                    QVariant hook = condition["hook"].toString();
                     QVariant sender_index;
                     QVariant sender_value;
                     getWidgetValues(check_item, &sender_index, &sender_value);
@@ -634,8 +645,13 @@ void TeraForm::checkConditionsForItem(QWidget *item)
                     bool condition_met = false;
                     //TODO: Other operators...
                     if (op == "="){
-                        if (sender_index == value || sender_value == value){
+                        if (value == "changed"){
+                            // Trigger hook when value was changed
                             condition_met = true;
+                        }else{
+                            if (sender_index == value || sender_value == value){
+                                condition_met = true;
+                            }
                         }
                     }
                     if (op == "<>"){
@@ -653,6 +669,29 @@ void TeraForm::checkConditionsForItem(QWidget *item)
                         setWidgetVisibility(item, check_item, condition_met);
                         //qDebug() << "Hiding...";
                     //}
+
+                    // We have a hook requesting data for that specific widget...
+                    if (!hook.isNull()){
+                        if (item_triggering == check_item){
+                            if (sender_index.toString() != ""){
+                                if (m_comManager){
+                                    QStringList target_hook = hook.toString().split("?");
+                                    if (target_hook.length()==2){
+                                        if (!m_widgetsHookRequests.contains(item)){
+                                            m_widgetsHookRequests.insert(item, TeraData::getDataTypeFromPath(target_hook.first()));
+                                            QUrlQuery args;
+                                            args.addQueryItem(target_hook.last().replace("=",""), sender_index.toString());
+                                            m_comManager->doQuery(target_hook.first(), args);
+                                        }
+                                    }
+                                }else{
+                                    LOG_ERROR("Unable to process hook - no linked to comManager!", "TeraForm::checkConditionsForItem");
+                                }
+
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -865,6 +904,26 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     LOG_WARNING("Unhandled widget: "+ QString(widget->metaObject()->className()) + " for item " + value.toString(), "TeraForm::setWidgetValue");
 }
 
+void TeraForm::updateWidgetChoices(QWidget *widget, const QList<TeraData> values)
+{
+
+    if (QComboBox* combo = dynamic_cast<QComboBox*>(widget)){
+        // Check if we need to update something first...
+        /*if (combo->count()>1 && !values.isEmpty()){
+            if (combo->itemData(1) == values.first().getId())
+                return; // Nothing to update...
+        }*/
+        combo->clear();
+        combo->addItem("", "");
+
+        for (TeraData value:values){
+            combo->addItem(value.getName(), value.getId());
+        }
+        return;
+    }
+    LOG_WARNING("Unhandled widget: "+ QString(widget->metaObject()->className()), "TeraForm::updateWidgetValues");
+}
+
 bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
 {
 
@@ -904,11 +963,15 @@ void TeraForm::widgetValueChanged()
 
     QWidget* sender_widget = dynamic_cast<QWidget*>(sender);
     if (sender_widget){
-        validateWidget(sender_widget);
-        emit widgetValueHasChanged(sender_widget, getWidgetValue(sender_widget));
+        if (sender_widget->property("last_value") != getWidgetValue(sender_widget)){
+            validateWidget(sender_widget);
+            sender_widget->setProperty("last_value", getWidgetValue(sender_widget));
+            emit widgetValueHasChanged(sender_widget, getWidgetValue(sender_widget));
+            checkConditions(sender_widget);
+        }
     }
 
-    checkConditions();
+
 
 
 
@@ -931,5 +994,19 @@ void TeraForm::colorWidgetClicked()
         sender_widget->setProperty("color", color.name());
         // Display current color
         sender_widget->setStyleSheet(QString("background-color: " + color.name() + ";"));
+    }
+}
+
+void TeraForm::hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas)
+{
+    if (m_widgetsHookRequests.isEmpty())
+        return;
+
+    // Check if we have a widget waiting for a reply from a query
+    if (m_widgetsHookRequests.values().contains(data_type)){
+        QWidget* target_widget = m_widgetsHookRequests.key(data_type);
+        // Update widget values
+        updateWidgetChoices(target_widget, datas);
+        m_widgetsHookRequests.remove(target_widget);
     }
 }

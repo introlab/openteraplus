@@ -261,12 +261,10 @@ void MainWindow::updateCurrentUser()
     }
 }
 
-void MainWindow::processGenericDataReply(QList<TeraData> datas)
+void MainWindow::processGenericDataReply(TeraDataTypes item_data_type, QList<TeraData> datas)
 {
     if (datas.isEmpty())
         return;
-
-    TeraDataTypes item_data_type = datas.first().getDataType();
 
     if (m_data_editor){
         if (m_data_editor->getData()->getDataType() == item_data_type && m_data_editor->getData()->getId()==0){

@@ -33,6 +33,8 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
         args.addQueryItem(WEB_QUERY_ID_DEVICE_TYPE, m_data->getFieldValue("device_type").toString());
         queryDataRequest(WEB_SESSIONTYPEDEVICETYPE_PATH, args);
     }
+
+    ui->wdgDevice->setHighlightConditions(false);
 }
 
 DeviceWidget::~DeviceWidget()

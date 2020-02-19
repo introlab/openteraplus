@@ -53,6 +53,8 @@ public:
     void deleteDataRequest(const QString &path, const int &id);
     void downloadDataRequest(const QString& save_path, const QString &path, const QUrlQuery &query_args);
 
+    ComManager* getComManager();
+
 private:
     virtual void updateControlsState()=0;
     virtual void updateFieldsValue()=0;

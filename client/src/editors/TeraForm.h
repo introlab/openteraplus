@@ -28,6 +28,7 @@
 #include <QtMultimedia/QAudioDeviceInfo>
 
 #include "TeraData.h"
+#include "ComManager.h"
 
 namespace Ui {
 class TeraForm;
@@ -70,6 +71,10 @@ private:
     QVariantMap                                     m_initialValues;
     bool                                            m_highlightConditionals;
 
+    // Hook interface for dynamic url requests
+    QMap<QWidget*, TeraDataTypes>                   m_widgetsHookRequests;
+    ComManager* m_comManager;
+
     void buildFormFromStructure(QWidget* page, const QVariantList &structure);
     void setDefaultValues();
 
@@ -86,12 +91,14 @@ private:
     QWidget* createDateTimeWidget(const QVariantMap& structure);
     QWidget* createDurationWidget(const QVariantMap& structure);
 
-    void checkConditions();
-    void checkConditionsForItem(QWidget* item);
+    void checkConditions(QWidget* item_triggering = nullptr);
+    void checkConditionsForItem(QWidget* item, QWidget* item_triggering = nullptr);
     void setWidgetVisibility(QWidget* widget, QWidget *linked_widget, bool visible);
     void getWidgetValues(QWidget *widget, QVariant *id, QVariant* value);
     QVariant getWidgetValue(QWidget* widget);
     void setWidgetValue(QWidget* widget, const QVariant& value);
+
+    void updateWidgetChoices(QWidget* widget, const QList<TeraData> values);
 
     bool validateWidget(QWidget* widget, bool include_hidden=false);
 
@@ -100,6 +107,9 @@ private:
 private slots:
     void widgetValueChanged();
     void colorWidgetClicked();
+
+    // Hooks
+    void hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas);
 
 signals:
     void widgetValueHasChanged(QWidget* widget, QVariant value);

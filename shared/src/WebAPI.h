@@ -13,6 +13,7 @@
 #define WEB_DEVICESITEINFO_PATH             "/api/user/devicesites"
 #define WEB_DEVICEPROJECTINFO_PATH          "/api/user/deviceprojects"
 #define WEB_DEVICEPARTICIPANTINFO_PATH      "/api/user/deviceparticipants"
+#define WEB_DEVICESUBTYPE_PATH              "/api/user/devicesubtypes"
 #define WEB_DEVICEDATAINFO_PATH             "/api/user/data"
 #define WEB_PARTICIPANTINFO_PATH            "/api/user/participants"
 #define WEB_GROUPINFO_PATH                  "/api/user/groups"
