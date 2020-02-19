@@ -216,7 +216,10 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
         }
 
         if (data_type == TERADATA_PARTICIPANT){
-            new_data->setFieldValue("id_participant_group", ui->wdgMainMenu->getCurrentGroupId());
+            if (ui->wdgMainMenu->getCurrentGroupId() > 0)
+                new_data->setFieldValue("id_participant_group", ui->wdgMainMenu->getCurrentGroupId());
+            if (ui->wdgMainMenu->getCurrentProjectId() > 0)
+                new_data->setFieldValue("id_project", ui->wdgMainMenu->getCurrentProjectId());
         }
 
         showDataEditor(data_type, new_data);
