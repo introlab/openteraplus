@@ -651,11 +651,11 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
                     bool condition_met = false;
                     //TODO: Other operators...
                     if (op == "="){
-                        if (value == "changed"){
-                            // Trigger hook when value was changed
+                        if (sender_index == value || sender_value == value){
                             condition_met = true;
                         }else{
-                            if (sender_index == value || sender_value == value){
+                            if (value.toString() == "changed"){
+                                // Trigger hook when value was changed
                                 condition_met = true;
                             }
                         }

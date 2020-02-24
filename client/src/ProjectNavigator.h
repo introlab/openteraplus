@@ -53,6 +53,9 @@ private:
     void updateGroup(const TeraData* group);
     void updateParticipant(const TeraData* participant);
 
+    int getParticipantProjectId(QTreeWidgetItem *part_item);
+    int getParticipantGroupId(QTreeWidgetItem *part_item);
+
     void updateAvailableActions(QTreeWidgetItem *current_item);
     TeraDataTypes getItemType(QTreeWidgetItem* item);
 

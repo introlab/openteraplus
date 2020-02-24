@@ -201,6 +201,11 @@ void ProjectNavigator::updateProject(const TeraData *project)
                 item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
             }
         }
+        if (project->hasFieldName("project_participant_count")){
+            if (project->getFieldValue("project_participant_count").toInt() > 0){
+                item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+            }
+        }
         m_projects_items[id_project] = item;
     }
 
@@ -360,6 +365,31 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     item->setText(0, participant->getName());
     item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
 
+}
+
+int ProjectNavigator::getParticipantProjectId(QTreeWidgetItem *part_item)
+{
+    QTreeWidgetItem* current_item = part_item;
+
+    while (current_item->parent()){
+        current_item = current_item->parent();
+        if (m_projects_items.values().contains(current_item))
+            return m_projects_items.key(current_item);
+    }
+    return -1;
+
+}
+
+int ProjectNavigator::getParticipantGroupId(QTreeWidgetItem *part_item)
+{
+    QTreeWidgetItem* current_item = part_item;
+
+    while (current_item->parent()){
+        current_item = current_item->parent();
+        if (m_groups_items.values().contains(current_item))
+            return m_groups_items.key(current_item);
+    }
+    return -1;
 }
 
 void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
@@ -594,8 +624,8 @@ void ProjectNavigator::currentNavItemChanged(QTreeWidgetItem *current, QTreeWidg
     // PARTICIPANT
     if (item_type==TERADATA_PARTICIPANT){
         // Ensure that group and project ids are correctly set
-        m_currentGroupId = m_groups_items.key(current->parent());
-        m_currentProjectId = m_projects_items.key(current->parent()->parent());
+        m_currentGroupId = getParticipantGroupId(current);
+        m_currentProjectId = getParticipantProjectId(current);
         int id = m_participants_items.key(current);
         emit dataDisplayRequest(TERADATA_PARTICIPANT, id);
     }
