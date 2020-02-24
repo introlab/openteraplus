@@ -5,7 +5,7 @@
 #include "DataEditorWidget.h"
 #include <QDebug>
 
-TeraForm::TeraForm(QWidget *parent) :
+TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
     QWidget(parent),
     ui(new Ui::TeraForm)
 {
@@ -20,11 +20,10 @@ TeraForm::TeraForm(QWidget *parent) :
     setStyleSheet(stylesheet);
 
     // Automatically sets comManager
-    DataEditorWidget* parent_editor = dynamic_cast<DataEditorWidget*>(parent);
-    if (parent_editor){
-        m_comManager = parent_editor->getComManager();
-        connect(m_comManager, &ComManager::dataReceived, this, &TeraForm::hookReplyReceived);
-    }
+    /*DataEditorWidget* parent_editor = dynamic_cast<DataEditorWidget*>(parent);
+    if (parent_editor){*/
+    setComManager(com_man);
+    //}
 }
 
 TeraForm::~TeraForm()
@@ -269,6 +268,14 @@ QColor TeraForm::getGradientColor(const int &lower_thresh, const int &middle_thr
 
 }
 
+void TeraForm::setComManager(ComManager *com_man)
+{
+    m_comManager = com_man;
+    if (m_comManager){
+        connect(m_comManager, &ComManager::dataReceived, this, &TeraForm::hookReplyReceived);
+    }
+}
+
 bool TeraForm::formHasData()
 {
     return !m_initialValues.isEmpty();
@@ -297,7 +304,6 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
     layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     //layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     layout->setVerticalSpacing(3);
-    layout->setAlignment(Qt::AlignTop);
 
     for (QVariant item:structure){
         if (item.canConvert(QMetaType::QVariantMap)){
@@ -307,7 +313,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             QFrame* item_frame = new QFrame();
             QHBoxLayout* item_frame_layout = new QHBoxLayout();
             item_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            item_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            item_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
             item_frame_layout->addWidget(item_label);
             item_frame->setLayout(item_frame_layout);
 

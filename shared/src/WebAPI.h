@@ -33,6 +33,7 @@
 #define WEB_FORMS_QUERY_PARTICIPANT     "type=participant"
 #define WEB_FORMS_QUERY_SESSION_TYPE    "type=session_type"
 #define WEB_FORMS_QUERY_SESSION         "type=session"
+#define WEB_FORMS_QUERY_DEVICE_SUBTYPE  "type=device_subtype"
 
 #define WEB_QUERY_USERUUID          "user_uuid"
 #define WEB_QUERY_ID_USER           "id_user"

@@ -234,6 +234,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_SESSION)            return WEB_SESSIONINFO_PATH;
     if (data_type==TERADATA_SESSIONTYPE)        return WEB_SESSIONTYPE_PATH;
     if (data_type==TERADATA_DEVICEPARTICIPANT)  return WEB_DEVICEPARTICIPANTINFO_PATH;
+    if (data_type==TERADATA_DEVICESUBTYPE)      return WEB_DEVICESUBTYPE_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 
@@ -262,6 +263,8 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
         return "://icons/project.png";
     case TERADATA_DEVICEDATA:
         return "://icons/sensors.png";
+    case TERADATA_DEVICESUBTYPE:
+        return "://icons/kit.png";
     default:
         return "://icons/error.png";
     }

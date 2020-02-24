@@ -25,6 +25,7 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
         queryDataRequest(WEB_PARTICIPANTINFO_PATH, query);
     }
 
+    ui->wdgGroup->setComManager(m_comManager);
     setData(data);
 
 }

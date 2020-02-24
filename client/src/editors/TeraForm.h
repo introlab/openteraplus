@@ -39,7 +39,7 @@ class TeraForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit TeraForm(QWidget *parent = nullptr);
+    explicit TeraForm(QWidget *parent = nullptr, ComManager* com_man = nullptr);
     ~TeraForm();
 
     void buildUiFromStructure(const QString& structure);
@@ -62,6 +62,8 @@ public:
     TeraData *getFormDataObject(const TeraDataTypes data_type);
 
     static QColor getGradientColor(const int& lower_thresh, const int& middle_thresh, const int& higher_thresh, const int& value);
+
+    void setComManager(ComManager *com_man);
 
 private:
     Ui::TeraForm*                                   ui;

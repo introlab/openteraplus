@@ -34,6 +34,7 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     // Query session events
     queryDataRequest(WEB_SESSIONEVENT_PATH, query);
 
+    ui->wdgSession->setComManager(m_comManager);
     setData(data);
 
 }

@@ -20,7 +20,7 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
 
     // Query available sites
     QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_LIST, "");
+    args.addQueryItem(WEB_QUERY_LIST, "true");
     queryDataRequest(WEB_SITEINFO_PATH, args);
 
     // Query associated participants and session types
@@ -35,6 +35,7 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
     }
 
     ui->wdgDevice->setHighlightConditions(false);
+    ui->wdgDevice->setComManager(m_comManager);
 }
 
 DeviceWidget::~DeviceWidget()
@@ -188,7 +189,7 @@ void DeviceWidget::processSitesReply(QList<TeraData> sites)
     if (need_to_load_device_sites && !dataIsNew()){
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
-        args.addQueryItem(WEB_QUERY_LIST, "");
+        args.addQueryItem(WEB_QUERY_LIST, "true");
         queryDataRequest(WEB_DEVICESITEINFO_PATH, args);
     }
 }
@@ -280,7 +281,7 @@ void DeviceWidget::processProjectsReply(QList<TeraData> projects)
     if (!dataIsNew()){
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
-        args.addQueryItem(WEB_QUERY_LIST, "");
+        args.addQueryItem(WEB_QUERY_LIST, "true");
         queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
     }
 }

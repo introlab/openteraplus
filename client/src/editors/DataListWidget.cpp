@@ -5,6 +5,7 @@
 #include "editors/SiteWidget.h"
 #include "editors/DeviceWidget.h"
 #include "editors/SessionTypeWidget.h"
+#include "editors/DeviceSubTypeWidget.h"
 
 DataListWidget::DataListWidget(ComManager *comMan, TeraDataTypes data_type, QWidget *parent):
     QWidget(parent),
@@ -59,7 +60,11 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
     }
 
     item->setIcon(QIcon(TeraData::getIconFilenameForDataType(data->getDataType())));
-    item->setText(data->getName());
+    QString data_name = data->getName();
+    // If a parent is specified, append the parent name
+    if (data->hasFieldName(data->getDataTypeName(data->getDataType()) + "_parent"))
+        data_name = "[" + data->getFieldValue(data->getDataTypeName(data->getDataType()) + "_parent").toString() + "]\n" + data_name;
+    item->setText(data_name);
     item->setData(Qt::UserRole, data->getId());
 
     //Customize color and icons, if needed, according to data_type
@@ -143,8 +148,11 @@ void DataListWidget::showEditor(TeraData *data)
         case TERADATA_SESSIONTYPE:
             m_editor = new SessionTypeWidget(m_comManager, data);
         break;
+        case TERADATA_DEVICESUBTYPE:
+            m_editor = new DeviceSubTypeWidget(m_comManager, data);
+        break;
         default:
-            LOG_ERROR("Unhandled datatype for editor: " + TeraData::getDataTypeName(data->getDataType()), "DataListWidget::lstData_currentItemChanged");
+            LOG_ERROR("Unhandled datatype for editor: " + TeraData::getDataTypeName(data->getDataType()), "DataListWidget::showEditor()");
             return;
     }
 
@@ -183,7 +191,9 @@ void DataListWidget::queryDataList()
     QString query_path = TeraData::getPathForDataType(m_dataType);
 
     if (!query_path.isEmpty()){
-        m_comManager->doQuery(query_path, QUrlQuery(WEB_QUERY_LIST));
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_LIST, "true");
+        m_comManager->doQuery(query_path, args);
     }
 }
 

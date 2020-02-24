@@ -34,6 +34,7 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     queryDataRequest(WEB_SITEINFO_PATH);
     queryDataRequest(WEB_PROJECTINFO_PATH);
 
+    ui->wdgUser->setComManager(m_comManager);
     setData(data);
 
 }

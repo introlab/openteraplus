@@ -553,7 +553,7 @@ void ProjectNavigator::currentSiteChanged()
     // Query projects for that site
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_currentSiteId));
-    query.addQueryItem(WEB_QUERY_LIST,"");
+    query.addQueryItem(WEB_QUERY_LIST, "true");
     m_comManager->doQuery(WEB_PROJECTINFO_PATH, query);
 }
 
@@ -613,12 +613,12 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
 
         QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
-        query.addQueryItem(WEB_QUERY_LIST, "");
+        query.addQueryItem(WEB_QUERY_LIST, "true");
         m_comManager->doQuery(WEB_GROUPINFO_PATH, query);
 
         // Also loads participant not in a group
         query.clear();
-        query.addQueryItem(WEB_QUERY_NO_GROUP,"");
+        query.addQueryItem(WEB_QUERY_NO_GROUP,"true");
         query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
         m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
 
@@ -632,7 +632,7 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         // Request participants for that group
         QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_GROUP, QString::number(id));
-        query.addQueryItem(WEB_QUERY_LIST, "");
+        query.addQueryItem(WEB_QUERY_LIST, "true");
         m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
 
     }

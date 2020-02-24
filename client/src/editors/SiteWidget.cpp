@@ -24,8 +24,11 @@ SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SITE));
 
     // Query accessible users list
-    queryDataRequest(WEB_USERINFO_PATH, QUrlQuery(WEB_QUERY_LIST));
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_LIST, "true");
+    queryDataRequest(WEB_USERINFO_PATH, args);
 
+    ui->wdgSite->setComManager(m_comManager);
     setData(data);
 }
 
@@ -59,7 +62,7 @@ void SiteWidget::setData(const TeraData *data)
     if (!dataIsNew()){
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(data->getFieldValue("id_site").toInt()));
-        args.addQueryItem(WEB_QUERY_LIST, "");
+        args.addQueryItem(WEB_QUERY_LIST, "true");
         queryDataRequest(WEB_PROJECTINFO_PATH, args);
 
         // Query full devices information

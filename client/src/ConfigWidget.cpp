@@ -48,6 +48,7 @@ void ConfigWidget::setupSections()
     addSection(tr("Utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)), TERADATA_USER);
     addSection(tr("Sites"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)), TERADATA_SITE);
     addSection(tr("Appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)), TERADATA_DEVICE);
+    addSection(tr("Sous-types appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICESUBTYPE)), TERADATA_DEVICESUBTYPE);
     addSection(tr("Séances"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSIONTYPE)), TERADATA_SESSIONTYPE);
     addSection(tr("Évaluations"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_TESTDEF)), TERADATA_TESTDEF);
 

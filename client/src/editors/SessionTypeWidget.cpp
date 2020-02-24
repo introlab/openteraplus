@@ -20,9 +20,10 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
 
     // Query available projects
     QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_LIST, "");
+    args.addQueryItem(WEB_QUERY_LIST, "true");
     queryDataRequest(WEB_PROJECTINFO_PATH, args);
 
+    ui->wdgSessionType->setComManager(m_comManager);
     setData(data);
 
 }
@@ -138,7 +139,7 @@ void SessionTypeWidget::processProjectsReply(QList<TeraData> projects)
     if (need_to_load_sessions_type_projects && !dataIsNew()){
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getId()));
-        args.addQueryItem(WEB_QUERY_LIST, "");
+        args.addQueryItem(WEB_QUERY_LIST, "true");
         queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
     }
 }

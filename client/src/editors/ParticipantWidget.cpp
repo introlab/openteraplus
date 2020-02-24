@@ -25,6 +25,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
     // Query form definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PARTICIPANT));
+    ui->wdgParticipant->setComManager(m_comManager);
     setData(data);
 
     // Query sessions types

@@ -24,8 +24,11 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PROJECT));
 
     // Query accessible users list
-    queryDataRequest(WEB_USERINFO_PATH, QUrlQuery(WEB_QUERY_LIST));
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_LIST, "true");
+    queryDataRequest(WEB_USERINFO_PATH, args);
 
+    ui->wdgProject->setComManager(m_comManager);
     setData(data);
 }
 
@@ -59,7 +62,7 @@ void ProjectWidget::setData(const TeraData *data)
     if (!dataIsNew()){
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(data->getFieldValue("id_project").toInt()));
-        args.addQueryItem(WEB_QUERY_LIST, "");
+        args.addQueryItem(WEB_QUERY_LIST, "true");
         queryDataRequest(WEB_GROUPINFO_PATH, args);
 
         args = QUrlQuery();

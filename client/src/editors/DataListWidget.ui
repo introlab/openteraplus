@@ -239,6 +239,9 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
         <property name="cursor" stdset="0">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
@@ -247,6 +250,15 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
           <width>24</width>
           <height>24</height>
          </size>
+        </property>
+        <property name="textElideMode">
+         <enum>Qt::ElideNone</enum>
+        </property>
+        <property name="isWrapping" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="uniformItemSizes">
+         <bool>false</bool>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

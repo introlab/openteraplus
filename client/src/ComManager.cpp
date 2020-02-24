@@ -278,6 +278,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::projectAccessReceived;
     case TERADATA_SESSION:
         return &ComManager::sessionsReceived;
+    case TERADATA_DEVICESUBTYPE:
+        return &ComManager::deviceSubtypesReceived;
     default:
         LOG_WARNING("Signal for object " + TeraData::getDataTypeName(data_type) + " unspecified.", "ComManager::getSignalFunctionForDataType");
         return nullptr;
