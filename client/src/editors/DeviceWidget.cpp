@@ -128,9 +128,9 @@ void DeviceWidget::updateProject(TeraData *project)
         if (site_item){
             item = new QTreeWidgetItem();
             item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
-            item->setCheckState(0, Qt::Unchecked);
+            item->setCheckState(0, site_item->checkState(0));
+            //item->setCheckState(0, Qt::Unchecked);
             site_item->addChild(item);
-
             m_listProjects_items[id_project] = item;
         }else{
             // No site in the list for this project...
@@ -226,9 +226,10 @@ void DeviceWidget::processDeviceProjectsReply(QList<TeraData> device_projects)
         return;
 
     // Uncheck all projects
-    for (QTreeWidgetItem* item:m_listProjects_items){
+    /*for (QTreeWidgetItem* item:m_listProjects_items){
         item->setCheckState(0, Qt::Unchecked);
-    }
+    }*/
+    bool first_load = m_listSites_items.isEmpty();
     m_listDeviceProjects_items.clear();
 
     // Check required projects
@@ -236,7 +237,8 @@ void DeviceWidget::processDeviceProjectsReply(QList<TeraData> device_projects)
         int project_id = device_project.getFieldValue("id_project").toInt();
         int device_project_id = device_project.getId();
         if (m_listProjects_items.contains(project_id)){
-            m_listProjects_items[project_id]->setCheckState(0, Qt::Checked);
+            if (first_load) // Only change state if it is not user forced
+                m_listProjects_items[project_id]->setCheckState(0, Qt::Checked);
             m_listDeviceProjects_items[device_project_id] = m_listProjects_items[project_id];
         }
     }
@@ -279,10 +281,12 @@ void DeviceWidget::processProjectsReply(QList<TeraData> projects)
     }
 
     if (!dataIsNew()){
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
-        args.addQueryItem(WEB_QUERY_LIST, "true");
-        queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
+        //if (m_listSites_items.isEmpty()){
+            QUrlQuery args;
+            args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
+        //}
     }
 }
 
@@ -375,6 +379,18 @@ void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
         return;
 
     updating = true;
+    if (m_listSites_items.values().contains(item)){
+        if (item->childCount() == 0 && !isLoading()){
+            // Query projects for that site
+            item->setExpanded(true);
+        }else{
+            // Check or uncheck all childs (projects)
+            for (int i=0; i<item->childCount(); i++){
+                item->child(i)->setCheckState(0, item->checkState(0));
+            }
+        }
+    }
+
     if (m_listProjects_items.values().contains(item)){
         // We have a project - check if we need to check the parent (site)
         QTreeWidgetItem* site = item->parent();
@@ -388,13 +404,6 @@ void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
             }
             // No projects selected for that site
             site->setCheckState(0, Qt::Unchecked);
-        }
-    }
-
-    if (m_listSites_items.values().contains(item)){
-        // Check or uncheck all childs (projects)
-        for (int i=0; i<item->childCount(); i++){
-            item->child(i)->setCheckState(0, item->checkState(0));
         }
     }
 
