@@ -11,6 +11,9 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     m_netManager = new QNetworkAccessManager(this);
     m_netManager->setCookieJar(&m_cookieJar);
 
+    // Set Keep Alive signal for websocket
+    m_keepAliveTimer.setInterval(30000);
+
     // Setup signals and slots
     // Websocket
     connect(m_webSocket, &QWebSocket::connected, this, &ComManager::onSocketConnected);
@@ -29,6 +32,7 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
 
     // Other objects
     connect(&m_connectTimer, &QTimer::timeout, this, &ComManager::onTimerConnectTimeout);
+    connect(&m_keepAliveTimer, &QTimer::timeout, this, &ComManager::onTimerKeepAliveTimeout);
 
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
@@ -426,12 +430,14 @@ void ComManager::onSocketError(QAbstractSocket::SocketError error)
 void ComManager::onSocketConnected()
 {
     m_connectTimer.stop();
+    m_keepAliveTimer.start();
     emit loginResult(true); // Logged in
 }
 
 void ComManager::onSocketDisconnected()
 {
     m_connectTimer.stop();
+    m_keepAliveTimer.stop();
     qDebug() << "ComManager::Disconnected from " << m_serverUrl.toString();
     emit serverDisconnected();
 }
@@ -531,4 +537,11 @@ void ComManager::onTimerConnectTimeout()
         emit serverError(QAbstractSocket::SocketTimeoutError, tr("Le serveur ne répond pas."));
     }
 
+}
+
+void ComManager::onTimerKeepAliveTimeout()
+{
+    if (m_webSocket){
+        m_webSocket->ping();
+    }
 }

@@ -551,6 +551,8 @@ QWidget *TeraForm::createLabelWidget(const QVariantMap &structure)
     Q_UNUSED(structure)
     QLabel* item_label = new QLabel();
 
+    item_label->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+
     //item_label->setHidden(is_hidden);
 
     return item_label;

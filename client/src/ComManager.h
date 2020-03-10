@@ -77,6 +77,7 @@ protected:
     QString                 m_password;
 
     QTimer                  m_connectTimer;
+    QTimer                  m_keepAliveTimer;
 
     TeraData                m_currentUser;
 
@@ -144,6 +145,7 @@ private slots:
     void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 
     void onTimerConnectTimeout();
+    void onTimerKeepAliveTimeout();
 
 };
 
