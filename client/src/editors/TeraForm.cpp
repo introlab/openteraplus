@@ -574,6 +574,8 @@ QWidget *TeraForm::createLongTextWidget(const QVariantMap &structure)
     Q_UNUSED(structure)
     QTextEdit* item_text = new QTextEdit();
 
+    item_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+
     return item_text;
 }
 
