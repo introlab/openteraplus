@@ -61,6 +61,8 @@ private slots:
     void on_btnEditUser_clicked();
     void on_btnConfig_clicked();
 
+    void on_btnVideo_toggled(bool checked);
+
 private:
     void connectSignals();
     void initUi();

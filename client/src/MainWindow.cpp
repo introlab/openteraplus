@@ -81,6 +81,12 @@ void MainWindow::initUi()
     // Setup main menu
     ui->wdgMainMenu->setComManager(m_comManager);
 
+    // Hide video camera
+    ui->frameVideo->hide();
+
+    // Set version number
+    ui->lblVersion->setText(QString(TERAPLUS_VERSION));
+
 }
 
 void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*data)
@@ -434,5 +440,12 @@ void MainWindow::on_btnConfig_clicked()
     m_diag_editor->setWindowTitle(tr("Configuration Globale"));
 
     m_diag_editor->open();
+
+}
+
+void MainWindow::on_btnVideo_toggled(bool checked)
+{
+    ui->frameVideo->setVisible(checked);
+    ui->splitterLeft->setSizes(QList<int>() << ui->tabMainMenu->height() << ui->frameDevicesButtons->height());
 
 }
