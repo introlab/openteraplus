@@ -20,7 +20,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>TeraPlus - Login</string>
+   <string>OpenTeraPlus - Login</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources/TeraClient.qrc">

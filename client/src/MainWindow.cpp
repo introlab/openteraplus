@@ -72,6 +72,7 @@ void MainWindow::initUi()
     // Disable docker titles
     ui->dockerTop->setTitleBarWidget(new QWidget());
     ui->dockerLeft->setTitleBarWidget(new QWidget());
+    ui->dockerRight->hide();
 
     // Setup loading icon animation
     m_loadingIcon = new QMovie("://status/loading.gif");
@@ -448,4 +449,9 @@ void MainWindow::on_btnVideo_toggled(bool checked)
     ui->frameVideo->setVisible(checked);
     ui->splitterLeft->setSizes(QList<int>() << ui->tabMainMenu->height() << ui->frameDevicesButtons->height());
 
+}
+
+void MainWindow::on_btnLog_toggled(bool checked)
+{
+    ui->dockerRight->setVisible(checked);
 }

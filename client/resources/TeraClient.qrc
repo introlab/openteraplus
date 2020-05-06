@@ -86,5 +86,7 @@
         <file>icons/info.png</file>
         <file>icons/camera.png</file>
         <file>icons/navtree.png</file>
+        <file>icons/history.png</file>
+        <file>icons/config.png</file>
     </qresource>
 </RCC>
