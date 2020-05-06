@@ -3,6 +3,9 @@
 #include <QFileInfo>
 #include <QDir>
 
+#include "GlobalEventLogger.h"
+#include "GlobalEvent.h"
+
 ClientApp::ClientApp(int &argc, char **argv)
  :   QApplication(argc, argv)
 {
@@ -20,6 +23,9 @@ ClientApp::ClientApp(int &argc, char **argv)
 
     // Load config
     loadConfig();
+
+    // Setup global event logger
+    setupLogger();
 
     // Connect signals
     connectSignals();
@@ -108,7 +114,21 @@ void ClientApp::showMainWindow()
     // Connect signals
     connect(m_mainWindow, &MainWindow::logout_request, this, &ClientApp::logoutRequested);
 
+    // Add logged action
+    GlobalEvent login_event(EVENT_LOGIN, tr("Connexion"));
+    GlobalEventLogger::instance()->logEvent(login_event);
+
     m_mainWindow->showMaximized();
+}
+
+void ClientApp::setupLogger()
+{
+    // TODO: Disable logging to file for security reasons in most case!
+    if (m_config.getLogToFile()){
+        GlobalEventLogger::instance()->startLogging(m_config.getLogPath());
+    }else{
+        GlobalEventLogger::instance()->startLogging();
+    }
 }
 
 void ClientApp::loginRequested(QString username, QString password, QString server_name)

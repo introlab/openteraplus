@@ -1,6 +1,8 @@
 {
 	"Settings": {
-		"showServers": true
+                "showServers": true,
+                "logToFile": true,
+                "logPath": "./logs"
 	},	
 	"Servers": {
 		"Local": {

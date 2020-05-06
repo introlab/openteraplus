@@ -58,7 +58,6 @@ QTableWidget::tab,QHeaderView::section {
     border: 2px solid  rgba(128,128,140,50%);
     padding: 2px;
     min-height:25px;
-    color:black;
 }
 
 QTabBar::tab{
@@ -373,7 +372,7 @@ QWidget#topWidget{background-color:rgba(0,128,200,50%);}
 QFrame#frameMenu,QFrame#frameVideo{border: 1px solid rgba(150,150,150,50%);}
 QFrame#frameMessages{background-color:rgba(255,0,0,50%); border-radius:5px;}
 QToolButton#btnVideoSwitch, QToolButton#btnLog {color: white; min-height: 35px; background-color: qlineargradient(spread:reflect, x1:0.220183, y1:0.745192, x2:1, y2:0, stop:0.201835 rgba(0, 0, 0, 255), stop:0.880734 rgba(255, 255, 255, 255), stop:1 rgba(189, 189, 189, 255)); border-radius: 5px;}
-QPushButton#btnLogout {background-color: rgba(120,10,10,50%); color: white; border: 1px solid rgb(150,0,0);}
+QPushButton#btnLogout {background-color: rgba(140,10,10,50%); color: white; border: 1px solid rgb(150,0,0);}
 QPushButton#btnEditUser,QPushButton#btnConfig {background-color: rgba(100,100,100,50%); min-width: 0px;}
 QPushButton#btnEditUser::hover, QPushButton#btnConfig::hover{color:white;}
 

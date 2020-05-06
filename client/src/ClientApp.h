@@ -27,6 +27,7 @@ protected:
     void connectSignals();
     void showLogin();
     void showMainWindow();
+    void setupLogger();
 
     ConfigManagerClient m_config;
     LoginDialog*        m_loginDiag;

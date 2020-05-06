@@ -872,7 +872,7 @@
         </sizepolicy>
        </property>
        <property name="styleSheet">
-        <string notr="true">QTableWidget{background-color:rgba(255,255,255,50%);}</string>
+        <string notr="true"/>
        </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
@@ -883,11 +883,17 @@
        <property name="dragDropOverwriteMode">
         <bool>false</bool>
        </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
        <property name="columnCount">
-        <number>2</number>
+        <number>3</number>
        </property>
        <attribute name="horizontalHeaderMinimumSectionSize">
         <number>25</number>
+       </attribute>
+       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+        <bool>true</bool>
        </attribute>
        <attribute name="horizontalHeaderStretchLastSection">
         <bool>true</bool>
@@ -897,12 +903,17 @@
        </attribute>
        <column>
         <property name="text">
+         <string/>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Heure</string>
         </property>
        </column>
        <column>
         <property name="text">
-         <string>Item</string>
+         <string>Événement</string>
         </property>
        </column>
       </widget>
