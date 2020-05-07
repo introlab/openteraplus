@@ -17,6 +17,9 @@ SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     // Limited by default
     m_limited = true;
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgSite, ui->btnEdit, ui->frameSave, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
@@ -84,8 +87,8 @@ void SiteWidget::connectSignals()
     connect(m_comManager, &ComManager::devicesReceived, this, &SiteWidget::processDevicesReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SiteWidget::processPostOKReply);
 
-    connect(ui->btnUndo, &QPushButton::clicked, this, &SiteWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &SiteWidget::btnSave_clicked);
+    //connect(ui->btnUndo, &QPushButton::clicked, this, &SiteWidget::btnUndo_clicked);
+    //connect(ui->btnSave, &QPushButton::clicked, this, &SiteWidget::btnSave_clicked);
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &SiteWidget::btnUpdateAccess_clicked);
     //connect(ui->btnProjects, &QPushButton::clicked, this, &SiteWidget::btnProjects_clicked);
     connect(ui->btnDevices, &QPushButton::clicked, this, &SiteWidget::btnDevices_clicked);
@@ -293,7 +296,7 @@ void SiteWidget::processPostOKReply(QString path)
         m_comManager->doUpdateCurrentUser();
     }
 }
-
+/*
 void SiteWidget::btnSave_clicked()
 {
     if (!validateData()){
@@ -319,7 +322,7 @@ void SiteWidget::btnUndo_clicked()
     if (parent())
         emit closeRequest();
 
-}
+}*/
 
 void SiteWidget::btnUpdateAccess_clicked()
 {

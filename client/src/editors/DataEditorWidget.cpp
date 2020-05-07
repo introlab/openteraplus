@@ -1,11 +1,18 @@
 #include "DataEditorWidget.h"
 #include <QApplication>
+#include "GlobalMessageBox.h"
 
 DataEditorWidget::DataEditorWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     QWidget(parent),
     m_undoing(false)
 {
     m_data = nullptr;
+    m_editToggle = nullptr;
+    m_frameSave = nullptr;
+    m_saveButton = nullptr;
+    m_cancelButton = nullptr;
+    m_mainForm = nullptr;
+
     setData(data);
     setLoading();
 
@@ -175,6 +182,29 @@ ComManager *DataEditorWidget::getComManager()
     return m_comManager;
 }
 
+void DataEditorWidget::setEditorControls(TeraForm* mainForm, QPushButton *editToggle, QFrame *frameSave, QPushButton *saveButton, QPushButton *cancelButton)
+{
+    m_mainForm = mainForm;
+    m_editToggle = editToggle;
+    m_frameSave = frameSave;
+    m_saveButton = saveButton;
+    m_cancelButton = cancelButton;
+
+    // Set initial state
+    if (m_frameSave){
+        m_frameSave->hide();
+    }
+    if (m_mainForm){
+        m_mainForm->setDisabled(true);
+    }
+
+    // Connect signals
+    connect(m_cancelButton, &QPushButton::clicked, this, &DataEditorWidget::undoButtonClicked);
+    connect(m_saveButton, &QPushButton::clicked, this, &DataEditorWidget::saveButtonClicked);
+    connect(m_editToggle, &QPushButton::clicked, this, &DataEditorWidget::editToggleClicked);
+
+}
+
 QString DataEditorWidget::getQueryDataName(const QString &path, const QUrlQuery &query_args)
 {
     QString query_name = path;
@@ -273,6 +303,55 @@ void DataEditorWidget::comDataError(QNetworkReply::NetworkError error, QString e
     Q_UNUSED(error)
     Q_UNUSED(error_str)
     setReady();
+}
+
+void DataEditorWidget::editToggleClicked()
+{
+    if (m_frameSave){
+        m_frameSave->show();
+        m_editToggle->setDisabled(true);
+        if (m_mainForm){
+            m_mainForm->setDisabled(false);
+        }
+    }
+}
+
+void DataEditorWidget::saveButtonClicked()
+{
+    if (!validateData()){
+        QStringList invalids = m_mainForm->getInvalidFormDataLabels();
+
+        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
+        for (QString field:invalids){
+            msg += "<li>" + field + "</li>";
+        }
+        msg += "</ul>";
+        GlobalMessageBox msgbox(this);
+        msgbox.showError(tr("Champs invalides"), msg);
+        return;
+    }
+
+     saveData();
+     m_frameSave->hide();
+     m_editToggle->setDisabled(false);
+     if (m_mainForm){
+         m_mainForm->setDisabled(true);
+     }
+
+}
+
+void DataEditorWidget::undoButtonClicked()
+{
+    undoOrDeleteData();
+
+    if (parent())
+        emit closeRequest();
+
+    m_frameSave->hide();
+    m_editToggle->setDisabled(false);
+    if (m_mainForm){
+        m_mainForm->setDisabled(true);
+    }
 }
 
 void DataEditorWidget::undoData(){

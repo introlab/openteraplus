@@ -186,10 +186,8 @@ QPlainTextEdit {
 QListWidget {
     background-color: rgba(255,255,255,50%); 
     color: white;
-}
-
-QListWidget::item:selected{
-    color: cyan;
+    selection-background-color: rgba(0,5,45,50%);
+    selection-color: cyan;
 }
 
 
@@ -360,6 +358,22 @@ QCalendarWidget QAbstractItemView:disabled { color: rgb(64, 64, 64); }
 QWidget#ConfigWidget{background-image: url(://TeRA_Background.png); }
 QWidget#SessionWidget{background-image: url(://TeRA_Background.png); }
 
+/* Customizations for Editors */
+QPushButton#btnEdit:hover{
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,5,45,100%), stop: 0.2  rgba(0,0,155,100%), stop:1 rgba(0,5,45,100%));
+    color: white;
+    border: 0px solid transparent;
+}
+
+QPushButton#btnEdit{
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,0,155,100%), stop: 0.2  rgba(0,5,45,100%), stop:1 rgba(0,0,155,100%));
+    border: 0px solid transparent;
+}
+
+QPushButton#btnEdit:!enabled{
+    background-color: rgba(0,0,155,25%);
+}
+
 /* Customizations for LoginDialog */
 QGroupBox#grpLogos{background-color:rgba(200,200,200,75%);}
 QLabel#lblMessage{color:gold;}
@@ -372,7 +386,18 @@ QWidget#topWidget{background-color:rgba(0,128,200,50%);}
 QFrame#frameMenu,QFrame#frameVideo{border: 1px solid rgba(150,150,150,50%);}
 QFrame#frameMessages{background-color:rgba(255,0,0,50%); border-radius:5px;}
 QToolButton#btnVideoSwitch, QToolButton#btnLog {color: white; min-height: 35px; background-color: qlineargradient(spread:reflect, x1:0.220183, y1:0.745192, x2:1, y2:0, stop:0.201835 rgba(0, 0, 0, 255), stop:0.880734 rgba(255, 255, 255, 255), stop:1 rgba(189, 189, 189, 255)); border-radius: 5px;}
-QPushButton#btnLogout {background-color: rgba(140,10,10,50%); color: white; border: 1px solid rgb(150,0,0);}
+QPushButton#btnLogout {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(140,10,10,100%), stop: 0.2  rgba(45,5,0,100%), stop:1 rgba(140,10,10,100%));
+    color: white;
+    border: 1px solid rgb(150,0,0);
+}
+
+QPushButton#btnLogout:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(45,5,0,100%), stop: 0.2  rgba(140,10,10,100%), stop:1 rgba(45,5,0,100%));
+    color: white;
+    border: 1px solid rgb(150,0,0);
+}
+
 QPushButton#btnEditUser,QPushButton#btnConfig {background-color: rgba(100,100,100,50%); min-width: 0px;}
 QPushButton#btnEditUser::hover, QPushButton#btnConfig::hover{color:white;}
 

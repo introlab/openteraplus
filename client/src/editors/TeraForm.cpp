@@ -301,8 +301,8 @@ void TeraForm::setHighlightConditions(const bool &hightlight)
 void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structure)
 {
     QFormLayout* layout = new QFormLayout(page);
-    layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    //layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    //layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     layout->setVerticalSpacing(3);
 
     for (QVariant item:structure){
@@ -310,12 +310,13 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             QVariantMap item_data = item.toMap();
             QWidget* item_widget = nullptr;
             QLabel* item_label = new QLabel(item_data["label"].toString());
-            QFrame* item_frame = new QFrame();
+            /*QFrame* item_frame = new QFrame();
             QHBoxLayout* item_frame_layout = new QHBoxLayout();
-            item_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            item_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+            item_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+            item_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
             item_frame_layout->addWidget(item_label);
-            item_frame->setLayout(item_frame_layout);
+            item_frame->setLayout(item_frame_layout);*/
+
 
             // Build widget according to item type
             QString item_type = item_data["type"].toString().toLower();
@@ -378,7 +379,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
                 if (item_data.contains("condition")){
                     item_widget->setProperty("condition", item_data["condition"]);
                     if (m_highlightConditionals)
-                        item_frame->setStyleSheet("background-color:rgb(70,70,70);");
+                        item_label->setStyleSheet("background-color:rgb(70,70,70);");
                 }
                 if (item_data.contains("readonly")){
                     item_widget->setProperty("readonly", item_data["readonly"].toBool());
@@ -389,7 +390,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
                 item_widget->setMinimumHeight(25);
 
                 // Add widget to layout
-                layout->addRow(item_frame, item_widget);
+                layout->addRow(item_label, item_widget);
 
                 // Add widget to list
                 m_widgets[item_data["id"].toString()] = item_widget;
@@ -406,7 +407,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
     }
 
     // Set layout alignement
-    layout->setAlignment(Qt::AlignTop);
+    layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     page->setLayout(layout);
 
     // Set default values

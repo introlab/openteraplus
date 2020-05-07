@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>948</width>
-    <height>434</height>
+    <height>494</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,7 @@
       </widget>
      </widget>
     </item>
-    <item alignment="Qt::AlignRight">
+    <item>
      <widget class="QFrame" name="frameCentralBottom">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
@@ -73,7 +73,7 @@
        <item>
         <widget class="QFrame" name="frameMessages">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -576,7 +576,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>173</width>
+               <width>276</width>
                <height>226</height>
               </rect>
              </property>
@@ -593,8 +593,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>140</width>
-               <height>226</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
              <attribute name="icon">

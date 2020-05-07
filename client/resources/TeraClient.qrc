@@ -88,5 +88,7 @@
         <file>icons/navtree.png</file>
         <file>icons/history.png</file>
         <file>icons/config.png</file>
+        <file>icons/dashboard.png</file>
+        <file>icons/details.png</file>
     </qresource>
 </RCC>
