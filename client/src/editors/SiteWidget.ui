@@ -295,7 +295,15 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <widget class="QWidget" name="grpSummaryPage1" native="true">
+         <widget class="QWidget" name="grpSummaryPage1">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>668</width>
+            <height>383</height>
+           </rect>
+          </property>
           <attribute name="label">
            <string>Résumé</string>
           </attribute>
@@ -308,7 +316,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <property name="verticalSpacing">
               <number>15</number>
              </property>
-             <item row="1" column="0">
+             <item row="1" column="0" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="lblUsers">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -324,7 +332,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="2" column="0" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="icoParticipant">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -371,7 +379,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="3" column="0" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="lblParticipant">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -387,7 +395,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item row="0" column="1" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="icoProjects">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -434,7 +442,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="2" column="1" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="icoSessions">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -465,7 +473,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
+             <item row="0" column="0" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="icoUsers">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

@@ -48,6 +48,14 @@ void DataEditorWidget::setData(const TeraData* data)
 
 void DataEditorWidget::setLimited(bool limited){
     m_limited = limited;
+
+    if (m_frameSave && m_limited){
+        m_frameSave->hide();
+    }
+
+    if (m_editToggle){
+        m_editToggle->setVisible(!limited);
+    }
     updateControlsState();
 }
 

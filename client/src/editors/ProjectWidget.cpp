@@ -17,16 +17,14 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
     // Limited by default
     m_limited = true;
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgProject, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PROJECT));
-
-    // Query accessible users list
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_LIST, "true");
-    queryDataRequest(WEB_USERINFO_PATH, args);
 
     ui->wdgProject->setComManager(m_comManager);
     setData(data);
@@ -58,22 +56,9 @@ void ProjectWidget::setData(const TeraData *data)
 {
     DataEditorWidget::setData(data);
 
-    // Query groups & kits
     if (!dataIsNew()){
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(data->getFieldValue("id_project").toInt()));
-        args.addQueryItem(WEB_QUERY_LIST, "true");
-        queryDataRequest(WEB_GROUPINFO_PATH, args);
-
-        args = QUrlQuery();
-        args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(data->getFieldValue("id_site").toInt()));
-        args.addQueryItem(WEB_QUERY_PARTICIPANTS, "");
-        queryDataRequest(WEB_DEVICEINFO_PATH, args);
-
-        // Query sessions types
-        args = QUrlQuery();
-        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(data->getId()));
-        queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
+        // Loads first detailled informations tab
+        on_tabProjectInfos_currentChanged(0);
 
     }else{
         ui->tabProjectInfos->setEnabled(false);
@@ -84,14 +69,8 @@ void ProjectWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &ProjectWidget::processFormsReply);
     connect(m_comManager, &ComManager::projectAccessReceived, this, &ProjectWidget::processProjectAccessReply);
-    connect(m_comManager, &ComManager::usersReceived, this, &ProjectWidget::processUsersReply);
-    connect(m_comManager, &ComManager::groupsReceived, this, &ProjectWidget::processGroupsReply);
-    connect(m_comManager, &ComManager::devicesReceived, this, &ProjectWidget::processDevicesReply);
-    connect(m_comManager, &ComManager::sessionTypesProjectsReceived, this, &ProjectWidget::processSessionTypesProjectReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &ProjectWidget::processPostOKReply);
 
-    connect(ui->btnUndo, &QPushButton::clicked, this, &ProjectWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &ProjectWidget::btnSave_clicked);
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &ProjectWidget::btnUpdateAccess_clicked);
     //connect(ui->btnDevices, &QPushButton::clicked, this, &ProjectWidget::btnDevices_clicked);
     connect(ui->btnUsers, &QPushButton::clicked, this, &ProjectWidget::btnUsers_clicked);
@@ -209,9 +188,7 @@ void ProjectWidget::updateControlsState()
 {
     //ui->btnDevices->setVisible(!m_limited);
     ui->btnUsers->setVisible(!m_limited);
-    ui->frameButtons->setVisible(!m_limited);
     ui->btnUpdateRoles->setVisible(!m_limited);
-    ui->wdgProject->setEnabled(!m_limited);
 
 }
 
@@ -219,6 +196,7 @@ void ProjectWidget::updateFieldsValue()
 {
     if (m_data){
         ui->wdgProject->fillFormFromData(m_data->toJson());
+        ui->lblTitle->setText(m_data->getName());
     }
 }
 
@@ -316,33 +294,6 @@ void ProjectWidget::processPostOKReply(QString path)
     }
 }
 
-void ProjectWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgProject->getInvalidFormDataLabels();
-
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
-    }
-
-     saveData();
-}
-
-void ProjectWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-
-}
-
 void ProjectWidget::btnUpdateAccess_clicked()
 {
 
@@ -401,4 +352,53 @@ void ProjectWidget::btnUsers_clicked()
     m_diag_editor->setWindowTitle(tr("Utilisateurs"));
 
     m_diag_editor->open();
+}
+
+void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
+{
+    // Load data depending on selected tab
+    QUrlQuery args;
+
+    if (index == 0){
+        // Groups
+        if (m_listGroups_items.isEmpty()){
+            connect(m_comManager, &ComManager::groupsReceived, this, &ProjectWidget::processGroupsReply);
+
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_GROUPINFO_PATH, args);
+        }
+    }
+
+    if (index == 1){
+        // Devices
+        if (m_listDevices_items.isEmpty()){
+            connect(m_comManager, &ComManager::devicesReceived, this, &ProjectWidget::processDevicesReply);
+
+            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+            args.addQueryItem(WEB_QUERY_PARTICIPANTS, "");
+            queryDataRequest(WEB_DEVICEINFO_PATH, args);
+        }
+    }
+
+    if (index == 2){
+        // Users
+        if (m_tableUsers_ids_rows.isEmpty()){
+            connect(m_comManager, &ComManager::usersReceived, this, &ProjectWidget::processUsersReply);
+
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_USERINFO_PATH, args);
+        }
+    }
+
+    if (index == 3){
+        // Session types
+        if (m_listSessionTypes_items.isEmpty()){
+            connect(m_comManager, &ComManager::sessionTypesProjectsReceived, this, &ProjectWidget::processSessionTypesProjectReply);
+
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+            queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
+        }
+    }
+
 }
