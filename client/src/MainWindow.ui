@@ -512,7 +512,7 @@
         <widget class="QWidget" name="tabProjectNavigator">
          <attribute name="icon">
           <iconset resource="../resources/TeraClient.qrc">
-           <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
+           <normaloff>:/icons/project.png</normaloff>:/icons/project.png</iconset>
          </attribute>
          <attribute name="title">
           <string>Navigateur</string>

@@ -90,5 +90,7 @@
         <file>icons/config.png</file>
         <file>icons/dashboard.png</file>
         <file>icons/details.png</file>
+        <file>icons/password.png</file>
+        <file>icons/server.png</file>
     </qresource>
 </RCC>

@@ -41,6 +41,8 @@ private slots:
     void btnDevices_clicked();
     void btnUsers_clicked();
 
+    void on_tabSiteInfos_currentChanged(int index);
+
 private:
     Ui::SiteWidget *ui;
 

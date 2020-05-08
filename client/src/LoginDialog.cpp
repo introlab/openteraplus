@@ -46,6 +46,7 @@ void LoginDialog::showServers(bool show)
 {
     ui->lblServer->setVisible(show);
     ui->cmbServers->setVisible(show);
+    ui->icoServer->setVisible(show);
 }
 
 void LoginDialog::setStatusMessage(QString message, bool error)
