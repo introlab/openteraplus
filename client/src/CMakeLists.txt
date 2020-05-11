@@ -19,6 +19,8 @@ set(headers
     DownloadedFile.h
     DownloadProgressDialog.h
     BaseDialog.h
+    GlobalEvent.h
+    GlobalEventLogger.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/TeraForm.h
@@ -50,6 +52,8 @@ set(srcs
     DownloadedFile.cpp
     DownloadProgressDialog.cpp
     BaseDialog.cpp
+    GlobalEvent.cpp
+    GlobalEventLogger.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/TeraForm.cpp

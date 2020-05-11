@@ -34,11 +34,11 @@ private slots:
 
     void processPostOKReply(QString path);
 
-    void btnSave_clicked();
-    void btnUndo_clicked();
     void btnUpdateAccess_clicked();
     void btnDevices_clicked();
     void btnUsers_clicked();
+
+    void on_tabProjectInfos_currentChanged(int index);
 
 private:
     Ui::ProjectWidget *ui;

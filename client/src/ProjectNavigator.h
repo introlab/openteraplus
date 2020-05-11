@@ -84,6 +84,7 @@ private slots:
 
      void currentSiteChanged();
      void currentNavItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+     void navItemActivated(QTreeWidgetItem* item, int column);
      void navItemExpanded(QTreeWidgetItem* item);
      void btnEditSite_clicked();
 

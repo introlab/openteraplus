@@ -33,6 +33,7 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
 
     // Update user in case we already have it
     updateCurrentUser();
+
 }
 
 MainWindow::~MainWindow()
@@ -60,6 +61,8 @@ void MainWindow::connectSignals()
 
     connect(ui->wdgMainMenu, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
     connect(ui->wdgMainMenu, &ProjectNavigator::dataDeleteRequest, this, &MainWindow::dataDeleteRequested);
+
+    connect(GlobalEventLogger::instance(), &GlobalEventLogger::newEventLogged, this, &MainWindow::addGlobalEvent);
 }
 
 void MainWindow::initUi()
@@ -69,9 +72,13 @@ void MainWindow::initUi()
     m_msgTimer.setSingleShot(true);
     m_msgTimer.setInterval(8000);
 
+    // Setup event view
+    ui->tableHistory->setColumnWidth(0, 20);
+
     // Disable docker titles
     ui->dockerTop->setTitleBarWidget(new QWidget());
     ui->dockerLeft->setTitleBarWidget(new QWidget());
+    ui->dockerRight->hide();
 
     // Setup loading icon animation
     m_loadingIcon = new QMovie("://status/loading.gif");
@@ -80,6 +87,12 @@ void MainWindow::initUi()
 
     // Setup main menu
     ui->wdgMainMenu->setComManager(m_comManager);
+
+    // Hide video camera
+    ui->frameVideo->hide();
+
+    // Set version number
+    ui->lblVersion->setText(QString(TERAPLUS_VERSION));
 
 }
 
@@ -134,6 +147,41 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
     }
 }
 
+QIcon MainWindow::getGlobalEventIcon(GlobalEvent &global_event)
+{
+    switch(global_event.getEventType()){
+        case EVENT_ERROR:
+            return QIcon("://icons/error.png");
+
+        case EVENT_LOGIN:
+        case EVENT_LOGOUT:
+            return QIcon("://icons/user_info.png");
+
+        case EVENT_NETWORK:
+            return QIcon("://status/connecting.gif");
+
+        case EVENT_WARNING:
+            return QIcon("://icons/warning.png");
+
+        case EVENT_USER_ONLINE:
+        case EVENT_PART_ONLINE:
+            return QIcon("://status/status_ok.png");
+
+        case EVENT_USER_OFFLINE:
+        case EVENT_PART_OFFLINE:
+            return QIcon("://status/status_notok.png");
+
+        case EVENT_DATA_NEW:
+            return QIcon("://icons/new.png");
+        case EVENT_DATA_EDIT:
+            return QIcon("://icons/edit.png");
+        case EVENT_DATA_DELETE:
+            return QIcon("://icons/delete_old.png");
+    }
+
+    return QIcon();
+}
+
 void MainWindow::showNextMessage()
 {
     m_loadingIcon->stop();
@@ -183,6 +231,29 @@ void MainWindow::showNextMessage()
     animate->setEndValue(0.0);
     animate->start(QAbstractAnimation::DeleteWhenStopped);
     ui->frameMessages->show();
+}
+
+void MainWindow::addGlobalEvent(GlobalEvent event)
+{
+    // Keep max 50 events in the log
+    if (ui->tableHistory->rowCount() >= 50){
+        ui->tableHistory->removeRow(ui->tableHistory->rowCount()-1);
+        ui->tableHistory->setRowCount(49);
+    }
+
+    // Get correct event icon depending on type
+    QIcon event_icon = getGlobalEventIcon(event);
+
+    // Create new table items and add to event table
+    QTableWidgetItem* icon_item = new QTableWidgetItem(event_icon, "");
+    QTableWidgetItem* time_item = new QTableWidgetItem(QTime::currentTime().toString("hh:mm:ss"));
+    QTableWidgetItem* desc_item = new QTableWidgetItem(event.getEventText());
+    ui->tableHistory->insertRow(0);
+    ui->tableHistory->setItem(0, 0, icon_item);
+    ui->tableHistory->setItem(0, 1, time_item);
+    ui->tableHistory->setItem(0, 2, desc_item);
+
+
 }
 
 void MainWindow::editorDialogFinished()
@@ -358,6 +429,10 @@ void MainWindow::com_downloadCompleted(DownloadedFile *file)
 
 void MainWindow::on_btnLogout_clicked()
 {
+    // Add logged action
+    GlobalEvent logout_event(EVENT_LOGOUT, tr("Déconnexion"));
+    GlobalEventLogger::instance()->logEvent(logout_event);
+
     emit logout_request();
 }
 
@@ -367,9 +442,21 @@ void MainWindow::addMessage(Message::MessageType msg_type, QString msg)
     addMessage(message);
 }
 
-void MainWindow::addMessage(const Message &msg)
+void MainWindow::addMessage(Message &msg)
 {
     m_messages.append(msg);
+
+    // Create event for error
+    if (msg.getMessageType() == Message::MESSAGE_ERROR){
+        GlobalEvent error_event(EVENT_ERROR, msg.getMessageText());
+        addGlobalEvent(error_event);
+    }
+
+    // Create event for warning
+    if (msg.getMessageType() == Message::MESSAGE_WARNING){
+        GlobalEvent warning_event(EVENT_WARNING, msg.getMessageText());
+        addGlobalEvent(warning_event);
+    }
 
     if (ui->frameMessages->isHidden())
         showNextMessage();
@@ -435,4 +522,16 @@ void MainWindow::on_btnConfig_clicked()
 
     m_diag_editor->open();
 
+}
+
+void MainWindow::on_btnVideo_toggled(bool checked)
+{
+    ui->frameVideo->setVisible(checked);
+    ui->splitterLeft->setSizes(QList<int>() << ui->tabMainMenu->height() << ui->frameDevicesButtons->height());
+
+}
+
+void MainWindow::on_btnLog_toggled(bool checked)
+{
+    ui->dockerRight->setVisible(checked);
 }

@@ -153,8 +153,9 @@ void ProjectNavigator::connectSignals()
     void (QComboBox::* comboIndexChangedSignal)(int) = &QComboBox::currentIndexChanged;
     connect(ui->cmbSites, comboIndexChangedSignal, this, &ProjectNavigator::currentSiteChanged);
     connect(ui->btnEditSite, &QPushButton::clicked, this, &ProjectNavigator::btnEditSite_clicked);
-    connect(ui->treeNavigator, &QTreeWidget::currentItemChanged, this, &ProjectNavigator::currentNavItemChanged);
+    //connect(ui->treeNavigator, &QTreeWidget::currentItemChanged, this, &ProjectNavigator::currentNavItemChanged);
     connect(ui->treeNavigator, &QTreeWidget::itemExpanded, this, &ProjectNavigator::navItemExpanded);
+    connect(ui->treeNavigator, &QTreeWidget::itemActivated, this, &ProjectNavigator::navItemActivated);
     connect(ui->btnDeleteItem, &QPushButton::clicked, this, &ProjectNavigator::deleteItemRequested);
     connect(ui->btnRefresh, &QToolButton::clicked, this, &ProjectNavigator::refreshRequested);
 }
@@ -632,6 +633,14 @@ void ProjectNavigator::currentNavItemChanged(QTreeWidgetItem *current, QTreeWidg
 
     // Update available actions (new items)
     updateAvailableActions(current);
+}
+
+void ProjectNavigator::navItemActivated(QTreeWidgetItem *item, int column)
+{
+    Q_UNUSED(column)
+
+    currentNavItemChanged(item, nullptr);
+
 }
 
 void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)

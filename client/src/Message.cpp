@@ -16,7 +16,7 @@ void Message::setMessage(const Message::MessageType &msg_type, const QString &ms
     m_type = msg_type;
 }
 
-Message::MessageType Message::getMessageType()
+ Message::MessageType Message::getMessageType()
 {
     return m_type;
 }

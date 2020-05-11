@@ -1,11 +1,13 @@
 {
 	"Settings": {
-		"showServers": true
+                "showServers": true,
+                "logToFile": true,
+                "logPath": "./logs"
 	},	
 	"Servers": {
 		"Local-4040": {
 			"url": "localhost",
-			"port": 4040,
+                        "port": 40075,
 			"webport": 40001, 
 			"pref": 1
 		},

@@ -34,12 +34,14 @@ private slots:
 
     void processPostOKReply(QString path);
 
-    void btnSave_clicked();
-    void btnUndo_clicked();
+    //void btnSave_clicked();
+    //void btnUndo_clicked();
     void btnUpdateAccess_clicked();
     void btnProjects_clicked();
     void btnDevices_clicked();
     void btnUsers_clicked();
+
+    void on_tabSiteInfos_currentChanged(int index);
 
 private:
     Ui::SiteWidget *ui;

@@ -14,6 +14,8 @@
 
 #include "ComManager.h"
 #include "Message.h"
+#include "GlobalEventLogger.h"
+#include "GlobalEvent.h"
 #include "DownloadedFile.h"
 
 namespace Ui {
@@ -47,9 +49,11 @@ private slots:
     void com_downloadCompleted(DownloadedFile* file);
 
     void addMessage(Message::MessageType msg_type, QString msg);
-    void addMessage(const Message& msg);
+    void addMessage(Message &msg);
     bool hasWaitingMessage();
     void showNextMessage();
+
+    void addGlobalEvent(GlobalEvent event);
 
     void editorDialogFinished();
     void dataDisplayRequested(TeraDataTypes data_type, int data_id);
@@ -61,10 +65,17 @@ private slots:
     void on_btnEditUser_clicked();
     void on_btnConfig_clicked();
 
+    void on_btnVideo_toggled(bool checked);
+
+    void on_btnLog_toggled(bool checked);
+
 private:
     void connectSignals();
     void initUi();
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
+
+    // Events
+    QIcon getGlobalEventIcon(GlobalEvent &global_event);
 
     Ui::MainWindow *ui;
 
@@ -78,6 +89,7 @@ private:
     QList<Message>  m_messages;
     Message         m_currentMessage;
     QTimer          m_msgTimer;
+
 
     // UI items
     QMovie*         m_loadingIcon;

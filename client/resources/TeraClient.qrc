@@ -84,5 +84,13 @@
         <file>icons/device_online.png</file>
         <file>stylesheet.qss</file>
         <file>icons/info.png</file>
+        <file>icons/camera.png</file>
+        <file>icons/navtree.png</file>
+        <file>icons/history.png</file>
+        <file>icons/config.png</file>
+        <file>icons/dashboard.png</file>
+        <file>icons/details.png</file>
+        <file>icons/password.png</file>
+        <file>icons/server.png</file>
     </qresource>
 </RCC>

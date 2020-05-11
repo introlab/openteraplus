@@ -1,4 +1,3 @@
-
 /*
     QWidget
 */
@@ -17,7 +16,7 @@ QToolBar {background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 rgb(125
     QDockWidget
 */
 
-QDockWidget{titlebar-close-icon: url(:/pictures/close-red.png);font:bold large Arial;color:rgb(200,200,198);}
+QDockWidget{titlebar-close-icon: url(:/pictures/close-red.png);font:bold large Arial; color:rgb(200,200,198);}
 QDockWidget::title{border: darkgray solid 2px;text-align:left;background:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 rgb(64,64,64), stop: 1.0 rgb(40,40,40));padding-left:5px}
 QDockWidget::close-button {icon-size:14px;background: rgba(0,0,0,0);}
 
@@ -54,18 +53,37 @@ QTabWidget::tab-bar {
     left: 0px;
 }
 
-QTabBar::tab,QTableWidget::tab,QHeaderView::section {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(128,128,140,25%));
+QTableWidget::tab,QHeaderView::section {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));
     border: 2px solid  rgba(128,128,140,50%);
-    border-bottom: 0px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
     padding: 2px;
     min-height:25px;
 }
 
+QTabBar::tab{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));
+    border: 2px solid  rgba(128,128,140,50%);
+    padding: 2px;
+    min-height:25px;
+    color: white;
+}
+
+QTabBar::tab:top{
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: 0px;
+}
+
+QTabBar::tab:left{
+    min-height:120px;
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    border-right: 0px;
+}
+
 QTabBar::tab:selected, QTabBar::tab:hover {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,70%),  stop: 1.0  rgba(128,128,140,50%));
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(220,220,220,70%),  stop: 1.0  rgba(255,255,255,50%));
+    color: black;
 }
 
 QTabBar::tab:selected {
@@ -80,11 +98,13 @@ QTabBar::tab:!selected {
 /*
     QToolBox
 */
-QToolBox{background-color:  rgba(128,150,150,25%);}
+QToolBox{
+    background-color:  rgba(5, 45, 105, 10%);
+    icon-size: 24px;
+}
 
 QToolBox::tab {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 cyan, 
-    stop: 0.2 rgba(0,128,200,50%), stop:1 cyan);
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,5,45,50%), stop: 0.2 rgba(0,64,128,50%), stop:1 rgba(0,5,45,50%));
     border-radius: 5px;
     color: darkgray;
 }
@@ -95,7 +115,8 @@ QToolBox::tab:selected {
 }
 
 QToolBox::tab:!selected {
-    color: white;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,64,128,50%), stop: 0.2 rgba(0,5,45,50%), stop:1 rgba(0,64,128,50%));
+    color: grey;
 }
 
 /*
@@ -118,6 +139,11 @@ QLabel {
 /*
     QTreeWidget
 */
+QTreeWidget{
+    selection-background-color: rgba(0,5,45,50%);
+    selection-color: cyan;
+}
+
 QTreeWidget::branch:closed:has-children  {
     border-image: none;
     image: url(://controls/branch_closed.png);
@@ -129,16 +155,12 @@ QTreeWidget::branch:open:has-children:has-siblings   {
     image:url(://controls/branch_opened.png);
 }
 
-QTreeWidget::item:selected{
-    color: cyan;
-}
-
 /*
     QLineEdit
 */
 QLineEdit{
     background-color: rgba(255,255,255,50%); 
-    color:white;
+    color:black;
     min-height: 25px;
     padding-left: 5px;
 }
@@ -147,6 +169,7 @@ QLineEdit:!enabled{
     background-color: rgba(0,0,0,0%);
     color:rgba(255,255,255,80%);
     padding-left: 0px;
+    color: white;
 }
 
 
@@ -164,10 +187,8 @@ QPlainTextEdit {
 QListWidget {
     background-color: rgba(255,255,255,50%); 
     color: white;
-}
-
-QListWidget::item:selected{
-    color: cyan;
+    selection-background-color: rgba(0,5,45,50%);
+    selection-color: cyan;
 }
 
 
@@ -183,27 +204,38 @@ QTextEdit {
     QComboBox
 */
 QComboBox {
-    background-color: rgba(75,75,75,100%);
+    background-color: rgba(255,255,255,50%);
     selection-background-color: rgba(90,90,90,100%);
+    selection-color: white;
     border: 1px solid gray;
     border-radius: 3px;
     padding: 0px 0px 0px 0px;
     min-width: 6em;
     min-height:25px;
     padding-left: 5px;
+    color: black;
+}
+
+QComboBox:!enabled {
+    background-color: rgba(255,255,255,10%);
+    color: white;
 }
 
 QComboBox QAbstractItemView {
-    background-color: rgba(100,100,100,100%);
+    /*background-color: rgba(255,255,255,50%);*/
     padding-left: 5px;
 }
+
+QComboBox::item{
+    color: white;
+ }
 
 /*
     QPushButton
 */
 QPushButton{
     color:white;
-    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 black, stop: 0.2  rgb(200,200,200), stop:1 black);
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 black, stop: 0.2  rgb(140,140,140), stop:1 black);
     border: 2px solid rgb(96, 96, 96);
     border-radius: 5px;
     min-height: 30px;
@@ -271,7 +303,8 @@ QToolButton:checked{
 
 QToolButton:!enabled{
     color: rgb(168, 168, 168);
-    background-color: rgba(200,200,200,10%);
+    /*background-color: rgba(200,200,200,10%);*/
+    background-color: transparent;
     border: 0px transparent
 }
 
@@ -337,22 +370,79 @@ QCalendarWidget QAbstractItemView:disabled { color: rgb(64, 64, 64); }
 QWidget#ConfigWidget{background-image: url(://TeRA_Background.png); }
 QWidget#SessionWidget{background-image: url(://TeRA_Background.png); }
 
+/* Customizations for Editors */
+QPushButton#btnEdit:hover{
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,5,45,100%), stop: 0.2  rgba(0,0,155,100%), stop:1 rgba(0,5,45,100%));
+    color: white;
+    border: 0px solid transparent;
+}
+
+QPushButton#btnEdit{
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,0,155,100%), stop: 0.2  rgba(0,5,45,100%), stop:1 rgba(0,0,155,100%));
+    border: 0px solid transparent;
+}
+
+QPushButton#btnEdit:!enabled{
+    background-color: rgba(0,0,155,25%);
+}
+
+QLabel#lblTitle{
+    font-weight: bold;
+    font-size: 14px;
+    color: cyan;
+}
+
 /* Customizations for LoginDialog */
 QGroupBox#grpLogos{background-color:rgba(200,200,200,75%);}
-QLabel#lblMessage{color:gold;}
+QLabel#lblMessage{color:white;}
 
 /* Customizations for MainWindow */
-QMainWindow{background-image: url(://TeRA_Background.png); }
+QMainWindow{background-image: url(://TeRA_Background.png); background-color: rgb(0,0,70);}
 QWidget#toolsWidget,QWidget#InToolsWidget{background-color:rgba(0,128,200,20%);}
 QWidget#topWidget{background-color:rgba(0,128,200,50%);}
 QFrame#frameMenu,QFrame#frameVideo{border: 1px solid rgba(150,150,150,50%);}
 QFrame#frameMessages{background-color:rgba(255,0,0,50%); border-radius:5px;}
-QToolButton#btnVideoSwitch {color: white; min-height: 35px; background-color: qlineargradient(spread:reflect, x1:0.220183, y1:0.745192, x2:1, y2:0, stop:0.201835 rgba(0, 0, 0, 255), stop:0.880734 rgba(255, 255, 255, 255), stop:1 rgba(189, 189, 189, 255)); border-radius: 5px;}
+QToolButton#btnVideoSwitch, QToolButton#btnLog {color: white; min-height: 35px; background-color: qlineargradient(spread:reflect, x1:0.220183, y1:0.745192, x2:1, y2:0, stop:0.201835 rgba(0, 0, 0, 255), stop:0.880734 rgba(255, 255, 255, 255), stop:1 rgba(189, 189, 189, 255)); border-radius: 5px;}
+QPushButton#btnLogout {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(140,10,10,100%), stop: 0.2  rgba(45,5,0,100%), stop:1 rgba(140,10,10,100%));
+    color: white;
+    border: 1px solid rgb(150,0,0);
+}
+
+QPushButton#btnLogout:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(45,5,0,100%), stop: 0.2  rgba(140,10,10,100%), stop:1 rgba(45,5,0,100%));
+    color: white;
+    border: 1px solid rgb(150,0,0);
+}
+
+QPushButton#btnEditUser,QPushButton#btnConfig {background-color: rgba(100,100,100,50%); min-width: 0px;}
+QPushButton#btnEditUser::hover, QPushButton#btnConfig::hover{color:white;}
+
+QToolButton#btnVideo:!checked, QToolButton#btnLog:!checked{
+    color:white;
+    background-color: transparent;
+    border: 1px solid rgb(120,120,120);
+    border-radius: 5px;
+}
+
+QToolButton#btnLog:!checked{
+    color:white;
+    background-color: transparent;
+    border: 0px;
+}
+
+QToolButton#btnVideo:checked, QToolButton#btnLog:checked{
+    color:black;
+    background-color: gray;
+    /*border: 2px solid white;*/
+    border: 0px;
+}
 
 /* Customizations for DataListWidget */
 QWidget#DataListWidget{background-image: url(://TeRA_Background.png); }
 QWidget#txtSearch{
     border:1px solid rgba(255,255,255,50%);
+    background-color: rgba(0,0,0,15%);
 }
 
 /* Customizations for ParticipantWidget */
