@@ -6,6 +6,7 @@
 #include <QAbstractSocket>
 #include <QTimer>
 #include "Logger.h"
+#include "UserRegisterToEvent.pb.h"
 
 
 class WebSocketManager : public QObject
@@ -16,6 +17,9 @@ public:
     ~WebSocketManager();
 
     void connectWebSocket(QString &socketUrl);
+    void registerForEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type);
+    void unregisterFromEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type);
+
 
 protected:
     QUrl                    m_socketUrl;

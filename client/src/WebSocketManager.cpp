@@ -1,7 +1,11 @@
 #include "WebSocketManager.h"
+#include <QDebug>
 
 WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent)
 {
+    // Check protobuf version
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+
     // Initialize communication objects
     m_webSocket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, parent);
     m_connectTimer.setSingleShot(true);
@@ -36,6 +40,28 @@ void WebSocketManager::connectWebSocket(QString &socketUrl)
     m_webSocket->open(m_socketUrl);
 }
 
+void WebSocketManager::registerForEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type)
+{
+    opentera::protobuf::UserRegisterToEvent user_event;
+
+    user_event.set_event_type(event_type);
+    user_event.set_action(opentera::protobuf::UserRegisterToEvent_Action_REGISTER);
+
+    qDebug() << QString::fromStdString(user_event.DebugString());
+
+}
+
+void WebSocketManager::unregisterFromEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type)
+{
+    opentera::protobuf::UserRegisterToEvent user_event;
+
+    user_event.set_event_type(event_type);
+    user_event.set_action(opentera::protobuf::UserRegisterToEvent_Action_UNREGISTER);
+    qDebug() << QString::fromStdString(user_event.DebugString());
+}
+
+
+
 //////////////////////////////////////////////////////////////////////
 void WebSocketManager::onSocketError(QAbstractSocket::SocketError error)
 {
@@ -48,6 +74,9 @@ void WebSocketManager::onSocketConnected()
     m_connectTimer.stop();
     m_keepAliveTimer.start();
     emit loginResult(true); // Logged in
+
+    // Test purpose
+    registerForEvent(opentera::protobuf::UserRegisterToEvent_EventType_USER_CONNECTED);
 }
 
 void WebSocketManager::onSocketDisconnected()
