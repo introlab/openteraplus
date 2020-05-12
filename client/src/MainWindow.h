@@ -39,7 +39,7 @@ private slots:
     void updateCurrentUser();
     void processGenericDataReply(TeraDataTypes item_data_type, QList<TeraData> datas);
 
-    void com_serverError(QAbstractSocket::SocketError error, QString error_msg);
+    void com_socketError(QAbstractSocket::SocketError error, QString error_msg);
     void com_networkError(QNetworkReply::NetworkError error, QString error_msg);
     void com_waitingForReply(bool waiting);
     void com_postReplyOK();

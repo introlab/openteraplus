@@ -2,8 +2,6 @@
 #define COMMANAGER_H
 
 #include <QObject>
-#include <QWebSocket>
-#include <QAbstractSocket>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -12,7 +10,6 @@
 #include <QSslPreSharedKeyAuthenticator>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
-#include <QWebSocket>
 
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -29,6 +26,7 @@
 
 #include "TeraData.h"
 #include "DownloadedFile.h"
+#include "WebSocketManager.h"
 
 
 class ComManager : public QObject
@@ -67,7 +65,7 @@ protected:
     QUrl                    m_serverUrl;
     QNetworkAccessManager*  m_netManager;
     QNetworkCookieJar       m_cookieJar;
-    QWebSocket*             m_webSocket;
+    WebSocketManager*       m_webSocketMan;
 
     QMap<QNetworkReply*, DownloadedFile*>   m_currentDownloads;
 
@@ -76,15 +74,12 @@ protected:
     QString                 m_username;
     QString                 m_password;
 
-    QTimer                  m_connectTimer;
-    QTimer                  m_keepAliveTimer;
-
     TeraData                m_currentUser;
 
 signals:
     void serverDisconnected();
-    void serverError(QAbstractSocket::SocketError, QString);
     void networkError(QNetworkReply::NetworkError, QString);
+    void socketError(QAbstractSocket::SocketError, QString);
     void waitingForReply(bool waiting);
 
     void loginResult(bool logged_in);
@@ -129,23 +124,12 @@ signals:
 public slots:
 
 private slots:
-    // Websockets
-    void onSocketConnected();
-    void onSocketDisconnected();
-    void onSocketError(QAbstractSocket::SocketError error);
-    void onSocketSslErrors(const QList<QSslError> &errors);
-    void onSocketTextMessageReceived(const QString &message);
-    void onSocketBinaryMessageReceived(const QByteArray &message);
-
     // Network
     void onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
     void onNetworkEncrypted(QNetworkReply *reply);
     void onNetworkFinished(QNetworkReply *reply);
     void onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
     void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
-
-    void onTimerConnectTimeout();
-    void onTimerKeepAliveTimeout();
 
 };
 

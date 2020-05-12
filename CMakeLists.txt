@@ -33,6 +33,9 @@ message(STATUS "Using QMAKE: ${QT_QMAKE_EXECUTABLE}")
 SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
+# Messages data
+add_subdirectory(opentera_messages/cpp)
+
 # Shared data
 add_subdirectory(shared)
 

@@ -6,22 +6,16 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     m_currentUser(TERADATA_USER)
 {
     // Initialize communication objects
-    m_webSocket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, parent);
-    m_connectTimer.setSingleShot(true);
     m_netManager = new QNetworkAccessManager(this);
     m_netManager->setCookieJar(&m_cookieJar);
 
-    // Set Keep Alive signal for websocket
-    m_keepAliveTimer.setInterval(30000);
+    m_webSocketMan = new WebSocketManager();
 
     // Setup signals and slots
-    // Websocket
-    connect(m_webSocket, &QWebSocket::connected, this, &ComManager::onSocketConnected);
-    connect(m_webSocket, &QWebSocket::disconnected, this, &ComManager::onSocketDisconnected);
-    connect(m_webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
-    connect(m_webSocket, &QWebSocket::sslErrors, this, &ComManager::onSocketSslErrors);
-    connect(m_webSocket, &QWebSocket::textMessageReceived, this, &ComManager::onSocketTextMessageReceived);
-    connect(m_webSocket, &QWebSocket::binaryMessageReceived, this, &ComManager::onSocketBinaryMessageReceived);
+    // Websocket manager
+    connect(m_webSocketMan, &WebSocketManager::serverDisconnected, this, &ComManager::serverDisconnected); // Pass-thru signal
+    connect(m_webSocketMan, &WebSocketManager::websocketError, this, &ComManager::socketError); // Pass-thru signal
+    connect(m_webSocketMan, &WebSocketManager::loginResult, this, &ComManager::loginResult); // Pass-thru signal
 
     // Network manager
     connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &ComManager::onNetworkAuthenticationRequired);
@@ -30,10 +24,6 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     connect(m_netManager, &QNetworkAccessManager::networkAccessibleChanged, this, &ComManager::onNetworkAccessibleChanged);
     connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ComManager::onNetworkSslErrors);
 
-    // Other objects
-    connect(&m_connectTimer, &QTimer::timeout, this, &ComManager::onTimerConnectTimeout);
-    connect(&m_keepAliveTimer, &QTimer::timeout, this, &ComManager::onTimerKeepAliveTimeout);
-
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
 
@@ -41,7 +31,7 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
 
 ComManager::~ComManager()
 {
-    m_webSocket->deleteLater();
+    m_webSocketMan->deleteLater();
 }
 
 void ComManager::connectToServer(QString username, QString password)
@@ -302,9 +292,7 @@ bool ComManager::handleLoginReply(const QString &reply_data)
 
     // Connect websocket
     QString web_socket_url = login_info["websocket_url"].toString();
-    m_connectTimer.setInterval(60000); //TODO: Reduce this delay - was set that high because of the time required to connect in MAC OS
-    m_connectTimer.start();
-    m_webSocket->open(QUrl(web_socket_url));
+    m_webSocketMan->connectWebSocket(web_socket_url);
 
     // Query connected user information
     QString user_uuid = login_info["user_uuid"].toString();
@@ -420,48 +408,6 @@ bool ComManager::handleFormReply(const QUrlQuery &reply_query, const QString &re
 }
 
 
-//////////////////////////////////////////////////////////////////////
-void ComManager::onSocketError(QAbstractSocket::SocketError error)
-{
-    qDebug() << "ComManager::Socket error - " << error;
-    emit serverError(error, m_webSocket->errorString());
-}
-
-void ComManager::onSocketConnected()
-{
-    m_connectTimer.stop();
-    m_keepAliveTimer.start();
-    emit loginResult(true); // Logged in
-}
-
-void ComManager::onSocketDisconnected()
-{
-    m_connectTimer.stop();
-    m_keepAliveTimer.stop();
-    qDebug() << "ComManager::Disconnected from " << m_serverUrl.toString();
-    emit serverDisconnected();
-}
-
-void ComManager::onSocketSslErrors(const QList<QSslError> &errors)
-{
-    Q_UNUSED(errors)
-
-    // WARNING: Never ignore SSL errors in production code.
-    // The proper way to handle self-signed certificates is to add a custom root
-    // to the CA store.
-    qDebug() << "ComManager::SSlErrors " << errors;
-    m_webSocket->ignoreSslErrors();
-}
-
-void ComManager::onSocketTextMessageReceived(const QString &message)
-{
-    LOG_DEBUG(message, "ComManager::onSocketTextMessageReceived");
-}
-
-void ComManager::onSocketBinaryMessageReceived(const QByteArray &message)
-{
-    Q_UNUSED(message)
-}
 
 /////////////////////////////////////////////////////////////////////////////////////
 void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
@@ -525,23 +471,5 @@ void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError>
     reply->ignoreSslErrors();
     for(QSslError error : errors){
         LOG_WARNING("Ignored: " + error.errorString(), "ComManager::onNetworkSslErrors");
-    }
-}
-
-void ComManager::onTimerConnectTimeout()
-{
-    // Connection timeout
-    if (m_webSocket){
-        qDebug() << "ComManager::onTimerConnectTimeout()";
-        m_webSocket->abort();
-        emit serverError(QAbstractSocket::SocketTimeoutError, tr("Le serveur ne répond pas."));
-    }
-
-}
-
-void ComManager::onTimerKeepAliveTimeout()
-{
-    if (m_webSocket){
-        m_webSocket->ping();
     }
 }

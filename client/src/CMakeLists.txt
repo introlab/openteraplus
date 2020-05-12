@@ -8,6 +8,7 @@ set(headers
     ConfigManagerClient.h
     LoginDialog.h
     ComManager.h
+    WebSocketManager.h
     MainWindow.h
     ProjectNavigator.h
     NotificationWindow.h
@@ -41,6 +42,7 @@ set(srcs
     ConfigManagerClient.cpp
     LoginDialog.cpp
     ComManager.cpp
+    WebSocketManager.cpp
     MainWindow.cpp
     ProjectNavigator.cpp
     NotificationWindow.cpp

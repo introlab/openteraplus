@@ -143,7 +143,7 @@ void ClientApp::loginRequested(QString username, QString password, QString serve
     m_comMan = new ComManager(server);
 
     // Connect signals
-    connect(m_comMan, &ComManager::serverError, this, &ClientApp::on_serverError);
+    connect(m_comMan, &ComManager::socketError, this, &ClientApp::on_serverError);
     connect(m_comMan, &ComManager::serverDisconnected, this, &ClientApp::on_serverDisconnected);
     connect(m_comMan, &ComManager::loginResult, this, &ClientApp::on_loginResult);
     connect(m_comMan, &ComManager::networkError, this, &ClientApp::on_networkError);

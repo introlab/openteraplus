@@ -49,7 +49,7 @@ void MainWindow::connectSignals()
 {
     connect(m_comManager, &ComManager::currentUserUpdated, this, &MainWindow::updateCurrentUser);
     connect(m_comManager, &ComManager::networkError, this, &MainWindow::com_networkError);
-    connect(m_comManager, &ComManager::serverError, this, &MainWindow::com_serverError);
+    connect(m_comManager, &ComManager::socketError, this, &MainWindow::com_socketError);
     connect(m_comManager, &ComManager::waitingForReply, this, &MainWindow::com_waitingForReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &MainWindow::com_postReplyOK);
     connect(m_comManager, &ComManager::dataReceived, this, &MainWindow::processGenericDataReply);
@@ -363,7 +363,7 @@ void MainWindow::processGenericDataReply(TeraDataTypes item_data_type, QList<Ter
 }
 
 
-void MainWindow::com_serverError(QAbstractSocket::SocketError error, QString error_msg)
+void MainWindow::com_socketError(QAbstractSocket::SocketError error, QString error_msg)
 {
     Q_UNUSED(error)
     addMessage(Message::MESSAGE_ERROR, error_msg);
