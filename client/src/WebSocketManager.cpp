@@ -1,5 +1,6 @@
 #include "WebSocketManager.h"
-#include <QDebug>
+#include "google/protobuf/util/json_util.h"
+
 
 WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent)
 {
@@ -9,6 +10,7 @@ WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent)
     // Initialize communication objects
     m_webSocket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, parent);
     m_connectTimer.setSingleShot(true);
+    seq_num = 0;
 
     // Set Keep Alive signal for websocket
     m_keepAliveTimer.setInterval(30000);
@@ -32,8 +34,9 @@ WebSocketManager::~WebSocketManager()
     m_webSocket->deleteLater();
 }
 
-void WebSocketManager::connectWebSocket(QString &socketUrl)
+void WebSocketManager::connectWebSocket(QString &socketUrl, QString &user_uuid)
 {
+    m_user_uuid = user_uuid;
     m_connectTimer.setInterval(60000); //TODO: Reduce this delay - was set that high because of the time required to connect in MAC OS
     m_connectTimer.start();
     m_socketUrl = QUrl(socketUrl);
@@ -42,24 +45,73 @@ void WebSocketManager::connectWebSocket(QString &socketUrl)
 
 void WebSocketManager::registerForEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type)
 {
-    opentera::protobuf::UserRegisterToEvent user_event;
 
+    TeraModuleMessage* tera_msg = new TeraModuleMessage();
+
+    // Header
+    TeraModuleMessage_Header* tera_msg_head = buildMessageHeader();
+    tera_msg->set_allocated_head(tera_msg_head);
+
+    // Data
+    UserRegisterToEvent user_event;
     user_event.set_event_type(event_type);
-    user_event.set_action(opentera::protobuf::UserRegisterToEvent_Action_REGISTER);
+    user_event.set_action(UserRegisterToEvent_Action_ACTION_REGISTER);
 
-    qDebug() << QString::fromStdString(user_event.DebugString());
+    google::protobuf::Any* data = tera_msg->add_data();
+    data->PackFrom(user_event);
+
+    // Sending
+    std::string json_msg;
+    google::protobuf::util::MessageToJsonString(*tera_msg, &json_msg);
+    m_webSocket->sendTextMessage(QString::fromStdString(json_msg));
+
+    // Clean up - since ownership was passed to the object, deleting it will clear all related ones.
+    delete tera_msg;
+
 
 }
 
-void WebSocketManager::unregisterFromEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type)
+void WebSocketManager::unregisterFromEvent(const UserRegisterToEvent_EventType event_type)
 {
-    opentera::protobuf::UserRegisterToEvent user_event;
 
+    TeraModuleMessage* tera_msg = new TeraModuleMessage();
+
+    // Header
+    TeraModuleMessage_Header* tera_msg_head = buildMessageHeader();
+    tera_msg->set_allocated_head(tera_msg_head);
+
+    // Data
+    UserRegisterToEvent user_event;
     user_event.set_event_type(event_type);
-    user_event.set_action(opentera::protobuf::UserRegisterToEvent_Action_UNREGISTER);
-    qDebug() << QString::fromStdString(user_event.DebugString());
+    user_event.set_action(UserRegisterToEvent_Action_ACTION_UNREGISTER);
+
+    google::protobuf::Any* data = tera_msg->add_data();
+    data->PackFrom(user_event);
+
+    // Sending
+    std::string json_msg;
+    google::protobuf::util::MessageToJsonString(*tera_msg, &json_msg);
+    m_webSocket->sendTextMessage(QString::fromStdString(json_msg));
+
+    // Clean up - since ownership was passed to the object, deleting it will clear all related ones.
+    delete tera_msg;
+
 }
 
+TeraModuleMessage_Header *WebSocketManager::buildMessageHeader()
+{
+    TeraModuleMessage_Header* tera_msg_head = new TeraModuleMessage_Header();
+    tera_msg_head->set_version(1);
+    tera_msg_head->set_time(static_cast<double>(QDateTime::currentDateTime().toMSecsSinceEpoch())/1000);
+    tera_msg_head->set_seq(++seq_num);
+    QString dest = "websocket.user." + m_user_uuid;
+    QString identity = "client.teraplus." + m_user_uuid;
+
+    tera_msg_head->set_dest(dest.toStdString());
+    tera_msg_head->set_source(identity.toStdString());
+
+    return tera_msg_head;
+}
 
 
 //////////////////////////////////////////////////////////////////////
@@ -76,7 +128,7 @@ void WebSocketManager::onSocketConnected()
     emit loginResult(true); // Logged in
 
     // Test purpose
-    registerForEvent(opentera::protobuf::UserRegisterToEvent_EventType_USER_CONNECTED);
+    registerForEvent(UserRegisterToEvent_EventType_EVENT_USER_CONNECTED);
 }
 
 void WebSocketManager::onSocketDisconnected()

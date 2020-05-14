@@ -291,11 +291,12 @@ bool ComManager::handleLoginReply(const QString &reply_data)
         return false;
 
     // Connect websocket
+    QString user_uuid = login_info["user_uuid"].toString();
     QString web_socket_url = login_info["websocket_url"].toString();
-    m_webSocketMan->connectWebSocket(web_socket_url);
+    m_webSocketMan->connectWebSocket(web_socket_url, user_uuid);
 
     // Query connected user information
-    QString user_uuid = login_info["user_uuid"].toString();
+
     m_currentUser.setFieldValue("user_uuid", QUuid(user_uuid));
     doUpdateCurrentUser();
 
