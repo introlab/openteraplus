@@ -196,6 +196,54 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
     return "";
 }
 
+QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
+{
+    switch (data_type) {
+    case TERADATA_NONE:
+        return "";
+    case TERADATA_USER:
+        return tr("Utilisateur");
+    case TERADATA_SITE:
+        return tr("Site");
+    case TERADATA_SESSIONTYPE:
+        return tr("Type de séance");
+    case TERADATA_TESTDEF:
+        return tr("Type d'évaluation");
+    case TERADATA_PROJECT:
+        return tr("Projet");
+    case TERADATA_DEVICE:
+        return tr("Appareil");
+    case TERADATA_PARTICIPANT:
+        return tr("Participant");
+    case TERADATA_GROUP:
+        return tr("Groupe participant");
+    case TERADATA_SITEACCESS:
+        return tr("Accès: site");
+    case TERADATA_PROJECTACCESS:
+        return tr("Accès: projet");
+    case TERADATA_SESSION:
+        return tr("Séance");
+    case TERADATA_DEVICESITE:
+        return tr("Appareil: site");
+    case TERADATA_DEVICEPROJECT:
+        return tr("Appareil: projet");
+    case TERADATA_DEVICEPARTICIPANT:
+        return tr("Appareil: participant");
+    case TERADATA_DEVICESUBTYPE:
+        return tr("Appareil: sous-type");
+    case TERADATA_SESSIONTYPEDEVICETYPE:
+        return tr("Appareil: type de séance");
+    case TERADATA_DEVICEDATA:
+        return tr("Appareil: donnée");
+    case TERADATA_SESSIONTYPEPROJECT:
+        return tr("Type de séance: projet");
+    case TERADATA_SESSIONEVENT:
+        return tr("Séance: événement");
+    }
+
+    return "";
+}
+
 TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
 {
     if (path==WEB_USERINFO_PATH)                return TERADATA_USER;

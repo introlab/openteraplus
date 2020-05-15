@@ -33,6 +33,7 @@ private:
     void updateFieldsValue();
 
     void updateParticipant(TeraData* participant);
+    void updateStats();
 
     bool validateData();
 
@@ -40,9 +41,6 @@ private slots:
     void processFormsReply(QString form_type, QString data);
     void postResultReply(QString path);
     void processParticipants(QList<TeraData> participants);
-
-    void btnSave_clicked();
-    void btnUndo_clicked();
 
 };
 

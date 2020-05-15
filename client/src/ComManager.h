@@ -117,6 +117,9 @@ signals:
     void queryResultsOK(QString path, QUrlQuery url_query);
     void postResultsOK(QString path);
     void deleteResultsOK(QString path, int id);
+    void posting(QString path, QString data);
+    void querying(QString path);
+    void deleting(QString path);
 
     void downloadCompleted(DownloadedFile* file);
     void downloadProgress(DownloadedFile* file);

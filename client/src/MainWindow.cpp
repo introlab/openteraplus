@@ -56,6 +56,9 @@ void MainWindow::connectSignals()
     connect(m_comManager, &ComManager::deleteResultsOK, this, &MainWindow::com_deleteResultsOK);
     connect(m_comManager, &ComManager::downloadProgress, this, &MainWindow::com_downloadProgress);
     connect(m_comManager, &ComManager::downloadCompleted, this, &MainWindow::com_downloadCompleted);
+    connect(m_comManager, &ComManager::posting, this, &MainWindow::com_posting);
+    connect(m_comManager, &ComManager::querying, this, &MainWindow::com_querying);
+    connect(m_comManager, &ComManager::deleting, this, &MainWindow::com_deleting);
 
     connect(&m_msgTimer, &QTimer::timeout, this, &MainWindow::showNextMessage);
 
@@ -177,6 +180,8 @@ QIcon MainWindow::getGlobalEventIcon(GlobalEvent &global_event)
             return QIcon("://icons/edit.png");
         case EVENT_DATA_DELETE:
             return QIcon("://icons/delete_old.png");
+        case EVENT_DATA_QUERY:
+            return QIcon("://icons/server.png");
     }
 
     return QIcon();
@@ -199,11 +204,11 @@ void MainWindow::showNextMessage()
 
     switch(m_currentMessage.getMessageType()){
     case Message::MESSAGE_OK:
-        background_color = "rgba(0,255,0,50%)";
+        background_color = "rgba(0,200,0,50%)";
         ui->icoMessage->setPixmap(QPixmap("://icons/ok.png"));
         break;
     case Message::MESSAGE_ERROR:
-        background_color = "rgba(255,0,0,50%)";
+        background_color = "rgba(200,0,0,50%)";
         ui->icoMessage->setPixmap(QPixmap("://icons/error.png"));
         break;
     case Message::MESSAGE_WARNING:
@@ -237,7 +242,8 @@ void MainWindow::addGlobalEvent(GlobalEvent event)
 {
     // Keep max 50 events in the log
     if (ui->tableHistory->rowCount() >= 50){
-        ui->tableHistory->removeRow(ui->tableHistory->rowCount()-1);
+        //ui->tableHistory->removeRow(ui->tableHistory->rowCount()-1);
+        ui->tableHistory->removeRow(0);
         ui->tableHistory->setRowCount(49);
     }
 
@@ -248,10 +254,12 @@ void MainWindow::addGlobalEvent(GlobalEvent event)
     QTableWidgetItem* icon_item = new QTableWidgetItem(event_icon, "");
     QTableWidgetItem* time_item = new QTableWidgetItem(QTime::currentTime().toString("hh:mm:ss"));
     QTableWidgetItem* desc_item = new QTableWidgetItem(event.getEventText());
-    ui->tableHistory->insertRow(0);
-    ui->tableHistory->setItem(0, 0, icon_item);
-    ui->tableHistory->setItem(0, 1, time_item);
-    ui->tableHistory->setItem(0, 2, desc_item);
+    //ui->tableHistory->insertRow(0);
+    ui->tableHistory->insertRow(ui->tableHistory->rowCount());
+    int current_row = ui->tableHistory->rowCount()-1; //0
+    ui->tableHistory->setItem(current_row, 0, icon_item);
+    ui->tableHistory->setItem(current_row, 1, time_item);
+    ui->tableHistory->setItem(current_row, 2, desc_item);
 
 
 }
@@ -394,7 +402,7 @@ void MainWindow::com_waitingForReply(bool waiting)
     ui->wdgMainMenu->setEnabled(!waiting);
 }
 
-void MainWindow::com_postReplyOK()
+void MainWindow::com_postReplyOK(QString path)
 {
     addMessage(Message::MESSAGE_OK, tr("Données sauvegardées."));
 
@@ -403,6 +411,35 @@ void MainWindow::com_postReplyOK()
 void MainWindow::com_deleteResultsOK(QString path, int id)
 {
     ui->wdgMainMenu->removeItem(TeraData::getDataTypeFromPath(path), id);
+}
+
+void MainWindow::com_posting(QString path, QString data)
+{
+    Q_UNUSED(data)
+
+    QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
+    if (!data_type.isEmpty()){
+        GlobalEvent event(EVENT_DATA_EDIT, data_type + tr(" - mise à jour..."));
+        addGlobalEvent(event);
+    }
+}
+
+void MainWindow::com_querying(QString path)
+{
+    QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
+    if (!data_type.isEmpty()){
+        GlobalEvent event(EVENT_DATA_QUERY, tr("Récupération de ") + data_type + "...");
+        addGlobalEvent(event);
+    }
+}
+
+void MainWindow::com_deleting(QString path)
+{
+    QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
+    if (!data_type.isEmpty()){
+        GlobalEvent event(EVENT_DATA_DELETE, data_type + tr(" - suppression..."));
+        addGlobalEvent(event);
+    }
 }
 
 void MainWindow::com_downloadProgress(DownloadedFile *file)
@@ -534,4 +571,17 @@ void MainWindow::on_btnVideo_toggled(bool checked)
 void MainWindow::on_btnLog_toggled(bool checked)
 {
     ui->dockerRight->setVisible(checked);
+}
+
+void MainWindow::on_tableHistory_itemDoubleClicked(QTableWidgetItem *item)
+{
+    // Display more info on that item
+    GlobalMessageBox msg_box;
+    int row = item->row();
+    QString date_str = ui->tableHistory->item(row,1)->text();
+    QString event_str = ui->tableHistory->item(row,2)->text();
+    QIcon icon = ui->tableHistory->item(row,0)->icon();
+
+    msg_box.showInfo(tr("Détails"), date_str + " - " + event_str, &icon);
+
 }

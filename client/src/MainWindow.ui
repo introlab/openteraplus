@@ -22,6 +22,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QFrame{background-color: rgba(100,100,100,10%); }
+QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -158,7 +159,7 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item alignment="Qt::AlignRight">
         <widget class="QLabel" name="icoLoading">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

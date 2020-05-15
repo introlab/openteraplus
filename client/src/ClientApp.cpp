@@ -187,12 +187,24 @@ void ClientApp::on_serverError(QAbstractSocket::SocketError error, QString error
 void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error_str)
 {
     if (m_loginDiag){
-        if (error == QNetworkReply::ConnectionRefusedError)
-            error_str = tr("La connexion a été refusée par le serveur.");
-        if (error == QNetworkReply::AuthenticationRequiredError){
-            on_loginResult(false);
-            return;
+        switch(error){
+            case QNetworkReply::ConnectionRefusedError:
+                error_str = tr("La connexion a été refusée par le serveur.");
+            break;
+            case QNetworkReply::AuthenticationRequiredError:
+                on_loginResult(false);
+                return;
+            break;
+            case QNetworkReply::TimeoutError:
+                error_str = tr("Impossible de rejoindre le serveur.");
+            break;
+            case QNetworkReply::HostNotFoundError:
+                error_str = tr("Le serveur est introuvable.");
+            break;
+            default:
+                error_str = tr("Impossible de se connecter (Code erreur: ") + QString::number(error) + ")";
         }
+
         m_loginDiag->setStatusMessage(error_str, true);
     }
     // TODO: Manage error in main UI

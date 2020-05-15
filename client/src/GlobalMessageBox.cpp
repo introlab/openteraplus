@@ -81,9 +81,12 @@ void GlobalMessageBox::showError(const QString &title, const QString &text)
     exec();
 }
 
-void GlobalMessageBox::showInfo(const QString &title, const QString &text)
+void GlobalMessageBox::showInfo(const QString &title, const QString &text, QIcon *icon)
 {
-    setIcon(QMessageBox::Information);
+    if (!icon)
+        setIcon(QMessageBox::Information);
+    else
+        setIconPixmap(icon->pixmap(64,64));
     setWindowTitle(title);
     setTextFormat(Qt::RichText);
     QString display_text = text;

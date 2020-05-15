@@ -12,6 +12,9 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
 
     setLimited(false);
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgGroup, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
@@ -53,19 +56,12 @@ void GroupWidget::saveData(bool signal){
 
 void GroupWidget::updateControlsState(){
 
-    ui->wdgGroup->setEnabled(!isWaitingOrLoading() && !m_limited);
-
-    // Buttons update
-    ui->btnSave->setEnabled(!isWaitingOrLoading());
-    ui->btnUndo->setEnabled(!isWaitingOrLoading());
-
-    ui->frameButtons->setVisible(!m_limited);
-
 }
 
 void GroupWidget::updateFieldsValue(){
     if (m_data){
         ui->wdgGroup->fillFormFromData(m_data->toJson());
+        ui->lblTitle->setText(m_data->getName());
     }
 }
 
@@ -123,6 +119,11 @@ void GroupWidget::updateParticipant(TeraData *participant)
     ui->tableParticipants->item(item->row(), 3)->setText(date_val_str);
 }
 
+void GroupWidget::updateStats()
+{
+    ui->lblParticipant->setText(QString::number(ui->tableParticipants->rowCount()) + tr(" participant(s)"));
+}
+
 bool GroupWidget::validateData(){
     bool valid = false;
 
@@ -157,6 +158,7 @@ void GroupWidget::processParticipants(QList<TeraData> participants)
     }
 
     //ui->tableParticipants->resizeColumnsToContents();
+    updateStats();
 }
 
 void GroupWidget::connectSignals()
@@ -164,33 +166,6 @@ void GroupWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &GroupWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &GroupWidget::postResultReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &GroupWidget::processParticipants);
-
-    connect(ui->btnUndo, &QPushButton::clicked, this, &GroupWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &GroupWidget::btnSave_clicked);
 }
 
-void GroupWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgGroup->getInvalidFormDataLabels();
 
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
-    }
-    saveData();
-}
-
-void GroupWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-
-}

@@ -9,7 +9,6 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
 {
     m_diag_editor = nullptr;
 
-
     ui->setupUi(this);
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image

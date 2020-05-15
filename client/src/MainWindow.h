@@ -42,8 +42,11 @@ private slots:
     void com_socketError(QAbstractSocket::SocketError error, QString error_msg);
     void com_networkError(QNetworkReply::NetworkError error, QString error_msg);
     void com_waitingForReply(bool waiting);
-    void com_postReplyOK();
+    void com_postReplyOK(QString path);
     void com_deleteResultsOK(QString path, int id);
+    void com_posting(QString path, QString data);
+    void com_querying(QString path);
+    void com_deleting(QString path);
 
     void com_downloadProgress(DownloadedFile* file);
     void com_downloadCompleted(DownloadedFile* file);
@@ -68,6 +71,8 @@ private slots:
     void on_btnVideo_toggled(bool checked);
 
     void on_btnLog_toggled(bool checked);
+
+    void on_tableHistory_itemDoubleClicked(QTableWidgetItem *item);
 
 private:
     void connectSignals();

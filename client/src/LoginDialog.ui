@@ -468,6 +468,9 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
         <property name="text">
          <string>Connexion en cours...</string>
         </property>
+        <property name="textFormat">
+         <enum>Qt::AutoText</enum>
+        </property>
        </widget>
       </item>
      </layout>

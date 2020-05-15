@@ -76,6 +76,7 @@ public:
     QList<QString> getFieldList() const;
 
     static QString getDataTypeName(const TeraDataTypes& data_type);
+    static QString getDataTypeNameText(const TeraDataTypes& data_type);
     static TeraDataTypes getDataTypeFromPath(const QString& path);
     static QString getPathForDataType(const TeraDataTypes& data_type);
 

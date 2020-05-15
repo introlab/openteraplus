@@ -126,6 +126,7 @@ void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
     }
     m_netManager->get(QNetworkRequest(query));
     emit waitingForReply(true);
+    emit querying(path);
 
     LOG_DEBUG("GET: " + path + ", with " + query_args.toString(), "ComManager::doQuery");
 }
@@ -139,6 +140,7 @@ void ComManager::doPost(const QString &path, const QString &post_data)
     request.setRawHeader("Content-Type", "application/json");
     m_netManager->post(request, post_data.toUtf8());
     emit waitingForReply(true);
+    emit posting(path, post_data);
 
     LOG_DEBUG("POST: " + path + ", with " + post_data, "ComManager::doPost");
 }
@@ -152,6 +154,8 @@ void ComManager::doDelete(const QString &path, const int &id)
     QNetworkRequest request(query);
     m_netManager->deleteResource(request);
     emit waitingForReply(true);
+    emit deleting(path);
+
     LOG_DEBUG("DELETE: " + path + ", with id=" + QString::number(id), "ComManager::doDelete");
 }
 

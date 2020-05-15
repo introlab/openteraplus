@@ -139,7 +139,7 @@ QLabel {
 /*
     QTreeWidget
 */
-QTreeWidget{
+QTreeWidget, QTableWidget{
     selection-background-color: rgba(0,5,45,50%);
     selection-color: cyan;
 }
