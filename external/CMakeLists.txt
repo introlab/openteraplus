@@ -15,7 +15,7 @@ endif (MSVC)
 option(protobuf_VERBOSE "" ON)
 
 #Will build shared libs
-set(BUILD_SHARED_LIBS TRUE)
+set(BUILD_SHARED_LIBS FALSE)
 
 #Disable tests for now...
 option(protobuf_BUILD_TESTS "" OFF)
