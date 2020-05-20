@@ -92,5 +92,14 @@
         <file>icons/details.png</file>
         <file>icons/password.png</file>
         <file>icons/server.png</file>
+        <file>icons/email.png</file>
+        <file>controls/check_off.png</file>
+        <file>controls/check_on.png</file>
+        <file>controls/check2_off_disabled.png</file>
+        <file>controls/check2_off.png</file>
+        <file>controls/check2_on_disabled.png</file>
+        <file>controls/check2_on.png</file>
+        <file>controls/check_on_disabled.png</file>
+        <file>controls/check_off_disabled.png</file>
     </qresource>
 </RCC>

@@ -56,6 +56,7 @@ public:
     bool setFieldValue(const QString& field, const QVariant& value);
     QVariant getFieldValue(const QString& field);
     void hideField(const QString& field);
+    void hideFields(const QStringList& fields);
 
     QString getFormData(bool include_unmodified_data=false);
     QJsonDocument getFormDataJson(bool include_unmodified_data=false);
@@ -72,6 +73,7 @@ private:
     QString                                         m_objectType;
     QVariantMap                                     m_initialValues;
     bool                                            m_highlightConditionals;
+    QStringList                                     m_hiddenFields;
 
     // Hook interface for dynamic url requests
     QMap<QWidget*, TeraDataTypes>                   m_widgetsHookRequests;

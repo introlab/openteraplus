@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>753</width>
-    <height>489</height>
+    <height>493</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -288,8 +288,8 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>705</width>
-            <height>294</height>
+            <width>717</width>
+            <height>295</height>
            </rect>
           </property>
           <attribute name="label">

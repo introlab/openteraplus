@@ -14,6 +14,7 @@
 #include "DeviceAssignDialog.h"
 #include "BaseDialog.h"
 #include "TeraSessionStatus.h"
+#include "Utils.h"
 
 namespace Ui {
 class ParticipantWidget;
@@ -45,6 +46,7 @@ private:
 
     void updateControlsState();
     void updateFieldsValue();
+    void initUI();
 
     bool validateData();
 
@@ -65,8 +67,6 @@ private slots:
     void deleteDataReply(QString path, int id);
     void onDownloadCompleted(DownloadedFile* file);
 
-    void btnSave_clicked();
-    void btnUndo_clicked();
     void btnDeleteSession_clicked();
     void btnAddDevice_clicked();
     void btnDelDevice_clicked();
@@ -81,6 +81,16 @@ private slots:
 
     void currentAvailDeviceChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void currentDeviceChanged(QListWidgetItem* current, QListWidgetItem* previous);
+    void on_chkEnabled_stateChanged(int checkState);
+    void on_chkWebAccess_stateChanged(int checkState);
+    void on_chkLogin_stateChanged(int arg1);
+    void on_btnCopyWeb_clicked();
+    void on_btnRandomPass_clicked();
+    void on_btnSaveLogin_clicked();
+    void on_txtUsername_textEdited(const QString &current);
+    void on_txtPassword_textEdited(const QString &current);
+    void on_txtPasswordConfirm_textEdited(const QString &current);
+    void on_tabInfos_currentChanged(int index);
 };
 
 #endif // PARTICIPANTWIDGET_H

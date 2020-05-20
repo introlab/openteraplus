@@ -2,6 +2,8 @@
 #include "ui_ParticipantWidget.h"
 
 #include <QLocale>
+#include <QClipboard>
+#include <QThread>
 
 #include "editors/DataListWidget.h"
 #include "editors/SessionWidget.h"
@@ -17,8 +19,13 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     ui->setupUi(this);
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
-    ui->btnDownloadAll->hide();
     setLimited(false);
+
+    // Use base class to manage editing
+    setEditorControls(ui->wdgParticipant, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
+    // Initialize user interface
+    initUI();
 
     // Connect signals and slots
     connectSignals();
@@ -33,14 +40,14 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
     // Query devices for that participant
     if (!m_data->isNew()){
-        QUrlQuery query;
+        /*QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
         queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, query);
 
         // Query devices for the current site
         query.removeQueryItem(WEB_QUERY_ID_PARTICIPANT);
         query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
-        queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);
+        queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);*/
         //query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
         //queryDataRequest(WEB_DEVICESITEINFO_PATH, query);
     }else{
@@ -80,8 +87,6 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
     connect(m_comManager, &ComManager::downloadCompleted, this, &ParticipantWidget::onDownloadCompleted);
 
-    connect(ui->btnUndo, &QPushButton::clicked, this, &ParticipantWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &ParticipantWidget::btnSave_clicked);
     connect(ui->btnDelSession, &QPushButton::clicked, this, &ParticipantWidget::btnDeleteSession_clicked);
     connect(ui->btnAddDevice, &QPushButton::clicked, this, &ParticipantWidget::btnAddDevice_clicked);
     connect(ui->btnDelDevice, &QPushButton::clicked, this, &ParticipantWidget::btnDelDevice_clicked);
@@ -99,21 +104,48 @@ void ParticipantWidget::connectSignals()
 
 void ParticipantWidget::updateControlsState()
 {
-    ui->tabParticipantInfos->setEnabled(!m_data->isNew());
-    ui->wdgParticipant->setEnabled(!isWaitingOrLoading() && !m_limited);
+    //ui->tabParticipantInfos->setEnabled(!m_data->isNew());
+    /*ui->wdgParticipant->setEnabled(!isWaitingOrLoading() && !m_limited);
 
     // Buttons update
     ui->btnSave->setEnabled(!isWaitingOrLoading());
     ui->btnUndo->setEnabled(!isWaitingOrLoading());
 
-    ui->frameButtons->setVisible(!m_limited);
+    ui->frameButtons->setVisible(!m_limited);*/
 }
 
 void ParticipantWidget::updateFieldsValue()
 {
     if (m_data){
+        ui->lblTitle->setText(m_data->getName());
+        ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
+        ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
+        ui->chkWebAccess->setChecked(!m_data->getFieldValue("participant_token").toString().isEmpty());
+        // TODO: Real URL
+        ui->txtWeb->setText(m_data->getFieldValue("participant_token").toString());
+        ui->txtUsername->setText(m_data->getFieldValue("participant_username").toString());
+        // Must "trigger" the slots for username - password, since they are not set otherwise
+        on_txtUsername_textEdited(ui->txtUsername->text());
+        on_txtPassword_textEdited("");
+
         ui->wdgParticipant->fillFormFromData(m_data->toJson());
     }
+}
+
+void ParticipantWidget::initUI()
+{
+    ui->btnDownloadAll->hide();
+    ui->frameLogin->hide();
+    ui->frameActive->hide();
+    ui->frameWeb->hide();
+
+    // TODO: Implement template email feature
+    ui->btnEmailWeb->hide();
+
+    // Hide some fields in the detailled participant widget
+    QStringList ignore_fields = {"participant_enabled", "participant_token", "participant_login_enabled",
+                                "participant_username", "participant_password"};
+    ui->wdgParticipant->hideFields(ignore_fields);
 }
 
 bool ParticipantWidget::validateData()
@@ -447,31 +479,6 @@ void ParticipantWidget::onDownloadCompleted(DownloadedFile *file)
 
 }
 
-void ParticipantWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgParticipant->getInvalidFormDataLabels();
-
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
-    }
-    saveData();
-}
-
-void ParticipantWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-}
-
 void ParticipantWidget::btnDeleteSession_clicked()
 {
     // Check if the sender is a QToolButton (from the action column)
@@ -698,3 +705,153 @@ void ParticipantWidget::currentDeviceChanged(QListWidgetItem *current, QListWidg
     ui->btnDelDevice->setEnabled(current);
 }
 
+
+void ParticipantWidget::on_chkEnabled_stateChanged(int checkState)
+{
+    // Update active state
+    bool current_state = (checkState == Qt::Checked);
+    if (m_data){
+        if (m_data->getFieldValue("participant_enabled").toBool() != current_state){
+            ui->wdgParticipant->setFieldValue("participant_enabled", current_state);
+            saveData();
+        }
+    }
+
+    // Update UI
+    ui->frameActive->setVisible(current_state);
+
+}
+
+void ParticipantWidget::on_chkWebAccess_stateChanged(int checkState)
+{
+    ui->frameWeb->setVisible(checkState == Qt::Checked);
+}
+
+void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
+{
+    bool current_state = (checkState == Qt::Checked);
+    if (m_data){
+        if (m_data->getFieldValue("participant_login_enabled").toBool() != current_state){
+            ui->wdgParticipant->setFieldValue("participant_login_enabled", current_state);
+            saveData();
+        }
+    }
+
+    ui->frameLogin->setVisible(checkState == Qt::Checked);
+}
+
+void ParticipantWidget::on_btnCopyWeb_clicked()
+{
+    QClipboard* clipboard = QApplication::clipboard();
+
+    clipboard->setText(ui->txtWeb->text(), QClipboard::Clipboard);
+
+    if (clipboard->supportsSelection()) {
+        clipboard->setText(ui->txtWeb->text(), QClipboard::Selection);
+    }
+
+    #if defined(Q_OS_LINUX)
+        QThread::msleep(1); //workaround for copied text not being available...
+    #endif
+}
+
+void ParticipantWidget::on_btnRandomPass_clicked()
+{
+    // Generate random password
+    QString password = Utils::generatePassword(10);
+
+
+    GlobalMessageBox msg(this);
+    msg.showInfo(tr("Mot de passe généré"), password);
+
+    ui->txtPassword->setText(password);
+    ui->txtPasswordConfirm->setText(password);
+
+
+
+}
+
+void ParticipantWidget::on_btnSaveLogin_clicked()
+{
+    // Validate required fields
+    bool all_ok = true;
+    QString err_msg;
+
+    if (ui->txtUsername->text().isEmpty()){
+        all_ok = false;
+        err_msg.append(tr("Code utilisateur manquant<br/>"));
+    }
+
+    if (!ui->txtPassword->text().isEmpty() || !ui->txtPasswordConfirm->text().isEmpty()){
+        if (ui->txtPassword->text() != ui->txtPasswordConfirm->text()){
+            all_ok = false;
+            err_msg.append(tr("Les mots de passe ne correspondent pas."));
+        }
+    }
+
+    if (!all_ok){
+        GlobalMessageBox msg;
+        msg.showError(tr("Informations manquantes"), tr("Les informations suivantes sont incorrectes:") + "<br/><br/>" + err_msg);
+        return;
+    }
+
+    // Update username and/or password
+    ui->wdgParticipant->setFieldValue("participant_username", ui->txtUsername->text());
+    if (!ui->txtPassword->text().isEmpty())
+        ui->wdgParticipant->setFieldValue("participant_password", ui->txtPassword->text());
+    saveData();
+    ui->wdgParticipant->resetFormValues(); // Ensure data is always sent when using this button
+    ui->txtPassword->clear();
+    ui->txtPasswordConfirm->clear();
+
+}
+
+void ParticipantWidget::on_txtUsername_textEdited(const QString &current)
+{
+    if (current.isEmpty()){
+        ui->txtUsername->setStyleSheet("background-color: #ffaaaa;");
+    }else{
+        ui->txtUsername->setStyleSheet("");
+    }
+}
+
+void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
+{
+    QString confirm_pass = ui->txtPasswordConfirm->text();
+    if (current != confirm_pass || ui->txtUsername->text().isEmpty()){
+        ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
+        ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
+    }else{
+        ui->txtPassword->setStyleSheet("");
+        ui->txtPasswordConfirm->setStyleSheet("");
+    }
+}
+
+void ParticipantWidget::on_txtPasswordConfirm_textEdited(const QString &current)
+{
+    QString pass = ui->txtPassword->text();
+    if (current != pass || ui->txtUsername->text().isEmpty()){
+        ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
+        ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
+    }else{
+        ui->txtPasswordConfirm->setStyleSheet("");
+        ui->txtPassword->setStyleSheet("");
+    }
+}
+
+void ParticipantWidget::on_tabInfos_currentChanged(int index)
+{
+    QUrlQuery query;
+
+    if (index == 1){ // Devices
+        if (m_listDevices_items.isEmpty()){
+            query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
+            queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, query);
+
+            // Query devices for the current site
+            query.removeQueryItem(WEB_QUERY_ID_PARTICIPANT);
+            query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
+            queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);
+        }
+    }
+}

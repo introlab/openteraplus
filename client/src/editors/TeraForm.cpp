@@ -180,6 +180,17 @@ void TeraForm::hideField(const QString &field)
     }
 }
 
+void TeraForm::hideFields(const QStringList &fields)
+{
+    // Hides the fields if already hidden
+    foreach(QString field, fields){
+        hideField(field);
+    }
+
+    // Stores the list if those fields appear later
+    m_hiddenFields = fields;
+}
+
 QString TeraForm::getFormData(bool include_unmodified_data)
 {
     QString data;
@@ -308,6 +319,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
     for (QVariant item:structure){
         if (item.canConvert(QMetaType::QVariantMap)){
             QVariantMap item_data = item.toMap();
+            QString item_id = item_data["id"].toString();
             QWidget* item_widget = nullptr;
             QLabel* item_label = new QLabel(item_data["label"].toString());
             /*QFrame* item_frame = new QFrame();
@@ -369,7 +381,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
                 if (item_data.contains("label"))
                     item_widget->setProperty("label", item_data["label"].toString());
                 if (item_data.contains("id"))
-                    item_widget->setProperty("id", item_data["id"]);
+                    item_widget->setProperty("id", item_id);
                 if (item_data.contains("required")){
                     item_widget->setProperty("required", item_data["required"]);
                     item_label->setText("<font color=red>*</font> " + item_label->text());
@@ -398,6 +410,11 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
                 // Remove row if hidden
                 if (item_type == "hidden"){
                     setWidgetVisibility(item_widget, nullptr, false);
+                }
+
+                // Check if is in "hidden fields" list
+                if (m_hiddenFields.contains(item_id)){
+                    hideField(item_id);
                 }
 
             }else{

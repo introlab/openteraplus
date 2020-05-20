@@ -21,7 +21,7 @@
    <bool>true</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">QFrame{background-color: rgba(100,100,100,10%); }
+   <string notr="true">/*QFrame{background-color: rgba(100,100,100,10%); }*/
 QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
 </string>
   </property>
@@ -577,8 +577,8 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>276</width>
-               <height>226</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
              <attribute name="icon">
