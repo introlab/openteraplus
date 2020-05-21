@@ -23,6 +23,9 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
 
     setLimited(false);
 
+    // Use base class to manage editing, but manually manage save button
+    setEditorControls(ui->wdgUser, ui->btnEdit, ui->frameButtons, nullptr, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
@@ -111,14 +114,15 @@ void UserWidget::updateControlsState(){
     ui->tableProjects->setEnabled(!isWaitingOrLoading());
 
     // Buttons update
-    ui->btnSave->setEnabled(!isWaitingOrLoading());
-    ui->btnUndo->setEnabled(!isWaitingOrLoading());
+    //ui->btnSave->setEnabled(!isWaitingOrLoading());
+    //ui->btnUndo->setEnabled(!isWaitingOrLoading());
     //ui->btnSave->setVisible(isEditing());
     //ui->btnUndo->setVisible(isEditing());
     // Always show save button if editing current user
     if (m_limited){
-        ui->btnSave->setVisible(true);
-        ui->btnUndo->setVisible(true);
+        /*ui->btnSave->setVisible(true);
+        ui->btnUndo->setVisible(true);*/
+        editToggleClicked();
     }
 
     // Enable access editing
@@ -146,6 +150,8 @@ void UserWidget::updateFieldsValue(){
         }
         resetSites();
         resetProjects();
+
+        ui->lblTitle->setText(m_data->getName());
 
         // Don't allow editing of username if not new data
         if (!m_data->isNew()){
@@ -424,7 +430,6 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &UserWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserWidget::postResultReply);
 
-    connect(ui->btnUndo, &QPushButton::clicked, this, &UserWidget::btnUndo_clicked);
     connect(ui->btnSave, &QPushButton::clicked, this, &UserWidget::btnSave_clicked);
 
 }
@@ -454,11 +459,3 @@ void UserWidget::btnSave_clicked()
      saveData();
 }
 
-void UserWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-
-}

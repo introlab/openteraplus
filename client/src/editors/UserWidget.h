@@ -69,7 +69,6 @@ private slots:
     void postResultReply(QString path);
 
     void btnSave_clicked();
-    void btnUndo_clicked();
 };
 
 

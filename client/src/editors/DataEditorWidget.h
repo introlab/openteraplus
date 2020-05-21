@@ -110,6 +110,7 @@ private slots:
     void deleteDataReplyOK(const QString &path, const int &id);
     void comDataError(QNetworkReply::NetworkError error, QString error_str);
 
+protected slots:
     void editToggleClicked();
     void saveButtonClicked();
     void undoButtonClicked();
