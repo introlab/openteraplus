@@ -287,6 +287,7 @@ void TeraForm::setComManager(ComManager *com_man)
     }
 }
 
+
 bool TeraForm::formHasData()
 {
     return !m_initialValues.isEmpty();
@@ -1036,5 +1037,21 @@ void TeraForm::hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas)
         // Update widget values
         updateWidgetChoices(target_widget, datas);
         m_widgetsHookRequests.remove(target_widget);
+    }
+}
+
+void TeraForm::setDisabled(bool disable)
+{
+    // Disable only the contents of pages, not the toolbox itself
+    for (int i=0; i<ui->toolboxMain->count(); i++){
+        ui->toolboxMain->widget(i)->setDisabled(disable);
+    }
+}
+
+void TeraForm::setEnabled(bool enable)
+{
+    // Enable only the contents of pages, not the toolbox itself
+    for (int i=0; i<ui->toolboxMain->count(); i++){
+        ui->toolboxMain->widget(i)->setEnabled(enable);
     }
 }

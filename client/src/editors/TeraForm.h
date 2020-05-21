@@ -115,6 +115,11 @@ private slots:
     // Hooks
     void hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas);
 
+public slots:
+
+    void setDisabled(bool disable);
+    void setEnabled(bool enable);
+
 signals:
     void widgetValueHasChanged(QWidget* widget, QVariant value);
 

@@ -12,27 +12,14 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgDevice, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_DEVICE));
-
-    // Query available sites
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_LIST, "true");
-    queryDataRequest(WEB_SITEINFO_PATH, args);
-
-    // Query associated participants and session types
-    if (!dataIsNew()){
-        args.removeAllQueryItems(WEB_QUERY_LIST);
-        args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
-        queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, args);
-
-        args.removeAllQueryItems(WEB_QUERY_ID_DEVICE);
-        args.addQueryItem(WEB_QUERY_ID_DEVICE_TYPE, m_data->getFieldValue("device_type").toString());
-        queryDataRequest(WEB_SESSIONTYPEDEVICETYPE_PATH, args);
-    }
 
     ui->wdgDevice->setHighlightConditions(false);
     ui->wdgDevice->setComManager(m_comManager);
@@ -72,6 +59,15 @@ void DeviceWidget::updateFieldsValue()
         }else {
             ui->wdgDevice->resetFormValues();
         }
+        ui->lblTitle->setText(m_data->getName());
+    }
+
+    if (!dataIsNew()){
+        // Loads first detailled informations tab
+        on_tabDeviceInfos_currentChanged(0);
+
+    }else{
+        ui->tabDetails->setEnabled(false);
     }
 }
 
@@ -90,8 +86,6 @@ void DeviceWidget::connectSignals()
     connect(m_comManager, &ComManager::sessionTypesDeviceTypesReceived, this, &DeviceWidget::processSessionTypesReply);
     connect(m_comManager, &ComManager::projectsReceived, this, &DeviceWidget::processProjectsReply);
 
-    connect(ui->btnSave, &QPushButton::clicked, this, &DeviceWidget::btnSave_clicked);
-    connect(ui->btnUndo, &QPushButton::clicked, this, &DeviceWidget::btnUndo_clicked);
     connect(ui->btnSites, &QPushButton::clicked, this, &DeviceWidget::btnSaveSites_clicked);
 
     connect(ui->lstSites, &QTreeWidget::itemExpanded, this, &DeviceWidget::lstSites_itemExpanded);
@@ -295,32 +289,6 @@ void DeviceWidget::processProjectsReply(QList<TeraData> projects)
     }
 }
 
-void DeviceWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgDevice->getInvalidFormDataLabels();
-
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
-    }
-
-     saveData();
-}
-
-void DeviceWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-}
-
 void DeviceWidget::btnSaveSites_clicked()
 {
     QJsonDocument document;
@@ -414,4 +382,35 @@ void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
 
     updating = false;
 
+}
+
+void DeviceWidget::on_tabDeviceInfos_currentChanged(int index)
+{
+
+    // Load data depending on selected tab
+    QUrlQuery args;
+
+    if (index == 0){
+        // Sites / Projets
+        if (m_listSites_items.isEmpty() || m_listProjects_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_SITEINFO_PATH, args);
+        }
+    }
+
+    if (index == 1){
+        // Participants
+        if (m_listParticipants_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
+            queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, args);
+        }
+    }
+
+    if (index == 2){
+        // Session types
+        if (m_listSessionTypes_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_ID_DEVICE_TYPE, m_data->getFieldValue("device_type").toString());
+            queryDataRequest(WEB_SESSIONTYPEDEVICETYPE_PATH, args);
+        }
+    }
 }

@@ -39,6 +39,7 @@ void DataEditorWidget::setData(const TeraData* data)
 {
     if (m_data){
         m_data->deleteLater();
+        m_data = nullptr;
     }
 
     if (data != nullptr){

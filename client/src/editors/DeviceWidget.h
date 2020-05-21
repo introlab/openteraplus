@@ -50,13 +50,12 @@ private slots:
     void processSessionTypesReply(QList<TeraData> session_types);
     void processProjectsReply(QList<TeraData> projects);
 
-    void btnSave_clicked();
-    void btnUndo_clicked();
     void btnSaveSites_clicked();
 
     void lstSites_itemExpanded(QTreeWidgetItem* item);
     void lstSites_itemChanged(QTreeWidgetItem* item, int column);
 
+    void on_tabDeviceInfos_currentChanged(int index);
 };
 
 #endif // DEVICEWIDGET_H
