@@ -317,7 +317,9 @@ void DataEditorWidget::editToggleClicked()
 {
     if (m_frameSave){
         m_frameSave->show();
-        m_editToggle->setDisabled(true);
+        //m_editToggle->setDisabled(true);
+        if (m_editToggle)
+            m_editToggle->hide();
         if (m_mainForm){
             m_mainForm->setDisabled(false);
         }
@@ -341,7 +343,9 @@ void DataEditorWidget::saveButtonClicked()
 
      saveData();
      m_frameSave->hide();
-     m_editToggle->setDisabled(false);
+     //m_editToggle->setDisabled(false);
+     if (m_editToggle)
+         m_editToggle->show();
      if (m_mainForm){
          m_mainForm->setDisabled(true);
      }
@@ -352,11 +356,13 @@ void DataEditorWidget::undoButtonClicked()
 {
     undoOrDeleteData();
 
-    if (parent())
-        emit closeRequest();
+    /*if (parent())
+        emit closeRequest();*/
 
     m_frameSave->hide();
-    m_editToggle->setDisabled(false);
+    //m_editToggle->setDisabled(false);
+    if (m_editToggle)
+        m_editToggle->show();
     if (m_mainForm){
         m_mainForm->setDisabled(true);
     }

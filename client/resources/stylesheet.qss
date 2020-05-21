@@ -185,7 +185,6 @@ QPlainTextEdit {
     QListWidget
 */
 QListWidget {
-    background-color: rgba(255,255,255,50%);
     color: white;
     selection-background-color: rgba(0,5,45,50%);
     selection-color: cyan;

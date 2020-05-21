@@ -17,22 +17,14 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
 
     setLimited(false);
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgSession, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
     // Query form definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION));
-
-    // Query session participants
-    QUrlQuery query;
-    query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
-    queryDataRequest(WEB_PARTICIPANTINFO_PATH, query);
-
-    // Query session device data
-    queryDataRequest(WEB_DEVICEDATAINFO_PATH, query);
-
-    // Query session events
-    queryDataRequest(WEB_SESSIONEVENT_PATH, query);
 
     ui->wdgSession->setComManager(m_comManager);
     setData(data);
@@ -60,21 +52,27 @@ void SessionWidget::saveData(bool signal){
     }
 }
 
+void SessionWidget::setData(const TeraData *data)
+{
+    DataEditorWidget::setData(data);
+
+    if (!dataIsNew()){
+        // Loads first detailled informations tab
+        on_tabSessionInfos_tabBarClicked(0);
+
+    }else{
+        ui->tabDetails->setEnabled(false);
+    }
+}
+
 void SessionWidget::updateControlsState(){
-
-    ui->wdgSession->setEnabled(!isWaitingOrLoading() && !m_limited);
-
-    // Buttons update
-    ui->btnSave->setEnabled(!isWaitingOrLoading());
-    ui->btnUndo->setEnabled(!isWaitingOrLoading());
-
-    ui->frameButtons->setVisible(!m_limited);
 
 }
 
 void SessionWidget::updateFieldsValue(){
     if (m_data){
         ui->wdgSession->fillFormFromData(m_data->toJson());
+        ui->lblTitle->setText(m_data->getName());
 
         int session_status = m_data->getFieldValue("session_status").toInt();
         ui->lblStatus->setText(tr("Séance: ") + TeraSessionStatus::getStatusName(session_status));
@@ -249,11 +247,12 @@ void SessionWidget::processSessionEventsReply(QList<TeraData> events)
 
 void SessionWidget::postResultReply(QString path)
 {
+    Q_UNUSED(path)
     // OK, data was saved!
-    if (path == WEB_SESSIONINFO_PATH){
+    /*if (path == WEB_SESSIONINFO_PATH){
         if (parent())
             emit closeRequest();
-    }
+    }*/
 }
 
 void SessionWidget::deleteDataReply(QString path, int id)
@@ -295,37 +294,9 @@ void SessionWidget::connectSignals()
     connect(m_comManager, &ComManager::downloadCompleted, this, &SessionWidget::onDownloadCompleted);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &SessionWidget::deleteDataReply);
 
-    connect(ui->btnUndo, &QPushButton::clicked, this, &SessionWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &SessionWidget::btnSave_clicked);
     connect(ui->btnDelData, &QPushButton::clicked, this, &SessionWidget::btnDeleteData_clicked);
     connect(ui->btnDownloadAll, &QPushButton::clicked, this, &SessionWidget::btnDownloadAll_clicked);
     connect(ui->tableData, &QTableWidget::currentItemChanged, this, &SessionWidget::currentSelectedDataChanged);
-}
-
-void SessionWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgSession->getInvalidFormDataLabels();
-
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
-    }
-    saveData();
-}
-
-void SessionWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-
 }
 
 void SessionWidget::btnDownload_clicked()
@@ -378,5 +349,39 @@ void SessionWidget::btnDownloadAll_clicked()
         args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
         downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
         setEnabled(false);
+    }
+}
+
+void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
+{
+    // Load data depending on selected tab
+    QUrlQuery query;
+
+    if (index == 0){
+        // Participants
+        query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
+        queryDataRequest(WEB_PARTICIPANTINFO_PATH, query);
+    }
+
+    if (index == 1){
+        // Data
+        if (m_listDeviceDatas.isEmpty()){
+            // Query session device data
+            query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
+            queryDataRequest(WEB_DEVICEDATAINFO_PATH, query);
+        }
+    }
+
+    if (index == 2){
+        // Tests
+        // TODO
+    }
+
+    if (index == 3){
+        // Session events
+        if (m_listSessionEvents.isEmpty()){
+            query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
+            queryDataRequest(WEB_SESSIONEVENT_PATH, query);
+        }
     }
 }

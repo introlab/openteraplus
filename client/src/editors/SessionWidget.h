@@ -25,6 +25,7 @@ public:
     ~SessionWidget();
 
     void saveData(bool signal=true);
+    void setData(const TeraData *data);
 
     void connectSignals();
 private:
@@ -43,8 +44,6 @@ private:
     void updateEvent(TeraData* event);
 
 private slots:
-    void btnSave_clicked();
-    void btnUndo_clicked();
     void btnDownload_clicked();
     void btnDeleteData_clicked();
     void btnDownloadAll_clicked();
@@ -59,6 +58,7 @@ private slots:
     void onDownloadCompleted(DownloadedFile* file);
 
     void currentSelectedDataChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
+    void on_tabSessionInfos_tabBarClicked(int index);
 };
 
 #endif // SESSIONWIDGET_H
