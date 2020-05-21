@@ -280,8 +280,6 @@ void DataEditorWidget::queryDataReplyOK(const QString &path, const QUrlQuery &qu
 
     if (m_requests.isEmpty())
         setEditing();
-
-
 }
 
 void DataEditorWidget::postDataReplyOK(const QString &path)

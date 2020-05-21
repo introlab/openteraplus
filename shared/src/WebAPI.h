@@ -44,6 +44,7 @@
 #define WEB_QUERY_ID_PROJECT        "id_project"
 #define WEB_QUERY_ID_DEVICE         "id_device"
 #define WEB_QUERY_ID_DEVICE_TYPE    "id_device_type"
+#define WEB_QUERY_ID_DEVICE_SUBTYPE "id_device_subtype"
 #define WEB_QUERY_ID_GROUP          "id_group"
 #define WEB_QUERY_ID_SESSION        "id_session"
 #define WEB_QUERY_ID_DEVICE_DATA    "id_device_data"

@@ -23,6 +23,12 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
 
     ui->wdgDevice->setHighlightConditions(false);
     ui->wdgDevice->setComManager(m_comManager);
+
+    if (!dataIsNew()){
+        // Loads first detailled informations tab
+        on_tabDeviceInfos_currentChanged(0);
+
+    }
 }
 
 DeviceWidget::~DeviceWidget()
@@ -49,6 +55,7 @@ void DeviceWidget::saveData(bool signal)
 void DeviceWidget::updateControlsState()
 {
    ui->tabSites->setEnabled(!dataIsNew());
+   ui->tabDetails->setEnabled(!dataIsNew());
 }
 
 void DeviceWidget::updateFieldsValue()
@@ -60,14 +67,6 @@ void DeviceWidget::updateFieldsValue()
             ui->wdgDevice->resetFormValues();
         }
         ui->lblTitle->setText(m_data->getName());
-    }
-
-    if (!dataIsNew()){
-        // Loads first detailled informations tab
-        on_tabDeviceInfos_currentChanged(0);
-
-    }else{
-        ui->tabDetails->setEnabled(false);
     }
 }
 

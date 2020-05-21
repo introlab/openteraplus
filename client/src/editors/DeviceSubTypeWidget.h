@@ -26,18 +26,22 @@ public:
 private:
     Ui::DeviceSubTypeWidget *ui;
 
+    QMap<int, QListWidgetItem*>  m_listDevices_items;
+
     void updateControlsState();
     void updateFieldsValue();
+
+    void updateDevice(const TeraData* device);
 
     bool validateData();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
+    void processDevicesReply(QList<TeraData> devices);
+
     void postResultReply(QString path);
 
-    void btnSave_clicked();
-    void btnUndo_clicked();
-
+    void on_tabDeviceSubInfos_currentChanged(int index);
 };
 
 #endif // DEVICESUBTYPEWIDGET_H

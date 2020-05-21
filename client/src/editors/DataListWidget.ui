@@ -349,6 +349,18 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
       </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
