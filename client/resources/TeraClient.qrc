@@ -102,5 +102,6 @@
         <file>controls/check_on_disabled.png</file>
         <file>controls/check_off_disabled.png</file>
         <file>icons/download.png</file>
+        <file>icons/session_type.png</file>
     </qresource>
 </RCC>

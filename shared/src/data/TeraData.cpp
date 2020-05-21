@@ -297,6 +297,7 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     case TERADATA_SITE:
         return "://icons/site.png";
     case TERADATA_SESSIONTYPE:
+        return "://icons/session_type.png";
     case TERADATA_SESSION:
         return "://icons/session.png";
     case TERADATA_TESTDEF:

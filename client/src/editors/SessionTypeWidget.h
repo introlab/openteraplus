@@ -42,10 +42,9 @@ private slots:
     void processProjectsReply(QList<TeraData> projects);
     void postResultReply(QString path);
 
-    void btnSave_clicked();
-    void btnUndo_clicked();
     void btnSaveProjects_clicked();
 
+    void on_tabSessionTypeInfos_currentChanged(int index);
 };
 
 #endif // SESSIONTYPEWIDGET_H

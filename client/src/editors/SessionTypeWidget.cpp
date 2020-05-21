@@ -12,19 +12,23 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
 
     setLimited(false);
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgSessionType, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
     // Query form definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION_TYPE));
 
-    // Query available projects
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_LIST, "true");
-    queryDataRequest(WEB_PROJECTINFO_PATH, args);
-
     ui->wdgSessionType->setComManager(m_comManager);
     setData(data);
+
+    if (!dataIsNew()){
+        // Loads first detailled informations tab
+        on_tabSessionTypeInfos_currentChanged(0);
+
+    }
 
 }
 
@@ -50,20 +54,13 @@ void SessionTypeWidget::saveData(bool signal){
 }
 
 void SessionTypeWidget::updateControlsState(){
-
-    ui->wdgSessionType->setEnabled(!isWaitingOrLoading() && !m_limited);
-
-    // Buttons update
-    ui->btnSave->setEnabled(!isWaitingOrLoading());
-    ui->btnUndo->setEnabled(!isWaitingOrLoading());
-
-    ui->frameButtons->setVisible(!m_limited);
-
+    ui->tabDetails->setEnabled(!dataIsNew());
 }
 
 void SessionTypeWidget::updateFieldsValue(){
     if (m_data){
         ui->wdgSessionType->fillFormFromData(m_data->toJson());
+        ui->lblTitle->setText(m_data->getName());
     }
 }
 
@@ -160,35 +157,7 @@ void SessionTypeWidget::connectSignals()
     connect(m_comManager, &ComManager::sessionTypesProjectsReceived, this, &SessionTypeWidget::processSessionTypesProjectsReply);
     connect(m_comManager, &ComManager::projectsReceived, this, &SessionTypeWidget::processProjectsReply);
 
-    connect(ui->btnUndo, &QPushButton::clicked, this, &SessionTypeWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &SessionTypeWidget::btnSave_clicked);
     connect(ui->btnProjects, & QPushButton::clicked, this, &SessionTypeWidget::btnSaveProjects_clicked);
-}
-
-void SessionTypeWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgSessionType->getInvalidFormDataLabels();
-
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
-    }
-    saveData();
-}
-
-void SessionTypeWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-
 }
 
 void SessionTypeWidget::btnSaveProjects_clicked()
@@ -222,4 +191,19 @@ void SessionTypeWidget::btnSaveProjects_clicked()
     base_obj.insert("session_type_project", projects);
     document.setObject(base_obj);
     postDataRequest(WEB_SESSIONTYPEPROJECT_PATH, document.toJson());
+}
+
+void SessionTypeWidget::on_tabSessionTypeInfos_currentChanged(int index)
+{
+
+    QUrlQuery args;
+
+    if (index == 0){
+        // Query available projects
+        if (m_listProjects_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_PROJECTINFO_PATH, args);
+        }
+    }
+
 }
