@@ -101,5 +101,6 @@
         <file>controls/check2_on.png</file>
         <file>controls/check_on_disabled.png</file>
         <file>controls/check_off_disabled.png</file>
+        <file>icons/download.png</file>
     </qresource>
 </RCC>

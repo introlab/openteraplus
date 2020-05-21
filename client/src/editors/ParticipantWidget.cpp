@@ -97,6 +97,9 @@ void ParticipantWidget::connectSignals()
     connect(ui->lstFilters, &QListWidget::itemChanged, this, &ParticipantWidget::currentTypeFiltersChanged);
     connect(ui->btnNextCal, &QPushButton::clicked, this, &ParticipantWidget::displayNextMonth);
     connect(ui->btnPrevCal, &QPushButton::clicked, this, &ParticipantWidget::displayPreviousMonth);
+    connect(ui->calMonth1, &HistoryCalendarWidget::clicked, this, &ParticipantWidget::currentCalendarDateChanged);
+    connect(ui->calMonth2, &HistoryCalendarWidget::clicked, this, &ParticipantWidget::currentCalendarDateChanged);
+    connect(ui->calMonth3, &HistoryCalendarWidget::clicked, this, &ParticipantWidget::currentCalendarDateChanged);
 
     connect(ui->lstAvailDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentAvailDeviceChanged);
     connect(ui->lstDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentDeviceChanged);
@@ -207,9 +210,19 @@ void ParticipantWidget::updateSession(TeraData *session)
         layout->setAlignment(Qt::AlignLeft);
         action_frame->setLayout(layout);
 
+        // View session
+        QToolButton* btnView = new QToolButton();
+        btnView->setIcon(QIcon(":/icons/search.png"));
+        btnView->setProperty("id_session", session->getId());
+        btnView->setCursor(Qt::PointingHandCursor);
+        btnView->setMaximumWidth(32);
+        btnView->setToolTip(tr("Ouvrir"));
+        connect(btnView, &QToolButton::clicked, this, &ParticipantWidget::btnViewSession_clicked);
+        layout->addWidget(btnView);
+
         // Delete
         QToolButton* btnDelete = new QToolButton();
-        btnDelete->setIcon(QIcon(":/icons/delete.png"));
+        btnDelete->setIcon(QIcon(":/icons/delete_old.png"));
         btnDelete->setProperty("id_session", session->getId());
         btnDelete->setCursor(Qt::PointingHandCursor);
         btnDelete->setMaximumWidth(32);
@@ -219,7 +232,7 @@ void ParticipantWidget::updateSession(TeraData *session)
 
         // Download data
         btnDownload = new QToolButton();
-        btnDownload->setIcon(QIcon(":/icons/save.png"));
+        btnDownload->setIcon(QIcon(":/icons/download.png"));
         btnDownload->setProperty("id_session", session->getId());
         btnDownload->setCursor(Qt::PointingHandCursor);
         btnDownload->setMaximumWidth(32);
@@ -443,6 +456,11 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
             delete m_ids_sessions[id];
             m_ids_sessions.remove(id);
             m_listSessions_items.remove(id);
+
+            // Update calendars
+            ui->calMonth1->setData(m_ids_sessions.values());
+            ui->calMonth2->setData(m_ids_sessions.values());
+            ui->calMonth2->setData(m_ids_sessions.values());
         }
     }
 
@@ -490,16 +508,25 @@ void ParticipantWidget::btnDeleteSession_clicked()
         ui->tableSessions->selectRow(session_item->row());
     }
 
-    if (!ui->tableSessions->currentItem())
+    if (ui->tableSessions->selectedItems().count()==0)
         return;
 
     GlobalMessageBox diag;
-    QTableWidgetItem* base_item = ui->tableSessions->item(ui->tableSessions->currentRow(),0);
-    QMessageBox::StandardButton answer = diag.showYesNo(tr("Suppression?"),
-                                                        tr("Êtes-vous sûrs de vouloir supprimer """) + base_item->text() + """?");
+    QMessageBox::StandardButton answer = QMessageBox::No;
+    if (ui->tableSessions->selectionModel()->selectedRows().count() == 1){
+        QTableWidgetItem* base_item = ui->tableSessions->item(ui->tableSessions->currentRow(),0);
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer """) + base_item->text() + """?");
+    }else{
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer toutes les séances sélectionnées?"));
+    }
+
     if (answer == QMessageBox::Yes){
         // We must delete!
-        m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_SESSION), m_listSessions_items.key(base_item));
+        foreach(QModelIndex selected_row, ui->tableSessions->selectionModel()->selectedRows()){
+            QTableWidgetItem* base_item = ui->tableSessions->item(selected_row.row(),0); // Get item at index 0 which is linked to session id
+            //m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_SESSION), m_listSessions_items.key(base_item));
+            m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_SESSION), m_listSessions_items.key(base_item));
+        }
     }
 }
 
@@ -592,10 +619,59 @@ void ParticipantWidget::btnDowloadAll_clicked()
     }
 }
 
+void ParticipantWidget::btnViewSession_clicked()
+{
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    QTableWidgetItem* session_item = nullptr;
+    if (action_btn){
+        // Select row according to the session id of that button
+        int id_session = action_btn->property("id_session").toInt();
+        session_item = m_listSessions_items[id_session];
+    }
+
+    if (session_item){
+        displaySessionDetails(session_item);
+    }
+
+
+}
+
 void ParticipantWidget::currentSelectedSessionChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
 {
     Q_UNUSED(previous)
     ui->btnDelSession->setEnabled(current);
+}
+
+void ParticipantWidget::currentCalendarDateChanged(QDate current_date)
+{
+    // Clear current selection
+    ui->tableSessions->clearSelection();
+
+    // Temporarly set multi-selection
+    QAbstractItemView::SelectionMode current_mode = ui->tableSessions->selectionMode();
+    ui->tableSessions->setSelectionMode(QAbstractItemView::MultiSelection);
+
+    // Select all the sessions in the list that fits with that date
+    QTableWidgetItem* first_item = nullptr;
+    foreach(TeraData* session, m_ids_sessions.values()){
+        if (session->getFieldValue("session_start_datetime").toDateTime().date() == current_date){
+            QTableWidgetItem* session_item = m_listSessions_items.value(session->getId());
+            if (session_item){
+                ui->tableSessions->selectRow(session_item->row());
+                if (!first_item)
+                    first_item = session_item;
+            }
+        }
+    }
+
+    // Resets selection mode
+    ui->tableSessions->setSelectionMode(current_mode);
+
+    // Ensure first session is visible
+    if (first_item){
+        ui->tableSessions->scrollToItem(first_item);
+    }
 }
 
 void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
@@ -604,11 +680,6 @@ void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
         m_diag_editor->deleteLater();
     }
     m_diag_editor = new BaseDialog(this);
-
-
-
-
-
 
     int id_session = m_listSessions_items.key(ui->tableSessions->item(session_item->row(),0));
     TeraData* ses_data = m_ids_sessions[id_session];

@@ -35,7 +35,7 @@ public:
 private:
     Ui::ParticipantWidget *ui;
 
-    QMap<int, QTableWidgetItem*>    m_listSessions_items;
+    QMap<int, QTableWidgetItem*>    m_listSessions_items; // ID Session to QTableWidgetItem* mapping
     QMap<int, TeraData*>            m_ids_session_types;
     QMap<int, TeraData*>            m_ids_sessions;
 
@@ -72,8 +72,10 @@ private slots:
     void btnDelDevice_clicked();
     void btnDownloadSession_clicked();
     void btnDowloadAll_clicked();
+    void btnViewSession_clicked();
 
     void currentSelectedSessionChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
+    void currentCalendarDateChanged(QDate current_date);
     void displaySessionDetails(QTableWidgetItem* session_item);
     void currentTypeFiltersChanged(QListWidgetItem* changed);
     void displayNextMonth();
