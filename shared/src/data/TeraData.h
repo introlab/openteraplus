@@ -13,6 +13,7 @@
 enum TeraDataTypes {
     TERADATA_NONE,
     TERADATA_USER,
+    TERADATA_USERGROUP,
     TERADATA_SITE,
     TERADATA_SESSIONTYPE,
     TERADATA_TESTDEF,
@@ -74,6 +75,7 @@ public:
     QVariant getFieldValue(const QString &fieldName) const;
     void setFieldValue(const QString& fieldName, const QVariant& fieldValue);
     QList<QString> getFieldList() const;
+    QVariantMap getFieldValues();
 
     static QString getDataTypeName(const TeraDataTypes& data_type);
     static QString getDataTypeNameText(const TeraDataTypes& data_type);

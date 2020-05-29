@@ -34,6 +34,8 @@ set(headers
     editors/SessionTypeWidget.h
     editors/SessionWidget.h
     editors/DeviceSubTypeWidget.h
+    wizards/UserWizard.h
+    wizards/BaseWizard.h
 )
 
 set(srcs
@@ -68,6 +70,8 @@ set(srcs
     editors/SessionTypeWidget.cpp
     editors/SessionWidget.cpp
     editors/DeviceSubTypeWidget.cpp
+    wizards/UserWizard.cpp
+    wizards/BaseWizard.cpp
 )
 
 SET(uis

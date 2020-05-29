@@ -50,7 +50,7 @@ public:
     QString getCurrentUserSiteRole(int site_id);
     QString getCurrentUserProjectRole(int project_id);
     bool isCurrentUserSuperAdmin();
-    typedef void (ComManager::* signal_ptr)(QList<TeraData>);
+    typedef void (ComManager::* signal_ptr)(QList<TeraData>, QUrlQuery);
 
     bool hasPendingDownloads();
 
@@ -89,28 +89,29 @@ signals:
     void formReceived(QString form_type, QString data);
 
     // Generic data signal, emitted for all data type.
-    void dataReceived(TeraDataTypes data_type, QList<TeraData> generic_list);
+    void dataReceived(TeraDataTypes data_type, QList<TeraData> generic_list, QUrlQuery reply_query);
 
     // Specific data signals
-    void usersReceived(QList<TeraData> user_list);
-    void sitesReceived(QList<TeraData> site_list);
-    void sessionTypesReceived(QList<TeraData> st_list);
-    void testDefsReceived(QList<TeraData> tests_list);
-    void projectsReceived(QList<TeraData> projects_list);
-    void devicesReceived(QList<TeraData> devices_list);
-    void participantsReceived(QList<TeraData> participants_list);
-    void groupsReceived(QList<TeraData> groups_list);
-    void siteAccessReceived(QList<TeraData> access_list);
-    void projectAccessReceived(QList<TeraData> access_list);
-    void sessionsReceived(QList<TeraData> sessions_list);
-    void deviceSitesReceived(QList<TeraData> device_sites_list);
-    void deviceProjectsReceived(QList<TeraData> device_projects_list);
-    void deviceParticipantsReceived(QList<TeraData> device_participants_list);
-    void sessionTypesDeviceTypesReceived(QList<TeraData> session_types_device_types_list);
-    void sessionTypesProjectsReceived(QList<TeraData> session_types_projects_list);
-    void deviceDatasReceived(QList<TeraData> device_data_list);
-    void sessionEventsReceived(QList<TeraData> events_list);
-    void deviceSubtypesReceived(QList<TeraData> device_subtypes_list);
+    void usersReceived(QList<TeraData> user_list, QUrlQuery reply_query);
+    void sitesReceived(QList<TeraData> site_list, QUrlQuery reply_query);
+    void sessionTypesReceived(QList<TeraData> st_list, QUrlQuery reply_query);
+    void testDefsReceived(QList<TeraData> tests_list, QUrlQuery reply_query);
+    void projectsReceived(QList<TeraData> projects_list, QUrlQuery reply_query);
+    void devicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
+    void participantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
+    void groupsReceived(QList<TeraData> groups_list, QUrlQuery reply_query);
+    void siteAccessReceived(QList<TeraData> access_list, QUrlQuery reply_query);
+    void projectAccessReceived(QList<TeraData> access_list, QUrlQuery reply_query);
+    void sessionsReceived(QList<TeraData> sessions_list, QUrlQuery reply_query);
+    void deviceSitesReceived(QList<TeraData> device_sites_list, QUrlQuery reply_query);
+    void deviceProjectsReceived(QList<TeraData> device_projects_list, QUrlQuery reply_query);
+    void deviceParticipantsReceived(QList<TeraData> device_participants_list, QUrlQuery reply_query);
+    void sessionTypesDeviceTypesReceived(QList<TeraData> session_types_device_types_list, QUrlQuery reply_query);
+    void sessionTypesProjectsReceived(QList<TeraData> session_types_projects_list, QUrlQuery reply_query);
+    void deviceDatasReceived(QList<TeraData> device_data_list, QUrlQuery reply_query);
+    void sessionEventsReceived(QList<TeraData> events_list, QUrlQuery reply_query);
+    void deviceSubtypesReceived(QList<TeraData> device_subtypes_list, QUrlQuery reply_query);
+    void userGroupsReceived(QList<TeraData> user_groups_list, QUrlQuery reply_query);
 
     //void queryResultsReceived(QString object, QUrlQuery url_query, QString data);
     //void postResultsReceived(QString path, QString data);

@@ -7,6 +7,8 @@
 #include "editors/SessionTypeWidget.h"
 #include "editors/DeviceSubTypeWidget.h"
 
+#include "wizards/UserWizard.h"
+
 DataListWidget::DataListWidget(ComManager *comMan, TeraDataTypes data_type, QWidget *parent):
     QWidget(parent),
     ui(new Ui::DataListWidget),
@@ -377,16 +379,19 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
 
 
     // Query full data for that data item
-    m_comManager->doQuery(TeraData::getPathForDataType(current_data->getDataType()),
-                          QUrlQuery(current_data->getIdFieldName() + "=" + QString::number(current_data->getId())));
+    QUrlQuery args;
+    args.addQueryItem(current_data->getIdFieldName(), QString::number(current_data->getId()));
+    m_comManager->doQuery(TeraData::getPathForDataType(current_data->getDataType()), args);
 }
 
 void DataListWidget::newDataRequested()
 {
-    TeraData* new_data = new TeraData(m_dataType);
+    /*TeraData* new_data = new TeraData(m_dataType);
     new_data->setId(0);
     m_newdata = true;
-    updateDataInList(new_data, true);
+    updateDataInList(new_data, true);*/
+    UserWizard new_wizard(m_comManager);
+    new_wizard.exec();
 
 }
 

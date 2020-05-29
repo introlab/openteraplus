@@ -148,6 +148,11 @@ QList<QString> TeraData::getFieldList() const
     return rval;
 }
 
+QVariantMap TeraData::getFieldValues()
+{
+    return m_fieldsValue;
+}
+
 QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
 {
     switch (data_type) {
@@ -155,6 +160,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "";
     case TERADATA_USER:
         return "user";
+    case TERADATA_USERGROUP:
+        return "user_group";
     case TERADATA_SITE:
         return "site";
     case TERADATA_SESSIONTYPE:
@@ -203,6 +210,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return "";
     case TERADATA_USER:
         return tr("Utilisateur");
+    case TERADATA_USERGROUP:
+        return tr("Groupe utilisateur");
     case TERADATA_SITE:
         return tr("Site");
     case TERADATA_SESSIONTYPE:
@@ -264,6 +273,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_SESSIONTYPEPROJECT_PATH)      return TERADATA_SESSIONTYPEPROJECT;
     if (path==WEB_SESSIONEVENT_PATH)            return TERADATA_SESSIONEVENT;
     if (path==WEB_DEVICESUBTYPE_PATH)           return TERADATA_DEVICESUBTYPE;
+    if (path==WEB_USERGROUPINFO_PATH)           return TERADATA_USERGROUP;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 
@@ -273,6 +283,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
 QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
 {
     if (data_type==TERADATA_USER)               return WEB_USERINFO_PATH;
+    if (data_type==TERADATA_USERGROUP)          return WEB_USERGROUPINFO_PATH;
     if (data_type==TERADATA_SITE)               return WEB_SITEINFO_PATH;
     if (data_type==TERADATA_PROJECT)            return WEB_PROJECTINFO_PATH;
     if (data_type==TERADATA_DEVICE)             return WEB_DEVICEINFO_PATH;
@@ -294,6 +305,8 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     switch(data_type){
     case TERADATA_USER:
         return "://icons/software_user.png";
+    case TERADATA_USERGROUP:
+        return "://icons/usergroup.png";
     case TERADATA_SITE:
         return "://icons/site.png";
     case TERADATA_SESSIONTYPE:

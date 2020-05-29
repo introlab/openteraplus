@@ -409,6 +409,44 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
+        <widget class="QPushButton" name="btnEditUser">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Profil</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources/TeraClient.qrc">
+           <normaloff>:/icons/user_info.png</normaloff>:/icons/user_info.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="btnConfig">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -420,6 +458,12 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
           <size>
            <width>0</width>
            <height>32</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
           </size>
          </property>
          <property name="cursor">
@@ -441,36 +485,17 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnEditUser">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-         <property name="minimumSize">
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>0</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string>Profil</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/TeraClient.qrc">
-           <normaloff>:/icons/user_info.png</normaloff>:/icons/user_info.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
+           <width>40</width>
            <height>20</height>
           </size>
          </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </item>
@@ -577,8 +602,8 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>276</width>
+               <height>226</height>
               </rect>
              </property>
              <attribute name="icon">

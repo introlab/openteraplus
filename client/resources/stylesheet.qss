@@ -424,6 +424,12 @@ QLabel#lblTitle{
     color: cyan;
 }
 
+QLabel#lblWarning{
+    font-weight: bold;
+    font-size: 14px;
+    color: orange;
+}
+
 /* Customizations for LoginDialog */
 QGroupBox#grpLogos{background-color:rgba(200,200,200,75%);}
 QLabel#lblMessage{color:white;}

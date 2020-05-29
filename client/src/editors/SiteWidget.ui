@@ -560,7 +560,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <property name="iconSize">
           <size>

@@ -161,7 +161,10 @@ void ComManager::doDelete(const QString &path, const int &id)
 
 void ComManager::doUpdateCurrentUser()
 {
-    doQuery(QString(WEB_USERINFO_PATH), QUrlQuery("user_uuid=" + m_currentUser.getFieldValue("user_uuid").toUuid().toString(QUuid::WithoutBraces)));
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_SELF, "");
+    args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1");
+    doQuery(QString(WEB_USERINFO_PATH), args);
 }
 
 void ComManager::doDownload(const QString &save_path, const QString &path, const QUrlQuery &query_args)
@@ -312,9 +315,15 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     QJsonParseError json_error;
 
     // Process reply
-    QJsonDocument data_list = QJsonDocument::fromJson(reply_data.toUtf8(), &json_error);
-    if (json_error.error!= QJsonParseError::NoError)
+    QString data_str = reply_data;
+    if (data_str.isEmpty())
+        data_str = "[]"; // Replace empty string with empty list!
+
+    QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
+    if (json_error.error!= QJsonParseError::NoError){
+        LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "ComManager::handleDataReply");
         return false;
+    }
 
     // Browse each items received
     QList<TeraData> items;
@@ -339,61 +348,64 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         LOG_ERROR("Unknown object - don't know what to do with it.", "ComManager::handleDataReply");
         break;
     case TERADATA_USER:
-        emit usersReceived(items);
+        emit usersReceived(items, reply_query);
+        break;
+    case TERADATA_USERGROUP:
+        emit userGroupsReceived(items, reply_query);
         break;
     case TERADATA_SITE:
-        emit sitesReceived(items);
+        emit sitesReceived(items, reply_query);
         break;
     case TERADATA_SESSIONTYPE:
-        emit sessionTypesReceived(items);
+        emit sessionTypesReceived(items, reply_query);
         break;
     case TERADATA_TESTDEF:
-        emit testDefsReceived(items);
+        emit testDefsReceived(items, reply_query);
         break;
     case TERADATA_PROJECT:
-        emit projectsReceived(items);
+        emit projectsReceived(items, reply_query);
         break;
     case TERADATA_DEVICE:
-        emit devicesReceived(items);
+        emit devicesReceived(items, reply_query);
         break;
     case TERADATA_PARTICIPANT:
-        emit participantsReceived(items);
+        emit participantsReceived(items, reply_query);
         break;
     case TERADATA_GROUP:
-        emit groupsReceived(items);
+        emit groupsReceived(items, reply_query);
         break;
     case TERADATA_SITEACCESS:
-        emit siteAccessReceived(items);
+        emit siteAccessReceived(items, reply_query);
         break;
     case TERADATA_PROJECTACCESS:
-        emit projectAccessReceived(items);
+        emit projectAccessReceived(items, reply_query);
         break;
     case TERADATA_SESSION:
-        emit sessionsReceived(items);
+        emit sessionsReceived(items, reply_query);
         break;
     case TERADATA_DEVICESITE:
-        emit deviceSitesReceived(items);
+        emit deviceSitesReceived(items, reply_query);
         break;
     case TERADATA_DEVICEPROJECT:
-        emit deviceProjectsReceived(items);
+        emit deviceProjectsReceived(items, reply_query);
         break;
     case TERADATA_DEVICEPARTICIPANT:
-        emit deviceParticipantsReceived(items);
+        emit deviceParticipantsReceived(items, reply_query);
         break;
     case TERADATA_SESSIONTYPEDEVICETYPE:
-        emit sessionTypesDeviceTypesReceived(items);
+        emit sessionTypesDeviceTypesReceived(items, reply_query);
         break;
     case TERADATA_DEVICESUBTYPE:
-        emit deviceSubtypesReceived(items);
+        emit deviceSubtypesReceived(items, reply_query);
         break;
     case TERADATA_DEVICEDATA:
-        emit deviceDatasReceived(items);
+        emit deviceDatasReceived(items, reply_query);
         break;
     case TERADATA_SESSIONTYPEPROJECT:
-        emit sessionTypesProjectsReceived(items);
+        emit sessionTypesProjectsReceived(items, reply_query);
         break;
     case TERADATA_SESSIONEVENT:
-        emit sessionEventsReceived(items);
+        emit sessionEventsReceived(items, reply_query);
         break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/
@@ -401,7 +413,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     }
 
     // Always emit generic signal
-    emit dataReceived(items_type, items);
+    emit dataReceived(items_type, items, reply_query);
 
     return true;
 }

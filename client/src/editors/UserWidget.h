@@ -40,35 +40,33 @@ public:
 private:
     Ui::UserWidget* ui;
 
-    QMap<int, int>      m_tableSites_ids_rows;
-    QMap<int, int>      m_tableProjects_ids_rows;
+    QMap<int, QListWidgetItem*>     m_listUserGroups_items;
 
     void updateControlsState();
     void updateFieldsValue();
 
     bool validateData();
 
-    void fillSites(const QList<TeraData>& sites);
-    void updateSites(const QList<TeraData>& sites);
-    QJsonArray getSitesRoles();
-    void resetSites();
+    void refreshUsersUserGroups();
 
-    void fillProjects(const QList<TeraData>& projects);
-    void updateProjects(const QList<TeraData>& projects);
-    QJsonArray getProjectsRoles();
-    void resetProjects();
+
+    void updateUserGroup(const TeraData* group);
+    void updateSiteAccess(const TeraData* site_access);
+    void updateProjectAccess(const TeraData* project_access);
 
 public slots:
 
 
 private slots:
     void processUsersReply(QList<TeraData> users);
-    void processSitesReply(QList<TeraData> sites);
-    void processProjectsReply(QList<TeraData> projects);
+    void processSitesAccessReply(QList<TeraData> sites);
+    void processProjectsAccessReply(QList<TeraData> projects);
+    void processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query);
     void processFormsReply(QString form_type, QString data);
     void postResultReply(QString path);
 
-    void btnSave_clicked();
+    void on_tabMain_currentChanged(int index);
+    void on_btnUpdateGroups_clicked();
 };
 
 

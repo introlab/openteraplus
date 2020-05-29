@@ -22,6 +22,7 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
     setLimited(false);
+    ui->tabMain->setCurrentIndex(0);
 
     // Use base class to manage editing, but manually manage save button
     setEditorControls(ui->wdgUser, ui->btnEdit, ui->frameButtons, nullptr, ui->btnUndo);
@@ -32,10 +33,6 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER_PROFILE));
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
-
-    // Query sites and projects
-    queryDataRequest(WEB_SITEINFO_PATH);
-    queryDataRequest(WEB_PROJECTINFO_PATH);
 
     ui->wdgUser->setComManager(m_comManager);
     setData(data);
@@ -51,7 +48,9 @@ UserWidget::~UserWidget()
 void UserWidget::setData(const TeraData *data){
    DataEditorWidget::setData(data);
 
-    // Query sites and projects roles
+   // Query available user groups
+   queryDataRequest(WEB_USERGROUPINFO_PATH);
+
    /* QString user_uuid = m_data->getFieldValue("user_uuid").toUuid().toString(QUuid::WithoutBraces);
     queryDataRequest(WEB_SITEINFO_PATH, QUrlQuery(QString(WEB_QUERY_USERUUID) + "=" + user_uuid));
     queryDataRequest(WEB_PROJECTINFO_PATH, QUrlQuery(QString(WEB_QUERY_USERUUID) + "=" + user_uuid));*/
@@ -72,7 +71,7 @@ void UserWidget::saveData(bool signal){
     QJsonDocument user_data = ui->wdgUser->getFormDataJson(m_data->isNew());
 
     // Site access
-    QJsonArray site_access = getSitesRoles();
+    /*QJsonArray site_access = getSitesRoles();
     if (!site_access.isEmpty()){
         QJsonObject base_obj = user_data.object();
         QJsonObject base_user = base_obj["user"].toObject();
@@ -89,7 +88,7 @@ void UserWidget::saveData(bool signal){
         base_user.insert("projects",project_access);
         base_obj.insert("user", base_user);
         user_data.setObject(base_obj);
-    }
+    }*/
 
     //qDebug() << user_data.toJson();
     postDataRequest(WEB_USERINFO_PATH, user_data.toJson());
@@ -108,16 +107,12 @@ void UserWidget::saveData(bool signal){
 
 
 void UserWidget::updateControlsState(){
-    ui->wdgUser->setEnabled(!isWaitingOrLoading());
     ui->wdgProfile->setEnabled(!isWaitingOrLoading());
-    ui->tableSites->setEnabled(!isWaitingOrLoading());
-    ui->tableProjects->setEnabled(!isWaitingOrLoading());
+    ui->tableRoles->setEnabled(!isWaitingOrLoading());
+    ui->frameGroups->setEnabled(!isWaitingOrLoading());
 
     // Buttons update
-    //ui->btnSave->setEnabled(!isWaitingOrLoading());
-    //ui->btnUndo->setEnabled(!isWaitingOrLoading());
-    //ui->btnSave->setVisible(isEditing());
-    //ui->btnUndo->setVisible(isEditing());
+
     // Always show save button if editing current user
     if (m_limited){
         /*ui->btnSave->setVisible(true);
@@ -132,8 +127,7 @@ void UserWidget::updateControlsState(){
         // Super admin can't be changed - they have access to everything!
         allow_access_edit &= !user_is_superadmin;
     }
-    ui->tableSites->setEnabled(allow_access_edit);
-    ui->tableProjects->setEnabled(allow_access_edit);
+    ui->frameGroups->setEnabled(allow_access_edit);
 }
 
 void UserWidget::updateFieldsValue(){
@@ -148,8 +142,6 @@ void UserWidget::updateFieldsValue(){
         else{
             ui->wdgProfile->resetFormValues();
         }
-        resetSites();
-        resetProjects();
 
         ui->lblTitle->setText(m_data->getName());
 
@@ -176,180 +168,68 @@ bool UserWidget::validateData(){
     return valid;
 }
 
-void UserWidget::fillSites(const QList<TeraData> &sites)
+void UserWidget::refreshUsersUserGroups()
 {
-    ui->tableSites->clearContents();
-    m_tableSites_ids_rows.clear();
-
-    for (int i=0; i<sites.count(); i++){
-        ui->tableSites->setRowCount(ui->tableSites->rowCount()+1);
-        int current_row = ui->tableSites->rowCount()-1;
-        QTableWidgetItem* item = new QTableWidgetItem(sites.at(i).getFieldValue("site_name").toString());
-        ui->tableSites->setItem(current_row,0,item);
-        QComboBox* combo_roles = buildRolesComboBox();
-        ui->tableSites->setCellWidget(current_row,1,combo_roles);
-        if (!m_comManager->isCurrentUserSuperAdmin()){
-            // Disable role selection if current user isn't admin of that site
-            bool edit_enabled = m_comManager->getCurrentUserSiteRole(sites.at(i).getId()) == "admin";
-            combo_roles->setEnabled(edit_enabled);
-        }
-        m_tableSites_ids_rows.insert(sites.at(i).getId(), current_row);
-    }
-
-    // Query sites roles
-    if (m_data){
-        if (!m_data->isNew() && sites.count()>0){
-            QString user_uuid = m_data->getFieldValue("user_uuid").toUuid().toString(QUuid::WithoutBraces);
-            queryDataRequest(WEB_SITEINFO_PATH, QUrlQuery(QString(WEB_QUERY_USERUUID) + "=" + user_uuid));
-        }
-    }
-}
-
-void UserWidget::updateSites(const QList<TeraData>& sites)
-{
-    // Don't do anything if we don't have the table data first
-    if (m_tableSites_ids_rows.isEmpty())
-        return;
-
-    for (int i=0; i<sites.count(); i++){
-        int site_id = sites.at(i).getId();
-        if (m_tableSites_ids_rows.contains(site_id)){
-            int row = m_tableSites_ids_rows[site_id];
-            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(row,1));
-            if (combo_roles){
-                int index = combo_roles->findData(sites.at(i).getFieldValue("site_role").toString());
-                if (index >= 0){
-                    combo_roles->setCurrentIndex(index);
-                }else{
-                    combo_roles->setCurrentIndex(0);
+    for (int i=0; i<m_listUserGroups_items.count(); i++){
+        QListWidgetItem* item = m_listUserGroups_items.values().at(i);
+        // Check item if the group is in the users groups list
+        item->setCheckState(Qt::Unchecked);
+        if (m_data->hasFieldName("user_groups")){
+            QVariantList groups_list = m_data->getFieldValue("user_groups").toList();
+            for (int j=0; j<groups_list.count(); j++){
+                QVariantMap group_info = groups_list.at(j).toMap();
+                if (group_info.contains("id_user_group")){
+                    if (group_info["id_user_group"].toInt() == m_listUserGroups_items.keys().at(i)){
+                        item->setCheckState(Qt::Checked);
+                        break;
+                    }
                 }
-                combo_roles->setProperty("original_index", index);
             }
-
-        }else{
-            LOG_WARNING("Site ID " + QString::number(site_id) + " not found in table.", "UserWidget::updateSites");
         }
+        // Save initial state, to only update required items when saving
+        item->setData(Qt::UserRole, item->checkState());
     }
 }
 
-QJsonArray UserWidget::getSitesRoles()
+void UserWidget::updateUserGroup(const TeraData *group)
 {
-    QJsonArray roles;
-
-    for (int i=0; i<m_tableSites_ids_rows.count(); i++){
-        int site_id = m_tableSites_ids_rows.keys().at(i);
-        int row = m_tableSites_ids_rows[site_id];
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(row,1));
-        //qDebug() << site_id << ": " << combo_roles->property("original_index").toInt() << " = " << combo_roles->currentIndex() << "?";
-        if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
-            QJsonObject data_obj;
-            // Ok, value was modified - must add!
-            QJsonValue role = combo_roles->currentData().toString();
-            data_obj.insert("id_site", site_id);
-            data_obj.insert("site_role", role);
-            roles.append(data_obj);
-        }
+    int id_user_group = group->getId();
+    QListWidgetItem* item;
+    if (m_listUserGroups_items.contains(id_user_group)){
+        item = m_listUserGroups_items[id_user_group];
+        item->setText(group->getName());
+    }else{
+        item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_USERGROUP)), group->getName());
+        ui->lstGroups->addItem(item);
+        m_listUserGroups_items[id_user_group] = item;
     }
 
-    return roles;
 }
 
-void UserWidget::resetSites()
+void UserWidget::updateSiteAccess(const TeraData *site_access)
 {
-    for (int i=0; i<m_tableSites_ids_rows.count(); i++){
-        int site_id = m_tableSites_ids_rows.keys().at(i);
-        int row = m_tableProjects_ids_rows[site_id];
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(row,1));
-        if (combo_roles)
-            combo_roles->setCurrentIndex(combo_roles->property("original_index").toInt());
-    }
+    // We assume the table is cleared beforehand and that item isn't already present.
+    ui->tableRoles->insertRow(0);
+    int current_row = 0; // Sites access are always added at the beginning
+    QTableWidgetItem* item = new QTableWidgetItem(site_access->getFieldValue("site_name").toString());
+    ui->tableRoles->setItem(current_row,0,item);
+    item = new QTableWidgetItem(""); // Site access has an empty project name
+    ui->tableRoles->setItem(current_row,1,item);
+    item = new QTableWidgetItem(getRoleName(site_access->getFieldValue("site_role").toString()));
+    ui->tableRoles->setItem(current_row,2,item);
 }
 
-void UserWidget::fillProjects(const QList<TeraData> &projects)
+void UserWidget::updateProjectAccess(const TeraData *project_access)
 {
-    ui->tableProjects->clearContents();
-    m_tableProjects_ids_rows.clear();
-
-
-    for (int i=0; i<projects.count(); i++){
-        ui->tableProjects->setRowCount(ui->tableProjects->rowCount()+1);
-        int current_row = ui->tableProjects->rowCount()-1;
-        QTableWidgetItem* item = new QTableWidgetItem(projects.at(i).getFieldValue("site_name").toString());
-        ui->tableProjects->setItem(current_row,0,item);
-        item = new QTableWidgetItem(projects.at(i).getFieldValue("project_name").toString());
-        ui->tableProjects->setItem(current_row,1,item);
-        QComboBox* combo_roles = buildRolesComboBox();
-        ui->tableProjects->setCellWidget(current_row,2,combo_roles);
-        if (!m_comManager->isCurrentUserSuperAdmin()){
-            // Disable role selection if current user isn't admin of that project
-            combo_roles->setEnabled(m_comManager->getCurrentUserProjectRole(projects.at(i).getId()) == "admin");
-        }
-        m_tableProjects_ids_rows.insert(projects.at(i).getId(), current_row);
-    }
-
-    if (m_data){
-        if (!m_data->isNew() && projects.count()>0){
-            QString user_uuid = m_data->getFieldValue("user_uuid").toUuid().toString(QUuid::WithoutBraces);
-            queryDataRequest(WEB_PROJECTINFO_PATH, QUrlQuery(QString(WEB_QUERY_USERUUID) + "=" + user_uuid));
-        }
-    }
-}
-
-void UserWidget::updateProjects(const QList<TeraData>& projects)
-{
-    // Don't do anything if we don't have the table data first
-    if (m_tableProjects_ids_rows.isEmpty())
-        return;
-
-    for (int i=0; i<projects.count(); i++){
-        int project_id = projects.at(i).getId();
-        if (m_tableProjects_ids_rows.contains(project_id)){
-            int row = m_tableProjects_ids_rows[project_id];
-            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
-            if (combo_roles){
-                int index = combo_roles->findData(projects.at(i).getFieldValue("project_role").toString());
-                if (index >= 0){
-                    combo_roles->setCurrentIndex(index);
-                }else{
-                    combo_roles->setCurrentIndex(0);
-                }
-                combo_roles->setProperty("original_index", index);
-            }
-        }else{
-            LOG_WARNING("Project ID " + QString::number(project_id) + " not found in table.", "UserWidget::fillProjectsData");
-        }
-    }
-}
-
-QJsonArray UserWidget::getProjectsRoles()
-{
-    QJsonArray roles;
-
-    for (int i=0; i<m_tableProjects_ids_rows.count(); i++){
-        int proj_id = m_tableProjects_ids_rows.keys().at(i);
-        int row = m_tableProjects_ids_rows[proj_id];
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
-        if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
-            QJsonObject data_obj;
-            // Ok, value was modified - must add!
-            QJsonValue role = combo_roles->currentData().toString();
-            data_obj.insert("id_project", proj_id);
-            data_obj.insert("project_role", role);
-            roles.append(data_obj);
-        }
-    }
-
-    return roles;
-}
-
-void UserWidget::resetProjects()
-{
-    for (int i=0; i<m_tableProjects_ids_rows.count(); i++){
-        int proj_id = m_tableProjects_ids_rows.keys().at(i);
-        int row = m_tableProjects_ids_rows[proj_id];
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
-        combo_roles->setCurrentIndex(combo_roles->property("original_index").toInt());
-    }
+    // We assume the table is cleared beforehand and that item isn't already present.
+    ui->tableRoles->setRowCount(ui->tableRoles->rowCount()+1);
+    int current_row = ui->tableRoles->rowCount()-1;
+    QTableWidgetItem* item = new QTableWidgetItem(project_access->getFieldValue("site_name").toString());
+    ui->tableRoles->setItem(current_row,0,item);
+    item = new QTableWidgetItem(project_access->getFieldValue("project_name").toString());
+    ui->tableRoles->setItem(current_row,1,item);
+    item = new QTableWidgetItem(getRoleName(project_access->getFieldValue("project_role").toString()));
+    ui->tableRoles->setItem(current_row,2,item);
 }
 
 void UserWidget::processUsersReply(QList<TeraData> users)
@@ -366,26 +246,40 @@ void UserWidget::processUsersReply(QList<TeraData> users)
         updateFieldsValue();
 }
 
-void UserWidget::processSitesReply(QList<TeraData> sites)
+void UserWidget::processSitesAccessReply(QList<TeraData> sites)
 {
-    if (m_tableSites_ids_rows.isEmpty()){
-        // We don't have any site list yet - fill it with what we got.
-        fillSites(sites);
-    }else{
-        // We want to update user roles for each site
-        updateSites(sites);
+    foreach (TeraData site, sites){
+        updateSiteAccess(&site);
     }
 }
 
-void UserWidget::processProjectsReply(QList<TeraData> projects)
+void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
 {
-    if (m_tableProjects_ids_rows.isEmpty()){
-        // We don't have any project list yet - fill it with what we got.
-        fillProjects(projects);
-    }else{
-        // We want to update user roles for each project
-        updateProjects(projects);
+    foreach (TeraData project, projects){
+        updateProjectAccess(&project);
     }
+}
+
+void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query)
+{
+    if (query.hasQueryItem(WEB_QUERY_ID_USER)){
+        // The reply contains users groups for a user. For us?
+        if (m_data->getId() == query.queryItemValue(WEB_QUERY_ID_USER).toInt()){
+            // For this user - complete information in the TeraData object
+            QVariantList groups;
+            foreach(TeraData user_group, user_groups){
+                groups.append(user_group.getFieldValues());
+            }
+            m_data->setFieldValue("user_groups", groups);
+        }
+
+    }
+    foreach(TeraData user_group, user_groups){
+        updateUserGroup(&user_group);
+    }
+
+    // Update selected user groups for that user
+    refreshUsersUserGroups();
 }
 
 void UserWidget::processFormsReply(QString form_type, QString data)
@@ -402,6 +296,8 @@ void UserWidget::processFormsReply(QString form_type, QString data)
             item = ui->wdgUser->getWidgetForField("user_superadmin");
             if (item) item->setEnabled(false);
             item = ui->wdgUser->getWidgetForField("user_notes");
+            if (item) item->setEnabled(false);
+            item = ui->wdgUser->getWidgetForField("id_user_group");
             if (item) item->setEnabled(false);
         }
         return;
@@ -425,37 +321,68 @@ void UserWidget::postResultReply(QString path)
 void UserWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::usersReceived, this, &UserWidget::processUsersReply);
-    connect(m_comManager, &ComManager::sitesReceived, this, &UserWidget::processSitesReply);
-    connect(m_comManager, &ComManager::projectsReceived, this, &UserWidget::processProjectsReply);
+    connect(m_comManager, &ComManager::siteAccessReceived, this, &UserWidget::processSitesAccessReply);
+    connect(m_comManager, &ComManager::projectAccessReceived, this, &UserWidget::processProjectsAccessReply);
     connect(m_comManager, &ComManager::formReceived, this, &UserWidget::processFormsReply);
+    connect(m_comManager, &ComManager::userGroupsReceived, this, &UserWidget::processUserGroupsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserWidget::postResultReply);
 
-    connect(ui->btnSave, &QPushButton::clicked, this, &UserWidget::btnSave_clicked);
-
 }
 
-void UserWidget::btnSave_clicked()
+void UserWidget::on_tabMain_currentChanged(int index)
 {
-    if (!validateData()){
-        QStringList invalids = ui->wdgUser->getInvalidFormDataLabels();
-        invalids.append(ui->wdgProfile->getInvalidFormDataLabels());
-        if (m_data->getId()==0){
-            // New user - must check that a password is set
-            if (ui->wdgUser->getFieldValue("user_password").toString().isEmpty()){
-                invalids.append(tr("Mot de passe"));
-            }
-        }
+    QUrlQuery args;
+    if (index == 1){
+        // User groups
+        //if (!m_data->hasFieldName("user_groups")){
+            // Update groups for user
+            args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
+            queryDataRequest(WEB_USERGROUPINFO_PATH, args);
+        //}
 
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
+        // If user is super admin, disable groups
+        bool super_admin = m_data->getFieldValue("user_superadmin").toBool();
+        ui->lblWarning->setVisible(super_admin);
+        ui->frameGroups->setVisible(!super_admin);
+    }
+    if (index == 2){
+        // Roles
+        ui->tableRoles->clearContents(); // Resets all elements in the table
+        ui->tableRoles->setRowCount(0);
+        ui->tableRoles->sortItems(-1);
+
+        // Query sites and projects roles
+        args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
+
+        queryDataRequest(WEB_SITEACCESS_PATH, args);
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+        queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+    }
+}
+
+void UserWidget::on_btnUpdateGroups_clicked()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray roles;
+
+    for (int i=0; i<m_listUserGroups_items.count(); i++){
+        int user_group_id = m_listUserGroups_items.keys().at(i);
+        QListWidgetItem* item = m_listUserGroups_items.values().at(i);
+        if (item->data(Qt::UserRole).toInt() != item->checkState()){
+            QJsonObject data_obj;
+            // Ok, value was modified - must add!
+            /*QJsonValue role = combo_roles->currentData().toString();
+            data_obj.insert("id_site", m_data->getId());
+            data_obj.insert("id_user", user_id);
+            data_obj.insert("site_access_role", role);
+            roles.append(data_obj);*/
         }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
     }
 
-     saveData();
+    /*if (!roles.isEmpty()){
+        base_obj.insert("site_access", roles);
+        document.setObject(base_obj);
+        postDataRequest(WEB_SITEACCESS_PATH, document.toJson());
+    }*/
 }
-

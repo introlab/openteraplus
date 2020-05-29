@@ -84,6 +84,7 @@ protected:
     ComManager*     m_comManager;
 
     QComboBox*      buildRolesComboBox();
+    QString         getRoleName(const QString& role);
 
     virtual void setEditorControls(TeraForm* mainForm, QPushButton* editToggle, QFrame* frameSave, QPushButton* saveButton, QPushButton* cancelButton);
 

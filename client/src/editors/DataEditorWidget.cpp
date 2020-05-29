@@ -226,13 +226,22 @@ QComboBox *DataEditorWidget::buildRolesComboBox()
 {
 
     QComboBox* item_roles = new QComboBox();
-    item_roles->addItem(tr("Aucun rôle"), "");
-    item_roles->addItem(tr("Administrateur"), "admin");
-    item_roles->addItem(tr("Utilisateur"), "user");
+    item_roles->addItem(getRoleName(""), "");
+    item_roles->addItem(getRoleName("admin"), "admin");
+    item_roles->addItem(getRoleName("user"), "user");
     item_roles->setCurrentIndex(0);
 
     return item_roles;
 
+}
+
+QString DataEditorWidget::getRoleName(const QString &role)
+{
+    if (role == "admin")
+        return tr("Administrateur");
+    if (role == "user")
+        return tr("Utilisateur");
+    return tr("Aucun rôle");
 }
 
 bool DataEditorWidget::isReady(){

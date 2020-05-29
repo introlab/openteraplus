@@ -5,6 +5,7 @@
 #define WEB_LOGIN_PATH                      "/api/user/login"
 #define WEB_LOGOUT_PATH                     "/api/user/logout"
 #define WEB_USERINFO_PATH                   "/api/user/users"
+#define WEB_USERGROUPINFO_PATH              "/api/user/usergroups"
 #define WEB_SITEINFO_PATH                   "/api/user/sites"
 #define WEB_PROJECTINFO_PATH                "/api/user/projects"
 #define WEB_SITEACCESS_PATH                 "/api/user/siteaccess"
@@ -49,11 +50,15 @@
 #define WEB_QUERY_ID_SESSION        "id_session"
 #define WEB_QUERY_ID_DEVICE_DATA    "id_device_data"
 #define WEB_QUERY_ID_SESSION_TYPE   "id_session_type"
+#define WEB_QUERY_ID_USER_GROUP     "id_user_group"
 #define WEB_QUERY_NO_GROUP          "no_group"
 
 #define WEB_QUERY_AVAILABLE         "available"
 #define WEB_QUERY_PARTICIPANTS      "participants"
 #define WEB_QUERY_SITES             "sites"
 #define WEB_QUERY_DOWNLOAD          "download"
+#define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
+#define WEB_QUERY_WITH_SITES        "with_sites"
+#define WEB_QUERY_SELF              "self"
 
 #endif // WEBAPI_H
