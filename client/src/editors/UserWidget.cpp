@@ -25,7 +25,7 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     ui->tabMain->setCurrentIndex(0);
 
     // Use base class to manage editing, but manually manage save button
-    setEditorControls(ui->wdgUser, ui->btnEdit, ui->frameButtons, nullptr, ui->btnUndo);
+    setEditorControls(ui->wdgUser, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
 
     // Connect signals and slots
     connectSignals();
@@ -156,7 +156,7 @@ bool UserWidget::validateData(){
     bool valid = false;
 
     valid = ui->wdgUser->validateFormData();
-    valid &= ui->wdgProfile->validateFormData();
+    //valid &= ui->wdgProfile->validateFormData();
 
     if (m_data->getId()==0){
         // New user - must check that a password is set
@@ -364,25 +364,23 @@ void UserWidget::on_btnUpdateGroups_clicked()
 {
     QJsonDocument document;
     QJsonObject base_obj;
-    QJsonArray roles;
+    QJsonArray user_groups;
 
     for (int i=0; i<m_listUserGroups_items.count(); i++){
         int user_group_id = m_listUserGroups_items.keys().at(i);
         QListWidgetItem* item = m_listUserGroups_items.values().at(i);
-        if (item->data(Qt::UserRole).toInt() != item->checkState()){
+        if (item->checkState() == Qt::Checked){
             QJsonObject data_obj;
-            // Ok, value was modified - must add!
-            /*QJsonValue role = combo_roles->currentData().toString();
-            data_obj.insert("id_site", m_data->getId());
-            data_obj.insert("id_user", user_id);
-            data_obj.insert("site_access_role", role);
-            roles.append(data_obj);*/
+            data_obj.insert("id_user_group", user_group_id);
+            user_groups.append(data_obj);
         }
     }
 
-    /*if (!roles.isEmpty()){
-        base_obj.insert("site_access", roles);
-        document.setObject(base_obj);
-        postDataRequest(WEB_SITEACCESS_PATH, document.toJson());
-    }*/
+    QJsonObject user_obj;
+    user_obj.insert("id_user", m_data->getId());
+    user_obj.insert("user_groups", user_groups);
+    base_obj.insert("user", user_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_USERINFO_PATH, document.toJson());
+
 }

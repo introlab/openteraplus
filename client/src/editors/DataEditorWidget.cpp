@@ -208,9 +208,9 @@ void DataEditorWidget::setEditorControls(TeraForm* mainForm, QPushButton *editTo
     }
 
     // Connect signals
-    connect(m_cancelButton, &QPushButton::clicked, this, &DataEditorWidget::undoButtonClicked);
-    connect(m_saveButton, &QPushButton::clicked, this, &DataEditorWidget::saveButtonClicked);
-    connect(m_editToggle, &QPushButton::clicked, this, &DataEditorWidget::editToggleClicked);
+    if (m_cancelButton) connect(m_cancelButton, &QPushButton::clicked, this, &DataEditorWidget::undoButtonClicked);
+    if (m_saveButton) connect(m_saveButton, &QPushButton::clicked, this, &DataEditorWidget::saveButtonClicked);
+    if (m_editToggle) connect(m_editToggle, &QPushButton::clicked, this, &DataEditorWidget::editToggleClicked);
 
 }
 
