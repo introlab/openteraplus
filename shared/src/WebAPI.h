@@ -60,5 +60,6 @@
 #define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
 #define WEB_QUERY_WITH_SITES        "with_sites"
 #define WEB_QUERY_SELF              "self"
+#define WEB_QUERY_BY_USERS          "by_users"
 
 #endif // WEBAPI_H

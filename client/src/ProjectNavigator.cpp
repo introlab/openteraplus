@@ -567,8 +567,8 @@ void ProjectNavigator::currentSiteChanged()
     m_currentSiteId = ui->cmbSites->currentData().toInt();
     //qDebug() << "Current Site Changed";
 
-    // Clear main display
-    emit dataDisplayRequest(TERADATA_NONE, 0);
+    // Display site
+    emit dataDisplayRequest(TERADATA_SITE, m_currentSiteId);
 
     // Clear all data
     m_projects_items.clear();

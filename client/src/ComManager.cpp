@@ -335,7 +335,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         if (items_type == TERADATA_USER){
             if (m_currentUser.getFieldValue("user_uuid").toUuid() == item_data.getFieldValue("user_uuid").toUuid() &&
                     !reply_query.hasQueryItem(WEB_QUERY_LIST)){
-                m_currentUser = item_data;
+                //m_currentUser = item_data;
+                // Update fields that we received with the new values
+                m_currentUser.updateFrom(item_data);
                 emit currentUserUpdated();
             }
         }

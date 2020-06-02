@@ -68,6 +68,7 @@ public:
 
     virtual TeraData &operator = (const TeraData& other);
     virtual bool operator == (const TeraData& other) const;
+    void updateFrom(const TeraData& other);
 
     TeraDataTypes getDataType() const;
     bool hasFieldName(const QString& fieldName) const;

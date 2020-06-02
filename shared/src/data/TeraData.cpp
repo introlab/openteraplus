@@ -103,6 +103,13 @@ bool TeraData::operator ==(const TeraData &other) const
     return getId() == other.getId() && getDataType() == other.getDataType();
 }
 
+void TeraData::updateFrom(const TeraData &other)
+{
+    foreach(QString key, other.m_fieldsValue.keys()){
+        m_fieldsValue[key] = other.m_fieldsValue[key];
+    }
+}
+
 TeraDataTypes TeraData::getDataType() const
 {
     return m_data_type;

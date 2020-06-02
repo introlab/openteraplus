@@ -430,6 +430,7 @@ QLabel#lblWarning{
     color: orange;
 }
 
+
 /* Customizations for LoginDialog */
 QGroupBox#grpLogos{background-color:rgba(200,200,200,75%);}
 QLabel#lblMessage{color:white;}
@@ -507,5 +508,11 @@ QToolButton#btnNextCal, QToolButton#btnPrevCal {
     border: 2px solid rgb(186, 186, 186);
 }
 
+/* Customizations for SiteWidget */
+QLabel#lblInherited{
+    font-weight: bold;
+    font-size: 12px;
+    color: orange;
+}
 
 
