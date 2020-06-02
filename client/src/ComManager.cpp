@@ -259,6 +259,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return nullptr;
     case TERADATA_USER:
         return &ComManager::usersReceived;
+    case TERADATA_USERGROUP:
+        return &ComManager::userGroupsReceived;
     case TERADATA_SITE:
         return &ComManager::sitesReceived;
     case TERADATA_SESSIONTYPE:

@@ -35,6 +35,7 @@
 #define WEB_FORMS_QUERY_SESSION_TYPE    "type=session_type"
 #define WEB_FORMS_QUERY_SESSION         "type=session"
 #define WEB_FORMS_QUERY_DEVICE_SUBTYPE  "type=device_subtype"
+#define WEB_FORMS_QUERY_USER_GROUP      "type=user_group"
 
 #define WEB_QUERY_USERUUID          "user_uuid"
 #define WEB_QUERY_ID_USER           "id_user"
@@ -59,6 +60,7 @@
 #define WEB_QUERY_DOWNLOAD          "download"
 #define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
 #define WEB_QUERY_WITH_SITES        "with_sites"
+#define WEB_QUERY_WITH_PROJECTS     "with_projects"
 #define WEB_QUERY_SELF              "self"
 #define WEB_QUERY_BY_USERS          "by_users"
 

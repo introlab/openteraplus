@@ -132,7 +132,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>:/icons/project.png</pixmap>
+        <pixmap resource="../../resources/TeraClient.qrc">:/icons/project.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -163,11 +163,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../resources/TeraClient.qrc">
         <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
       </attribute>
       <attribute name="title">
@@ -204,7 +204,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <string>Éditer</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../../resources/TeraClient.qrc">
              <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
            </property>
            <property name="iconSize">
@@ -245,7 +245,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <string>Sauvegarder</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../../resources/TeraClient.qrc">
               <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
             </property>
             <property name="iconSize">
@@ -271,7 +271,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <string>Annuler</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../../resources/TeraClient.qrc">
               <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
             </property>
             <property name="iconSize">
@@ -335,7 +335,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap>:/icons/software_user.png</pixmap>
+                <pixmap resource="../../resources/TeraClient.qrc">:/icons/software_user.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -366,7 +366,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap>:/icons/session.png</pixmap>
+                <pixmap resource="../../resources/TeraClient.qrc">:/icons/session.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -439,7 +439,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap>:/icons/patient.png</pixmap>
+                <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -529,7 +529,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      </widget>
      <widget class="QWidget" name="tabDetails">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../resources/TeraClient.qrc">
         <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
       </attribute>
       <attribute name="title">
@@ -552,7 +552,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </property>
          <widget class="QWidget" name="tabUsers">
           <attribute name="icon">
-           <iconset>
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/icons/software_user.png</normaloff>:/icons/software_user.png</iconset>
           </attribute>
           <attribute name="title">
@@ -607,7 +607,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </widget>
          <widget class="QWidget" name="tabUserGroups">
           <attribute name="icon">
-           <iconset>
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/icons/usergroup.png</normaloff>:/icons/usergroup.png</iconset>
           </attribute>
           <attribute name="title">
@@ -697,7 +697,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <string>Mettre à jour les rôles des utilisateurs</string>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="../../resources/TeraClient.qrc">
                <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
              </property>
              <property name="iconSize">
@@ -712,7 +712,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </widget>
          <widget class="QWidget" name="tabDevices">
           <attribute name="icon">
-           <iconset>
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
           </attribute>
           <attribute name="title">
@@ -758,7 +758,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </widget>
          <widget class="QWidget" name="tabSessionTypes">
           <attribute name="icon">
-           <iconset>
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/icons/session.png</normaloff>:/icons/session.png</iconset>
           </attribute>
           <attribute name="title">
@@ -772,7 +772,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </widget>
          <widget class="QWidget" name="tabGroups">
           <attribute name="icon">
-           <iconset>
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/icons/group.png</normaloff>:/icons/group.png</iconset>
           </attribute>
           <attribute name="title">
@@ -819,6 +819,8 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../resources/TeraClient.qrc"/>
+ </resources>
  <connections/>
 </ui>

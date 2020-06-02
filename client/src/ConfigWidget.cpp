@@ -46,6 +46,7 @@ void ConfigWidget::addSection(const QString &name, const QIcon &icon, const int 
 void ConfigWidget::setupSections()
 {
     addSection(tr("Utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)), TERADATA_USER);
+    addSection(tr("Groupes utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USERGROUP)), TERADATA_USERGROUP);
     addSection(tr("Sites"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)), TERADATA_SITE);
     addSection(tr("Appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)), TERADATA_DEVICE);
     addSection(tr("Sous-types appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICESUBTYPE)), TERADATA_DEVICESUBTYPE);
