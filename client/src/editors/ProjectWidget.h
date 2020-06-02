@@ -26,8 +26,7 @@ public:
 
 private slots:
     void processFormsReply(QString form_type, QString data);
-    void processProjectAccessReply(QList<TeraData> access);
-    void processUsersReply(QList<TeraData> users);
+    void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processGroupsReply(QList<TeraData> groups);
     void processDevicesReply(QList<TeraData> devices);
     void processSessionTypesProjectReply(QList<TeraData> stps);
@@ -36,14 +35,14 @@ private slots:
 
     void btnUpdateAccess_clicked();
     void btnDevices_clicked();
-    void btnUsers_clicked();
 
     void on_tabProjectInfos_currentChanged(int index);
 
 private:
     Ui::ProjectWidget *ui;
 
-    QMap<int, int>               m_tableUsers_ids_rows;
+    QMap<int, QTableWidgetItem*>  m_tableUsers_items;
+    QMap<int, QTableWidgetItem*>  m_tableUserGroups_items;
     QMap<int, QListWidgetItem*>  m_listGroups_items;
     QMap<int, QListWidgetItem*>  m_listSessionTypes_items;
     QMap<int, QTableWidgetItem*> m_listDevices_items;
@@ -52,7 +51,8 @@ private:
 
     void connectSignals();
 
-    void updateProjectAccess(const TeraData* access);
+    void updateUserProjectAccess(const TeraData* access);
+    void updateUserGroupProjectAccess(const TeraData* access);
     void updateGroup(const TeraData* group);
     void updateDevice(const TeraData* device);
     void updateSessionType(const TeraData* st);

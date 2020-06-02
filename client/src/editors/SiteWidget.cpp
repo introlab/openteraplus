@@ -406,7 +406,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
         // Users
         if (m_tableUsers_items.isEmpty()){
             // Query
-            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
             args.addQueryItem(WEB_QUERY_BY_USERS, "1");
             queryDataRequest(WEB_SITEACCESS_PATH, args);
         }
@@ -416,7 +416,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
         // User groups
         if (m_tableUserGroups_items.isEmpty()){
             // Query
-            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
             args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups without any access
             queryDataRequest(WEB_SITEACCESS_PATH, args);
         }

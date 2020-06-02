@@ -27,6 +27,10 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
 
     ui->wdgProject->setComManager(m_comManager);
     setData(data);
+
+    // Default display
+    ui->tabNav->setCurrentIndex(0);
+    ui->tabProjectInfos->setCurrentIndex(0);
 }
 
 ProjectWidget::~ProjectWidget()
@@ -72,44 +76,69 @@ void ProjectWidget::connectSignals()
 
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &ProjectWidget::btnUpdateAccess_clicked);
     //connect(ui->btnDevices, &QPushButton::clicked, this, &ProjectWidget::btnDevices_clicked);
-    connect(ui->btnUsers, &QPushButton::clicked, this, &ProjectWidget::btnUsers_clicked);
 
 }
 
-void ProjectWidget::updateProjectAccess(const TeraData *access)
+void ProjectWidget::updateUserProjectAccess(const TeraData *access)
 {
-    if (m_tableUsers_ids_rows.contains(access->getFieldValue("id_user").toInt())){
-        // Already there - update the user access
-        int row = m_tableUsers_ids_rows[access->getFieldValue("id_user").toInt()];
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableUsers->cellWidget(row,1));
-        if (combo_roles){
-            int index = -1;
-            if (access->hasFieldName("project_access_role"))
-                index = combo_roles->findData(access->getFieldValue("project_access_role").toString());
-            if (index >= 0){
-                combo_roles->setCurrentIndex(index);
-            }else{
-                combo_roles->setCurrentIndex(0);
-            }
-            combo_roles->setProperty("original_index", index);
-
-            if (access->hasFieldName("project_access_inherited")){
-                if (access->getFieldValue("project_access_inherited").toBool()){
-                    // Inherited access - disable combobox
-                    combo_roles->setDisabled(true);
-                }
-            }
-        }
+    QTableWidgetItem* item;
+    int id_user = access->getFieldValue("id_user").toInt();
+    QString project_role = access->getFieldValue("project_access_role").toString();
+    if (m_tableUsers_items.contains(id_user)){
+        item = m_tableUsers_items[id_user];
+        item->setText(DataEditorWidget::getRoleName(project_role));
     }else{
-        // Not there - must add the user
+        // Not there - must add the user and role
         ui->tableUsers->setRowCount(ui->tableUsers->rowCount()+1);
         int current_row = ui->tableUsers->rowCount()-1;
-        QTableWidgetItem* item = new QTableWidgetItem(access->getFieldValue("user_name").toString());
-        ui->tableUsers->setItem(current_row,0,item);
-        QComboBox* combo_roles = buildRolesComboBox();
-        ui->tableUsers->setCellWidget(current_row,1,combo_roles);
-        m_tableUsers_ids_rows.insert(access->getFieldValue("id_user").toInt(), current_row);
+        QTableWidgetItem* item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_USER)),
+                                                      access->getFieldValue("user_name").toString());
+        ui->tableUsers->setItem(current_row, 0, item);
+        item = new QTableWidgetItem(DataEditorWidget::getRoleName(project_role));
+        ui->tableUsers->setItem(current_row, 1, item);
+        m_tableUsers_items.insert(id_user, item); // Store QTableWidget Item that has the role name.
+    }
+}
+
+void ProjectWidget::updateUserGroupProjectAccess(const TeraData *access)
+{
+    QTableWidgetItem* item;
+    int id_user_group = access->getFieldValue("id_user_group").toInt();
+    QString project_role = access->getFieldValue("project_access_role").toString();
+    QComboBox* combo_roles;
+    if (m_tableUserGroups_items.contains(id_user_group)){
+        item = m_tableUserGroups_items[id_user_group];
+        combo_roles = dynamic_cast<QComboBox*>(ui->tableUsers->cellWidget(item->row(),1));
+
+    }else{
+        // Not there - must add the usergroup and role
+        ui->tableUserGroups->setRowCount(ui->tableUserGroups->rowCount()+1);
+        int current_row = ui->tableUserGroups->rowCount()-1;
+        QTableWidgetItem* item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_USERGROUP)),
+                                                      access->getFieldValue("user_group_name").toString());
+        ui->tableUserGroups->setItem(current_row, 0, item);
+        combo_roles = buildRolesComboBox();
+        ui->tableUserGroups->setCellWidget(current_row, 1, combo_roles);
+        m_tableUserGroups_items.insert(id_user_group, item);
+    }
+
+    if (combo_roles){
+        int index = -1;
+        index = combo_roles->findData(project_role);
+        if (index >= 0){
+            combo_roles->setCurrentIndex(index);
+        }else{
+            combo_roles->setCurrentIndex(0);
+        }
+        combo_roles->setProperty("original_index", index);
         combo_roles->setEnabled(!m_limited);
+
+        if (access->hasFieldName("project_access_inherited")){
+            if (access->getFieldValue("project_access_inherited").toBool()){
+                // Inherited access - disable combobox
+                combo_roles->setDisabled(true);
+            }
+        }
     }
 }
 
@@ -186,7 +215,6 @@ void ProjectWidget::updateSessionType(const TeraData *st)
 void ProjectWidget::updateControlsState()
 {
     //ui->btnDevices->setVisible(!m_limited);
-    ui->btnUsers->setVisible(!m_limited);
     ui->btnUpdateRoles->setVisible(!m_limited);
 
 }
@@ -212,32 +240,30 @@ void ProjectWidget::processFormsReply(QString form_type, QString data)
     }
 }
 
-void ProjectWidget::processProjectAccessReply(QList<TeraData> access)
+void ProjectWidget::processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query)
 {
     if (!m_data)
         return;
 
-    for (int i=0; i<access.count(); i++){
-        if (access.at(i).getFieldValue("id_project").toInt() == m_data->getId()){
-            // Ok, we need to update information in the table
-            updateProjectAccess(&access.at(i));
+    // Check if that reply is for us or not.
+    if (!reply_query.hasQueryItem(WEB_QUERY_ID_PROJECT))
+        return;
+
+    if (reply_query.queryItemValue(WEB_QUERY_ID_PROJECT).toInt() != m_data->getId())
+        return;
+
+    if (reply_query.hasQueryItem(WEB_QUERY_BY_USERS)){
+        for (int i=0; i<access.count(); i++) {
+           updateUserProjectAccess(&access.at(i));
+        }
+    }else{
+        // User groups in reply
+        for (int i=0; i<access.count(); i++) {
+           updateUserGroupProjectAccess(&access.at(i));
         }
     }
 }
 
-void ProjectWidget::processUsersReply(QList<TeraData> users)
-{
-    for (int i=0; i<users.count(); i++){
-        updateProjectAccess(&users.at(i));
-    }
-
-    // Query access for those users
-    if (m_data && !dataIsNew()){
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
-        queryDataRequest(WEB_PROJECTACCESS_PATH, args);
-    }
-}
 
 void ProjectWidget::processGroupsReply(QList<TeraData> groups)
 {
@@ -287,8 +313,7 @@ void ProjectWidget::processSessionTypesProjectReply(QList<TeraData> stps)
 void ProjectWidget::processPostOKReply(QString path)
 {
     if (path == WEB_PROJECTINFO_PATH){
-        qDebug() << "Updating current user...";
-        // Update current user access list for the newly created site
+        // Update current user access list for the newly created project
         m_comManager->doUpdateCurrentUser();
     }
 }
@@ -300,16 +325,16 @@ void ProjectWidget::btnUpdateAccess_clicked()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for (int i=0; i<m_tableUsers_ids_rows.count(); i++){
-        int user_id = m_tableUsers_ids_rows.keys().at(i);
-        int row = m_tableUsers_ids_rows[user_id];
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableUsers->cellWidget(row,1));
+    for (int i=0; i<m_tableUserGroups_items.count(); i++){
+        int user_group_id = m_tableUserGroups_items.keys().at(i);
+        int row = m_tableUserGroups_items[user_group_id]->row();
+        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableUserGroups->cellWidget(row,1));
         if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
             QJsonObject data_obj;
             // Ok, value was modified - must add!
             QJsonValue role = combo_roles->currentData().toString();
             data_obj.insert("id_project", m_data->getId());
-            data_obj.insert("id_user", user_id);
+            data_obj.insert("id_user_group", user_group_id);
             data_obj.insert("project_access_role", role);
             roles.append(data_obj);
         }
@@ -320,9 +345,6 @@ void ProjectWidget::btnUpdateAccess_clicked()
         document.setObject(base_obj);
         postDataRequest(WEB_PROJECTACCESS_PATH, document.toJson());
     }
-
-
-
 }
 
 void ProjectWidget::btnDevices_clicked()
@@ -339,26 +361,13 @@ void ProjectWidget::btnDevices_clicked()
     m_diag_editor->open();
 }
 
-void ProjectWidget::btnUsers_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new QDialog(this);
-    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USER, m_diag_editor);
-    Q_UNUSED(list_widget)
-
-    m_diag_editor->setWindowTitle(tr("Utilisateurs"));
-
-    m_diag_editor->open();
-}
-
 void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
 {
     // Load data depending on selected tab
     QUrlQuery args;
+    QString tab_name = ui->tabProjectInfos->widget(index)->objectName();
 
-    if (index == 0){
+    if (tab_name == "tabGroups"){
         // Groups
         if (m_listGroups_items.isEmpty()){
             connect(m_comManager, &ComManager::groupsReceived, this, &ProjectWidget::processGroupsReply);
@@ -369,7 +378,7 @@ void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
         }
     }
 
-    if (index == 1){
+    if (tab_name == "tabDevices"){
         // Devices
         if (m_listDevices_items.isEmpty()){
             connect(m_comManager, &ComManager::devicesReceived, this, &ProjectWidget::processDevicesReply);
@@ -380,23 +389,32 @@ void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
         }
     }
 
-    if (index == 2){
+    if (tab_name == "tabUsers"){
         // Users
-        if (m_tableUsers_ids_rows.isEmpty()){
-            connect(m_comManager, &ComManager::usersReceived, this, &ProjectWidget::processUsersReply);
-
-            args.addQueryItem(WEB_QUERY_LIST, "true");
-            queryDataRequest(WEB_USERINFO_PATH, args);
+        if (m_tableUsers_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
+            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
         }
     }
 
-    if (index == 3){
+    if (tab_name == "tabSessionTypes"){
         // Session types
         if (m_listSessionTypes_items.isEmpty()){
             connect(m_comManager, &ComManager::sessionTypesProjectsReceived, this, &ProjectWidget::processSessionTypesProjectReply);
 
             args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
             queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
+        }
+    }
+
+    if (tab_name == "tabUserGroups"){
+        // User groups
+        if (m_tableUserGroups_items.isEmpty()){
+            // Query
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups without any access
+            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
         }
     }
 
