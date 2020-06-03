@@ -11,9 +11,6 @@ UserGroupWidget::UserGroupWidget(ComManager *comMan, const TeraData *data, QWidg
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
-    // Limited by default
-    m_limited = true;
-
     // Use base class to manage editing
     setEditorControls(ui->wdgUserGroup, ui->btnEdit, ui->frameSave, ui->btnSave, ui->btnUndo);
 
@@ -71,6 +68,7 @@ void UserGroupWidget::connectSignals()
     connect(m_comManager, &ComManager::siteAccessReceived, this, &UserGroupWidget::processSiteAccessReply);
     connect(m_comManager, &ComManager::projectAccessReceived, this, &UserGroupWidget::processProjectAccessReply);
     connect(m_comManager, &ComManager::usersReceived, this, &UserGroupWidget::processUsersReply);
+    connect(m_comManager, &ComManager::postResultsOK, this, &UserGroupWidget::processPostOKReply);
 
     connect(ui->btnUpdateSitesRoles, &QPushButton::clicked, this, &UserGroupWidget::btnUpdateSiteAccess_clicked);
     connect(ui->btnUpdateProjectsRoles, &QPushButton::clicked, this, &UserGroupWidget::btnUpdateProjectAccess_clicked);
@@ -107,7 +105,14 @@ void UserGroupWidget::updateSiteAccess(const TeraData *access)
             combo_roles->setCurrentIndex(0);
         }
         combo_roles->setProperty("original_index", index);
-        combo_roles->setEnabled(!m_limited);
+        combo_roles->setDisabled(false);
+
+        if (access->hasFieldName("site_access_inherited")){
+            if (access->getFieldValue("site_access_inherited").toBool()){
+                // Inherited access - disable combobox
+                combo_roles->setDisabled(true);
+            }
+        }
     }
 }
 
@@ -141,7 +146,14 @@ void UserGroupWidget::updateProjectAccess(const TeraData *access)
             combo_roles->setCurrentIndex(0);
         }
         combo_roles->setProperty("original_index", index);
-        combo_roles->setEnabled(!m_limited);
+        combo_roles->setDisabled(false);
+
+        if (access->hasFieldName("project_access_inherited")){
+            if (access->getFieldValue("project_access_inherited").toBool()){
+                // Inherited access - disable combobox
+                combo_roles->setDisabled(true);
+            }
+        }
     }
 
 }
@@ -241,6 +253,33 @@ void UserGroupWidget::processUsersReply(QList<TeraData> users, QUrlQuery reply_q
     }
 }
 
+void UserGroupWidget::processPostOKReply(QString path)
+{
+    if (path == TeraData::getPathForDataType(TERADATA_SITEACCESS)){
+        // Reset "dirty" flag on each combo box role
+        for (int i=0; i<m_tableSites_items.count(); i++){
+           int site_id = m_tableSites_items.keys().at(i);
+           int row = m_tableSites_items[site_id]->row();
+           QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(row,1));
+           if (combo_roles){
+               combo_roles->setProperty("original_index", combo_roles->currentIndex());
+           }
+        }
+    }
+
+    if (path == TeraData::getPathForDataType(TERADATA_PROJECTACCESS)){
+        // Reset "dirty" flag on each combo box role
+        for (int i=0; i<m_tableProjects_items.count(); i++){
+           int project_id = m_tableProjects_items.keys().at(i);
+           int row = m_tableProjects_items[project_id]->row();
+           QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,1));
+           if (combo_roles){
+               combo_roles->setProperty("original_index", combo_roles->currentIndex());
+           }
+        }
+    }
+}
+
 void UserGroupWidget::btnUpdateSiteAccess_clicked()
 {
 
@@ -311,18 +350,13 @@ void UserGroupWidget::on_tabUserGroupInfos_currentChanged(int index)
 
     if (tab_name == "tabProjects"){
         // Projects
-        if (m_tableProjects_items.isEmpty()){
-            args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
-            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
-        }
+        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
+        queryDataRequest(WEB_PROJECTACCESS_PATH, args);
     }
 
     if (tab_name == "tabSites"){
-        // Sites
-        if (m_tableSites_items.isEmpty()){
-            args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
-            queryDataRequest(WEB_SITEACCESS_PATH, args);
-        }
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+        queryDataRequest(WEB_SITEACCESS_PATH, args);
     }
 
     if (tab_name == "tabUsers"){

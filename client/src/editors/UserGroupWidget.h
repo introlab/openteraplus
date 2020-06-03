@@ -29,6 +29,7 @@ private slots:
     void processSiteAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processUsersReply(QList<TeraData> users, QUrlQuery reply_query);
+    void processPostOKReply(QString path);
 
     void btnUpdateSiteAccess_clicked();
     void btnUpdateProjectAccess_clicked();

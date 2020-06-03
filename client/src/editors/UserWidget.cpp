@@ -128,6 +128,12 @@ void UserWidget::updateControlsState(){
         allow_access_edit &= !user_is_superadmin;
     }
     ui->frameGroups->setEnabled(allow_access_edit);
+
+    if (dataIsNew() && ui->tabMain->count()>1){
+        ui->tabMain->removeTab(1);
+        ui->tabMain->removeTab(1);
+        ui->tabMain->removeTab(1);
+    }
 }
 
 void UserWidget::updateFieldsValue(){
@@ -332,7 +338,12 @@ void UserWidget::connectSignals()
 void UserWidget::on_tabMain_currentChanged(int index)
 {
     QUrlQuery args;
-    if (index == 1){
+
+    if (!ui->tabMain->currentWidget()->isEnabled())
+        return;
+
+    QString tab_name = ui->tabMain->widget(index)->objectName();
+    if (tab_name == "tabGroups"){
         // User groups
         //if (!m_data->hasFieldName("user_groups")){
             // Update groups for user
@@ -345,7 +356,7 @@ void UserWidget::on_tabMain_currentChanged(int index)
         ui->lblWarning->setVisible(super_admin);
         ui->frameGroups->setVisible(!super_admin);
     }
-    if (index == 2){
+    if (tab_name == "tabRoles"){
         // Roles
         ui->tableRoles->clearContents(); // Resets all elements in the table
         ui->tableRoles->setRowCount(0);

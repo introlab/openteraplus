@@ -321,7 +321,7 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
            </property>
            <property name="icon">
             <iconset resource="../../resources/TeraClient.qrc">
-             <normaloff>:/icons/delete.png</normaloff>:/icons/delete.png</iconset>
+             <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
            </property>
            <property name="iconSize">
             <size>

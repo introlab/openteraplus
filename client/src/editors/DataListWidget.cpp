@@ -17,9 +17,7 @@ DataListWidget::DataListWidget(ComManager *comMan, TeraDataTypes data_type, QWid
     m_dataType(data_type)
 {
 
-
     ui->setupUi(this);
-
 
     m_editor = nullptr;
     setSearching(false);
@@ -390,12 +388,12 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
 
 void DataListWidget::newDataRequested()
 {
-    /*TeraData* new_data = new TeraData(m_dataType);
+    TeraData* new_data = new TeraData(m_dataType);
     new_data->setId(0);
     m_newdata = true;
-    updateDataInList(new_data, true);*/
-    UserWizard new_wizard(m_comManager);
-    new_wizard.exec();
+    updateDataInList(new_data, true);
+    /*UserWizard new_wizard(m_comManager);
+    new_wizard.exec();*/
 
 }
 

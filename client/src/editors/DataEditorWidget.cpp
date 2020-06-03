@@ -44,7 +44,12 @@ void DataEditorWidget::setData(const TeraData* data)
 
     if (data != nullptr){
         m_data = new TeraData(*data);
+        // Start editing if new data
+        if (m_data->isNew()){
+            editToggleClicked();
+        }
     }
+
 }
 
 void DataEditorWidget::setLimited(bool limited){
