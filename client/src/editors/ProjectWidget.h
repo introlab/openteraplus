@@ -30,6 +30,8 @@ private slots:
     void processGroupsReply(QList<TeraData> groups);
     void processDevicesReply(QList<TeraData> devices);
     void processSessionTypesProjectReply(QList<TeraData> stps);
+    void processServiceProjectRolesReply(QList<TeraData> roles);
+    void processServiceProjectsReply(QList<TeraData> services);
 
     void processPostOKReply(QString path);
 
@@ -38,24 +40,33 @@ private slots:
 
     void on_tabProjectInfos_currentChanged(int index);
 
+    void on_btnUpdateServiceRoles_clicked();
+
 private:
     Ui::ProjectWidget *ui;
 
     QMap<int, QTableWidgetItem*>  m_tableUsers_items;
     QMap<int, QTableWidgetItem*>  m_tableUserGroups_items;
-    QMap<int, QListWidgetItem*>  m_listGroups_items;
-    QMap<int, QListWidgetItem*>  m_listSessionTypes_items;
-    QMap<int, QTableWidgetItem*> m_listDevices_items;
+    QMap<int, QListWidgetItem*>   m_listGroups_items;
+    QMap<int, QListWidgetItem*>   m_listSessionTypes_items;
+    QMap<int, QTableWidgetItem*>  m_listDevices_items;
+    QMap<int, QTableWidgetItem*>  m_tableServiceRoles_items;
 
-    QDialog*                     m_diag_editor;
+    QMap<int, TeraData*>          m_services;
+
+    QDialog*                      m_diag_editor;
 
     void connectSignals();
 
     void updateUserProjectAccess(const TeraData* access);
     void updateUserGroupProjectAccess(const TeraData* access);
+    void updateUserGroupServiceRole(const TeraData* role);
     void updateGroup(const TeraData* group);
     void updateDevice(const TeraData* device);
     void updateSessionType(const TeraData* st);
+    void updateService(const TeraData* service);
+
+    QMap<int, QString> getRolesForService(const int &service_id);
 
     void updateControlsState();
     void updateFieldsValue();

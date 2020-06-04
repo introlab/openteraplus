@@ -25,6 +25,7 @@
 #define WEB_SESSIONEVENT_PATH               "/api/user/sessionevents"
 #define WEB_SERVICEINFO_PATH                "/api/user/services"
 #define WEB_SERVICEPROJECTINFO_PATH         "/api/user/serviceprojects"
+#define WEB_SERVICEPROJECTROLEINFO_PATH     "/api/user/serviceprojectroles"
 
 #define WEB_FORMS_PATH                  "/api/user/forms"
 #define WEB_FORMS_QUERY_USER_PROFILE    "type=user_profile"

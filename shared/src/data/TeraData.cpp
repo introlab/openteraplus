@@ -209,6 +209,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "service";
     case TERADATA_SERVICE_PROJECT:
         return "service_project";
+    case TERADATA_SERVICE_PROJECT_ROLE:
+        return "service_project_role";
     }
 
     return "";
@@ -263,6 +265,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Service");
     case TERADATA_SERVICE_PROJECT:
         return tr("Service: projet");
+    case TERADATA_SERVICE_PROJECT_ROLE:
+        return tr("Service: Projet: Role");
     }
 
     return "";
@@ -291,6 +295,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_USERGROUPINFO_PATH)           return TERADATA_USERGROUP;
     if (path==WEB_SERVICEINFO_PATH)             return TERADATA_SERVICE;
     if (path==WEB_SERVICEPROJECTINFO_PATH)      return TERADATA_SERVICE_PROJECT;
+    if (path==WEB_SERVICEPROJECTROLEINFO_PATH)  return TERADATA_SERVICE_PROJECT_ROLE;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 
