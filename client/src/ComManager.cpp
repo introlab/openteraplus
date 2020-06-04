@@ -283,6 +283,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::sessionsReceived;
     case TERADATA_DEVICESUBTYPE:
         return &ComManager::deviceSubtypesReceived;
+    case TERADATA_SERVICE:
+        return &ComManager::servicesReceived;
     default:
         LOG_WARNING("Signal for object " + TeraData::getDataTypeName(data_type) + " unspecified.", "ComManager::getSignalFunctionForDataType");
         return nullptr;
@@ -410,6 +412,12 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_SESSIONEVENT:
         emit sessionEventsReceived(items, reply_query);
+        break;
+    case TERADATA_SERVICE:
+        emit servicesReceived(items, reply_query);
+        break;
+    case TERADATA_SERVICE_PROJECT:
+        emit servicesProjectsReceived(items, reply_query);
         break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/

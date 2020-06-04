@@ -205,6 +205,10 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "session_type_project";
     case TERADATA_SESSIONEVENT:
         return "session_event";
+    case TERADATA_SERVICE:
+        return "service";
+    case TERADATA_SERVICE_PROJECT:
+        return "service_project";
     }
 
     return "";
@@ -255,6 +259,10 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Type de séance: projet");
     case TERADATA_SESSIONEVENT:
         return tr("Séance: événement");
+    case TERADATA_SERVICE:
+        return tr("Service");
+    case TERADATA_SERVICE_PROJECT:
+        return tr("Service: projet");
     }
 
     return "";
@@ -281,6 +289,8 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_SESSIONEVENT_PATH)            return TERADATA_SESSIONEVENT;
     if (path==WEB_DEVICESUBTYPE_PATH)           return TERADATA_DEVICESUBTYPE;
     if (path==WEB_USERGROUPINFO_PATH)           return TERADATA_USERGROUP;
+    if (path==WEB_SERVICEINFO_PATH)             return TERADATA_SERVICE;
+    if (path==WEB_SERVICEPROJECTINFO_PATH)      return TERADATA_SERVICE_PROJECT;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 
@@ -301,6 +311,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_SESSIONTYPE)        return WEB_SESSIONTYPE_PATH;
     if (data_type==TERADATA_DEVICEPARTICIPANT)  return WEB_DEVICEPARTICIPANTINFO_PATH;
     if (data_type==TERADATA_DEVICESUBTYPE)      return WEB_DEVICESUBTYPE_PATH;
+    if (data_type==TERADATA_SERVICE)            return WEB_SERVICEINFO_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 
@@ -329,11 +340,15 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     case TERADATA_GROUP:
         return "://icons/group.png";
     case TERADATA_PROJECT:
+    case TERADATA_SERVICE_PROJECT:
+    case TERADATA_SESSIONTYPEPROJECT:
         return "://icons/project.png";
     case TERADATA_DEVICEDATA:
         return "://icons/sensors.png";
     case TERADATA_DEVICESUBTYPE:
         return "://icons/kit.png";
+    case TERADATA_SERVICE:
+        return "://icons/service.png";
     default:
         return "://icons/error.png";
     }

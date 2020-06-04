@@ -80,7 +80,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -88,7 +88,7 @@
         <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Tableau de bord</string>
+       <string>Informations</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
@@ -219,7 +219,7 @@
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <property name="iconSize">
           <size>
@@ -399,7 +399,7 @@
              </attribute>
              <column>
               <property name="text">
-               <string>Project</string>
+               <string>Projet</string>
               </property>
              </column>
              <column>

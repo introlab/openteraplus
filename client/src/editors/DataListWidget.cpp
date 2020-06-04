@@ -7,6 +7,7 @@
 #include "editors/SessionTypeWidget.h"
 #include "editors/DeviceSubTypeWidget.h"
 #include "editors/UserGroupWidget.h"
+#include "editors/ServiceWidget.h"
 
 #include "wizards/UserWizard.h"
 
@@ -154,6 +155,9 @@ void DataListWidget::showEditor(TeraData *data)
         break;
         case TERADATA_USERGROUP:
             m_editor = new UserGroupWidget(m_comManager, data);
+        break;
+        case TERADATA_SERVICE:
+            m_editor = new ServiceWidget(m_comManager, data);
         break;
         default:
             LOG_ERROR("Unhandled datatype for editor: " + TeraData::getDataTypeName(data->getDataType()), "DataListWidget::showEditor()");

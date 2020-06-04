@@ -35,6 +35,7 @@ set(headers
     editors/SessionWidget.h
     editors/DeviceSubTypeWidget.h
     editors/UserGroupWidget.h
+    editors/ServiceWidget.h
     wizards/UserWizard.h
     wizards/BaseWizard.h
 )
@@ -72,6 +73,7 @@ set(srcs
     editors/SessionWidget.cpp
     editors/DeviceSubTypeWidget.cpp
     editors/UserGroupWidget.cpp
+    editors/ServiceWidget.cpp
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
 )
@@ -97,6 +99,7 @@ SET(uis
     editors/SessionWidget.ui
     editors/DeviceSubTypeWidget.ui
     editors/UserGroupWidget.ui
+    editors/ServiceWidget.ui
 )
 
 SET(qrcs

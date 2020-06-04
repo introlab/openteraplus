@@ -23,6 +23,8 @@
 #define WEB_SESSIONTYPEDEVICETYPE_PATH      "/api/user/sessiontypedevicetypes"
 #define WEB_SESSIONTYPEPROJECT_PATH         "/api/user/sessiontypeprojects"
 #define WEB_SESSIONEVENT_PATH               "/api/user/sessionevents"
+#define WEB_SERVICEINFO_PATH                "/api/user/services"
+#define WEB_SERVICEPROJECTINFO_PATH         "/api/user/serviceprojects"
 
 #define WEB_FORMS_PATH                  "/api/user/forms"
 #define WEB_FORMS_QUERY_USER_PROFILE    "type=user_profile"
@@ -36,10 +38,10 @@
 #define WEB_FORMS_QUERY_SESSION         "type=session"
 #define WEB_FORMS_QUERY_DEVICE_SUBTYPE  "type=device_subtype"
 #define WEB_FORMS_QUERY_USER_GROUP      "type=user_group"
+#define WEB_FORMS_QUERY_SERVICE         "type=service"
 
 #define WEB_QUERY_USERUUID          "user_uuid"
 #define WEB_QUERY_ID_USER           "id_user"
-#define WEB_QUERY_LIST              "list"
 #define WEB_QUERY_ID                "id"
 #define WEB_QUERY_ID_SITE           "id_site"
 #define WEB_QUERY_ID_PARTICIPANT    "id_participant"
@@ -52,8 +54,9 @@
 #define WEB_QUERY_ID_DEVICE_DATA    "id_device_data"
 #define WEB_QUERY_ID_SESSION_TYPE   "id_session_type"
 #define WEB_QUERY_ID_USER_GROUP     "id_user_group"
-#define WEB_QUERY_NO_GROUP          "no_group"
+#define WEB_QUERY_ID_SERVICE        "id_service"
 
+#define WEB_QUERY_LIST              "list"
 #define WEB_QUERY_AVAILABLE         "available"
 #define WEB_QUERY_PARTICIPANTS      "participants"
 #define WEB_QUERY_SITES             "sites"
@@ -61,7 +64,9 @@
 #define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
 #define WEB_QUERY_WITH_SITES        "with_sites"
 #define WEB_QUERY_WITH_PROJECTS     "with_projects"
+#define WEB_QUERY_WITH_ROLES        "with_roles"
 #define WEB_QUERY_SELF              "self"
 #define WEB_QUERY_BY_USERS          "by_users"
+#define WEB_QUERY_NO_GROUP          "no_group"
 
 #endif // WEBAPI_H

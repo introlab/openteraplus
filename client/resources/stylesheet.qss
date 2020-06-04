@@ -158,14 +158,14 @@ QTreeWidget::branch:open:has-children:has-siblings   {
 /*
     QLineEdit
 */
-QLineEdit{
+QLineEdit, QSpinBox{
     background-color: rgba(255,255,255,50%);
     color:black;
     min-height: 25px;
     padding-left: 5px;
 }
 
-QLineEdit:!enabled{
+QLineEdit:!enabled, QSpinBox:!enabled{
     background-color: rgba(0,0,0,0%);
     color:rgba(255,255,255,80%);
     padding-left: 0px;
