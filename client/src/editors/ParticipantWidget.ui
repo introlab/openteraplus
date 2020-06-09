@@ -725,6 +725,13 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                     </widget>
                    </item>
                    <item>
+                    <widget class="QCheckBox" name="checkBox">
+                     <property name="text">
+                      <string>CheckBox</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="HistoryCalendarWidget" name="calMonth2">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">

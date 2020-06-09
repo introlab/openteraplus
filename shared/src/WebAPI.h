@@ -27,6 +27,8 @@
 #define WEB_SERVICEPROJECTINFO_PATH         "/api/user/serviceprojects"
 #define WEB_SERVICEPROJECTROLEINFO_PATH     "/api/user/serviceprojectroles"
 
+#define WEB_SESSIONMANAGER_PATH             "/api/user/sessions/manager"
+
 #define WEB_FORMS_PATH                  "/api/user/forms"
 #define WEB_FORMS_QUERY_USER_PROFILE    "type=user_profile"
 #define WEB_FORMS_QUERY_USER            "type=user"

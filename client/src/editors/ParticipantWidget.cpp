@@ -926,3 +926,29 @@ void ParticipantWidget::on_tabInfos_currentChanged(int index)
         }
     }
 }
+
+void ParticipantWidget::on_btnNewSession_clicked()
+{
+    // Build JSON structure to request session start
+
+    // TODO: Don't request anything if no service related to that session type
+    // TODO: Display correct UI depending on the session type category and related service
+
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray participants;
+
+    QJsonObject item_obj;
+    item_obj.insert("id_service", 1); // TODO Get correct ID
+    item_obj.insert("action", "start");
+    item_obj.insert("parameters", "{start_muted: false}"); // TODO: Get parameters from session type
+
+    participants.append(QJsonValue(m_data->getFieldValue("participant_uuid").toString()));
+    item_obj.insert("session_participants", participants);
+
+    // Update query
+    base_obj.insert("session_manage", item_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SESSIONMANAGER_PATH, document.toJson());
+
+}

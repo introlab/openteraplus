@@ -93,6 +93,7 @@ private slots:
     void on_txtPassword_textEdited(const QString &current);
     void on_txtPasswordConfirm_textEdited(const QString &current);
     void on_tabInfos_currentChanged(int index);
+    void on_btnNewSession_clicked();
 };
 
 #endif // PARTICIPANTWIDGET_H
