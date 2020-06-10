@@ -211,9 +211,16 @@ void SessionWidget::processParticipantsReply(QList<TeraData> participants)
     if (!m_data)
         return;
 
-    QList<QVariant> part_ids;
-    if (m_data->hasFieldName("session_participants_ids")){
-        part_ids = m_data->getFieldValue("session_participants_ids").toList();
+    QList<int> part_ids;
+
+    if (m_data->hasFieldName("session_participants")){
+        QVariantList session_parts_list = m_data->getFieldValue("session_participants").toList();
+
+        for(QVariant session_part:session_parts_list){
+            QVariantMap part_info = session_part.toMap();
+
+            part_ids.append(part_info["id_participant"].toInt());
+        }
     }
 
     for (TeraData part:participants){

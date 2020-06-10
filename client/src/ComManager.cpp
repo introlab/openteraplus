@@ -322,7 +322,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
 
     // Process reply
     QString data_str = reply_data;
-    if (data_str.isEmpty())
+    if (data_str.isEmpty() || data_str == "\n" || data_str == "null\n")
         data_str = "[]"; // Replace empty string with empty list!
 
     QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);

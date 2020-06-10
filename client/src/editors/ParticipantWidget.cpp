@@ -269,12 +269,14 @@ void ParticipantWidget::updateSession(TeraData *session)
     //date_item->setBackgroundColor(back_color);
 
     // Session creator
-    if (!session->getFieldValue("session_creator_user").isNull())
+    if (session->hasFieldName("session_creator_user"))
         user_item->setText(session->getFieldValue("session_creator_user").toString());
-    else if(!session->getFieldValue("session_creator_device").isNull())
+    else if(session->hasFieldName("session_creator_device"))
         user_item->setText(tr("Appareil: ") + session->getFieldValue("session_creator_device").toString());
-    else if(!session->getFieldValue("session_creator_participant").isNull())
+    else if(session->hasFieldName("session_creator_participant"))
         user_item->setText(tr("Participant: ") + session->getFieldValue("session_creator_participant").toString());
+    else if(session->hasFieldName("session_creator_service"))
+        user_item->setText(tr("Service: ") + session->getFieldValue("session_creator_service").toString());
     else {
         user_item->setText(tr("Inconnu"));
     }
@@ -360,15 +362,19 @@ void ParticipantWidget::processFormsReply(QString form_type, QString data)
 void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
 {
     for(TeraData session:sessions){
-        QVariantList session_parts = session.getFieldValue("session_participants_ids").toList();
+        QVariantList session_parts_list = session.getFieldValue("session_participants").toList();
 
-        // Is that session for the current participant?
-        if (session_parts.contains(m_data->getId())){
-            // Add session in table or update it
-            updateSession(&session);
-        }else{
-            // Session is not for us - ignore it.
-            continue;
+        for(QVariant session_part:session_parts_list){
+            QVariantMap part_info = session_part.toMap();
+
+            // Is that session for the current participant?
+            if (part_info["id_participant"].toInt() == m_data->getId()){
+                // Add session in table or update it
+                updateSession(&session);
+            }else{
+                // Session is not for us - ignore it.
+                continue;
+            }
         }
     }
 
@@ -939,7 +945,7 @@ void ParticipantWidget::on_btnNewSession_clicked()
     QJsonArray participants;
 
     QJsonObject item_obj;
-    item_obj.insert("id_service", 1); // TODO Get correct ID
+    item_obj.insert("id_service", 3); // TODO Get correct ID
     item_obj.insert("action", "start");
     item_obj.insert("parameters", "{start_muted: false}"); // TODO: Get parameters from session type
 
