@@ -21,7 +21,6 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &ComManager::onNetworkAuthenticationRequired);
     connect(m_netManager, &QNetworkAccessManager::encrypted, this, &ComManager::onNetworkEncrypted);
     connect(m_netManager, &QNetworkAccessManager::finished, this, &ComManager::onNetworkFinished);
-    connect(m_netManager, &QNetworkAccessManager::networkAccessibleChanged, this, &ComManager::onNetworkAccessibleChanged);
     connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ComManager::onNetworkSslErrors);
 
     // Create correct server url
@@ -487,14 +486,6 @@ void ComManager::onNetworkFinished(QNetworkReply *reply)
     }
 
     reply->deleteLater();
-}
-
-void ComManager::onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible)
-{
-    Q_UNUSED(accessible)
-
-    qDebug() << "ComManager::onNetworkAccessibleChanged";
-    //TODO: Emit signal
 }
 
 void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)

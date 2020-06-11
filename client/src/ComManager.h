@@ -135,7 +135,6 @@ private slots:
     void onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
     void onNetworkEncrypted(QNetworkReply *reply);
     void onNetworkFinished(QNetworkReply *reply);
-    void onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
     void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 
 };

@@ -39,7 +39,8 @@ private:
 
     bool validateData();
 
-    void updateParticipant(TeraData* participant);
+    void updateSessionParticipants();
+    void updateSessionUsers();
     void updateDeviceData(TeraData* device_data);
     void updateEvent(TeraData* event);
 
@@ -49,7 +50,6 @@ private slots:
     void btnDownloadAll_clicked();
 
     void processFormsReply(QString form_type, QString data);
-    void processParticipantsReply(QList<TeraData> participants);
     void processDeviceDatasReply(QList<TeraData> device_datas);
     void processSessionEventsReply(QList<TeraData> events);
     void postResultReply(QString path);

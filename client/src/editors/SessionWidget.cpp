@@ -27,6 +27,7 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION));
 
     ui->wdgSession->setComManager(m_comManager);
+    ui->tabNav->setCurrentIndex(0);
     setData(data);
 
 }
@@ -88,27 +89,77 @@ bool SessionWidget::validateData(){
     return valid;
 }
 
-void SessionWidget::updateParticipant(TeraData *participant)
+void SessionWidget::updateSessionParticipants()
 {
-    QListWidgetItem* item = nullptr;
-    for(int i=0; i<ui->lstParticipants->count(); i++){
-        int part_id = ui->lstParticipants->item(i)->data(Qt::UserRole).toInt();
-        if (part_id == participant->getId()){
-            // Participant already present
-            item = ui->lstParticipants->item(i);
-            break;
+    if (!m_data)
+        return;
+
+
+    if (m_data->hasFieldName("session_participants")){
+        QVariantList session_parts_list = m_data->getFieldValue("session_participants").toList();
+
+        for(QVariant session_part:session_parts_list){
+            QVariantMap part_info = session_part.toMap();
+            int id_participant = part_info["id_participant"].toInt();
+            QString participant_name = part_info["participant_name"].toString();
+            QListWidgetItem* item = nullptr;
+            for(int i=0; i<ui->lstParticipants->count(); i++){
+                int part_id = ui->lstParticipants->item(i)->data(Qt::UserRole).toInt();
+                if (part_id == id_participant){
+                    // Participant already present
+                    item = ui->lstParticipants->item(i);
+                    break;
+                }
+            }
+            // New participant
+            if (!item){
+                item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant_name);
+                item->setData(Qt::UserRole, id_participant);
+                ui->lstParticipants->addItem(item);
+            }
+
+            // Update participant name
+            item->setText(participant_name);
+
+
         }
     }
+}
 
-    // New participant
-    if (!item){
-        item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant->getName());
-        item->setData(Qt::UserRole, participant->getId());
-        ui->lstParticipants->addItem(item);
+void SessionWidget::updateSessionUsers()
+{
+    if (!m_data)
+        return;
+
+    if (m_data->hasFieldName("session_users")){
+        QVariantList session_users_list = m_data->getFieldValue("session_users").toList();
+
+        for(QVariant session_user:session_users_list){
+            QVariantMap user_info = session_user.toMap();
+            int id_user = user_info["id_user"].toInt();
+            QString user_name = user_info["user_name"].toString();
+            QListWidgetItem* item = nullptr;
+            for(int i=0; i<ui->lstUsers->count(); i++){
+                int user_id = ui->lstUsers->item(i)->data(Qt::UserRole).toInt();
+                if (user_id == id_user){
+                    // User already present
+                    item = ui->lstUsers->item(i);
+                    break;
+                }
+            }
+            // New participant
+            if (!item){
+                item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)), user_name);
+                item->setData(Qt::UserRole, id_user);
+                ui->lstUsers->addItem(item);
+            }
+
+            // Update name
+            item->setText(user_name);
+
+
+        }
     }
-
-    // Update participant name
-    item->setText(participant->getName());
 }
 
 void SessionWidget::updateDeviceData(TeraData *device_data)
@@ -206,32 +257,6 @@ void SessionWidget::processFormsReply(QString form_type, QString data)
     }
 }
 
-void SessionWidget::processParticipantsReply(QList<TeraData> participants)
-{
-    if (!m_data)
-        return;
-
-    QList<int> part_ids;
-
-    if (m_data->hasFieldName("session_participants")){
-        QVariantList session_parts_list = m_data->getFieldValue("session_participants").toList();
-
-        for(QVariant session_part:session_parts_list){
-            QVariantMap part_info = session_part.toMap();
-
-            part_ids.append(part_info["id_participant"].toInt());
-        }
-    }
-
-    for (TeraData part:participants){
-        // Participant is part of the current session
-        if (part_ids.contains(part.getId())){
-            updateParticipant(&part);
-        }
-    }
-
-}
-
 void SessionWidget::processDeviceDatasReply(QList<TeraData> device_datas)
 {
     for (TeraData device_data:device_datas){
@@ -295,7 +320,6 @@ void SessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &SessionWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SessionWidget::postResultReply);
-    connect(m_comManager, &ComManager::participantsReceived, this, &SessionWidget::processParticipantsReply);
     connect(m_comManager, &ComManager::deviceDatasReceived, this, &SessionWidget::processDeviceDatasReply);
     connect(m_comManager, &ComManager::sessionEventsReceived, this, &SessionWidget::processSessionEventsReply);
     connect(m_comManager, &ComManager::downloadCompleted, this, &SessionWidget::onDownloadCompleted);
@@ -364,13 +388,15 @@ void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
     // Load data depending on selected tab
     QUrlQuery query;
 
-    if (index == 0){
+    QWidget* current_tab = ui->tabSessionInfos->widget(index);
+
+    if (current_tab == ui->tabParticipants){
         // Participants
-        query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
-        queryDataRequest(WEB_PARTICIPANTINFO_PATH, query);
+        updateSessionParticipants();
+        updateSessionUsers();
     }
 
-    if (index == 1){
+    if (current_tab == ui->tabData){
         // Data
         if (m_listDeviceDatas.isEmpty()){
             // Query session device data
@@ -379,12 +405,12 @@ void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
         }
     }
 
-    if (index == 2){
+    if (current_tab == ui->tabTests){
         // Tests
         // TODO
     }
 
-    if (index == 3){
+    if (current_tab == ui->tabEvents){
         // Session events
         if (m_listSessionEvents.isEmpty()){
             query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));

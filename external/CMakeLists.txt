@@ -17,6 +17,9 @@ option(protobuf_VERBOSE "" ON)
 #Will build shared libs
 set(BUILD_SHARED_LIBS FALSE)
 
+# Build position independant code (-fPIC)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 #Disable tests for now...
 option(protobuf_BUILD_TESTS "" OFF)
 
