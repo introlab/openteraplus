@@ -21,8 +21,11 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_comManager = com_manager;
     m_diag_editor = nullptr;
     m_data_editor = nullptr;
+    m_inSessionWidget = nullptr;
     m_download_dialog = nullptr;
     m_waiting_for_data_type = TERADATA_NONE;
+    m_currentDataType = TERADATA_NONE;
+    m_currentDataId = -1;
     m_currentMessage.setMessage(Message::MESSAGE_NONE,"");
 
     // Initial UI state
@@ -56,6 +59,8 @@ void MainWindow::connectSignals()
     connect(m_comManager, &ComManager::deleteResultsOK, this, &MainWindow::com_deleteResultsOK);
     connect(m_comManager, &ComManager::downloadProgress, this, &MainWindow::com_downloadProgress);
     connect(m_comManager, &ComManager::downloadCompleted, this, &MainWindow::com_downloadCompleted);
+    connect(m_comManager, &ComManager::sessionStarted, this, &MainWindow::com_sessionStarted);
+    connect(m_comManager, &ComManager::sessionStopped, this, &MainWindow::com_sessionStopped);
     connect(m_comManager, &ComManager::posting, this, &MainWindow::com_posting);
     connect(m_comManager, &ComManager::querying, this, &MainWindow::com_querying);
     connect(m_comManager, &ComManager::deleting, this, &MainWindow::com_deleting);
@@ -108,8 +113,15 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
     }
 
     if (data_type == TERADATA_NONE || data == nullptr){
+        m_currentDataType = data_type;
+        m_currentDataId = -1;
         return;
     }
+
+    // Save values to display them again if needed
+    m_currentDataType = data_type;
+    m_currentDataId = data->getId();
+
 
     if (data_type == TERADATA_SITE){
         m_data_editor = new SiteWidget(m_comManager, data);
@@ -147,6 +159,34 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
         connect(m_data_editor, &DataEditorWidget::dataWasDeleted, this, &MainWindow::dataEditorCancelled);
     }else{
         LOG_ERROR("Unhandled data editor: " + TeraData::getPathForDataType(data_type), "MainWindow::showDataEditor");
+    }
+
+
+}
+
+void MainWindow::setInSession(bool in_session, const TeraData *session_type, const int &id_session)
+{
+    if (m_data_editor){
+        m_data_editor->disconnectSignals();
+        m_data_editor->deleteLater();
+        m_data_editor = nullptr;
+    }
+    if (m_inSessionWidget){
+        m_inSessionWidget->disconnectSignals();
+        m_inSessionWidget->deleteLater();
+        m_inSessionWidget = nullptr;
+    }
+
+    ui->dockerLeft->setVisible(!in_session);
+    ui->btnLogout->setVisible(!in_session);
+
+    if (in_session){
+        m_inSessionWidget = new InSessionWidget(m_comManager, session_type, id_session);
+        ui->wdgMainTop->layout()->addWidget(m_inSessionWidget);
+    }else{
+
+        // Loads back the "previous" data type
+        dataDisplayRequested(m_currentDataType, m_currentDataId);
     }
 }
 
@@ -464,6 +504,18 @@ void MainWindow::com_downloadCompleted(DownloadedFile *file)
             m_download_dialog = nullptr;
         }
     }
+}
+
+void MainWindow::com_sessionStarted(TeraData session_type, int id_session)
+{
+    // Loads the in-session widget
+    setInSession(true, &session_type, id_session);
+
+}
+
+void MainWindow::com_sessionStopped(int id_session)
+{
+    setInSession(false, nullptr, id_session);
 }
 
 void MainWindow::on_btnLogout_clicked()

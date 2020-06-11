@@ -17,6 +17,8 @@
 #include "GlobalEventLogger.h"
 #include "GlobalEvent.h"
 #include "DownloadedFile.h"
+#include "TeraSessionCategory.h"
+#include "InSessionWidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +53,9 @@ private slots:
     void com_downloadProgress(DownloadedFile* file);
     void com_downloadCompleted(DownloadedFile* file);
 
+    void com_sessionStarted(TeraData session_type, int id_session);
+    void com_sessionStopped(int id_session);
+
     void addMessage(Message::MessageType msg_type, QString msg);
     void addMessage(Message &msg);
     bool hasWaitingMessage();
@@ -60,7 +65,7 @@ private slots:
 
     void editorDialogFinished();
     void dataDisplayRequested(TeraDataTypes data_type, int data_id);
-    void dataDeleteRequested(TeraDataTypes data_type, int data_id);
+    void dataDeleteRequested(TeraDataTypes data_type, int data_id);   
     void dataEditorCancelled();
 
     void on_btnCloseMessage_clicked();
@@ -78,6 +83,8 @@ private:
     void connectSignals();
     void initUi();
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
+    void setInSession(bool in_session, const TeraData *session_type, const int& id_session);
+
 
     // Events
     QIcon getGlobalEventIcon(GlobalEvent &global_event);
@@ -87,14 +94,16 @@ private:
     ComManager*             m_comManager;
     BaseDialog*             m_diag_editor;
     DataEditorWidget*       m_data_editor;
+    InSessionWidget*        m_inSessionWidget;
     DownloadProgressDialog* m_download_dialog;
     TeraDataTypes           m_waiting_for_data_type;
+    TeraDataTypes           m_currentDataType;
+    int                     m_currentDataId;
 
     // Message system
     QList<Message>  m_messages;
     Message         m_currentMessage;
     QTimer          m_msgTimer;
-
 
     // UI items
     QMovie*         m_loadingIcon;

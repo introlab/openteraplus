@@ -21,10 +21,13 @@
 #include <QTimer>
 #include <QUuid>
 
+#include <QStringList>
+
 #include "Logger.h"
 #include "WebAPI.h"
 
 #include "TeraData.h"
+#include "TeraSessionCategory.h"
 #include "DownloadedFile.h"
 #include "WebSocketManager.h"
 
@@ -46,6 +49,9 @@ public:
     void doUpdateCurrentUser();
     void doDownload(const QString& save_path, const QString &path, const QUrlQuery &query_args = QUrlQuery());
 
+    void startSession(const TeraData& session_type, const QStringList &participants_list, const QStringList &users_list = QStringList());
+    void stopSession(const TeraData& session, const int &id_service = 0);
+
     TeraData &getCurrentUser();
     QString getCurrentUserSiteRole(int site_id);
     QString getCurrentUserProjectRole(int project_id);
@@ -59,8 +65,10 @@ public:
 protected:
     bool handleLoginReply(const QString& reply_data);
     bool handleDataReply(const QString& reply_path, const QString& reply_data, const QUrlQuery& reply_query);
+    bool handleSessionManagerReply(const QString& reply_data, const QUrlQuery& reply_query);
     bool handleFormReply(const QUrlQuery& reply_query, const QString& reply_data);
 
+    QString filterReplyString(const QString& data_str);
 
     QUrl                    m_serverUrl;
     QNetworkAccessManager*  m_netManager;
@@ -75,6 +83,7 @@ protected:
     QString                 m_password;
 
     TeraData                m_currentUser;
+    TeraData*               m_currentSessionType;
 
 signals:
     void serverDisconnected();
@@ -125,8 +134,13 @@ signals:
     void querying(QString path);
     void deleting(QString path);
 
+    // File transfer
     void downloadCompleted(DownloadedFile* file);
     void downloadProgress(DownloadedFile* file);
+
+    // Generic session
+    void sessionStarted(TeraData session_type, int id_session);
+    void sessionStopped(int id_session);
 
 public slots:
 

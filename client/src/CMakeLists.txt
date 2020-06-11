@@ -22,6 +22,7 @@ set(headers
     BaseDialog.h
     GlobalEvent.h
     GlobalEventLogger.h
+    InSessionWidget.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/TeraForm.h
@@ -60,6 +61,7 @@ set(srcs
     BaseDialog.cpp
     GlobalEvent.cpp
     GlobalEventLogger.cpp
+    InSessionWidget.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/TeraForm.cpp
@@ -87,6 +89,7 @@ SET(uis
     DeviceAssignDialog.ui
     DownloadProgressDialog.ui
     BaseDialog.ui
+    InSessionWidget.ui
     editors/UserWidget.ui
     editors/TeraForm.ui
     editors/DataListWidget.ui

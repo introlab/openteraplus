@@ -3,8 +3,10 @@
 
 ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     QObject(parent),
-    m_currentUser(TERADATA_USER)
+    m_currentUser(TERADATA_USER),
+    m_currentSessionType(nullptr)
 {
+
     // Initialize communication objects
     m_netManager = new QNetworkAccessManager(this);
     m_netManager->setCookieJar(&m_cookieJar);
@@ -31,6 +33,8 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
 ComManager::~ComManager()
 {
     m_webSocketMan->deleteLater();
+    if (m_currentSessionType)
+        delete m_currentSessionType;
 }
 
 void ComManager::connectToServer(QString username, QString password)
@@ -98,8 +102,14 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
     }
 
     if (reply->operation()==QNetworkAccessManager::PostOperation){
-        handled=handleDataReply(reply_path, reply_data, reply_query);
-        if (handled) emit postResultsOK(reply_path);
+        if (reply_path == WEB_SESSIONMANAGER_PATH){
+            handled = handleSessionManagerReply(reply_data, reply_query);
+        }
+
+        if (!handled){
+            handled=handleDataReply(reply_path, reply_data, reply_query);
+            if (handled) emit postResultsOK(reply_path);
+        }
     }
 
     if (reply->operation()==QNetworkAccessManager::DeleteOperation){
@@ -185,6 +195,94 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     emit waitingForReply(true);
 
     LOG_DEBUG("DOWNLOADING: " + path + ", with " + query_args.toString() + ", to " + save_path, "ComManager::doQuery");
+}
+
+void ComManager::startSession(const TeraData &session_type, const QStringList &participants_list, const QStringList &users_list)
+{
+    if (session_type.getDataType() != TERADATA_SESSIONTYPE)
+        LOG_ERROR("Received an invalid session_type object", "ComManager::startSession");
+
+    if (m_currentSessionType){
+        LOG_ERROR("Tried to start a session, but already one started.", "ComManager::startSession");
+    }
+
+    TeraSessionCategory::SessionTypeCategories session_type_category = static_cast<TeraSessionCategory::SessionTypeCategories>(session_type.getFieldValue("session_type_category").toInt());
+
+    // Do the correct request to server, depending on the type of the session we want to start
+    switch(session_type_category){
+    case TeraSessionCategory::SESSION_TYPE_SERVICE:
+       {
+        QJsonDocument document;
+        QJsonObject base_obj;
+
+        QJsonObject item_obj;
+        item_obj.insert("id_service", session_type.getFieldValue("id_service").toInt());
+        item_obj.insert("action", "start");
+        item_obj.insert("parameters", session_type.getFieldValue("session_type_config").toString());
+
+        if (!participants_list.isEmpty()){
+            QJsonArray participants;
+            for(QString part_uuid:participants_list){
+                participants.append(QJsonValue(part_uuid));
+            }
+            item_obj.insert("session_participants", participants);
+        }
+
+        // Always add the current user to the list
+        QStringList current_users_list = users_list;
+        if (!current_users_list.contains(m_currentUser.getFieldValue("user_uuid").toString()))
+            current_users_list.append(m_currentUser.getFieldValue("user_uuid").toString());
+
+        if (!current_users_list.isEmpty()){
+            QJsonArray users;
+            for(QString user_uuid:current_users_list){
+                users.append(QJsonValue(user_uuid));
+            }
+            item_obj.insert("session_users", users);
+        }
+
+        // Update query
+        base_obj.insert("session_manage", item_obj);
+        document.setObject(base_obj);
+        doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+        }
+        break;
+    default:
+        // TODO: Manage other service category types
+        break;
+    }
+
+    m_currentSessionType = new TeraData(session_type);
+}
+
+void ComManager::stopSession(const TeraData &session, const int &id_service)
+{
+
+    if (session.getDataType() != TERADATA_SESSION)
+        LOG_ERROR("Received an invalid session object", "ComManager::stopSession");
+
+    if (id_service > 0){
+        // Do a request to stop the current session on the service
+        QJsonDocument document;
+        QJsonObject base_obj;
+
+        QJsonObject item_obj;
+        item_obj.insert("id_service", id_service);
+        item_obj.insert("id_session", session.getId());
+        item_obj.insert("action", "stop");
+
+        // Update query
+        base_obj.insert("session_manage", item_obj);
+        document.setObject(base_obj);
+        doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+    }else{
+        // Changes the session status only.
+        delete m_currentSessionType;
+        m_currentSessionType = nullptr;
+    }
+
+
+
 }
 
 TeraData &ComManager::getCurrentUser()
@@ -320,9 +418,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     QJsonParseError json_error;
 
     // Process reply
-    QString data_str = reply_data;
-    if (data_str.isEmpty() || data_str == "\n" || data_str == "null\n")
-        data_str = "[]"; // Replace empty string with empty list!
+    QString data_str = filterReplyString(reply_data);
 
     QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
     if (json_error.error!= QJsonParseError::NoError){
@@ -434,10 +530,68 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     return true;
 }
 
+bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrlQuery &reply_query)
+{
+    if (!m_currentSessionType){
+        LOG_WARNING("Received a Session Manager reply, but no session type was defined", "ComManager::handleSessionManagerReply");
+        return false;
+    }
+    QJsonParseError json_error;
+
+    // Process reply
+    QString data_str = filterReplyString(reply_data);
+
+    // Convert reply to json structure
+    QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
+    if (json_error.error!= QJsonParseError::NoError){
+        LOG_ERROR("Received a JSON string from SessionManager with " + reply_query.toString() + " with error: " + json_error.errorString(), "ComManager::handleSessionManagerReply");
+        return false;
+    }
+
+    // Check the status in the reply
+    QJsonObject reply_json = data_list.object();
+    if (reply_json.contains("status")){
+        QString status = reply_json["status"].toString();
+        if (status.toLower() == "started"){
+            if (reply_json.contains("id_session")){
+                emit sessionStarted(*m_currentSessionType, reply_json["id_session"].toInt());
+                return true;
+            }else{
+                LOG_WARNING("Received a start session event, but no id_session into it", "ComManager::handleSessionManagerReply");
+            }
+        }
+        if (status.toLower() == "stopped"){
+            if (reply_json.contains("id_session")){
+                emit sessionStopped(reply_json["id_session"].toInt());
+                // Delete current session type infos
+                delete m_currentSessionType;
+                m_currentSessionType = nullptr;
+
+                return true;
+            }else{
+                LOG_WARNING("Received a stop session event, but no id_session into it", "ComManager::handleSessionManagerReply");
+            }
+        }
+    }
+
+    LOG_WARNING("Received a Session Manager reply, but no status in it.", "ComManager::handleSessionManagerReply");
+    return false;
+
+}
+
 bool ComManager::handleFormReply(const QUrlQuery &reply_query, const QString &reply_data)
 {
     emit formReceived(reply_query.toString(), reply_data);
     return true;
+}
+
+QString ComManager::filterReplyString(const QString &data_str)
+{
+    QString filtered_str = data_str;
+    if (data_str.isEmpty() || data_str == "\n" || data_str == "null\n")
+        filtered_str = "[]"; // Replace empty string with empty list!
+
+    return filtered_str;
 }
 
 

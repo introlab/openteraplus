@@ -104,5 +104,6 @@
         <file>icons/download.png</file>
         <file>icons/session_type.png</file>
         <file>icons/service.png</file>
+        <file>icons/stop.png</file>
     </qresource>
 </RCC>

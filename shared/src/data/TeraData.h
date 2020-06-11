@@ -37,7 +37,6 @@ enum TeraDataTypes {
     TERADATA_SERVICE_PROJECT_ROLE
 };
 
-
 Q_DECLARE_METATYPE(TeraDataTypes)
 
 class TeraData : public QObject

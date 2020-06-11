@@ -937,10 +937,7 @@ void ParticipantWidget::on_btnNewSession_clicked()
 {
     // Build JSON structure to request session start
 
-    // TODO: Don't request anything if no service related to that session type
-    // TODO: Display correct UI depending on the session type category and related service
-
-    QJsonDocument document;
+    /*QJsonDocument document;
     QJsonObject base_obj;
     QJsonArray participants;
 
@@ -955,6 +952,10 @@ void ParticipantWidget::on_btnNewSession_clicked()
     // Update query
     base_obj.insert("session_manage", item_obj);
     document.setObject(base_obj);
-    postDataRequest(WEB_SESSIONMANAGER_PATH, document.toJson());
+    postDataRequest(WEB_SESSIONMANAGER_PATH, document.toJson());*/
+
+    // TODO: UI to select multiple participants if the session is setted to "multi"
+    int id_session_type = ui->cmbSessionType->currentData().toInt();
+    m_comManager->startSession(*m_ids_session_types[id_session_type], QStringList(m_data->getFieldValue("participant_uuid").toString()), QStringList());
 
 }
