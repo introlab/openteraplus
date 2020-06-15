@@ -23,6 +23,7 @@ set(headers
     GlobalEvent.h
     GlobalEventLogger.h
     InSessionWidget.h
+    StartSessionDialog.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/TeraForm.h
@@ -39,6 +40,8 @@ set(headers
     editors/ServiceWidget.h
     wizards/UserWizard.h
     wizards/BaseWizard.h
+    services/BaseServiceWidget.h
+    services/VideoRehabService/VideoRehabWidget.h
 )
 
 set(srcs
@@ -62,6 +65,7 @@ set(srcs
     GlobalEvent.cpp
     GlobalEventLogger.cpp
     InSessionWidget.cpp
+    StartSessionDialog.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/TeraForm.cpp
@@ -78,6 +82,8 @@ set(srcs
     editors/ServiceWidget.cpp
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
+    services/BaseServiceWidget.cpp
+    services/VideoRehabService/VideoRehabWidget.cpp
 )
 
 SET(uis
@@ -90,6 +96,7 @@ SET(uis
     DownloadProgressDialog.ui
     BaseDialog.ui
     InSessionWidget.ui
+    StartSessionDialog.ui
     editors/UserWidget.ui
     editors/TeraForm.ui
     editors/DataListWidget.ui
@@ -103,6 +110,7 @@ SET(uis
     editors/DeviceSubTypeWidget.ui
     editors/UserGroupWidget.ui
     editors/ServiceWidget.ui
+    services/VideoRehabService/VideoRehabWidget.ui
 )
 
 SET(qrcs

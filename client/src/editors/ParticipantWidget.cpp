@@ -955,7 +955,10 @@ void ParticipantWidget::on_btnNewSession_clicked()
     postDataRequest(WEB_SESSIONMANAGER_PATH, document.toJson());*/
 
     // TODO: UI to select multiple participants if the session is setted to "multi"
+
     int id_session_type = ui->cmbSessionType->currentData().toInt();
     m_comManager->startSession(*m_ids_session_types[id_session_type], QStringList(m_data->getFieldValue("participant_uuid").toString()), QStringList());
+    StartSessionDialog diag(tr("Démarrage de séance en cours..."), m_comManager);
+    diag.exec();
 
 }

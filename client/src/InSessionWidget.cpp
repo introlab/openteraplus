@@ -9,6 +9,7 @@ InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_typ
     ui->setupUi(this);
 
     m_comManager = comMan;
+    m_serviceWidget = nullptr;
 
     // Create temporary object
     m_session = new TeraData(TERADATA_SESSION);
@@ -30,6 +31,8 @@ InSessionWidget::~InSessionWidget()
     delete ui;
     if (m_session)
         delete m_session;
+    if (m_serviceWidget)
+        m_serviceWidget->deleteLater();
 }
 
 void InSessionWidget::disconnectSignals()
@@ -47,6 +50,8 @@ void InSessionWidget::on_btnEndSession_clicked()
             id_service = m_sessionType.getFieldValue("id_service").toInt();
         }
         m_comManager->stopSession(*m_session, id_service);
+        StartSessionDialog diag(tr("Arrêt de la séance en cours..."), m_comManager);
+        diag.exec();
     }
 }
 
@@ -75,21 +80,60 @@ void InSessionWidget::connectSignals()
 
 void InSessionWidget::initUI()
 {
-    ui->btnInSessionInfos->setChecked(false);
-    ui->tabInfos->hide();
+
+    ui->btnInSessionInfos->setChecked(true);
+    //ui->tabInfos->hide();
+
+    // Clean up, if needed
+    if (m_serviceWidget){
+        m_serviceWidget->deleteLater();
+        m_serviceWidget = nullptr;
+    }
 
     // Get session type category
     TeraSessionCategory::SessionTypeCategories category = getSessionTypeCategory();
 
     switch(category){
+    case TeraSessionCategory::SESSION_TYPE_SERVICE:{
+        // Get service key to load the proper ui
+        QString service_key = m_sessionType.getFieldValue("session_type_service_key").toString();
+        bool handled = false;
+        if (service_key == "VideoRehabService"){
+            // Main widget = QWebEngine
+            m_serviceWidget = new VideoRehabWidget(m_comManager);
+            setMainWidget(m_serviceWidget);
+            handled = true;
+        }
+
+        if (!handled){
+            GlobalMessageBox msg_box;
+            msg_box.showWarning(tr("Service non-supporté"), tr("Le service \"") + service_key + tr("\" n'est pas gérée par cette version du logiciel.\n\nVeuillez vérifier si une mise à jour existe ou contribuez au développement du logiciel!"));
+        }
+
+        break;
+    }
     default:
         GlobalMessageBox msg_box;
-        msg_box.showWarning(tr("Catégorie de séance non-supportée"), tr("La catégorie de séance \"") + TeraSessionCategory::getSessionTypeCategoryName(category) + "\" n'est pas gérée par cette version du logiciel.\n\nVeuillez vérifier si une mise à jour existe ou contribuez au développement du logiciel!");
+        msg_box.showWarning(tr("Catégorie de séance non-supportée"), tr("La catégorie de séance \"") + TeraSessionCategory::getSessionTypeCategoryName(category) + tr("\" n'est pas gérée par cette version du logiciel.\n\nVeuillez vérifier si une mise à jour existe ou contribuez au développement du logiciel!"));
     }
 }
 
 void InSessionWidget::updateUI()
 {
+
+}
+
+void InSessionWidget::setMainWidget(QWidget *wdg)
+{
+    // Check for layout
+    if (!ui->widgetMain->layout()){
+        // No existing layout - create one
+        QHBoxLayout* layout = new QHBoxLayout();
+        layout->setContentsMargins(0,0,0,0);
+        ui->widgetMain->setLayout(layout);
+    }
+
+    ui->widgetMain->layout()->addWidget(wdg);
 
 }
 

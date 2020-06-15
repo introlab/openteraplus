@@ -105,5 +105,6 @@
         <file>icons/session_type.png</file>
         <file>icons/service.png</file>
         <file>icons/stop.png</file>
+        <file>status/session_loading.gif</file>
     </qresource>
 </RCC>
