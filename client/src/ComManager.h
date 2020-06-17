@@ -60,7 +60,7 @@ public:
 
     bool hasPendingDownloads();
 
-    const WebSocketManager* getWebSocketManager();
+    WebSocketManager* getWebSocketManager();
 
     static signal_ptr getSignalFunctionForDataType(const TeraDataTypes& data_type);
 

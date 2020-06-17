@@ -8,7 +8,7 @@ WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent)
     // Initialize communication objects
     m_webSocket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, parent);
     m_connectTimer.setSingleShot(true);
-    seq_num = 0;
+    m_seq_num = 0;
 
     // Set Keep Alive signal for websocket
     m_keepAliveTimer.setInterval(30000);
@@ -44,27 +44,12 @@ void WebSocketManager::connectWebSocket(QString &socketUrl, QString &user_uuid)
 void WebSocketManager::registerForEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type)
 {
 
-    TeraModuleMessage* tera_msg = new TeraModuleMessage();
-
-    // Header
-    TeraModuleMessage_Header* tera_msg_head = buildMessageHeader();
-    tera_msg->set_allocated_head(tera_msg_head);
-
     // Data
     UserRegisterToEvent user_event;
     user_event.set_event_type(event_type);
     user_event.set_action(UserRegisterToEvent_Action_ACTION_REGISTER);
 
-    google::protobuf::Any* data = tera_msg->add_data();
-    data->PackFrom(user_event);
-
-    // Sending
-    std::string json_msg;
-    google::protobuf::util::MessageToJsonString(*tera_msg, &json_msg);
-    m_webSocket->sendTextMessage(QString::fromStdString(json_msg));
-
-    // Clean up - since ownership was passed to the object, deleting it will clear all related ones.
-    delete tera_msg;
+    sendModuleMessage(user_event);
 
 
 }
@@ -72,19 +57,50 @@ void WebSocketManager::registerForEvent(const opentera::protobuf::UserRegisterTo
 void WebSocketManager::unregisterFromEvent(const UserRegisterToEvent_EventType event_type)
 {
 
+    // Data
+    UserRegisterToEvent user_event;
+    user_event.set_event_type(event_type);
+    user_event.set_action(UserRegisterToEvent_Action_ACTION_UNREGISTER);
+
+    sendModuleMessage(user_event);
+
+}
+
+void WebSocketManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReply::ReplyType reply_type)
+{
+    // Data
+    JoinSessionReply session_reply;
+    session_reply.set_join_reply(reply_type);
+    session_reply.set_session_uuid(session_uuid.toStdString());
+
+    sendModuleMessage(session_reply);
+}
+
+TeraModuleMessage_Header *WebSocketManager::buildMessageHeader()
+{
+    TeraModuleMessage_Header* tera_msg_head = new TeraModuleMessage_Header();
+    tera_msg_head->set_version(1);
+    tera_msg_head->set_time(static_cast<double>(QDateTime::currentDateTime().toMSecsSinceEpoch())/1000);
+    tera_msg_head->set_seq(++m_seq_num);
+    QString dest = "websocket.user." + m_user_uuid;
+    QString identity = "client.teraplus." + m_user_uuid;
+
+    tera_msg_head->set_dest(dest.toStdString());
+    tera_msg_head->set_source(identity.toStdString());
+
+    return tera_msg_head;
+}
+
+void WebSocketManager::sendModuleMessage(const google::protobuf::Message &data_msg)
+{
     TeraModuleMessage* tera_msg = new TeraModuleMessage();
 
     // Header
     TeraModuleMessage_Header* tera_msg_head = buildMessageHeader();
     tera_msg->set_allocated_head(tera_msg_head);
 
-    // Data
-    UserRegisterToEvent user_event;
-    user_event.set_event_type(event_type);
-    user_event.set_action(UserRegisterToEvent_Action_ACTION_UNREGISTER);
-
     google::protobuf::Any* data = tera_msg->add_data();
-    data->PackFrom(user_event);
+    data->PackFrom(data_msg);
 
     // Sending
     std::string json_msg;
@@ -93,22 +109,6 @@ void WebSocketManager::unregisterFromEvent(const UserRegisterToEvent_EventType e
 
     // Clean up - since ownership was passed to the object, deleting it will clear all related ones.
     delete tera_msg;
-
-}
-
-TeraModuleMessage_Header *WebSocketManager::buildMessageHeader()
-{
-    TeraModuleMessage_Header* tera_msg_head = new TeraModuleMessage_Header();
-    tera_msg_head->set_version(1);
-    tera_msg_head->set_time(static_cast<double>(QDateTime::currentDateTime().toMSecsSinceEpoch())/1000);
-    tera_msg_head->set_seq(++seq_num);
-    QString dest = "websocket.user." + m_user_uuid;
-    QString identity = "client.teraplus." + m_user_uuid;
-
-    tera_msg_head->set_dest(dest.toStdString());
-    tera_msg_head->set_source(identity.toStdString());
-
-    return tera_msg_head;
 }
 
 
@@ -171,6 +171,15 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                        emit userEventReceived(user_event);
                    }else{
                        LOG_ERROR("Error unpacking UserEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                   }
+               }
+
+               if (tera_event.events(i).Is<JoinSessionEvent>()){
+                   JoinSessionEvent event;
+                   if (tera_event.events(i).UnpackTo(&event)){
+                       emit joinSessionEventReceived(event);
+                   }else{
+                       LOG_ERROR("Error unpacking JoinSessionEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
                    }
                }
            }

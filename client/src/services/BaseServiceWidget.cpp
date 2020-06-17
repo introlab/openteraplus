@@ -6,3 +6,11 @@ BaseServiceWidget::BaseServiceWidget(ComManager *comMan, QWidget *parent) :
 {
 
 }
+
+bool BaseServiceWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
+{
+    Q_UNUSED(event)
+    // Don't do anything for now for joinSessionEvent in base class
+
+    return true; // Accept by default
+}

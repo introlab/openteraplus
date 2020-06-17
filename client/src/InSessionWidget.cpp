@@ -73,9 +73,45 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
     }
 }
 
+void InSessionWidget::processJoinSessionEvent(JoinSessionEvent event)
+{
+    QString session_uuid = QString::fromStdString(event.session_uuid());
+
+    // Check if that event is really for us
+    if (!m_session){
+        LOG_ERROR("Received JoinSessionEvent, but no current session!", "InSessionWidget::processJoinSessionEvent");
+        m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_DENIED);
+        return;
+    }
+
+    if (m_session->getFieldValue("session_uuid").toString() != session_uuid){
+        LOG_WARNING("Received JoinSessionEvent, but it's not for current session - replying busy", "InSessionWidget::processJoinSessionEvent");
+        m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_BUSY);
+        return;
+    }
+
+    // Update users list
+    // TODO
+
+    // Update participants list
+    // TODO
+
+    // Forward to widget
+    if (m_serviceWidget){
+        bool result = m_serviceWidget->handleJoinSessionEvent(event);
+        if (result){
+            m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_ACCEPTED);
+        }else{
+            m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_DENIED);
+        }
+    }
+
+}
+
 void InSessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::sessionsReceived, this, &InSessionWidget::processSessionsReply);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &InSessionWidget::processJoinSessionEvent);
 }
 
 void InSessionWidget::initUI()
@@ -141,3 +177,4 @@ TeraSessionCategory::SessionTypeCategories InSessionWidget::getSessionTypeCatego
 {
     return static_cast<TeraSessionCategory::SessionTypeCategories>(m_sessionType.getFieldValue("session_type_category").toInt());
 }
+

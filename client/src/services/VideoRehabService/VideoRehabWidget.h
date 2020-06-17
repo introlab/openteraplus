@@ -5,6 +5,8 @@
 #include <QWebEngineView>
 #include <QHBoxLayout>
 
+#include "JoinSessionEvent.pb.h"
+
 namespace Ui {
 class VideoRehabWidget;
 }
@@ -18,6 +20,8 @@ public:
     ~VideoRehabWidget();
 
     void initUI();
+
+    bool handleJoinSessionEvent(const JoinSessionEvent &event) override;
 
 private slots:
     void on_txtURL_returnPressed();

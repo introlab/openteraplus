@@ -10,6 +10,8 @@ class BaseServiceWidget : public QWidget
 public:
     explicit BaseServiceWidget(ComManager* comMan, QWidget *parent = nullptr);
 
+    virtual bool handleJoinSessionEvent(const JoinSessionEvent &event);
+
 protected:
     ComManager* m_comManager;
 

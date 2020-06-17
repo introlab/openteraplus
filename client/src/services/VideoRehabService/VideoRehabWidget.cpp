@@ -33,6 +33,17 @@ void VideoRehabWidget::initUI()
     ui->wdgWebEngine->layout()->addWidget(m_webEngine);
 }
 
+bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
+{
+    // Redirect web engine to session url
+    if (m_webEngine){
+        m_webEngine->setUrl(QString::fromStdString(event.session_url()));
+    }
+
+    return true; // Accepts the request
+
+}
+
 void VideoRehabWidget::on_txtURL_returnPressed()
 {
     m_webEngine->setUrl(ui->txtURL->text());

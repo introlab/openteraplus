@@ -6,9 +6,12 @@
 #include "TeraData.h"
 #include "GlobalMessageBox.h"
 #include "StartSessionDialog.h"
+#include "Logger.h"
 
 #include "services/BaseServiceWidget.h"
 #include "services/VideoRehabService/VideoRehabWidget.h"
+
+#include "JoinSessionReply.pb.h"
 
 namespace Ui {
 class InSessionWidget;
@@ -29,6 +32,8 @@ private slots:
     void on_btnInSessionInfos_toggled(bool checked);
 
     void processSessionsReply(QList<TeraData> sessions);
+
+    void processJoinSessionEvent(JoinSessionEvent event);
 
 private:
     void connectSignals();

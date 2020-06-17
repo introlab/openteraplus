@@ -10,6 +10,8 @@
 // Protobuf includes
 #include "UserRegisterToEvent.pb.h"
 #include "UserEvent.pb.h"
+#include "JoinSessionEvent.pb.h"
+#include "JoinSessionReply.pb.h"
 #include "TeraEvent.pb.h"
 #include "TeraMessage.pb.h"
 #include "TeraModuleMessage.pb.h"
@@ -30,10 +32,13 @@ public:
     void registerForEvent(const UserRegisterToEvent_EventType event_type);
     void unregisterFromEvent(const UserRegisterToEvent_EventType event_type);
 
+    void sendJoinSessionReply(const QString& session_uuid, const JoinSessionReply::ReplyType reply_type);
+
 private:
     TeraModuleMessage_Header*   buildMessageHeader();
+    void sendModuleMessage(const google::protobuf::Message &data_msg);
 
-    quint32 seq_num;
+    quint32                 m_seq_num;
 
 protected:
     QUrl                    m_socketUrl;
@@ -50,6 +55,7 @@ signals:
     void loginResult(bool logged_in);
 
     void userEventReceived(UserEvent event);
+    void joinSessionEventReceived(JoinSessionEvent event);
 
 
 private slots:

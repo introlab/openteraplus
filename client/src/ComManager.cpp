@@ -217,6 +217,7 @@ void ComManager::startSession(const TeraData &session_type, const QStringList &p
 
         QJsonObject item_obj;
         item_obj.insert("id_service", session_type.getFieldValue("id_service").toInt());
+        item_obj.insert("id_session_type", session_type.getId());
         item_obj.insert("action", "start");
         item_obj.insert("parameters", session_type.getFieldValue("session_type_config").toString());
 
@@ -348,7 +349,7 @@ bool ComManager::hasPendingDownloads()
     return !m_currentDownloads.isEmpty();
 }
 
-const WebSocketManager *ComManager::getWebSocketManager()
+WebSocketManager *ComManager::getWebSocketManager()
 {
     return m_webSocketMan;
 }

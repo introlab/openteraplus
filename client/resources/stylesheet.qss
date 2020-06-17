@@ -524,7 +524,7 @@ QPushButton#btnNotificationClose{
 }
 
 QFrame#frameNotificationText{
-    background-color:rgba(170,170,170,30%);
+    background-color:rgba(255,255,255,40%);
     border-radius:10px;
 }
 
