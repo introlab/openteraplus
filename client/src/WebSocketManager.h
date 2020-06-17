@@ -9,8 +9,13 @@
 
 // Protobuf includes
 #include "UserRegisterToEvent.pb.h"
+#include "UserEvent.pb.h"
+#include "TeraEvent.pb.h"
 #include "TeraMessage.pb.h"
 #include "TeraModuleMessage.pb.h"
+
+#include "google/protobuf/any.h"
+#include "google/protobuf/util/json_util.h"
 
 using namespace opentera::protobuf;
 
@@ -43,6 +48,8 @@ signals:
     void serverDisconnected();
     void websocketError(QAbstractSocket::SocketError, QString);
     void loginResult(bool logged_in);
+
+    void userEventReceived(UserEvent event);
 
 
 private slots:

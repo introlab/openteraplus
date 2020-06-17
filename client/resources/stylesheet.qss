@@ -515,4 +515,16 @@ QLabel#lblInherited{
     color: orange;
 }
 
+/* Customizations for NotificationWindow */
+QPushButton#btnNotificationClose{
+    background-color: transparent;
+    border: 0px solid transparent;
+    min-height: 10px;
+    min-width: 10px;
+}
+
+QFrame#frameNotificationText{
+    background-color:rgba(170,170,170,30%);
+    border-radius:10px;
+}
 

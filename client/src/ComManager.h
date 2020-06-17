@@ -60,6 +60,8 @@ public:
 
     bool hasPendingDownloads();
 
+    const WebSocketManager* getWebSocketManager();
+
     static signal_ptr getSignalFunctionForDataType(const TeraDataTypes& data_type);
 
 protected:
@@ -141,6 +143,8 @@ signals:
     // Generic session
     void sessionStarted(TeraData session_type, int id_session);
     void sessionStopped(int id_session);
+
+
 
 public slots:
 

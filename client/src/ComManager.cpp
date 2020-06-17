@@ -348,6 +348,11 @@ bool ComManager::hasPendingDownloads()
     return !m_currentDownloads.isEmpty();
 }
 
+const WebSocketManager *ComManager::getWebSocketManager()
+{
+    return m_webSocketMan;
+}
+
 ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTypes &data_type)
 {
     switch(data_type){

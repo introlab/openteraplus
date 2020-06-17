@@ -11,6 +11,7 @@
 #include "ConfigWidget.h"
 
 #include "DownloadProgressDialog.h"
+#include "NotificationWindow.h"
 
 #include "ComManager.h"
 #include "Message.h"
@@ -19,6 +20,9 @@
 #include "DownloadedFile.h"
 #include "TeraSessionCategory.h"
 #include "InSessionWidget.h"
+
+// Protobuf
+#include "UserEvent.pb.h"
 
 namespace Ui {
 class MainWindow;
@@ -56,10 +60,11 @@ private slots:
     void com_sessionStarted(TeraData session_type, int id_session);
     void com_sessionStopped(int id_session);
 
-    void addMessage(Message::MessageType msg_type, QString msg);
-    void addMessage(Message &msg);
+    void ws_userEvent(UserEvent event);
+
     bool hasWaitingMessage();
     void showNextMessage();
+    void notificationCompleted(NotificationWindow* notify);
 
     void addGlobalEvent(GlobalEvent event);
 
@@ -85,6 +90,10 @@ private:
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
     void setInSession(bool in_session, const TeraData *session_type, const int& id_session);
 
+    // Messages and notifications
+    void addMessage(Message::MessageType msg_type, QString msg);
+    void addMessage(Message &msg);
+    void addNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath = QString());
 
     // Events
     QIcon getGlobalEventIcon(GlobalEvent &global_event);
@@ -100,10 +109,11 @@ private:
     TeraDataTypes           m_currentDataType;
     int                     m_currentDataId;
 
-    // Message system
-    QList<Message>  m_messages;
-    Message         m_currentMessage;
-    QTimer          m_msgTimer;
+    // Message & notification system
+    QList<Message>              m_messages;
+    QList<NotificationWindow*>  m_notifications;
+    Message                     m_currentMessage;
+    QTimer                      m_msgTimer;
 
     // UI items
     QMovie*         m_loadingIcon;

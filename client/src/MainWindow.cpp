@@ -46,6 +46,9 @@ MainWindow::~MainWindow()
     if (m_data_editor)
         m_data_editor->deleteLater();
 
+    if (!m_notifications.isEmpty())
+        qDeleteAll(m_notifications);
+
 }
 
 void MainWindow::connectSignals()
@@ -64,6 +67,8 @@ void MainWindow::connectSignals()
     connect(m_comManager, &ComManager::posting, this, &MainWindow::com_posting);
     connect(m_comManager, &ComManager::querying, this, &MainWindow::com_querying);
     connect(m_comManager, &ComManager::deleting, this, &MainWindow::com_deleting);
+
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::userEventReceived, this, &MainWindow::ws_userEvent);
 
     connect(&m_msgTimer, &QTimer::timeout, this, &MainWindow::showNextMessage);
 
@@ -278,6 +283,16 @@ void MainWindow::showNextMessage()
     ui->frameMessages->show();
 }
 
+void MainWindow::notificationCompleted(NotificationWindow *notify)
+{
+    m_notifications.removeAll(notify);
+    notify->deleteLater();
+
+    for(int i=0; i<m_notifications.count(); i++){
+        m_notifications.at(i)->resetPosition(i+1);
+    }
+}
+
 void MainWindow::addGlobalEvent(GlobalEvent event)
 {
     // Keep max 50 events in the log
@@ -444,6 +459,7 @@ void MainWindow::com_waitingForReply(bool waiting)
 
 void MainWindow::com_postReplyOK(QString path)
 {
+    Q_UNUSED(path);
     addMessage(Message::MESSAGE_OK, tr("Données sauvegardées."));
 
 }
@@ -518,6 +534,26 @@ void MainWindow::com_sessionStopped(int id_session)
     setInSession(false, nullptr, id_session);
 }
 
+void MainWindow::ws_userEvent(UserEvent event)
+{
+    // TODO: Don't do anything for current user!
+    if (event.type() == UserEvent_EventType_USER_CONNECTED){
+        QString msg_text = "<font color=yellow>" + QString::fromStdString(event.user_fullname()) + "</font>" + tr(" est en ligne.");
+        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user.png");
+        // Add a trace in events also
+        GlobalEvent event(EVENT_LOGIN, msg_text);
+        addGlobalEvent(event);
+    }
+
+    if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
+        QString msg_text = "<font color=yellow>" + QString::fromStdString(event.user_fullname()) + "</font>" +  tr(" est hors-ligne.");
+        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user.png");
+
+        GlobalEvent event(EVENT_LOGOUT, msg_text);
+        addGlobalEvent(event);
+    }
+}
+
 void MainWindow::on_btnLogout_clicked()
 {
     // Add logged action
@@ -551,6 +587,18 @@ void MainWindow::addMessage(Message &msg)
 
     if (ui->frameMessages->isHidden())
         showNextMessage();
+}
+
+void MainWindow::addNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath)
+{
+    // Notification window
+    NotificationWindow* notify = new NotificationWindow(this, notification_type, m_notifications.count()+1);
+    notify->setNotificationText(text);
+    notify->setNotificationIcon(iconPath);
+    m_notifications.append(notify);
+
+    connect(notify, &NotificationWindow::notificationFinished, this, &MainWindow::notificationCompleted);
+    connect(notify, &NotificationWindow::notificationClosed, this, &MainWindow::notificationCompleted);
 }
 
 bool MainWindow::hasWaitingMessage()

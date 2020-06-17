@@ -20,7 +20,10 @@ QStringList ConfigManagerClient::getServerNames()
         foreach (QString name, servers.keys()){
             QVariantMap infos = servers[name].toMap();
             int pref = infos["pref"].toInt()-1;
-            server_names.insert(pref, name);
+            if (pref < server_names.count())
+                server_names.insert(pref, name);
+            else
+                server_names.append(name);
         }
     }
 

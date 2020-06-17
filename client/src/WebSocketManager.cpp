@@ -1,6 +1,4 @@
 #include "WebSocketManager.h"
-#include "google/protobuf/util/json_util.h"
-
 
 WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent)
 {
@@ -153,6 +151,34 @@ void WebSocketManager::onSocketSslErrors(const QList<QSslError> &errors)
 void WebSocketManager::onSocketTextMessageReceived(const QString &message)
 {
     LOG_DEBUG(message, "WebSocketManager::onSocketTextMessageReceived");
+
+    // Handle received message depending on type
+    TeraMessage tera_msg;
+    if (google::protobuf::util::JsonStringToMessage(message.toStdString(), &tera_msg) == google::protobuf::util::Status::OK){
+        // TeraMessage
+        if (tera_msg.message().Is<TeraEvent>()){
+            TeraEvent tera_event;
+            if (!tera_msg.message().UnpackTo(&tera_event)){
+                LOG_ERROR("Error unpacking TeraEvent from TeraMessage.", "WebSocketManager::onSocketTextMessageReceived");
+                return;
+            }
+
+            // Process received events
+           for(int i=0; i< tera_event.events_size(); i++){
+               if (tera_event.events(i).Is<UserEvent>()){
+                   UserEvent user_event;
+                   if (tera_event.events(i).UnpackTo(&user_event)){
+                       emit userEventReceived(user_event);
+                   }else{
+                       LOG_ERROR("Error unpacking UserEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                   }
+               }
+           }
+        }else{
+            LOG_WARNING("Got unhandled message on websocket", "WebSocketManager::onSocketTextMessageReceived");
+        }
+    }
+
 }
 
 void WebSocketManager::onSocketBinaryMessageReceived(const QByteArray &message)

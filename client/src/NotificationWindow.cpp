@@ -61,8 +61,8 @@ NotificationWindow::NotificationWindow(QWidget *parent, NotificationType type, i
     animate->setEndValue(0.0);
     animate->start(QAbstractAnimation::DeleteWhenStopped);
 
-    connect(animate,SIGNAL(finished()),this,SLOT(animationFinished()));
-    connect(btnClose,SIGNAL(clicked()),this,SLOT(notificationClosed()));
+    connect(animate, &QPropertyAnimation::finished, this, &NotificationWindow::animationFinished);
+    connect(btnNotificationClose, &QPushButton::clicked, this, &NotificationWindow::notificationCloseRequest);
 }
 
 NotificationWindow::~NotificationWindow()
@@ -79,6 +79,11 @@ void NotificationWindow::setNotificationText(const QString &message)
         // Message box with the warning
         QMessageBox::warning(nullptr,"Attention!", m_text);
     }*/
+}
+
+void NotificationWindow::setNotificationIcon(const QString &iconPath)
+{
+    lblImg->setPixmap(QPixmap(iconPath));
 }
 
 void NotificationWindow::setNotificationID(int id)
@@ -120,7 +125,7 @@ void NotificationWindow::animationFinished()
     emit notificationFinished(this);
 }
 
-void NotificationWindow::notificationClosed()
+void NotificationWindow::notificationCloseRequest()
 {
     emit notificationClosed(this);
 }
