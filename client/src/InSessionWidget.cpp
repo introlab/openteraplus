@@ -10,8 +10,7 @@ InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_typ
 
     m_comManager = comMan;
     m_serviceWidget = nullptr;
-
-
+    m_startDiag = nullptr;
 
     connectSignals();
 
@@ -31,6 +30,8 @@ InSessionWidget::~InSessionWidget()
         delete m_session;
     if (m_serviceWidget)
         m_serviceWidget->deleteLater();
+    if (m_startDiag)
+        m_startDiag->deleteLater();
 }
 
 void InSessionWidget::disconnectSignals()
@@ -54,11 +55,35 @@ void InSessionWidget::showEvent(QShowEvent *event)
     QWidget::showEvent(event);
 
     if (!m_session){
-        StartSessionDialog diag(tr("Démarrage de séance en cours..."), m_comManager);
-        diag.exec();
+        showStartSessionDiag(tr("Démarrage de séance en cours..."));
     }
 
+}
 
+void InSessionWidget::showStartSessionDiag(const QString &msg)
+{
+    if (m_startDiag){
+        m_startDiag->deleteLater();
+    }
+
+    m_startDiag = new StartSessionDialog(msg, m_comManager);
+    m_startDiag->setModal(true);
+    connect(m_startDiag, &StartSessionDialog::timeout, this, &InSessionWidget::startSessionDiagTimeout);
+    connect(m_startDiag, &StartSessionDialog::finished, this, &InSessionWidget::startSessionDiagClosed);
+    //diag.exec();
+    m_startDiag->show();
+}
+
+void InSessionWidget::startSessionDiagTimeout()
+{
+    GlobalMessageBox msg_box;
+    msg_box.showError(tr("Délai expiré"), tr("L'opération n'a pu être complétée. Veuillez réessayer à nouveau."));
+}
+
+void InSessionWidget::startSessionDiagClosed()
+{
+    m_startDiag->deleteLater();
+    m_startDiag = nullptr;
 }
 
 void InSessionWidget::on_btnEndSession_clicked()
@@ -71,8 +96,7 @@ void InSessionWidget::on_btnEndSession_clicked()
             id_service = m_sessionType.getFieldValue("id_service").toInt();
         }
         m_comManager->stopSession(*m_session, id_service);
-        StartSessionDialog diag(tr("Arrêt de la séance en cours..."), m_comManager);
-        diag.exec();
+        showStartSessionDiag(tr("Arrêt de la séance en cours..."));
     }
 }
 

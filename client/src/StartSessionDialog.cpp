@@ -21,10 +21,15 @@ StartSessionDialog::StartSessionDialog(QString title, ComManager *comManager, QW
     ui->lblTitle->setText(title);
     ui->btnCancel->hide(); // For now!
 
+    m_timer.setInterval(1000);
+
     // Signals
     connect(m_comManager, &ComManager::sessionStarted, this, &StartSessionDialog::closeRequest);
     connect(m_comManager, &ComManager::sessionStopped, this, &StartSessionDialog::closeRequest);
     connect(m_comManager, &ComManager::networkError, this, &StartSessionDialog::closeRequest);
+    connect(&m_timer, &QTimer::timeout, this, &StartSessionDialog::timerTimeOut);
+
+    m_timer.start();
 
 }
 
@@ -36,10 +41,21 @@ StartSessionDialog::~StartSessionDialog()
 
 void StartSessionDialog::closeRequest()
 {
-    close();
+    accept();
 }
 
 void StartSessionDialog::on_btnCancel_clicked()
 {
 
+}
+
+void StartSessionDialog::timerTimeOut()
+{
+
+    m_count++;
+    if (m_count>m_timeout){
+        emit timeout();
+        reject();
+    }
+    ui->lblTimeout->setText(QString::number(m_timeout - m_count));
 }

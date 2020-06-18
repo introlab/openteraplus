@@ -21,6 +21,9 @@ private:
     Ui::StartSessionDialog *ui;
 
     ComManager* m_comManager;
+    QTimer      m_timer;
+    int         m_timeout = 10; // Timeout in seconds
+    int         m_count = 0; // Current count value
 
     // UI items
     QMovie*         m_loadingIcon;
@@ -28,6 +31,10 @@ private:
 private slots:
     void closeRequest();
     void on_btnCancel_clicked();
+    void timerTimeOut();
+
+signals:
+    void timeout();
 };
 
 #endif // STARTSESSIONDIALOG_H

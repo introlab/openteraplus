@@ -585,7 +585,7 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
     }
 
     LOG_WARNING("Received a Session Manager reply, but no session status in it.", "ComManager::handleSessionManagerReply");
-    return false;
+    return true;
 
 }
 

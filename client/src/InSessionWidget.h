@@ -40,6 +40,10 @@ private slots:
 
     void showEvent(QShowEvent *event) override;
 
+    void showStartSessionDiag(const QString& msg);
+    void startSessionDiagTimeout();
+    void startSessionDiagClosed();
+
 private:
     void connectSignals();
     void initUI();
@@ -53,6 +57,7 @@ private:
     TeraData            m_sessionType;
     TeraData*           m_session;
     BaseServiceWidget*  m_serviceWidget;
+    StartSessionDialog* m_startDiag;
 };
 
 #endif // INSESSIONWIDGET_H
