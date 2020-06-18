@@ -26,6 +26,9 @@ public:
     ~InSessionWidget();
 
     void disconnectSignals();
+    void setSessionId(int session_id);
+
+
 
 private slots:
     void on_btnEndSession_clicked();
@@ -34,6 +37,8 @@ private slots:
     void processSessionsReply(QList<TeraData> sessions);
 
     void processJoinSessionEvent(JoinSessionEvent event);
+
+    void showEvent(QShowEvent *event) override;
 
 private:
     void connectSignals();

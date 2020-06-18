@@ -11,16 +11,14 @@ InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_typ
     m_comManager = comMan;
     m_serviceWidget = nullptr;
 
-    // Create temporary object
-    m_session = new TeraData(TERADATA_SESSION);
-    m_session->setId(id_session);
+
 
     connectSignals();
 
     //Query session information
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
-    m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+    if (id_session >0){
+        setSessionId(id_session);
+    }
 
     initUI();
 
@@ -38,6 +36,29 @@ InSessionWidget::~InSessionWidget()
 void InSessionWidget::disconnectSignals()
 {
     disconnect(m_comManager, nullptr, this, nullptr);
+}
+
+void InSessionWidget::setSessionId(int session_id)
+{
+    // Create temporary object
+    m_session = new TeraData(TERADATA_SESSION);
+    m_session->setId(session_id);
+
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(session_id));
+    m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+}
+
+void InSessionWidget::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+
+    if (!m_session){
+        StartSessionDialog diag(tr("Démarrage de séance en cours..."), m_comManager);
+        diag.exec();
+    }
+
+
 }
 
 void InSessionWidget::on_btnEndSession_clicked()
@@ -78,7 +99,7 @@ void InSessionWidget::processJoinSessionEvent(JoinSessionEvent event)
     QString session_uuid = QString::fromStdString(event.session_uuid());
 
     // Check if that event is really for us
-    if (!m_session){
+    /*if (!m_session){
         LOG_ERROR("Received JoinSessionEvent, but no current session!", "InSessionWidget::processJoinSessionEvent");
         m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_DENIED);
         return;
@@ -88,7 +109,7 @@ void InSessionWidget::processJoinSessionEvent(JoinSessionEvent event)
         LOG_WARNING("Received JoinSessionEvent, but it's not for current session - replying busy", "InSessionWidget::processJoinSessionEvent");
         m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_BUSY);
         return;
-    }
+    }*/
 
     // Update users list
     // TODO

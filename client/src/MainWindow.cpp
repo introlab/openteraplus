@@ -64,6 +64,7 @@ void MainWindow::connectSignals()
     connect(m_comManager, &ComManager::downloadCompleted, this, &MainWindow::com_downloadCompleted);
     connect(m_comManager, &ComManager::sessionStarted, this, &MainWindow::com_sessionStarted);
     connect(m_comManager, &ComManager::sessionStopped, this, &MainWindow::com_sessionStopped);
+    connect(m_comManager, &ComManager::sessionStartRequested, this, &MainWindow::com_sessionStartRequested);
     connect(m_comManager, &ComManager::posting, this, &MainWindow::com_posting);
     connect(m_comManager, &ComManager::querying, this, &MainWindow::com_querying);
     connect(m_comManager, &ComManager::deleting, this, &MainWindow::com_deleting);
@@ -173,11 +174,13 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
 {
     if (m_data_editor){
         m_data_editor->disconnectSignals();
+        ui->wdgMainTop->layout()->removeWidget(m_data_editor);
         m_data_editor->deleteLater();
         m_data_editor = nullptr;
     }
     if (m_inSessionWidget){
         m_inSessionWidget->disconnectSignals();
+        ui->wdgMainTop->layout()->removeWidget(m_inSessionWidget);
         m_inSessionWidget->deleteLater();
         m_inSessionWidget = nullptr;
     }
@@ -524,9 +527,19 @@ void MainWindow::com_downloadCompleted(DownloadedFile *file)
 
 void MainWindow::com_sessionStarted(TeraData session_type, int id_session)
 {
-    // Loads the in-session widget
-    setInSession(true, &session_type, id_session);
+    if (!m_inSessionWidget){
+        // Loads the in-session widget since none loaded yet!
+        setInSession(true, &session_type, id_session);
+    }else{
+        // Update session id in InSessionWidget
+        m_inSessionWidget->setSessionId(id_session);
+    }
+}
 
+void MainWindow::com_sessionStartRequested(TeraData session_type)
+{
+    // Loads the in-session widget
+    setInSession(true, &session_type, -1);
 }
 
 void MainWindow::com_sessionStopped(int id_session)

@@ -199,11 +199,14 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
 
 void ComManager::startSession(const TeraData &session_type, const QStringList &participants_list, const QStringList &users_list)
 {
-    if (session_type.getDataType() != TERADATA_SESSIONTYPE)
+    if (session_type.getDataType() != TERADATA_SESSIONTYPE){
         LOG_ERROR("Received an invalid session_type object", "ComManager::startSession");
+        return;
+    }
 
     if (m_currentSessionType){
         LOG_ERROR("Tried to start a session, but already one started.", "ComManager::startSession");
+        return;
     }
 
     TeraSessionCategory::SessionTypeCategories session_type_category = static_cast<TeraSessionCategory::SessionTypeCategories>(session_type.getFieldValue("session_type_category").toInt());
@@ -254,6 +257,7 @@ void ComManager::startSession(const TeraData &session_type, const QStringList &p
     }
 
     m_currentSessionType = new TeraData(session_type);
+    emit sessionStartRequested(session_type);
 }
 
 void ComManager::stopSession(const TeraData &session, const int &id_service)

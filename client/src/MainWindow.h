@@ -58,6 +58,7 @@ private slots:
     void com_downloadCompleted(DownloadedFile* file);
 
     void com_sessionStarted(TeraData session_type, int id_session);
+    void com_sessionStartRequested(TeraData session_type);
     void com_sessionStopped(int id_session);
 
     void ws_userEvent(UserEvent event);

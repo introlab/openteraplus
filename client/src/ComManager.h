@@ -142,8 +142,9 @@ signals:
 
     // Generic session
     void sessionStarted(TeraData session_type, int id_session);
+    void sessionStartRequested(TeraData session_type);
     void sessionStopped(int id_session);
-
+    void sessionStopRequested(TeraData session_type);
 
 
 public slots:

@@ -958,7 +958,7 @@ void ParticipantWidget::on_btnNewSession_clicked()
 
     int id_session_type = ui->cmbSessionType->currentData().toInt();
     m_comManager->startSession(*m_ids_session_types[id_session_type], QStringList(m_data->getFieldValue("participant_uuid").toString()), QStringList());
-    StartSessionDialog diag(tr("Démarrage de séance en cours..."), m_comManager);
-    diag.exec();
+    /*StartSessionDialog diag(tr("Démarrage de séance en cours..."), m_comManager);
+    diag.exec();*/
 
 }
