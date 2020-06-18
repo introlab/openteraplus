@@ -14,13 +14,21 @@ VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
 
 VideoRehabWidget::~VideoRehabWidget()
 {
+    m_webPage->deleteLater();
     m_webEngine->deleteLater();
     delete ui;
+
 }
 
 void VideoRehabWidget::initUI()
 {
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
+    //Create a new page
+    m_webPage = new VideoRehabWebPage(m_webEngine);
+
+    //Set page to view
+    m_webEngine->setPage(m_webPage);
+
 
     // Create layout for widget if missing
     if (!ui->wdgWebEngine->layout()){
@@ -36,8 +44,8 @@ void VideoRehabWidget::initUI()
 bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
 {
     // Redirect web engine to session url
-    if (m_webEngine){
-        m_webEngine->setUrl(QString::fromStdString(event.session_url()));
+    if (m_webPage){
+        m_webPage->setUrl(QString::fromStdString(event.session_url()));
     }
 
     return true; // Accepts the request
@@ -57,7 +65,10 @@ void VideoRehabWidget::webEngineURLChanged(QUrl url)
 void VideoRehabWidget::connectSignals()
 {
     if (m_webEngine){
-        connect(m_webEngine, &QWebEngineView::urlChanged, this, &VideoRehabWidget::webEngineURLChanged);
+        //connect(m_webEngine, &QWebEngineView::urlChanged, this, &VideoRehabWidget::webEngineURLChanged);
+    }
+    if (m_webPage){
+        connect(m_webPage, &QWebEnginePage::urlChanged, this, &VideoRehabWidget::webEngineURLChanged);
     }
 
 }

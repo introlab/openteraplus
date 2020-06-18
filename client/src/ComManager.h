@@ -27,6 +27,7 @@
 #include "WebAPI.h"
 
 #include "TeraData.h"
+#include "TeraSessionStatus.h"
 #include "TeraSessionCategory.h"
 #include "DownloadedFile.h"
 #include "WebSocketManager.h"

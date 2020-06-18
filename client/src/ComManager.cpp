@@ -560,9 +560,9 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
 
     // Check the status in the reply
     QJsonObject reply_json = data_list.object();
-    if (reply_json.contains("status")){
-        QString status = reply_json["status"].toString();
-        if (status.toLower() == "started"){
+    if (reply_json.contains("session_status")){
+        TeraSessionStatus::SessionStatus status = static_cast<TeraSessionStatus::SessionStatus>(reply_json["session_status"].toInt());
+        if (status == TeraSessionStatus::STATUS_INPROGRESS){
             if (reply_json.contains("id_session")){
                 emit sessionStarted(*m_currentSessionType, reply_json["id_session"].toInt());
                 return true;
@@ -570,7 +570,7 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
                 LOG_WARNING("Received a start session event, but no id_session into it", "ComManager::handleSessionManagerReply");
             }
         }
-        if (status.toLower() == "stopped"){
+        if (status == TeraSessionStatus::STATUS_COMPLETED){
             if (reply_json.contains("id_session")){
                 emit sessionStopped(reply_json["id_session"].toInt());
                 // Delete current session type infos
@@ -584,7 +584,7 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
         }
     }
 
-    LOG_WARNING("Received a Session Manager reply, but no status in it.", "ComManager::handleSessionManagerReply");
+    LOG_WARNING("Received a Session Manager reply, but no session status in it.", "ComManager::handleSessionManagerReply");
     return false;
 
 }

@@ -42,6 +42,7 @@ set(headers
     wizards/BaseWizard.h
     services/BaseServiceWidget.h
     services/VideoRehabService/VideoRehabWidget.h
+    services/VideoRehabService/VideoRehabWebPage.h
 )
 
 set(srcs
@@ -84,6 +85,7 @@ set(srcs
     wizards/BaseWizard.cpp
     services/BaseServiceWidget.cpp
     services/VideoRehabService/VideoRehabWidget.cpp
+    services/VideoRehabService/VideoRehabWebPage.cpp
 )
 
 SET(uis

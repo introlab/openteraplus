@@ -5,6 +5,8 @@
 #include <QWebEngineView>
 #include <QHBoxLayout>
 
+#include "VideoRehabWebPage.h"
+
 #include "JoinSessionEvent.pb.h"
 
 namespace Ui {
@@ -30,8 +32,9 @@ private slots:
 private:
     void connectSignals();
 
-    Ui::VideoRehabWidget *ui;
-    QWebEngineView* m_webEngine;
+    Ui::VideoRehabWidget*   ui;
+    QWebEngineView*         m_webEngine;
+    VideoRehabWebPage*      m_webPage;
 };
 
 #endif // VIDEOREHABWIDGET_H
