@@ -30,8 +30,8 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 message(STATUS "Using QMAKE: ${QT_QMAKE_EXECUTABLE}")
 
 # This will enable to output everything in the bin directory for testing and debugging...
-SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-SET (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+# SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+# SET (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 # External dependencies first
 add_subdirectory(external)

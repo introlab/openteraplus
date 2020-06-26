@@ -139,8 +139,20 @@ include_directories(
 # Application icon
 SET(icon openteraico.rc)
 
+# Will be used in Info.plist.in
+set(MACOSX_BUNDLE_INFO_STRING "OpenTeRa+")
+set(MACOSX_BUNDLE_ICON_FILE "OpenTeraPlus.icns")
+set(MACOSX_BUNDLE_GUI_IDENTIFIER "OpenTeRa+")
+set(MACOSX_BUNDLE_LONG_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
+set(MACOSX_BUNDLE_BUNDLE_NAME "OpenTeRa")
+set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
+set(MACOSX_BUNDLE_BUNDLE_VERSION "${CPACK_PACKAGE_VERSION}")
+set(MACOSX_BUNDLE_COPYRIGHT "IntRolab/CDRV UdeS")
+
+set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
+
 # create an executable file named "TeraClient" from the source files
-add_executable(TeraClient MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${client_qrc} ${moc_uis})
+add_executable(TeraClient MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${client_qrc} ${moc_uis} ${ICON_PATH})
 qt5_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
 
 # Linking with Qt libraries and others
@@ -148,6 +160,12 @@ target_link_libraries(TeraClient ${OPENTERA_SHARED_LIBS})
 set_target_properties(TeraClient PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# Set a custom plist file for the app bundle
+set_target_properties(TeraClient PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
+
+#This will copy icon to Resources directory
+set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
 # Install target
 install(TARGETS TeraClient DESTINATION bin)
