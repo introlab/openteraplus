@@ -62,6 +62,7 @@ private slots:
     void com_sessionStopped(int id_session);
 
     void ws_userEvent(UserEvent event);
+    void ws_participantEvent(ParticipantEvent event);
 
     bool hasWaitingMessage();
     void showNextMessage();
@@ -91,6 +92,9 @@ private:
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
     void setInSession(bool in_session, const TeraData *session_type, const int& id_session);
 
+    // Online users and participants management
+    void updateOnlineUser(const QString &user_uuid, const bool &online, const QString &user_name = QString());
+
     // Messages and notifications
     void addMessage(Message::MessageType msg_type, QString msg);
     void addMessage(Message &msg);
@@ -118,6 +122,10 @@ private:
 
     // UI items
     QMovie*         m_loadingIcon;
+
+    // Data management
+    QHash<QString, QListWidgetItem*> m_onlineUsers; // User UUID mapping of online users
+
 
 };
 

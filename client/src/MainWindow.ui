@@ -557,7 +557,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
            <number>4</number>
           </property>
           <item>
-           <widget class="ProjectNavigator" name="wdgMainMenu" native="true">
+           <widget class="ProjectNavigator" name="projNavigator" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -592,7 +592,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
           <item>
            <widget class="QToolBox" name="boxOnline">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <property name="tabSpacing">
              <number>5</number>
@@ -619,8 +619,8 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>276</width>
+               <height>226</height>
               </rect>
              </property>
              <attribute name="icon">
@@ -630,6 +630,11 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
              <attribute name="label">
               <string>Utilisateurs</string>
              </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <widget class="QListWidget" name="lstOnlineUsers"/>
+              </item>
+             </layout>
             </widget>
            </widget>
           </item>

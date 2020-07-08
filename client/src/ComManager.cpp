@@ -574,7 +574,7 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
             if (reply_json.contains("id_session")){
                 emit sessionStopped(reply_json["id_session"].toInt());
                 // Delete current session type infos
-                delete m_currentSessionType;
+                m_currentSessionType->deleteLater();
                 m_currentSessionType = nullptr;
 
                 return true;

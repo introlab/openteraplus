@@ -106,5 +106,7 @@
         <file>icons/service.png</file>
         <file>icons/stop.png</file>
         <file>status/session_loading.gif</file>
+        <file>icons/software_user_offline.png</file>
+        <file>icons/software_user_online.png</file>
     </qresource>
 </RCC>

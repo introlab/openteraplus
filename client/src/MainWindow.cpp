@@ -70,11 +70,12 @@ void MainWindow::connectSignals()
     connect(m_comManager, &ComManager::deleting, this, &MainWindow::com_deleting);
 
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::userEventReceived, this, &MainWindow::ws_userEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &MainWindow::ws_participantEvent);
 
     connect(&m_msgTimer, &QTimer::timeout, this, &MainWindow::showNextMessage);
 
-    connect(ui->wdgMainMenu, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
-    connect(ui->wdgMainMenu, &ProjectNavigator::dataDeleteRequest, this, &MainWindow::dataDeleteRequested);
+    connect(ui->projNavigator, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
+    connect(ui->projNavigator, &ProjectNavigator::dataDeleteRequest, this, &MainWindow::dataDeleteRequested);
 
     connect(GlobalEventLogger::instance(), &GlobalEventLogger::newEventLogged, this, &MainWindow::addGlobalEvent);
 }
@@ -100,7 +101,7 @@ void MainWindow::initUi()
     ui->icoLoading->hide();
 
     // Setup main menu
-    ui->wdgMainMenu->setComManager(m_comManager);
+    ui->projNavigator->setComManager(m_comManager);
 
     // Hide video camera
     ui->frameVideo->hide();
@@ -195,6 +196,36 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
 
         // Loads back the "previous" data type
         dataDisplayRequested(m_currentDataType, m_currentDataId);
+    }
+}
+
+void MainWindow::updateOnlineUser(const QString &user_uuid, const bool &online,  const QString &user_name)
+{
+    QListWidgetItem* user_item = nullptr;
+
+    if (m_onlineUsers.contains(user_uuid)){
+        user_item = m_onlineUsers[user_uuid];
+    }else{
+        // If offline, we don't need to anything since it's there !
+        if (online){
+            user_item = new QListWidgetItem(QIcon("://icons/software_user_online.png"), user_name);
+            ui->lstOnlineUsers->addItem(user_item);
+            m_onlineUsers[user_uuid] = user_item;
+        }
+    }
+
+    if (user_item){
+        if (!online){
+            // We must remove that item
+            delete user_item;
+            m_onlineUsers.remove(user_uuid);
+        }else{
+            // Update name if needed
+            user_item->setText(user_name);
+
+            // Resort items
+            ui->lstOnlineUsers->sortItems();
+        }
     }
 }
 
@@ -328,7 +359,7 @@ void MainWindow::editorDialogFinished()
     m_diag_editor = nullptr;
 
     // Enable selection in the project manager
-    ui->wdgMainMenu->setOnHold(false);
+    ui->projNavigator->setOnHold(false);
 }
 
 void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
@@ -340,23 +371,23 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
     }
 
     if (data_id == 0){
-        ui->wdgMainMenu->setEnabled(false);
+        ui->projNavigator->setEnabled(false);
         TeraData* new_data = new TeraData(data_type);
         new_data->setId(0);
 
         // Set default values for new data
         if (data_type == TERADATA_PROJECT)
-            new_data->setFieldValue("id_site", ui->wdgMainMenu->getCurrentSiteId());
+            new_data->setFieldValue("id_site", ui->projNavigator->getCurrentSiteId());
 
         if (data_type == TERADATA_GROUP){
-            new_data->setFieldValue("id_project", ui->wdgMainMenu->getCurrentProjectId());
+            new_data->setFieldValue("id_project", ui->projNavigator->getCurrentProjectId());
         }
 
         if (data_type == TERADATA_PARTICIPANT){
-            if (ui->wdgMainMenu->getCurrentGroupId() > 0)
-                new_data->setFieldValue("id_participant_group", ui->wdgMainMenu->getCurrentGroupId());
-            if (ui->wdgMainMenu->getCurrentProjectId() > 0)
-                new_data->setFieldValue("id_project", ui->wdgMainMenu->getCurrentProjectId());
+            if (ui->projNavigator->getCurrentGroupId() > 0)
+                new_data->setFieldValue("id_participant_group", ui->projNavigator->getCurrentGroupId());
+            if (ui->projNavigator->getCurrentProjectId() > 0)
+                new_data->setFieldValue("id_project", ui->projNavigator->getCurrentProjectId());
         }
 
         showDataEditor(data_type, new_data);
@@ -386,7 +417,7 @@ void MainWindow::dataDeleteRequested(TeraDataTypes data_type, int data_id)
 void MainWindow::dataEditorCancelled()
 {
     showDataEditor(TERADATA_NONE, nullptr);
-    ui->wdgMainMenu->setEnabled(true);
+    ui->projNavigator->setEnabled(true);
 }
 
 void MainWindow::updateCurrentUser()
@@ -413,7 +444,7 @@ void MainWindow::processGenericDataReply(TeraDataTypes item_data_type, QList<Ter
                 }
                 // Yes, it is - close data editor
                 showDataEditor(TERADATA_NONE, nullptr);
-                ui->wdgMainMenu->setEnabled(true);
+                ui->projNavigator->setEnabled(true);
             }
         }
     }
@@ -457,7 +488,7 @@ void MainWindow::com_waitingForReply(bool waiting)
     }
     ui->btnEditUser->setEnabled(!waiting);
     ui->btnConfig->setEnabled(!waiting);
-    ui->wdgMainMenu->setEnabled(!waiting);
+    ui->projNavigator->setEnabled(!waiting);
 }
 
 void MainWindow::com_postReplyOK(QString path)
@@ -469,7 +500,7 @@ void MainWindow::com_postReplyOK(QString path)
 
 void MainWindow::com_deleteResultsOK(QString path, int id)
 {
-    ui->wdgMainMenu->removeItem(TeraData::getDataTypeFromPath(path), id);
+    ui->projNavigator->removeItem(TeraData::getDataTypeFromPath(path), id);
 }
 
 void MainWindow::com_posting(QString path, QString data)
@@ -552,18 +583,52 @@ void MainWindow::ws_userEvent(UserEvent event)
     // TODO: Don't do anything for current user!
     if (event.type() == UserEvent_EventType_USER_CONNECTED){
         QString msg_text = "<font color=yellow>" + QString::fromStdString(event.user_fullname()) + "</font>" + tr(" est en ligne.");
-        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user.png");
+        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user_online.png");
+
         // Add a trace in events also
-        GlobalEvent event(EVENT_LOGIN, msg_text);
-        addGlobalEvent(event);
+        GlobalEvent g_event(EVENT_LOGIN, msg_text);
+        addGlobalEvent(g_event);
+
+        // Update online users list
+        updateOnlineUser(QString::fromStdString(event.user_uuid()), true, QString::fromStdString(event.user_fullname()));
     }
 
     if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
         QString msg_text = "<font color=yellow>" + QString::fromStdString(event.user_fullname()) + "</font>" +  tr(" est hors-ligne.");
-        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user.png");
+        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user_offline.png");
 
-        GlobalEvent event(EVENT_LOGOUT, msg_text);
-        addGlobalEvent(event);
+        GlobalEvent g_event(EVENT_LOGOUT, msg_text);
+        addGlobalEvent(g_event);
+
+        // Update online users list
+        updateOnlineUser(QString::fromStdString(event.user_uuid()), false);
+    }
+}
+
+void MainWindow::ws_participantEvent(ParticipantEvent event)
+{
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED){
+        // Is in the current site?
+        if (QString::fromStdString(event.participant_site_name()) == ui->projNavigator->getCurrentSiteName()){
+            QString msg_text = "<font color=cyan><u>" + QString::fromStdString(event.participant_project_name()) + "</u></font><br/>";
+            msg_text += "<font color=yellow>" + QString::fromStdString(event.participant_name()) + "</font>" + tr(" est en ligne.");
+            addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient_online.png");
+            // Add a trace in events also
+            GlobalEvent event(EVENT_LOGIN, msg_text);
+            addGlobalEvent(event);
+        }
+    }
+
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
+        // Is in the current site?
+        if (QString::fromStdString(event.participant_site_name()) == ui->projNavigator->getCurrentSiteName()){
+            QString msg_text = "<font color=cyan><u>" + QString::fromStdString(event.participant_project_name()) + "</u></font><br/>";
+            msg_text += "<font color=yellow>" + QString::fromStdString(event.participant_name()) + "</font>" + tr(" est hors-ligne.");
+            addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient.png");
+            // Add a trace in events also
+            GlobalEvent event(EVENT_LOGOUT, msg_text);
+            addGlobalEvent(event);
+        }
     }
 }
 
@@ -635,7 +700,7 @@ void MainWindow::on_btnEditUser_clicked()
     }
 
     // Hold all selection from happening in the project manager
-    ui->wdgMainMenu->setOnHold(true);
+    ui->projNavigator->setOnHold(true);
 
     m_diag_editor = new BaseDialog(this);
     UserWidget* user_editor = new UserWidget(m_comManager, &(m_comManager->getCurrentUser()), nullptr);
@@ -658,7 +723,7 @@ void MainWindow::on_btnConfig_clicked()
     }
 
     // Hold all selection from happening in the project manager
-    ui->wdgMainMenu->setOnHold(true);
+    ui->projNavigator->setOnHold(true);
 
     m_diag_editor = new BaseDialog(this);
     ConfigWidget* config_editor = new ConfigWidget(m_comManager, nullptr);

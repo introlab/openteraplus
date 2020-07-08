@@ -434,6 +434,7 @@ QLabel#lblWarning{
 /* Customizations for LoginDialog */
 QGroupBox#grpLogos{background-color:rgba(200,200,200,75%);}
 QLabel#lblMessage{color:white;}
+QFrame#frameMessage{background-color: transparent;}
 
 /* Customizations for MainWindow */
 QMainWindow{background-image: url(://TeRA_Background.png); background-color: rgb(0,0,70);}

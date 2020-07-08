@@ -165,6 +165,7 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
 
             // Process received events
            for(int i=0; i< tera_event.events_size(); i++){
+               ///// User event
                if (tera_event.events(i).Is<UserEvent>()){
                    UserEvent user_event;
                    if (tera_event.events(i).UnpackTo(&user_event)){
@@ -174,6 +175,17 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                    }
                }
 
+               ///// Participant event
+               if (tera_event.events(i).Is<ParticipantEvent>()){
+                   ParticipantEvent part_event;
+                   if (tera_event.events(i).UnpackTo(&part_event)){
+                       emit participantEventReceived(part_event);
+                   }else{
+                       LOG_ERROR("Error unpacking ParticipantEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                   }
+               }
+
+               ///// Join session event
                if (tera_event.events(i).Is<JoinSessionEvent>()){
                    JoinSessionEvent event;
                    if (tera_event.events(i).UnpackTo(&event)){

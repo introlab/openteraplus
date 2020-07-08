@@ -27,8 +27,11 @@ public:
     void initUi();
 
     int getCurrentSiteId() const;
+    QString getCurrentSiteName() const;
     int getCurrentProjectId() const;
+    QString getCurrentProjetName() const;
     int getCurrentGroupId() const;
+    QString getCurrentGroupName() const;
 
     void selectItem(const TeraDataTypes& data_type, const int& id);
     void removeItem(const TeraDataTypes& data_type, const int& id);

@@ -58,14 +58,38 @@ int ProjectNavigator::getCurrentSiteId() const
     return m_currentSiteId;
 }
 
+QString ProjectNavigator::getCurrentSiteName() const
+{
+    return ui->cmbSites->currentText();
+}
+
 int ProjectNavigator::getCurrentProjectId() const
 {
     return m_currentProjectId;
 }
 
+QString ProjectNavigator::getCurrentProjetName() const
+{
+    QTreeWidgetItem* proj_item = m_projects_items.value(m_currentProjectId);
+    if (proj_item){
+        return proj_item->text(0);
+    }
+    return "???";
+
+}
+
 int ProjectNavigator::getCurrentGroupId() const
 {
     return m_currentGroupId;
+}
+
+QString ProjectNavigator::getCurrentGroupName() const
+{
+    QTreeWidgetItem* group_item = m_groups_items.value(m_currentGroupId);
+    if (group_item){
+        return group_item->text(0);
+    }
+    return "???";
 }
 
 void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)

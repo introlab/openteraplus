@@ -187,13 +187,6 @@
          <number>5</number>
         </property>
         <item>
-         <widget class="QLabel" name="lblParticipants">
-          <property name="text">
-           <string>Participants</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QListWidget" name="lstParticipants">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
@@ -202,16 +195,6 @@
            </sizepolicy>
           </property>
          </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lblUsers">
-          <property name="text">
-           <string>Utilisateurs</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListWidget" name="lstUsers"/>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">

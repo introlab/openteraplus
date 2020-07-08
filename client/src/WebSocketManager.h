@@ -10,6 +10,7 @@
 // Protobuf includes
 #include "UserRegisterToEvent.pb.h"
 #include "UserEvent.pb.h"
+#include "ParticipantEvent.pb.h"
 #include "JoinSessionEvent.pb.h"
 #include "JoinSessionReply.pb.h"
 #include "TeraEvent.pb.h"
@@ -55,6 +56,7 @@ signals:
     void loginResult(bool logged_in);
 
     void userEventReceived(UserEvent event);
+    void participantEventReceived(ParticipantEvent event);
     void joinSessionEventReceived(JoinSessionEvent event);
 
 
