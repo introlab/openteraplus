@@ -194,6 +194,16 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                        LOG_ERROR("Error unpacking JoinSessionEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
                    }
                }
+
+               ///// Database Event
+               if (tera_event.events(i).Is<DatabaseEvent>()){
+                   DatabaseEvent event;
+                   if (tera_event.events(i).UnpackTo(&event)){
+                       emit databaseEventReceived(event);
+                   }else{
+                       LOG_ERROR("Error unpacking DatabaseEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                   }
+               }
            }
         }else{
             LOG_WARNING("Got unhandled message on websocket", "WebSocketManager::onSocketTextMessageReceived");

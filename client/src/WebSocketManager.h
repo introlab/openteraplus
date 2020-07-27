@@ -16,6 +16,7 @@
 #include "TeraEvent.pb.h"
 #include "TeraMessage.pb.h"
 #include "TeraModuleMessage.pb.h"
+#include "DatabaseEvent.pb.h"
 
 #include "google/protobuf/any.h"
 #include "google/protobuf/util/json_util.h"
@@ -58,6 +59,7 @@ signals:
     void userEventReceived(UserEvent event);
     void participantEventReceived(ParticipantEvent event);
     void joinSessionEventReceived(JoinSessionEvent event);
+    void databaseEventReceived(DatabaseEvent event);
 
 
 private slots:
