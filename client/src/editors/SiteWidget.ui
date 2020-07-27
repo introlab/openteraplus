@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>704</width>
+    <width>1074</width>
     <height>574</height>
    </rect>
   </property>
@@ -307,7 +307,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>668</width>
+            <width>1038</width>
             <height>339</height>
            </rect>
           </property>
@@ -316,213 +316,388 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
-            <layout class="QGridLayout" name="gridLayout">
-             <property name="horizontalSpacing">
-              <number>45</number>
-             </property>
-             <property name="verticalSpacing">
-              <number>15</number>
-             </property>
-             <item row="1" column="0" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="lblUsers">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <layout class="QGridLayout" name="gridLayout">
+               <property name="verticalSpacing">
+                <number>10</number>
                </property>
-               <property name="text">
-                <string>XXXX Utilisateurs</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
+               <item row="0" column="0" alignment="Qt::AlignHCenter">
+                <widget class="QLabel" name="icoUsers">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources/TeraClient.qrc">:/icons/software_user.png</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                <widget class="QLabel" name="icoProjects">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources/TeraClient.qrc">:/icons/project.png</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                <widget class="QLabel" name="icoDevices">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources/TeraClient.qrc">:/icons/device.png</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
+                <widget class="QLabel" name="lblUsers">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>XXXX Utilisateurs</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1" alignment="Qt::AlignHCenter|Qt::AlignTop">
+                <widget class="QLabel" name="lblProjects">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>XXXX Projets</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
+                <widget class="QLabel" name="lblDevices">
+                 <property name="text">
+                  <string>XXX Appareils</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" alignment="Qt::AlignHCenter">
+                <widget class="QLabel" name="icoGroups">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources/TeraClient.qrc">:/icons/group.png</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1" alignment="Qt::AlignHCenter">
+                <widget class="QLabel" name="icoParticipant">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2" alignment="Qt::AlignHCenter">
+                <widget class="QLabel" name="icoSessions">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources/TeraClient.qrc">:/icons/session.png</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
+                <widget class="QLabel" name="lblGroups">
+                 <property name="text">
+                  <string>XXXX Groupes</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1" alignment="Qt::AlignHCenter|Qt::AlignTop">
+                <widget class="QLabel" name="lblParticipant">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>XXXX Participants</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
+                <widget class="QLabel" name="lblSessions">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>XXXX Séances</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
-             <item row="2" column="0" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="icoParticipant">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <property name="spacing">
+                <number>5</number>
                </property>
-               <property name="minimumSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
-               </property>
-               <property name="scaledContents">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QLabel" name="lblSessions">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>XXXX Séances</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="lblParticipant">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>XXXX Participants</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="icoProjects">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="../../resources/TeraClient.qrc">:/icons/project.png</pixmap>
-               </property>
-               <property name="scaledContents">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="lblProjects">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>XXXX Projets</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="icoSessions">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="../../resources/TeraClient.qrc">:/icons/session.png</pixmap>
-               </property>
-               <property name="scaledContents">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="icoUsers">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>64</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="../../resources/TeraClient.qrc">:/icons/software_user.png</pixmap>
-               </property>
-               <property name="scaledContents">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
+               <item alignment="Qt::AlignTop">
+                <widget class="QPushButton" name="btnManageUsers">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="text">
+                  <string>Gérer les utilisateurs</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../resources/TeraClient.qrc">
+                   <normaloff>:/icons/software_user_online.png</normaloff>:/icons/software_user_online.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item alignment="Qt::AlignTop">
+                <widget class="QPushButton" name="btnManageUserGroups">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="text">
+                  <string>Gérer les groupes utilisateurs</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../resources/TeraClient.qrc">
+                   <normaloff>:/icons/usergroup.png</normaloff>:/icons/usergroup.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item alignment="Qt::AlignTop">
+                <widget class="QPushButton" name="btnManageProjects">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="text">
+                  <string>Gérer les projets</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../resources/TeraClient.qrc">
+                   <normaloff>:/icons/project.png</normaloff>:/icons/project.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item alignment="Qt::AlignTop">
+                <widget class="QPushButton" name="btnManageDevices">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="text">
+                  <string>Gérer les appareils</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../resources/TeraClient.qrc">
+                   <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>
@@ -560,7 +735,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="iconSize">
           <size>
@@ -598,7 +773,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <bool>true</bool>
              </property>
              <property name="columnCount">
-              <number>2</number>
+              <number>3</number>
              </property>
              <attribute name="horizontalHeaderDefaultSectionSize">
               <number>175</number>
@@ -619,6 +794,37 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                <string>Rôle</string>
               </property>
              </column>
+             <column>
+              <property name="text">
+               <string>Groupes</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnUsers">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="text">
+              <string>Modifier les utilisateurs</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../resources/TeraClient.qrc">
+               <normaloff>:/icons/software_user.png</normaloff>:/icons/software_user.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
           </layout>

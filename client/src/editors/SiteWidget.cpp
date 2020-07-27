@@ -63,6 +63,11 @@ void SiteWidget::setData(const TeraData *data)
     if (!dataIsNew()){
         // Loads first detailled informations tab
         on_tabSiteInfos_currentChanged(0);
+
+        // Query stats
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+        queryDataRequest(WEB_STATS_PATH, args);
     }else{
         ui->tabSiteInfos->setEnabled(false);
     }
@@ -73,6 +78,7 @@ void SiteWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &SiteWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SiteWidget::processPostOKReply);
     connect(m_comManager, &ComManager::siteAccessReceived, this, &SiteWidget::processSiteAccessReply);
+    connect(m_comManager, &ComManager::statsReceived, this, &SiteWidget::processStatsReply);
 
     //connect(ui->btnUndo, &QPushButton::clicked, this, &SiteWidget::btnUndo_clicked);
     //connect(ui->btnSave, &QPushButton::clicked, this, &SiteWidget::btnSave_clicked);
@@ -100,6 +106,16 @@ void SiteWidget::updateUserSiteAccess(const TeraData *access)
         item = new QTableWidgetItem(DataEditorWidget::getRoleName(site_role));
         ui->tableUsers->setItem(current_row, 1, item);
         m_tableUsers_items.insert(id_user, item); // Store QTableWidget Item that has the role name.
+
+        QVariantList groups = access->getFieldValue("user_groups").toList();
+        QString groups_str;
+        for (QVariant group:groups){
+            if (!groups_str.isEmpty())
+                groups_str += ", ";
+            groups_str += group.toMap()["user_group_name"].toString();
+        }
+        item = new QTableWidgetItem(groups_str);
+        ui->tableUsers->setItem(current_row, 2, item);
     }
 }
 
@@ -219,6 +235,20 @@ void SiteWidget::updateControlsState()
 {
     ui->btnDevices->setVisible(!m_limited);
     //ui->btnProjects->setVisible(!m_limited);
+    bool is_site_admin;
+    if (m_data){
+        is_site_admin = m_comManager->getCurrentUserSiteRole(m_data->getId())=="admin";
+    }
+    else{
+        is_site_admin = false;
+    }
+    ui->btnUpdateRoles->setVisible(is_site_admin);
+    ui->btnDevices->setVisible(is_site_admin);
+    ui->btnUsers->setVisible(is_site_admin);
+    ui->btnManageUsers->setVisible(is_site_admin);
+    ui->btnManageDevices->setVisible(is_site_admin);
+    ui->btnManageUserGroups->setVisible(is_site_admin);
+    ui->btnManageProjects->setVisible(is_site_admin);
 
 }
 
@@ -299,6 +329,28 @@ void SiteWidget::processDevicesReply(QList<TeraData> devices)
 
 }
 
+void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
+{
+
+    // Check if stats are for us
+    if (!reply_query.hasQueryItem("id_site"))
+        return;
+
+    if (reply_query.queryItemValue("id_site").toInt() != m_data->getId())
+        return;
+
+    // Fill stats information
+    ui->lblUsers->setText(stats.getFieldValue("users_total_count").toString() + tr(" Utilisateurs") + "\n"
+                          + stats.getFieldValue("users_enabled_count").toString() + " Utilisateurs actifs");
+    ui->lblProjects->setText(stats.getFieldValue("projects_count").toString() + tr(" Projets"));
+    ui->lblGroups->setText(stats.getFieldValue("participants_groups_count").toString() + tr(" Groupes participants"));
+    ui->lblParticipant->setText(stats.getFieldValue("participants_total_count").toString() + tr(" Participants") + "\n"
+                                + stats.getFieldValue("participants_enabled_count").toString() + tr(" Participants actifs"));
+    ui->lblSessions->setText(stats.getFieldValue("sessions_total_count").toString() + tr(" Séances planifiées \nou réalisées"));
+    ui->lblDevices->setText(stats.getFieldValue("devices_total_count").toString() + tr(" Appareils"));
+
+}
+
 void SiteWidget::processPostOKReply(QString path)
 {
     if (path == WEB_SITEINFO_PATH){
@@ -350,6 +402,7 @@ void SiteWidget::btnProjects_clicked()
     m_diag_editor->setCentralWidget(list_widget);
 
     m_diag_editor->setWindowTitle(tr("Projets"));
+    m_diag_editor->setFixedSize(size().width(), size().height());
 
     m_diag_editor->open();
 }
@@ -364,7 +417,7 @@ void SiteWidget::btnDevices_clicked()
     m_diag_editor->setCentralWidget(list_widget);
 
     m_diag_editor->setWindowTitle(tr("Appareils"));
-    m_diag_editor->setMinimumHeight(700);
+    m_diag_editor->setFixedSize(size().width(), size().height());
 
     m_diag_editor->open();
 }
@@ -408,6 +461,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
             // Query
             args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
             args.addQueryItem(WEB_QUERY_BY_USERS, "1");
+            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups details
             queryDataRequest(WEB_SITEACCESS_PATH, args);
         }
     }
@@ -417,9 +471,50 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
         if (m_tableUserGroups_items.isEmpty()){
             // Query
             args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups without any access
+            args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
             queryDataRequest(WEB_SITEACCESS_PATH, args);
         }
     }
+
+}
+
+void SiteWidget::on_btnManageUsers_clicked()
+{
+    ui->tabSiteInfos->setCurrentIndex(0);
+    ui->tabNav->setCurrentIndex(1);
+}
+
+void SiteWidget::on_btnManageProjects_clicked()
+{
+    ui->tabSiteInfos->setCurrentIndex(3);
+    ui->tabNav->setCurrentIndex(1);
+}
+
+void SiteWidget::on_btnManageDevices_clicked()
+{
+    ui->tabSiteInfos->setCurrentIndex(2);
+    ui->tabNav->setCurrentIndex(1);
+}
+
+void SiteWidget::on_btnManageUserGroups_clicked()
+{
+    ui->tabSiteInfos->setCurrentIndex(1);
+    ui->tabNav->setCurrentIndex(1);
+}
+
+void SiteWidget::on_btnUsers_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+    m_diag_editor = new BaseDialog(this);
+    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USER, nullptr);
+    m_diag_editor->setCentralWidget(list_widget);
+
+    m_diag_editor->setWindowTitle(tr("Utilisateurs"));
+    m_diag_editor->setFixedSize(size().width(), size().height());
+
+    m_diag_editor->open();
+
 
 }

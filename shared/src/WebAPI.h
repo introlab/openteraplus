@@ -26,6 +26,7 @@
 #define WEB_SERVICEINFO_PATH                "/api/user/services"
 #define WEB_SERVICEPROJECTINFO_PATH         "/api/user/serviceprojects"
 #define WEB_SERVICEPROJECTROLEINFO_PATH     "/api/user/serviceprojectroles"
+#define WEB_STATS_PATH                      "/api/user/stats"
 
 #define WEB_SESSIONMANAGER_PATH             "/api/user/sessions/manager"
 
@@ -68,6 +69,7 @@
 #define WEB_QUERY_WITH_SITES        "with_sites"
 #define WEB_QUERY_WITH_PROJECTS     "with_projects"
 #define WEB_QUERY_WITH_ROLES        "with_roles"
+#define WEB_QUERY_WITH_EMPTY        "with_empty"
 #define WEB_QUERY_SELF              "self"
 #define WEB_QUERY_BY_USERS          "by_users"
 #define WEB_QUERY_NO_GROUP          "no_group"

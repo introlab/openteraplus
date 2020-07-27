@@ -103,9 +103,6 @@ void MainWindow::initUi()
     // Setup main menu
     ui->projNavigator->setComManager(m_comManager);
 
-    // Hide video camera
-    ui->frameVideo->hide();
-
     // Set version number
     ui->lblVersion->setText(QString(TERAPLUS_VERSION));
 
@@ -610,7 +607,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED){
         // Is in the current site?
         if (QString::fromStdString(event.participant_site_name()) == ui->projNavigator->getCurrentSiteName()){
-            QString msg_text = "<font color=cyan><u>" + QString::fromStdString(event.participant_project_name()) + "</u></font><br/>";
+            QString msg_text = "<u>" + QString::fromStdString(event.participant_project_name()) + "</u><br/>";
             msg_text += "<font color=yellow>" + QString::fromStdString(event.participant_name()) + "</font>" + tr(" est en ligne.");
             addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient_online.png");
             // Add a trace in events also
@@ -738,13 +735,6 @@ void MainWindow::on_btnConfig_clicked()
     m_diag_editor->setWindowTitle(tr("Configuration Globale"));
 
     m_diag_editor->open();
-
-}
-
-void MainWindow::on_btnVideo_toggled(bool checked)
-{
-    ui->frameVideo->setVisible(checked);
-    ui->splitterLeft->setSizes(QList<int>() << ui->tabMainMenu->height() << ui->frameDevicesButtons->height());
 
 }
 

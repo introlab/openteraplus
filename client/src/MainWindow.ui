@@ -602,8 +602,8 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>276</width>
-               <height>226</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
              <attribute name="icon">
@@ -620,7 +620,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
                <x>0</x>
                <y>0</y>
                <width>276</width>
-               <height>226</height>
+               <height>289</height>
               </rect>
              </property>
              <attribute name="icon">
@@ -724,149 +724,6 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
           </item>
          </layout>
         </widget>
-       </widget>
-       <widget class="QFrame" name="frameDevices">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item alignment="Qt::AlignTop">
-          <widget class="QFrame" name="frameDevicesButtons">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <property name="sizeConstraint">
-             <enum>QLayout::SetDefaultConstraint</enum>
-            </property>
-            <item>
-             <widget class="QToolButton" name="btnVideo">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="text">
-               <string>Caméra locale</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../resources/TeraClient.qrc">
-                <normaloff>:/icons/camera.png</normaloff>:/icons/camera.png</iconset>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-              <property name="toolButtonStyle">
-               <enum>Qt::ToolButtonTextBesideIcon</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignTop">
-          <widget class="QFrame" name="frameVideo">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="spacing">
-             <number>5</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QWidget" name="widgetVideo" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_6">
-               <property name="spacing">
-                <number>0</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="btnVideoSwitch">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../resources/TeraClient.qrc">
-                <normaloff>:/controls/branch_closed.png</normaloff>:/controls/branch_closed.png</iconset>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
        </widget>
       </widget>
      </item>

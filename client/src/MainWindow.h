@@ -80,8 +80,6 @@ private slots:
     void on_btnEditUser_clicked();
     void on_btnConfig_clicked();
 
-    void on_btnVideo_toggled(bool checked);
-
     void on_btnLog_toggled(bool checked);
 
     void on_tableHistory_itemDoubleClicked(QTableWidgetItem *item);
@@ -125,6 +123,7 @@ private:
 
     // Data management
     QHash<QString, QListWidgetItem*> m_onlineUsers; // User UUID mapping of online users
+    QHash<QString, QListWidgetItem*> m_onlineParticipants; // Participant UUID mapping of online participants
 
 
 };

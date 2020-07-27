@@ -221,7 +221,7 @@ void UserWidget::updateSiteAccess(const TeraData *site_access)
     ui->tableRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(""); // Site access has an empty project name
     ui->tableRoles->setItem(current_row,1,item);
-    item = new QTableWidgetItem(getRoleName(site_access->getFieldValue("site_role").toString()));
+    item = new QTableWidgetItem(getRoleName(site_access->getFieldValue("site_access_role").toString()));
     ui->tableRoles->setItem(current_row,2,item);
 }
 
@@ -234,7 +234,7 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
     ui->tableRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(project_access->getFieldValue("project_name").toString());
     ui->tableRoles->setItem(current_row,1,item);
-    item = new QTableWidgetItem(getRoleName(project_access->getFieldValue("project_role").toString()));
+    item = new QTableWidgetItem(getRoleName(project_access->getFieldValue("project_access_role").toString()));
     ui->tableRoles->setItem(current_row,2,item);
 }
 

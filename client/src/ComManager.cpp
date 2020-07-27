@@ -439,19 +439,24 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     // Browse each items received
     QList<TeraData> items;
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
-    for (QJsonValue data:data_list.array()){
-        TeraData item_data(items_type, data);
+    if (data_list.isArray()){
+        for (QJsonValue data:data_list.array()){
+            TeraData item_data(items_type, data);
 
-        // Check if the currently connected user was updated and not requesting a list (limited information)
-        if (items_type == TERADATA_USER){
-            if (m_currentUser.getFieldValue("user_uuid").toUuid() == item_data.getFieldValue("user_uuid").toUuid() &&
-                    !reply_query.hasQueryItem(WEB_QUERY_LIST)){
-                //m_currentUser = item_data;
-                // Update fields that we received with the new values
-                m_currentUser.updateFrom(item_data);
-                emit currentUserUpdated();
+            // Check if the currently connected user was updated and not requesting a list (limited information)
+            if (items_type == TERADATA_USER){
+                if (m_currentUser.getFieldValue("user_uuid").toUuid() == item_data.getFieldValue("user_uuid").toUuid() &&
+                        !reply_query.hasQueryItem(WEB_QUERY_LIST)){
+                    //m_currentUser = item_data;
+                    // Update fields that we received with the new values
+                    m_currentUser.updateFrom(item_data);
+                    emit currentUserUpdated();
+                }
             }
+            items.append(item_data);
         }
+    }else{
+        TeraData item_data(items_type, data_list.object());
         items.append(item_data);
     }
 
@@ -528,6 +533,10 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_SERVICE_PROJECT_ROLE:
         emit servicesProjectsRolesReceived(items, reply_query);
+        break;
+    case TERADATA_STATS:
+        if (items.count() > 0)
+            emit statsReceived(items.first(), reply_query);
         break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/

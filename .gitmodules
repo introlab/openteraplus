@@ -4,3 +4,5 @@
 [submodule "external/messages"]
 	path = external/messages
 	url = https://github.com/introlab/opentera_messages.git
+[submodule "opentera_messages"]
+	update = rebase

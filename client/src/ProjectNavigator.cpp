@@ -426,7 +426,7 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
     TeraDataTypes item_type = getItemType(current_item);
 
     // New project
-    ui->btnEditSite->setVisible(is_site_admin);
+    //ui->btnEditSite->setVisible(is_site_admin);
     QAction* new_project = getActionForDataType(TERADATA_PROJECT);
     if (new_project){
         new_project->setEnabled(is_site_admin);

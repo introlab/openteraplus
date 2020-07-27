@@ -30,6 +30,7 @@ private slots:
     void processSiteAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processProjectsReply(QList<TeraData> projects);
     void processDevicesReply(QList<TeraData> devices);
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
 
     void processPostOKReply(QString path);
 
@@ -38,6 +39,16 @@ private slots:
     void btnDevices_clicked();
 
     void on_tabSiteInfos_currentChanged(int index);
+
+    void on_btnManageUsers_clicked();
+
+    void on_btnManageProjects_clicked();
+
+    void on_btnManageDevices_clicked();
+
+    void on_btnManageUserGroups_clicked();
+
+    void on_btnUsers_clicked();
 
 private:
     Ui::SiteWidget *ui;
