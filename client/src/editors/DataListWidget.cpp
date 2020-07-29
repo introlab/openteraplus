@@ -12,13 +12,33 @@
 #include "wizards/UserWizard.h"
 
 DataListWidget::DataListWidget(ComManager *comMan, TeraDataTypes data_type, QWidget *parent):
+    DataListWidget(comMan, data_type, QUrlQuery(), parent)
+{  
+
+}
+
+DataListWidget::DataListWidget(ComManager* comMan, TeraDataTypes data_type, QUrlQuery args, QWidget *parent ):
+    DataListWidget(comMan, data_type, TeraData::getPathForDataType(data_type), args, QStringList(), parent)
+{
+
+}
+
+DataListWidget::DataListWidget(ComManager* comMan, TeraDataTypes data_type, QString query_path, QUrlQuery args, QStringList extra_display_fields, QWidget *parent):
     QWidget(parent),
     ui(new Ui::DataListWidget),
     m_comManager(comMan),
-    m_dataType(data_type)
+    m_dataType(data_type),
+    m_queryPath(query_path),
+    m_extraDisplayFields(extra_display_fields),
+    m_canEdit(false),
+    m_canView(true),
+    m_queryArgs(args)
 {
-
     ui->setupUi(this);
+
+    // Hide filters by default
+    ui->frameFilter->setEnabled(false);
+    ui->frameFilter->hide();
 
     m_editor = nullptr;
     setSearching(false);
@@ -28,9 +48,9 @@ DataListWidget::DataListWidget(ComManager *comMan, TeraDataTypes data_type, QWid
     ui->btnCopy->hide();
 
     connectSignals();
+    updateControlsState();
 
-    queryDataList();
-
+    queryDataList(m_queryArgs);
 }
 
 DataListWidget::~DataListWidget()
@@ -39,6 +59,13 @@ DataListWidget::~DataListWidget()
         m_editor->deleteLater();
 
     clearDataList();
+}
+
+void DataListWidget::setPermissions(const bool &can_view, const bool &can_edit)
+{
+    m_canEdit = can_edit;
+    m_canView = can_view;
+    updateControlsState();
 }
 
 void DataListWidget::updateDataInList(TeraData* data, bool select_item){
@@ -66,17 +93,32 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
     // If a parent is specified, append the parent name
     if (data->hasFieldName(data->getDataTypeName(data->getDataType()) + "_parent"))
         data_name = "[" + data->getFieldValue(data->getDataTypeName(data->getDataType()) + "_parent").toString() + "]\n" + data_name;
+
+    // If we have extra fields to display, append them
+    QString extra_field = "";
+    if (!m_extraDisplayFields.isEmpty() && !m_extraInfos.contains(data->getId())){
+        for (QString field:m_extraDisplayFields){
+            if (data->hasFieldName(field)){
+                if (!extra_field.isEmpty())
+                    extra_field += ", ";
+                extra_field += data->getFieldValue(field).toString();
+            }
+        }
+
+    }else{
+        if (m_extraInfos.contains(data->getId())){
+            extra_field = m_extraInfos[data->getId()];
+        }
+    }
+
+    if (!extra_field.isEmpty()){
+        m_extraInfos[data->getId()] = extra_field;
+        data_name += " (" + extra_field + ")";
+    }
     item->setText(data_name);
     item->setData(Qt::UserRole, data->getId());
 
     //Customize color and icons, if needed, according to data_type
-    /*if (m_dataType==TERADATA_USER){
-        if (data->getFieldValue("user_enabled").toBool())
-            item->setTextColor(Qt::green);
-        else {
-            item->setTextColor(Qt::red);
-        }
-    }*/
     if (data->hasEnabledField()){
         if (data->isEnabled()){
             item->setForeground(Qt::green);
@@ -168,7 +210,17 @@ void DataListWidget::showEditor(TeraData *data)
         connect(m_editor, &DataEditorWidget::dataWasDeleted, this, &DataListWidget::editor_dataDeleted);
         connect(m_editor, &DataEditorWidget::dataWasChanged, this, &DataListWidget::editor_dataChanged);
     }
-     ui->wdgEditor->layout()->addWidget(m_editor);
+    ui->wdgEditor->layout()->addWidget(m_editor);
+}
+
+void DataListWidget::setFilterText(const QString &text)
+{
+    ui->lblFilter->setText(text);
+    if (m_canView){
+        ui->frameFilter->setEnabled(true);
+        ui->frameFilter->setVisible(true);
+    }
+
 }
 
 /*void DataListWidget::itemClicked(QListWidgetItem *item){
@@ -185,6 +237,9 @@ void DataListWidget::connectSignals()
     connect(m_comManager, &ComManager::deleteResultsOK, this, &DataListWidget::deleteDataReply);
 
     // Connect correct signal according to the datatype
+    TeraDataTypes expectedDataType = TeraData::getDataTypeFromPath(m_queryPath);
+    if (expectedDataType != m_dataType) // Also connect the indirect signal for that data type
+        connect(m_comManager, ComManager::getSignalFunctionForDataType(expectedDataType), this, &DataListWidget::setDataList);
     connect(m_comManager, ComManager::getSignalFunctionForDataType(m_dataType), this, &DataListWidget::setDataList);
 
     connect(ui->txtSearch, &QLineEdit::textChanged, this, &DataListWidget::searchChanged);
@@ -197,12 +252,31 @@ void DataListWidget::connectSignals()
 void DataListWidget::queryDataList()
 {
     QString query_path = TeraData::getPathForDataType(m_dataType);
+    clearSearch();
 
     if (!query_path.isEmpty()){
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_LIST, "true");
         m_comManager->doQuery(query_path, args);
     }
+}
+
+void DataListWidget::queryDataList(QUrlQuery args)
+{
+    //QString query_path = TeraData::getPathForDataType(m_dataType);
+    clearSearch();
+
+    if (!m_queryPath.isEmpty()){
+        if (args.isEmpty()) // "list" parameter must be appended manually if we provide an args list
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+        m_comManager->doQuery(m_queryPath, args);
+    }
+}
+
+void DataListWidget::updateControlsState()
+{
+    ui->frameFilter->setVisible(m_canView && ui->frameFilter->isEnabled());
+    ui->frameButtons->setVisible(m_canEdit);
 }
 
 TeraData *DataListWidget::getCurrentData()
@@ -290,9 +364,20 @@ void DataListWidget::deleteDataReply(QString path, int id)
 
 void DataListWidget::setDataList(QList<TeraData> list)
 {
+    TeraDataTypes expectedDataType = TeraData::getDataTypeFromPath(m_queryPath);
     for (int i=0; i<list.count(); i++){
-        if (list.at(i).getDataType() == m_dataType){
+        if (list.at(i).getDataType() == expectedDataType || list.at(i).getDataType() == m_dataType){
             TeraData* item_data = new TeraData(list.at(i));
+            if (expectedDataType != m_dataType && list.at(i).getDataType() == expectedDataType){
+                // We had some objects from a different URL - switch the data type.
+                item_data->setDataType(m_dataType);
+                if (!item_data->hasNameField() || item_data->getId() == 0){
+                    // Wrong item format - this might happen if the editor queried similar infos.
+                    delete item_data;
+                    continue;
+                }
+
+            }
             updateDataInList(item_data);
         }
     }
@@ -381,6 +466,9 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
     if (!current)
         return;
 
+    if (!m_canView) // Check if the user can see the details of that item
+        return;
+
     TeraData* current_data = m_datamap.keys(current).first();
 
 
@@ -418,4 +506,20 @@ void DataListWidget::deleteDataRequested()
 void DataListWidget::copyDataRequested()
 {
 
+}
+
+void DataListWidget::on_radBtnFilter_toggled(bool checked)
+{
+    if (checked){
+        clearDataList();
+        queryDataList(m_queryArgs);
+    }
+}
+
+void DataListWidget::on_radBtnAll_toggled(bool checked)
+{
+    if (checked){
+        clearDataList();
+        queryDataList();
+    }
 }

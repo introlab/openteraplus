@@ -108,5 +108,7 @@
         <file>status/session_loading.gif</file>
         <file>icons/software_user_offline.png</file>
         <file>icons/software_user_online.png</file>
+        <file>controls/radio-off.png</file>
+        <file>controls/radio-on.png</file>
     </qresource>
 </RCC>

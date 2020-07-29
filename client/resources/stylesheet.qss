@@ -352,6 +352,25 @@ QCheckBox:checked{color:lightgreen;background-color:rgba(0,0,0,0%);}
 QCheckBox:!checked{color:red;background-color:rgba(0,0,0,0%);}
 
 /*
+    QRadioButton
+*/
+QRadioButton::indicator {
+    width: 20px;
+    height: 20px;
+}
+
+QRadioButton::indicator::unchecked {
+    image: url(://controls/radio-off.png);
+}
+
+QRadioButton::indicator::checked {
+    image: url(://controls/radio-on.png);
+}
+
+QRadioButton:checked{color:lightgreen;background-color:rgba(0,0,0,0%);}
+QRadioButton:!checked{color:red;background-color:rgba(0,0,0,0%);}
+
+/*
     QCalendarWidget
 */
 
@@ -498,6 +517,14 @@ QWidget#DataListWidget{background-image: url(://TeRA_Background.png); }
 QWidget#txtSearch{
     border:1px solid rgba(255,255,255,50%);
     background-color: rgba(0,0,0,15%);
+}
+QFrame#frameFilter{
+    background-color:rgba(255,255,255,10%);
+    border-radius:5px;
+}
+QLabel#lblFilter{
+    font-weight: bold;
+    color: orange;
 }
 
 /* Customizations for ParticipantWidget */

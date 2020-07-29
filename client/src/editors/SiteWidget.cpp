@@ -88,37 +88,6 @@ void SiteWidget::connectSignals()
 
 }
 
-void SiteWidget::updateUserSiteAccess(const TeraData *access)
-{
-    QTableWidgetItem* item;
-    int id_user = access->getFieldValue("id_user").toInt();
-    QString site_role = access->getFieldValue("site_access_role").toString();
-    if (m_tableUsers_items.contains(id_user)){
-        item = m_tableUsers_items[id_user];
-        item->setText(DataEditorWidget::getRoleName(site_role));
-    }else{
-        // Not there - must add the user and role
-        ui->tableUsers->setRowCount(ui->tableUsers->rowCount()+1);
-        int current_row = ui->tableUsers->rowCount()-1;
-        QTableWidgetItem* item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_USER)),
-                                                      access->getFieldValue("user_name").toString());
-        ui->tableUsers->setItem(current_row, 0, item);
-        item = new QTableWidgetItem(DataEditorWidget::getRoleName(site_role));
-        ui->tableUsers->setItem(current_row, 1, item);
-        m_tableUsers_items.insert(id_user, item); // Store QTableWidget Item that has the role name.
-
-        QVariantList groups = access->getFieldValue("user_groups").toList();
-        QString groups_str;
-        for (QVariant group:groups){
-            if (!groups_str.isEmpty())
-                groups_str += ", ";
-            groups_str += group.toMap()["user_group_name"].toString();
-        }
-        item = new QTableWidgetItem(groups_str);
-        ui->tableUsers->setItem(current_row, 2, item);
-    }
-}
-
 void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
 {
     QTableWidgetItem* item;
@@ -127,7 +96,7 @@ void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
     QComboBox* combo_roles;
     if (m_tableUserGroups_items.contains(id_user_group)){
         item = m_tableUserGroups_items[id_user_group];
-        combo_roles = dynamic_cast<QComboBox*>(ui->tableUsers->cellWidget(item->row(),1));
+        combo_roles = dynamic_cast<QComboBox*>(ui->tableUserGroups->cellWidget(item->row(),1));
 
     }else{
         // Not there - must add the usergroup and role
@@ -235,16 +204,9 @@ void SiteWidget::updateControlsState()
 {
     ui->btnDevices->setVisible(!m_limited);
     //ui->btnProjects->setVisible(!m_limited);
-    bool is_site_admin;
-    if (m_data){
-        is_site_admin = m_comManager->getCurrentUserSiteRole(m_data->getId())=="admin";
-    }
-    else{
-        is_site_admin = false;
-    }
+    bool is_site_admin = isSiteAdmin();
     ui->btnUpdateRoles->setVisible(is_site_admin);
     ui->btnDevices->setVisible(is_site_admin);
-    ui->btnUsers->setVisible(is_site_admin);
     ui->btnManageUsers->setVisible(is_site_admin);
     ui->btnManageDevices->setVisible(is_site_admin);
     ui->btnManageUserGroups->setVisible(is_site_admin);
@@ -263,6 +225,16 @@ void SiteWidget::updateFieldsValue()
 bool SiteWidget::validateData()
 {
     return ui->wdgSite->validateFormData();
+}
+
+bool SiteWidget::isSiteAdmin()
+{
+    if (m_data){
+        return m_comManager->getCurrentUserSiteRole(m_data->getId())=="admin";
+    }
+    else{
+        return false;
+    }
 }
 
 void SiteWidget::processFormsReply(QString form_type, QString data)
@@ -285,11 +257,7 @@ void SiteWidget::processSiteAccessReply(QList<TeraData> access, QUrlQuery reply_
     if (reply_query.queryItemValue(WEB_QUERY_ID_SITE).toInt() != m_data->getId())
         return;
 
-    if (reply_query.hasQueryItem(WEB_QUERY_BY_USERS)){
-        for (int i=0; i<access.count(); i++) {
-           updateUserSiteAccess(&access.at(i));
-        }
-    }else{
+    if (!reply_query.hasQueryItem(WEB_QUERY_BY_USERS)){
         // User groups in reply
         for (int i=0; i<access.count(); i++) {
            updateUserGroupSiteAccess(&access.at(i));
@@ -457,13 +425,26 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
 
     if (tab_name == "tabUsers"){
         // Users
-        if (m_tableUsers_items.isEmpty()){
+        if (!ui->wdgUsers->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgUsers->setLayout(layout);
+        }
+        if (ui->wdgUsers->layout()->count() == 0){
+            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
+            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups details
+            DataListWidget* userlist_editor = new DataListWidget(m_comManager, TERADATA_USER, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), ui->wdgUsers);
+            userlist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
+            userlist_editor->setFilterText(tr("Seuls les utilisateurs ayant un accès au site sont affichés."));
+            ui->wdgUsers->layout()->addWidget(userlist_editor);
+        }
+        /*if (m_tableUsers_items.isEmpty()){
             // Query
             args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
             args.addQueryItem(WEB_QUERY_BY_USERS, "1");
             args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups details
             queryDataRequest(WEB_SITEACCESS_PATH, args);
-        }
+        }*/
     }
 
     if (tab_name == "tabUserGroups"){
@@ -502,19 +483,3 @@ void SiteWidget::on_btnManageUserGroups_clicked()
     ui->tabNav->setCurrentIndex(1);
 }
 
-void SiteWidget::on_btnUsers_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new BaseDialog(this);
-    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USER, nullptr);
-    m_diag_editor->setCentralWidget(list_widget);
-
-    m_diag_editor->setWindowTitle(tr("Utilisateurs"));
-    m_diag_editor->setFixedSize(size().width(), size().height());
-
-    m_diag_editor->open();
-
-
-}

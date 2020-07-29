@@ -40,20 +40,17 @@ private slots:
 
     void on_tabSiteInfos_currentChanged(int index);
 
-    void on_btnManageUsers_clicked();
-
     void on_btnManageProjects_clicked();
 
     void on_btnManageDevices_clicked();
 
     void on_btnManageUserGroups_clicked();
 
-    void on_btnUsers_clicked();
+    void on_btnManageUsers_clicked();
 
 private:
     Ui::SiteWidget *ui;
 
-    QMap<int, QTableWidgetItem*> m_tableUsers_items;
     QMap<int, QListWidgetItem*>  m_listProjects_items;
     QMap<int, QTableWidgetItem*> m_listDevices_items;
     QMap<int, QTableWidgetItem*> m_tableUserGroups_items;
@@ -62,7 +59,6 @@ private:
 
     void connectSignals();
 
-    void updateUserSiteAccess(const TeraData* access);
     void updateUserGroupSiteAccess(const TeraData* access);
     void updateProject(const TeraData* project);
     void updateDevice(const TeraData* device);
@@ -70,6 +66,8 @@ private:
     void updateControlsState();
     void updateFieldsValue();
     bool validateData();
+
+    bool isSiteAdmin();
 };
 
 #endif // SITEWIDGET_H

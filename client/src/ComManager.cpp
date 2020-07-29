@@ -400,7 +400,6 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
     }
 }
 
-
 bool ComManager::handleLoginReply(const QString &reply_data)
 {
     QJsonParseError json_error;

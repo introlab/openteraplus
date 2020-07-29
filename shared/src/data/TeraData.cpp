@@ -63,6 +63,11 @@ void TeraData::setName(const QString &name)
     setFieldValue(m_nameField, name);
 }
 
+bool TeraData::hasNameField()
+{
+    return hasFieldName(m_nameField);
+}
+
 bool TeraData::hasEnabledField()
 {
     return hasFieldName(m_enabledField);
@@ -322,6 +327,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_DEVICEPARTICIPANT)  return WEB_DEVICEPARTICIPANTINFO_PATH;
     if (data_type==TERADATA_DEVICESUBTYPE)      return WEB_DEVICESUBTYPE_PATH;
     if (data_type==TERADATA_SERVICE)            return WEB_SERVICEINFO_PATH;
+    if (data_type==TERADATA_SITEACCESS)         return WEB_SITEACCESS_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 

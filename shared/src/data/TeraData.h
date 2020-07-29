@@ -63,6 +63,7 @@ public:
 
     virtual QString getName() const;
     void setName(const QString& name);
+    bool hasNameField();
 
     bool hasEnabledField();
     bool isEnabled();

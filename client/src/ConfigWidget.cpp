@@ -75,6 +75,7 @@ void ConfigWidget::currentSectionChanged(QListWidgetItem *current, QListWidgetIt
 
     m_dataListEditor = new DataListWidget(m_comManager, current_section);
     ui->wdgEditor->layout()->addWidget(m_dataListEditor);
+    m_dataListEditor->setPermissions(true, true); // All permissions from here!
 
 }
 
