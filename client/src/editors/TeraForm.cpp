@@ -191,6 +191,16 @@ void TeraForm::hideFields(const QStringList &fields)
     m_hiddenFields = fields;
 }
 
+void TeraForm::setFieldRequired(const QString &field, const bool &required)
+{
+    QWidget* widget = getWidgetForField(field);
+    if (widget){
+        QLabel* widget_label = m_widgetsLabels[widget];
+        setWidgetRequired(widget, widget_label, required);
+    }
+
+}
+
 QString TeraForm::getFormData(bool include_unmodified_data)
 {
     QString data;
@@ -383,12 +393,10 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
                     item_widget->setProperty("label", item_data["label"].toString());
                 if (item_data.contains("id"))
                     item_widget->setProperty("id", item_id);
-                if (item_data.contains("required")){
-                    item_widget->setProperty("required", item_data["required"]);
-                    item_label->setText("<font color=red>*</font> " + item_label->text());
-                }else{
-                    item_label->setText("  " + item_label->text());
-                }
+
+                // Required?
+                setWidgetRequired(item_widget, item_label, item_data.contains("required"));
+
                 if (item_data.contains("condition")){
                     item_widget->setProperty("condition", item_data["condition"]);
                     if (m_highlightConditionals)
@@ -407,6 +415,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
 
                 // Add widget to list
                 m_widgets[item_data["id"].toString()] = item_widget;
+                m_widgetsLabels[item_widget] = item_label;
 
                 // Remove row if hidden
                 if (item_type == "hidden"){
@@ -931,6 +940,20 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
 
 
     LOG_WARNING("Unhandled widget: "+ QString(widget->metaObject()->className()) + " for item " + value.toString(), "TeraForm::setWidgetValue");
+}
+
+void TeraForm::setWidgetRequired(QWidget *item_widget, QLabel *item_label, const bool &required)
+{
+    if (!item_widget || !item_label)
+        return;
+
+    item_widget->setProperty("required", required);
+    if (required){
+        item_label->setText("<font color=red>*</font> " + item_label->text());
+    }else{
+
+        item_label->setText("  " + item_label->text());
+    }
 }
 
 void TeraForm::updateWidgetChoices(QWidget *widget, const QList<TeraData> values)

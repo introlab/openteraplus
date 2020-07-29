@@ -471,6 +471,8 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
 
     TeraData* current_data = m_datamap.keys(current).first();
 
+    if (current_data->isNew())
+        return;
 
     // Query full data for that data item
     QUrlQuery args;

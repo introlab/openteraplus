@@ -49,6 +49,7 @@ private:
 
     void refreshUsersUserGroups();
 
+    QJsonArray getSelectedGroupsAsJsonArray();
 
     void updateUserGroup(const TeraData* group);
     void updateSiteAccess(const TeraData* site_access);
@@ -67,6 +68,8 @@ private slots:
 
     void on_tabMain_currentChanged(int index);
     void on_btnUpdateGroups_clicked();
+
+    void userFormValueChanged(QWidget* widget, QVariant value);
 };
 
 

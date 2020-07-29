@@ -57,6 +57,7 @@ public:
     QVariant getFieldValue(const QString& field);
     void hideField(const QString& field);
     void hideFields(const QStringList& fields);
+    void setFieldRequired(const QString& field, const bool& required);
 
     QString getFormData(bool include_unmodified_data=false);
     QJsonDocument getFormDataJson(bool include_unmodified_data=false);
@@ -69,6 +70,7 @@ public:
 private:
     Ui::TeraForm*                                   ui;
     QMap<QString, QWidget*>                         m_widgets;
+    QMap<QWidget*, QLabel*>                         m_widgetsLabels;
     QMap<QWidget*, QFormLayout::TakeRowResult>      m_hidden_rows;
     QString                                         m_objectType;
     QVariantMap                                     m_initialValues;
@@ -101,6 +103,8 @@ private:
     void getWidgetValues(QWidget *widget, QVariant *id, QVariant* value);
     QVariant getWidgetValue(QWidget* widget);
     void setWidgetValue(QWidget* widget, const QVariant& value);
+
+    void setWidgetRequired(QWidget* item_widget, QLabel* item_label, const bool& required);
 
     void updateWidgetChoices(QWidget* widget, const QList<TeraData> values);
 

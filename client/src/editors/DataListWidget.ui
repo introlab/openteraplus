@@ -340,6 +340,12 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
       </item>
       <item alignment="Qt::AlignLeft">
        <widget class="QFrame" name="frameButtons">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <layout class="QHBoxLayout" name="buttonsZone">
          <property name="sizeConstraint">
           <enum>QLayout::SetFixedSize</enum>

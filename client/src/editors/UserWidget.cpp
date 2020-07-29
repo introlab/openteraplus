@@ -70,6 +70,18 @@ void UserWidget::saveData(bool signal){
     // If data is new, we request all the fields.
     QJsonDocument user_data = ui->wdgUser->getFormDataJson(m_data->isNew());
 
+    if (m_data->isNew() && ui->lstGroups->isEnabled()){
+        QJsonObject base_obj = user_data.object();
+        QJsonObject base_user = base_obj["user"].toObject();
+        QJsonArray groups = getSelectedGroupsAsJsonArray();
+        // For new users, also sends the user groups at the same time
+        if (!groups.isEmpty()){
+            base_user.insert("user_user_groups", groups);
+            base_obj.insert("user", base_user);
+            user_data.setObject(base_obj);
+        }
+    }
+
     // Site access
     /*QJsonArray site_access = getSitesRoles();
     if (!site_access.isEmpty()){
@@ -130,6 +142,19 @@ void UserWidget::updateControlsState(){
     ui->frameGroups->setEnabled(allow_access_edit);
 
     if (dataIsNew() && ui->tabMain->count()>1){
+        // Move user groups list to first tab
+        ui->frameGroups->layout()->removeWidget(ui->lstGroups);
+        ui->mainWidget->layout()->removeWidget(ui->frameButtons);
+
+        QLabel* lblGroups = new QLabel(tr("Groupes utilisateurs"));
+        QFont labelFont;
+        labelFont.setBold(true);
+        labelFont.setPointSize(10);
+        lblGroups->setFont(labelFont);
+
+        ui->mainWidget->layout()->addWidget(lblGroups);
+        ui->mainWidget->layout()->addWidget(ui->lstGroups);
+        ui->mainWidget->layout()->addWidget(ui->frameButtons);
         ui->tabMain->removeTab(1);
         ui->tabMain->removeTab(1);
         ui->tabMain->removeTab(1);
@@ -154,24 +179,15 @@ void UserWidget::updateFieldsValue(){
         // Don't allow editing of username if not new data
         if (!m_data->isNew()){
             ui->wdgUser->getWidgetForField("user_username")->setEnabled(false);
+        }else{
+            // Require password for new data
+            ui->wdgUser->setFieldRequired("user_password", true);
         }
     }
 }
 
 bool UserWidget::validateData(){
-    bool valid = false;
-
-    valid = ui->wdgUser->validateFormData();
-    //valid &= ui->wdgProfile->validateFormData();
-
-    if (m_data->getId()==0){
-        // New user - must check that a password is set
-        if (ui->wdgUser->getFieldValue("user_password").toString().isEmpty()){
-            valid = false;
-        }
-    }
-
-    return valid;
+    return ui->wdgUser->validateFormData();
 }
 
 void UserWidget::refreshUsersUserGroups()
@@ -196,6 +212,22 @@ void UserWidget::refreshUsersUserGroups()
         item->setData(Qt::UserRole, item->checkState());
     }
 }
+
+QJsonArray UserWidget::getSelectedGroupsAsJsonArray()
+{
+    QJsonArray user_groups;
+    for (int i=0; i<m_listUserGroups_items.count(); i++){
+        int user_group_id = m_listUserGroups_items.keys().at(i);
+        QListWidgetItem* item = m_listUserGroups_items.values().at(i);
+        if (item->checkState() == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_user_group", user_group_id);
+            user_groups.append(data_obj);
+        }
+    }
+    return user_groups;
+}
+
 
 void UserWidget::updateUserGroup(const TeraData *group)
 {
@@ -303,9 +335,15 @@ void UserWidget::processFormsReply(QString form_type, QString data)
             if (item) item->setEnabled(false);
             item = ui->wdgUser->getWidgetForField("user_notes");
             if (item) item->setEnabled(false);
-            item = ui->wdgUser->getWidgetForField("id_user_group");
-            if (item) item->setEnabled(false);
         }
+
+        // Disable super admin field if not super admin itself!
+        QWidget* item = ui->wdgUser->getWidgetForField("user_superadmin");
+        if (item){
+            item->setVisible(m_comManager->isCurrentUserSuperAdmin());
+
+        }
+
         return;
     }
 
@@ -332,6 +370,7 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &UserWidget::processFormsReply);
     connect(m_comManager, &ComManager::userGroupsReceived, this, &UserWidget::processUserGroupsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserWidget::postResultReply);
+    connect(ui->wdgUser, &TeraForm::widgetValueHasChanged, this, &UserWidget::userFormValueChanged);
 
 }
 
@@ -363,11 +402,14 @@ void UserWidget::on_tabMain_currentChanged(int index)
         ui->tableRoles->sortItems(-1);
 
         // Query sites and projects roles
-        args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
+        if (!m_data->isNew()){
+            args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
 
-        queryDataRequest(WEB_SITEACCESS_PATH, args);
-        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
-        queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+            queryDataRequest(WEB_SITEACCESS_PATH, args);
+            args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+
+        }
     }
 }
 
@@ -375,17 +417,8 @@ void UserWidget::on_btnUpdateGroups_clicked()
 {
     QJsonDocument document;
     QJsonObject base_obj;
-    QJsonArray user_groups;
+    QJsonArray user_groups = getSelectedGroupsAsJsonArray();
 
-    for (int i=0; i<m_listUserGroups_items.count(); i++){
-        int user_group_id = m_listUserGroups_items.keys().at(i);
-        QListWidgetItem* item = m_listUserGroups_items.values().at(i);
-        if (item->checkState() == Qt::Checked){
-            QJsonObject data_obj;
-            data_obj.insert("id_user_group", user_group_id);
-            user_groups.append(data_obj);
-        }
-    }
 
     QJsonObject user_obj;
     user_obj.insert("id_user", m_data->getId());
@@ -394,4 +427,11 @@ void UserWidget::on_btnUpdateGroups_clicked()
     document.setObject(base_obj);
     postDataRequest(WEB_USERINFO_PATH, document.toJson());
 
+}
+
+void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
+{
+    if (widget == ui->wdgUser->getWidgetForField("user_superadmin")){
+        ui->lstGroups->setEnabled(!value.toBool());
+    }
 }
