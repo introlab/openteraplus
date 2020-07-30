@@ -23,6 +23,12 @@ DataListWidget::DataListWidget(ComManager* comMan, TeraDataTypes data_type, QUrl
 
 }
 
+DataListWidget::DataListWidget(ComManager* comMan, TeraDataTypes data_type, QUrlQuery args, QStringList extra_display_fields, QWidget *parent):
+    DataListWidget(comMan, data_type, TeraData::getPathForDataType(data_type), args, extra_display_fields, parent)
+{
+
+}
+
 DataListWidget::DataListWidget(ComManager* comMan, TeraDataTypes data_type, QString query_path, QUrlQuery args, QStringList extra_display_fields, QWidget *parent):
     QWidget(parent),
     ui(new Ui::DataListWidget),
@@ -98,10 +104,34 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
     QString extra_field = "";
     if (!m_extraDisplayFields.isEmpty() && !m_extraInfos.contains(data->getId())){
         for (QString field:m_extraDisplayFields){
+            QStringList subfields = field.split(".");
+            QString subfield;
+            if (subfields.count() > 1){
+                field = subfields.first();
+                subfield = subfields.last();
+            }
             if (data->hasFieldName(field)){
                 if (!extra_field.isEmpty())
                     extra_field += ", ";
-                extra_field += data->getFieldValue(field).toString();
+                QVariant field_value = data->getFieldValue(field);
+
+                if (field_value.canConvert(QMetaType::QVariantList)){
+                    QVariantList field_values = field_value.toList();
+                    QString merged_list;
+                    for (QVariant field_value:field_values){
+                        if (!merged_list.isEmpty())
+                            merged_list += ", ";
+                        // Search for subfield?
+                        if (field_value.canConvert(QMetaType::QVariantMap)){
+                            QVariantMap field_map = field_value.toMap();
+                            field_value = field_map[subfield];
+                        }
+                        merged_list += field_value.toString();
+                    }
+                    extra_field += merged_list;
+                }else{
+                    extra_field += data->getFieldValue(field).toString();
+                }
             }
         }
 

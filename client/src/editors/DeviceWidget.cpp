@@ -12,6 +12,8 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
+    ui->tabNav->setCurrentIndex(0);
+
     // Use base class to manage editing
     setEditorControls(ui->wdgDevice, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
 
@@ -24,11 +26,11 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
     ui->wdgDevice->setHighlightConditions(false);
     ui->wdgDevice->setComManager(m_comManager);
 
-    if (!dataIsNew()){
+    /*if (!dataIsNew()){
         // Loads first detailled informations tab
         on_tabDeviceInfos_currentChanged(0);
 
-    }
+    }*/
 }
 
 DeviceWidget::~DeviceWidget()
@@ -55,7 +57,7 @@ void DeviceWidget::saveData(bool signal)
 void DeviceWidget::updateControlsState()
 {
    ui->tabSites->setEnabled(!dataIsNew());
-   ui->tabDetails->setEnabled(!dataIsNew());
+   //ui->tabDetails->setEnabled(!dataIsNew());
 }
 
 void DeviceWidget::updateFieldsValue()
@@ -325,9 +327,11 @@ void DeviceWidget::btnSaveSites_clicked()
     }
 
     // Update query
-    base_obj.insert("device_project", devices);
-    document.setObject(base_obj);
-    postDataRequest(WEB_DEVICEPROJECTINFO_PATH, document.toJson());
+    if (!devices.isEmpty()){
+        base_obj.insert("device_project", devices);
+        document.setObject(base_obj);
+        postDataRequest(WEB_DEVICEPROJECTINFO_PATH, document.toJson());
+    }
 
 }
 
@@ -383,13 +387,16 @@ void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
 
 }
 
-void DeviceWidget::on_tabDeviceInfos_currentChanged(int index)
+void DeviceWidget::on_tabNav_currentChanged(int index)
 {
-
     // Load data depending on selected tab
     QUrlQuery args;
+    //args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
 
-    if (index == 0){
+    QString tab_name = ui->tabNav->widget(index)->objectName();
+
+
+    if (tab_name == "tabSites"){
         // Sites / Projets
         if (m_listSites_items.isEmpty() || m_listProjects_items.isEmpty()){
             args.addQueryItem(WEB_QUERY_LIST, "true");
@@ -397,7 +404,7 @@ void DeviceWidget::on_tabDeviceInfos_currentChanged(int index)
         }
     }
 
-    if (index == 1){
+    if (tab_name == "tabParticipants"){
         // Participants
         if (m_listParticipants_items.isEmpty()){
             args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
@@ -405,7 +412,7 @@ void DeviceWidget::on_tabDeviceInfos_currentChanged(int index)
         }
     }
 
-    if (index == 2){
+    if (tab_name == "tabSessionTypes"){
         // Session types
         if (m_listSessionTypes_items.isEmpty()){
             args.addQueryItem(WEB_QUERY_ID_DEVICE_TYPE, m_data->getFieldValue("device_type").toString());

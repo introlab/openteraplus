@@ -79,28 +79,15 @@ void UserWidget::saveData(bool signal){
             base_user.insert("user_user_groups", groups);
             base_obj.insert("user", base_user);
             user_data.setObject(base_obj);
+        }else{
+            if (!m_comManager->isCurrentUserSuperAdmin()){
+                // Warning: that user not having any user group meaning that it will be not available to the current user
+                GlobalMessageBox msgbox;
+                msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
+                return;
+            }
         }
     }
-
-    // Site access
-    /*QJsonArray site_access = getSitesRoles();
-    if (!site_access.isEmpty()){
-        QJsonObject base_obj = user_data.object();
-        QJsonObject base_user = base_obj["user"].toObject();
-        base_user.insert("sites",site_access);
-        base_obj.insert("user", base_user);
-        user_data.setObject(base_obj);
-    }
-
-    // Project access
-    QJsonArray project_access = getProjectsRoles();
-    if (!project_access.isEmpty()){
-        QJsonObject base_obj = user_data.object();
-        QJsonObject base_user = base_obj["user"].toObject();
-        base_user.insert("projects",project_access);
-        base_obj.insert("user", base_user);
-        user_data.setObject(base_obj);
-    }*/
 
     //qDebug() << user_data.toJson();
     postDataRequest(WEB_USERINFO_PATH, user_data.toJson());
@@ -195,8 +182,12 @@ void UserWidget::refreshUsersUserGroups()
     for (int i=0; i<m_listUserGroups_items.count(); i++){
         QListWidgetItem* item = m_listUserGroups_items.values().at(i);
         // Check item if the group is in the users groups list
-        item->setCheckState(Qt::Unchecked);
-        if (m_data->hasFieldName("user_groups")){
+        if (m_listUserUserGroups_items.values().contains(item)){
+            item->setCheckState(Qt::Checked);
+        }else{
+            item->setCheckState(Qt::Unchecked);
+        }
+        /*if (m_data->hasFieldName("user_groups")){
             QVariantList groups_list = m_data->getFieldValue("user_groups").toList();
             for (int j=0; j<groups_list.count(); j++){
                 QVariantMap group_info = groups_list.at(j).toMap();
@@ -207,7 +198,7 @@ void UserWidget::refreshUsersUserGroups()
                     }
                 }
             }
-        }
+        }*/
         // Save initial state, to only update required items when saving
         item->setData(Qt::UserRole, item->checkState());
     }
@@ -239,6 +230,7 @@ void UserWidget::updateUserGroup(const TeraData *group)
     }else{
         item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_USERGROUP)), group->getName());
         ui->lstGroups->addItem(item);
+        item->setCheckState(Qt::Unchecked);
         m_listUserGroups_items[id_user_group] = item;
     }
 
@@ -300,24 +292,33 @@ void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
 
 void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query)
 {
-    if (query.hasQueryItem(WEB_QUERY_ID_USER)){
-        // The reply contains users groups for a user. For us?
-        if (m_data->getId() == query.queryItemValue(WEB_QUERY_ID_USER).toInt()){
-            // For this user - complete information in the TeraData object
-            QVariantList groups;
-            foreach(TeraData user_group, user_groups){
-                groups.append(user_group.getFieldValues());
-            }
-            m_data->setFieldValue("user_groups", groups);
-        }
 
-    }
     foreach(TeraData user_group, user_groups){
         updateUserGroup(&user_group);
     }
 
+}
+
+void UserWidget::processUserUsersGroupsReply(QList<TeraData> user_users_groups, QUrlQuery query)
+{
+
+    //m_listUserUserGroups_items.clear();
+
+    // The reply contains users groups for a user. For us?
+
+    // For this user - complete information in the TeraData object
+    QVariantList groups;
+    foreach(TeraData user_user_group, user_users_groups){
+        if (m_data->getFieldValue("id_user").toInt() == user_user_group.getFieldValue("id_user").toInt()){
+            groups.append(user_user_group.getFieldValues());
+            // Keep relationship id
+            m_listUserUserGroups_items[user_user_group.getId()] = m_listUserGroups_items[user_user_group.getFieldValue("id_user_group").toInt()];
+        }
+    }
+
     // Update selected user groups for that user
     refreshUsersUserGroups();
+
 }
 
 void UserWidget::processFormsReply(QString form_type, QString data)
@@ -369,6 +370,7 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::projectAccessReceived, this, &UserWidget::processProjectsAccessReply);
     connect(m_comManager, &ComManager::formReceived, this, &UserWidget::processFormsReply);
     connect(m_comManager, &ComManager::userGroupsReceived, this, &UserWidget::processUserGroupsReply);
+    connect(m_comManager, &ComManager::userUserGroupsReceived, this, &UserWidget::processUserUsersGroupsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserWidget::postResultReply);
     connect(ui->wdgUser, &TeraForm::widgetValueHasChanged, this, &UserWidget::userFormValueChanged);
 
@@ -387,7 +389,8 @@ void UserWidget::on_tabMain_currentChanged(int index)
         //if (!m_data->hasFieldName("user_groups")){
             // Update groups for user
             args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
-            queryDataRequest(WEB_USERGROUPINFO_PATH, args);
+            //queryDataRequest(WEB_USERGROUPINFO_PATH, args);
+            queryDataRequest(WEB_USERUSERGROUPINFO_PATH, args);
         //}
 
         // If user is super admin, disable groups
@@ -415,7 +418,15 @@ void UserWidget::on_tabMain_currentChanged(int index)
 
 void UserWidget::on_btnUpdateGroups_clicked()
 {
-    QJsonDocument document;
+
+    if (!m_comManager->isCurrentUserSuperAdmin()){
+        // Warning: that user not having any user group meaning that it will be not available to the current user
+        GlobalMessageBox msgbox;
+        msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
+        return;
+    }
+
+    /*QJsonDocument document;
     QJsonObject base_obj;
     QJsonArray user_groups = getSelectedGroupsAsJsonArray();
 
@@ -425,7 +436,39 @@ void UserWidget::on_btnUpdateGroups_clicked()
     user_obj.insert("user_groups", user_groups);
     base_obj.insert("user", user_obj);
     document.setObject(base_obj);
-    postDataRequest(WEB_USERINFO_PATH, document.toJson());
+    postDataRequest(WEB_USERINFO_PATH, document.toJson());*/
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray groups;
+    QList<int> user_user_group_to_delete;
+
+    for (int i=0; i<m_listUserGroups_items.count(); i++){
+        // Build json list of user and groups
+        if (m_listUserGroups_items.values().at(i)->checkState()==Qt::Checked){
+            QJsonObject item_obj;
+            item_obj.insert("id_user", m_data->getId());
+            item_obj.insert("id_user_group", m_listUserGroups_items.keys().at(i));
+            groups.append(item_obj);
+        }else{
+            int id_user_user_group = m_listUserUserGroups_items.key(m_listUserGroups_items.values().at(i),-1);
+            if (id_user_user_group>=0){
+                user_user_group_to_delete.append(id_user_user_group);
+            }
+        }
+    }
+
+    // Delete queries
+    for (int id_user_user_group:user_user_group_to_delete){
+        deleteDataRequest(WEB_USERUSERGROUPINFO_PATH, id_user_user_group);
+        m_listUserUserGroups_items.remove(id_user_user_group);
+    }
+
+    // Update query
+    if (!groups.isEmpty()){
+        base_obj.insert("user_user_group", groups);
+        document.setObject(base_obj);
+        postDataRequest(WEB_USERUSERGROUPINFO_PATH, document.toJson());
+    }
 
 }
 

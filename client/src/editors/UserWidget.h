@@ -41,6 +41,7 @@ private:
     Ui::UserWidget* ui;
 
     QMap<int, QListWidgetItem*>     m_listUserGroups_items;
+    QMap<int, QListWidgetItem*>     m_listUserUserGroups_items;
 
     void updateControlsState();
     void updateFieldsValue();
@@ -63,6 +64,7 @@ private slots:
     void processSitesAccessReply(QList<TeraData> sites);
     void processProjectsAccessReply(QList<TeraData> projects);
     void processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query);
+    void processUserUsersGroupsReply(QList<TeraData> user_users_groups, QUrlQuery query);
     void processFormsReply(QString form_type, QString data);
     void postResultReply(QString path);
 

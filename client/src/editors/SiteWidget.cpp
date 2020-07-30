@@ -84,7 +84,7 @@ void SiteWidget::connectSignals()
     //connect(ui->btnSave, &QPushButton::clicked, this, &SiteWidget::btnSave_clicked);
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &SiteWidget::btnUpdateAccess_clicked);
     //connect(ui->btnProjects, &QPushButton::clicked, this, &SiteWidget::btnProjects_clicked);
-    connect(ui->btnDevices, &QPushButton::clicked, this, &SiteWidget::btnDevices_clicked);
+    //connect(ui->btnDevices, &QPushButton::clicked, this, &SiteWidget::btnDevices_clicked);
 
 }
 
@@ -144,7 +144,7 @@ void SiteWidget::updateProject(const TeraData *project)
     }
 }
 
-void SiteWidget::updateDevice(const TeraData *device)
+/*void SiteWidget::updateDevice(const TeraData *device)
 {
     int id_device = device->getId();
 
@@ -198,15 +198,15 @@ void SiteWidget::updateDevice(const TeraData *device)
         ui->lstDevices->setItem(ui->lstDevices->rowCount()-1, 1, item);
     }  
 
-}
+}*/
 
 void SiteWidget::updateControlsState()
 {
-    ui->btnDevices->setVisible(!m_limited);
+    //ui->btnDevices->setVisible(!m_limited);
     //ui->btnProjects->setVisible(!m_limited);
     bool is_site_admin = isSiteAdmin();
     ui->btnUpdateRoles->setVisible(is_site_admin);
-    ui->btnDevices->setVisible(is_site_admin);
+    //ui->btnDevices->setVisible(is_site_admin);
     ui->btnManageUsers->setVisible(is_site_admin);
     ui->btnManageDevices->setVisible(is_site_admin);
     ui->btnManageUserGroups->setVisible(is_site_admin);
@@ -277,7 +277,7 @@ void SiteWidget::processProjectsReply(QList<TeraData> projects)
     }
 }
 
-void SiteWidget::processDevicesReply(QList<TeraData> devices)
+/*void SiteWidget::processDevicesReply(QList<TeraData> devices)
 {
     if (!m_data)
         return;
@@ -296,7 +296,7 @@ void SiteWidget::processDevicesReply(QList<TeraData> devices)
     }
 
 }
-
+*/
 void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 {
 
@@ -375,7 +375,7 @@ void SiteWidget::btnProjects_clicked()
     m_diag_editor->open();
 }
 
-void SiteWidget::btnDevices_clicked()
+/*void SiteWidget::btnDevices_clicked()
 {
     if (m_diag_editor){
         m_diag_editor->deleteLater();
@@ -388,7 +388,7 @@ void SiteWidget::btnDevices_clicked()
     m_diag_editor->setFixedSize(size().width(), size().height());
 
     m_diag_editor->open();
-}
+}*/
 
 void SiteWidget::on_tabSiteInfos_currentChanged(int index)
 {
@@ -412,7 +412,20 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
 
     if (tab_name == "tabDevices"){
         // Devices
-        if (m_listDevices_items.isEmpty()){
+        if (!ui->wdgDevices->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgDevices->setLayout(layout);
+        }
+        if (ui->wdgDevices->layout()->count() == 0){
+            args.addQueryItem(WEB_QUERY_PARTICIPANTS, "");
+            args.addQueryItem(WEB_QUERY_SITES, "");
+            DataListWidget* deviceslist_editor = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList("device_participants.participant_name"), ui->wdgUsers);
+            deviceslist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
+            deviceslist_editor->setFilterText(tr("Seuls les appareils associés au site sont affichés."));
+            ui->wdgDevices->layout()->addWidget(deviceslist_editor);
+        }
+        /*if (m_listDevices_items.isEmpty()){
             // Connect signal to receive updates
             connect(m_comManager, &ComManager::devicesReceived, this, &SiteWidget::processDevicesReply);
 
@@ -420,7 +433,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
             args.addQueryItem(WEB_QUERY_PARTICIPANTS, "");
             args.addQueryItem(WEB_QUERY_SITES, "");
             queryDataRequest(WEB_DEVICEINFO_PATH, args);
-        }
+        }*/
     }
 
     if (tab_name == "tabUsers"){

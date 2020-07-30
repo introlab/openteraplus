@@ -158,7 +158,13 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -166,7 +172,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Résumé</string>
+       <string>Informations</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
@@ -285,138 +291,100 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabDetails">
+     <widget class="QWidget" name="tabSites">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
+        <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Détails</string>
+       <string>Sites / Projets</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QTabWidget" name="tabDeviceInfos">
+        <widget class="QTreeWidget" name="lstSites">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="tabPosition">
-          <enum>QTabWidget::West</enum>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnSites">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
          </property>
-         <property name="currentIndex">
-          <number>0</number>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les projets associés à cet appareil</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
-         <widget class="QWidget" name="tabSites">
-          <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
-            <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Sites / Projets</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QTreeWidget" name="lstSites">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <attribute name="headerVisible">
-              <bool>false</bool>
-             </attribute>
-             <column>
-              <property name="text">
-               <string notr="true">1</string>
-              </property>
-             </column>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btnSites">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>32</height>
-              </size>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="text">
-              <string>Mettre à jour les projets associés à cet appareil</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../../resources/TeraClient.qrc">
-               <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>24</width>
-               <height>24</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tabParticipants">
-          <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
-            <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Participants</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QListWidget" name="lstParticipants">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tabSessionTypes">
-          <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
-            <normaloff>:/icons/session.png</normaloff>:/icons/session.png</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Types de séances</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <item>
-            <widget class="QListWidget" name="lstSessionTypes">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabParticipants">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Participants</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QListWidget" name="lstParticipants">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabSessionTypes">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/session_type.png</normaloff>:/icons/session_type.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Types de séances</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QLabel" name="lblWarning">
+         <property name="text">
+          <string>Les types de séances sont déterminées par le type d'appareil. </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="lstSessionTypes">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>

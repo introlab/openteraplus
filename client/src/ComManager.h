@@ -124,6 +124,7 @@ signals:
     void sessionEventsReceived(QList<TeraData> events_list, QUrlQuery reply_query);
     void deviceSubtypesReceived(QList<TeraData> device_subtypes_list, QUrlQuery reply_query);
     void userGroupsReceived(QList<TeraData> user_groups_list, QUrlQuery reply_query);
+    void userUserGroupsReceived(QList<TeraData> user_users_groups_list, QUrlQuery reply_query);
     void servicesReceived(QList<TeraData> services_list, QUrlQuery reply_query);
     void servicesProjectsReceived(QList<TeraData> projects_list, QUrlQuery reply_query);
     void servicesProjectsRolesReceived(QList<TeraData> projects_roles_list, QUrlQuery reply_query);

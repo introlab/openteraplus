@@ -55,7 +55,7 @@ private slots:
     void lstSites_itemExpanded(QTreeWidgetItem* item);
     void lstSites_itemChanged(QTreeWidgetItem* item, int column);
 
-    void on_tabDeviceInfos_currentChanged(int index);
+    void on_tabNav_currentChanged(int index);
 };
 
 #endif // DEVICEWIDGET_H

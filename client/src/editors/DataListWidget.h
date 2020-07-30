@@ -21,6 +21,7 @@ class DataListWidget :  public QWidget
 public:
     explicit DataListWidget(ComManager* comMan, TeraDataTypes data_type, QWidget *parent = nullptr);
     explicit DataListWidget(ComManager* comMan, TeraDataTypes data_type, QUrlQuery args, QWidget *parent = nullptr);
+    explicit DataListWidget(ComManager* comMan, TeraDataTypes data_type, QUrlQuery args, QStringList extra_display_fields = QStringList(), QWidget *parent = nullptr);
     explicit DataListWidget(ComManager* comMan, TeraDataTypes data_type, QString query_path, QUrlQuery args, QStringList extra_display_fields = QStringList(), QWidget *parent = nullptr);
     ~DataListWidget();
 

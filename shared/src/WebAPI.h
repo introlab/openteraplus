@@ -6,6 +6,7 @@
 #define WEB_LOGOUT_PATH                     "/api/user/logout"
 #define WEB_USERINFO_PATH                   "/api/user/users"
 #define WEB_USERGROUPINFO_PATH              "/api/user/usergroups"
+#define WEB_USERUSERGROUPINFO_PATH          "/api/user/users/usergroups"
 #define WEB_SITEINFO_PATH                   "/api/user/sites"
 #define WEB_PROJECTINFO_PATH                "/api/user/projects"
 #define WEB_SITEACCESS_PATH                 "/api/user/siteaccess"

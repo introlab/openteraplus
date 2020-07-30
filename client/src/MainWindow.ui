@@ -152,7 +152,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
             </property>
             <property name="icon">
              <iconset resource="../resources/TeraClient.qrc">
-              <normaloff>:/icons/ok.png</normaloff>:/icons/ok.png</iconset>
+              <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
             </property>
            </widget>
           </item>
@@ -620,7 +620,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
                <x>0</x>
                <y>0</y>
                <width>276</width>
-               <height>289</height>
+               <height>226</height>
               </rect>
              </property>
              <attribute name="icon">
