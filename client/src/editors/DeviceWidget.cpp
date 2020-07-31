@@ -26,6 +26,8 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
     ui->wdgDevice->setHighlightConditions(false);
     ui->wdgDevice->setComManager(m_comManager);
 
+    setData(data);
+
     /*if (!dataIsNew()){
         // Loads first detailled informations tab
         on_tabDeviceInfos_currentChanged(0);
@@ -58,6 +60,32 @@ void DeviceWidget::updateControlsState()
 {
    ui->tabSites->setEnabled(!dataIsNew());
    //ui->tabDetails->setEnabled(!dataIsNew());
+
+   if (dataIsNew() && ui->tabNav->count()>1){
+
+       // Move sites / projects list to first tab
+       ui->tabSites->layout()->removeWidget(ui->lstSites);
+       ui->tabDashboard->layout()->removeWidget(ui->frameButtons);
+
+       QLabel* lbl = new QLabel(tr("Sites / Projets associés"));
+       QFont labelFont;
+       labelFont.setBold(true);
+       labelFont.setPointSize(10);
+       lbl->setFont(labelFont);
+
+       ui->tabDashboard->layout()->addWidget(lbl);
+       ui->tabDashboard->layout()->addWidget(ui->lstSites);
+       ui->tabDashboard->layout()->addWidget(ui->frameButtons);
+       while (ui->tabNav->count() > 1)
+           ui->tabNav->removeTab(1);
+
+       // Query sites and projects if needed
+       if (m_listSites_items.isEmpty() || m_listProjects_items.isEmpty()){
+           QUrlQuery args;
+           args.addQueryItem(WEB_QUERY_LIST, "true");
+           queryDataRequest(WEB_SITEINFO_PATH, args);
+       }
+   }
 }
 
 void DeviceWidget::updateFieldsValue()

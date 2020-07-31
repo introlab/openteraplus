@@ -142,9 +142,8 @@ void UserWidget::updateControlsState(){
         ui->mainWidget->layout()->addWidget(lblGroups);
         ui->mainWidget->layout()->addWidget(ui->lstGroups);
         ui->mainWidget->layout()->addWidget(ui->frameButtons);
-        ui->tabMain->removeTab(1);
-        ui->tabMain->removeTab(1);
-        ui->tabMain->removeTab(1);
+        while (ui->tabMain->count() > 1)
+            ui->tabMain->removeTab(1);
     }
 }
 
