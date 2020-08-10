@@ -110,7 +110,9 @@ void UserGroupWidget::updateSiteAccess(const TeraData *access)
         if (access->hasFieldName("site_access_inherited")){
             if (access->getFieldValue("site_access_inherited").toBool()){
                 // Inherited access - disable combobox
-                combo_roles->setDisabled(true);
+                //combo_roles->setDisabled(true);
+                if (combo_roles->count() == 3)
+                    combo_roles->removeItem(0); // Remove "no role" item
             }
         }
     }

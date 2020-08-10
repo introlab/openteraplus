@@ -94,9 +94,12 @@ void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
     int id_user_group = access->getFieldValue("id_user_group").toInt();
     QString site_role = access->getFieldValue("site_access_role").toString();
     QComboBox* combo_roles;
+    QTableWidgetItem* inherited_item;
+
     if (m_tableUserGroups_items.contains(id_user_group)){
         item = m_tableUserGroups_items[id_user_group];
         combo_roles = dynamic_cast<QComboBox*>(ui->tableUserGroups->cellWidget(item->row(),1));
+        inherited_item = ui->tableUserGroups->item(item->row(), 2);
 
     }else{
         // Not there - must add the usergroup and role
@@ -107,11 +110,28 @@ void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
         ui->tableUserGroups->setItem(current_row, 0, item);
         combo_roles = buildRolesComboBox();
         ui->tableUserGroups->setCellWidget(current_row, 1, combo_roles);
+        inherited_item = new QTableWidgetItem("");
+        inherited_item->setForeground(Qt::green);
+        ui->tableUserGroups->setItem(current_row, 2, inherited_item);
         m_tableUserGroups_items.insert(id_user_group, item);
     }
 
     if (combo_roles){
         int index = -1;
+
+        if (inherited_item)
+            inherited_item->setText("");
+
+        if (access->hasFieldName("site_access_inherited")){
+            if (access->getFieldValue("site_access_inherited").toBool()){
+                // Inherited access - disable combobox
+                //combo_roles->setDisabled(true);
+                if (combo_roles->count() == 3)
+                    combo_roles->removeItem(0); // Remove "no role" item
+                if (inherited_item)
+                    inherited_item->setText("Administrateur / Utilisateur dans au moins un projet du site");
+            }
+        }
         index = combo_roles->findData(site_role);
         if (index >= 0){
             combo_roles->setCurrentIndex(index);
@@ -120,13 +140,6 @@ void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
         }
         combo_roles->setProperty("original_index", index);
         combo_roles->setEnabled(!m_limited);
-
-        if (access->hasFieldName("site_access_inherited")){
-            if (access->getFieldValue("site_access_inherited").toBool()){
-                // Inherited access - disable combobox
-                combo_roles->setDisabled(true);
-            }
-        }
     }
 
 }
@@ -237,6 +250,15 @@ bool SiteWidget::isSiteAdmin()
     }
 }
 
+void SiteWidget::queryUserGroupsSiteAccess()
+{
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
+    queryDataRequest(WEB_SITEACCESS_PATH, args);
+
+}
+
 void SiteWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_SITE){
@@ -324,6 +346,10 @@ void SiteWidget::processPostOKReply(QString path)
     if (path == WEB_SITEINFO_PATH){
         // Update current user access list for the newly created site
         m_comManager->doUpdateCurrentUser();
+    }
+    if (path == WEB_SITEACCESS_PATH){
+        // Refresh roles
+        queryUserGroupsSiteAccess();
     }
 }
 
@@ -464,9 +490,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
         // User groups
         if (m_tableUserGroups_items.isEmpty()){
             // Query
-            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
-            queryDataRequest(WEB_SITEACCESS_PATH, args);
+            queryUserGroupsSiteAccess();
         }
     }
 

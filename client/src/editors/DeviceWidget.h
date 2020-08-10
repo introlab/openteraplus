@@ -52,10 +52,14 @@ private slots:
 
     void btnSaveSites_clicked();
 
+    void deleteDataReply(QString path, int id);
+
     void lstSites_itemExpanded(QTreeWidgetItem* item);
     void lstSites_itemChanged(QTreeWidgetItem* item, int column);
 
     void on_tabNav_currentChanged(int index);
+    void on_lstParticipants_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void on_btnRemoveParticipant_clicked();
 };
 
 #endif // DEVICEWIDGET_H

@@ -114,6 +114,7 @@ void DeviceWidget::connectSignals()
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &DeviceWidget::processDeviceParticipantsReply);
     connect(m_comManager, &ComManager::sessionTypesDeviceTypesReceived, this, &DeviceWidget::processSessionTypesReply);
     connect(m_comManager, &ComManager::projectsReceived, this, &DeviceWidget::processProjectsReply);
+    connect(m_comManager, &ComManager::deleteResultsOK, this, &DeviceWidget::deleteDataReply);
 
     connect(ui->btnSites, &QPushButton::clicked, this, &DeviceWidget::btnSaveSites_clicked);
 
@@ -169,9 +170,11 @@ void DeviceWidget::updateParticipant(TeraData *participant)
     QString participant_name = participant->getFieldValue("participant_name").toString();
     if (m_listParticipants_items.contains(id_participant)){
         QListWidgetItem* item = m_listParticipants_items[id_participant];
+        item->setData(Qt::UserRole, participant->getFieldValue("id_device_participant"));
         item->setText(participant_name);
     }else{
         QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant_name);
+        item->setData(Qt::UserRole, participant->getFieldValue("id_device_participant"));
         ui->lstParticipants->addItem(item);
         m_listParticipants_items[id_participant] = item;
     }
@@ -363,6 +366,21 @@ void DeviceWidget::btnSaveSites_clicked()
 
 }
 
+void DeviceWidget::deleteDataReply(QString path, int id)
+{
+    if (path == WEB_DEVICEPARTICIPANTINFO_PATH){
+        // A participant device association was deleted
+        for (int i=0; i<ui->lstParticipants->count(); i++){
+            if (ui->lstParticipants->item(i)->data(Qt::UserRole).toInt() == id){
+                int id_participant = m_listParticipants_items.key(ui->lstParticipants->item(i));
+                m_listParticipants_items.remove(id_participant);
+                delete ui->lstParticipants->takeItem(i);
+                return;
+            }
+        }
+    }
+}
+
 void DeviceWidget::lstSites_itemExpanded(QTreeWidgetItem *item)
 {
     /*if (item->childCount() == 0){
@@ -446,5 +464,26 @@ void DeviceWidget::on_tabNav_currentChanged(int index)
             args.addQueryItem(WEB_QUERY_ID_DEVICE_TYPE, m_data->getFieldValue("device_type").toString());
             queryDataRequest(WEB_SESSIONTYPEDEVICETYPE_PATH, args);
         }
+    }
+}
+
+void DeviceWidget::on_lstParticipants_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+   Q_UNUSED(previous)
+   ui->btnRemoveParticipant->setEnabled(current);
+}
+
+void DeviceWidget::on_btnRemoveParticipant_clicked()
+{
+    if (!ui->lstParticipants->currentItem()){
+        ui->btnRemoveParticipant->setEnabled(false);
+        return;
+    }
+
+    GlobalMessageBox msg;
+    int rval = msg.showYesNo(tr("Retirer l'appareil"), tr("Êtes-vous sûrs de vouloir retirer cet appareil de ce participant?\nSi l'appareil est présentement déployé, les données ne seront plus collectés et l'appareil ne sera plus utilisable pendant les séances."));
+    if (rval == QMessageBox::Yes){
+        int id_device_participant = ui->lstParticipants->currentItem()->data(Qt::UserRole).toInt();
+        deleteDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, id_device_participant);
     }
 }

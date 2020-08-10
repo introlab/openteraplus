@@ -64,6 +64,8 @@ private:
     bool validateData();
 
     bool isSiteAdmin();
+
+    void queryUserGroupsSiteAccess();
 };
 
 #endif // SITEWIDGET_H
