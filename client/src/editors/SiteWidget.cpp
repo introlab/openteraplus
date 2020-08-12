@@ -242,12 +242,13 @@ bool SiteWidget::validateData()
 
 bool SiteWidget::isSiteAdmin()
 {
-    if (m_data){
+    /*if (m_data){
         return m_comManager->getCurrentUserSiteRole(m_data->getId())=="admin";
     }
     else{
         return false;
-    }
+    }*/
+    return !m_limited;
 }
 
 void SiteWidget::queryUserGroupsSiteAccess()
@@ -444,8 +445,8 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
             ui->wdgDevices->setLayout(layout);
         }
         if (ui->wdgDevices->layout()->count() == 0){
-            args.addQueryItem(WEB_QUERY_PARTICIPANTS, "");
-            args.addQueryItem(WEB_QUERY_SITES, "");
+            args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "");
+            args.addQueryItem(WEB_QUERY_WITH_SITES, "");
             DataListWidget* deviceslist_editor = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList("device_participants.participant_name"), ui->wdgUsers);
             deviceslist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
             deviceslist_editor->setFilterText(tr("Seuls les appareils associés au site sont affichés."));

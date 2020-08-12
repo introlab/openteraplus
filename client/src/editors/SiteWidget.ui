@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1074</width>
-    <height>604</height>
+    <height>620</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -307,8 +307,8 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1025</width>
-            <height>377</height>
+            <width>1038</width>
+            <height>385</height>
            </rect>
           </property>
           <attribute name="label">
@@ -763,7 +763,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="iconSize">
           <size>

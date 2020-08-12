@@ -216,8 +216,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "service";
     case TERADATA_SERVICE_PROJECT:
         return "service_project";
-    case TERADATA_SERVICE_PROJECT_ROLE:
-        return "service_project_role";
+    case TERADATA_SERVICE_ACCESS:
+        return "service_access";
     case TERADATA_STATS:
         return "stats";
     }
@@ -276,8 +276,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Service");
     case TERADATA_SERVICE_PROJECT:
         return tr("Service: projet");
-    case TERADATA_SERVICE_PROJECT_ROLE:
-        return tr("Service: Projet: Role");
+    case TERADATA_SERVICE_ACCESS:
+        return tr("Service: Accès");
     case TERADATA_STATS:
         return tr("Statistiques");
     }
@@ -308,7 +308,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_USERGROUPINFO_PATH)           return TERADATA_USERGROUP;
     if (path==WEB_SERVICEINFO_PATH)             return TERADATA_SERVICE;
     if (path==WEB_SERVICEPROJECTINFO_PATH)      return TERADATA_SERVICE_PROJECT;
-    if (path==WEB_SERVICEPROJECTROLEINFO_PATH)  return TERADATA_SERVICE_PROJECT_ROLE;
+    if (path==WEB_SERVICEACCESSINFO_PATH)       return TERADATA_SERVICE_ACCESS;
     if (path==WEB_USERUSERGROUPINFO_PATH)       return TERADATA_USERUSERGROUP;
     if (path==WEB_STATS_PATH)                   return TERADATA_STATS;
 

@@ -392,8 +392,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::deviceSubtypesReceived;
     case TERADATA_SERVICE:
         return &ComManager::servicesReceived;
-    case TERADATA_SERVICE_PROJECT_ROLE:
-        return &ComManager::servicesProjectsRolesReceived;
+    case TERADATA_SERVICE_ACCESS:
+        return &ComManager::servicesAccessReceived;
     default:
         LOG_WARNING("Signal for object " + TeraData::getDataTypeName(data_type) + " unspecified.", "ComManager::getSignalFunctionForDataType");
         return nullptr;
@@ -532,8 +532,8 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_SERVICE_PROJECT:
         emit servicesProjectsReceived(items, reply_query);
         break;
-    case TERADATA_SERVICE_PROJECT_ROLE:
-        emit servicesProjectsRolesReceived(items, reply_query);
+    case TERADATA_SERVICE_ACCESS:
+        emit servicesAccessReceived(items, reply_query);
         break;
     case TERADATA_STATS:
         if (items.count() > 0)

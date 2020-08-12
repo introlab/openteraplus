@@ -127,7 +127,7 @@ signals:
     void userUserGroupsReceived(QList<TeraData> user_users_groups_list, QUrlQuery reply_query);
     void servicesReceived(QList<TeraData> services_list, QUrlQuery reply_query);
     void servicesProjectsReceived(QList<TeraData> projects_list, QUrlQuery reply_query);
-    void servicesProjectsRolesReceived(QList<TeraData> projects_roles_list, QUrlQuery reply_query);
+    void servicesAccessReceived(QList<TeraData> access_list, QUrlQuery reply_query);
     void statsReceived(TeraData stats, QUrlQuery reply_query);
 
     //void queryResultsReceived(QString object, QUrlQuery url_query, QString data);

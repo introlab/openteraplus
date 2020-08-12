@@ -1000,7 +1000,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tabParticipant">
           <attribute name="icon">
