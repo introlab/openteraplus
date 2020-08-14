@@ -129,19 +129,19 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
 
     if (data_type == TERADATA_SITE){
         m_data_editor = new SiteWidget(m_comManager, data);
-        m_data_editor->setLimited(m_comManager->getCurrentUserSiteRole(data->getId()) != "admin" && data->getId()>0);
+        m_data_editor->setLimited(!(m_comManager->isCurrentUserSiteAdmin(data->getId())) && data->getId()>0);
     }
 
     if (data_type == TERADATA_PROJECT){
         m_data_editor = new ProjectWidget(m_comManager, data);
-        m_data_editor->setLimited(m_comManager->getCurrentUserProjectRole(data->getId()) != "admin" && data->getId()>0);
+        m_data_editor->setLimited(!(m_comManager->isCurrentUserProjectAdmin(data->getId())) && data->getId()>0);
     }
 
     if (data_type == TERADATA_GROUP){
         m_data_editor = new GroupWidget(m_comManager, data);
         bool limited = false;
         if (data->hasFieldName("id_project")){
-            limited = m_comManager->getCurrentUserProjectRole(data->getFieldValue("id_project").toInt()) != "admin" && data->getId()>0;
+            limited = !(m_comManager->isCurrentUserProjectAdmin(data->getFieldValue("id_project").toInt()));
         }
         m_data_editor->setLimited(limited);
     }
@@ -150,7 +150,7 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
         m_data_editor = new ParticipantWidget(m_comManager, data);
         bool limited = true;
         if (data->hasFieldName("id_project")){
-            limited = m_comManager->getCurrentUserProjectRole(data->getFieldValue("id_project").toInt()) != "admin";
+            limited = !(m_comManager->isCurrentUserProjectAdmin(data->getFieldValue("id_project").toInt())); //m_comManager->getCurrentUserProjectRole(data->getFieldValue("id_project").toInt()) != "admin";
         }
         if (data->getId()==0)
             limited = false;

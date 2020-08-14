@@ -35,6 +35,9 @@ private:
     void updateProject(TeraData* project);
 
     bool validateData();
+    bool validateProjects();
+
+    QJsonArray getSelectedProjectsAsJsonArray();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -45,6 +48,7 @@ private slots:
     void btnSaveProjects_clicked();
 
     void on_tabSessionTypeInfos_currentChanged(int index);
+    void on_lstProjects_itemChanged(QListWidgetItem *item);
 };
 
 #endif // SESSIONTYPEWIDGET_H

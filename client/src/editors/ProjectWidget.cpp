@@ -209,19 +209,6 @@ void ProjectWidget::updateDevice(const TeraData *device)
     }
 }
 
-void ProjectWidget::updateSessionType(const TeraData *st)
-{
-    int id_session_type = st->getId();
-    if (m_listSessionTypes_items.contains(id_session_type)){
-        QListWidgetItem* item = m_listSessionTypes_items[id_session_type];
-        item->setText(st->getFieldValue("session_type_name").toString());
-    }else{
-        QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSION)), st->getFieldValue("session_type_name").toString());
-        ui->lstSessions->addItem(item);
-        m_listSessionTypes_items[id_session_type] = item;
-    }
-}
-
 void ProjectWidget::updateServiceProject(const TeraData *sp)
 {
     int id_service_project = sp->getId();
@@ -236,6 +223,7 @@ void ProjectWidget::updateServiceProject(const TeraData *sp)
     }else{
         // Must create a new item
         item = new QListWidgetItem(service_name);
+        item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE)));
         ui->lstServices->addItem(item);
 
         m_listServices_items[id_service] = item;
@@ -259,9 +247,19 @@ void ProjectWidget::updateServiceProject(const TeraData *sp)
 
 void ProjectWidget::updateControlsState()
 {
+    bool is_site_admin = isSiteAdmin();
+
     // m_limited = true if current user isn't project admin
     ui->btnUpdateRoles->setVisible(!m_limited);
     ui->lblInherited->setVisible(!m_limited);
+
+    ui->btnManageUserGroups->setVisible(!m_limited);
+    ui->btnManageSessionTypes->setVisible(!m_limited);
+
+    ui->lstServices->setEnabled(is_site_admin);
+    ui->btnUpdateServices->setVisible(is_site_admin);
+
+    ui->btnManageServices->setVisible(is_site_admin);
 
 }
 
@@ -276,6 +274,16 @@ void ProjectWidget::updateFieldsValue()
 bool ProjectWidget::validateData()
 {
     return ui->wdgProject->validateFormData();
+}
+
+bool ProjectWidget::isSiteAdmin()
+{
+    if (m_data){
+        return m_comManager->isCurrentUserSiteAdmin(m_data->getFieldValue("id_site").toInt());
+    }
+    else{
+        return false;
+    }
 }
 
 void ProjectWidget::processFormsReply(QString form_type, QString data)
@@ -342,18 +350,6 @@ void ProjectWidget::processDevicesReply(QList<TeraData> devices)
         //}
     }
 
-}
-
-void ProjectWidget::processSessionTypesProjectReply(QList<TeraData> stps)
-{
-    if (!m_data)
-        return;
-
-    for (int i=0; i<stps.count(); i++){
-        if (stps.at(i).getFieldValue("id_project") == m_data->getId()){
-            updateSessionType(&stps.at(i));
-        }
-    }
 }
 
 void ProjectWidget::processServiceProjectsReply(QList<TeraData> services_projects)
@@ -542,11 +538,18 @@ void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
 
     if (current_tab == ui->tabSessionTypes){
         // Session types
-        if (m_listSessionTypes_items.isEmpty()){
-            connect(m_comManager, &ComManager::sessionTypesProjectsReceived, this, &ProjectWidget::processSessionTypesProjectReply);
-
+        if (!ui->wdgSessionTypes->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgSessionTypes->setLayout(layout);
+        }
+        if (ui->wdgSessionTypes->layout()->count() == 0){
             args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
-            queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
+            DataListWidget* stlist_editor = new DataListWidget(m_comManager, TERADATA_SESSIONTYPE, WEB_SESSIONTYPEPROJECT_PATH, args, QStringList(), ui->wdgSessionTypes);
+            // m_limited = true = user only, not project admin
+            stlist_editor->setPermissions(!m_limited, !m_limited);
+            stlist_editor->setFilterText(tr("Seuls les types de séance associés au projet sont affichés."));
+            ui->wdgSessionTypes->layout()->addWidget(stlist_editor);
         }
     }
 
@@ -653,4 +656,22 @@ void ProjectWidget::on_btnUpdateServices_clicked()
         document.setObject(base_obj);
         postDataRequest(WEB_SERVICEPROJECTINFO_PATH, document.toJson());
     }
+}
+
+void ProjectWidget::on_btnManageUserGroups_clicked()
+{
+    ui->tabProjectInfos->setCurrentWidget(ui->tabUserGroups);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void ProjectWidget::on_btnManageSessionTypes_clicked()
+{
+    ui->tabProjectInfos->setCurrentWidget(ui->tabSessionTypes);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void ProjectWidget::on_btnManageServices_clicked()
+{
+    ui->tabProjectInfos->setCurrentWidget(ui->tabServices);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }

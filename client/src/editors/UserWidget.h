@@ -56,6 +56,8 @@ private:
     void updateSiteAccess(const TeraData* site_access);
     void updateProjectAccess(const TeraData* project_access);
 
+    bool validateUserGroups();
+
 public slots:
 
 

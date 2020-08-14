@@ -295,7 +295,7 @@ TeraData &ComManager::getCurrentUser()
     return m_currentUser;
 }
 
-QString ComManager::getCurrentUserSiteRole(int site_id)
+QString ComManager::getCurrentUserSiteRole(const int &site_id)
 {
     QString rval = "";
 
@@ -317,7 +317,7 @@ QString ComManager::getCurrentUserSiteRole(int site_id)
     return rval;
 }
 
-QString ComManager::getCurrentUserProjectRole(int project_id)
+QString ComManager::getCurrentUserProjectRole(const int &project_id)
 {
     QString rval = "";
 
@@ -337,6 +337,16 @@ QString ComManager::getCurrentUserProjectRole(int project_id)
     }
 
     return rval;
+}
+
+bool ComManager::isCurrentUserProjectAdmin(const int &project_id)
+{
+    return getCurrentUserProjectRole(project_id) == "admin";
+}
+
+bool ComManager::isCurrentUserSiteAdmin(const int &site_id)
+{
+    return getCurrentUserSiteRole(site_id) == "admin";
 }
 
 bool ComManager::isCurrentUserSuperAdmin()
@@ -394,6 +404,10 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::servicesReceived;
     case TERADATA_SERVICE_ACCESS:
         return &ComManager::servicesAccessReceived;
+    case TERADATA_SERVICE_PROJECT:
+        return &ComManager::servicesProjectsReceived;
+    case TERADATA_SESSIONTYPEPROJECT:
+        return &ComManager::sessionTypesProjectsReceived;
     default:
         LOG_WARNING("Signal for object " + TeraData::getDataTypeName(data_type) + " unspecified.", "ComManager::getSignalFunctionForDataType");
         return nullptr;

@@ -29,7 +29,6 @@ private slots:
     void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processGroupsReply(QList<TeraData> groups);
     void processDevicesReply(QList<TeraData> devices);
-    void processSessionTypesProjectReply(QList<TeraData> stps);
     void processServiceProjectsReply(QList<TeraData> services);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
 
@@ -44,6 +43,12 @@ private slots:
 
     void on_btnUpdateServices_clicked();
 
+    void on_btnManageUserGroups_clicked();
+
+    void on_btnManageSessionTypes_clicked();
+
+    void on_btnManageServices_clicked();
+
 private:
     Ui::ProjectWidget *ui;
 
@@ -51,7 +56,6 @@ private:
     QMap<int, QTableWidgetItem*>  m_tableUserGroups_items;
     QMap<int, QTableWidgetItem*>  m_tableParticipants_items;
     QMap<int, QListWidgetItem*>   m_listGroups_items;
-    QMap<int, QListWidgetItem*>   m_listSessionTypes_items;
     QMap<int, QTableWidgetItem*>  m_listDevices_items;
 
     QMap<int, QListWidgetItem*>   m_listServicesProjects_items;
@@ -65,12 +69,13 @@ private:
     void updateUserGroupProjectAccess(const TeraData* access);
     void updateGroup(const TeraData* group);
     void updateDevice(const TeraData* device);
-    void updateSessionType(const TeraData* st);
     void updateServiceProject(const TeraData* sp);
 
     void updateControlsState();
     void updateFieldsValue();
     bool validateData();
+
+    bool isSiteAdmin();
 };
 
 #endif // ProjectWidget_H

@@ -54,8 +54,10 @@ public:
     void stopSession(const TeraData& session, const int &id_service = 0);
 
     TeraData &getCurrentUser();
-    QString getCurrentUserSiteRole(int site_id);
-    QString getCurrentUserProjectRole(int project_id);
+    QString getCurrentUserSiteRole(const int &site_id);
+    QString getCurrentUserProjectRole(const int &project_id);
+    bool isCurrentUserProjectAdmin(const int& project_id);
+    bool isCurrentUserSiteAdmin(const int& site_id);
     bool isCurrentUserSuperAdmin();
     typedef void (ComManager::* signal_ptr)(QList<TeraData>, QUrlQuery);
 

@@ -420,8 +420,8 @@ int ProjectNavigator::getParticipantGroupId(QTreeWidgetItem *part_item)
 void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
 {
     // Get user access for current site and project
-    bool is_site_admin = m_comManager->getCurrentUserSiteRole(m_currentSiteId)=="admin";
-    bool is_project_admin = m_comManager->getCurrentUserProjectRole(m_currentProjectId)=="admin";
+    bool is_site_admin = m_comManager->isCurrentUserSiteAdmin(m_currentSiteId);
+    bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(m_currentProjectId);
     bool at_least_one_enabled = false;
     TeraDataTypes item_type = getItemType(current_item);
 

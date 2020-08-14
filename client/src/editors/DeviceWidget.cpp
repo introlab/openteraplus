@@ -45,6 +45,18 @@ void DeviceWidget::saveData(bool signal)
     // Site data
     QJsonDocument device_data = ui->wdgDevice->getFormDataJson(m_data->isNew());
 
+    if (m_data->isNew() && ui->lstSites->isEnabled()){
+        QJsonObject base_obj = device_data.object();
+        QJsonObject base_st = base_obj["device"].toObject();
+        QJsonArray projects = getSelectedProjectsAsJsonArray();
+        // For new session types, also sends the projects at the same time
+        if (!projects.isEmpty()){
+            base_st.insert("device_projects", projects);
+            base_obj.insert("device", base_st);
+            device_data.setObject(base_obj);
+        }
+    }
+
     //qDebug() << user_data.toJson();
     postDataRequest(WEB_DEVICEINFO_PATH, device_data.toJson());
 
@@ -102,6 +114,10 @@ void DeviceWidget::updateFieldsValue()
 
 bool DeviceWidget::validateData()
 {
+    if (dataIsNew()){
+        if (!validateSitesProjects())
+            return false;
+    }
     return ui->wdgDevice->validateFormData();
 }
 
@@ -192,6 +208,50 @@ void DeviceWidget::updateSessionType(TeraData *session_type)
         ui->lstSessionTypes->addItem(item);
         m_listSessionTypes_items[id_session_type] = item;
     }
+}
+
+bool DeviceWidget::validateSitesProjects()
+{
+    if (!m_comManager->isCurrentUserSuperAdmin()){
+        bool at_least_one_selected = false;
+        for (int i=0; i<m_listSites_items.count(); i++){
+            if (m_listSites_items.values().at(i)->checkState(0) == Qt::Checked){
+                at_least_one_selected = true;
+                break;
+            }
+        }
+        if (!at_least_one_selected){
+            for (int i=0; i<m_listProjects_items.count(); i++){
+                if (m_listProjects_items.values().at(i)->checkState(0) == Qt::Checked){
+                    at_least_one_selected = true;
+                    break;
+                }
+            }
+        }
+
+        if (!at_least_one_selected){
+            // Warning: that device not having any site/project meaning that it will be not available to the current user
+            GlobalMessageBox msgbox;
+            msgbox.showError(tr("Attention"), tr("Aucun site / projet n'a été spécifié.\nVous devez spécifier au moins un site / projet"));
+            return false;
+        }
+    }
+    return true;
+}
+
+QJsonArray DeviceWidget::getSelectedProjectsAsJsonArray()
+{
+    QJsonArray projects;
+    for (int i=0; i<m_listProjects_items.count(); i++){
+        int project_id = m_listProjects_items.keys().at(i);
+        QTreeWidgetItem* item = m_listProjects_items.values().at(i);
+        if (item->checkState(0) == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_project", project_id);
+            projects.append(data_obj);
+        }
+    }
+    return projects;
 }
 
 void DeviceWidget::processFormsReply(QString form_type, QString data)
@@ -323,6 +383,10 @@ void DeviceWidget::processProjectsReply(QList<TeraData> projects)
 
 void DeviceWidget::btnSaveSites_clicked()
 {
+
+    if (!validateSitesProjects())
+        return;
+
     QJsonDocument document;
     QJsonObject base_obj;
     QJsonArray devices;

@@ -41,6 +41,9 @@ private:
     void updateParticipant(TeraData *participant);
     void updateSessionType(TeraData *session_type);
 
+    bool validateSitesProjects();
+    QJsonArray getSelectedProjectsAsJsonArray();
+
 private slots:
     void processFormsReply(QString form_type, QString data);
     void processSitesReply(QList<TeraData> sites);

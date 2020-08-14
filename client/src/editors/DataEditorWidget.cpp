@@ -359,13 +359,15 @@ void DataEditorWidget::saveButtonClicked()
     if (!validateData()){
         QStringList invalids = m_mainForm->getInvalidFormDataLabels();
 
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
+        if (!invalids.isEmpty()){
+            QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
+            for (QString field:invalids){
+                msg += "<li>" + field + "</li>";
+            }
+            msg += "</ul>";
+            GlobalMessageBox msgbox(this);
+            msgbox.showError(tr("Champs invalides"), msg);
         }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
         return;
     }
 

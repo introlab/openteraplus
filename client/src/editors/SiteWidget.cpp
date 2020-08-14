@@ -242,13 +242,12 @@ bool SiteWidget::validateData()
 
 bool SiteWidget::isSiteAdmin()
 {
-    /*if (m_data){
-        return m_comManager->getCurrentUserSiteRole(m_data->getId())=="admin";
+    if (m_data){
+        return m_comManager->isCurrentUserSiteAdmin((m_data->getId()));
     }
     else{
         return false;
-    }*/
-    return !m_limited;
+    }
 }
 
 void SiteWidget::queryUserGroupsSiteAccess()
@@ -423,9 +422,9 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
 
-    QString tab_name = ui->tabSiteInfos->widget(index)->objectName();
+    QWidget* current_tab = ui->tabSiteInfos->widget(index);
 
-    if (tab_name == "tabProjects"){
+    if (current_tab == ui->tabProjects){
         // Projects
         if (m_listProjects_items.isEmpty()){
             // Connect signal to receive updates
@@ -437,7 +436,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
         }
     }
 
-    if (tab_name == "tabDevices"){
+    if (current_tab == ui->tabDevices){
         // Devices
         if (!ui->wdgDevices->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
@@ -463,7 +462,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
         }*/
     }
 
-    if (tab_name == "tabUsers"){
+    if (current_tab == ui->tabUsers){
         // Users
         if (!ui->wdgUsers->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
@@ -487,7 +486,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
         }*/
     }
 
-    if (tab_name == "tabUserGroups"){
+    if (current_tab == ui->tabUserGroups){
         // User groups
         if (m_tableUserGroups_items.isEmpty()){
             // Query
@@ -499,25 +498,25 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
 
 void SiteWidget::on_btnManageUsers_clicked()
 {
-    ui->tabSiteInfos->setCurrentIndex(0);
-    ui->tabNav->setCurrentIndex(1);
+    ui->tabSiteInfos->setCurrentWidget(ui->tabUsers);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }
 
 void SiteWidget::on_btnManageProjects_clicked()
 {
-    ui->tabSiteInfos->setCurrentIndex(3);
-    ui->tabNav->setCurrentIndex(1);
+    ui->tabSiteInfos->setCurrentWidget(ui->tabProjects);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }
 
 void SiteWidget::on_btnManageDevices_clicked()
 {
-    ui->tabSiteInfos->setCurrentIndex(2);
-    ui->tabNav->setCurrentIndex(1);
+    ui->tabSiteInfos->setCurrentWidget(ui->tabDevices);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }
 
 void SiteWidget::on_btnManageUserGroups_clicked()
 {
-    ui->tabSiteInfos->setCurrentIndex(1);
-    ui->tabNav->setCurrentIndex(1);
+    ui->tabSiteInfos->setCurrentWidget(ui->tabUserGroups);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }
 

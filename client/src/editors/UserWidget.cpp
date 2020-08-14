@@ -79,13 +79,6 @@ void UserWidget::saveData(bool signal){
             base_user.insert("user_user_groups", groups);
             base_obj.insert("user", base_user);
             user_data.setObject(base_obj);
-        }else{
-            if (!m_comManager->isCurrentUserSuperAdmin()){
-                // Warning: that user not having any user group meaning that it will be not available to the current user
-                GlobalMessageBox msgbox;
-                msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
-                return;
-            }
         }
     }
 
@@ -173,6 +166,11 @@ void UserWidget::updateFieldsValue(){
 }
 
 bool UserWidget::validateData(){
+    if (dataIsNew()){
+        // For new data, if not super admin, at least one user group must be specified
+        if (!validateUserGroups())
+            return false;
+    }
     return ui->wdgUser->validateFormData();
 }
 
@@ -259,6 +257,26 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
     ui->tableRoles->setItem(current_row,1,item);
     item = new QTableWidgetItem(getRoleName(project_access->getFieldValue("project_access_role").toString()));
     ui->tableRoles->setItem(current_row,2,item);
+}
+
+bool UserWidget::validateUserGroups()
+{
+    if (!m_comManager->isCurrentUserSuperAdmin()){
+        bool at_least_one_selected = false;
+        for (int i=0; i<m_listUserGroups_items.count(); i++){
+            if (m_listUserGroups_items.values().at(i)->checkState() == Qt::Checked){
+                at_least_one_selected = true;
+                break;
+            }
+        }
+        if (!at_least_one_selected){
+            // Warning: that user not having any user group meaning that it will be not available to the current user
+            GlobalMessageBox msgbox;
+            msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
+            return false;
+        }
+    }
+    return true;
 }
 
 void UserWidget::processUsersReply(QList<TeraData> users)
@@ -418,12 +436,8 @@ void UserWidget::on_tabMain_currentChanged(int index)
 void UserWidget::on_btnUpdateGroups_clicked()
 {
 
-    if (!m_comManager->isCurrentUserSuperAdmin()){
-        // Warning: that user not having any user group meaning that it will be not available to the current user
-        GlobalMessageBox msgbox;
-        msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
+    if (!validateUserGroups())
         return;
-    }
 
     /*QJsonDocument document;
     QJsonObject base_obj;

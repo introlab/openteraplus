@@ -160,9 +160,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="tabDashBoard">
+     <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
         <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
