@@ -157,10 +157,10 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
         }
     }
 
-    QString color_field = TeraData::getDataTypeName(m_dataType) + "_color";
+    /*QString color_field = TeraData::getDataTypeName(m_dataType) + "_color";
     if (data->hasFieldName(color_field)){
         item->setForeground(QColor(data->getFieldValue(color_field).toString()));
-    }
+    }*/
 
     if (select_item){
         ui->lstData->setCurrentItem(item);

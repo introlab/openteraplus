@@ -403,7 +403,8 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
             ui->tableSummary->setRowCount(ui->tableSummary->rowCount()+1);
             int current_row = ui->tableSummary->rowCount()-1;
-            QTableWidgetItem* item = new QTableWidgetItem(part_info["participant_name"].toString());
+            QTableWidgetItem* item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)),
+                                                                part_info["participant_name"].toString());
             m_tableParticipants_items[part_id] = item;
             ui->tableSummary->setItem(current_row, 0, item);
 

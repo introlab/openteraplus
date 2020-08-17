@@ -9,6 +9,7 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
     ui->setupUi(this);
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
+    ui->tabNav->setCurrentIndex(0);
 
     setLimited(false);
 

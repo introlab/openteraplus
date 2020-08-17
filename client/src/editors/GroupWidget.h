@@ -34,11 +34,13 @@ private:
 
     void updateParticipant(TeraData* participant);
     void updateStats();
+    void setData(const TeraData* data);
 
     bool validateData();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
     void postResultReply(QString path);
     void processParticipants(QList<TeraData> participants);
 

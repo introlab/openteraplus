@@ -124,6 +124,19 @@ void GroupWidget::updateStats()
     ui->lblParticipant->setText(QString::number(ui->tableParticipants->rowCount()) + tr(" participant(s)"));
 }
 
+void GroupWidget::setData(const TeraData *data)
+{
+    DataEditorWidget::setData(data);
+
+    if (!dataIsNew()){
+        // Query stats
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_GROUP, QString::number(m_data->getId()));
+        queryDataRequest(WEB_STATS_PATH, args);
+
+    }
+}
+
 bool GroupWidget::validateData(){
     bool valid = false;
 
@@ -138,6 +151,22 @@ void GroupWidget::processFormsReply(QString form_type, QString data)
         ui->wdgGroup->buildUiFromStructure(data);
         return;
     }
+}
+
+void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
+{
+    // Check if stats are for us
+    if (!reply_query.hasQueryItem("id_group"))
+        return;
+
+    if (reply_query.queryItemValue("id_group").toInt() != m_data->getId())
+        return;
+
+    // Fill stats information
+    ui->lblParticipant->setText(stats.getFieldValue("participants_total_count").toString() + tr(" Participants") + "\n"
+                                + stats.getFieldValue("participants_enabled_count").toString() + tr(" Participants actifs"));
+    ui->lblSessions->setText(stats.getFieldValue("sessions_total_count").toString() + tr(" Séances planifiées \nou réalisées"));
+
 }
 
 void GroupWidget::postResultReply(QString path)
@@ -166,6 +195,7 @@ void GroupWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &GroupWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &GroupWidget::postResultReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &GroupWidget::processParticipants);
+    connect(m_comManager, &ComManager::statsReceived, this, &GroupWidget::processStatsReply);
 }
 
 
