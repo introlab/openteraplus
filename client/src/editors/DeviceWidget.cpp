@@ -49,7 +49,7 @@ void DeviceWidget::saveData(bool signal)
         QJsonObject base_obj = device_data.object();
         QJsonObject base_st = base_obj["device"].toObject();
         QJsonArray projects = getSelectedProjectsAsJsonArray();
-        // For new session types, also sends the projects at the same time
+        // For new device, also sends the projects at the same time
         if (!projects.isEmpty()){
             base_st.insert("device_projects", projects);
             base_obj.insert("device", base_st);

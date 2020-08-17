@@ -486,6 +486,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_USERUSERGROUP:
         emit userUserGroupsReceived(items, reply_query);
+        break;
     case TERADATA_SITE:
         emit sitesReceived(items, reply_query);
         break;

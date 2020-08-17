@@ -28,26 +28,32 @@ private slots:
     void processFormsReply(QString form_type, QString data);
     void processSiteAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
-    void processUsersReply(QList<TeraData> users, QUrlQuery reply_query);
+    void processSitesReply(QList<TeraData> sites);
+    void processProjectsReply(QList<TeraData> projects);
+    void processUserUserGroupsReply(QList<TeraData> users_user_groups);
     void processPostOKReply(QString path);
 
     void btnUpdateSiteAccess_clicked();
     void btnUpdateProjectAccess_clicked();
 
-    void on_tabUserGroupInfos_currentChanged(int index);
+    void on_tabNav_currentChanged(int index);
+
+    void on_btnUpdateUsers_clicked();
 
 private:
     Ui::UserGroupWidget *ui;
 
     QMap<int, QTableWidgetItem*> m_tableProjects_items;
     QMap<int, QTableWidgetItem*> m_tableSites_items;
-    QMap<int, QListWidgetItem*>  m_lstUsers_items;
+
+    QMap<int, QListWidgetItem*>  m_listUsersUserGroups_items;
+    QMap<int, QListWidgetItem*>  m_listUsers_items;
 
     void connectSignals();
 
     void updateSiteAccess(const TeraData* access);
     void updateProjectAccess(const TeraData* access);
-    void updateUser(const TeraData* user);
+    void updateUserUserGroup(const TeraData* uug);
 
     
     void updateControlsState();
