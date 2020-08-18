@@ -204,8 +204,6 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "device_participant";
     case TERADATA_DEVICESUBTYPE:
         return "device_subtype";
-    case TERADATA_SESSIONTYPEDEVICETYPE:
-        return "session_type_device_type";
     case TERADATA_DEVICEDATA:
         return "device_data";
     case TERADATA_SESSIONTYPEPROJECT:
@@ -264,8 +262,6 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Appareil: participant");
     case TERADATA_DEVICESUBTYPE:
         return tr("Appareil: sous-type");
-    case TERADATA_SESSIONTYPEDEVICETYPE:
-        return tr("Appareil: type de séance");
     case TERADATA_DEVICEDATA:
         return tr("Appareil: donnée");
     case TERADATA_SESSIONTYPEPROJECT:
@@ -300,7 +296,6 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_DEVICESITEINFO_PATH)          return TERADATA_DEVICESITE;
     if (path==WEB_DEVICEPROJECTINFO_PATH)       return TERADATA_DEVICEPROJECT;
     if (path==WEB_DEVICEPARTICIPANTINFO_PATH)   return TERADATA_DEVICEPARTICIPANT;
-    if (path==WEB_SESSIONTYPEDEVICETYPE_PATH)   return TERADATA_SESSIONTYPEDEVICETYPE;
     if (path==WEB_DEVICEDATAINFO_PATH)          return TERADATA_DEVICEDATA;
     if (path==WEB_SESSIONTYPEPROJECT_PATH)      return TERADATA_SESSIONTYPEPROJECT;
     if (path==WEB_SESSIONEVENT_PATH)            return TERADATA_SESSIONEVENT;

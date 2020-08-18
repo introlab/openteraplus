@@ -393,31 +393,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabSessionTypes">
-      <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/session_type.png</normaloff>:/icons/session_type.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Types de séances</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QLabel" name="lblWarning">
-         <property name="text">
-          <string>Les types de séances sont déterminées par le type d'appareil. </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="lstSessionTypes">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
   </layout>

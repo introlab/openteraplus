@@ -46,6 +46,8 @@ private slots:
 
     void on_btnManageUsers_clicked();
 
+    void on_btnUserGroups_clicked();
+
 private:
     Ui::SiteWidget *ui;
 

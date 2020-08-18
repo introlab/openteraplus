@@ -25,12 +25,6 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
     ui->wdgSessionType->setComManager(m_comManager);
     setData(data);
 
-    if (!dataIsNew()){
-        // Loads first detailled informations tab
-        on_tabSessionTypeInfos_currentChanged(0);
-
-    }
-
 }
 
 SessionTypeWidget::~SessionTypeWidget()
@@ -67,7 +61,7 @@ void SessionTypeWidget::saveData(bool signal){
 }
 
 void SessionTypeWidget::updateControlsState(){
-    ui->tabDetails->setEnabled(!dataIsNew());
+    ui->tabProjects->setEnabled(!dataIsNew());
 
     if (dataIsNew() && ui->tabNav->count()>1){
 
@@ -277,21 +271,6 @@ void SessionTypeWidget::btnSaveProjects_clicked()
     postDataRequest(WEB_SESSIONTYPEPROJECT_PATH, document.toJson());
 }
 
-void SessionTypeWidget::on_tabSessionTypeInfos_currentChanged(int index)
-{
-
-    QUrlQuery args;
-
-    if (index == 0){
-        // Query available projects
-        if (m_listProjects_items.isEmpty()){
-            args.addQueryItem(WEB_QUERY_LIST, "true");
-            queryDataRequest(WEB_PROJECTINFO_PATH, args);
-        }
-    }
-
-}
-
 void SessionTypeWidget::on_lstProjects_itemChanged(QListWidgetItem *item)
 {
     int id_project = m_listProjects_items.key(item);
@@ -311,4 +290,19 @@ void SessionTypeWidget::on_lstProjects_itemChanged(QListWidgetItem *item)
 
 
 
+}
+
+void SessionTypeWidget::on_tabNav_currentChanged(int index)
+{
+    QUrlQuery args;
+
+    QWidget* current_tab = ui->tabNav->widget(index);
+
+    if (current_tab == ui->tabProjects){
+        // Query available projects
+        if (m_listProjects_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_PROJECTINFO_PATH, args);
+        }
+    }
 }

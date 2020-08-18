@@ -47,8 +47,8 @@ private slots:
 
     void btnSaveProjects_clicked();
 
-    void on_tabSessionTypeInfos_currentChanged(int index);
     void on_lstProjects_itemChanged(QListWidgetItem *item);
+    void on_tabNav_currentChanged(int index);
 };
 
 #endif // SESSIONTYPEWIDGET_H

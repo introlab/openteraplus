@@ -526,9 +526,6 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_DEVICEPARTICIPANT:
         emit deviceParticipantsReceived(items, reply_query);
         break;
-    case TERADATA_SESSIONTYPEDEVICETYPE:
-        emit sessionTypesDeviceTypesReceived(items, reply_query);
-        break;
     case TERADATA_DEVICESUBTYPE:
         emit deviceSubtypesReceived(items, reply_query);
         break;

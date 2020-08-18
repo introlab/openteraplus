@@ -28,7 +28,6 @@ private:
     QMap<int, QTreeWidgetItem*>  m_listProjects_items;
     QMap<int, QTreeWidgetItem*>  m_listDeviceProjects_items;
     QMap<int, QListWidgetItem*>  m_listParticipants_items;
-    QMap<int, QListWidgetItem*>  m_listSessionTypes_items;
 
     void updateControlsState();
     void updateFieldsValue();
@@ -39,7 +38,6 @@ private:
     void updateSite(TeraData *site);
     void updateProject(TeraData * project);
     void updateParticipant(TeraData *participant);
-    void updateSessionType(TeraData *session_type);
 
     bool validateSitesProjects();
     QJsonArray getSelectedProjectsAsJsonArray();
@@ -50,7 +48,6 @@ private slots:
     void processDeviceSitesReply(QList<TeraData> device_sites);
     void processDeviceProjectsReply(QList<TeraData> device_projects);
     void processDeviceParticipantsReply(QList<TeraData> device_parts);
-    void processSessionTypesReply(QList<TeraData> session_types);
     void processProjectsReply(QList<TeraData> projects);
 
     void btnSaveSites_clicked();

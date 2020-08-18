@@ -224,6 +224,7 @@ void SiteWidget::updateControlsState()
     ui->btnManageDevices->setVisible(is_site_admin);
     ui->btnManageUserGroups->setVisible(is_site_admin);
     ui->btnManageProjects->setVisible(is_site_admin);
+    ui->btnUserGroups->setVisible(is_site_admin);
 
 }
 
@@ -420,7 +421,7 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
 {
 
     QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
 
     QWidget* current_tab = ui->tabSiteInfos->widget(index);
 
@@ -491,6 +492,20 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
         if (m_tableUserGroups_items.isEmpty()){
             // Query
             queryUserGroupsSiteAccess();
+
+        /*
+           if (!ui->wdgUserGroups->layout()){
+                QHBoxLayout* layout = new QHBoxLayout();
+                layout->setMargin(0);
+                ui->wdgUserGroups->setLayout(layout);
+            }
+            if (ui->wdgUserGroups->layout()->count() == 0){
+                //args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
+                DataListWidget* usergroupslist_editor = new DataListWidget(m_comManager, TERADATA_USERGROUP, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), ui->wdgUserGroups);
+                usergroupslist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
+                usergroupslist_editor->setFilterText(tr("Seuls les groupes utilisateurs ayant un accès au site sont affichés."));
+                ui->wdgUserGroups->layout()->addWidget(usergroupslist_editor);
+            }*/
         }
     }
 
@@ -520,3 +535,23 @@ void SiteWidget::on_btnManageUserGroups_clicked()
     ui->tabNav->setCurrentWidget(ui->tabDetails);
 }
 
+
+void SiteWidget::on_btnUserGroups_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+
+    m_diag_editor = new BaseDialog(this);
+    //DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USERGROUP, nullptr);
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USERGROUP, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), nullptr);
+    list_widget->setFilterText(tr("Seuls les groupes utilisateurs ayant un accès au site sont affichés."));
+    m_diag_editor->setCentralWidget(list_widget);
+
+    m_diag_editor->setWindowTitle(tr("Groupes Utilisateurs"));
+    m_diag_editor->setFixedSize(size().width(), size().height());
+
+    m_diag_editor->open();
+}
