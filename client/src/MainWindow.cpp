@@ -463,9 +463,21 @@ void MainWindow::com_socketError(QAbstractSocket::SocketError error, QString err
     addMessage(Message::MESSAGE_ERROR, error_msg);
 }
 
-void MainWindow::com_networkError(QNetworkReply::NetworkError error, QString error_msg)
+void MainWindow::com_networkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code)
 {
-    addMessage(Message::MESSAGE_ERROR, tr("Erreur ") + QString::number(error) + ": " + error_msg);
+    if (error_msg.endsWith('\n'))
+        error_msg = error_msg.left(error_msg.length()-1);
+
+    if (status_code > 0)
+        addMessage(Message::MESSAGE_ERROR, tr("Erreur HTTP ") + QString::number(status_code) + ": " + error_msg);
+    else
+        addMessage(Message::MESSAGE_ERROR, tr("Erreur ") + QString::number(error) + ": " + error_msg);
+
+    if (op == QNetworkAccessManager::DeleteOperation){
+        // Also show a message box for that error
+        GlobalMessageBox msg;
+        msg.showError(tr("Suppression impossible"), error_msg);
+    }
 }
 
 void MainWindow::com_waitingForReply(bool waiting)

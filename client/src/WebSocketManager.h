@@ -31,6 +31,7 @@ public:
     ~WebSocketManager();
 
     void connectWebSocket(QString &socketUrl, QString &user_uuid);
+    void disconnectWebSocket();
     void registerForEvent(const UserRegisterToEvent_EventType event_type);
     void unregisterFromEvent(const UserRegisterToEvent_EventType event_type);
 

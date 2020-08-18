@@ -29,6 +29,7 @@ WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent)
 
 WebSocketManager::~WebSocketManager()
 {
+    disconnectWebSocket();
     m_webSocket->deleteLater();
 }
 
@@ -39,6 +40,12 @@ void WebSocketManager::connectWebSocket(QString &socketUrl, QString &user_uuid)
     m_connectTimer.start();
     m_socketUrl = QUrl(socketUrl);
     m_webSocket->open(m_socketUrl);
+}
+
+void WebSocketManager::disconnectWebSocket()
+{
+    m_webSocket->close();
+    //while(m_webSocket->state() == QAbstractSocket::ConnectedState);
 }
 
 void WebSocketManager::registerForEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type)

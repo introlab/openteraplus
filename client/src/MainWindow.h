@@ -46,7 +46,7 @@ private slots:
     void processGenericDataReply(TeraDataTypes item_data_type, QList<TeraData> datas);
 
     void com_socketError(QAbstractSocket::SocketError error, QString error_msg);
-    void com_networkError(QNetworkReply::NetworkError error, QString error_msg);
+    void com_networkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
     void com_waitingForReply(bool waiting);
     void com_postReplyOK(QString path);
     void com_deleteResultsOK(QString path, int id);

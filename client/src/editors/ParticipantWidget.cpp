@@ -15,7 +15,6 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
     m_diag_editor = nullptr;
 
-
     ui->setupUi(this);
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
@@ -53,6 +52,10 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     }else{
         updateCalendars(QDate::currentDate());
     }
+
+    // Default display
+    ui->tabNav->setCurrentIndex(0);
+    ui->tabInfos->setCurrentIndex(0);
 }
 
 ParticipantWidget::~ParticipantWidget()
@@ -481,8 +484,8 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
                 delete item;
                 // Request refresh of available devices
                 QUrlQuery query;
-                query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
-                queryDataRequest(WEB_DEVICESITEINFO_PATH, query);
+                query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
+                queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);
                 break;
             }
         }
@@ -704,7 +707,6 @@ void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
 
 void ParticipantWidget::currentTypeFiltersChanged(QListWidgetItem *changed)
 {
-    Q_UNUSED(changed)
     QList<int> ids;
 
     for (int i=0; i<ui->lstFilters->count(); i++){
@@ -717,7 +719,15 @@ void ParticipantWidget::currentTypeFiltersChanged(QListWidgetItem *changed)
     ui->calMonth2->setFilters(ids);
     ui->calMonth3->setFilters(ids);
 
-    // TODO: Update session tables
+    if (!changed)
+        return;
+    // Update session tables
+    QString current_ses_type = changed->text();
+    for (int i=0; i<ui->tableSessions->rowCount(); i++){
+        if (ui->tableSessions->item(i,2)->text() == current_ses_type){
+            ui->tableSessions->setRowHidden(i, changed->checkState()==Qt::Unchecked);
+        }
+    }
 }
 
 void ParticipantWidget::updateCalendars(QDate left_date){
@@ -920,7 +930,9 @@ void ParticipantWidget::on_tabInfos_currentChanged(int index)
 {
     QUrlQuery query;
 
-    if (index == 1){ // Devices
+    QWidget* current_tab = ui->tabInfos->widget(index);
+
+    if (current_tab == ui->tabDevices){ // Devices
         if (m_listDevices_items.isEmpty()){
             query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
             queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, query);
@@ -961,4 +973,18 @@ void ParticipantWidget::on_btnNewSession_clicked()
     /*StartSessionDialog diag(tr("Démarrage de séance en cours..."), m_comManager);
     diag.exec();*/
 
+}
+
+void ParticipantWidget::on_btnCheckSesstionTypes_clicked()
+{
+    for (int i=0; i<ui->lstFilters->count(); i++){
+        ui->lstFilters->item(i)->setCheckState(Qt::Checked);
+    }
+}
+
+void ParticipantWidget::on_btnUnchekSessionTypes_clicked()
+{
+    for (int i=0; i<ui->lstFilters->count(); i++){
+        ui->lstFilters->item(i)->setCheckState(Qt::Unchecked);
+    }
 }

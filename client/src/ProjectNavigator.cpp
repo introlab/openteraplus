@@ -107,6 +107,7 @@ void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
 
 void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
 {
+    bool handled = true;
     switch(data_type){
     case TERADATA_SITE:
         // Check if we have that site in the list
@@ -157,7 +158,10 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
         break;
     default: ;
         // Don't do anything!
+        handled = false;
     }
+    if (handled)
+        refreshRequested();
 }
 
 void ProjectNavigator::setOnHold(const bool &hold)
@@ -171,7 +175,7 @@ void ProjectNavigator::connectSignals()
     connect(m_comManager, &ComManager::projectsReceived, this, &ProjectNavigator::processProjectsReply);
     connect(m_comManager, &ComManager::groupsReceived, this, &ProjectNavigator::processGroupsReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &ProjectNavigator::processParticipantsReply);
-    //connect(m_comManager, &ComManager::deleteResultsOK, this, &ProjectNavigator::deleteItemRequested);
+    //connect(m_comManager, &ComManager::deleteResultsOK, this, &ProjectNavigator::processItemDeletedReply);
     connect(m_comManager, &ComManager::currentUserUpdated, this, &ProjectNavigator::processCurrentUserUpdated);
 
     void (QComboBox::* comboIndexChangedSignal)(int) = &QComboBox::currentIndexChanged;
@@ -578,6 +582,8 @@ void ProjectNavigator::processItemDeletedReply(QString path, int id)
         //qDebug() << "Site deleted!";
         // Check if we need to remove that site from the list
         removeItem(TERADATA_SITE, id);
+    }else{
+        refreshRequested();
     }
 }
 

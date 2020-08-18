@@ -535,6 +535,9 @@ QToolButton#btnNextCal, QToolButton#btnPrevCal {
     border-radius: 5px;
     border: 2px solid rgb(186, 186, 186);
 }
+QFrame#frameCheckSessionTypes{
+    background-color: black;
+}
 
 /* Customizations for SiteWidget */
 QLabel#lblInherited{

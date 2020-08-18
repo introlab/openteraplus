@@ -32,6 +32,7 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
 
 ComManager::~ComManager()
 {
+    m_webSocketMan->disconnectWebSocket();
     m_webSocketMan->deleteLater();
     if (m_currentSessionType)
         delete m_currentSessionType;
@@ -53,6 +54,7 @@ void ComManager::connectToServer(QString username, QString password)
 void ComManager::disconnectFromServer()
 {
     doQuery(QString(WEB_LOGOUT_PATH));
+    m_webSocketMan->disconnectWebSocket();
 }
 
 bool ComManager::processNetworkReply(QNetworkReply *reply)
@@ -665,10 +667,14 @@ void ComManager::onNetworkFinished(QNetworkReply *reply)
             //reply_msg = tr("Erreur non-détaillée.");
             reply_msg = reply->errorString();
         }
+
+        int status_code = -1;
+        if (reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).isValid())
+            status_code = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).toInt();
         qDebug() << "ComManager::onNetworkFinished - Reply error: " << reply->error() << ", Reply message: " << reply_msg;
         /*if (reply_msg.isEmpty())
             reply_msg = reply->errorString();*/
-        emit networkError(reply->error(), reply_msg);
+        emit networkError(reply->error(), reply_msg, reply->operation(), status_code);
     }
 
     reply->deleteLater();

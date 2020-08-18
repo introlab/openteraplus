@@ -39,6 +39,11 @@ ClientApp::~ClientApp()
     if (m_loginDiag)
         delete m_loginDiag;
 
+    if (m_comMan){
+       m_comMan->disconnectFromServer();
+       m_comMan->deleteLater();
+    }
+
 }
 
 ComManager *ClientApp::getComManager()
