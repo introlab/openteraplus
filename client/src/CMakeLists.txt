@@ -4,6 +4,7 @@ find_package(Qt5WebEngineWidgets REQUIRED)
 find_package(Qt5Multimedia  REQUIRED)
 find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Network REQUIRED)
+find_package(Qt5LinguistTools REQUIRED)
 
 set(headers
     ClientApp.h
@@ -130,6 +131,27 @@ QT5_ADD_RESOURCES(client_qrc ${qrcs})
 #This will generate moc_* for Qt
 qt5_wrap_cpp(moc_srcs ${headers})
 
+#Translation files, this is done manually to avoid removing the file when doing make clean
+add_custom_target(openteraplus_en_ts
+    COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(openteraplus_fr_ts
+    COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+#Build this target to update translations
+add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
+add_custom_target(translation_files SOURCES ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+
+
+#Generate qm files from .ts files
+qt5_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+
+message(STATUS "qm_files : ${qm_files}")
+
 include_directories(
     ${TERACLIENT_RES_INCLUDES}
     ${OPENTERA_MESSAGES_INCLUDES}
@@ -154,7 +176,7 @@ set(MACOSX_BUNDLE_COPYRIGHT "IntRolab/CDRV UdeS")
 set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 
 # create an executable file named "TeraClient" from the source files
-add_executable(TeraClient MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${client_qrc} ${moc_uis} ${ICON_PATH})
+add_executable(TeraClient MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${client_qrc} ${moc_uis} ${ICON_PATH} ${qm_files})
 # qt5_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
 
 # Linking with Qt libraries and others
@@ -162,6 +184,10 @@ target_link_libraries(TeraClient ${OPENTERA_SHARED_LIBS} Qt5::Core Qt5::Network 
 set_target_properties(TeraClient PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# Automatic generation of ts files on target
+# Remove if you don't want to generate translations every time.
+add_dependencies(TeraClient translations)
 
 # Set a custom plist file for the app bundle
 set_target_properties(TeraClient PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
