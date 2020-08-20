@@ -4,7 +4,6 @@ find_package(Qt5WebEngineWidgets REQUIRED)
 find_package(Qt5Multimedia  REQUIRED)
 find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Network REQUIRED)
-find_package(Qt5Multimedia REQUIRED)
 
 set(headers
     ClientApp.h
