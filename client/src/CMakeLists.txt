@@ -131,6 +131,11 @@ QT5_ADD_RESOURCES(client_qrc ${qrcs})
 #This will generate moc_* for Qt
 qt5_wrap_cpp(moc_srcs ${headers})
 
+set(translation_files_srcs
+    ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+    ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+)
+
 #Translation files, this is done manually to avoid removing the file when doing make clean
 add_custom_target(openteraplus_en_ts
     COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
@@ -142,9 +147,12 @@ add_custom_target(openteraplus_fr_ts
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+#set qm files output directory
+set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
+
 #Build this target to update translations
 add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
-add_custom_target(translation_files SOURCES ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+add_custom_target(translation_files SOURCES ${translation_files_srcs})
 
 
 #Generate qm files from .ts files
@@ -176,7 +184,8 @@ set(MACOSX_BUNDLE_COPYRIGHT "IntRolab/CDRV UdeS")
 set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 
 # create an executable file named "TeraClient" from the source files
-add_executable(TeraClient MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${client_qrc} ${moc_uis} ${ICON_PATH} ${qm_files})
+# Put qrc files after qm files
+add_executable(TeraClient MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
 # qt5_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
 
 # Linking with Qt libraries and others
