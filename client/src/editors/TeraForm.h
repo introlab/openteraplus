@@ -70,8 +70,8 @@ public:
 private:
     Ui::TeraForm*                                   ui;
     QMap<QString, QWidget*>                         m_widgets;
-    QMap<QWidget*, QLabel*>                         m_widgetsLabels;
-    QMap<QWidget*, QFormLayout::TakeRowResult>      m_hidden_rows;
+    QHash<QWidget*, QLabel*>                        m_widgetsLabels;
+    QHash<QWidget*, QFormLayout::TakeRowResult>     m_hidden_rows;
     QString                                         m_objectType;
     QVariantMap                                     m_initialValues;
     bool                                            m_highlightConditionals;
@@ -84,18 +84,18 @@ private:
     void buildFormFromStructure(QWidget* page, const QVariantList &structure);
     void setDefaultValues();
 
-    QWidget* createVideoInputsWidget(const QVariantMap& structure);
-    QWidget* createAudioInputsWidget(const QVariantMap& structure);
-    QWidget* createArrayWidget(const QVariantMap& structure);
-    QWidget* createTextWidget(const QVariantMap& structure, bool is_masked);
-    QWidget* createBooleanWidget(const QVariantMap& structure);
-    QWidget* createNumericWidget(const QVariantMap& structure);
-    QWidget* createLabelWidget(const QVariantMap& structure);
-    QWidget* createListWidget(const QVariantMap& structure);
-    QWidget* createLongTextWidget(const QVariantMap& structure);
-    QWidget* createColorWidget(const QVariantMap& structure);
-    QWidget* createDateTimeWidget(const QVariantMap& structure);
-    QWidget* createDurationWidget(const QVariantMap& structure);
+    QWidget* createVideoInputsWidget(const QVariantHash& structure);
+    QWidget* createAudioInputsWidget(const QVariantHash& structure);
+    QWidget* createArrayWidget(const QVariantHash& structure);
+    QWidget* createTextWidget(const QVariantHash& structure, bool is_masked);
+    QWidget* createBooleanWidget(const QVariantHash& structure);
+    QWidget* createNumericWidget(const QVariantHash& structure);
+    QWidget* createLabelWidget(const QVariantHash& structure);
+    QWidget* createListWidget(const QVariantHash& structure);
+    QWidget* createLongTextWidget(const QVariantHash& structure);
+    QWidget* createColorWidget(const QVariantHash& structure);
+    QWidget* createDateTimeWidget(const QVariantHash& structure);
+    QWidget* createDurationWidget(const QVariantHash& structure);
 
     void checkConditions(QWidget* item_triggering = nullptr);
     void checkConditionsForItem(QWidget* item, QWidget* item_triggering = nullptr);

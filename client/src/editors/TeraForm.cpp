@@ -52,8 +52,8 @@ void TeraForm::buildUiFromStructure(const QString &structure)
         QVariantList struct_data =struct_object["sections"].toArray().toVariantList();
         int page_index = 0;
         for (QVariant section:struct_data){
-            if (section.canConvert(QMetaType::QVariantMap)){
-                QVariantMap section_data = section.toMap();
+            if (section.canConvert(QMetaType::QVariantHash)){
+                QVariantHash section_data = section.toHash();
                 if (page_index>0){
                     QWidget* new_page = new QWidget(ui->toolboxMain);
                     new_page->setObjectName("pageSection" + QString::number(page_index+1));
@@ -328,8 +328,8 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
     layout->setVerticalSpacing(3);
 
     for (QVariant item:structure){
-        if (item.canConvert(QMetaType::QVariantMap)){
-            QVariantMap item_data = item.toMap();
+        if (item.canConvert(QMetaType::QVariantHash)){
+            QVariantHash item_data = item.toHash();
             QString item_id = item_data["id"].toString();
             QWidget* item_widget = nullptr;
             QLabel* item_label = new QLabel(item_data["label"].toString());
@@ -389,6 +389,8 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
 
             if (item_widget){
                 // Set widget properties
+                if (item_data.contains("_order"))
+                    item_widget->setProperty("_order", item_data["_order"].toInt());
                 if (item_data.contains("label"))
                     item_widget->setProperty("label", item_data["label"].toString());
                 if (item_data.contains("id"))
@@ -454,7 +456,7 @@ void TeraForm::setDefaultValues()
     }
 }
 
-QWidget *TeraForm::createVideoInputsWidget(const QVariantMap &structure)
+QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QComboBox* item_combo = new QComboBox();
@@ -475,7 +477,7 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantMap &structure)
     return item_combo;
 }
 
-QWidget *TeraForm::createAudioInputsWidget(const QVariantMap &structure)
+QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QComboBox* item_combo = new QComboBox();
@@ -495,7 +497,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantMap &structure)
     return item_combo;
 }
 
-QWidget *TeraForm::createArrayWidget(const QVariantMap &structure)
+QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
 {
     QComboBox* item_combo = new QComboBox();
 
@@ -505,8 +507,8 @@ QWidget *TeraForm::createArrayWidget(const QVariantMap &structure)
     if (structure.contains("values")){
         if (structure["values"].canConvert(QMetaType::QVariantList)){
             for (QVariant value:structure["values"].toList()){
-                if (value.canConvert(QMetaType::QVariantMap)){
-                    QVariantMap item_data = value.toMap();
+                if (value.canConvert(QMetaType::QVariantHash)){
+                    QVariantHash item_data = value.toHash();
                     item_combo->addItem(item_data["value"].toString(), item_data["id"].toString());
                 }
             }
@@ -520,7 +522,7 @@ QWidget *TeraForm::createArrayWidget(const QVariantMap &structure)
     return item_combo;
 }
 
-QWidget *TeraForm::createTextWidget(const QVariantMap &structure, bool is_masked)
+QWidget *TeraForm::createTextWidget(const QVariantHash &structure, bool is_masked)
 {
     Q_UNUSED(structure)
     QLineEdit* item_text = new QLineEdit();
@@ -537,7 +539,7 @@ QWidget *TeraForm::createTextWidget(const QVariantMap &structure, bool is_masked
     return item_text;
 }
 
-QWidget *TeraForm::createBooleanWidget(const QVariantMap &structure)
+QWidget *TeraForm::createBooleanWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QCheckBox* item_check = new QCheckBox();
@@ -552,7 +554,7 @@ QWidget *TeraForm::createBooleanWidget(const QVariantMap &structure)
     return item_check;
 }
 
-QWidget *TeraForm::createNumericWidget(const QVariantMap &structure)
+QWidget *TeraForm::createNumericWidget(const QVariantHash &structure)
 {
     QSpinBox* item_spin = new QSpinBox();
 
@@ -574,7 +576,7 @@ QWidget *TeraForm::createNumericWidget(const QVariantMap &structure)
     return item_spin;
 }
 
-QWidget *TeraForm::createLabelWidget(const QVariantMap &structure)
+QWidget *TeraForm::createLabelWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QLabel* item_label = new QLabel();
@@ -586,7 +588,7 @@ QWidget *TeraForm::createLabelWidget(const QVariantMap &structure)
     return item_label;
 }
 
-QWidget *TeraForm::createListWidget(const QVariantMap &structure)
+QWidget *TeraForm::createListWidget(const QVariantHash &structure)
 {
     QListWidget* item_list = new QListWidget();
 
@@ -597,7 +599,7 @@ QWidget *TeraForm::createListWidget(const QVariantMap &structure)
     return item_list;
 }
 
-QWidget *TeraForm::createLongTextWidget(const QVariantMap &structure)
+QWidget *TeraForm::createLongTextWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QTextEdit* item_text = new QTextEdit();
@@ -607,7 +609,7 @@ QWidget *TeraForm::createLongTextWidget(const QVariantMap &structure)
     return item_text;
 }
 
-QWidget *TeraForm::createColorWidget(const QVariantMap &structure)
+QWidget *TeraForm::createColorWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QPushButton* item_btn = new QPushButton();
@@ -624,7 +626,7 @@ QWidget *TeraForm::createColorWidget(const QVariantMap &structure)
     return item_btn;
 }
 
-QWidget *TeraForm::createDateTimeWidget(const QVariantMap &structure)
+QWidget *TeraForm::createDateTimeWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QDateTimeEdit* item_dt = new QDateTimeEdit();
@@ -635,7 +637,7 @@ QWidget *TeraForm::createDateTimeWidget(const QVariantMap &structure)
 
 }
 
-QWidget *TeraForm::createDurationWidget(const QVariantMap &structure)
+QWidget *TeraForm::createDurationWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QTimeEdit* item_t = new QTimeEdit();
@@ -659,8 +661,8 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
 {
     if (item->property("condition").isValid()){
         // Item has a condition
-        if (item->property("condition").canConvert(QMetaType::QVariantMap)){
-            QVariantMap condition = item->property("condition").toMap();
+        if (item->property("condition").canConvert(QMetaType::QVariantHash)){
+            QVariantHash condition = item->property("condition").toHash();
             QString check_id = condition["item"].toString();
             if (!check_id.isNull()){
                 QWidget* check_item = m_widgets[check_id];
@@ -751,6 +753,22 @@ void TeraForm::setWidgetVisibility(QWidget *widget, QWidget *linked_widget, bool
                         form_layout->getWidgetPosition(linked_widget, &parent_row, nullptr);
                     }else {
                         form_layout->getWidgetPosition(ui->toolboxMain, &parent_row, nullptr);
+                     }
+
+                    // Ensure the item is at the correct row order
+                    if (widget->dynamicPropertyNames().contains("_order")){
+                        for (int row = 0; row<form_layout->rowCount(); row++){
+                            if (form_layout->itemAt(row, QFormLayout::FieldRole)){
+                                QWidget* form_widget = form_layout->itemAt(row, QFormLayout::FieldRole)->widget();
+                                if (form_widget->dynamicPropertyNames().contains("_order")){
+                                    if (widget->property("_order").toInt() < form_widget->property("_order").toInt()){
+                                        parent_row = row - 1;
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
                     }
                     form_layout->insertRow(parent_row+1, row.labelItem->widget(), row.fieldItem->widget());
                     row.labelItem->widget()->show();

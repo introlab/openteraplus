@@ -158,14 +158,14 @@ QTreeWidget::branch:open:has-children:has-siblings   {
 /*
     QLineEdit
 */
-QLineEdit, QSpinBox{
+QLineEdit, QSpinBox, QTextEdit{
     background-color: rgba(255,255,255,50%);
     color:black;
     min-height: 25px;
     padding-left: 5px;
 }
 
-QLineEdit:!enabled, QSpinBox:!enabled{
+QLineEdit:!enabled, QSpinBox:!enabled, QTextEdit:!enabled{
     background-color: rgba(0,0,0,0%);
     color:rgba(255,255,255,80%);
     padding-left: 0px;
@@ -192,12 +192,12 @@ QListWidget {
 
 
 /*
-    QTextEdit
+    QTextEdit, See QLineEdit
 */
-QTextEdit {
+/*QTextEdit {
     background-color: rgba(255,255,255,50%);
     color: white;
-}
+}*/
 
 /*
     QComboBox
