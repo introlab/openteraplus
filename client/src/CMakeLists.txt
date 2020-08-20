@@ -2,6 +2,9 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5WebEngine REQUIRED)
 find_package(Qt5WebEngineWidgets REQUIRED)
 find_package(Qt5Multimedia  REQUIRED)
+find_package(Qt5WebSockets REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
 
 set(headers
     ClientApp.h
@@ -153,10 +156,10 @@ set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 
 # create an executable file named "TeraClient" from the source files
 add_executable(TeraClient MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${client_qrc} ${moc_uis} ${ICON_PATH})
-qt5_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
+# qt5_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
 
 # Linking with Qt libraries and others
-target_link_libraries(TeraClient ${OPENTERA_SHARED_LIBS})
+target_link_libraries(TeraClient ${OPENTERA_SHARED_LIBS} Qt5::Core Qt5::Network Qt5::Multimedia Qt5::WebSockets Qt5::WebEngine Qt5::WebEngineWidgets)
 set_target_properties(TeraClient PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
