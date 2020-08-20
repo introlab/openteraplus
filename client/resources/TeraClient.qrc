@@ -110,5 +110,7 @@
         <file>icons/software_user_online.png</file>
         <file>controls/radio-off.png</file>
         <file>controls/radio-on.png</file>
+        <file>translations/openteraplus_en.qm</file>
+        <file>translations/openteraplus_fr.qm</file>
     </qresource>
 </RCC>

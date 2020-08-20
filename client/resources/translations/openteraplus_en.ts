@@ -6,12 +6,12 @@
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_BaseDialog.h" line="77"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_BaseDialog.h" line="78"/>
         <source>Fermer</source>
-        <translation type="unfinished"></translation>
+        <translation>Close</translation>
     </message>
 </context>
 <context>
@@ -661,48 +661,48 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
     <message>
         <location filename="../../src/LoginDialog.cpp" line="79"/>
         <source>Code utilisateur invalide</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid username</translation>
     </message>
     <message>
         <location filename="../../src/LoginDialog.cpp" line="84"/>
         <source>Mot de passe invalide</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid password</translation>
     </message>
     <message>
         <location filename="../../src/LoginDialog.cpp" line="88"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="347"/>
         <source>Connexion en cours...</source>
-        <translation type="unfinished"></translation>
+        <translation>Connecting...</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="333"/>
         <source>OpenTeraPlus - Login</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTeraPlus -- Login</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="339"/>
         <source>Mot de passe</source>
-        <translation type="unfinished"></translation>
+        <translation>Password</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="340"/>
         <source>Serveur</source>
-        <translation type="unfinished"></translation>
+        <translation>Server</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="341"/>
         <source>Code utilisateur</source>
-        <translation type="unfinished"></translation>
+        <translation>Username</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="348"/>
         <source>Connecter</source>
-        <translation type="unfinished"></translation>
+        <translation>Connect</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="349"/>
         <source>Quitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Quit</translation>
     </message>
 </context>
 <context>
@@ -1048,13 +1048,13 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="989"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="990"/>
         <source>Code utilisateur</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Username</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="991"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="996"/>
         <source>Mot de passe</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Password</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="993"/>
@@ -1964,7 +1964,7 @@ ou réalisées</source>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_StartSessionDialog.h" line="96"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dialog</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_StartSessionDialog.h" line="97"/>
