@@ -140,11 +140,13 @@ set(translation_files_srcs
 add_custom_target(openteraplus_en_ts
     COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS ${moc_uis}
 )
 
 add_custom_target(openteraplus_fr_ts
     COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS ${moc_uis}
 )
 
 #set qm files output directory

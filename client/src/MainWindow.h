@@ -100,6 +100,7 @@ private:
 
     // Events
     QIcon getGlobalEventIcon(GlobalEvent &global_event);
+    void changeEvent(QEvent* event);
 
     Ui::MainWindow *ui;
 

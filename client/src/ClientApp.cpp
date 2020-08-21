@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QDir>
 
+
 #include "GlobalEventLogger.h"
 #include "GlobalEvent.h"
 
@@ -12,6 +13,16 @@ ClientApp::ClientApp(int &argc, char **argv)
     m_comMan = nullptr;
     m_loginDiag = nullptr;
     m_mainWindow = nullptr;
+    m_translator = new QTranslator();
+
+    //Translations...
+    QLocale english = QLocale(QLocale::English);
+    QLocale french = QLocale(QLocale::French);
+    qDebug() << QLocale();
+    if (m_translator->load(english, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
+        this->installTranslator(m_translator);
+        qDebug() << "Installed translator";
+    }
 
     QFile file(":/stylesheet.qss");
     file.open(QFile::ReadOnly);

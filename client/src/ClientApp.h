@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QAbstractSocket> // For error codes
 #include <QUuid>
+#include <QTranslator>
 
 #include "MainWindow.h"
 #include "LoginDialog.h"
@@ -34,6 +35,7 @@ protected:
     MainWindow*         m_mainWindow;
 
     ComManager*         m_comMan;
+    QTranslator*        m_translator;
 
 
 private slots:
