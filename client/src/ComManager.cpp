@@ -1,6 +1,6 @@
 #include "ComManager.h"
 #include <sstream>
-#include <Qlocale>
+#include <QLocale>
 
 ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     QObject(parent),
