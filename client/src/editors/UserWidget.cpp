@@ -309,7 +309,7 @@ void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
 
 void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query)
 {
-
+    Q_UNUSED(query)
     foreach(TeraData user_group, user_groups){
         updateUserGroup(&user_group);
     }
@@ -318,6 +318,7 @@ void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery q
 
 void UserWidget::processUserUsersGroupsReply(QList<TeraData> user_users_groups, QUrlQuery query)
 {
+    Q_UNUSED(query)
 
     //m_listUserUserGroups_items.clear();
 
@@ -400,8 +401,9 @@ void UserWidget::on_tabMain_currentChanged(int index)
     if (!ui->tabMain->currentWidget()->isEnabled())
         return;
 
-    QString tab_name = ui->tabMain->widget(index)->objectName();
-    if (tab_name == "tabGroups"){
+    QWidget* current_tab = ui->tabMain->widget(index);
+
+    if (current_tab == ui->tabGroups){
         // User groups
         //if (!m_data->hasFieldName("user_groups")){
             // Update groups for user
@@ -415,7 +417,7 @@ void UserWidget::on_tabMain_currentChanged(int index)
         ui->lblWarning->setVisible(super_admin);
         ui->frameGroups->setVisible(!super_admin);
     }
-    if (tab_name == "tabRoles"){
+    if (current_tab == ui->tabRoles){
         // Roles
         ui->tableRoles->clearContents(); // Resets all elements in the table
         ui->tableRoles->setRowCount(0);
@@ -429,6 +431,21 @@ void UserWidget::on_tabMain_currentChanged(int index)
             args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
             queryDataRequest(WEB_PROJECTACCESS_PATH, args);
 
+        }
+    }
+    if (current_tab == ui->tabConfig){
+        // Service config
+        if (!ui->wdgServiceConfig->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgServiceConfig->setLayout(layout);
+        }
+        if (ui->wdgServiceConfig->layout()->count() == 0){
+            args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
+            args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Also includes services without configuration
+            DataListWidget* userlist_editor = new DataListWidget(m_comManager, TERADATA_SERVICE_CONFIG, args, ui->wdgServiceConfig);
+            userlist_editor->setPermissions(true, false);
+            ui->wdgServiceConfig->layout()->addWidget(userlist_editor);
         }
     }
 }

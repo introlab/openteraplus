@@ -189,7 +189,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <item>
        <widget class="QTabWidget" name="tabMain">
         <property name="currentIndex">
-         <number>0</number>
+         <number>4</number>
         </property>
         <property name="iconSize">
          <size>
@@ -496,11 +496,25 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <normaloff>:/icons/options.png</normaloff>:/icons/options.png</iconset>
          </attribute>
          <attribute name="title">
-          <string>Paramètres</string>
+          <string>Préférences</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
            <widget class="TeraForm" name="wdgProfile" native="true"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabConfig">
+         <attribute name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
+         </attribute>
+         <attribute name="title">
+          <string>Configuration</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QWidget" name="wdgServiceConfig" native="true"/>
           </item>
          </layout>
         </widget>

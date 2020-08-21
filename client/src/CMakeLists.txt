@@ -41,6 +41,7 @@ set(headers
     editors/DeviceSubTypeWidget.h
     editors/UserGroupWidget.h
     editors/ServiceWidget.h
+    editors/ServiceConfigWidget.h
     wizards/UserWizard.h
     wizards/BaseWizard.h
     services/BaseServiceWidget.h
@@ -84,6 +85,7 @@ set(srcs
     editors/DeviceSubTypeWidget.cpp
     editors/UserGroupWidget.cpp
     editors/ServiceWidget.cpp
+    editors/ServiceConfigWidget.cpp
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
     services/BaseServiceWidget.cpp
@@ -115,6 +117,7 @@ SET(uis
     editors/DeviceSubTypeWidget.ui
     editors/UserGroupWidget.ui
     editors/ServiceWidget.ui
+    editors/ServiceConfigWidget.ui
     services/VideoRehabService/VideoRehabWidget.ui
 )
 

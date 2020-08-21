@@ -27,6 +27,7 @@
 #define WEB_SERVICEINFO_PATH                "/api/user/services"
 #define WEB_SERVICEPROJECTINFO_PATH         "/api/user/services/projects"
 #define WEB_SERVICEACCESSINFO_PATH          "/api/user/services/access"
+#define WEB_SERVICECONFIGINFO_PATH          "/api/user/services/configs"
 #define WEB_STATS_PATH                      "/api/user/stats"
 
 #define WEB_SESSIONMANAGER_PATH             "/api/user/sessions/manager"
@@ -44,6 +45,7 @@
 #define WEB_FORMS_QUERY_DEVICE_SUBTYPE  "type=device_subtype"
 #define WEB_FORMS_QUERY_USER_GROUP      "type=user_group"
 #define WEB_FORMS_QUERY_SERVICE         "type=service"
+#define WEB_FORMS_QUERY_SERVICE_CONFIG  "type=service_config"
 
 #define WEB_QUERY_USERUUID          "user_uuid"
 #define WEB_QUERY_ID_USER           "id_user"

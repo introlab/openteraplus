@@ -216,6 +216,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "service_project";
     case TERADATA_SERVICE_ACCESS:
         return "service_access";
+    case TERADATA_SERVICE_CONFIG:
+        return "service_config";
     case TERADATA_STATS:
         return "stats";
     }
@@ -274,6 +276,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Service: projet");
     case TERADATA_SERVICE_ACCESS:
         return tr("Service: Accès");
+    case TERADATA_SERVICE_CONFIG:
+        return tr("Service: Configuration");
     case TERADATA_STATS:
         return tr("Statistiques");
     }
@@ -304,6 +308,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_SERVICEINFO_PATH)             return TERADATA_SERVICE;
     if (path==WEB_SERVICEPROJECTINFO_PATH)      return TERADATA_SERVICE_PROJECT;
     if (path==WEB_SERVICEACCESSINFO_PATH)       return TERADATA_SERVICE_ACCESS;
+    if (path==WEB_SERVICECONFIGINFO_PATH)       return TERADATA_SERVICE_CONFIG;
     if (path==WEB_USERUSERGROUPINFO_PATH)       return TERADATA_USERUSERGROUP;
     if (path==WEB_STATS_PATH)                   return TERADATA_STATS;
 
@@ -328,6 +333,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_DEVICESUBTYPE)      return WEB_DEVICESUBTYPE_PATH;
     if (data_type==TERADATA_SERVICE)            return WEB_SERVICEINFO_PATH;
     if (data_type==TERADATA_SITEACCESS)         return WEB_SITEACCESS_PATH;
+    if (data_type==TERADATA_SERVICE_CONFIG)     return WEB_SERVICECONFIGINFO_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 
@@ -364,6 +370,7 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     case TERADATA_DEVICESUBTYPE:
         return "://icons/kit.png";
     case TERADATA_SERVICE:
+    case TERADATA_SERVICE_CONFIG:
         return "://icons/service.png";
     default:
         return "://icons/error.png";

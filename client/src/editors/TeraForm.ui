@@ -132,11 +132,11 @@ QWidget#pageSection1{
         <x>0</x>
         <y>0</y>
         <width>396</width>
-        <height>268</height>
+        <height>267</height>
        </rect>
       </property>
       <attribute name="label">
-       <string>Page 1</string>
+       <string>Ce formulaire ne contient aucune information.</string>
       </attribute>
      </widget>
     </widget>
