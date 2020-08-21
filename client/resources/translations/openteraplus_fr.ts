@@ -45,38 +45,38 @@
 <context>
     <name>ClientApp</name>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="134"/>
+        <location filename="../../src/ClientApp.cpp" line="135"/>
         <source>Connexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="180"/>
+        <location filename="../../src/ClientApp.cpp" line="181"/>
         <source>Utilisateur ou mot de passe invalide.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="182"/>
+        <location filename="../../src/ClientApp.cpp" line="183"/>
         <source>Bienvenue!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="196"/>
-        <location filename="../../src/ClientApp.cpp" line="208"/>
+        <location filename="../../src/ClientApp.cpp" line="197"/>
+        <location filename="../../src/ClientApp.cpp" line="209"/>
         <source>La connexion a été refusée par le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="215"/>
+        <location filename="../../src/ClientApp.cpp" line="216"/>
         <source>Impossible de rejoindre le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="218"/>
+        <location filename="../../src/ClientApp.cpp" line="219"/>
         <source>Le serveur est introuvable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="221"/>
+        <location filename="../../src/ClientApp.cpp" line="222"/>
         <source>Impossible de se connecter (Code erreur: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -474,7 +474,7 @@ Si l&apos;appareil est présentement déployé, les données ne seront plus coll
     </message>
     <message>
         <location filename="../../src/editors/GroupWidget.cpp" line="168"/>
-        <source> Séances planifiées
+        <source> Séances planifiées 
 ou réalisées</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1266,7 +1266,7 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
     </message>
     <message>
         <location filename="../../src/editors/ProjectWidget.cpp" line="391"/>
-        <source> Séances planifiées
+        <source> Séances planifiées 
 ou réalisées</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1792,7 +1792,7 @@ Vous devez associer au moins un projet.</source>
     </message>
     <message>
         <location filename="../../src/editors/SiteWidget.cpp" line="340"/>
-        <source> Séances planifiées
+        <source> Séances planifiées 
 ou réalisées</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1985,7 +1985,7 @@ ou réalisées</source>
 <context>
     <name>TeraForm</name>
     <message>
-        <location filename="../../src/editors/TeraForm.cpp" line="1043"/>
+        <location filename="../../src/editors/TeraForm.cpp" line="1061"/>
         <source>Choisir la couleur</source>
         <translation type="unfinished"></translation>
     </message>

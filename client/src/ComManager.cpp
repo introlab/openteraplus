@@ -1,5 +1,6 @@
 #include "ComManager.h"
 #include <sstream>
+#include <Qlocale>
 
 ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     QObject(parent),
@@ -135,7 +136,11 @@ void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
     if (!query_args.isEmpty()){
         query.setQuery(query_args);
     }
-    m_netManager->get(QNetworkRequest(query));
+    QNetworkRequest request(query);
+    setRequestLanguage(request);
+
+
+    m_netManager->get(request);
     emit waitingForReply(true);
     emit querying(path);
 
@@ -148,7 +153,10 @@ void ComManager::doPost(const QString &path, const QString &post_data)
 
     query.setPath(path);
     QNetworkRequest request(query);
+    setRequestLanguage(request);
+
     request.setRawHeader("Content-Type", "application/json");
+
     m_netManager->post(request, post_data.toUtf8());
     emit waitingForReply(true);
     emit posting(path, post_data);
@@ -163,6 +171,8 @@ void ComManager::doDelete(const QString &path, const int &id)
     query.setPath(path);
     query.setQuery("id=" + QString::number(id));
     QNetworkRequest request(query);
+    setRequestLanguage(request);
+
     m_netManager->deleteResource(request);
     emit waitingForReply(true);
     emit deleting(path);
@@ -186,7 +196,11 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     if (!query_args.isEmpty()){
         query.setQuery(query_args);
     }
-    QNetworkReply* reply = m_netManager->get(QNetworkRequest(query));
+
+    QNetworkRequest request(query);
+    setRequestLanguage(request);
+
+    QNetworkReply* reply = m_netManager->get(request);
     if (reply){
         DownloadedFile* file_to_download = new DownloadedFile(reply, save_path);
         m_currentDownloads[reply] = file_to_download;
@@ -689,4 +703,11 @@ void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError>
     for(QSslError error : errors){
         LOG_WARNING("Ignored: " + error.errorString(), "ComManager::onNetworkSslErrors");
     }
+}
+
+
+void ComManager::setRequestLanguage(QNetworkRequest &request) {
+    //Locale will be initialized with default locale
+    QString localeString = QLocale().bcp47Name();
+    request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
 }
