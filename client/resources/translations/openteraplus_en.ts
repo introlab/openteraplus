@@ -45,38 +45,38 @@
 <context>
     <name>ClientApp</name>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="134"/>
+        <location filename="../../src/ClientApp.cpp" line="135"/>
         <source>Connexion</source>
         <translation>Connection</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="180"/>
+        <location filename="../../src/ClientApp.cpp" line="181"/>
         <source>Utilisateur ou mot de passe invalide.</source>
         <translation>Invalid username or password.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="182"/>
+        <location filename="../../src/ClientApp.cpp" line="183"/>
         <source>Bienvenue!</source>
         <translation>Welcome!</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="196"/>
-        <location filename="../../src/ClientApp.cpp" line="208"/>
+        <location filename="../../src/ClientApp.cpp" line="197"/>
+        <location filename="../../src/ClientApp.cpp" line="209"/>
         <source>La connexion a été refusée par le serveur.</source>
         <translation>Connection refused by server.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="215"/>
+        <location filename="../../src/ClientApp.cpp" line="216"/>
         <source>Impossible de rejoindre le serveur.</source>
         <translation>Impossible to join the server.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="218"/>
+        <location filename="../../src/ClientApp.cpp" line="219"/>
         <source>Le serveur est introuvable.</source>
         <translation>Server is unreachable.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="221"/>
+        <location filename="../../src/ClientApp.cpp" line="222"/>
         <source>Impossible de se connecter (Code erreur: </source>
         <translation>Unable to connect (Error code: </translation>
     </message>

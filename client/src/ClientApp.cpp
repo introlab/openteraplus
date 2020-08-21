@@ -18,6 +18,7 @@ ClientApp::ClientApp(int &argc, char **argv)
     //Translations...
     QLocale english = QLocale(QLocale::English);
     QLocale french = QLocale(QLocale::French);
+    QLocale::setDefault(english);
     qDebug() << QLocale();
     if (m_translator->load(english, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
         this->installTranslator(m_translator);

@@ -154,6 +154,9 @@ signals:
 
 public slots:
 
+protected:
+    void setRequestLanguage(QNetworkRequest &request);
+
 private slots:
     // Network
     void onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
@@ -162,5 +165,7 @@ private slots:
     void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 
 };
+
+
 
 #endif // COMMANAGER_H
