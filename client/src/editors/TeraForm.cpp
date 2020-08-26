@@ -41,6 +41,11 @@ void TeraForm::buildUiFromStructure(const QString &structure)
     }
 
     m_widgets.clear();
+    while (ui->toolboxMain->count() > 0){
+        ui->toolboxMain->widget(0)->deleteLater();
+        ui->toolboxMain->removeItem(0);
+    }
+
 
     QJsonObject struct_object = struct_info.object();
     //qDebug() << struct_info.object().keys();
@@ -54,12 +59,12 @@ void TeraForm::buildUiFromStructure(const QString &structure)
         for (QVariant section:struct_data){
             if (section.canConvert(QMetaType::QVariantHash)){
                 QVariantHash section_data = section.toHash();
-                if (page_index>0){
+                //if (page_index>0){
                     QWidget* new_page = new QWidget(ui->toolboxMain);
                     new_page->setObjectName("pageSection" + QString::number(page_index+1));
                     new_page->setStyleSheet("QWidget#" + new_page->objectName() + "{border: 1px solid white; border-radius: 5px;}");
                     ui->toolboxMain->addItem(new_page,"");
-                }
+                //}
                 ui->toolboxMain->setItemText(page_index, section_data["label"].toString());
                 if (section_data.contains("items")){
                     if (section_data["items"].canConvert(QMetaType::QVariantList)){
@@ -303,6 +308,11 @@ bool TeraForm::formHasData()
     return !m_initialValues.isEmpty();
 }
 
+bool TeraForm::formHasStructure()
+{
+    return !m_widgets.isEmpty();
+}
+
 void TeraForm::resetFormValues()
 {
     for (QString field:m_initialValues.keys()){
@@ -322,10 +332,15 @@ void TeraForm::setHighlightConditions(const bool &hightlight)
 
 void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structure)
 {
-    QFormLayout* layout = new QFormLayout(page);
-    //layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
-    layout->setVerticalSpacing(3);
+    QFormLayout* layout;
+    if (!page->layout()){
+        layout = new QFormLayout(page);
+        //layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+        layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+        layout->setVerticalSpacing(3);
+    }else{
+        layout = static_cast<QFormLayout*>(page->layout());
+    }
 
     for (QVariant item:structure){
         if (item.canConvert(QMetaType::QVariantHash)){
@@ -998,6 +1013,9 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
 {
 
     bool rval = true;
+
+    if (!widget)
+        return false;
 
     if (widget->isVisibleTo(widget->parentWidget()) || include_hidden){
         if (widget->property("required").isValid()){

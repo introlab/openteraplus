@@ -165,12 +165,12 @@
 <context>
     <name>DataListWidget</name>
     <message>
-        <location filename="../../src/editors/DataListWidget.cpp" line="534"/>
+        <location filename="../../src/editors/DataListWidget.cpp" line="531"/>
         <source>Suppression?</source>
         <translation>Delete?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/DataListWidget.cpp" line="535"/>
+        <location filename="../../src/editors/DataListWidget.cpp" line="532"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation>Are you sure you want to delete </translation>
     </message>
@@ -1503,7 +1503,7 @@ or done</translation>
 <context>
     <name>ServiceConfigWidget</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="144"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="189"/>
         <source>Configuration - Service</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1512,22 +1512,26 @@ or done</translation>
         <translation type="obsolete">Device Sub-Type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="146"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="191"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="147"/>
         <source>Éditer</source>
-        <translation type="unfinished">Edit</translation>
+        <translation type="obsolete">Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="148"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="192"/>
+        <source>Configuration:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="193"/>
         <source>Sauvegarder</source>
         <translation type="unfinished">Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="149"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="194"/>
         <source>Annuler</source>
         <translation type="unfinished">Cancel</translation>
     </message>
@@ -1542,6 +1546,21 @@ or done</translation>
     <message>
         <source>Détails</source>
         <translation type="obsolete">Details</translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/ServiceConfigWidget.cpp" line="67"/>
+        <source>Field service_config_config can&apos;t be set.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/ServiceConfigWidget.cpp" line="205"/>
+        <source>Les champs suivants doivent être complétés:</source>
+        <translation type="unfinished">The following fields must be entered:</translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/ServiceConfigWidget.cpp" line="211"/>
+        <source>Champs invalides</source>
+        <translation type="unfinished">Invalid fields</translation>
     </message>
 </context>
 <context>
@@ -2081,7 +2100,7 @@ ou réalisées</source>
 <context>
     <name>TeraForm</name>
     <message>
-        <location filename="../../src/editors/TeraForm.cpp" line="1061"/>
+        <location filename="../../src/editors/TeraForm.cpp" line="1079"/>
         <source>Choisir la couleur</source>
         <translation>Chose a color</translation>
     </message>
@@ -2092,8 +2111,12 @@ ou réalisées</source>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_TeraForm.h" line="146"/>
+        <source>Ce formulaire ne contient aucune information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Page 1</source>
-        <translation>Pate 1</translation>
+        <translation type="vanished">Pate 1</translation>
     </message>
 </context>
 <context>
@@ -2211,78 +2234,78 @@ Vous devez spécifier au moins un groupe utilisateur</source>
         <translation>You should specify at least one user group</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="414"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="416"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="419"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="421"/>
         <source>Utilisateur</source>
         <translation>User</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="417"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="422"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="418"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="423"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="419"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="424"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="420"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="425"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="421"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="426"/>
         <source>Cet utilisateur est un super administrateur. Il est donc impossible de lui assigner des groupes utiilsateurs.</source>
         <translation>This user is a superuser. It is not possible to assign a user group.</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="422"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="427"/>
         <source>Mettre à jour les groupes de cet utilisateur</source>
         <translation>Update this user groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="423"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="428"/>
         <source>Groupes</source>
         <translation>Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="424"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="429"/>
         <source>Rôles effectifs</source>
         <translation>Effective roles</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="426"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="431"/>
         <source>Site</source>
         <translation>Site</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="428"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="433"/>
         <source>Projet</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="430"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="435"/>
         <source>Rôle</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="431"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="436"/>
         <source>Rôles</source>
         <translation>Roles</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="432"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="437"/>
         <source>Préférences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="433"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_0_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="438"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>

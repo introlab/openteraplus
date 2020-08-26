@@ -441,11 +441,8 @@ void UserWidget::on_tabMain_currentChanged(int index)
             ui->wdgServiceConfig->setLayout(layout);
         }
         if (ui->wdgServiceConfig->layout()->count() == 0){
-            args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Also includes services without configuration
-            DataListWidget* userlist_editor = new DataListWidget(m_comManager, TERADATA_SERVICE_CONFIG, args, ui->wdgServiceConfig);
-            userlist_editor->setPermissions(true, false);
-            ui->wdgServiceConfig->layout()->addWidget(userlist_editor);
+            ServiceConfigWidget* service_config_widget = new ServiceConfigWidget(m_comManager, m_data->getIdFieldName(), m_data->getId(), ui->wdgServiceConfig);
+            ui->wdgServiceConfig->layout()->addWidget(service_config_widget);
         }
     }
 }

@@ -4,12 +4,12 @@
 
 #include <QDebug>
 
-/*
+
 TeraData::TeraData(QObject *parent) :
     QObject(parent)
 {
     setDataType(TERADATA_NONE);
-}*/
+}
 
 TeraData::TeraData(TeraDataTypes obj_type, QObject *parent) :
     QObject(parent)
@@ -417,12 +417,21 @@ bool TeraData::fromJson(const QJsonValue &value)
     return true;
 }
 
-QJsonObject TeraData::toJson()
+QJsonObject TeraData::toJson(const QString &specific_fieldName)
 {
     QJsonObject object;
 
+    if (!specific_fieldName.isEmpty() && !hasFieldName(specific_fieldName)){
+        LOG_WARNING("Field " + specific_fieldName + " not in fields list.", "TeraData::toJson");
+        return object;
+    }
+
     for (int i=0; i<m_fieldsValue.count(); i++){
         QString fieldName = m_fieldsValue.keys().at(i);
+        if (!specific_fieldName.isEmpty()){
+            if (fieldName != specific_fieldName)
+                continue;
+        }
         // Ignore "metaObject" properties
         QVariant fieldData = getFieldValue(fieldName);
         if (fieldData.canConvert(QMetaType::QString)){

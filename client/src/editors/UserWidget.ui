@@ -512,9 +512,16 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          <attribute name="title">
           <string>Configuration</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_7">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QWidget" name="wdgServiceConfig" native="true"/>
+           <widget class="QWidget" name="wdgServiceConfig" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

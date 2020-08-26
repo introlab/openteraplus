@@ -8,6 +8,10 @@
 
 int main(int argc, char* argv[])
 {
+    // Global settings
+    QCoreApplication::setOrganizationName("INTER");
+    QCoreApplication::setApplicationName("OpenTeraPlus");
+
     // Force use of ANGLE instead of Desktop OpenGL - some memory leak may happen with WebRTC on Intel Graphics Cards otherwise.
 #ifdef WIN32
     QApplication::setAttribute(Qt::AA_UseOpenGLES, true);

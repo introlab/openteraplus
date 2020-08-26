@@ -14,7 +14,7 @@
 #include <QComboBox>
 
 #include "DataEditorWidget.h"
-#include "DataListWidget.h"
+#include "ServiceConfigWidget.h"
 #include "GlobalMessageBox.h"
 
 namespace Ui {

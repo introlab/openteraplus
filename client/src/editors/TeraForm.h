@@ -46,6 +46,7 @@ public:
     void fillFormFromData(const QJsonObject& data);
     void fillFormFromData(const QString& structure);
     bool formHasData();
+    bool formHasStructure();
     void resetFormValues();
     void setHighlightConditions(const bool& hightlight);
 

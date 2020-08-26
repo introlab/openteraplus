@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QRandomGenerator>
+#include <QSysInfo>
+#include <QSettings>
+#include <QUuid>
 
 class Utils : public QObject
 {
@@ -11,6 +14,8 @@ public:
     explicit Utils(QObject *parent = nullptr);
 
     static QString generatePassword(const int &len);
+
+    static QString getMachineUniqueId();
 
 signals:
 

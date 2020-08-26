@@ -232,9 +232,6 @@ void DataListWidget::showEditor(TeraData *data)
         case TERADATA_SERVICE:
             m_editor = new ServiceWidget(m_comManager, data);
         break;
-        case TERADATA_SERVICE_CONFIG:
-            m_editor = new ServiceConfigWidget(m_comManager, data);
-        break;
         default:
             LOG_ERROR("Unhandled datatype for editor: " + TeraData::getDataTypeName(data->getDataType()), "DataListWidget::showEditor()");
             return;
