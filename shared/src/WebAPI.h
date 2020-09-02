@@ -33,7 +33,6 @@
 #define WEB_SESSIONMANAGER_PATH             "/api/user/sessions/manager"
 
 #define WEB_FORMS_PATH                  "/api/user/forms"
-#define WEB_FORMS_QUERY_USER_PROFILE    "type=user_profile"
 #define WEB_FORMS_QUERY_USER            "type=user"
 #define WEB_FORMS_QUERY_SITE            "type=site"
 #define WEB_FORMS_QUERY_DEVICE          "type=device"
@@ -74,6 +73,7 @@
 #define WEB_QUERY_WITH_EMPTY        "with_empty"
 #define WEB_QUERY_WITH_PARTICIPANTS "with_participants"
 #define WEB_QUERY_WITH_SERVICES     "with_services"
+#define WEB_QUERY_WITH_CONFIG       "with_config"
 #define WEB_QUERY_SELF              "self"
 #define WEB_QUERY_BY_USERS          "by_users"
 #define WEB_QUERY_NO_GROUP          "no_group"

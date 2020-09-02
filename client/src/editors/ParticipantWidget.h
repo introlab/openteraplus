@@ -16,6 +16,7 @@
 #include "TeraSessionStatus.h"
 #include "Utils.h"
 #include "StartSessionDialog.h"
+#include "ServiceConfigWidget.h"
 
 namespace Ui {
 class ParticipantWidget;

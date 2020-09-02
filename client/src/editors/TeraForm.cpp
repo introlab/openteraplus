@@ -480,8 +480,9 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
     item_combo->addItem("", "");
 
     // Query webcams on the system
-    QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-    for (QCameraInfo camera:cameras){
+    if (m_videoInputs.isEmpty())
+        loadVideoInputs();
+    for (QCameraInfo camera:m_videoInputs){
         //item_combo->addItem(camera.description(), camera.deviceName());
         item_combo->addItem(camera.description(), camera.description());
     }
@@ -500,9 +501,10 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
     // Add empty item
     item_combo->addItem("", "");
 
-    // Query webcams on the system
-    QList<QAudioDeviceInfo> inputs = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-    for (QAudioDeviceInfo input:inputs){
+    // Query audio inputs on the system
+    if (m_audioInputs.isEmpty())
+        loadAudioInputs();
+    for (QAudioDeviceInfo input:m_audioInputs){
         item_combo->addItem(input.deviceName(), input.deviceName());
     }
 
@@ -659,6 +661,16 @@ QWidget *TeraForm::createDurationWidget(const QVariantHash &structure)
     item_t->setDisplayFormat("hh:mm:ss");
 
     return item_t;
+}
+
+void TeraForm::loadAudioInputs()
+{
+    m_audioInputs = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+}
+
+void TeraForm::loadVideoInputs()
+{
+    m_videoInputs = QCameraInfo::availableCameras();
 }
 
 void TeraForm::checkConditions(QWidget *item_triggering)

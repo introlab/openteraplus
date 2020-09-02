@@ -31,7 +31,6 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     connectSignals();
 
     // Query forms definition
-    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER_PROFILE));
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
 
     ui->wdgUser->setComManager(m_comManager);
@@ -58,13 +57,6 @@ void UserWidget::setData(const TeraData *data){
 }
 
 void UserWidget::saveData(bool signal){
-
-    // User Profile
-    QString user_profile = ui->wdgProfile->getFormData(true);
-
-    if (!ui->wdgUser->setFieldValue("user_profile", user_profile)){
-        LOG_ERROR(tr("Field user_profile can't be set."), "UserWidget::saveData");
-    }
 
     //QString user_data = ui->wdgUser->getFormData();
     // If data is new, we request all the fields.
@@ -99,7 +91,7 @@ void UserWidget::saveData(bool signal){
 
 
 void UserWidget::updateControlsState(){
-    ui->wdgProfile->setEnabled(!isWaitingOrLoading());
+    ui->framePrefs->setEnabled(!isWaitingOrLoading());
     ui->tableRoles->setEnabled(!isWaitingOrLoading());
     ui->frameGroups->setEnabled(!isWaitingOrLoading());
 
@@ -146,11 +138,6 @@ void UserWidget::updateFieldsValue(){
             ui->wdgUser->fillFormFromData(m_data->toJson());
         else {
             ui->wdgUser->resetFormValues();
-        }
-        if (!ui->wdgProfile->formHasData())
-            ui->wdgProfile->fillFormFromData(m_data->getFieldValue("user_profile").toString());
-        else{
-            ui->wdgProfile->resetFormValues();
         }
 
         ui->lblTitle->setText(m_data->getName());
@@ -363,11 +350,6 @@ void UserWidget::processFormsReply(QString form_type, QString data)
 
         }
 
-        return;
-    }
-
-    if (form_type == WEB_FORMS_QUERY_USER_PROFILE){
-        ui->wdgProfile->buildUiFromStructure(data);
         return;
     }
 }
