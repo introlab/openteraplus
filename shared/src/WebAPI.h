@@ -1,12 +1,15 @@
 #ifndef WEBAPI_H
 #define WEBAPI_H
 
+#define APPLICATION_TAG                     "OpenTeraPlus"
+
 // TERASERVER URL Definitions
 #define WEB_LOGIN_PATH                      "/api/user/login"
 #define WEB_LOGOUT_PATH                     "/api/user/logout"
 #define WEB_USERINFO_PATH                   "/api/user/users"
 #define WEB_USERGROUPINFO_PATH              "/api/user/usergroups"
 #define WEB_USERUSERGROUPINFO_PATH          "/api/user/users/usergroups"
+#define WEB_USERPREFSINFO_PATH              "/api/user/users/preferences"
 #define WEB_SITEINFO_PATH                   "/api/user/sites"
 #define WEB_PROJECTINFO_PATH                "/api/user/projects"
 #define WEB_SITEACCESS_PATH                 "/api/user/siteaccess"
@@ -47,6 +50,7 @@
 #define WEB_FORMS_QUERY_SERVICE_CONFIG  "type=service_config"
 
 #define WEB_QUERY_USERUUID          "user_uuid"
+#define WEB_QUERY_APPTAG            "app_tag"
 #define WEB_QUERY_ID_USER           "id_user"
 #define WEB_QUERY_ID                "id"
 #define WEB_QUERY_ID_SITE           "id_site"

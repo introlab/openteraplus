@@ -189,7 +189,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <item>
        <widget class="QTabWidget" name="tabMain">
         <property name="currentIndex">
-         <number>4</number>
+         <number>3</number>
         </property>
         <property name="iconSize">
          <size>
@@ -500,37 +500,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
-           <widget class="QFrame" name="framePrefs">
-            <layout class="QFormLayout" name="formLayout">
-             <item row="0" column="0">
-              <widget class="QLabel" name="lblLanguage">
-               <property name="text">
-                <string>Langue de l'interface:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QComboBox" name="cmbLanguage"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="lblNotificationSounds">
-               <property name="text">
-                <string>Sons lors des notifications &quot;en-ligne&quot; / &quot;hors-ligne&quot;</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QCheckBox" name="chkNotificationSounds">
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
+           <widget class="TeraForm" name="wdgPrefs" native="true"/>
           </item>
           <item>
            <widget class="QPushButton" name="btnUpdatePrefs">

@@ -53,6 +53,8 @@ private:
 
     QJsonArray getSelectedGroupsAsJsonArray();
 
+    void buildUserPreferencesWidget();
+
     void updateUserGroup(const TeraData* group);
     void updateSiteAccess(const TeraData* site_access);
     void updateProjectAccess(const TeraData* project_access);
@@ -68,6 +70,7 @@ private slots:
     void processProjectsAccessReply(QList<TeraData> projects);
     void processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query);
     void processUserUsersGroupsReply(QList<TeraData> user_users_groups, QUrlQuery query);
+    void processUserPrefsReply(QList<TeraData> user_prefs, QUrlQuery query);
     void processFormsReply(QString form_type, QString data);
     void postResultReply(QString path);
 
@@ -75,6 +78,7 @@ private slots:
     void on_btnUpdateGroups_clicked();
 
     void userFormValueChanged(QWidget* widget, QVariant value);
+    void on_btnUpdatePrefs_clicked();
 };
 
 

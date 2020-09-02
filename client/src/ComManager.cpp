@@ -5,6 +5,7 @@
 ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     QObject(parent),
     m_currentUser(TERADATA_USER),
+    m_currentPreferences(TERADATA_USERPREFERENCE),
     m_currentSessionType(nullptr)
 {
 
@@ -18,7 +19,7 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     // Websocket manager
     connect(m_webSocketMan, &WebSocketManager::serverDisconnected, this, &ComManager::serverDisconnected); // Pass-thru signal
     connect(m_webSocketMan, &WebSocketManager::websocketError, this, &ComManager::socketError); // Pass-thru signal
-    connect(m_webSocketMan, &WebSocketManager::loginResult, this, &ComManager::loginResult); // Pass-thru signal
+    connect(m_webSocketMan, &WebSocketManager::loginResult, this, &ComManager::onWebSocketLoginResult);
 
     // Network manager
     connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &ComManager::onNetworkAuthenticationRequired);
@@ -186,6 +187,11 @@ void ComManager::doUpdateCurrentUser()
     args.addQueryItem(WEB_QUERY_SELF, "");
     args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1");
     doQuery(QString(WEB_USERINFO_PATH), args);
+
+    // Update preferences
+    args.clear();
+    args.addQueryItem(WEB_QUERY_APPTAG, APPLICATION_TAG);
+    doQuery(WEB_USERPREFSINFO_PATH, args);
 }
 
 void ComManager::doDownload(const QString &save_path, const QString &path, const QUrlQuery &query_args)
@@ -309,6 +315,15 @@ void ComManager::stopSession(const TeraData &session, const int &id_service)
 TeraData &ComManager::getCurrentUser()
 {
     return m_currentUser;
+}
+
+QVariantMap ComManager::getCurrentPreferences()
+{
+    QString prefs = m_currentPreferences.getFieldValue("user_preference_preference").toString();
+
+    QJsonDocument doc = QJsonDocument::fromJson(prefs.toUtf8());
+
+    return doc.object().toVariantMap();
 }
 
 QString ComManager::getCurrentUserSiteRole(const int &site_id)
@@ -474,20 +489,39 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         for (QJsonValue data:data_list.array()){
             TeraData item_data(items_type, data);
 
+            ///////// UPDATE CURRENT USER AND PREFERENCES
+            /////////////////////////////////////////////
             // Check if the currently connected user was updated and not requesting a list (limited information)
             if (items_type == TERADATA_USER){
-                if (m_currentUser.getFieldValue("user_uuid").toUuid() == item_data.getFieldValue("user_uuid").toUuid() &&
-                        !reply_query.hasQueryItem(WEB_QUERY_LIST)){
-                    //m_currentUser = item_data;
-                    // Update fields that we received with the new values
-                    m_currentUser.updateFrom(item_data);
-                    emit currentUserUpdated();
+                if (!reply_query.hasQueryItem(WEB_QUERY_LIST))
+                    updateCurrentUser(item_data);
+            }
+
+            // Check if we received user preferences that need to be updated
+            if (items_type == TERADATA_USERPREFERENCE){
+                updateCurrentPrefs(item_data);
+            }
+
+            // Check if we received current user and preference, when login, before emitting signal
+            if (m_loggingInProgress){
+                if (m_currentUser.getFieldValues().count() > 1 && m_currentPreferences.getFieldValues().count() > 0){
+                    emit loginResult(true);
+                    m_loggingInProgress = false;
                 }
             }
+            /////////////////////////////////////////////
+
             items.append(item_data);
         }
     }else{
         TeraData item_data(items_type, data_list.object());
+        if (items_type == TERADATA_USER){
+            if (!reply_query.hasQueryItem(WEB_QUERY_LIST))
+                updateCurrentUser(item_data);
+        }
+        if (items_type == TERADATA_USERPREFERENCE){
+            updateCurrentPrefs(item_data);
+        }
         items.append(item_data);
     }
 
@@ -504,6 +538,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_USERUSERGROUP:
         emit userUserGroupsReceived(items, reply_query);
+        break;
+    case TERADATA_USERPREFERENCE:
+        emit userPreferencesReceived(items, reply_query);
         break;
     case TERADATA_SITE:
         emit sitesReceived(items, reply_query);
@@ -637,6 +674,25 @@ bool ComManager::handleFormReply(const QUrlQuery &reply_query, const QString &re
     return true;
 }
 
+void ComManager::updateCurrentUser(const TeraData &user_data)
+{
+    if (m_currentUser.getFieldValue("user_uuid").toUuid() == user_data.getFieldValue("user_uuid").toUuid()){
+        // Update fields that we received with the new values
+        m_currentUser.updateFrom(user_data);
+        emit currentUserUpdated();
+    }
+}
+
+void ComManager::updateCurrentPrefs(const TeraData &user_prefs)
+{
+    if ((!m_currentUser.hasFieldName("id_user") || m_currentUser.getId() == user_prefs.getFieldValue("id_user").toInt())
+         && user_prefs.getFieldValue("user_preference_app_tag").toString() == APPLICATION_TAG){
+        // Update preferences
+        m_currentPreferences.updateFrom(user_prefs);
+        emit preferencesUpdated();
+    }
+}
+
 QString ComManager::filterReplyString(const QString &data_str)
 {
     QString filtered_str = data_str;
@@ -656,7 +712,7 @@ void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenti
         LOG_DEBUG("Sending authentication request...", "ComManager::onNetworkAuthenticationRequired");
         authenticator->setUser(m_username);
         authenticator->setPassword(m_password);
-        m_loggingInProgress = false; // Not logging anymore - we sent the credentials
+        //m_loggingInProgress = false; // Not logging anymore - we sent the credentials
     }else{
         LOG_DEBUG("Authentication error", "ComManager::onNetworkAuthenticationRequired");
         emit loginResult(false);
@@ -707,6 +763,17 @@ void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError>
     for(QSslError error : errors){
         LOG_WARNING("Ignored: " + error.errorString(), "ComManager::onNetworkSslErrors");
     }
+}
+
+void ComManager::onWebSocketLoginResult(bool logged_in)
+{
+    if (!logged_in){
+        emit loginResult(logged_in);
+        return;
+    }
+
+    // Logged in - update current user before sending login result
+    doUpdateCurrentUser();
 }
 
 

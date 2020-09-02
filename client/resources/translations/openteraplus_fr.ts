@@ -45,38 +45,38 @@
 <context>
     <name>ClientApp</name>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="135"/>
+        <location filename="../../src/ClientApp.cpp" line="129"/>
         <source>Connexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="181"/>
+        <location filename="../../src/ClientApp.cpp" line="209"/>
         <source>Utilisateur ou mot de passe invalide.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="183"/>
+        <location filename="../../src/ClientApp.cpp" line="211"/>
         <source>Bienvenue!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="197"/>
-        <location filename="../../src/ClientApp.cpp" line="209"/>
+        <location filename="../../src/ClientApp.cpp" line="225"/>
+        <location filename="../../src/ClientApp.cpp" line="237"/>
         <source>La connexion a été refusée par le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="216"/>
+        <location filename="../../src/ClientApp.cpp" line="244"/>
         <source>Impossible de rejoindre le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="219"/>
+        <location filename="../../src/ClientApp.cpp" line="247"/>
         <source>Le serveur est introuvable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="222"/>
+        <location filename="../../src/ClientApp.cpp" line="250"/>
         <source>Impossible de se connecter (Code erreur: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -778,6 +778,17 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
     <message>
         <location filename="../../src/MainWindow.cpp" line="769"/>
         <source>Détails</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="781"/>
+        <source>Changement de langue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="781"/>
+        <source>La langue a été modifiée.
+Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2152,109 +2163,120 @@ ou réalisées</source>
 <context>
     <name>UserWidget</name>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="121"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="120"/>
         <source>Groupes utilisateurs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="262"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="218"/>
+        <source>Langue de l&apos;interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/UserWidget.cpp" line="223"/>
+        <source>Français</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/UserWidget.cpp" line="227"/>
+        <source>Anglais</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/UserWidget.cpp" line="234"/>
+        <source>Sons lors des notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/UserWidget.cpp" line="301"/>
         <source>Attention</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="262"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="301"/>
         <source>Aucun groupe utilisateur n&apos;a été spécifié.
 Vous devez spécifier au moins un groupe utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="460"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="462"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="429"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="431"/>
         <source>Utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="463"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="432"/>
         <source>Éditer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="464"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="433"/>
         <source>Sauvegarder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="465"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="434"/>
         <source>Annuler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="466"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="435"/>
         <source>Informations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="467"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="436"/>
         <source>Cet utilisateur est un super administrateur. Il est donc impossible de lui assigner des groupes utiilsateurs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="468"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="437"/>
         <source>Mettre à jour les groupes de cet utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="469"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="438"/>
         <source>Groupes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="470"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="439"/>
         <source>Rôles effectifs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="472"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="441"/>
         <source>Site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="474"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="443"/>
         <source>Projet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="476"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="445"/>
         <source>Rôle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="477"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="446"/>
         <source>Rôles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="478"/>
-        <source>Langue de l&apos;interface:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="479"/>
-        <source>Sons lors des notifications &quot;en-ligne&quot; / &quot;hors-ligne&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="481"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="447"/>
         <source>Mettre à jour les préférences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="482"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="238"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="448"/>
         <source>Préférences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="483"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="449"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>

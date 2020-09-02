@@ -643,7 +643,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
 
 void MainWindow::on_btnLogout_clicked()
 {
-    qDebug() << "on_btnLogout_clicked()";
+    //qDebug() << "on_btnLogout_clicked()";
 
     // Add logged action
     GlobalEvent logout_event(EVENT_LOGOUT, tr("Déconnexion"));
@@ -776,7 +776,14 @@ void MainWindow::changeEvent(QEvent* event)
         switch(event->type()) {
 
         case QEvent::LanguageChange:
-            qDebug() << "MainWindow::changeEvent - LanguageChange";
+            if (m_currentDataId >= 0){ // Filter initial language change
+                GlobalMessageBox msg;
+                if (msg.showYesNo(tr("Changement de langue"), tr("La langue a été modifiée.\nSouhaitez-vous vous déconnecter pour appliquer les changements?")) == QMessageBox::Yes){
+                    emit logout_request();
+                }
+
+            }
+            //qDebug() << "MainWindow::changeEvent - LanguageChange";
             break;
 
             // this event is send, if the system, language changes

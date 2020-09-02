@@ -15,15 +15,9 @@ ClientApp::ClientApp(int &argc, char **argv)
     m_mainWindow = nullptr;
     m_translator = new QTranslator();
 
-    //Translations...
-    QLocale english = QLocale(QLocale::English);
-    QLocale french = QLocale(QLocale::French);
-    QLocale::setDefault(english);
-    qDebug() << QLocale();
-    if (m_translator->load(english, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
-        this->installTranslator(m_translator);
-        qDebug() << "Installed translator";
-    }
+    //Translations
+    setTranslation();
+
 
     QFile file(":/stylesheet.qss");
     file.open(QFile::ReadOnly);
@@ -148,6 +142,39 @@ void ClientApp::setupLogger()
     }
 }
 
+void ClientApp::setTranslation(QString language)
+{
+
+   bool lang_changed = false;
+
+   if (language.isEmpty()){
+       m_currentLocale = QLocale(); // Use system locale by default
+       lang_changed = true;
+   }
+   if (language.toLower() == "en" && m_currentLocale != QLocale::English){
+       m_currentLocale = QLocale(QLocale::English);
+       lang_changed = true;
+   }
+
+   if (language.toLower() == "fr" && m_currentLocale != QLocale::French){
+       m_currentLocale = QLocale(QLocale::French);
+       lang_changed = true;
+   }
+
+   //QLocale english = QLocale(QLocale::English);
+   //QLocale french = QLocale(QLocale::French);
+   //QLocale::setDefault(english);
+   //qDebug() << QLocale();
+
+   if (lang_changed){
+       if (m_translator->load(m_currentLocale, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
+           this->installTranslator(m_translator);
+           //qDebug() << "Installed translator";
+       }
+   }
+
+}
+
 void ClientApp::loginRequested(QString username, QString password, QString server_name)
 {
     // Find server url for that server
@@ -164,6 +191,7 @@ void ClientApp::loginRequested(QString username, QString password, QString serve
     connect(m_comMan, &ComManager::serverDisconnected, this, &ClientApp::on_serverDisconnected);
     connect(m_comMan, &ComManager::loginResult, this, &ClientApp::on_loginResult);
     connect(m_comMan, &ComManager::networkError, this, &ClientApp::on_networkError);
+    connect(m_comMan, &ComManager::preferencesUpdated, this, &ClientApp::preferencesUpdated);
 
     // Connect to server
     m_comMan->connectToServer(username, password);
@@ -225,4 +253,11 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
         m_loginDiag->setStatusMessage(error_str, true);
     }
     // TODO: Manage error in main UI
+}
+
+void ClientApp::preferencesUpdated()
+{
+    // Update translation
+    QVariantMap prefs = m_comMan->getCurrentPreferences();
+    setTranslation(prefs["language"].toString());
 }
