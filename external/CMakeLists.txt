@@ -15,7 +15,7 @@ endif (MSVC)
 option(protobuf_VERBOSE "" ON)
 
 #Will build shared libs
-set(BUILD_SHARED_LIBS FALSE)
+set(BUILD_SHARED_LIBS ON)
 
 # Build position independant code (-fPIC)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)

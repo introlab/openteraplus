@@ -417,13 +417,15 @@ bool TeraData::fromJson(const QJsonValue &value)
     return true;
 }
 
-QJsonObject TeraData::toJson(const QString &specific_fieldName)
+QJsonObject TeraData::toJson(const QString specific_fieldName)
 {
     QJsonObject object;
 
-    if (!specific_fieldName.isEmpty() && !hasFieldName(specific_fieldName)){
-        LOG_WARNING("Field " + specific_fieldName + " not in fields list.", "TeraData::toJson");
-        return object;
+    if (!specific_fieldName.isEmpty()){
+        if (!hasFieldName(specific_fieldName)){
+            LOG_WARNING("Field " + specific_fieldName + " not in fields list.", "TeraData::toJson");
+            return object;
+        }
     }
 
     for (int i=0; i<m_fieldsValue.count(); i++){

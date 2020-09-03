@@ -56,7 +56,7 @@ public:
     explicit TeraData(TeraDataTypes obj_type, const QJsonValue& json, QObject *parent = nullptr);
 
     virtual bool        fromJson(const QJsonValue& value);
-    virtual QJsonObject toJson(const QString& specific_fieldName = QString());
+    virtual QJsonObject toJson(const QString specific_fieldName = QString());
 
     int getId() const;
     QString getIdFieldName() const;
