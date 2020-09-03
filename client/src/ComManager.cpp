@@ -57,7 +57,7 @@ void ComManager::disconnectFromServer()
     doQuery(QString(WEB_LOGOUT_PATH));
     m_webSocketMan->disconnectWebSocket();
 
-    m_currentPreferences.setSet(false);
+    clearCurrentUser();
 }
 
 bool ComManager::processNetworkReply(QNetworkReply *reply)
@@ -65,7 +65,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
     QString reply_path = reply->url().path();
     QString reply_data = reply->readAll();
     QUrlQuery reply_query = QUrlQuery(reply->url().query());
-    //qDebug() << reply_path << " ---> " << reply_data << ": " << reply_query;
+    //qDebug() << reply_path << " ---> " << reply_data << ": " << reply->url().query();
 
     bool handled = false;
 
@@ -73,8 +73,12 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
         if (reply_path == WEB_LOGIN_PATH){
             // Initialize cookies
             m_cookieJar.cookiesForUrl(reply->url());
-
             handled=handleLoginReply(reply_data);
+        }
+
+        if (m_loggingInProgress && !handled){
+            // While not logged in, wait for user and user prefs
+            handled = handleLoginSequence(reply_path, reply_data, reply_query);
         }
 
         if (reply_path == WEB_LOGOUT_PATH){
@@ -466,6 +470,55 @@ bool ComManager::handleLoginReply(const QString &reply_data)
     return true;
 }
 
+bool ComManager::handleLoginSequence(const QString &reply_path, const QString &reply_data, const QUrlQuery &reply_query)
+{
+    QJsonParseError json_error;
+
+    // Process reply
+    QString data_str = filterReplyString(reply_data);
+
+    QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
+    if (json_error.error!= QJsonParseError::NoError){
+        LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "ComManager::handleDataReply");
+        return false;
+    }
+
+    QList<TeraData> items;
+    TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
+
+    if (items_type != TERADATA_USER && items_type != TERADATA_USERPREFERENCE)
+        return false;
+
+    QJsonValue data = data_list.array().first();
+
+    if (items_type == TERADATA_USER){
+        TeraData item_data(items_type, data);
+        updateCurrentUser(item_data);
+    }
+
+    if (items_type == TERADATA_USERPREFERENCE){
+        if (data.isUndefined()){
+            // No preference for that user, will use default.
+            m_currentPreferences.setSet(true);
+        }else{
+            TeraData item_data(items_type, data);
+            updateCurrentPrefs(item_data);
+        }
+    }
+
+    // Check if we received current user and preference, when login, before emitting signal
+    if (m_loggingInProgress){
+        //qDebug() << "Still logging in...";
+        if (m_currentPreferences.isSet()){
+            //qDebug() << "All set!";
+            emit loginResult(true);
+            m_loggingInProgress = false;
+        }
+    }
+
+    return true;
+}
+
 bool ComManager::handleDataReply(const QString& reply_path, const QString &reply_data, const QUrlQuery &reply_query)
 {
     QJsonParseError json_error;
@@ -486,8 +539,6 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         for (QJsonValue data:data_list.array()){
             TeraData item_data(items_type, data);
 
-            ///////// UPDATE CURRENT USER AND PREFERENCES
-            /////////////////////////////////////////////
             // Check if the currently connected user was updated and not requesting a list (limited information)
             if (items_type == TERADATA_USER){
                 if (!reply_query.hasQueryItem(WEB_QUERY_LIST))
@@ -498,15 +549,6 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
             if (items_type == TERADATA_USERPREFERENCE){
                 updateCurrentPrefs(item_data);
             }
-
-            // Check if we received current user and preference, when login, before emitting signal
-            if (m_loggingInProgress){
-                if (m_currentUser.getFieldValues().count() > 1 && m_currentPreferences.isSet()){
-                    emit loginResult(true);
-                    m_loggingInProgress = false;
-                }
-            }
-            /////////////////////////////////////////////
 
             items.append(item_data);
         }
@@ -673,8 +715,10 @@ bool ComManager::handleFormReply(const QUrlQuery &reply_query, const QString &re
 
 void ComManager::updateCurrentUser(const TeraData &user_data)
 {
+    //qDebug() << "ComManager::updateCurrentUser";
     if (m_currentUser.getFieldValue("user_uuid").toUuid() == user_data.getFieldValue("user_uuid").toUuid()){
         // Update fields that we received with the new values
+        //qDebug() << "Updating user...";
         m_currentUser.updateFrom(user_data);
         emit currentUserUpdated();
     }
@@ -682,12 +726,21 @@ void ComManager::updateCurrentUser(const TeraData &user_data)
 
 void ComManager::updateCurrentPrefs(const TeraData &user_prefs)
 {
+    //qDebug() << "ComManager::updateCurrentPrefs";
+
     if ((!m_currentUser.hasFieldName("id_user") || m_currentUser.getId() == user_prefs.getFieldValue("id_user").toInt())
          && user_prefs.getFieldValue("user_preference_app_tag").toString() == APPLICATION_TAG){
         // Update preferences
+        //qDebug() << "Updating preferences...";
         m_currentPreferences.load(user_prefs);
         emit preferencesUpdated();
     }
+}
+
+void ComManager::clearCurrentUser()
+{
+    m_currentPreferences.clear();
+    m_currentUser = TeraData(TERADATA_USER);
 }
 
 QString ComManager::filterReplyString(const QString &data_str)
@@ -765,12 +818,10 @@ void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError>
 void ComManager::onWebSocketLoginResult(bool logged_in)
 {
     if (!logged_in){
+        clearCurrentUser();
         emit loginResult(logged_in);
         return;
     }
-
-    // Logged in - update current user before sending login result
-    doUpdateCurrentUser();
 }
 
 

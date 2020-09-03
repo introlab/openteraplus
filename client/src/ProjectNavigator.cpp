@@ -183,7 +183,7 @@ void ProjectNavigator::connectSignals()
     connect(ui->btnEditSite, &QPushButton::clicked, this, &ProjectNavigator::btnEditSite_clicked);
     //connect(ui->treeNavigator, &QTreeWidget::currentItemChanged, this, &ProjectNavigator::currentNavItemChanged);
     connect(ui->treeNavigator, &QTreeWidget::itemExpanded, this, &ProjectNavigator::navItemExpanded);
-    connect(ui->treeNavigator, &QTreeWidget::itemActivated, this, &ProjectNavigator::navItemActivated);
+    connect(ui->treeNavigator, &QTreeWidget::itemClicked, this, &ProjectNavigator::navItemClicked);
     connect(ui->btnDeleteItem, &QPushButton::clicked, this, &ProjectNavigator::deleteItemRequested);
     connect(ui->btnRefresh, &QToolButton::clicked, this, &ProjectNavigator::refreshRequested);
 }
@@ -665,9 +665,8 @@ void ProjectNavigator::currentNavItemChanged(QTreeWidgetItem *current, QTreeWidg
     updateAvailableActions(current);
 }
 
-void ProjectNavigator::navItemActivated(QTreeWidgetItem *item, int column)
+void ProjectNavigator::navItemClicked(QTreeWidgetItem *item)
 {
-    Q_UNUSED(column)
 
     currentNavItemChanged(item, nullptr);
 

@@ -23,6 +23,8 @@ public:
     void load(const QString& pref_str);
     void load(const TeraData& pref_obj);
 
+    void clear();
+
 public slots:
     void setLanguage(QString language);
     void setNotifySounds(bool notifySounds);

@@ -71,12 +71,15 @@ public:
 
 protected:
     bool handleLoginReply(const QString& reply_data);
+    bool handleLoginSequence(const QString& reply_path, const QString& reply_data, const QUrlQuery& reply_query);
     bool handleDataReply(const QString& reply_path, const QString& reply_data, const QUrlQuery& reply_query);
     bool handleSessionManagerReply(const QString& reply_data, const QUrlQuery& reply_query);
     bool handleFormReply(const QUrlQuery& reply_query, const QString& reply_data);
 
     void updateCurrentUser(const TeraData& user_data);
     void updateCurrentPrefs(const TeraData& user_prefs);
+
+    void clearCurrentUser();
 
     QString filterReplyString(const QString& data_str);
 

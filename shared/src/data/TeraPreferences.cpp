@@ -2,7 +2,7 @@
 
 TeraPreferences::TeraPreferences(QObject *parent) : QObject(parent)
 {
-
+    clear();
 }
 
 void TeraPreferences::load(const TeraData &pref_obj)
@@ -14,6 +14,15 @@ void TeraPreferences::load(const TeraData &pref_obj)
     QString prefs = pref_obj.getFieldValue("user_preference_preference").toString();
 
     load(prefs);
+}
+
+void TeraPreferences::clear()
+{
+    // Reset default values
+    m_language = "";
+    m_notifySounds = true;
+    m_isSet = false;
+
 }
 
 void TeraPreferences::load(const QString &pref_str)
