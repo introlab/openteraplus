@@ -32,7 +32,7 @@ private:
     QString m_idFieldName;
     int     m_idFieldValue;
     QMap<int, QListWidgetItem*>     m_listServices_items;
-    QMap<int, TeraData>             m_servicesIdsData;
+    //QMap<int, TeraData>             m_servicesIdsData;
 
     QString m_specificId;
 
@@ -40,18 +40,21 @@ private:
     void updateFieldsValue();
 
     void updateServiceConfig(const TeraData* config);
+    void updateService(const TeraData* service);
 
     bool validateData();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
     void processServiceConfigsReply(QList<TeraData> configs, QUrlQuery query);
+    void processServicesReply(QList<TeraData> services, QUrlQuery query);
 
     void postResultReply(QString path);
 
     void on_lstServiceConfig_itemClicked(QListWidgetItem *item);
     void on_btnSave_clicked();
     void on_btnUndo_clicked();
+    void on_cmbSpecific_currentIndexChanged(const QString &current_id);
 };
 
 #endif // SERVICECONFIGWIDGET_H

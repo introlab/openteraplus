@@ -78,6 +78,9 @@ private:
     bool                                            m_highlightConditionals;
     QStringList                                     m_hiddenFields;
 
+    QList<QAudioDeviceInfo>                         m_audioInputs;
+    QList<QCameraInfo>                              m_videoInputs;
+
     // Hook interface for dynamic url requests
     QMap<QWidget*, TeraDataTypes>                   m_widgetsHookRequests;
     ComManager* m_comManager;
@@ -97,6 +100,9 @@ private:
     QWidget* createColorWidget(const QVariantHash& structure);
     QWidget* createDateTimeWidget(const QVariantHash& structure);
     QWidget* createDurationWidget(const QVariantHash& structure);
+
+    void loadAudioInputs();
+    void loadVideoInputs();
 
     void checkConditions(QWidget* item_triggering = nullptr);
     void checkConditionsForItem(QWidget* item, QWidget* item_triggering = nullptr);

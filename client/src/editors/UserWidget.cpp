@@ -31,7 +31,6 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     connectSignals();
 
     // Query forms definition
-    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER_PROFILE));
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
 
     ui->wdgUser->setComManager(m_comManager);
@@ -59,13 +58,6 @@ void UserWidget::setData(const TeraData *data){
 
 void UserWidget::saveData(bool signal){
 
-    // User Profile
-    QString user_profile = ui->wdgProfile->getFormData(true);
-
-    if (!ui->wdgUser->setFieldValue("user_profile", user_profile)){
-        LOG_ERROR(tr("Field user_profile can't be set."), "UserWidget::saveData");
-    }
-
     //QString user_data = ui->wdgUser->getFormData();
     // If data is new, we request all the fields.
     QJsonDocument user_data = ui->wdgUser->getFormDataJson(m_data->isNew());
@@ -83,7 +75,7 @@ void UserWidget::saveData(bool signal){
     }
 
     //qDebug() << user_data.toJson();
-    postDataRequest(WEB_USERINFO_PATH, user_data.toJson());
+
 
     if (signal){
         TeraData* new_data = ui->wdgUser->getFormDataObject(TERADATA_USER);
@@ -99,7 +91,6 @@ void UserWidget::saveData(bool signal){
 
 
 void UserWidget::updateControlsState(){
-    ui->wdgProfile->setEnabled(!isWaitingOrLoading());
     ui->tableRoles->setEnabled(!isWaitingOrLoading());
     ui->frameGroups->setEnabled(!isWaitingOrLoading());
 
@@ -146,11 +137,6 @@ void UserWidget::updateFieldsValue(){
             ui->wdgUser->fillFormFromData(m_data->toJson());
         else {
             ui->wdgUser->resetFormValues();
-        }
-        if (!ui->wdgProfile->formHasData())
-            ui->wdgProfile->fillFormFromData(m_data->getFieldValue("user_profile").toString());
-        else{
-            ui->wdgProfile->resetFormValues();
         }
 
         ui->lblTitle->setText(m_data->getName());
@@ -214,6 +200,46 @@ QJsonArray UserWidget::getSelectedGroupsAsJsonArray()
         }
     }
     return user_groups;
+}
+
+void UserWidget::buildUserPreferencesWidget()
+{
+
+    // TODO: Use "generator" to build structure such as what will be needed for "tests".
+    QString json_form_structure = "{\"objecttype\": \"user_preference\","
+                                  "\"sections\": ["
+                                    "{"
+                                      "\"_order\": 1,"
+                                      "\"id\": \"main_prefs\","
+                                      "\"items\": ["
+                                        "{"
+                                          "\"_order\": 1,"
+                                          "\"id\": \"language\","
+                                          "\"label\": \"" + tr("Langue de l'interface") + "\","
+                                          "\"type\": \"array\","
+                                          "\"values\": ["
+                                            "{"
+                                              "\"id\": \"fr\","
+                                              "\"value\": \"" + tr("Français") + "\""
+                                            "},"
+                                            "{"
+                                              "\"id\": \"en\","
+                                              "\"value\": \"" + tr("Anglais") + "\""
+                                            "}"
+                                          "]"
+                                        "},"
+                                        "{"
+                                          "\"_order\": 2,"
+                                          "\"id\": \"notify_sounds\","
+                                          "\"label\": \"" + tr("Sons lors des notifications") + "\","
+                                          "\"type\": \"boolean\""
+                                        "}"
+                                      "],"
+                                      "\"label\": \"" + tr("Préférences") + "\""
+                                    "}"
+                                  "]"
+                                "}";
+    ui->wdgPrefs->buildUiFromStructure(json_form_structure);
 }
 
 
@@ -339,6 +365,19 @@ void UserWidget::processUserUsersGroupsReply(QList<TeraData> user_users_groups, 
 
 }
 
+void UserWidget::processUserPrefsReply(QList<TeraData> user_prefs, QUrlQuery query)
+{
+    Q_UNUSED(query)
+
+    foreach(TeraData pref, user_prefs){
+        if (pref.getFieldValue("id_user").toInt() == m_data->getId() && pref.getFieldValue("user_preference_app_tag").toString() == APPLICATION_TAG){
+            // Got the correct user preference
+            ui->wdgPrefs->fillFormFromData(pref.getFieldValue("user_preference_preference").toString());
+            break;
+        }
+    }
+}
+
 void UserWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_USER){
@@ -365,11 +404,6 @@ void UserWidget::processFormsReply(QString form_type, QString data)
 
         return;
     }
-
-    if (form_type == WEB_FORMS_QUERY_USER_PROFILE){
-        ui->wdgProfile->buildUiFromStructure(data);
-        return;
-    }
 }
 
 void UserWidget::postResultReply(QString path)
@@ -389,6 +423,7 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &UserWidget::processFormsReply);
     connect(m_comManager, &ComManager::userGroupsReceived, this, &UserWidget::processUserGroupsReply);
     connect(m_comManager, &ComManager::userUserGroupsReceived, this, &UserWidget::processUserUsersGroupsReply);
+    connect(m_comManager, &ComManager::userPreferencesReceived, this, &UserWidget::processUserPrefsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserWidget::postResultReply);
     connect(ui->wdgUser, &TeraForm::widgetValueHasChanged, this, &UserWidget::userFormValueChanged);
 
@@ -433,6 +468,7 @@ void UserWidget::on_tabMain_currentChanged(int index)
 
         }
     }
+
     if (current_tab == ui->tabConfig){
         // Service config
         if (!ui->wdgServiceConfig->layout()){
@@ -443,6 +479,19 @@ void UserWidget::on_tabMain_currentChanged(int index)
         if (ui->wdgServiceConfig->layout()->count() == 0){
             ServiceConfigWidget* service_config_widget = new ServiceConfigWidget(m_comManager, m_data->getIdFieldName(), m_data->getId(), ui->wdgServiceConfig);
             ui->wdgServiceConfig->layout()->addWidget(service_config_widget);
+        }
+    }
+
+    if (current_tab == ui->tabProfile){
+        // User Preferences
+        if (!ui->wdgPrefs->formHasStructure()){
+            buildUserPreferencesWidget();
+
+            // Query user preferences
+            QUrlQuery args;
+            args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
+            args.addQueryItem(WEB_QUERY_APPTAG, APPLICATION_TAG);
+            queryDataRequest(WEB_USERPREFSINFO_PATH, args);
         }
     }
 }
@@ -504,4 +553,26 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
     if (widget == ui->wdgUser->getWidgetForField("user_superadmin")){
         ui->lstGroups->setEnabled(!value.toBool());
     }
+}
+
+void UserWidget::on_btnUpdatePrefs_clicked()
+{
+    if (!m_data)
+        return;
+
+    QJsonDocument user_pref_data = ui->wdgPrefs->getFormDataJson(true);
+
+    // Add base fields
+    QJsonObject base_obj;
+    QJsonObject base_user_pref = user_pref_data.object()["user_preference"].toObject();
+    QJsonDocument user_pref_doc;
+    QJsonObject user_pref_obj;
+    user_pref_obj.insert("id_user", m_data->getId());
+    user_pref_obj.insert("user_preference_app_tag", APPLICATION_TAG);
+    user_pref_obj.insert("user_preference_preference", base_user_pref);
+    base_obj.insert("user_preference", user_pref_obj);
+    user_pref_doc.setObject(base_obj);
+
+    postDataRequest(WEB_USERPREFSINFO_PATH, user_pref_doc.toJson());
+
 }

@@ -6,6 +6,7 @@
 #include <QTreeWidgetItem>
 
 #include "DataEditorWidget.h"
+#include "ServiceConfigWidget.h"
 
 namespace Ui {
 class DeviceWidget;

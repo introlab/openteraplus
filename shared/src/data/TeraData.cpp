@@ -220,6 +220,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "service_config";
     case TERADATA_STATS:
         return "stats";
+    case TERADATA_USERPREFERENCE:
+        return "user_preference";
     }
 
     return "";
@@ -236,6 +238,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Groupe utilisateur");
     case TERADATA_USERUSERGROUP:
         return tr("Utilisateurs: Groupe");
+    case TERADATA_USERPREFERENCE:
+        return tr("Utilisateurs: Préférences");
     case TERADATA_SITE:
         return tr("Site");
     case TERADATA_SESSIONTYPE:
@@ -310,6 +314,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_SERVICEACCESSINFO_PATH)       return TERADATA_SERVICE_ACCESS;
     if (path==WEB_SERVICECONFIGINFO_PATH)       return TERADATA_SERVICE_CONFIG;
     if (path==WEB_USERUSERGROUPINFO_PATH)       return TERADATA_USERUSERGROUP;
+    if (path==WEB_USERPREFSINFO_PATH)           return TERADATA_USERPREFERENCE;
     if (path==WEB_STATS_PATH)                   return TERADATA_STATS;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");

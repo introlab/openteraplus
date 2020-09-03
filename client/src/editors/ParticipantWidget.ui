@@ -1114,7 +1114,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="tabParticipant">
           <attribute name="icon">
@@ -1122,7 +1122,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
           </attribute>
           <attribute name="title">
-           <string>Détails</string>
+           <string>Informations</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_12">
            <item>
@@ -1367,6 +1367,20 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
               <widget class="QListWidget" name="lstAvailDevices"/>
              </item>
             </layout>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tabConfig">
+          <attribute name="icon">
+           <iconset resource="../../resources/TeraClient.qrc">
+            <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
+          </attribute>
+          <attribute name="title">
+           <string>Configuration</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_16">
+           <item>
+            <widget class="QWidget" name="wdgServiceConfig" native="true"/>
            </item>
           </layout>
          </widget>

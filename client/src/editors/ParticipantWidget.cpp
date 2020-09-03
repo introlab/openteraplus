@@ -943,6 +943,18 @@ void ParticipantWidget::on_tabInfos_currentChanged(int index)
             queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);
         }
     }
+
+    if (current_tab == ui->tabConfig){ // Configuration
+        if (!ui->wdgServiceConfig->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgServiceConfig->setLayout(layout);
+        }
+        if (ui->wdgServiceConfig->layout()->count() == 0){
+            ServiceConfigWidget* service_config_widget = new ServiceConfigWidget(m_comManager, m_data->getIdFieldName(), m_data->getId(), ui->wdgServiceConfig);
+            ui->wdgServiceConfig->layout()->addWidget(service_config_widget);
+        }
+    }
 }
 
 void ParticipantWidget::on_btnNewSession_clicked()

@@ -30,12 +30,15 @@ protected:
     void showMainWindow();
     void setupLogger();
 
+    void setTranslation(QString language = "");
+
     ConfigManagerClient m_config;
     LoginDialog*        m_loginDiag;
     MainWindow*         m_mainWindow;
 
     ComManager*         m_comMan;
     QTranslator*        m_translator;
+    QLocale             m_currentLocale;
 
 
 private slots:
@@ -46,6 +49,8 @@ private slots:
     void on_serverDisconnected();
     void on_serverError(QAbstractSocket::SocketError error, QString error_str);
     void on_networkError(QNetworkReply::NetworkError error, QString error_str);
+
+    void preferencesUpdated();
 };
 
 #endif // CLIENTAPP_H

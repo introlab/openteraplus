@@ -54,6 +54,7 @@ public:
     void stopSession(const TeraData& session, const int &id_service = 0);
 
     TeraData &getCurrentUser();
+    QVariantMap getCurrentPreferences();
     QString getCurrentUserSiteRole(const int &site_id);
     QString getCurrentUserProjectRole(const int &project_id);
     bool isCurrentUserProjectAdmin(const int& project_id);
@@ -73,6 +74,9 @@ protected:
     bool handleSessionManagerReply(const QString& reply_data, const QUrlQuery& reply_query);
     bool handleFormReply(const QUrlQuery& reply_query, const QString& reply_data);
 
+    void updateCurrentUser(const TeraData& user_data);
+    void updateCurrentPrefs(const TeraData& user_prefs);
+
     QString filterReplyString(const QString& data_str);
 
     QUrl                    m_serverUrl;
@@ -88,6 +92,7 @@ protected:
     QString                 m_password;
 
     TeraData                m_currentUser;
+    TeraData                m_currentPreferences;
     TeraData*               m_currentSessionType;
 
 signals:
@@ -99,6 +104,7 @@ signals:
     void loginResult(bool logged_in);
 
     void currentUserUpdated();
+    void preferencesUpdated();
 
     void formReceived(QString form_type, QString data);
 
@@ -126,6 +132,7 @@ signals:
     void deviceSubtypesReceived(QList<TeraData> device_subtypes_list, QUrlQuery reply_query);
     void userGroupsReceived(QList<TeraData> user_groups_list, QUrlQuery reply_query);
     void userUserGroupsReceived(QList<TeraData> user_users_groups_list, QUrlQuery reply_query);
+    void userPreferencesReceived(QList<TeraData> user_prefs_list, QUrlQuery reply_query);
     void servicesReceived(QList<TeraData> services_list, QUrlQuery reply_query);
     void servicesProjectsReceived(QList<TeraData> projects_list, QUrlQuery reply_query);
     void servicesAccessReceived(QList<TeraData> access_list, QUrlQuery reply_query);
@@ -163,6 +170,8 @@ private slots:
     void onNetworkEncrypted(QNetworkReply *reply);
     void onNetworkFinished(QNetworkReply *reply);
     void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+
+    void onWebSocketLoginResult(bool logged_in);
 
 };
 
