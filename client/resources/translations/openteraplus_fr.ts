@@ -2300,7 +2300,7 @@ Vous devez spécifier au moins un groupe utilisateur</source>
 <context>
     <name>WebSocketManager</name>
     <message>
-        <location filename="../../src/WebSocketManager.cpp" line="234"/>
+        <location filename="../../src/WebSocketManager.cpp" line="235"/>
         <source>Le serveur ne répond pas.</source>
         <translation type="unfinished"></translation>
     </message>

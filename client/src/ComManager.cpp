@@ -465,7 +465,7 @@ bool ComManager::handleLoginReply(const QString &reply_data)
     // Query connected user information
 
     m_currentUser.setFieldValue("user_uuid", QUuid(user_uuid));
-    doUpdateCurrentUser();
+    //doUpdateCurrentUser();
 
     return true;
 }
@@ -822,6 +822,8 @@ void ComManager::onWebSocketLoginResult(bool logged_in)
         emit loginResult(logged_in);
         return;
     }
+
+    doUpdateCurrentUser();
 }
 
 

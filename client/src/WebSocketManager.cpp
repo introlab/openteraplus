@@ -128,6 +128,7 @@ void WebSocketManager::onSocketError(QAbstractSocket::SocketError error)
 
 void WebSocketManager::onSocketConnected()
 {
+    //qDebug() << "WebSocketManager::onSocketConnected()";
     m_connectTimer.stop();
     m_keepAliveTimer.start();
     emit loginResult(true); // Logged in
