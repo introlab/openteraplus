@@ -258,6 +258,5 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
 void ClientApp::preferencesUpdated()
 {
     // Update translation
-    QVariantMap prefs = m_comMan->getCurrentPreferences();
-    setTranslation(prefs["language"].toString());
+    setTranslation( m_comMan->getCurrentPreferences().getLanguage());
 }

@@ -5,7 +5,6 @@
 ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     QObject(parent),
     m_currentUser(TERADATA_USER),
-    m_currentPreferences(TERADATA_USERPREFERENCE),
     m_currentSessionType(nullptr)
 {
 
@@ -57,6 +56,8 @@ void ComManager::disconnectFromServer()
 {
     doQuery(QString(WEB_LOGOUT_PATH));
     m_webSocketMan->disconnectWebSocket();
+
+    m_currentPreferences.setSet(false);
 }
 
 bool ComManager::processNetworkReply(QNetworkReply *reply)
@@ -317,13 +318,9 @@ TeraData &ComManager::getCurrentUser()
     return m_currentUser;
 }
 
-QVariantMap ComManager::getCurrentPreferences()
+TeraPreferences &ComManager::getCurrentPreferences()
 {
-    QString prefs = m_currentPreferences.getFieldValue("user_preference_preference").toString();
-
-    QJsonDocument doc = QJsonDocument::fromJson(prefs.toUtf8());
-
-    return doc.object().toVariantMap();
+   return m_currentPreferences;
 }
 
 QString ComManager::getCurrentUserSiteRole(const int &site_id)
@@ -504,7 +501,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
 
             // Check if we received current user and preference, when login, before emitting signal
             if (m_loggingInProgress){
-                if (m_currentUser.getFieldValues().count() > 1 && m_currentPreferences.getFieldValues().count() > 0){
+                if (m_currentUser.getFieldValues().count() > 1 && m_currentPreferences.isSet()){
                     emit loginResult(true);
                     m_loggingInProgress = false;
                 }
@@ -688,7 +685,7 @@ void ComManager::updateCurrentPrefs(const TeraData &user_prefs)
     if ((!m_currentUser.hasFieldName("id_user") || m_currentUser.getId() == user_prefs.getFieldValue("id_user").toInt())
          && user_prefs.getFieldValue("user_preference_app_tag").toString() == APPLICATION_TAG){
         // Update preferences
-        m_currentPreferences.updateFrom(user_prefs);
+        m_currentPreferences.load(user_prefs);
         emit preferencesUpdated();
     }
 }

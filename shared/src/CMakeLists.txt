@@ -19,6 +19,7 @@ set(sharedlib_headers
     data/TeraSessionStatus.h
     data/TeraSessionEvent.h
     data/TeraSessionCategory.h
+    data/TeraPreferences.h
     WebAPI.h
 )
 
@@ -30,6 +31,7 @@ set(sharedlib_srcs
     data/TeraSessionStatus.cpp
     data/TeraSessionEvent.cpp
     data/TeraSessionCategory.cpp
+    data/TeraPreferences.cpp
 )
 
 include_directories(

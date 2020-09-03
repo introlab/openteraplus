@@ -27,6 +27,7 @@
 #include "WebAPI.h"
 
 #include "TeraData.h"
+#include "TeraPreferences.h"
 #include "TeraSessionStatus.h"
 #include "TeraSessionCategory.h"
 #include "DownloadedFile.h"
@@ -54,7 +55,7 @@ public:
     void stopSession(const TeraData& session, const int &id_service = 0);
 
     TeraData &getCurrentUser();
-    QVariantMap getCurrentPreferences();
+    TeraPreferences &getCurrentPreferences();
     QString getCurrentUserSiteRole(const int &site_id);
     QString getCurrentUserProjectRole(const int &project_id);
     bool isCurrentUserProjectAdmin(const int& project_id);
@@ -92,7 +93,7 @@ protected:
     QString                 m_password;
 
     TeraData                m_currentUser;
-    TeraData                m_currentPreferences;
+    TeraPreferences         m_currentPreferences;
     TeraData*               m_currentSessionType;
 
 signals:
