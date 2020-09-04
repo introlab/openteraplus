@@ -4,5 +4,7 @@
 [submodule "external/messages"]
 	path = external/messages
 	url = https://github.com/introlab/opentera_messages.git
-[submodule "opentera_messages"]
-	update = rebase
+[submodule "external/opentera-webcamoid"]
+	path = external/opentera-webcamoid
+	url = https://github.com/introlab/opentera-webcamoid.git
+	branch = devel
