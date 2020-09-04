@@ -2,6 +2,8 @@
 #define VIRTUALCAMERA_H
 
 #include <QObject>
+#include <QSharedPointer>
+#include <QVariant>
 #include <ak.h>
 #include <akelement.h>
 #include <akpacket.h>
@@ -13,12 +15,19 @@ class VirtualCamera : public QObject
 public:
     explicit VirtualCamera(QObject *parent = nullptr);
 
-    bool init(const QString device);
+    virtual ~VirtualCamera();
+
+    bool init(const QString &source, const QString &device);
     bool start();
     bool stop();
 
 signals:
 
+
+private:
+    AkElementPtr m_multiSrcPtr;
+    AkElementPtr m_virtualCameraPtr;
+    AkElementPtr m_desktopCapturePtr;
 };
 
 #endif // VIRTUALCAMERA_H

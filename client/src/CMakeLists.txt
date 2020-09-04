@@ -6,6 +6,10 @@ find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Network REQUIRED)
 find_package(Qt5LinguistTools REQUIRED)
 
+# Driverss first
+add_subdirectory(drivers)
+
+
 set(headers
     ClientApp.h
     ConfigManagerClient.h
@@ -171,7 +175,11 @@ include_directories(
     ${OPENTERA_SHARED_INCLUDES}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/editors
-    ${CMAKE_CURRENT_BINARY_DIR})
+    ${CMAKE_CURRENT_BINARY_DIR}
+    # DL Temporary test for virtual cameras
+    ${VIRTUAL_CAMERA_INCLUDES}
+    ${AVKYS_INCLUDES}
+    )
 
 # Application icon
 SET(icon openteraico.rc)
@@ -194,7 +202,11 @@ add_executable(TeraClient MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_s
 # qt5_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
 
 # Linking with Qt libraries and others
-target_link_libraries(TeraClient ${OPENTERA_SHARED_LIBS} Qt5::Core Qt5::Network Qt5::Multimedia Qt5::WebSockets Qt5::WebEngine Qt5::WebEngineWidgets)
+target_link_libraries(TeraClient ${OPENTERA_SHARED_LIBS}  Qt5::Core Qt5::Network Qt5::Multimedia Qt5::WebSockets Qt5::WebEngine Qt5::WebEngineWidgets)
+
+# DL - Temporary for tests
+target_link_libraries(TeraClient ${VIRTUAL_CAMERA_LIBS})
+
 set_target_properties(TeraClient PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
