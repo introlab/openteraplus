@@ -980,10 +980,19 @@ void ParticipantWidget::on_btnNewSession_clicked()
 
     // TODO: UI to select multiple participants if the session is setted to "multi"
 
+    if (ui->cmbSessionType->currentIndex() < 0)
+        return;
+
     int id_session_type = ui->cmbSessionType->currentData().toInt();
-    m_comManager->startSession(*m_ids_session_types[id_session_type], QStringList(m_data->getFieldValue("participant_uuid").toString()), QStringList());
-    /*StartSessionDialog diag(tr("Démarrage de séance en cours..."), m_comManager);
-    diag.exec();*/
+
+    SessionLobbyDialog* sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type]);
+    sessionLobby->exec();
+
+    if (sessionLobby->result() == QDialog::Accepted){
+        // Start session
+        // TODO: Get real participant list from SessionLobbyDialog!
+        m_comManager->startSession(*m_ids_session_types[id_session_type], QStringList(m_data->getFieldValue("participant_uuid").toString()), QStringList());
+    }
 
 }
 

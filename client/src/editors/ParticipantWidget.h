@@ -15,8 +15,9 @@
 #include "BaseDialog.h"
 #include "TeraSessionStatus.h"
 #include "Utils.h"
-#include "StartSessionDialog.h"
+//#include "StartSessionDialog.h"
 #include "ServiceConfigWidget.h"
+#include "SessionLobbyDialog.h"
 
 namespace Ui {
 class ParticipantWidget;

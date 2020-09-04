@@ -112,5 +112,6 @@
         <file>controls/radio-on.png</file>
         <file>translations/openteraplus_en.qm</file>
         <file>translations/openteraplus_fr.qm</file>
+        <file>icons/play.png</file>
     </qresource>
 </RCC>
