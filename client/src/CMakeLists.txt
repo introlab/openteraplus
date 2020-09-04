@@ -27,6 +27,8 @@ set(headers
     GlobalEventLogger.h
     InSessionWidget.h
     StartSessionDialog.h
+    SessionLobbyDialog.h
+    SessionInviteWidget.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/TeraForm.h
@@ -47,6 +49,7 @@ set(headers
     services/BaseServiceWidget.h
     services/VideoRehabService/VideoRehabWidget.h
     services/VideoRehabService/VideoRehabWebPage.h
+    services/VideoRehabService/VideoRehabSetupWidget.h
 )
 
 set(srcs
@@ -71,6 +74,8 @@ set(srcs
     GlobalEventLogger.cpp
     InSessionWidget.cpp
     StartSessionDialog.cpp
+    SessionLobbyDialog.cpp
+    SessionInviteWidget.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/TeraForm.cpp
@@ -91,6 +96,7 @@ set(srcs
     services/BaseServiceWidget.cpp
     services/VideoRehabService/VideoRehabWidget.cpp
     services/VideoRehabService/VideoRehabWebPage.cpp
+    services/VideoRehabService/VideoRehabSetupWidget.cpp
 )
 
 SET(uis
@@ -104,6 +110,8 @@ SET(uis
     BaseDialog.ui
     InSessionWidget.ui
     StartSessionDialog.ui
+    SessionLobbyDialog.ui
+    SessionInviteWidget.ui
     editors/UserWidget.ui
     editors/TeraForm.ui
     editors/DataListWidget.ui
@@ -119,6 +127,7 @@ SET(uis
     editors/ServiceWidget.ui
     editors/ServiceConfigWidget.ui
     services/VideoRehabService/VideoRehabWidget.ui
+    services/VideoRehabService/VideoRehabSetupWidget.ui
 )
 
 SET(qrcs
