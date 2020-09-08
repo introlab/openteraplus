@@ -68,14 +68,33 @@ bool TeraData::hasNameField()
     return hasFieldName(m_nameField);
 }
 
-bool TeraData::hasEnabledField()
+bool TeraData::hasEnabledField() const
 {
     return hasFieldName(m_enabledField);
 }
 
-bool TeraData::isEnabled()
+bool TeraData::isEnabled() const
 {
     return getFieldValue(m_enabledField).toBool();
+}
+
+bool TeraData::hasStateField() const
+{
+    return hasFieldName(m_stateField);
+}
+
+bool TeraData::isOnline() const
+{
+    if (hasStateField())
+        return getFieldValue(m_stateField).toString() == "online";
+    return false;
+}
+
+bool TeraData::isBusy() const
+{
+    if (hasStateField())
+        return getFieldValue(m_stateField).toString() == "busy";
+    return false;
 }
 
 bool TeraData::isNew()
@@ -383,6 +402,34 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
 
 }
 
+QString TeraData::getIconStateFilename() const
+{
+    switch(m_data_type){
+    case TERADATA_USER:
+        if (isOnline())
+            return "://icons/software_user_online.png";
+        return "://icons/software_user.png";
+
+    case TERADATA_DEVICE:
+        if (isOnline())
+            return "://icons/device_online.png";
+        if (isEnabled())
+            return "://icons/device_installed.png";
+        return "://icons/device_offline.png";
+
+    case TERADATA_PARTICIPANT:
+        if (isBusy())
+            return "://icons/patient_busy.png";
+        if (isOnline())
+            return "://icons/patient_online.png";
+        if (isEnabled())
+            return "://icons/patient_installed.png";
+        return "://icons/patient.png";
+    default:
+        return "://icons/error.png";
+    }
+}
+
 /*
 bool TeraData::hasMetaProperty(const QString &fieldName) const
 {
@@ -403,6 +450,7 @@ void TeraData::setDataType(TeraDataTypes data_type)
     m_idField = "id_" + m_objectName;
     m_nameField = m_objectName + "_name";
     m_enabledField = m_objectName + "_enabled";
+    m_stateField = m_objectName + "_state";
 
 
 }

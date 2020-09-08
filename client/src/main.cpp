@@ -38,9 +38,9 @@ int main(int argc, char* argv[])
 
 
     //DL - Testing Virtual camera driver, should be put elsewhere
-    VirtualCamera cam;
+    /*VirtualCamera cam;
     cam.init("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov", "/akvcam/video0");
-    cam.start();
+    cam.start();*/
 
 
     return app.exec();

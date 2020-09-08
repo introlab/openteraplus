@@ -14,6 +14,9 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
 VideoRehabSetupWidget::~VideoRehabSetupWidget()
 {
     delete ui;
+
+    m_webPage->deleteLater();
+    m_webEngine->deleteLater();
 }
 
 void VideoRehabSetupWidget::initUI()

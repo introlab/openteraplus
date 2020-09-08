@@ -23,6 +23,7 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_data_editor = nullptr;
     m_inSessionWidget = nullptr;
     m_download_dialog = nullptr;
+    m_initialLanguageSetted = false;
     m_waiting_for_data_type = TERADATA_NONE;
     m_currentDataType = TERADATA_NONE;
     m_currentDataId = -1;
@@ -776,13 +777,16 @@ void MainWindow::changeEvent(QEvent* event)
         switch(event->type()) {
 
         case QEvent::LanguageChange:
-            if (m_currentDataId >= 0){ // Filter initial language change
+            if (m_initialLanguageSetted){ // Filter initial language change
                 GlobalMessageBox msg;
                 if (msg.showYesNo(tr("Changement de langue"), tr("La langue a été modifiée.\nSouhaitez-vous vous déconnecter pour appliquer les changements?")) == QMessageBox::Yes){
                     emit logout_request();
                 }
 
+            }else{
+                m_initialLanguageSetted = true;
             }
+
             //qDebug() << "MainWindow::changeEvent - LanguageChange";
             break;
 

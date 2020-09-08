@@ -10,6 +10,8 @@
 
 #include "ComManager.h"
 
+#include "TeraOnlineableItem.h"
+
 namespace Ui {
 class ProjectNavigator;
 }
@@ -50,6 +52,8 @@ private:
     QMap<int, QTreeWidgetItem*> m_projects_items;
     QMap<int, QTreeWidgetItem*> m_groups_items;
     QMap<int, QTreeWidgetItem*> m_participants_items;
+
+    QMap<int, TeraData>         m_participants; // ID - TeraData mapping for participants, required for online status
 
     void updateSite(const TeraData* site);
     void updateProject(const TeraData* project);

@@ -67,8 +67,12 @@ public:
     void setName(const QString& name);
     bool hasNameField();
 
-    bool hasEnabledField();
-    bool isEnabled();
+    bool hasEnabledField() const;
+    bool isEnabled() const;
+
+    bool hasStateField() const;
+    bool isOnline() const;
+    bool isBusy() const;
 
     bool isNew();
 
@@ -90,6 +94,7 @@ public:
     static QString getPathForDataType(const TeraDataTypes& data_type);
 
     static QString getIconFilenameForDataType(const TeraDataTypes& data_type);
+    QString getIconStateFilename() const;
 
 protected:
 
@@ -100,6 +105,7 @@ private:
     QString     m_idField;
     QString     m_nameField;
     QString     m_enabledField;
+    QString     m_stateField;
 
     QVariantMap m_fieldsValue;
 

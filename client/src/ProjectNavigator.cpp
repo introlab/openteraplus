@@ -147,8 +147,10 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
                         delete item->parent()->takeChild(i);
                         if (data_type==TERADATA_GROUP)
                             m_groups_items.remove(id);
-                        if (data_type==TERADATA_PARTICIPANT)
+                        if (data_type==TERADATA_PARTICIPANT){
                             m_participants_items.remove(id);
+                            m_participants.remove(id);
+                        }
                         break;
                     }
                 }
@@ -393,6 +395,7 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
 
     item->setText(0, participant->getName());
     item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
+    m_participants[id_participant] = *participant;
 
 }
 

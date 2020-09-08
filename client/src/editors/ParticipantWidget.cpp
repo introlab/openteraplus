@@ -983,9 +983,20 @@ void ParticipantWidget::on_btnNewSession_clicked()
     if (ui->cmbSessionType->currentIndex() < 0)
         return;
 
+    if (!m_data)
+        return;
+
     int id_session_type = ui->cmbSessionType->currentData().toInt();
 
-    SessionLobbyDialog* sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type]);
+    SessionLobbyDialog* sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], m_data->getFieldValue("id_project").toInt());
+
+    // Add current participant to session
+    sessionLobby->addParticipantsToSession(QList<TeraData>() << *m_data, QList<int>() << m_data->getId());
+
+    // Add current user to session
+    sessionLobby->addUsersToSession(QList<TeraData>() << m_comManager->getCurrentUser(), QList<int>() <<m_comManager->getCurrentUser().getId());
+
+    // Show Session Lobby
     sessionLobby->exec();
 
     if (sessionLobby->result() == QDialog::Accepted){

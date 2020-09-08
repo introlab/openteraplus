@@ -101,6 +101,7 @@ private:
     // Events
     QIcon getGlobalEventIcon(GlobalEvent &global_event);
     void changeEvent(QEvent* event);
+    bool m_initialLanguageSetted;
 
     Ui::MainWindow *ui;
 
