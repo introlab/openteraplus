@@ -42,6 +42,9 @@ add_subdirectory(shared)
 # Client
 add_subdirectory(client)
 
+# Tests
+add_subdirectory(tests)
+
 # Package
 add_subdirectory(package)
 
