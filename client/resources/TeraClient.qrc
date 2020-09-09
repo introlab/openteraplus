@@ -114,4 +114,5 @@
         <file>translations/openteraplus_fr.qm</file>
         <file>icons/play.png</file>
     </qresource>
+    <qresource prefix="/videorehab"/>
 </RCC>

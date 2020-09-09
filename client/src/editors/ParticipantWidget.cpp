@@ -14,6 +14,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 {
 
     m_diag_editor = nullptr;
+    m_sessionLobby = nullptr;
 
     ui->setupUi(this);
 
@@ -63,6 +64,9 @@ ParticipantWidget::~ParticipantWidget()
     delete ui;
     qDeleteAll(m_ids_session_types);
     qDeleteAll(m_ids_sessions);
+
+    if (m_sessionLobby)
+        m_sessionLobby->deleteLater();
 }
 
 void ParticipantWidget::saveData(bool signal)
@@ -780,6 +784,25 @@ void ParticipantWidget::displayPreviousMonth(){
     updateCalendars(new_date);
 }
 
+void ParticipantWidget::sessionLobbyStartSessionRequested()
+{
+    int id_session_type = ui->cmbSessionType->currentData().toInt();
+    // Start session
+    // TODO: Get real participant list from SessionLobbyDialog!
+    m_comManager->startSession(*m_ids_session_types[id_session_type], QStringList(m_data->getFieldValue("participant_uuid").toString()), QStringList());
+
+    m_sessionLobby->deleteLater();
+    m_sessionLobby = nullptr;
+}
+
+void ParticipantWidget::sessionLobbyStartSessionCancelled()
+{
+    if (m_sessionLobby){
+        m_sessionLobby->deleteLater();
+        m_sessionLobby = nullptr;
+    }
+}
+
 void ParticipantWidget::currentAvailDeviceChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     Q_UNUSED(previous)
@@ -988,23 +1011,21 @@ void ParticipantWidget::on_btnNewSession_clicked()
 
     int id_session_type = ui->cmbSessionType->currentData().toInt();
 
-    SessionLobbyDialog* sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], m_data->getFieldValue("id_project").toInt(), this);
+    if (m_sessionLobby)
+        m_sessionLobby->deleteLater();
+    m_sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], m_data->getFieldValue("id_project").toInt(), this);
 
     // Add current participant to session
-    sessionLobby->addParticipantsToSession(QList<TeraData>() << *m_data, QList<int>() << m_data->getId());
+    m_sessionLobby->addParticipantsToSession(QList<TeraData>() << *m_data, QList<int>() << m_data->getId());
 
     // Add current user to session
-    sessionLobby->addUsersToSession(QList<TeraData>() << m_comManager->getCurrentUser(), QList<int>() <<m_comManager->getCurrentUser().getId());
+    m_sessionLobby->addUsersToSession(QList<TeraData>() << m_comManager->getCurrentUser(), QList<int>() <<m_comManager->getCurrentUser().getId());
+
+    connect(m_sessionLobby, &QDialog::accepted, this, &ParticipantWidget::sessionLobbyStartSessionRequested);
+    connect(m_sessionLobby, &QDialog::rejected, this, &ParticipantWidget::sessionLobbyStartSessionCancelled);
 
     // Show Session Lobby
-    sessionLobby->exec();
-
-    if (sessionLobby->result() == QDialog::Accepted){
-        // Start session
-        // TODO: Get real participant list from SessionLobbyDialog!
-        m_comManager->startSession(*m_ids_session_types[id_session_type], QStringList(m_data->getFieldValue("participant_uuid").toString()), QStringList());
-    }
-
+    m_sessionLobby->exec();
 }
 
 void ParticipantWidget::on_btnCheckSesstionTypes_clicked()

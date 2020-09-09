@@ -3,6 +3,7 @@
 
 #include "services/BaseServiceWidget.h"
 #include <QWebEngineView>
+#include <QWebEngineProfile>
 #include <QHBoxLayout>
 
 #include "VideoRehabWebPage.h"

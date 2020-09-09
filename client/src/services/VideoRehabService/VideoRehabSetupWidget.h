@@ -3,7 +3,11 @@
 
 #include <QWidget>
 #include <QWebEngineView>
+#include <QWebEngineProfile>
 #include <QHBoxLayout>
+
+#include <QAudioDeviceInfo>
+#include <QCameraInfo>
 
 #include "VideoRehabWebPage.h"
 #include "ComManager.h"

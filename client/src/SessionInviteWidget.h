@@ -48,8 +48,12 @@ private slots:
 
     void on_btnRemove_clicked();
 
+    void on_txtSearchInvitees_textChanged(const QString &arg1);
+
 private:
     Ui::SessionInviteWidget *ui;
+
+    bool m_searching;
 
     QHash<int, TeraData>    m_users; // id, data
     QHash<int, TeraData>    m_participants;
@@ -73,6 +77,8 @@ private:
     void refreshInSessionTreeWidget();
 
     quint8 getInviteesCount();
+
+    void setSearching(const bool &search);
 
 };
 

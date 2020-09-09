@@ -94,7 +94,7 @@ void SessionLobbyDialog::configureWidget()
         QString service_key = m_sessionType.getFieldValue("session_type_service_key").toString();
         bool handled = false;
         if (service_key == "VideoRehabService"){
-            setSetupWidget(new VideoRehabSetupWidget(m_comManager));
+            setSetupWidget(new VideoRehabSetupWidget(m_comManager, this));
             handled = true;
         }
 

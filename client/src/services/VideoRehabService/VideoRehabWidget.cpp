@@ -29,6 +29,9 @@ void VideoRehabWidget::initUI()
     //Set page to view
     m_webEngine->setPage(m_webPage);
 
+    QWebEngineProfile::defaultProfile()->setPersistentCookiesPolicy(QWebEngineProfile::NoPersistentCookies);
+    QWebEngineProfile::defaultProfile()->setHttpCacheType(QWebEngineProfile::NoCache);
+
 
     // Create layout for widget if missing
     if (!ui->wdgWebEngine->layout()){

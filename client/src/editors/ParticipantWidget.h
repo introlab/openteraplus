@@ -46,6 +46,7 @@ private:
     QMap<int, QListWidgetItem*>     m_listDevices_items;        // int  = device_id
 
     BaseDialog*                     m_diag_editor;
+    SessionLobbyDialog*             m_sessionLobby;
 
     void updateControlsState();
     void updateFieldsValue();
@@ -83,6 +84,9 @@ private slots:
     void currentTypeFiltersChanged(QListWidgetItem* changed);
     void displayNextMonth();
     void displayPreviousMonth();
+
+    void sessionLobbyStartSessionRequested();
+    void sessionLobbyStartSessionCancelled();
 
     void currentAvailDeviceChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void currentDeviceChanged(QListWidgetItem* current, QListWidgetItem* previous);

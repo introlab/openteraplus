@@ -9,6 +9,8 @@ SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_searching = false;
+
     ui->frameSelector->hide();
 
     connectSignals();
@@ -185,6 +187,12 @@ void SessionInviteWidget::updateFilters()
                 hidden = true;
             }
         }
+
+        if (m_searching){
+            if (!item->text().contains(ui->txtSearchInvitees->text(), Qt::CaseInsensitive)){
+                hidden = true;
+            }
+        }
         item->setHidden(hidden);
     }
 }
@@ -310,6 +318,21 @@ quint8 SessionInviteWidget::getInviteesCount()
     return m_usersInSession.count() + m_participantsInSession.count() + m_devicesInSession.count();
 }
 
+void SessionInviteWidget::setSearching(const bool &search)
+{
+
+    if (search){
+        m_searching = true;
+        //ui->txtSearchInvitees->setStyleSheet("color:white;");
+        //ui->btnClear->setVisible(true);
+    }else{
+        m_searching=false;
+        //ui->txtSearchInvitees->setStyleSheet("color:rgba(255,255,255,50%);");
+        //ui->btnClear->setVisible(false);
+    }
+
+}
+
 void SessionInviteWidget::on_btnInvite_clicked()
 {
     // Check if we are under the allowed maximum number of invitees in a session
@@ -352,7 +375,14 @@ void SessionInviteWidget::on_lstInvitables_itemDoubleClicked(QListWidgetItem *it
 
 void SessionInviteWidget::on_treeInvitees_itemSelectionChanged()
 {
-    ui->btnRemove->setEnabled(ui->treeInvitees->selectedItems().count()>0);
+    foreach(QTreeWidgetItem* item, ui->treeInvitees->selectedItems()){
+        // Don't enable remove button on toplevel items (categories)
+        if (item->parent()){
+            ui->btnRemove->setEnabled(true);
+            return;
+        }
+    }
+    ui->btnRemove->setEnabled(false);
 }
 
 void SessionInviteWidget::on_treeInvitees_itemDoubleClicked(QTreeWidgetItem *item, int column)
@@ -387,4 +417,11 @@ void SessionInviteWidget::on_btnRemove_clicked()
         // Update item to add it back to invitable list
         updateItem(*item_data);
     }
+}
+
+void SessionInviteWidget::on_txtSearchInvitees_textChanged(const QString &arg1)
+{
+    // Check if search field is empty
+    setSearching(ui->txtSearchInvitees->text().count()>0);
+    updateFilters();
 }

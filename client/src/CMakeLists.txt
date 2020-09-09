@@ -54,6 +54,9 @@ set(headers
     services/VideoRehabService/VideoRehabWidget.h
     services/VideoRehabService/VideoRehabWebPage.h
     services/VideoRehabService/VideoRehabSetupWidget.h
+    services/VideoRehabService/WebSocket/SharedObject.h
+    services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
+    services/VideoRehabService/WebSocket/WebSocketTransport.h
 )
 
 set(srcs
@@ -101,6 +104,9 @@ set(srcs
     services/VideoRehabService/VideoRehabWidget.cpp
     services/VideoRehabService/VideoRehabWebPage.cpp
     services/VideoRehabService/VideoRehabSetupWidget.cpp
+    services/VideoRehabService/WebSocket/SharedObject.cpp
+    services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
+    services/VideoRehabService/WebSocket/WebSocketTransport.cpp
 )
 
 SET(uis
@@ -136,6 +142,7 @@ SET(uis
 
 SET(qrcs
     ${TERACLIENT_RES_INCLUDES}/TeraClient.qrc
+    services/VideoRehabService/resources/VideoRehabService.qrc
 )
 
 #Generate .h files from the .ui files

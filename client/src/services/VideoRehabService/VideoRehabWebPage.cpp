@@ -2,13 +2,26 @@
 
 VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
 {
+    // Create shared object for communication with webpage
+    m_sharedObject = new SharedObject(this);
 
+    // Create websocket for communication with page
+    m_webSocketServer = new QWebSocketServer("localpage", QWebSocketServer::NonSecureMode, this);
+    m_webSocketServer->listen(QHostAddress::LocalHost, 12345);
+
+    m_clientWrapper = new WebSocketClientWrapper(m_webSocketServer,this);
+    m_webChannel = new QWebChannel(this);
+
+    // Connect signals
+    connect(m_clientWrapper, &WebSocketClientWrapper::clientConnected, m_webChannel, &QWebChannel::connectTo); // Transport will be automatically connected
     connect(this, &VideoRehabWebPage::featurePermissionRequested, this, &VideoRehabWebPage::featurePermissionHandler);
+
+    m_webChannel->registerObject(QStringLiteral("SharedObject"), m_sharedObject);
 }
 
 bool VideoRehabWebPage::certificateError(const QWebEngineCertificateError &certificateError)
 {
-    // TODO: Remove in production
+#ifdef QT_DEBUG
 
     qDebug() << "Certificate error: " << certificateError.errorDescription();
     /*
@@ -16,7 +29,11 @@ bool VideoRehabWebPage::certificateError(const QWebEngineCertificateError &certi
     Return true to ignore the error and complete the request. Return false to stop loading the request.
     */
 
-    return true;
+    return true; // Accept all certificates in debug
+#else
+    // Refuse invalid certificates
+    return false;
+#endif
 }
 
 void VideoRehabWebPage::featurePermissionHandler(const QUrl &securityOrigin, QWebEnginePage::Feature feature)
