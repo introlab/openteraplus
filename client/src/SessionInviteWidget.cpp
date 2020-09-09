@@ -1,6 +1,8 @@
 #include "SessionInviteWidget.h"
 #include "ui_SessionInviteWidget.h"
 
+#include <QDebug>
+
 SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SessionInviteWidget)
@@ -8,6 +10,8 @@ SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
     ui->setupUi(this);
 
     ui->frameSelector->hide();
+
+    connectSignals();
 }
 
 SessionInviteWidget::~SessionInviteWidget()
@@ -19,8 +23,13 @@ void SessionInviteWidget::addParticipantsToSession(const QList<TeraData> &partic
 {
     // Participants
     foreach(TeraData participant, participants){
-        updateItem(participant, true);
+        // Add in session - widget will be created and updated in updateItem
+        int id_item = participant.getId();
+        if (!m_participantsInSession.contains(id_item))
+            m_participantsInSession[id_item] = nullptr;
 
+        // Update item display
+        updateItem(participant);
     }
 
     // Required ids
@@ -34,7 +43,13 @@ void SessionInviteWidget::addUsersToSession(const QList<TeraData> &users, const 
 {
     // Users
     foreach(TeraData user, users){
-        updateItem(user, true);
+        // Add in session - widget will be created and updated in updateItem
+        int id_item = user.getId();
+        if (!m_usersInSession.contains(id_item))
+            m_usersInSession[id_item] = nullptr;
+
+        // Update item display
+        updateItem(user);
     }
 
     // Required ids
@@ -48,7 +63,13 @@ void SessionInviteWidget::addDevicesToSession(const QList<TeraData> &devices, co
 {
     // Devices
     foreach(TeraData device, devices){
-       updateItem(device, true);
+        // Add in session - widget will be created and updated in updateItem
+        int id_item = device.getId();
+        if (!m_devicesInSession.contains(id_item))
+            m_devicesInSession[id_item] = nullptr;
+
+        // Update item display
+       updateItem(device);
 
     }
 
@@ -64,6 +85,9 @@ void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &partic
     foreach(TeraData participant, participants){
         int id_participant = participant.getId();
         m_participants[id_participant] = participant;
+        if (!m_participantsItems.contains(id_participant))
+            m_participantsItems[id_participant] = nullptr;
+        updateItem(participant);
     }
 }
 
@@ -72,6 +96,9 @@ void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users)
     foreach(TeraData user, users){
         int id_user = user.getId();
         m_users[id_user] = user;
+        if (!m_usersItems.contains(id_user))
+            m_usersItems[id_user] = nullptr;
+        updateItem(user);
     }
 }
 
@@ -80,7 +107,37 @@ void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices)
     foreach(TeraData device, devices){
         int id_device = device.getId();
         m_devices[id_device] = device;
+        if (!m_devicesItems.contains(id_device))
+            m_devicesItems[id_device] = nullptr;
+        updateItem(device);
     }
+}
+
+QList<TeraData> SessionInviteWidget::getParticipantsInSession()
+{
+    QList<TeraData> rval;
+    foreach(int id, m_participantsInSession.keys()){
+        rval.append(m_participants[id]);
+    }
+    return rval;
+}
+
+QList<TeraData> SessionInviteWidget::getUsersInSession()
+{
+    QList<TeraData> rval;
+    foreach(int id, m_usersInSession.keys()){
+        rval.append(m_users[id]);
+    }
+    return rval;
+}
+
+QList<TeraData> SessionInviteWidget::getDevicesInSession()
+{
+    QList<TeraData> rval;
+    foreach(int id, m_devicesInSession.keys()){
+        rval.append(m_devices[id]);
+    }
+    return rval;
 }
 
 void SessionInviteWidget::on_btnManageInvitees_clicked()
@@ -94,28 +151,78 @@ void SessionInviteWidget::on_btnManageInvitees_clicked()
     }
 }
 
-void SessionInviteWidget::updateItem(const TeraData &item, const bool &invited)
+void SessionInviteWidget::updateFilters()
+{
+    // TOIMPROVE: Better way to do this with a QListView instead of a QListWidget?
+    for (int i=0; i<ui->lstInvitables->count(); i++){
+        QListWidgetItem* item = ui->lstInvitables->item(i);
+        TeraData* item_data = nullptr;
+        bool hidden = false;
+        if (m_usersItems.values().contains(item)){
+            if (!ui->btnUsers->isChecked())
+                hidden = true;
+            else{
+                item_data = &m_users[m_usersItems.key(item)];
+            }
+        }
+        if (m_devicesItems.values().contains(item)){
+            if (!ui->btnDevices->isChecked())
+                hidden = true;
+            else{
+                item_data = &m_devices[m_devicesItems.key(item)];
+            }
+        }
+        if (m_participantsItems.values().contains(item)){
+            if (!ui->btnParticipants->isChecked())
+                hidden = true;
+            else{
+                item_data = &m_participants[m_participantsItems.key(item)];
+            }
+        }
+
+        if (item_data){
+            if (!item_data->isOnline() && ui->btnOnline->isChecked()){
+                hidden = true;
+            }
+        }
+        item->setHidden(hidden);
+    }
+}
+
+void SessionInviteWidget::connectSignals()
+{
+    connect(ui->btnDevices, &QToolButton::clicked, this, &SessionInviteWidget::updateFilters);
+    connect(ui->btnParticipants, &QToolButton::clicked, this, &SessionInviteWidget::updateFilters);
+    connect(ui->btnUsers, &QToolButton::clicked, this, &SessionInviteWidget::updateFilters);
+    connect(ui->btnOnline, &QToolButton::clicked, this, &SessionInviteWidget::updateFilters);
+}
+
+void SessionInviteWidget::updateItem(const TeraData &item)
 {
     // Get pointers to correct structures depending on item type
     QHash<int, TeraData>*           item_data;
     QHash<int, QListWidgetItem*>*   item_availables;
     QHash<int, QTreeWidgetItem*>*   item_invitees;
     QTreeWidgetItem*                base_tree_item;
+    QList<int>*                     item_required;
 
     if (item.getDataType() == TERADATA_PARTICIPANT){
         item_data = &m_participants;
         item_availables = &m_participantsItems;
         item_invitees = &m_participantsInSession;
+        item_required = &m_requiredParticipants;
         base_tree_item = ui->treeInvitees->topLevelItem(0);
     }else if(item.getDataType() == TERADATA_USER){
         item_data = &m_users;
         item_availables = &m_usersItems;
-        item_invitees = &m_participantsInSession;
+        item_invitees = &m_usersInSession;
+        item_required = &m_requiredUsers;
         base_tree_item = ui->treeInvitees->topLevelItem(1);
     }else if(item.getDataType() == TERADATA_DEVICE){
         item_data = &m_devices;
         item_availables = &m_devicesItems;
         item_invitees = &m_devicesInSession;
+        item_required = &m_requiredDevices;
         base_tree_item = ui->treeInvitees->topLevelItem(2);
     }else{
         qWarning("SessionInviteWidget::updateItem - Wrong data type!!");
@@ -123,10 +230,15 @@ void SessionInviteWidget::updateItem(const TeraData &item, const bool &invited)
     }
 
     int id_item = item.getId();
+    // Check in which list the item is
+    bool invited = item_invitees->contains(id_item);
+
+    //qDebug() << item.getName() << " - " << item.getDataTypeName(item.getDataType()) << " ID " << id_item << ": " << invited;
+
     if (invited){
         // Item is in the invited list
         QTreeWidgetItem* tree_item = nullptr;
-        if (item_invitees->contains(id_item)){
+        if (item_invitees->contains(id_item) && (*item_invitees)[id_item] != nullptr){
             tree_item = (*item_invitees)[id_item];
         }else{
             tree_item = new QTreeWidgetItem(base_tree_item);
@@ -137,6 +249,8 @@ void SessionInviteWidget::updateItem(const TeraData &item, const bool &invited)
         tree_item->setText(0, item.getName());
         tree_item->setIcon(0, QIcon(item.getIconStateFilename()));
 
+        tree_item->setDisabled(item_required->contains(id_item)); // Required, so can't be removed!
+
         // Make sure item isn't in available list anymore
         if (item_availables->contains(id_item)){
             delete ui->lstInvitables->takeItem(ui->lstInvitables->row((*item_availables)[id_item]));
@@ -146,7 +260,7 @@ void SessionInviteWidget::updateItem(const TeraData &item, const bool &invited)
     }else{
         // Item is in the available list
         QListWidgetItem* list_item = nullptr;
-        if (item_availables->contains(id_item)){
+        if (item_availables->contains(id_item) && (*item_availables)[id_item] != nullptr){
             list_item = (*item_availables)[id_item];
         }else{
             list_item = new QListWidgetItem();
@@ -156,6 +270,7 @@ void SessionInviteWidget::updateItem(const TeraData &item, const bool &invited)
         // Update informations
         list_item->setText(item.getName());
         list_item->setIcon(QIcon(item.getIconStateFilename()));
+        ui->lstInvitables->addItem(list_item);
 
         // Make sure item isn't in invited list anymore
         if (item_invitees->contains(id_item)){
@@ -165,4 +280,111 @@ void SessionInviteWidget::updateItem(const TeraData &item, const bool &invited)
         }
     }
 
+    // Refresh filters for available items
+    updateFilters();
+
+    // Refresh in session widget (hide empty items and expand)
+    refreshInSessionTreeWidget();
+
+}
+
+void SessionInviteWidget::refreshInSessionTreeWidget()
+{
+    // Hide empty top level items
+    for(int i=0; i<ui->treeInvitees->topLevelItemCount(); i++){
+        if (ui->treeInvitees->topLevelItem(i)->childCount() == 0){
+           ui->treeInvitees->topLevelItem(i)->setHidden(true);
+        }else{
+           ui->treeInvitees->topLevelItem(i)->setHidden(false);
+        }
+    }
+
+    // Always expand items
+    ui->treeInvitees->expandAll();
+
+
+}
+
+quint8 SessionInviteWidget::getInviteesCount()
+{
+    return m_usersInSession.count() + m_participantsInSession.count() + m_devicesInSession.count();
+}
+
+void SessionInviteWidget::on_btnInvite_clicked()
+{
+    // Check if we are under the allowed maximum number of invitees in a session
+    if (getInviteesCount() + ui->lstInvitables->selectedItems().count() > 5){
+        // 5: 1 clinician and 4 others maximum
+        GlobalMessageBox msgbox;
+        msgbox.showError(tr("Nombre d'invités atteint"), tr("Impossible d'ajouter ces invités à la séance: le nombre maximal de participants (5) serait dépassé"));
+        return;
+    }
+
+    // Add all items to the session
+    foreach(QListWidgetItem* item, ui->lstInvitables->selectedItems()){
+        TeraData* item_data = nullptr;
+        if (m_usersItems.values().contains(item)){
+            item_data = &(m_users[m_usersItems.key(item)]);
+            m_usersInSession[item_data->getId()] = nullptr;
+        }
+        if (m_devicesItems.values().contains(item)){
+            item_data = &(m_devices[m_devicesItems.key(item)]);
+            m_devicesInSession[item_data->getId()] = nullptr;
+        }
+        if (m_participantsItems.values().contains(item)){
+            item_data = &(m_participants[m_participantsItems.key(item)]);
+            m_participantsInSession[item_data->getId()] = nullptr;
+        }
+        updateItem(*item_data);
+    }
+}
+
+void SessionInviteWidget::on_lstInvitables_itemSelectionChanged()
+{
+    ui->btnInvite->setEnabled(ui->lstInvitables->selectedItems().count()>0);
+}
+
+void SessionInviteWidget::on_lstInvitables_itemDoubleClicked(QListWidgetItem *item)
+{
+    Q_UNUSED(item)
+    on_btnInvite_clicked();
+}
+
+void SessionInviteWidget::on_treeInvitees_itemSelectionChanged()
+{
+    ui->btnRemove->setEnabled(ui->treeInvitees->selectedItems().count()>0);
+}
+
+void SessionInviteWidget::on_treeInvitees_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    Q_UNUSED(item)
+    Q_UNUSED(column)
+    on_btnRemove_clicked();
+}
+
+void SessionInviteWidget::on_btnRemove_clicked()
+{
+    // Remove all selected item from the session
+    foreach(QTreeWidgetItem* item, ui->treeInvitees->selectedItems()){
+        TeraData* item_data = nullptr;
+        if (m_usersInSession.values().contains(item)){
+            item_data = &(m_users[m_usersInSession.key(item)]);
+            m_usersInSession.remove(item_data->getId());
+        }
+        if (m_devicesInSession.values().contains(item)){
+            item_data = &(m_devices[m_devicesInSession.key(item)]);
+            m_devicesInSession.remove(item_data->getId());
+        }
+        if (m_participantsInSession.values().contains(item)){
+            item_data = &(m_participants[m_participantsInSession.key(item)]);
+            m_participantsInSession.remove(item_data->getId());
+        }
+
+        // Remove from view
+        item->parent()->removeChild(item);
+        delete item;
+
+        // Update item to add it back to invitable list
+        updateItem(*item_data);
+    }
 }

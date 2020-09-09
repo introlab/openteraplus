@@ -127,17 +127,20 @@ void SessionLobbyDialog::on_btnStartSession_clicked()
 void SessionLobbyDialog::processDevicesReply(QList<TeraData> devices)
 {
     ui->wdgSessionInvite->setAvailableDevices(devices);
+    m_gotDevices = true;
     checkReady();
 }
 
 void SessionLobbyDialog::processUsersReply(QList<TeraData> users)
 {
     ui->wdgSessionInvite->setAvailableUsers(users);
+    m_gotUsers = true;
     checkReady();
 }
 
 void SessionLobbyDialog::processParticipantsReply(QList<TeraData> participants)
 {
     ui->wdgSessionInvite->setAvailableParticipants(participants);
+    m_gotParticipants = true;
     checkReady();
 }

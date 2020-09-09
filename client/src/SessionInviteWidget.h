@@ -4,7 +4,9 @@
 #include <QWidget>
 #include <QListWidgetItem>
 #include <QTreeWidgetItem>
+
 #include "TeraData.h"
+#include "GlobalMessageBox.h"
 
 namespace Ui {
 class SessionInviteWidget;
@@ -26,8 +28,25 @@ public:
     void setAvailableUsers(const QList<TeraData> &users);
     void setAvailableDevices(const QList<TeraData> &devices);
 
+    QList<TeraData> getParticipantsInSession();
+    QList<TeraData> getUsersInSession();
+    QList<TeraData> getDevicesInSession();
+
 private slots:
     void on_btnManageInvitees_clicked();
+    void updateFilters();
+
+    void on_btnInvite_clicked();
+
+    void on_lstInvitables_itemSelectionChanged();
+
+    void on_lstInvitables_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_treeInvitees_itemSelectionChanged();
+
+    void on_treeInvitees_itemDoubleClicked(QTreeWidgetItem *item, int column);
+
+    void on_btnRemove_clicked();
 
 private:
     Ui::SessionInviteWidget *ui;
@@ -48,7 +67,12 @@ private:
     QHash<int, QTreeWidgetItem*>    m_participantsInSession;
     QHash<int, QTreeWidgetItem*>    m_devicesInSession;
 
-    void updateItem(const TeraData &item, const bool &invited);
+    void connectSignals();
+
+    void updateItem(const TeraData &item);
+    void refreshInSessionTreeWidget();
+
+    quint8 getInviteesCount();
 
 };
 

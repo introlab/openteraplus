@@ -10,8 +10,6 @@
 
 #include "ComManager.h"
 
-#include "TeraOnlineableItem.h"
-
 namespace Ui {
 class ProjectNavigator;
 }

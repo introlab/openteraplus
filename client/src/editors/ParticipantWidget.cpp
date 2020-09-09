@@ -988,7 +988,7 @@ void ParticipantWidget::on_btnNewSession_clicked()
 
     int id_session_type = ui->cmbSessionType->currentData().toInt();
 
-    SessionLobbyDialog* sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], m_data->getFieldValue("id_project").toInt());
+    SessionLobbyDialog* sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], m_data->getFieldValue("id_project").toInt(), this);
 
     // Add current participant to session
     sessionLobby->addParticipantsToSession(QList<TeraData>() << *m_data, QList<int>() << m_data->getId());

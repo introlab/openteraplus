@@ -216,7 +216,7 @@
            <bool>true</bool>
           </property>
           <property name="checked">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="popupMode">
            <enum>QToolButton::InstantPopup</enum>
@@ -315,7 +315,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QListWidget" name="lstInvitables"/>
+       <widget class="QListWidget" name="lstInvitables">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnInvite">
@@ -378,6 +382,9 @@
         </property>
         <property name="showDropIndicator" stdset="0">
          <bool>false</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
         <property name="iconSize">
          <size>
