@@ -19,6 +19,11 @@ VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
     m_webChannel->registerObject(QStringLiteral("SharedObject"), m_sharedObject);
 }
 
+SharedObject *VideoRehabWebPage::getSharedObject() const
+{
+    return m_sharedObject;
+}
+
 bool VideoRehabWebPage::certificateError(const QWebEngineCertificateError &certificateError)
 {
 #ifdef QT_DEBUG

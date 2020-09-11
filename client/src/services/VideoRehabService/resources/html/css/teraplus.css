@@ -108,6 +108,7 @@
 			background-color: rgba(0,0,0,0.5);
 			float: left;
 			margin-left:10px;
+                        z-index: 1;
 		}
 
 		.overlay a {

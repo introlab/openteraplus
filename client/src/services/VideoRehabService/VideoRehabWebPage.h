@@ -17,6 +17,8 @@ class VideoRehabWebPage : public QWebEnginePage
 public:
     VideoRehabWebPage(QObject *parent = nullptr);
 
+    SharedObject* getSharedObject() const;
+
 protected:
     virtual bool certificateError(const QWebEngineCertificateError &certificateError) override;
 

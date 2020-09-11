@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
 #ifdef __APPLE__
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
 #endif
+    qputenv("QTWEBENGINE_CHROMIUM_FLAGS", "--autoplay-policy=no-user-gesture-required"); // Allow auto-play feature in webengine without any user interaction to test, for example, the microphone and play sounds
     ClientApp app(argc, argv);
 
 //Set application style

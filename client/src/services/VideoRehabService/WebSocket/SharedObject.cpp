@@ -23,6 +23,13 @@ void SharedObject::setSecondVideoName(const QString &name){
     m_2ndVideoName = name;
 }
 
+void SharedObject::setPTZCapabilities(const bool &zoom, const bool &presets, const bool &settings)
+{
+    m_camCanZoom = zoom;
+    m_camHasPresets = presets;
+    m_camHasSettings = settings;
+}
+
 void SharedObject::setSecondAudioSrcName(const QString &name){
     m_2ndAudioName = name;
 }
@@ -107,6 +114,8 @@ void SharedObject::newRemoteConnection(){
 void SharedObject::cameraChanged(QString name, int index){
     m_cameraName = name;
     m_cameraIndex = index;
+
+    emit currentCameraWasChanged();
 }
 
 void SharedObject::sendContactInformation(){
@@ -145,7 +154,7 @@ void SharedObject::sendCurrentVideoSource(const QString &name, const int &index)
 
     QJsonDocument doc(myObject);
 
-    qDebug() << "js: Sending : " << QString(doc.toJson(QJsonDocument::Compact));
+    qDebug() << "js: Sending Video Source: " << QString(doc.toJson(QJsonDocument::Compact));
 
     emit newVideoSource(QString(doc.toJson(QJsonDocument::Compact)));
 }
@@ -239,6 +248,16 @@ void SharedObject::sendExtraParams(){
     emit newExtraParams(m_extraParams);
 }
 
+void SharedObject::sendPTZCapabilities()
+{
+    emit newPTZCapabilities(m_userUUID, m_camCanZoom, m_camHasPresets, m_camHasSettings);
+}
+
+bool SharedObject::isPageReady()
+{
+    return m_pageIsReady;
+}
+
 void SharedObject::getLocalMirror(){
     emit setLocalMirrorSignal(m_localMirror);
 }
@@ -246,4 +265,10 @@ void SharedObject::getLocalMirror(){
 void SharedObject::getExtraParams()
 {
     sendExtraParams();
+}
+
+void SharedObject::setPageReady()
+{
+    m_pageIsReady = true;
+    emit pageIsReady();
 }

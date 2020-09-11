@@ -18,5 +18,7 @@
         <file>html/images/Zoom-min.png</file>
         <file>html/images/Zoom-out1.png</file>
         <file>html/js/teraplus.js</file>
+        <file>html/js/volume-meter.js</file>
+        <file>html/js/main_audio_test.js</file>
     </qresource>
 </RCC>

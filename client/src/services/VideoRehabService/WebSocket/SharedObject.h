@@ -24,6 +24,7 @@ public:
     void setCurrentAudioSrcName(const QString &name);
     void setSecondAudioSrcName(const QString &name);
     void setSecondVideoName(const QString &name);
+    void setPTZCapabilities(const bool &zoom, const bool &presets, const bool &settings);
     //void sendCameraSettings(const QString &uuid, CameraImageSettings &settings, const QString &owner="");
     void getCameraSettings(const QString &uuid);
 
@@ -35,6 +36,9 @@ public:
     void sendCurrentAudioSource();
     void sendSecondSources();
     void sendExtraParams();
+    void sendPTZCapabilities();
+
+    bool isPageReady();
 
 
 public slots:
@@ -45,6 +49,8 @@ public slots:
     Q_INVOKABLE void getSecondSources();
     Q_INVOKABLE void getLocalMirror();
     Q_INVOKABLE void getExtraParams();
+
+    Q_INVOKABLE void setPageReady();
 
     Q_INVOKABLE void zoomInClicked(QString uuid);
     Q_INVOKABLE void zoomOutClicked(QString uuid);
@@ -71,6 +77,7 @@ signals:
     void newDataForward(QString);
     void newRemoteStream();
     void newExtraParams(QString);
+    void newPTZCapabilities(QString, bool, bool, bool);
 
     void zoomIn(QString uuid);
     void zoomOut(QString uuid);
@@ -86,6 +93,10 @@ signals:
     //void setCamSettings(QString uuid, CameraImageSettings& settings);   // Request to set camSettings (if local uuid) or to send camSettings (if remote uuid)
 
     void setLocalMirrorSignal(bool mirror);
+
+    void pageIsReady();
+    void currentCameraWasChanged();
+
 protected:
 
     //TODO add more information as needed...
@@ -101,6 +112,12 @@ protected:
     int     m_cameraIndex;
     bool    m_localMirror;
     QString m_extraParams;
+
+    bool    m_camCanZoom;
+    bool    m_camHasPresets;
+    bool    m_camHasSettings;
+
+    bool    m_pageIsReady;
 
 };
 

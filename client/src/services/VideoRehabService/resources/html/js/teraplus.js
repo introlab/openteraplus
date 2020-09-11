@@ -10,36 +10,37 @@ var extraParams;
 
 function connect() {
     initLocalVideo('#selfVideo');
-	
+    startAudioTest();
  }
 
 function setupSharedObjectCallbacks(channel) {
 
-    //console.error("setupSharedObjectCallbacks " +  channel);
+    console.log("setupSharedObjectCallbacks " +  channel);
 
     // Connect to a signal
-    channel.objects.SharedObject.newContactInformation.connect(updateContact);
-	channel.objects.SharedObject.newVideoSource.connect(selectVideoSource);
-	channel.objects.SharedObject.setLocalMirrorSignal.connect(setLocalMirror);
+    SharedObject.newContactInformation.connect(updateContact);
+    SharedObject.newVideoSource.connect(selectVideoSource);
+    SharedObject.setLocalMirrorSignal.connect(setLocalMirror);
+    SharedObject.newPTZCapabilities.connect(setPTZCapabilities);
 	
     // Check if we need to apply specific parameters
-    channel.objects.SharedObject.newExtraParams.connect(setExtraParams);
-    channel.objects.SharedObject.getExtraParams();
+    SharedObject.newExtraParams.connect(setExtraParams);
+    SharedObject.getExtraParams();
 
     // Request contact info...
-    channel.objects.SharedObject.getContactInformation();
+    SharedObject.getContactInformation();
 
     // Request current camera
-    channel.objects.SharedObject.getCurrentVideoSource();
+    //SharedObject.getCurrentVideoSource();
 
     // Check if we need to mirror or not the local camera
-    channel.objects.SharedObject.getLocalMirror();
+    SharedObject.getLocalMirror();
 }
 
 function updateContact(contact)
 {
     //Contact should be a JSON object
-	//console.error("Update contact : " + contact);
+    console.log("Update contact : " + contact);
 	
     localContact = JSON.parse(contact);
 	
@@ -63,6 +64,7 @@ function setLocalMirror(mirror)
 }
 
 function fillVideoSourceList(){
+    console.log("fillVideoSourceList")
 	videoSources.length=0;
 	var select = document.getElementById('videoSelect');
 	select.options.length = 0;
@@ -76,28 +78,29 @@ function fillVideoSourceList(){
 				//select.options[select.options.length] = new Option(device.label.substring(0,device.label.length-12), device.id);
 				select.options[select.options.length] = new Option(device.label, device.id);
 				count++;
-				if (count<2){
+                hideElement("videoSelect"); // Always hidden
+                /*if (count<2){
 					hideElement("videoSelect"); // Hide if only one video source
 				}else{
 					showElement("videoSelect");
-				}
+                }*/
 			}
 			select.selectedIndex = currentVideoSourceIndex;
-			//console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
+            //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
 		});
+        // Here, after we had the video list, the page is considered to be ready!
+        SharedObject.setPageReady();
 	})
 	.catch(function(err) {
 		console.log(err.name + ": " + err.message);
 	});
-	
-	
-	
-	
+
+
 	
 }
 
 function updateVideoSource(){
-	var select = document.getElementById('videoSelect');
+    var select = document.getElementById('videoSelect');
 	if (select.selectedIndex>=0){
 		currentVideoSourceIndex = select.selectedIndex;
 		var constraints = { deviceId: { exact: videoSources[currentVideoSourceIndex].deviceId } };
@@ -114,19 +117,21 @@ function updateVideoSource(){
 		//console.log(constraints);
 		navigator.mediaDevices.getUserMedia({video: constraints}).then(handleVideo).catch(videoError);
 		
-		SharedObject.cameraChanged(select[select.selectedIndex].label, select.selectedIndex);
+        //SharedObject.cameraChanged(select[select.selectedIndex].label, select.selectedIndex);
 		
-	}
+    }
 }
 
 function selectVideoSource(source){
 	video = JSON.parse(source);
+    console.log("selectVideoSource: " + video.name);
 	for (var i=0; i<videoSources.length; i++){
+        console.log(videoSources[i].label + " == " + video.name + " ?");
 		if (videoSources[i].label.includes(video.name)){
 			var select = document.getElementById('videoSelect');
 			select.selectedIndex = i;
-			SharedObject.cameraChanged(select[select.selectedIndex].label, select.selectedIndex);
-			updateVideoSource();
+            updateVideoSource();
+            //SharedObject.cameraChanged(select[select.selectedIndex].label, select.selectedIndex);
 			break;
 		}
 	}
@@ -149,11 +154,16 @@ function initLocalVideo(tag){
 function handleVideo(stream) {
 	var video = document.getElementById("selfVideo");
 
-	//console.log("Success! Device Name: " + stream.getVideoTracks()[0].label);
+    console.log("Success! Device Name: " + stream.getVideoTracks()[0].label);
 	video.srcObject = stream;
 	//video.src = URL.createObjectURL(stream);
 	
-	fillVideoSourceList();
+    if (videoSources.length === 0)
+        fillVideoSourceList();
+    else{
+        var select = document.getElementById('videoSelect');
+        SharedObject.cameraChanged(select[select.selectedIndex].label, select.selectedIndex);
+    }
 }
  
 function videoError(e) {
@@ -188,13 +198,13 @@ function toggleButtons(id) {
 }
 
 function isButtonsClosed(id){
-	return document.getElementById(id).style.height == "0%";
+    return document.getElementById(id).style.height === "0%";
 }
 
 
 function setTitle(id, title){
 	var label = "videoLabel";
-	if (id!=0){
+    if (id !== 0){
 		label = label + id;
 	}
 	if (document.getElementById(label)){
@@ -212,7 +222,7 @@ function resetInactiveTimer(){
 }
 
 function stopInactiveTimer(){
-	if (timerHandle != 0){
+    if (timerHandle !== 0){
 		clearTimeout(timerHandle);
 		timerHandle = 0;
 	}
@@ -223,6 +233,7 @@ function inactiveTimeout(){
 }
 
 function setPTZCapabilities(uuid, zoom, presets, settings){
+    console.log("setPTZCapabilities for uuid=" + uuid + ", zoom=" + zoom + ", presets=" + presets + ", settings=", settings);
 	var zoom_tag = "zoomButtons0";
 	var presets_tag = "presetButtons0";
 	var settings_tag = "settingsButton0";

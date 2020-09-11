@@ -66,6 +66,7 @@
 #define WEB_QUERY_ID_USER_GROUP     "id_user_group"
 #define WEB_QUERY_ID_SERVICE        "id_service"
 #define WEB_QUERY_ID_SPECIFIC       "id_specific"
+#define WEB_QUERY_SERVICE_KEY       "service_key"
 
 #define WEB_QUERY_LIST              "list"
 #define WEB_QUERY_AVAILABLE         "available"

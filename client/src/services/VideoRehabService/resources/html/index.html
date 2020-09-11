@@ -3,10 +3,11 @@
       <head>
         <title>TeraPlus - Vidéo locale</title>
         <link rel="stylesheet" type="text/css" href="css/teraplus.css" /> 
-		<script type="text/javascript" src="js/teraplus.js"></script>
-		<style>
-		
-		</style>
+        <script type="text/javascript" src="js/teraplus.js"></script>
+        <!-- Include the volume meter component -->
+        <script type="text/javascript" src="js/volume-meter.js"></script>
+        <!-- Include the main app logic -->
+        <script type="text/javascript" src="js/main_audio_test.js"></script>
       </head>
       <body onload = "connect();" style="background-color:black; overflow: hidden;">
 	  <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
@@ -27,7 +28,7 @@
 
 			socket.onopen = function()
 			{
-				//console.error("websocket connected");
+                                console.log("Websocket connected");
 				new QWebChannel(socket, function(channel) {
 
 				//global object
@@ -71,9 +72,7 @@
 						<input id="settingsButton0" type="image" src="images/settings.png" height=22px onclick="camSettings(0);closeButtons('navButtons');"/>
 					</div>
 					<div>
-						<select id="videoSelect" onchange="updateVideoSource();event.stopPropagation();" onclick="event.stopPropagation();">
-							
-						</select>
+                                                <select id="videoSelect" onchange="updateVideoSource();event.stopPropagation();" onclick="event.stopPropagation();"></select>
 					</div>
 				  </div>
 				  <!--<div class="overlay-bottom-center" style="padding-left:20px">
@@ -82,9 +81,15 @@
 					<input type="image" src="images/video.png" height=100% onclick="muteVideo();closeButtons('navButtons');"/>
 					
 				  </div>-->
-			</div>
-			<video autoplay="true" id="selfVideo" muted="muted" volume="1" micEnabled="true" class="easyrtcMirror" oncontextmenu="toggleButtons('navButtons');return false;" onclick="getVideoCoords(event,'selfVideo');" onwheel="manageMouseWheel(event);"/>
+                        </div>
+                        <div id="audioTest" class="overlay-bottom-left" style="display:inline">
+                            <canvas id="meter" width="500" height="10"></canvas>
+                        </div>
+                        <video autoplay="true" id="selfVideo" muted="muted" volume="1" micEnabled="true" class="easyrtcMirror" oncontextmenu="toggleButtons('navButtons');return false;" onclick="getVideoCoords(event,'selfVideo');" onwheel="manageMouseWheel(event);"/>
+
 		  </div>
+
 		</div>
+
       </body>
     </html>
