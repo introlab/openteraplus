@@ -1,3 +1,3 @@
 add_subdirectory(VirtualCamera)
-add_subdirectory(VivotekPTZ)
+add_subdirectory(PTZ)
 
