@@ -14,6 +14,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${VIRTUAL_CAMERA_INCLUDES}
     ${AVKYS_INCLUDES}
+    ${PTZ_DRIVERS_INCLUDES}
 )
 
 set(ptz_test_headers
@@ -53,6 +54,7 @@ add_executable(ptz_test
 target_link_libraries(ptz_test
     ${OPENTERA_SHARED_LIBS}
     ${VIRTUAL_CAMERA_LIBS}
+    ${PTZ_DRIVERS_LIBS}
     Qt5::Core
     Qt5::Network
     Qt5::Multimedia

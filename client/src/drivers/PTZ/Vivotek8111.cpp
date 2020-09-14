@@ -42,28 +42,39 @@ void VIVOTEK8111::init(QString config)
     if(jsonObj.contains("hostname") && jsonObj.contains("password") && jsonObj.contains("user") && jsonObj.contains("password"))
     {
         //Get hostname and port
-        m_hostname = jsonObj.find("hostname").value().toString();
-        m_port = jsonObj.find("port").value().toInt();
+        QString hostname = jsonObj.find("hostname").value().toString();
+        int port = jsonObj.find("port").value().toInt();
         //Get user and password
-        m_user = jsonObj.find("user").value().toString();
-        m_password = jsonObj.find("password").value().toString();
+        QString user = jsonObj.find("user").value().toString();
+        QString password = jsonObj.find("password").value().toString();
 
-
-        m_cameraInfo.setDeviceName(CAMERA_NAME);
-        m_cameraInfo.setDeviceConnection(QString("%1:%2").arg(m_hostname).arg(m_port));
-        m_cameraInfo.setDeviceFunct((CameraInfo::CameraInfoFunct)(CameraInfo::CIF_POINT_N_CLICK + CameraInfo::CIF_ZOOM_REL + CameraInfo::CIF_PRESET_POS + CameraInfo::CIF_IMAGE_SETTINGS));
-        m_cameraInfo.setNumberPreset(VIVOTEK_NUM_PRESET);
-
-        m_CameraManager = new QNetworkAccessManager(this);
-
-        connect(m_CameraManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(cameraDataRdy(QNetworkReply*)));
-        connect(m_CameraManager, SIGNAL(authenticationRequired ( QNetworkReply *, QAuthenticator *)),this, SLOT(cameraAuthenticationRequest( QNetworkReply *, QAuthenticator *)));
-
-        //Start the connection by asking resolution
-        connect(&m_connectionTimer,SIGNAL(timeout()),this,SLOT(connectionTimeout()));
-        m_connectionTimer.setInterval(200);
-        m_connectionTimer.start();
+        //Recall init with all parameters
+        init(hostname, port, user, password);
     }
+
+}
+
+void VIVOTEK8111::init(const QString &hostname, const int port, const QString &user, const QString &password)
+{
+    m_hostname = hostname;
+    m_port = port;
+    m_user = user;
+    m_password = password;
+
+    m_cameraInfo.setDeviceName(CAMERA_NAME);
+    m_cameraInfo.setDeviceConnection(QString("%1:%2").arg(m_hostname).arg(m_port));
+    m_cameraInfo.setDeviceFunct((CameraInfo::CameraInfoFunct)(CameraInfo::CIF_POINT_N_CLICK + CameraInfo::CIF_ZOOM_REL + CameraInfo::CIF_PRESET_POS + CameraInfo::CIF_IMAGE_SETTINGS));
+    m_cameraInfo.setNumberPreset(VIVOTEK_NUM_PRESET);
+
+    m_CameraManager = new QNetworkAccessManager(this);
+
+    connect(m_CameraManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(cameraDataRdy(QNetworkReply*)));
+    connect(m_CameraManager, SIGNAL(authenticationRequired ( QNetworkReply *, QAuthenticator *)),this, SLOT(cameraAuthenticationRequest( QNetworkReply *, QAuthenticator *)));
+
+    //Start the connection by asking resolution
+    connect(&m_connectionTimer,SIGNAL(timeout()),this,SLOT(connectionTimeout()));
+    m_connectionTimer.setInterval(200);
+    m_connectionTimer.start();
 
 }
 

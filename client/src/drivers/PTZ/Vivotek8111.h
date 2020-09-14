@@ -38,6 +38,7 @@ public:
 
     // ICameraDriver interface
     void init(QString config);
+    void init(const QString &hostname, const int port, const QString &user, const QString &password);
     void getCameraInfo(CameraRequest infoRequested);
     void setCameraInfo(CameraInfo info);
 
