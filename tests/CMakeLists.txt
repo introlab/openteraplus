@@ -2,6 +2,7 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5WebEngine REQUIRED)
 find_package(Qt5WebEngineWidgets REQUIRED)
 find_package(Qt5Multimedia  REQUIRED)
+find_package(Qt5MultimediaWidgets REQUIRED)
 find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Network REQUIRED)
 find_package(Qt5LinguistTools REQUIRED)
@@ -26,7 +27,7 @@ set(ptz_test_srcs
 )
 
 SET(ptz_test_uis
-
+    ptz_test.ui
 )
 
 SET(ptz_test_qrcs
@@ -58,6 +59,7 @@ target_link_libraries(ptz_test
     Qt5::Core
     Qt5::Network
     Qt5::Multimedia
+    Qt5::MultimediaWidgets
     Qt5::WebSockets
     Qt5::WebEngine
     Qt5::WebEngineWidgets
