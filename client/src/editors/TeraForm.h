@@ -29,6 +29,7 @@
 
 #include "TeraData.h"
 #include "ComManager.h"
+#include "Utils.h"
 
 namespace Ui {
 class TeraForm;
@@ -78,8 +79,10 @@ private:
     bool                                            m_highlightConditionals;
     QStringList                                     m_hiddenFields;
 
-    QList<QAudioDeviceInfo>                         m_audioInputs;
-    QList<QCameraInfo>                              m_videoInputs;
+    //QList<QAudioDeviceInfo>                         m_audioInputs;
+    //QList<QCameraInfo>                              m_videoInputs;
+    QStringList                                     m_audioInputs;
+    QStringList                                     m_videoInputs;
 
     // Hook interface for dynamic url requests
     QMap<QWidget*, TeraDataTypes>                   m_widgetsHookRequests;

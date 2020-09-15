@@ -24,13 +24,13 @@
 		}
 		
 		.overlay-left {
-			position: relative;
-			width: 10%;
-			height: 95%;
-			max-width: 48px;
-			padding: 5px;
+                        position: absolute;
+                        width: 20px;
+                        height: 100%;
 			background-color: rgba(0,0,0,0.5);
 			float: left;
+                        bottom: 0px;
+                        z-index: 1;
 		}
 		
 		.overlay-right {

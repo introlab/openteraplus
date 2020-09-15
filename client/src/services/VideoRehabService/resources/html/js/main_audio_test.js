@@ -20,14 +20,17 @@ SOFTWARE.
 var audioContext = null;
 var meter = null;
 var canvasContext = null;
-var WIDTH=500;
-var HEIGHT=50;
+var WIDTH=10;
+var HEIGHT=500;
 var rafID = null;
 
-function startAudioTest() {
+function startAudioTest(deviceId) {
+
 
     // grab our canvas
     canvasContext = document.getElementById( "meter" ).getContext("2d");
+    HEIGHT = document.getElementById( "meter" ).height;
+    WIDTH = document.getElementById( "meter" ).width;
 
     // monkeypatch Web Audio
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -47,24 +50,22 @@ function startAudioTest() {
         navigator.getUserMedia(
         {
             "audio": {
-                "mandatory": {
-                    "googEchoCancellation": "false",
-                    "googAutoGainControl": "false",
-                    "googNoiseSuppression": "false",
-                    "googHighpassFilter": "false"
-                },
-                "optional": []
+                "deviceId": {
+                                "exact": deviceId
+                            },
+                "echoCancellation": "false",
+                "autoGainControl": "false",
+                "noiseSuppression": "false"
             },
         }, gotStream, didntGetStream);
     } catch (e) {
         console.error('getUserMedia threw exception :' + e);
     }
-
 }
 
-
-function didntGetStream() {
-    console.error('Stream generation failed.');
+function didntGetStream(e) {
+    console.error(e.toString());
+    SharedObject.setAudioError("audioError", e.toString());
 }
 
 var mediaStreamSource = null;
@@ -90,10 +91,12 @@ function drawLoop( time ) {
     if (meter.checkClipping())
         canvasContext.fillStyle = "red";
     else
-        canvasContext.fillStyle = "green";
+        canvasContext.fillStyle = "lightgreen";
 
     // draw a bar based on the current volume
-    canvasContext.fillRect(0, 0, meter.volume*WIDTH*1.4, HEIGHT);
+    //canvasContext.fillRect(0, 0, meter.volume*WIDTH*1.4, HEIGHT);
+    var fillValue = meter.volume*HEIGHT*2;
+    canvasContext.fillRect(0, HEIGHT - fillValue, WIDTH, fillValue);
 
     // set up the next visual callback
     rafID = window.requestAnimationFrame( drawLoop );

@@ -12,6 +12,7 @@
 
 #include "VideoRehabWebPage.h"
 #include "ComManager.h"
+#include "Utils.h"
 
 
 namespace Ui {
@@ -34,21 +35,27 @@ private:
     VideoRehabWebPage*      m_webPage;
 
     void initUI();
+    void refreshAudioVideoDevices();
     void connectSignals();
 
     void selectVideoSrcByName(const QString& name);
     void selectAudioSrcByName(const QString& name);
 
     void setLoading(const bool& loading);
+    void showError(const QString& title, const QString& context, const QString& error);
 
 
 private slots:
     void webPageLoaded(bool ok);
     void webPageReady();
     void webPageCameraChanged();
+    void webPageVideoError(QString context, QString error);
+    void webPageAudioError(QString context, QString error);
+    void webPageGeneralError(QString context, QString error);
 
     void processServiceConfigsReply(QList<TeraData> configs, QUrlQuery query);
     void refreshWebpageSettings();
+    void on_btnRefresh_clicked();
 };
 
 #endif // VIDEOREHABSETUPWIDGET_H

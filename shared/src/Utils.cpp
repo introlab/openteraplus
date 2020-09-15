@@ -42,3 +42,56 @@ QString Utils::getMachineUniqueId()
 
     return machine_id;
 }
+
+QStringList Utils::getAudioDeviceNames()
+{
+    QStringList names;
+    QList<QAudioDeviceInfo> audio_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    foreach(QAudioDeviceInfo input, audio_devices){
+#ifdef Q_OS_LINUX
+        // On linux, since Qt use ALSA API, we must filter the returned device list...
+        if (input.deviceName().startsWith("alsa_input") || input.deviceName() == "default"){
+            QString filtered_name = input.deviceName();
+            if (input.deviceName() != "default"){
+                QStringList name_parts = filtered_name.split(".");
+                // Removes first part - usually is "alsa_input"
+                if (name_parts.count()>1)
+                    filtered_name = name_parts[1];
+
+                // Split using "_" to remove first and last part, and replace others with spaces
+                name_parts = filtered_name.split("_");
+                if (name_parts.count()>2){
+                    filtered_name = "";
+                    for (int i=1; i<name_parts.count()-1; i++){
+                        if (i>1)
+                            filtered_name += " ";
+                        filtered_name += name_parts[i];
+                    }
+                }else{
+                    // No audio name...
+                    name_parts = filtered_name.split("-");
+                    if (name_parts.count()>2){
+                        filtered_name = name_parts[1].replace("_", ":");
+                    }
+                }
+
+            }
+            names.append(filtered_name);
+        }
+#else
+        names.append(input.deviceName());
+#endif
+    }
+    return names;
+}
+
+QStringList Utils::getVideoDeviceNames()
+{
+    QStringList names;
+    QList<QCameraInfo> video_devices = QCameraInfo::availableCameras();
+    for (QCameraInfo camera:video_devices){
+        names.append(camera.description());
+    }
+    return names;
+}
+

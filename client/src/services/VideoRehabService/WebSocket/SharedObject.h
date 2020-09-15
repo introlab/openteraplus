@@ -51,6 +51,9 @@ public slots:
     Q_INVOKABLE void getExtraParams();
 
     Q_INVOKABLE void setPageReady();
+    Q_INVOKABLE void setVideoError(QString context, QString error);
+    Q_INVOKABLE void setAudioError(QString context, QString error);
+    Q_INVOKABLE void setGeneralError(QString context, QString error);
 
     Q_INVOKABLE void zoomInClicked(QString uuid);
     Q_INVOKABLE void zoomOutClicked(QString uuid);
@@ -96,6 +99,9 @@ signals:
 
     void pageIsReady();
     void currentCameraWasChanged();
+    void videoErrorOccured(QString context, QString error);
+    void audioErrorOccured(QString context, QString error);
+    void generalErrorOccured(QString context, QString error);
 
 protected:
 
