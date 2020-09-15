@@ -4,12 +4,12 @@
 <context>
     <name>BaseDialog</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_BaseDialog.h" line="77"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_BaseDialog.h" line="77"/>
         <source>Dialog</source>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_BaseDialog.h" line="78"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_BaseDialog.h" line="78"/>
         <source>Fermer</source>
         <translation>Close</translation>
     </message>
@@ -129,7 +129,7 @@
         <translation>Unknown error</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ConfigWidget.h" line="190"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ConfigWidget.h" line="190"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
@@ -175,34 +175,34 @@
         <translation>Are you sure you want to delete </translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DataListWidget.h" line="297"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DataListWidget.h" line="297"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DataListWidget.h" line="298"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DataListWidget.h" line="298"/>
         <source>Seuls les ... ayant un lien avec  ce ... sont présentement affichés.</source>
         <translation>Only ... with a link with ... are displayed.</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DataListWidget.h" line="299"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DataListWidget.h" line="299"/>
         <source>Filtrer</source>
         <translation>Filter</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DataListWidget.h" line="300"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DataListWidget.h" line="300"/>
         <source>Tout voir</source>
         <translation>See All</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DataListWidget.h" line="303"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DataListWidget.h" line="303"/>
         <source>Recherche...</source>
         <translation>Search...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DataListWidget.h" line="304"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DataListWidget.h" line="305"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DataListWidget.h" line="306"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DataListWidget.h" line="304"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DataListWidget.h" line="305"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DataListWidget.h" line="306"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -210,32 +210,32 @@
 <context>
     <name>DeviceAssignDialog</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="262"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="262"/>
         <source>Assignation d&apos;un appareil</source>
         <translation>Assign device</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="263"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="263"/>
         <source>L&apos;appareil est présentement assigné au(x) participant(s) suivant(s):</source>
         <translation>The device is currently assigned to the following participant(s):</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="264"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="264"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Souhaitez-vous &lt;span style=&quot; font-weight:600;&quot;&gt;désassocier&lt;/span&gt; cet appareil de ces participants avant de l&apos;ajouter au participant actuel ou souhaitez-vous &lt;span style=&quot; font-weight:600;&quot;&gt;ajouter&lt;/span&gt; un participant supplémentaire à cet appareil?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Do you want to &lt;span style=&quot; font-weight:600;&quot;&gt;unlink&lt;/span&gt;this device to the actual participants or do you which to &lt;span style=&quot; font-weight:600;&quot;&gt;add&lt;/span&gt; a new participant to this device?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="265"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="265"/>
         <source>Déassocier puis ajouter</source>
         <translation>Unlink then add</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="266"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="266"/>
         <source>Ajouter sans désassocier</source>
         <translation>Add without unlinking</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="267"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="267"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
@@ -243,42 +243,42 @@
 <context>
     <name>DeviceSubTypeWidget</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="297"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="297"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="299"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="299"/>
         <source>Sous-type appareil</source>
         <translation>Device Sub-Type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="300"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="300"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="301"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="301"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="302"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="302"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="303"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="303"/>
         <source>Résumé</source>
         <translation>Summary</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="304"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="304"/>
         <source>Appareils</source>
         <translation>Devices</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="305"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceSubTypeWidget.h" line="305"/>
         <source>Détails</source>
         <translation>Details</translation>
     </message>
@@ -315,57 +315,57 @@ Si l&apos;appareil est présentement déployé, les données ne seront plus coll
 If the device is currently deployed, the data will not be collected anymore and the device will not be usable during sessions.</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="341"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="341"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="343"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="343"/>
         <source>Appareil</source>
         <translation>Device</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="344"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="344"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="345"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="345"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="346"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="346"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="347"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="347"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="348"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="348"/>
         <source>Mettre à jour les projets associés à cet appareil</source>
         <translation>Updated projects associated to this device</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="349"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="349"/>
         <source>Sites / Projets</source>
         <translation>Sites / Projects</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="350"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="350"/>
         <source>Retirer cet appareil de ce participant</source>
         <translation>Remove this device from the participant</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="351"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="351"/>
         <source>Participants</source>
         <translation>Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DeviceWidget.h" line="352"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DeviceWidget.h" line="352"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -373,27 +373,27 @@ If the device is currently deployed, the data will not be collected anymore and 
 <context>
     <name>DownloadProgressDialog</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="235"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="235"/>
         <source>Téléchargements</source>
         <translation>Downloads</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="236"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="236"/>
         <source>Téléchargements en cours</source>
         <translation>Downloading</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="238"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="238"/>
         <source>Progression</source>
         <translation>Progression</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="240"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="240"/>
         <source>Fichier</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="241"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_DownloadProgressDialog.h" line="241"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
@@ -492,67 +492,67 @@ ou réalisées</source>
 or done</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="369"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="369"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="371"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="371"/>
         <source>Groupe participant</source>
         <translation>Participant Group</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="372"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="372"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="373"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="373"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="374"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="374"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="376"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="376"/>
         <source>XXXX Séances</source>
         <translation>XXXX Sessions</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="377"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="377"/>
         <source>XXXX Participants</source>
         <translation>XXXX Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="380"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="380"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="382"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="382"/>
         <source>État</source>
         <translation>State</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="384"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="384"/>
         <source>Dernière connexion</source>
         <translation>Last connection</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="386"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="386"/>
         <source>Dernière séance</source>
         <translation>Last session</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="387"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="387"/>
         <source>Résumé</source>
         <translation>Summary</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_GroupWidget.h" line="388"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_GroupWidget.h" line="388"/>
         <source>Tableau de bord</source>
         <translation>Dashboard</translation>
     </message>
@@ -619,53 +619,53 @@ Please update the software or contribute to the development!</translation>
         <translation>The session category &quot;</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="238"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="238"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="239"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="239"/>
         <source>Gestion</source>
         <translation>Admin</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="240"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="240"/>
         <source>Terminer</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="242"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="242"/>
         <source>Ajouter des participants - utilisateurs</source>
         <translation>Add participants - users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="244"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="248"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="244"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="248"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="246"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="246"/>
         <source>Retirer participant / utilisateur</source>
         <translation>Remove participant / user</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="249"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="249"/>
         <source>Participants</source>
         <translation>Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="250"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="250"/>
         <source>Paramètres - séance</source>
         <translation>Session - Parameters</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="251"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="251"/>
         <source>Paramètres</source>
         <translation>Parameters</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_InSessionWidget.h" line="252"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_InSessionWidget.h" line="252"/>
         <source>00:00:00</source>
         <translation>00:00:00</translation>
     </message>
@@ -684,37 +684,37 @@ Please update the software or contribute to the development!</translation>
     </message>
     <message>
         <location filename="../../src/LoginDialog.cpp" line="88"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="347"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_LoginDialog.h" line="347"/>
         <source>Connexion en cours...</source>
         <translation>Connecting...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="333"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_LoginDialog.h" line="333"/>
         <source>OpenTeraPlus - Login</source>
         <translation>OpenTeraPlus -- Login</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="339"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_LoginDialog.h" line="339"/>
         <source>Mot de passe</source>
         <translation>Password</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="340"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_LoginDialog.h" line="340"/>
         <source>Serveur</source>
         <translation>Server</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="341"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_LoginDialog.h" line="341"/>
         <source>Code utilisateur</source>
         <translation>Username</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="348"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_LoginDialog.h" line="348"/>
         <source>Connecter</source>
         <translation>Connect</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_LoginDialog.h" line="349"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_LoginDialog.h" line="349"/>
         <source>Quitter</source>
         <translation>Quit</translation>
     </message>
@@ -770,7 +770,7 @@ Please update the software or contribute to the development!</translation>
     </message>
     <message>
         <location filename="../../src/MainWindow.cpp" line="650"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="512"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="512"/>
         <source>Déconnexion</source>
         <translation>Disconnect</translation>
     </message>
@@ -801,84 +801,84 @@ Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="500"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="500"/>
         <source>OpenTeraPlus</source>
         <translation>OpenTeraPlus</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="502"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="502"/>
         <source>(Message)</source>
         <translation>(Message)</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="503"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="511"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="503"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="511"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="506"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="506"/>
         <source>0.1</source>
         <translation>0.1</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="507"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="507"/>
         <source>Nom Utilisateur</source>
         <translation>User Name</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="509"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="523"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="509"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="523"/>
         <source>Historique</source>
         <translation>History</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="513"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="513"/>
         <source>Profil</source>
         <translation>Profile</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="514"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="514"/>
         <source>Admin</source>
         <translation>Admin</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="515"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="515"/>
         <source>Navigateur</source>
         <translation>Browser</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="516"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="516"/>
         <source>Participants</source>
         <translation>Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="517"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="517"/>
         <source>Utilisateurs</source>
         <translation>Users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="518"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="518"/>
         <source>En ligne</source>
         <translation>Online</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="521"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="521"/>
         <source>Nom participant...</source>
         <translation>Participant name...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="522"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="522"/>
         <source>Recherche</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="525"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="525"/>
         <source>Heure</source>
         <translation>Time</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_MainWindow.h" line="527"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_MainWindow.h" line="527"/>
         <source>Événement</source>
         <translation>Event</translation>
     </message>
@@ -886,22 +886,22 @@ Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
 <context>
     <name>NotifyWindow</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_notification.h" line="173"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_notification.h" line="173"/>
         <source>OpenTera Notification</source>
         <translation>OpenTera Notification</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_notification.h" line="176"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_notification.h" line="176"/>
         <source>(Texte de la notification)</source>
         <translation>(Notification text)</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_notification.h" line="177"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_notification.h" line="177"/>
         <source>Oui</source>
         <translation>Yes</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_notification.h" line="178"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_notification.h" line="178"/>
         <source>Non</source>
         <translation>No</translation>
     </message>
@@ -915,7 +915,7 @@ Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
     </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="236"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1063"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1063"/>
         <source>Supprimer</source>
         <translation>Delete</translation>
     </message>
@@ -988,7 +988,7 @@ Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
     </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="703"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1035"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1035"/>
         <source>Séance</source>
         <translation>Session</translation>
     </message>
@@ -1018,208 +1018,208 @@ Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
         <translation>The following information is missing:</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="989"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="989"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="991"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="991"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="992"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="992"/>
         <source>Actif</source>
         <translation>Active</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="993"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="993"/>
         <source>Accès via lien web</source>
         <translation>Web link</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="994"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="994"/>
         <source>Aucun lien n&apos;a été généré</source>
         <translation>No weblink generated</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="996"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="996"/>
         <source>Copier le lien</source>
         <translation>Copy link</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="998"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1002"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1010"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1016"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1018"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1025"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1029"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1033"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="998"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1002"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1010"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1016"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1018"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1025"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1029"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1033"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1000"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1000"/>
         <source>Envoyer par courriel</source>
         <translation>Send via email</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1003"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1003"/>
         <source>Accès via identification</source>
         <translation>Username/password login</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1004"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1005"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1004"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1005"/>
         <source>Code utilisateur</source>
         <translation>Username</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1006"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1011"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1006"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1011"/>
         <source>Mot de passe</source>
         <translation>Password</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1008"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1008"/>
         <source>Générer mot de passe aléatoire</source>
         <translation>Generate random password</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1012"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1012"/>
         <source>Confirmation mot de passe</source>
         <translation>Confirm password</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1014"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1051"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1014"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1051"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1017"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1053"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1017"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1053"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1019"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1019"/>
         <source>Mois 1</source>
         <translation>Month 1</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1023"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1023"/>
         <source>Mois 2</source>
         <translation>Month 2</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1024"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1024"/>
         <source>Mois 3</source>
         <translation>Month 3</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1027"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1027"/>
         <source>Tout cocher</source>
         <translation>Select All</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1031"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1031"/>
         <source>Tout décocher</source>
         <translation>Deselect All</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1037"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1037"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1039"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1039"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1041"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1041"/>
         <source>État</source>
         <translation>State</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1043"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1043"/>
         <source>Durée</source>
         <translation>Duration</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1045"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1045"/>
         <source>Responsable</source>
         <translation>Owner</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1047"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1047"/>
         <source>Actions</source>
         <translation>Actions</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1048"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1048"/>
         <source>Séances</source>
         <translation>Sessions</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1049"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1049"/>
         <source>Tableau de bord</source>
         <translation>Dashboard</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1050"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1050"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1052"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1052"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1059"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1059"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1060"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1060"/>
         <source>Détails</source>
         <translation>Details</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1054"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1054"/>
         <source>Appareil(s) assigné(s)</source>
         <translation>Assigned Device(s)</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1055"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1055"/>
         <source>&lt;&lt;&lt; Ajouter</source>
         <translation>&lt;&lt;&lt; Add</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1056"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1056"/>
         <source>Retirer &gt;&gt;&gt;</source>
         <translation>Remove &gt;&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1057"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1057"/>
         <source>Appareils disponibles</source>
         <translation>Available devices</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1058"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1058"/>
         <source>Appareils</source>
         <translation>Devices</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1061"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1061"/>
         <source>Nouvelle Séance</source>
         <translation>New Session</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1062"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1062"/>
         <source>Tout télécharger</source>
         <translation>Download All</translation>
     </message>
@@ -1252,12 +1252,12 @@ Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
         <translation>Are you sure you want to delete </translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectNavigator.h" line="159"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectNavigator.h" line="159"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectNavigator.h" line="160"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectNavigator.h" line="160"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -1318,7 +1318,7 @@ or done</translation>
     </message>
     <message>
         <location filename="../../src/editors/ProjectWidget.cpp" line="498"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="706"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="706"/>
         <source>Appareils</source>
         <translation>Devices</translation>
     </message>
@@ -1328,164 +1328,164 @@ or done</translation>
         <translation>Only associated project&apos;s session types are displayed.</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="668"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="668"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="670"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="670"/>
         <source>Projet</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="671"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="671"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="672"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="672"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="673"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="673"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="674"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="674"/>
         <source>XXXX Séances</source>
         <translation>XXXX Sessions</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="676"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="676"/>
         <source>XXXX Groupes</source>
         <translation>XXXX Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="677"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="677"/>
         <source>XXXX Participants</source>
         <translation>XXXX Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="680"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="680"/>
         <source>XXXX Utilisateurs</source>
         <translation>XXXX Users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="683"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="683"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="685"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="685"/>
         <source>État</source>
         <translation>State</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="687"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="687"/>
         <source>Séances</source>
         <translation>Sessions</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="689"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="689"/>
         <source>Première séance</source>
         <translation>First Session</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="691"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="691"/>
         <source>Dernière séance</source>
         <translation>Last Session</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="692"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="692"/>
         <source>Gérer les groupes utilisateurs</source>
         <translation>Manage Users Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="693"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="693"/>
         <source>Gérer les types de séance</source>
         <translation>Manage Session Types</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="694"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="694"/>
         <source>Gérer les services</source>
         <translation>Manage Services</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="695"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="695"/>
         <source>Résumé</source>
         <translation>Summary</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="696"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="696"/>
         <source>Tableau de bord</source>
         <translation>Dashboard</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="698"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="709"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="698"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="709"/>
         <source>Utilisateur</source>
         <translation>User</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="700"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="711"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="700"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="711"/>
         <source>Rôle</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="701"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="701"/>
         <source>Utilisateurs</source>
         <translation>Users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="703"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="703"/>
         <source>Appareil</source>
         <translation>Device</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="705"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="705"/>
         <source>Participant(s)</source>
         <translation>Participant(s)</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="707"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="707"/>
         <source>La modification des accès est désactivée pour les groupes utilisateurs dont l&apos;accès au projet provient du site (i.e. administrateurs du site associé au projet)</source>
         <translation>Access modification is disabled for users groups which project access is specified in the site (i.e. project&apos;s administrators)</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="712"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="712"/>
         <source>Mettre à jour les rôles</source>
         <translation>Update roles</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="713"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="713"/>
         <source>Groupes Utilisateurs</source>
         <translation>Users Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="714"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="714"/>
         <source>Groupes Participants</source>
         <translation>Participants Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="715"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="715"/>
         <source>Types de séance</source>
         <translation>Session Type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="716"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="716"/>
         <source>Mettre à jour les services associés</source>
         <translation>Updated associated services</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="717"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="717"/>
         <source>Services</source>
         <translation>Services</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ProjectWidget.h" line="718"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ProjectWidget.h" line="718"/>
         <source>Détails</source>
         <translation>Details</translation>
     </message>
@@ -1524,7 +1524,7 @@ or done</translation>
 <context>
     <name>ServiceConfigWidget</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="189"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="189"/>
         <source>Configuration - Service</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1533,7 +1533,7 @@ or done</translation>
         <translation type="obsolete">Device Sub-Type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="191"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="191"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1542,17 +1542,17 @@ or done</translation>
         <translation type="obsolete">Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="192"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="192"/>
         <source>Configuration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="193"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="193"/>
         <source>Sauvegarder</source>
         <translation type="unfinished">Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="194"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceConfigWidget.h" line="194"/>
         <source>Annuler</source>
         <translation type="unfinished">Cancel</translation>
     </message>
@@ -1618,63 +1618,63 @@ or done</translation>
         <translation>Edit Role</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="272"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="272"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="274"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="274"/>
         <source>Service</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="275"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="275"/>
         <source>Attention! Ces paramètres sont pour des utilisateurs avancés - modifiez à vos propres risques!</source>
         <translation>Warning! Those parameters are for advanced users - change at your own risks!</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="276"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="283"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="276"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="283"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="277"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="277"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="278"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="278"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="279"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="279"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="280"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="280"/>
         <source>Mettre à jour les projets associés</source>
         <translation>Update associated projects</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="281"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="281"/>
         <source>Projets</source>
         <translation>Projects</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="282"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="282"/>
         <source>Nouveau Rôle</source>
         <translation>New Role</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="284"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="284"/>
         <source>Supprimer</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_ServiceWidget.h" line="285"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_ServiceWidget.h" line="285"/>
         <source>Rôles</source>
         <translation>Roles</translation>
     </message>
@@ -1686,77 +1686,77 @@ or done</translation>
         <translation type="obsolete">Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="259"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="259"/>
         <source>Participants disponibles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="261"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="261"/>
         <source>Filtrer participants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="263"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="267"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="271"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="275"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="263"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="267"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="271"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="275"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="265"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="289"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="265"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="289"/>
         <source>Utilisateurs</source>
         <translation type="unfinished">Users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="257"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="257"/>
         <source>Invitations à la séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="280"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="280"/>
         <source>Participants dans la séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="269"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="291"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="269"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="291"/>
         <source>Appareils</source>
         <translation type="unfinished">Devices</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="258"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="258"/>
         <source>Ajouter des participants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="273"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="273"/>
         <source>En ligne / Hors ligne</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="278"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="278"/>
         <source>Recherche...</source>
         <translation type="unfinished">Search...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="279"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="279"/>
         <source>Inviter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="282"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="282"/>
         <source>1</source>
         <translation type="unfinished">1</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="287"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="287"/>
         <source>Participants</source>
         <translation type="unfinished">Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="294"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionInviteWidget.h" line="294"/>
         <source>Retirer de la séance</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1778,22 +1778,22 @@ or done</translation>
         <translation type="obsolete">Dialog</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionLobbyDialog.h" line="145"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionLobbyDialog.h" line="145"/>
         <source>Vestibule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionLobbyDialog.h" line="146"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionLobbyDialog.h" line="146"/>
         <source>(Type de séance)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionLobbyDialog.h" line="147"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionLobbyDialog.h" line="147"/>
         <source>Démarrer la séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionLobbyDialog.h" line="148"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionLobbyDialog.h" line="148"/>
         <source>Annuler</source>
         <translation type="unfinished">Cancel</translation>
     </message>
@@ -1818,42 +1818,42 @@ Vous devez associer au moins un projet.</source>
 You should associate at least one project.</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="294"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="294"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="296"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="296"/>
         <source>Type de séance</source>
         <translation>Session Type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="297"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="297"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="298"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="298"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="299"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="299"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="300"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="300"/>
         <source>Résumé</source>
         <translation>Summary</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="301"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="301"/>
         <source>Mettre à jour les projets de ce type de séance</source>
         <translation>Update projects with this session type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="302"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionTypeWidget.h" line="302"/>
         <source>Projets</source>
         <translation>Projects</translation>
     </message>
@@ -1897,123 +1897,123 @@ You should associate at least one project.</translation>
         <translation>Are you sure you want to delete the data </translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="457"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="457"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="459"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="459"/>
         <source>Séance</source>
         <translation>Session</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="460"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="460"/>
         <source>État de la séance</source>
         <translation>Session Status</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="461"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="461"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="462"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="462"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="463"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="463"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="464"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="464"/>
         <source>Résumé</source>
         <translation>Summary</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="465"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="467"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="465"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="467"/>
         <source>Participants</source>
         <translation>Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="466"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="466"/>
         <source>Utilisateurs</source>
         <translation>Users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="469"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="469"/>
         <source>Appareil</source>
         <translation>Device</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="471"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="471"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="473"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="473"/>
         <source>Donnée</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="475"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="475"/>
         <source>Taille</source>
         <translation>Size</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="477"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="477"/>
         <source>Action</source>
         <translation>Action</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="478"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="478"/>
         <source>Tout télécharger</source>
         <translation>Download  All</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="479"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="479"/>
         <source>Supprimer</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="480"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="480"/>
         <source>Données</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="481"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="481"/>
         <source>Évaluations</source>
         <translation>Evaluations</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="483"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="483"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="485"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="485"/>
         <source>Date / Heure</source>
         <translation>Date / Hour</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="487"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="487"/>
         <source>Contexte</source>
         <translation>Context</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="489"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="489"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="490"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="490"/>
         <source>Événements</source>
         <translation>Events</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SessionWidget.h" line="491"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SessionWidget.h" line="491"/>
         <source>Détails</source>
         <translation>Details</translation>
     </message>
@@ -2063,7 +2063,7 @@ ou réalisées</source>
     </message>
     <message>
         <location filename="../../src/editors/SiteWidget.cpp" line="399"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="671"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="671"/>
         <source>Projets</source>
         <translation>Projects</translation>
     </message>
@@ -2088,133 +2088,133 @@ ou réalisées</source>
         <translation>Users Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="635"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="635"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="637"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="637"/>
         <source>Site</source>
         <translation>Site</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="638"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="638"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="639"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="639"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="640"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="640"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="641"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="641"/>
         <source>XXXX Groupes</source>
         <translation>XXXX Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="643"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="643"/>
         <source>XXX Appareils</source>
         <translation>XXXX Devices</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="644"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="644"/>
         <source>XXXX Projets</source>
         <translation>XXXX Projects</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="648"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="648"/>
         <source>XXXX Utilisateurs</source>
         <translation>XXXX Users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="649"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="649"/>
         <source>XXXX Séances</source>
         <translation>XXXX Sessions</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="650"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="650"/>
         <source>XXXX Participants</source>
         <translation>XXXX Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="653"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="653"/>
         <source>Gérer les utilisateurs</source>
         <translation>Manage users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="654"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="668"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="654"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="668"/>
         <source>Gérer les groupes utilisateurs</source>
         <translation>Manage users groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="655"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="655"/>
         <source>Gérer les projets</source>
         <translation>Manage projects</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="656"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="656"/>
         <source>Gérer les appareils</source>
         <translation>Manage devices</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="657"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="657"/>
         <source>Résumé</source>
         <translation>Summary</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="658"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="658"/>
         <source>Tableau de bord</source>
         <translation>Dashboard</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="659"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="659"/>
         <source>Utilisateurs</source>
         <translation>Users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="660"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="660"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Il n&apos;est pas possible de spécifier &amp;quot;Aucun rôle&amp;quot; aux groupes utilisateurs qui ont au moins un accès (Administrateur ou Utilisateur) à un projet du groupe.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You cannot specify &amp;quot;Any Role&amp;quot; to users groups that have (Administrator or User) access to a project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="662"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="662"/>
         <source>Groupe utilisateur</source>
         <translation>User Group</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="664"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="664"/>
         <source>Rôle</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="666"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="666"/>
         <source>Hérité?</source>
         <translation>Inherited?</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="667"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="667"/>
         <source>Mettre à jour les rôles des utilisateurs</source>
         <translation>Update users roles</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="669"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="669"/>
         <source>Groupes utilisateurs</source>
         <translation>Users Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="670"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="670"/>
         <source>Appareils</source>
         <translation>Devices</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_SiteWidget.h" line="672"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_SiteWidget.h" line="672"/>
         <source>Détails</source>
         <translation>Details</translation>
     </message>
@@ -2222,22 +2222,22 @@ ou réalisées</source>
 <context>
     <name>StartSessionDialog</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_StartSessionDialog.h" line="96"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_StartSessionDialog.h" line="96"/>
         <source>Dialog</source>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_StartSessionDialog.h" line="97"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_StartSessionDialog.h" line="97"/>
         <source>10</source>
         <translation>10</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_StartSessionDialog.h" line="99"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_StartSessionDialog.h" line="99"/>
         <source>Démarrage de la séance en cours...</source>
         <translation>Starting session...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_StartSessionDialog.h" line="100"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_StartSessionDialog.h" line="100"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
@@ -2250,12 +2250,12 @@ ou réalisées</source>
         <translation>Chose a color</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_TeraForm.h" line="145"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_TeraForm.h" line="145"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_TeraForm.h" line="146"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_TeraForm.h" line="146"/>
         <source>Ce formulaire ne contient aucune information.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2268,89 +2268,89 @@ ou réalisées</source>
     <name>UserGroupWidget</name>
     <message>
         <location filename="../../src/editors/UserGroupWidget.cpp" line="265"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="322"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="322"/>
         <source>Accès - Sites</source>
         <translation>Access - Sites</translation>
     </message>
     <message>
         <location filename="../../src/editors/UserGroupWidget.cpp" line="274"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="329"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="329"/>
         <source>Accès - Projets</source>
         <translation>Access - Projects</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="309"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="309"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="311"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="311"/>
         <source>Groupe utilisateur</source>
         <translation>User group</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="312"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="312"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="313"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="313"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="314"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="314"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="315"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="315"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="316"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="316"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Il n&apos;est pas possible de spécifier &amp;quot;Aucun rôle&amp;quot; aux groupes utilisateurs qui ont au moins un accès (Administrateur ou Utilisateur) à un projet du groupe.&lt;/p&gt;&lt;p&gt;Vous ne pouvez pas spécifier un rôle pour les sites dont vous n&apos;est pas Administrateur.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;It is not possible to specify &amp;quot;Any role&amp;quot; to user groups that have a least one acces (Admin or User) to a project of the group.&lt;/p&gt;&lt;p&gt;You cannot specify a role for sites which you are not Administrator.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="318"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="318"/>
         <source>Site</source>
         <translation>Site</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="320"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="327"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="320"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="327"/>
         <source>Rôle</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="321"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="321"/>
         <source>Mettre à jour les rôles des sites</source>
         <translation>Update sites&apos; roles</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="323"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="323"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vous ne pouvez pas spécifier un rôle pour les projets dont vous n&apos;est pas Administrateur.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You cannot specify a role for a project which you are not Administrator.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="325"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="325"/>
         <source>Projet</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="328"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="328"/>
         <source>Mettre à jour les rôles des projets</source>
         <translation>Update projects&apos; roles</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="330"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="330"/>
         <source>Mettre à jour les utilisateurs membres de ce groupe</source>
         <translation>Update users members of the group</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserGroupWidget.h" line="331"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserGroupWidget.h" line="331"/>
         <source>Utilisateurs</source>
         <translation>Users</translation>
     </message>
@@ -2398,84 +2398,84 @@ Vous devez spécifier au moins un groupe utilisateur</source>
         <translation>You should specify at least one user group</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="429"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="431"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="429"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="431"/>
         <source>Utilisateur</source>
         <translation>User</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="432"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="432"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="433"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="433"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="434"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="434"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="435"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="435"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="436"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="436"/>
         <source>Cet utilisateur est un super administrateur. Il est donc impossible de lui assigner des groupes utiilsateurs.</source>
         <translation>This user is a superuser. It is not possible to assign a user group.</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="437"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="437"/>
         <source>Mettre à jour les groupes de cet utilisateur</source>
         <translation>Update this user groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="438"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="438"/>
         <source>Groupes</source>
         <translation>Groups</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="439"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="439"/>
         <source>Rôles effectifs</source>
         <translation>Effective roles</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="441"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="441"/>
         <source>Site</source>
         <translation>Site</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="443"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="443"/>
         <source>Projet</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="445"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="445"/>
         <source>Rôle</source>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="446"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="446"/>
         <source>Rôles</source>
         <translation>Roles</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="447"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="447"/>
         <source>Mettre à jour les préférences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/editors/UserWidget.cpp" line="238"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="448"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="448"/>
         <source>Préférences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_UserWidget.h" line="449"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_UserWidget.h" line="449"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2495,47 +2495,47 @@ Vous devez spécifier au moins un groupe utilisateur</source>
 <context>
     <name>VideoRehabSetupWidget</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="170"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="170"/>
         <source>Form</source>
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="171"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="171"/>
         <source>Titre</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="172"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="172"/>
         <source>(Erreur)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="173"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="173"/>
         <source>Réessayer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="174"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="174"/>
         <source>Chargement en cours...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="175"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="175"/>
         <source>Source vidéo principale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="176"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="176"/>
         <source>Source audio principale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="177"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="177"/>
         <source>Image miroir</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="178"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabSetupWidget.h" line="178"/>
         <source>Configuration avancée</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2579,7 +2579,7 @@ Vous devez spécifier au moins un groupe utilisateur</source>
 <context>
     <name>VideoRehabWidget</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_14_2_GCC_64bit-Debug/client/src/ui_VideoRehabWidget.h" line="57"/>
+        <location filename="../../../../build-openteraplus.git-Desktop_Qt_5_14_2_clang_64bit-Debug/client/src/ui_VideoRehabWidget.h" line="57"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>

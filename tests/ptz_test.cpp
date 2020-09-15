@@ -113,19 +113,14 @@ void PTZTestMainWindow::on_comboBox_Camera_activated(int index)
 
 
     //m_camera->load();
-    //m_cameraViewfinder = new QCameraViewfinder(m_ui.widget_CameraView);
-    auto testView = new QVideoWidget(m_ui.widget_CameraView);
+    m_cameraViewfinder = new QCameraViewfinder(m_ui.widget_CameraView);
+    //auto testView = new QVideoWidget(m_ui.widget_CameraView);
     //QCameraViewfinderSettings settings;
-
     auto formats = m_camera->supportedViewfinderSettings();
     auto status = m_camera->status();
-
-
-
-    m_ui.widget_CameraView->layout()->addWidget(testView);
-    m_camera->setViewfinder(testView);
-    //m_cameraViewfinder->show();
-    testView->show();
+    m_ui.widget_CameraView->layout()->addWidget(m_cameraViewfinder);
+    m_camera->setViewfinder(m_cameraViewfinder);
+    m_cameraViewfinder->show();
     qDebug() << m_camera->errorString();
     m_camera->start();
 }
