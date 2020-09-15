@@ -174,15 +174,17 @@ void VideoRehabSetupWidget::processServiceConfigsReply(QList<TeraData> configs, 
             if (config_values.contains("audio")){
                 selectAudioSrcByName(config_values["audio"].toString());
             }
+        }
+    }
+
+    // Load page
+    if (m_webEngine && m_webPage){
+        if (m_webEngine->url().isEmpty()){
+            // Set initial video source
+            m_webPage->getSharedObject()->setCurrentCameraName(ui->cmbVideoSrc->currentText());
 
             // Load page
-            if (m_webEngine && m_webPage){
-                // Set initial video source
-                m_webPage->getSharedObject()->setCurrentCameraName(ui->cmbVideoSrc->currentText());
-
-                // Load page
-                m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
-            }
+            m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
         }
     }
 

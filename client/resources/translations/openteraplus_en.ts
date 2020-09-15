@@ -2245,7 +2245,7 @@ ou réalisées</source>
 <context>
     <name>TeraForm</name>
     <message>
-        <location filename="../../src/editors/TeraForm.cpp" line="1091"/>
+        <location filename="../../src/editors/TeraForm.cpp" line="1092"/>
         <source>Choisir la couleur</source>
         <translation>Chose a color</translation>
     </message>
