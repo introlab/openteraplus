@@ -229,7 +229,7 @@ set_target_properties(TeraClient PROPERTIES
 
 # Automatic generation of ts files on target
 # Remove if you don't want to generate translations every time.
-add_dependencies(TeraClient translations)
+# add_dependencies(TeraClient translations)
 
 # Set a custom plist file for the app bundle
 set_target_properties(TeraClient PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)

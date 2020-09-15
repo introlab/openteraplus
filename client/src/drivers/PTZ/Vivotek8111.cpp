@@ -5,9 +5,9 @@
 #include <QUrlQuery>
 #include <math.h>
 
-const int VIVOTEK8111::VIVOTEK_NUM_PRESET = 3;
+const int Vivotek8111::VIVOTEK_NUM_PRESET = 3;
 
-VIVOTEK8111::VIVOTEK8111() : ICameraDriver(),
+Vivotek8111::Vivotek8111() : ICameraDriver(),
     m_lastStatusCode(0),
     m_firstTime(true),
     m_CameraManager(0),
@@ -17,7 +17,7 @@ VIVOTEK8111::VIVOTEK8111() : ICameraDriver(),
     m_user(""),
     m_password("")
 {
-    qDebug() << "VIVOTEK8111::VIVOTEK8111()";
+    qDebug() << "Vivotek8111::Vivotek8111()";
 
     // Set Image Settings limits
     m_cameraInfo.imageSettings()->setBrightnessLimits(-5,5);
@@ -27,12 +27,12 @@ VIVOTEK8111::VIVOTEK8111() : ICameraDriver(),
     m_cameraInfo.imageSettings()->setWhiteLimits(0,8);
 }
 
-VIVOTEK8111::~VIVOTEK8111()
+Vivotek8111::~Vivotek8111()
 {
     closeNetworkAccessManager();
 }
 
-void VIVOTEK8111::init(QString config)
+void Vivotek8111::init(QString config)
 {
     //Create json object
     QJsonValue value(config);
@@ -54,7 +54,7 @@ void VIVOTEK8111::init(QString config)
 
 }
 
-void VIVOTEK8111::init(const QString &hostname, const int port, const QString &user, const QString &password)
+void Vivotek8111::init(const QString &hostname, const int port, const QString &user, const QString &password)
 {
     m_hostname = hostname;
     m_port = port;
@@ -78,7 +78,7 @@ void VIVOTEK8111::init(const QString &hostname, const int port, const QString &u
 
 }
 
-void VIVOTEK8111::getCameraInfo(CameraRequest infoRequested)
+void Vivotek8111::getCameraInfo(CameraRequest infoRequested)
 {
     bool emitSignal = true;
 
@@ -113,7 +113,7 @@ void VIVOTEK8111::getCameraInfo(CameraRequest infoRequested)
         emit cameraDataReady(m_cameraInfo);
 }
 
-void VIVOTEK8111::setCameraInfo(CameraInfo info)
+void Vivotek8111::setCameraInfo(CameraInfo info)
 {
 
     switch(info.cameraRequest()->getCameraFlag())
@@ -148,7 +148,7 @@ void VIVOTEK8111::setCameraInfo(CameraInfo info)
 
 }
 
-void VIVOTEK8111::setPointNClick(QPoint coordinates, QSize screenSize)
+void Vivotek8111::setPointNClick(QPoint coordinates, QSize screenSize)
 {
     //Nothing for the moment
     QString path =  QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/camctrl/camctrl.cgi");
@@ -171,7 +171,7 @@ void VIVOTEK8111::setPointNClick(QPoint coordinates, QSize screenSize)
         m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
 }
 
-void VIVOTEK8111::setRelZoom(double value)
+void Vivotek8111::setRelZoom(double value)
 {
 
     setZoomSpeed(convertZoomToSpeed(value));
@@ -206,7 +206,7 @@ void VIVOTEK8111::setRelZoom(double value)
     }
 }
 
-void VIVOTEK8111::setPresetID(int id)
+void Vivotek8111::setPresetID(int id)
 {
     QString path =  QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/camctrl/recall.cgi");
 
@@ -222,7 +222,7 @@ void VIVOTEK8111::setPresetID(int id)
         m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
 }
 
-void VIVOTEK8111::configPresetID(int id)
+void Vivotek8111::configPresetID(int id)
 {
     QString path =  QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/operator/preset.cgi");
 
@@ -248,9 +248,9 @@ void VIVOTEK8111::configPresetID(int id)
 
 }
 
-void VIVOTEK8111::requestInformation()
+void Vivotek8111::requestInformation()
 {
-    //LOG_DEBUG(QString("requestInformation"),this->metaObject()->className());
+    qDebug() << QString("requestInformation"),this->metaObject()->className();
     QString path = QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/admin/getparam.cgi");
 
     QNetworkRequest request;
@@ -269,8 +269,8 @@ void VIVOTEK8111::requestInformation()
         m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
 }
 
-void VIVOTEK8111::requestImageSettings(){
-    //LOG_DEBUG(QString("requestImageSettings"),this->metaObject()->className());
+void Vivotek8111::requestImageSettings(){
+    qDebug() << QString("requestImageSettings"),this->metaObject()->className();
     QString path = QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/admin/getparam.cgi");
 
     QNetworkRequest request;
@@ -288,8 +288,8 @@ void VIVOTEK8111::requestImageSettings(){
         m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
 }
 
-void VIVOTEK8111::setImageSettings(CameraImageSettings settings){
-    //LOG_DEBUG(QString("requestImageSettings"),this->metaObject()->className());
+void Vivotek8111::setImageSettings(CameraImageSettings settings){
+    qDebug() << QString("requestImageSettings"),this->metaObject()->className();
     QString path = QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/admin/setparam.cgi");
 
     QNetworkRequest request;
@@ -311,7 +311,7 @@ void VIVOTEK8111::setImageSettings(CameraImageSettings settings){
         m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
 }
 
-void VIVOTEK8111::setZoomSpeed(const int &speed)
+void Vivotek8111::setZoomSpeed(const int &speed)
 {
     //QString path =  QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/admin/setparam.cgi");
     QString path =  QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/admin/camctrl.cgi");
@@ -328,7 +328,7 @@ void VIVOTEK8111::setZoomSpeed(const int &speed)
         m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
 }
 
-int VIVOTEK8111::convertZoomToSpeed(const double &value)
+int Vivotek8111::convertZoomToSpeed(const double &value)
 {
     double absValue = qAbs(value);
 
@@ -346,11 +346,11 @@ int VIVOTEK8111::convertZoomToSpeed(const double &value)
 }
 
 /// PUBLIC SLOTS
-void VIVOTEK8111::cameraDataRdy(QNetworkReply *netReply)
+void Vivotek8111::cameraDataRdy(QNetworkReply *netReply)
 {
     m_lastStatusCode = netReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
-    //LOG_DEBUG(QString("cameraDataRdy - Http Status : %1").arg(m_lastStatusCode.toInt()),this->metaObject()->className());
+    qDebug() << QString("cameraDataRdy - Http Status : %1").arg(m_lastStatusCode.toInt()),this->metaObject()->className();
 
     // "200 OK" received?
     if (m_lastStatusCode.toInt()>=200 && m_lastStatusCode.toInt() < 300 )
@@ -390,7 +390,7 @@ void VIVOTEK8111::cameraDataRdy(QNetworkReply *netReply)
                 m_cameraInfo.setResolution(resolution);
                 m_cameraInfo.setUnit(CameraInfo::CIU_PIXEL);
 
-                //LOG_DEBUG(QString("cameraDataRdy - Rcv resolution wxh : %1 x %2").arg(resolution.width()).arg(resolution.height()),this->metaObject()->className());
+                qDebug() << QString("cameraDataRdy - Rcv resolution wxh : %1 x %2").arg(resolution.width()).arg(resolution.height()),this->metaObject()->className();
 
                 //Detect if this is the first time you go here
                 if(m_firstTime)
@@ -473,7 +473,7 @@ void VIVOTEK8111::cameraDataRdy(QNetworkReply *netReply)
     netReply->deleteLater();
 }
 
-void VIVOTEK8111::cameraAuthenticationRequest(QNetworkReply *reply, QAuthenticator *authenticator)
+void Vivotek8111::cameraAuthenticationRequest(QNetworkReply *reply, QAuthenticator *authenticator)
 {
     authenticator->setUser(m_user);
     authenticator->setPassword(m_password);
@@ -482,7 +482,7 @@ void VIVOTEK8111::cameraAuthenticationRequest(QNetworkReply *reply, QAuthenticat
     reply->deleteLater();
 }
 
-void VIVOTEK8111::connectionTimeout()
+void Vivotek8111::connectionTimeout()
 {
     //For the vivotek you need to acquire the resolution first
     requestInformation();
@@ -491,12 +491,12 @@ void VIVOTEK8111::connectionTimeout()
     requestImageSettings();
 }
 
-void VIVOTEK8111::onQuitDriver()
+void Vivotek8111::onQuitDriver()
 {
     closeNetworkAccessManager();
 }
 
-void VIVOTEK8111::closeNetworkAccessManager()
+void Vivotek8111::closeNetworkAccessManager()
 {
     if(m_CameraManager != 0)
     {

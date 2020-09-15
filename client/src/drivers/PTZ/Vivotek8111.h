@@ -3,10 +3,11 @@
  *
  *  Created on: 2014-05-28
  *  Author: Pierre Lepage
+ *  Modified by : Simon Briere, Dominic Letourneau
  */
 
-#ifndef VIVOTEK8111_H_
-#define VIVOTEK8111_H_
+#ifndef Vivotek8111_H_
+#define Vivotek8111_H_
 
 #include "CameraUtilities.h"
 #include "ICameraDriver.h"
@@ -17,9 +18,9 @@
 #include <QAuthenticator>
 #include <QTimer>
 
-#define CAMERA_NAME "VIVOTEK8111"
+#define CAMERA_NAME "Vivotek8111"
 
-class VIVOTEK8111 :public ICameraDriver
+class Vivotek8111 :public ICameraDriver
 {
     Q_OBJECT
 
@@ -31,10 +32,10 @@ public:
         Constructor
         \param config The RobotConfiguration (contains the camera configuration)
     */
-    VIVOTEK8111();
+    Vivotek8111();
 
     ///Destructor
-    ~VIVOTEK8111();
+    ~Vivotek8111();
 
     // ICameraDriver interface
     void init(QString config);
@@ -53,7 +54,7 @@ public slots:
 
     //ICameraDriver interface
     void onQuitDriver();
-private:
+
     void closeNetworkAccessManager();
     void setPointNClick(QPoint coordinates, QSize screenSize);
     void setRelZoom(double value);
