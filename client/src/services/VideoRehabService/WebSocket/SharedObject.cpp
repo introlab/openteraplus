@@ -272,3 +272,18 @@ void SharedObject::setPageReady()
     m_pageIsReady = true;
     emit pageIsReady();
 }
+
+void SharedObject::setVideoError(QString context, QString error)
+{
+    emit videoErrorOccured(context, error);
+}
+
+void SharedObject::setAudioError(QString context, QString error)
+{
+    emit audioErrorOccured(context, error);
+}
+
+void SharedObject::setGeneralError(QString context, QString error)
+{
+    emit generalErrorOccured(context, error);
+}

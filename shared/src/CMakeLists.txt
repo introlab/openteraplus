@@ -1,4 +1,5 @@
 find_package(Qt5Core REQUIRED)
+find_package(Qt5Multimedia  REQUIRED)
 
 add_definitions(-DSHAREDLIB_LIBRARY)
 if (MSVC)
@@ -50,7 +51,7 @@ add_library(opentera_shared SHARED ${sharedlib_headers} ${sharedlib_srcs} ${shar
 set_target_properties(opentera_shared PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
-target_link_libraries(opentera_shared ${OPENTERA_MESSAGES_LIBS} Qt5::Core)
+target_link_libraries(opentera_shared ${OPENTERA_MESSAGES_LIBS} Qt5::Core Qt5::Multimedia)
 if (MSVC)
 target_compile_definitions(opentera_shared PUBLIC OPENTERAMESSAGES_EXPORT=__declspec\(dllimport\))
 endif(MSVC)

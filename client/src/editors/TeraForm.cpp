@@ -483,9 +483,12 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
     // Query webcams on the system
     if (m_videoInputs.isEmpty())
         loadVideoInputs();
-    for (QCameraInfo camera:m_videoInputs){
+    /*for (QCameraInfo camera:m_videoInputs){
         //item_combo->addItem(camera.description(), camera.deviceName());
         item_combo->addItem(camera.description(), camera.description());
+    }*/
+    for (QString camera:m_videoInputs){
+        item_combo->addItem(camera, camera);
     }
 
     // Using old-style connect since SLOT has less parameter and not working with new-style connect
@@ -505,8 +508,11 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
     // Query audio inputs on the system
     if (m_audioInputs.isEmpty())
         loadAudioInputs();
-    for (QAudioDeviceInfo input:m_audioInputs){
+    /*for (QAudioDeviceInfo input:m_audioInputs){
         item_combo->addItem(input.deviceName(), input.deviceName());
+    }*/
+    for (QString input:m_audioInputs){
+        item_combo->addItem(input, input);
     }
 
     // Using old-style connect since SLOT has less parameter and not working with new-style connect
@@ -666,12 +672,12 @@ QWidget *TeraForm::createDurationWidget(const QVariantHash &structure)
 
 void TeraForm::loadAudioInputs()
 {
-    m_audioInputs = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    m_audioInputs = Utils::getAudioDeviceNames();// QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
 }
 
 void TeraForm::loadVideoInputs()
 {
-    m_videoInputs = QCameraInfo::availableCameras();
+    m_videoInputs = Utils::getVideoDeviceNames(); //QCameraInfo::availableCameras();
 }
 
 void TeraForm::checkConditions(QWidget *item_triggering)

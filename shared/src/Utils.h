@@ -6,6 +6,8 @@
 #include <QSysInfo>
 #include <QSettings>
 #include <QUuid>
+#include <QAudioDeviceInfo>
+#include <QCameraInfo>
 
 class Utils : public QObject
 {
@@ -16,6 +18,9 @@ public:
     static QString generatePassword(const int &len);
 
     static QString getMachineUniqueId();
+
+    static QStringList getAudioDeviceNames();
+    static QStringList getVideoDeviceNames();
 
 signals:
 

@@ -1,6 +1,9 @@
 ﻿var videoSources = [];
 var currentVideoSourceIndex = 0;
 
+var audioSources = [];
+var currentAudioSourceIndex = 0;
+
 var timerHandle = 0;
 
 var localContact = {'name':'Unknown','uuid':'00000000-0000-0000-0000-000000000000'};
@@ -9,8 +12,36 @@ var debounceWheel = 0;
 var extraParams;
 
 function connect() {
-    initLocalVideo('#selfVideo');
-    startAudioTest();
+    var baseUrl = "ws://localhost:12345";
+    //console.log("Connecting to WebSocket server at " + baseUrl + ".");
+    var socket = new WebSocket(baseUrl);
+
+    socket.onclose = function()
+    {
+        console.error("web channel closed");
+    };
+
+    socket.onerror = function(error)
+    {
+        console.error("web channel error: " + error);
+    };
+
+    socket.onopen = function()
+    {
+        console.log("Websocket connected");
+        new QWebChannel(socket, function(channel) {
+
+        //global object
+        window.SharedObject = channel.objects.SharedObject;
+
+        setupSharedObjectCallbacks(channel);
+
+        });
+
+    }
+    // DONE after SharedObject is set.
+    //initLocalVideo('#selfVideo');
+    //startAudioTest();
  }
 
 function setupSharedObjectCallbacks(channel) {
@@ -20,6 +51,7 @@ function setupSharedObjectCallbacks(channel) {
     // Connect to a signal
     SharedObject.newContactInformation.connect(updateContact);
     SharedObject.newVideoSource.connect(selectVideoSource);
+    SharedObject.newAudioSource.connect(selectAudioSource);
     SharedObject.setLocalMirrorSignal.connect(setLocalMirror);
     SharedObject.newPTZCapabilities.connect(setPTZCapabilities);
 	
@@ -35,6 +67,9 @@ function setupSharedObjectCallbacks(channel) {
 
     // Check if we need to mirror or not the local camera
     SharedObject.getLocalMirror();
+
+    initLocalVideo('#selfVideo');
+    //startAudioTest(audioSources[currentAudioSourceIndex].deviceId);
 }
 
 function updateContact(contact)
@@ -85,6 +120,10 @@ function fillVideoSourceList(){
 					showElement("videoSelect");
                 }*/
 			}
+            if (device.kind === "audioinput"){
+                audioSources[audioSources.length] = device;
+            }
+
 			select.selectedIndex = currentVideoSourceIndex;
             //console.log(device.kind + ": " + device.label + " id = " + device.deviceId);
 		});
@@ -100,6 +139,7 @@ function fillVideoSourceList(){
 }
 
 function updateVideoSource(){
+    console.log('updateVideoSource');
     var select = document.getElementById('videoSelect');
 	if (select.selectedIndex>=0){
 		currentVideoSourceIndex = select.selectedIndex;
@@ -127,27 +167,40 @@ function selectVideoSource(source){
     console.log("selectVideoSource: " + video.name);
 	for (var i=0; i<videoSources.length; i++){
         console.log(videoSources[i].label + " == " + video.name + " ?");
-		if (videoSources[i].label.includes(video.name)){
+        if (videoSources[i].label.includes(video.name) || videoSources[i].deviceId === video.name){
 			var select = document.getElementById('videoSelect');
 			select.selectedIndex = i;
             updateVideoSource();
             //SharedObject.cameraChanged(select[select.selectedIndex].label, select.selectedIndex);
 			break;
 		}
-	}
-	
+	}	
+}
+
+function selectAudioSource(source){
+    audio = JSON.parse(source);
+    console.log("selectAudioSource: " + video.name);
+    for (var i=0; i<audioSources.length; i++){
+        console.log(audioSources[i].label + " == " + audio.name + " ?");
+        if (audioSources[i].label.includes(audio.name) || audioSources[i].deviceId === audio.name){
+            currentAudioSourceIndex = i;
+            startAudioTest(audioSources[currentAudioSourceIndex].deviceId);
+            break;
+        }
+    }
 }
 
 var video = document.getElementById("selfVideo");
- 
+
 function initLocalVideo(tag){
+    console.log('initLocalVideo');
 	video = document.querySelector(tag);
 				 
 	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mediaDevices.getUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
 
 	if (navigator.getUserMedia) {       
 		//navigator.getUserMedia({video: true, audio: false}, handleVideo, videoError);
-		navigator.mediaDevices.getUserMedia({video: true, audio: false}).then(handleVideo).catch(videoError);
+        navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(handleVideo).catch(videoError);
 	}
 }
 
@@ -168,7 +221,8 @@ function handleVideo(stream) {
  
 function videoError(e) {
 	// do something
-	console.log(e);
+    console.error(e.toString());
+    SharedObject.setVideoError("videoError", e.toString());
 }
 
 

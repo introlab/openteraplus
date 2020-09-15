@@ -33,17 +33,11 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
 
 void VideoRehabSetupWidget::initUI()
 {
-    //// Local device enumeration
-    QList<QAudioDeviceInfo> audio_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-    foreach(QAudioDeviceInfo input, audio_devices){
-        ui->cmbAudioSrc->addItem(input.deviceName(), input.deviceName());
-    }
+    ui->frameError->hide();
+    ui->btnAdvancedConfig->hide(); // For now...s
 
-    QList<QCameraInfo> video_devices = QCameraInfo::availableCameras();
-    for (QCameraInfo camera:video_devices){
-        //item_combo->addItem(camera.description(), camera.deviceName());
-        ui->cmbVideoSrc->addItem(camera.description(), camera.description());
-    }
+    //// Local device enumeration
+    refreshAudioVideoDevices();
 
     //// Web engine setup
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
@@ -53,6 +47,9 @@ void VideoRehabSetupWidget::initUI()
     m_webPage = new VideoRehabWebPage(m_webEngine);
     connect(m_webPage->getSharedObject(), &SharedObject::pageIsReady, this, &VideoRehabSetupWidget::webPageReady);
     connect(m_webPage->getSharedObject(), &SharedObject::currentCameraWasChanged, this, &VideoRehabSetupWidget::webPageCameraChanged);
+    connect(m_webPage->getSharedObject(), &SharedObject::videoErrorOccured, this, &VideoRehabSetupWidget::webPageVideoError);
+    connect(m_webPage->getSharedObject(), &SharedObject::audioErrorOccured, this, &VideoRehabSetupWidget::webPageAudioError);
+    connect(m_webPage->getSharedObject(), &SharedObject::generalErrorOccured, this, &VideoRehabSetupWidget::webPageGeneralError);
 
     //Set page to view
     m_webEngine->setPage(m_webPage);
@@ -72,6 +69,19 @@ void VideoRehabSetupWidget::initUI()
 
     // Wait for service configuration before setting url
     //m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
+}
+
+void VideoRehabSetupWidget::refreshAudioVideoDevices()
+{
+    QStringList audio_devices = Utils::getAudioDeviceNames();
+    foreach(QString input, audio_devices){
+        ui->cmbAudioSrc->addItem(input, input);
+    }
+
+    QStringList video_devices = Utils::getVideoDeviceNames();
+    foreach(QString input, video_devices){
+        ui->cmbVideoSrc->addItem(input, input);
+    }
 }
 
 void VideoRehabSetupWidget::connectSignals()
@@ -109,9 +119,24 @@ void VideoRehabSetupWidget::selectAudioSrcByName(const QString &name)
 
 void VideoRehabSetupWidget::setLoading(const bool &loading)
 {
-    setEnabled(!loading);
-    ui->wdgWebEngine->setVisible(!loading);
-    ui->lblLoading->setVisible(loading);
+    ui->frameSetup->setEnabled(!loading);
+    if (!ui->frameError->isVisible()){
+        ui->wdgWebEngine->setVisible(!loading);
+        ui->lblLoading->setVisible(loading);
+    }
+
+}
+
+void VideoRehabSetupWidget::showError(const QString &title, const QString &context, const QString &error)
+{
+    ui->lblTitle->setText(title);
+#ifdef QT_DEBUG
+    ui->lblError->setText(context + " - " + error);
+#else
+    ui->lblError->setText(error);
+#endif
+    ui->lblLoading->hide();
+    ui->frameError->show();
 }
 
 void VideoRehabSetupWidget::refreshWebpageSettings()
@@ -134,7 +159,10 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
     m_webPage->getSharedObject()->setLocalMirror(ui->chkMirror->isChecked());
     m_webPage->getSharedObject()->getLocalMirror();
 
-    // TODO Audio?
+    // Update audio source
+    qDebug() << "Setting Audio Src to " << ui->cmbAudioSrc->currentText();
+    m_webPage->getSharedObject()->setCurrentAudioSrcName(ui->cmbAudioSrc->currentText());
+    m_webPage->getSharedObject()->sendCurrentAudioSource();
 }
 
 void VideoRehabSetupWidget::webPageLoaded(bool ok)
@@ -154,6 +182,21 @@ void VideoRehabSetupWidget::webPageReady()
 void VideoRehabSetupWidget::webPageCameraChanged()
 {
     setLoading(false);
+}
+
+void VideoRehabSetupWidget::webPageVideoError(QString context, QString error)
+{
+    showError(tr("Problème vidéo"), context, error);
+}
+
+void VideoRehabSetupWidget::webPageAudioError(QString context, QString error)
+{
+    showError(tr("Problème audio"), context, error);
+}
+
+void VideoRehabSetupWidget::webPageGeneralError(QString context, QString error)
+{
+    showError(tr("Erreur"), context, error);
 }
 
 void VideoRehabSetupWidget::processServiceConfigsReply(QList<TeraData> configs, QUrlQuery query)
@@ -190,4 +233,12 @@ void VideoRehabSetupWidget::processServiceConfigsReply(QList<TeraData> configs, 
 
     //refreshWebpageSettings();
 
+}
+
+void VideoRehabSetupWidget::on_btnRefresh_clicked()
+{
+    if (m_webEngine){
+        setLoading(true);
+        m_webEngine->reload();
+    }
 }
