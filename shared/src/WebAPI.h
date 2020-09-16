@@ -79,6 +79,7 @@
 #define WEB_QUERY_WITH_PARTICIPANTS "with_participants"
 #define WEB_QUERY_WITH_SERVICES     "with_services"
 #define WEB_QUERY_WITH_CONFIG       "with_config"
+#define WEB_QUERY_WITH_STATUS       "with_status"
 #define WEB_QUERY_SELF              "self"
 #define WEB_QUERY_BY_USERS          "by_users"
 #define WEB_QUERY_NO_GROUP          "no_group"

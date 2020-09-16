@@ -450,9 +450,7 @@ void TeraData::setDataType(TeraDataTypes data_type)
     m_idField = "id_" + m_objectName;
     m_nameField = m_objectName + "_name";
     m_enabledField = m_objectName + "_enabled";
-    m_stateField = m_objectName + "_state";
-
-
+    m_stateField = m_objectName + "_status";
 }
 
 bool TeraData::fromJson(const QJsonValue &value)

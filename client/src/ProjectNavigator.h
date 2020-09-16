@@ -51,7 +51,7 @@ private:
     QMap<int, QTreeWidgetItem*> m_groups_items;
     QMap<int, QTreeWidgetItem*> m_participants_items;
 
-    QMap<int, TeraData>         m_participants; // ID - TeraData mapping for participants, required for online status
+    QMap<QString, TeraData>     m_participants; // UUID - TeraData mapping for participants, required for online status
 
     void updateSite(const TeraData* site);
     void updateProject(const TeraData* project);

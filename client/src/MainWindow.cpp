@@ -103,6 +103,10 @@ void MainWindow::initUi()
 
     // Setup main menu
     ui->projNavigator->setComManager(m_comManager);
+    ui->lstOnlineDevices->hide();
+    ui->lstOnlineUsers->hide();
+    ui->btnShowOnlineParticipants->setChecked(true); // Expand participants by default
+    ui->tabMainMenu->setCurrentIndex(0); // Select "Navigator" tab by default
 
     // Set version number
     ui->lblVersion->setText(QString(TERAPLUS_VERSION));
@@ -207,7 +211,7 @@ void MainWindow::updateOnlineUser(const QString &user_uuid, const bool &online, 
         // If offline, we don't need to anything since it's there !
         if (online){
             user_item = new QListWidgetItem(QIcon("://icons/software_user_online.png"), user_name);
-            ui->lstOnlineUsers->addItem(user_item);
+            //ui->lstOnlineUsers->addItem(user_item);
             m_onlineUsers[user_uuid] = user_item;
         }
     }
@@ -222,7 +226,36 @@ void MainWindow::updateOnlineUser(const QString &user_uuid, const bool &online, 
             user_item->setText(user_name);
 
             // Resort items
-            ui->lstOnlineUsers->sortItems();
+            //ui->lstOnlineUsers->sortItems();
+        }
+    }
+}
+
+void MainWindow::updateOnlineParticipant(const QString &uuid, const bool &online, const QString &name)
+{
+    QListWidgetItem* participant_item = nullptr;
+
+    if (m_onlineParticipants.contains(uuid)){
+        participant_item = m_onlineParticipants[uuid];
+    }else{
+        // If offline, we don't need to anything since it's there !
+        if (online){
+            participant_item = new QListWidgetItem(QIcon("://icons/software_user_online.png"), name);
+            m_onlineParticipants[uuid] = participant_item;
+        }
+    }
+
+    if (participant_item){
+        if (!online){
+            // We must remove that item
+            delete participant_item;
+            m_onlineParticipants.remove(uuid);
+        }else{
+            // Update name if needed
+            participant_item->setText(name);
+
+            // Resort items
+            //ui->lstOnlineUsers->sortItems();
         }
     }
 }
@@ -624,8 +657,11 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
             msg_text += "<font color=yellow>" + QString::fromStdString(event.participant_name()) + "</font>" + tr(" est en ligne.");
             addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient_online.png");
             // Add a trace in events also
-            GlobalEvent event(EVENT_LOGIN, msg_text);
-            addGlobalEvent(event);
+            GlobalEvent g_event(EVENT_LOGIN, msg_text);
+            addGlobalEvent(g_event);
+
+            // Update online users list
+            updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), true, QString::fromStdString(event.participant_name()));
         }
     }
 
@@ -636,8 +672,11 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
             msg_text += "<font color=yellow>" + QString::fromStdString(event.participant_name()) + "</font>" + tr(" est hors-ligne.");
             addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient.png");
             // Add a trace in events also
-            GlobalEvent event(EVENT_LOGOUT, msg_text);
-            addGlobalEvent(event);
+            GlobalEvent g_event(EVENT_LOGOUT, msg_text);
+            addGlobalEvent(g_event);
+
+            // Update online participants list
+            updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), false);
         }
     }
 }
@@ -803,4 +842,19 @@ void MainWindow::changeEvent(QEvent* event)
     //Base class
     QMainWindow::changeEvent(event);
 
+}
+
+void MainWindow::on_btnShowOnlineParticipants_clicked()
+{
+    ui->lstOnlineParticipants->setVisible(ui->btnShowOnlineParticipants->isChecked());
+}
+
+void MainWindow::on_btnShowOnlineUsers_clicked()
+{
+    ui->lstOnlineUsers->setVisible(ui->btnShowOnlineUsers->isChecked());
+}
+
+void MainWindow::on_btnShowOnlineDevices_clicked()
+{
+    ui->lstOnlineDevices->setVisible(ui->btnShowOnlineDevices->isChecked());
 }

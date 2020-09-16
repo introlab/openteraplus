@@ -7,14 +7,20 @@ NotificationWindow::NotificationWindow(QWidget *parent, NotificationType type, i
  : QWidget(parent), m_type(type), m_width(width), m_height(height), m_duration(duration),m_id(-1)
 {
     setupUi(this);
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     setContentsMargins(0,0,0,0);
 
     //QDesktopWidget desktop;
     //or screenGeometry(), depending on your needs
     //QRect mainScreenSize = desktop.availableGeometry(desktop.primaryScreen());
-    QRect mainScreenSize = QGuiApplication::primaryScreen()->availableGeometry();
+    QRect mainScreenSize;
+
+    //FIXME Not working properly on a 2 screen setup on Linux...
+    if (parent)
+        mainScreenSize = parent->screen()->availableGeometry();
+    else
+        mainScreenSize = QGuiApplication::primaryScreen()->availableGeometry();
 
     setGeometry(mainScreenSize.width() - m_width,
                 mainScreenSize.height() - (level * m_height),

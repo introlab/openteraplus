@@ -30,7 +30,7 @@
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
-      <string>Ajouter des participants</string>
+      <string>Ajouter des participants à la séance</string>
      </property>
      <property name="icon">
       <iconset resource="../resources/TeraClient.qrc">
@@ -73,7 +73,7 @@
         <item>
          <widget class="QLabel" name="lblSelector">
           <property name="text">
-           <string>Participants disponibles</string>
+           <string>Éléments disponibles</string>
           </property>
          </widget>
         </item>
@@ -374,7 +374,7 @@
       <item>
        <widget class="QLabel" name="lblInvitees">
         <property name="text">
-         <string>Participants dans la séance</string>
+         <string>Invités dans la séance</string>
         </property>
        </widget>
       </item>

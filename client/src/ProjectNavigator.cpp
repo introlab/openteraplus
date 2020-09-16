@@ -148,8 +148,8 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
                         if (data_type==TERADATA_GROUP)
                             m_groups_items.remove(id);
                         if (data_type==TERADATA_PARTICIPANT){
+                            //m_participants.remove(m_participants_items.key(item));
                             m_participants_items.remove(id);
-                            m_participants.remove(id);
                         }
                         break;
                     }
@@ -394,8 +394,9 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     }*/
 
     item->setText(0, participant->getName());
-    item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
-    m_participants[id_participant] = *participant;
+    //item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
+    item->setIcon(0, QIcon(participant->getIconStateFilename()));
+    m_participants[participant->getFieldValue("participant_uuid").toString()] = *participant;
 
 }
 
@@ -607,6 +608,7 @@ void ProjectNavigator::currentSiteChanged()
     m_projects_items.clear();
     m_groups_items.clear();
     m_participants_items.clear();
+    m_participants.clear();
     m_currentProjectId = -1;
     m_currentGroupId = -1;
     ui->treeNavigator->clear();
@@ -691,6 +693,7 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         query.clear();
         query.addQueryItem(WEB_QUERY_NO_GROUP,"true");
         query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
+        query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
         m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
 
     }
@@ -704,6 +707,7 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_GROUP, QString::number(id));
         query.addQueryItem(WEB_QUERY_LIST, "true");
+        query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
         m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
 
     }
