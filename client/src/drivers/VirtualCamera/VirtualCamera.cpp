@@ -38,7 +38,8 @@ bool VirtualCamera::init(const QString &source, const QString& device)
     if (m_virtualCameraPtr)
     {
         m_virtualCameraPtr->setProperty("media", device);
-        m_virtualCameraPtr->setProperty("swapRgb", true);
+        m_virtualCameraPtr->setProperty("fps", "15.0");
+        m_virtualCameraPtr->setProperty("swapRgb", false);
     }
 
     if (source.startsWith("screen"))
