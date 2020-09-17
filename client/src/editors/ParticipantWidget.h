@@ -45,6 +45,8 @@ private:
     QMap<int, QListWidgetItem*>     m_listAvailDevices_items;   // int  = device_id
     QMap<int, QListWidgetItem*>     m_listDevices_items;        // int  = device_id
 
+    QList<TeraData>                 m_services;
+
     BaseDialog*                     m_diag_editor;
     SessionLobbyDialog*             m_sessionLobby;
 
@@ -68,6 +70,7 @@ private slots:
     //void processDevicesReply(QList<TeraData> devices);
     void processDeviceProjectsReply(QList<TeraData> device_projects);
     void processDeviceParticipantsReply(QList<TeraData> device_participants);
+    void processServicesReply(QList<TeraData> services);
     void deleteDataReply(QString path, int id);
     void onDownloadCompleted(DownloadedFile* file);
 

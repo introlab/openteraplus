@@ -210,7 +210,7 @@ QComboBox {
     border-radius: 3px;
     padding: 0px 0px 0px 0px;
     min-width: 6em;
-    min-height:25px;
+    min-height: 25px;
     padding-left: 5px;
     color: black;
 }
@@ -225,9 +225,16 @@ QComboBox QAbstractItemView {
     padding-left: 5px;
 }
 
+QComboBox QAbstractItemView::item {
+    /*background-color: rgba(255,255,255,50%);*/
+    min-height: 25px;
+}
+
+
 QComboBox::item{
     color: white;
- }
+}
+
 
 /*
     QPushButton

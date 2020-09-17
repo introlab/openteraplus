@@ -78,6 +78,7 @@ private:
     QVariantMap                                     m_initialValues;
     bool                                            m_highlightConditionals;
     QStringList                                     m_hiddenFields;
+    bool                                            m_disabled;
 
     //QList<QAudioDeviceInfo>                         m_audioInputs;
     //QList<QCameraInfo>                              m_videoInputs;

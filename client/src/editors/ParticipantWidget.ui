@@ -204,7 +204,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -231,8 +231,8 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>913</width>
-            <height>136</height>
+            <width>909</width>
+            <height>139</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -292,6 +292,16 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                  <widget class="QFrame" name="frameWeb">
                   <layout class="QHBoxLayout" name="horizontalLayout_4">
                    <item>
+                    <widget class="QComboBox" name="cmbServices">
+                     <property name="maximumSize">
+                      <size>
+                       <width>200</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLineEdit" name="txtWeb">
                      <property name="minimumSize">
                       <size>
@@ -316,7 +326,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                       <string>Copier le lien</string>
                      </property>
                      <property name="text">
-                      <string>...</string>
+                      <string>Copier le lien</string>
                      </property>
                      <property name="icon">
                       <iconset resource="../../resources/TeraClient.qrc">
@@ -327,6 +337,9 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                        <width>24</width>
                        <height>24</height>
                       </size>
+                     </property>
+                     <property name="toolButtonStyle">
+                      <enum>Qt::ToolButtonTextBesideIcon</enum>
                      </property>
                     </widget>
                    </item>
@@ -339,7 +352,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                       <string>Envoyer par courriel</string>
                      </property>
                      <property name="text">
-                      <string>...</string>
+                      <string>Envoyer le lien par courriel</string>
                      </property>
                      <property name="icon">
                       <iconset resource="../../resources/TeraClient.qrc">
@@ -350,6 +363,9 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                        <width>24</width>
                        <height>24</height>
                       </size>
+                     </property>
+                     <property name="toolButtonStyle">
+                      <enum>Qt::ToolButtonTextBesideIcon</enum>
                      </property>
                     </widget>
                    </item>
@@ -524,8 +540,8 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>913</width>
-            <height>474</height>
+            <width>909</width>
+            <height>470</height>
            </rect>
           </property>
           <attribute name="label">
@@ -578,7 +594,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>911</width>
+                <width>907</width>
                 <height>198</height>
                </rect>
               </property>

@@ -84,21 +84,13 @@ private slots:
 
     void on_tableHistory_itemDoubleClicked(QTableWidgetItem *item);
 
-    void on_btnShowOnlineParticipants_clicked();
 
-    void on_btnShowOnlineUsers_clicked();
-
-    void on_btnShowOnlineDevices_clicked();
 
 private:
     void connectSignals();
     void initUi();
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
     void setInSession(bool in_session, const TeraData *session_type, const int& id_session);
-
-    // Online users and participants management
-    void updateOnlineUser(const QString &user_uuid, const bool &online, const QString &user_name = QString());
-    void updateOnlineParticipant(const QString &uuid, const bool &online, const QString &name = QString());
 
     // Messages and notifications
     void addMessage(Message::MessageType msg_type, QString msg);
@@ -129,11 +121,6 @@ private:
 
     // UI items
     QMovie*         m_loadingIcon;
-
-    // Data management
-    QHash<QString, QListWidgetItem*> m_onlineUsers;             // User UUID mapping of online users
-    QHash<QString, QListWidgetItem*> m_onlineParticipants;      // Participant UUID mapping of online participants
-    QHash<QString, QListWidgetItem*> m_onlineDevices;      // Participant UUID mapping of online participants
 
 
 };

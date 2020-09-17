@@ -98,8 +98,6 @@ void UserWidget::updateControlsState(){
 
     // Always show save button if editing current user
     if (m_limited){
-        /*ui->btnSave->setVisible(true);
-        ui->btnUndo->setVisible(true);*/
         editToggleClicked();
     }
 

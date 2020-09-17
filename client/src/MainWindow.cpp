@@ -103,9 +103,7 @@ void MainWindow::initUi()
 
     // Setup main menu
     ui->projNavigator->setComManager(m_comManager);
-    ui->lstOnlineDevices->hide();
-    ui->lstOnlineUsers->hide();
-    ui->btnShowOnlineParticipants->setChecked(true); // Expand participants by default
+    ui->onlineManager->setComManager(m_comManager);
     ui->tabMainMenu->setCurrentIndex(0); // Select "Navigator" tab by default
 
     // Set version number
@@ -198,65 +196,6 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
 
         // Loads back the "previous" data type
         dataDisplayRequested(m_currentDataType, m_currentDataId);
-    }
-}
-
-void MainWindow::updateOnlineUser(const QString &user_uuid, const bool &online,  const QString &user_name)
-{
-    QListWidgetItem* user_item = nullptr;
-
-    if (m_onlineUsers.contains(user_uuid)){
-        user_item = m_onlineUsers[user_uuid];
-    }else{
-        // If offline, we don't need to anything since it's there !
-        if (online){
-            user_item = new QListWidgetItem(QIcon("://icons/software_user_online.png"), user_name);
-            //ui->lstOnlineUsers->addItem(user_item);
-            m_onlineUsers[user_uuid] = user_item;
-        }
-    }
-
-    if (user_item){
-        if (!online){
-            // We must remove that item
-            delete user_item;
-            m_onlineUsers.remove(user_uuid);
-        }else{
-            // Update name if needed
-            user_item->setText(user_name);
-
-            // Resort items
-            //ui->lstOnlineUsers->sortItems();
-        }
-    }
-}
-
-void MainWindow::updateOnlineParticipant(const QString &uuid, const bool &online, const QString &name)
-{
-    QListWidgetItem* participant_item = nullptr;
-
-    if (m_onlineParticipants.contains(uuid)){
-        participant_item = m_onlineParticipants[uuid];
-    }else{
-        // If offline, we don't need to anything since it's there !
-        if (online){
-            participant_item = new QListWidgetItem(QIcon("://icons/software_user_online.png"), name);
-            m_onlineParticipants[uuid] = participant_item;
-        }
-    }
-
-    if (participant_item){
-        if (!online){
-            // We must remove that item
-            delete participant_item;
-            m_onlineParticipants.remove(uuid);
-        }else{
-            // Update name if needed
-            participant_item->setText(name);
-
-            // Resort items
-            //ui->lstOnlineUsers->sortItems();
-        }
     }
 }
 
@@ -633,7 +572,7 @@ void MainWindow::ws_userEvent(UserEvent event)
         addGlobalEvent(g_event);
 
         // Update online users list
-        updateOnlineUser(QString::fromStdString(event.user_uuid()), true, QString::fromStdString(event.user_fullname()));
+        //updateOnlineUser(QString::fromStdString(event.user_uuid()), true, QString::fromStdString(event.user_fullname()));
     }
 
     if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
@@ -644,7 +583,7 @@ void MainWindow::ws_userEvent(UserEvent event)
         addGlobalEvent(g_event);
 
         // Update online users list
-        updateOnlineUser(QString::fromStdString(event.user_uuid()), false);
+        //updateOnlineUser(QString::fromStdString(event.user_uuid()), false);
     }
 }
 
@@ -661,7 +600,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
             addGlobalEvent(g_event);
 
             // Update online users list
-            updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), true, QString::fromStdString(event.participant_name()));
+            //updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), true, QString::fromStdString(event.participant_name()));
         }
     }
 
@@ -676,7 +615,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
             addGlobalEvent(g_event);
 
             // Update online participants list
-            updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), false);
+            //updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), false);
         }
     }
 }
@@ -844,17 +783,3 @@ void MainWindow::changeEvent(QEvent* event)
 
 }
 
-void MainWindow::on_btnShowOnlineParticipants_clicked()
-{
-    ui->lstOnlineParticipants->setVisible(ui->btnShowOnlineParticipants->isChecked());
-}
-
-void MainWindow::on_btnShowOnlineUsers_clicked()
-{
-    ui->lstOnlineUsers->setVisible(ui->btnShowOnlineUsers->isChecked());
-}
-
-void MainWindow::on_btnShowOnlineDevices_clicked()
-{
-    ui->lstOnlineDevices->setVisible(ui->btnShowOnlineDevices->isChecked());
-}

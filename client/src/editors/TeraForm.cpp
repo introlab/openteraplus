@@ -453,13 +453,13 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
     // Set layout alignement
     layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     page->setLayout(layout);
-    page->setEnabled(page->parentWidget()->isEnabled());
 
     // Set default values
     setDefaultValues();
     checkConditions();
     validateFormData(true);
 
+    page->setDisabled(m_disabled);
 
 }
 
@@ -1124,6 +1124,7 @@ void TeraForm::setDisabled(bool disable)
     for (int i=0; i<ui->toolboxMain->count(); i++){
         ui->toolboxMain->widget(i)->setDisabled(disable);
     }
+    m_disabled = true;
     //QWidget::setDisabled(disable);
 
 
@@ -1135,5 +1136,6 @@ void TeraForm::setEnabled(bool enable)
     for (int i=0; i<ui->toolboxMain->count(); i++){
         ui->toolboxMain->widget(i)->setEnabled(enable);
     }
+    m_disabled = false;
     //QWidget::setEnabled(enable);
 }

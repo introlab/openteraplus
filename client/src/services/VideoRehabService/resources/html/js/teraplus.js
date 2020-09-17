@@ -168,6 +168,7 @@ function selectVideoSource(source){
 	for (var i=0; i<videoSources.length; i++){
         console.log(videoSources[i].label + " == " + video.name + " ?");
         if (videoSources[i].label.includes(video.name) || videoSources[i].deviceId === video.name){
+            console.log("Found video source.");
 			var select = document.getElementById('videoSelect');
 			select.selectedIndex = i;
             updateVideoSource();
@@ -183,6 +184,7 @@ function selectAudioSource(source){
     for (var i=0; i<audioSources.length; i++){
         console.log(audioSources[i].label + " == " + audio.name + " ?");
         if (audioSources[i].label.includes(audio.name) || audioSources[i].deviceId === audio.name){
+            console.log("Found audio source.");
             currentAudioSourceIndex = i;
             startAudioTest(audioSources[currentAudioSourceIndex].deviceId);
             break;

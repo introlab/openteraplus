@@ -38,19 +38,13 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     // Query sessions types
     queryDataRequest(WEB_SESSIONTYPE_PATH);
 
-    // Query devices for that participant
-    if (!m_data->isNew()){
-        /*QUrlQuery query;
-        query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
-        queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, query);
+    // Query services
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_LIST, "1");
+    queryDataRequest(WEB_SERVICEINFO_PATH, args);
 
-        // Query devices for the current site
-        query.removeQueryItem(WEB_QUERY_ID_PARTICIPANT);
-        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
-        queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);*/
-        //query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
-        //queryDataRequest(WEB_DEVICESITEINFO_PATH, query);
-    }else{
+    // Set default calendar view for new participants
+    if (m_data->isNew()){
         updateCalendars(QDate::currentDate());
     }
 
@@ -91,6 +85,7 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::sessionTypesReceived, this, &ParticipantWidget::processSessionTypesReply);
     connect(m_comManager, &ComManager::deviceProjectsReceived, this, &ParticipantWidget::processDeviceProjectsReply);
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &ParticipantWidget::processDeviceParticipantsReply);
+    connect(m_comManager, &ComManager::servicesReceived, this, &ParticipantWidget::processServicesReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
     connect(m_comManager, &ComManager::downloadCompleted, this, &ParticipantWidget::onDownloadCompleted);
 
@@ -455,6 +450,22 @@ void ParticipantWidget::processDeviceParticipantsReply(QList<TeraData> device_pa
             updateDeviceParticipant(&device_part);
         }
     }
+}
+
+void ParticipantWidget::processServicesReply(QList<TeraData> services)
+{
+    ui->cmbServices->clear();
+    m_services.clear();
+
+    foreach(TeraData service, services){
+        m_services.append(service);
+        ui->cmbServices->addItem(service.getName(), service.getFieldValue("service_key"));
+    }
+
+    // Find and select VideoRehab by default in the combobox
+    int default_index = ui->cmbServices->findData("VideoRehabService");
+    if (default_index>=0)
+        ui->cmbServices->setCurrentIndex(default_index);
 }
 
 void ParticipantWidget::deleteDataReply(QString path, int id)

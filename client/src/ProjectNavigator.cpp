@@ -1,12 +1,15 @@
 #include "ProjectNavigator.h"
 #include "GlobalMessageBox.h"
 #include "ui_ProjectNavigator.h"
+#include <QStyledItemDelegate>
+
 
 ProjectNavigator::ProjectNavigator(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProjectNavigator)
 {
     ui->setupUi(this);
+    ui->cmbSites->setItemDelegate(new QStyledItemDelegate);
 
     m_comManager = nullptr;
     m_newItemMenu = nullptr;

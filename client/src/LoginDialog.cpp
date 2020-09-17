@@ -1,11 +1,13 @@
 #include "LoginDialog.h"
 #include "ui_LoginDialog.h"
+#include <QStyledItemDelegate>
 
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::LoginDialog)
 {
     ui->setupUi(this);
+    ui->cmbServers->setItemDelegate(new QStyledItemDelegate());
     //setAttribute(Qt::WA_StyledBackground);
     //setStyleSheet("QDialog{background-image: url(://TeRA_Background.png); }");
 
