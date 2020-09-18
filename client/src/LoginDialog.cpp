@@ -14,7 +14,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
     // Setup properties
     setSizeGripEnabled(false);
     setFixedWidth(450);
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
     // Setup loading icon animation
     m_animatedIcon = new QMovie("://status/loading.gif");

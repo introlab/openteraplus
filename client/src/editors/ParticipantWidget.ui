@@ -231,8 +231,8 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>909</width>
-            <height>139</height>
+            <width>913</width>
+            <height>136</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -278,10 +278,22 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
               </property>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
                 <item>
                  <widget class="QCheckBox" name="chkWebAccess">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="cursor">
                    <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string>Accès via lien web</string>
@@ -290,35 +302,49 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                 </item>
                 <item>
                  <widget class="QFrame" name="frameWeb">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_4">
-                   <item>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetMinAndMaxSize</enum>
+                   </property>
+                   <item alignment="Qt::AlignLeft">
                     <widget class="QComboBox" name="cmbServices">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="maximumSize">
                       <size>
-                       <width>200</width>
+                       <width>250</width>
                        <height>16777215</height>
                       </size>
                      </property>
                     </widget>
                    </item>
-                   <item>
-                    <widget class="QLineEdit" name="txtWeb">
+                   <item alignment="Qt::AlignLeft">
+                    <widget class="QToolButton" name="btnCopyWeb">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
                        <height>32</height>
                       </size>
                      </property>
-                     <property name="readOnly">
-                      <bool>true</bool>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>16777215</height>
+                      </size>
                      </property>
-                     <property name="placeholderText">
-                      <string>Aucun lien n'a été généré</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="btnCopyWeb">
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
                      </property>
@@ -343,8 +369,20 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                      </property>
                     </widget>
                    </item>
-                   <item>
+                   <item alignment="Qt::AlignLeft">
                     <widget class="QToolButton" name="btnEmailWeb">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>32</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
                      </property>
@@ -368,6 +406,83 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                       <enum>Qt::ToolButtonTextBesideIcon</enum>
                      </property>
                     </widget>
+                   </item>
+                   <item alignment="Qt::AlignLeft">
+                    <widget class="QToolButton" name="btnViewLink">
+                     <property name="minimumSize">
+                      <size>
+                       <width>32</width>
+                       <height>32</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>32</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="cursor">
+                      <cursorShape>PointingHandCursor</cursorShape>
+                     </property>
+                     <property name="toolTip">
+                      <string>Afficher le lien</string>
+                     </property>
+                     <property name="text">
+                      <string>...</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../../resources/TeraClient.qrc">
+                       <normaloff>:/icons/view_off.png</normaloff>
+                       <activeon>:/icons/view_on.png</activeon>:/icons/view_off.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="checkable">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="txtWeb">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>250</width>
+                       <height>32</height>
+                      </size>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Aucun lien n'a été généré</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_4">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Expanding</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>1</width>
+                       <height>1</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                   </layout>
                  </widget>
@@ -540,8 +655,8 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>909</width>
-            <height>470</height>
+            <width>913</width>
+            <height>474</height>
            </rect>
           </property>
           <attribute name="label">
@@ -594,7 +709,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>907</width>
+                <width>911</width>
                 <height>198</height>
                </rect>
               </property>

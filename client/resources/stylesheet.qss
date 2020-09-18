@@ -297,8 +297,10 @@ QToolButton:hover{
 
 QToolButton[checkable=true]:!checked{
     color:red;
-    background-color:rgba(180,0,0,50%);
-    border: 2px solid rgb(180,0,0);
+    /*background-color:rgba(180,0,0,50%);*/
+    background-color:rgba(100,100,100,50%);
+    /*border: 2px solid rgb(180,0,0);*/
+    border: 2px solid rgb(100,100,100);
 }
 
 QToolButton:checked{

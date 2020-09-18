@@ -41,6 +41,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     // Query services
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_LIST, "1");
+    args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
     queryDataRequest(WEB_SERVICEINFO_PATH, args);
 
     // Set default calendar view for new participants
@@ -85,6 +86,7 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::sessionTypesReceived, this, &ParticipantWidget::processSessionTypesReply);
     connect(m_comManager, &ComManager::deviceProjectsReceived, this, &ParticipantWidget::processDeviceProjectsReply);
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &ParticipantWidget::processDeviceParticipantsReply);
+    connect(m_comManager, &ComManager::participantsReceived, this, &ParticipantWidget::processParticipantsReply);
     connect(m_comManager, &ComManager::servicesReceived, this, &ParticipantWidget::processServicesReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
     connect(m_comManager, &ComManager::downloadCompleted, this, &ParticipantWidget::onDownloadCompleted);
@@ -125,9 +127,9 @@ void ParticipantWidget::updateFieldsValue()
         ui->lblTitle->setText(m_data->getName());
         ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
         ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
-        ui->chkWebAccess->setChecked(!m_data->getFieldValue("participant_token").toString().isEmpty());
-        // TODO: Real URL
-        ui->txtWeb->setText(m_data->getFieldValue("participant_token").toString());
+        ui->chkWebAccess->setChecked(m_data->getFieldValue("participant_token_enabled").toBool());
+        //ui->txtWeb->setText(m_data->getFieldValue("participant_token").toString());
+        refreshWebAccessUrl();
         ui->txtUsername->setText(m_data->getFieldValue("participant_username").toString());
         // Must "trigger" the slots for username - password, since they are not set otherwise
         on_txtUsername_textEdited(ui->txtUsername->text());
@@ -143,12 +145,13 @@ void ParticipantWidget::initUI()
     ui->frameLogin->hide();
     ui->frameActive->hide();
     ui->frameWeb->hide();
+    ui->txtWeb->hide();
 
     // TODO: Implement template email feature
     ui->btnEmailWeb->hide();
 
     // Hide some fields in the detailled participant widget
-    QStringList ignore_fields = {"participant_enabled", "participant_token", "participant_login_enabled",
+    QStringList ignore_fields = {"participant_enabled", "participant_token_enabled", "participant_token", "participant_login_enabled",
                                 "participant_username", "participant_password"};
     ui->wdgParticipant->hideFields(ignore_fields);
 }
@@ -353,10 +356,27 @@ void ParticipantWidget::updateDeviceParticipant(TeraData *device_participant)
     item->setText(device_participant->getFieldValue("device_name").toString());
 }
 
+void ParticipantWidget::refreshWebAccessUrl()
+{
+    int index = ui->cmbServices->currentIndex();
+    if (index >= m_services.count() || index <0)
+        return;
+
+    TeraData* current_service = &m_services[index];
+    QUrl server_url = m_comManager->getServerUrl();
+    QString service_url = "https://" + server_url.host() + ":" + QString::number(server_url.port()) +
+            current_service->getFieldValue("service_clientendpoint").toString() +
+            current_service->getFieldValue("service_endpoint_participant").toString() + "?token=" +
+            m_data->getFieldValue("participant_token").toString();
+
+    ui->txtWeb->setText(service_url);
+}
+
 void ParticipantWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_PARTICIPANT){
-        ui->wdgParticipant->buildUiFromStructure(data);
+        if (!ui->wdgParticipant->formHasStructure())
+            ui->wdgParticipant->buildUiFromStructure(data);
         return;
     }
 }
@@ -448,6 +468,18 @@ void ParticipantWidget::processDeviceParticipantsReply(QList<TeraData> device_pa
         if (device_part.getFieldValue("id_participant").toInt() == m_data->getId()){
             // For us! Update device...
             updateDeviceParticipant(&device_part);
+        }
+    }
+}
+
+void ParticipantWidget::processParticipantsReply(QList<TeraData> participants)
+{
+    for (int i=0; i<participants.count(); i++){
+        if (participants.at(i) == *m_data){
+            // We found "ourself" in the list - update data.
+            *m_data = participants.at(i);
+            updateFieldsValue();
+            break;
         }
     }
 }
@@ -845,6 +877,23 @@ void ParticipantWidget::on_chkEnabled_stateChanged(int checkState)
 
 void ParticipantWidget::on_chkWebAccess_stateChanged(int checkState)
 {
+    bool current_state = (checkState == Qt::Checked);
+
+    if (!current_state){
+        GlobalMessageBox msg;
+        if (msg.showYesNo(tr("Confirmation"), tr("En désactivant l'accès web, le lien sera supprimé.\n\nSi un accès est à nouveau créé, le lien sera différent et il faudra envoyer à nouveau le lien au participant.\n\nSouhaitez-vous continuer?")) != QMessageBox::Yes){
+            ui->chkWebAccess->setCheckState(Qt::Checked); // Warning: use "setCheckState" and not "setChecked" since the signal is on CheckState!
+            return;
+        }
+    }
+
+    if (m_data){
+        if (m_data->getFieldValue("participant_token_enabled").toBool() != current_state){
+            ui->wdgParticipant->setFieldValue("participant_token_enabled", current_state);
+            saveData();
+        }
+    }
+
     ui->frameWeb->setVisible(checkState == Qt::Checked);
 }
 
@@ -874,6 +923,7 @@ void ParticipantWidget::on_btnCopyWeb_clicked()
     #if defined(Q_OS_LINUX)
         QThread::msleep(1); //workaround for copied text not being available...
     #endif
+
 }
 
 void ParticipantWidget::on_btnRandomPass_clicked()
@@ -1051,4 +1101,16 @@ void ParticipantWidget::on_btnUnchekSessionTypes_clicked()
     for (int i=0; i<ui->lstFilters->count(); i++){
         ui->lstFilters->item(i)->setCheckState(Qt::Unchecked);
     }
+}
+
+void ParticipantWidget::on_btnViewLink_clicked()
+{
+    ui->txtWeb->setVisible(ui->btnViewLink->isChecked());
+}
+
+void ParticipantWidget::on_cmbServices_currentIndexChanged(int index)
+{
+    Q_UNUSED(index)
+    refreshWebAccessUrl();
+
 }

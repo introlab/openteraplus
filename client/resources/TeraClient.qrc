@@ -113,6 +113,8 @@
         <file>translations/openteraplus_en.qm</file>
         <file>translations/openteraplus_fr.qm</file>
         <file>icons/play.png</file>
+        <file>icons/view_off.png</file>
+        <file>icons/view_on.png</file>
     </qresource>
     <qresource prefix="/videorehab"/>
 </RCC>

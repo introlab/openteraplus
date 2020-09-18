@@ -403,6 +403,11 @@ void ComManager::setCredentials(const QString &username, const QString &password
     m_settedCredentials = false;  // Credentials were changed, must update on next request
 }
 
+QUrl ComManager::getServerUrl() const
+{
+    return m_serverUrl;
+}
+
 WebSocketManager *ComManager::getWebSocketManager()
 {
     return m_webSocketMan;

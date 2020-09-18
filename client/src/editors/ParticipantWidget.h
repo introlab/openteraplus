@@ -60,6 +60,8 @@ private:
     void updateDeviceProject(TeraData* device_project);
     void updateDeviceParticipant(TeraData* device_participant);
 
+    void refreshWebAccessUrl();
+
     void updateCalendars(QDate left_date);
     QDate getMinimumSessionDate();
 
@@ -70,6 +72,7 @@ private slots:
     //void processDevicesReply(QList<TeraData> devices);
     void processDeviceProjectsReply(QList<TeraData> device_projects);
     void processDeviceParticipantsReply(QList<TeraData> device_participants);
+    void processParticipantsReply(QList<TeraData> participants);
     void processServicesReply(QList<TeraData> services);
     void deleteDataReply(QString path, int id);
     void onDownloadCompleted(DownloadedFile* file);
@@ -106,6 +109,8 @@ private slots:
     void on_btnNewSession_clicked();
     void on_btnCheckSesstionTypes_clicked();
     void on_btnUnchekSessionTypes_clicked();
+    void on_btnViewLink_clicked();
+    void on_cmbServices_currentIndexChanged(int index);
 };
 
 #endif // PARTICIPANTWIDGET_H

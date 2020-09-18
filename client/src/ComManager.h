@@ -66,6 +66,7 @@ public:
     bool hasPendingDownloads();
 
     void setCredentials(const QString &username, const QString &password);
+    QUrl getServerUrl() const;
 
     WebSocketManager* getWebSocketManager();
 

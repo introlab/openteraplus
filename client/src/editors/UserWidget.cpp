@@ -245,6 +245,7 @@ void UserWidget::buildUserPreferencesWidget()
                                   "]"
                                 "}";
     ui->wdgPrefs->buildUiFromStructure(json_form_structure);
+    ui->wdgPrefs->setEnabled(true);
 }
 
 
