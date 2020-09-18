@@ -173,6 +173,18 @@ QVariant TeraForm::getFieldValue(const QString &field)
     return rval;
 }
 
+bool TeraForm::getFieldDirty(const QString &field)
+{
+    if (m_widgets.contains(field)){
+        QVariant value, id;
+        getWidgetValues(m_widgets[field], &id, &value);
+        if (!id.isNull())
+            value = id;
+        return m_initialValues[field] != value;
+    }
+    return false;
+}
+
 void TeraForm::hideField(const QString &field)
 {
     QWidget* widget = getWidgetForField(field);
@@ -226,7 +238,7 @@ QJsonDocument TeraForm::getFormDataJson(bool include_unmodified_data)
         if (!id.isNull())
             value = id;
         // Include only modified fields or ids
-        if ((!include_unmodified_data && m_initialValues[field] != value)
+        if ((!include_unmodified_data && getFieldDirty(field))
                 || field.startsWith("id_") || include_unmodified_data){
             QJsonValue json_value = QJsonValue::fromVariant(value);
             if (field.startsWith("id_")){

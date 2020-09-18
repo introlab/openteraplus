@@ -205,11 +205,18 @@ void ClientApp::logoutRequested()
 
 void ClientApp::on_loginResult(bool logged)
 {
-    if (!logged){
-        m_loginDiag->setStatusMessage(tr("Utilisateur ou mot de passe invalide."),true);
+    if (m_loginDiag){
+        if (!logged){
+            m_loginDiag->setStatusMessage(tr("Utilisateur ou mot de passe invalide."),true);
+        }else{
+            m_loginDiag->setStatusMessage(tr("Bienvenue!"));
+            showMainWindow();
+        }
     }else{
-        m_loginDiag->setStatusMessage(tr("Bienvenue!"));
-        showMainWindow();
+        // Looks like we are not able to authentificate to the server anymore... Show error and login dialog again
+        GlobalMessageBox msg;
+        msg.showError(tr("Déconnexion"), tr("Vous avez été déconnecté du serveur. Veuillez vous connecter à nouveau."));
+        m_comMan->disconnectFromServer();
     }
 }
 
@@ -237,7 +244,7 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
                 error_str = tr("La connexion a été refusée par le serveur.");
             break;
             case QNetworkReply::AuthenticationRequiredError:
-                on_loginResult(false);
+                //on_loginResult(false);
                 return;
             break;
             case QNetworkReply::TimeoutError:

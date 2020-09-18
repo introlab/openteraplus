@@ -43,10 +43,9 @@ void ComManager::connectToServer(QString username, QString password)
 {
     qDebug() << "ComManager::Connecting to " << m_serverUrl.toString();
 
-    m_username = username;
-    m_password = password;
+    setCredentials(username, password);
 
-    m_loggingInProgress = true; // Indicate that a login request was sent, but not processed
+    m_loggingInProgress = true;     // Indicate that a login request was sent, but not processed
 
     doQuery(QString(WEB_LOGIN_PATH));
 
@@ -58,6 +57,7 @@ void ComManager::disconnectFromServer()
     m_webSocketMan->disconnectWebSocket();
 
     clearCurrentUser();
+    m_settedCredentials = false;
 }
 
 bool ComManager::processNetworkReply(QNetworkReply *reply)
@@ -393,6 +393,14 @@ bool ComManager::isCurrentUserSuperAdmin()
 bool ComManager::hasPendingDownloads()
 {
     return !m_currentDownloads.isEmpty();
+}
+
+void ComManager::setCredentials(const QString &username, const QString &password)
+{
+    m_username = username;
+    m_password = password;
+
+    m_settedCredentials = false;  // Credentials were changed, must update on next request
 }
 
 WebSocketManager *ComManager::getWebSocketManager()
@@ -758,11 +766,11 @@ QString ComManager::filterReplyString(const QString &data_str)
 void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
     Q_UNUSED(reply)
-    if (m_loggingInProgress){
+    if (!m_settedCredentials){
         LOG_DEBUG("Sending authentication request...", "ComManager::onNetworkAuthenticationRequired");
         authenticator->setUser(m_username);
         authenticator->setPassword(m_password);
-        //m_loggingInProgress = false; // Not logging anymore - we sent the credentials
+        m_settedCredentials = true; // We setted the credentials in authentificator
     }else{
         LOG_DEBUG("Authentication error", "ComManager::onNetworkAuthenticationRequired");
         emit loginResult(false);

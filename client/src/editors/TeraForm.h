@@ -57,6 +57,7 @@ public:
     QWidget* getWidgetForField(const QString& field);
     bool setFieldValue(const QString& field, const QVariant& value);
     QVariant getFieldValue(const QString& field);
+    bool getFieldDirty(const QString& field);
     void hideField(const QString& field);
     void hideFields(const QStringList& fields);
     void setFieldRequired(const QString& field, const bool& required);

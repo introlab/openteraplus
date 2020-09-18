@@ -74,7 +74,14 @@ void UserWidget::saveData(bool signal){
         }
     }
 
+    if (*m_data == m_comManager->getCurrentUser()){
+        m_currentUserPasswordChanged = ui->wdgUser->getFieldDirty("user_password");
+    }else{
+        m_currentUserPasswordChanged = false;
+    }
+
     //qDebug() << user_data.toJson();
+    postDataRequest(WEB_USERINFO_PATH, user_data.toJson());
 
 
     if (signal){
@@ -307,6 +314,12 @@ void UserWidget::processUsersReply(QList<TeraData> users)
 {
     for (int i=0; i<users.count(); i++){
         if (users.at(i) == *m_data){
+            // Update password if it was changed
+            if (m_currentUserPasswordChanged){
+                m_comManager->setCredentials(m_data->getFieldValue("user_username").toString(),
+                                             ui->wdgUser->getFieldValue("user_password").toString());
+                m_currentUserPasswordChanged = false;
+            }
             // We found "ourself" in the list - update data.
             *m_data = users.at(i);
             updateFieldsValue();
@@ -379,25 +392,27 @@ void UserWidget::processUserPrefsReply(QList<TeraData> user_prefs, QUrlQuery que
 void UserWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_USER){
-        ui->wdgUser->buildUiFromStructure(data);
-        // Disable some widgets if we are in limited mode (editing self profile)
-        if (m_limited){
-            // Disable some widgets
-            QWidget* item = ui->wdgUser->getWidgetForField("user_username");
-            if (item) item->setEnabled(false);
-            item = ui->wdgUser->getWidgetForField("user_enabled");
-            if (item) item->setEnabled(false);
-            item = ui->wdgUser->getWidgetForField("user_superadmin");
-            if (item) item->setEnabled(false);
-            item = ui->wdgUser->getWidgetForField("user_notes");
-            if (item) item->setEnabled(false);
-        }
+        if (!ui->wdgUser->formHasStructure()){
+            ui->wdgUser->buildUiFromStructure(data);
+            // Disable some widgets if we are in limited mode (editing self profile)
+            if (m_limited){
+                // Disable some widgets
+                QWidget* item = ui->wdgUser->getWidgetForField("user_username");
+                if (item) item->setEnabled(false);
+                item = ui->wdgUser->getWidgetForField("user_enabled");
+                if (item) item->setEnabled(false);
+                item = ui->wdgUser->getWidgetForField("user_superadmin");
+                if (item) item->setEnabled(false);
+                item = ui->wdgUser->getWidgetForField("user_notes");
+                if (item) item->setEnabled(false);
+            }
 
-        // Disable super admin field if not super admin itself!
-        QWidget* item = ui->wdgUser->getWidgetForField("user_superadmin");
-        if (item){
-            item->setVisible(m_comManager->isCurrentUserSuperAdmin());
+            // Disable super admin field if not super admin itself!
+            QWidget* item = ui->wdgUser->getWidgetForField("user_superadmin");
+            if (item){
+                item->setVisible(m_comManager->isCurrentUserSuperAdmin());
 
+            }
         }
 
         return;

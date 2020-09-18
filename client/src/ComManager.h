@@ -65,6 +65,8 @@ public:
 
     bool hasPendingDownloads();
 
+    void setCredentials(const QString &username, const QString &password);
+
     WebSocketManager* getWebSocketManager();
 
     static signal_ptr getSignalFunctionForDataType(const TeraDataTypes& data_type);
@@ -91,6 +93,7 @@ protected:
     QMap<QNetworkReply*, DownloadedFile*>   m_currentDownloads;
 
     bool                    m_loggingInProgress;
+    bool                    m_settedCredentials;
 
     QString                 m_username;
     QString                 m_password;
