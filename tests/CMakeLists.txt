@@ -43,7 +43,7 @@ QT5_ADD_RESOURCES(ptz_test_qrc_res ${ptz_test_qrcs})
 #This will generate moc_* for Qt
 qt5_wrap_cpp(ptz_test_moc_srcs ${ptz_test_headers})
 
-add_executable(ptz_test
+add_executable(ptz_test MACOSX_BUNDLE WIN32
     ${ptz_test_headers}
     ${ptz_test_moc_srcs}
     ${ptz_test_qrc_res}
@@ -65,3 +65,27 @@ target_link_libraries(ptz_test
     Qt5::WebEngineWidgets
     )
 
+if(APPLE)
+
+    set_target_properties(ptz_test PROPERTIES
+            INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
+            INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+    # Set a custom plist file for the app bundle
+    set_target_properties(ptz_test PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
+
+
+    # Will be used in Info.plist.in
+    set(MACOSX_BUNDLE_INFO_STRING "ptz_test")
+    set(MACOSX_BUNDLE_ICON_FILE "")
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "ptz_test")
+    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
+    set(MACOSX_BUNDLE_BUNDLE_NAME "ptz_test")
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "${CPACK_PACKAGE_VERSION}")
+    set(MACOSX_BUNDLE_COPYRIGHT "IntRolab/CDRV UdeS")
+
+
+    add_custom_target(info_plist SOURCES Info.plist.in)
+endif(APPLE)
