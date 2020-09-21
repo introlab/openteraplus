@@ -7,6 +7,10 @@
 #include <QCameraImageCapture>
 #include <QCameraViewfinderSettings>
 #include "CameraUtilities.h"
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QGraphicsVideoItem>
+#include <QMediaPlayer>
 
 class MyVideoWidget : public QVideoWidget {
     Q_OBJECT
@@ -33,6 +37,11 @@ class PTZTestMainWindow : public QMainWindow
         VirtualCamera m_virtualCamera;
         MyVideoWidget *m_cameraViewfinder;
         QCamera *m_camera;
+        QGraphicsScene *m_scene;
+        QGraphicsView *m_view;
+        QGraphicsVideoItem *m_videoItem;
+
+
 
 private slots:
         void on_pushButton_RTSP_Start_clicked();

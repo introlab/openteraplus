@@ -21,6 +21,15 @@ PTZTestMainWindow::PTZTestMainWindow(QWidget *parent)
 
     connect(&m_ptz, &ICameraDriver::cameraConnected, this, &PTZTestMainWindow::cameraConnected);
 
+    //Create player
+    m_scene = new QGraphicsScene(this);
+    m_view = new QGraphicsView(m_ui.widget_CameraView);
+    m_view->setScene(m_scene);
+    m_ui.widget_CameraView->layout()->addWidget(m_view);
+
+    m_videoItem = new QGraphicsVideoItem();
+    m_scene->addItem(m_videoItem);
+
     fillCameraInfoCombo();
 }
 
@@ -118,7 +127,10 @@ void PTZTestMainWindow::on_comboBox_Camera_activated(int index)
 
     m_camera = new QCamera(info);
     m_camera->setCaptureMode(QCamera::CaptureVideo);
+    m_camera->setViewfinder(m_videoItem);
+    m_camera->start();
 
+#if 0
     m_camera->load();
     QCameraImageCapture capture(m_camera);
 
@@ -146,6 +158,8 @@ void PTZTestMainWindow::on_comboBox_Camera_activated(int index)
     m_cameraViewfinder->show();
     qDebug() << m_camera->errorString();
     m_camera->start();
+
+#endif
 }
 
 MyVideoWidget::MyVideoWidget(QCamera *camera, QWidget *parent)
@@ -164,6 +178,7 @@ void MyVideoWidget::mousePressEvent(QMouseEvent *event)
     auto media = this->mediaObject();
     if (m_camera)
     {
+        qDebug() << "Resolution:" << this->mediaObject()->metaData("Resolution");
         auto settings  = m_camera->viewfinderSettings();
         auto resolution = settings.resolution();
         qDebug() << resolution;
