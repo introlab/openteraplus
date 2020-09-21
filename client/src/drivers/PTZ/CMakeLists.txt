@@ -10,7 +10,8 @@ set(PTZDrivers_headers
 )
 
 set(PTZDrivers_srcs
-    ICameraDriver.cpp
+    #Empty for now
+    #ICameraDriver.cpp
     CameraUtilities.cpp
     Vivotek8111.cpp
 )
@@ -34,7 +35,7 @@ QT5_ADD_RESOURCES(ptz_drivers_qrc ${PTZDrivers_qrcs})
 qt5_wrap_cpp(ptz_drivers_moc_srcs ${PTZDrivers_headers})
 
 
-add_library(PTZDrivers SHARED ${PTZDrivers_headers} ${PTZDrivers_srcs} ${ptz_drivers_qrc} ${ptz_drivers_moc_srcs})
+add_library(PTZDrivers STATIC ${PTZDrivers_headers} ${PTZDrivers_srcs} ${ptz_drivers_qrc} ${ptz_drivers_moc_srcs})
 target_link_libraries(PTZDrivers Qt5::Core Qt5::Xml Qt5::Network)
 
 set(PTZ_DRIVERS_LIBS PTZDrivers CACHE INTERNAL "doc string")
