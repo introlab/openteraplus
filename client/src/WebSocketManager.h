@@ -10,9 +10,12 @@
 // Protobuf includes
 #include "UserRegisterToEvent.pb.h"
 #include "UserEvent.pb.h"
+#include "DeviceEvent.pb.h"
 #include "ParticipantEvent.pb.h"
 #include "JoinSessionEvent.pb.h"
 #include "JoinSessionReply.pb.h"
+#include "LeaveSessionEvent.pb.h"
+#include "StopSessionEvent.pb.h"
 #include "TeraEvent.pb.h"
 #include "TeraMessage.pb.h"
 #include "TeraModuleMessage.pb.h"
@@ -59,7 +62,10 @@ signals:
 
     void userEventReceived(UserEvent event);
     void participantEventReceived(ParticipantEvent event);
+    void deviceEventReceived(DeviceEvent event);
     void joinSessionEventReceived(JoinSessionEvent event);
+    void leaveSessionEventReceived(LeaveSessionEvent event);
+    void stopSessionEventReceived(StopSessionEvent event);
     void databaseEventReceived(DatabaseEvent event);
 
 

@@ -146,6 +146,9 @@ signals:
     void servicesAccessReceived(QList<TeraData> access_list, QUrlQuery reply_query);
     void servicesConfigReceived(QList<TeraData> config_list, QUrlQuery reply_query);
     void statsReceived(TeraData stats, QUrlQuery reply_query);
+    void onlineUsersReceived(QList<TeraData> users_list, QUrlQuery reply_query);
+    void onlineParticipantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
+    void onlineDevicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
 
     //void queryResultsReceived(QString object, QUrlQuery url_query, QString data);
     //void postResultsReceived(QString path, QString data);

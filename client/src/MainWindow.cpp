@@ -77,6 +77,7 @@ void MainWindow::connectSignals()
 
     connect(ui->projNavigator, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
     connect(ui->projNavigator, &ProjectNavigator::dataDeleteRequest, this, &MainWindow::dataDeleteRequested);
+    connect(ui->projNavigator, &ProjectNavigator::currentSiteWasChanged, this, &MainWindow::currentSiteChanged);
 
     connect(GlobalEventLogger::instance(), &GlobalEventLogger::newEventLogged, this, &MainWindow::addGlobalEvent);
 }
@@ -295,6 +296,11 @@ void MainWindow::notificationCompleted(NotificationWindow *notify)
     for(int i=0; i<m_notifications.count(); i++){
         m_notifications.at(i)->resetPosition(i+1);
     }
+}
+
+void MainWindow::currentSiteChanged(QString site_name, int site_id)
+{
+    ui->onlineManager->setCurrentSite(site_name, site_id);
 }
 
 void MainWindow::addGlobalEvent(GlobalEvent event)
@@ -607,7 +613,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
         // Is in the current site?
         if (QString::fromStdString(event.participant_site_name()) == ui->projNavigator->getCurrentSiteName()){
-            QString msg_text = "<font color=cyan><u>" + QString::fromStdString(event.participant_project_name()) + "</u></font><br/>";
+            QString msg_text = "<u>" + QString::fromStdString(event.participant_project_name()) + "</u><br/>";
             msg_text += "<font color=yellow>" + QString::fromStdString(event.participant_name()) + "</font>" + tr(" est hors-ligne.");
             addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient.png");
             // Add a trace in events also

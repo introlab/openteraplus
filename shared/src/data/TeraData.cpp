@@ -190,6 +190,7 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
     case TERADATA_NONE:
         return "";
     case TERADATA_USER:
+    case TERADATA_ONLINE_USER:
         return "user";
     case TERADATA_USERGROUP:
         return "user_group";
@@ -204,8 +205,10 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
     case TERADATA_PROJECT:
         return "project";
     case TERADATA_DEVICE:
+    case TERADATA_ONLINE_DEVICE:
         return "device";
     case TERADATA_PARTICIPANT:
+    case TERADATA_ONLINE_PARTICIPANT:
         return "participant";
     case TERADATA_GROUP:
         return "participant_group";
@@ -303,6 +306,12 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Service: Configuration");
     case TERADATA_STATS:
         return tr("Statistiques");
+    case TERADATA_ONLINE_DEVICE:
+        return tr("Appareil: état");
+    case TERADATA_ONLINE_PARTICIPANT:
+        return tr("Participant: état");
+    case TERADATA_ONLINE_USER:
+        return tr("Utilisateur: état");
     }
 
     return "";
@@ -335,6 +344,9 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_USERUSERGROUPINFO_PATH)       return TERADATA_USERUSERGROUP;
     if (path==WEB_USERPREFSINFO_PATH)           return TERADATA_USERPREFERENCE;
     if (path==WEB_STATS_PATH)                   return TERADATA_STATS;
+    if (path==WEB_ONLINEDEVICEINFO_PATH)        return TERADATA_ONLINE_DEVICE;
+    if (path==WEB_ONLINEPARTICIPANTINFO_PATH)   return TERADATA_ONLINE_PARTICIPANT;
+    if (path==WEB_ONLINEUSERINFO_PATH)          return TERADATA_ONLINE_USER;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 
@@ -406,11 +418,13 @@ QString TeraData::getIconStateFilename() const
 {
     switch(m_data_type){
     case TERADATA_USER:
+    case TERADATA_ONLINE_USER:
         if (isOnline())
             return "://icons/software_user_online.png";
         return "://icons/software_user.png";
 
     case TERADATA_DEVICE:
+    case TERADATA_ONLINE_DEVICE:
         if (isOnline())
             return "://icons/device_online.png";
         if (isEnabled())
@@ -418,6 +432,7 @@ QString TeraData::getIconStateFilename() const
         return "://icons/device_offline.png";
 
     case TERADATA_PARTICIPANT:
+    case TERADATA_ONLINE_PARTICIPANT:
         if (isBusy())
             return "://icons/patient_busy.png";
         if (isOnline())

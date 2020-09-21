@@ -660,6 +660,15 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         if (items.count() > 0)
             emit statsReceived(items.first(), reply_query);
         break;
+    case TERADATA_ONLINE_DEVICE:
+        emit onlineDevicesReceived(items, reply_query);
+        break;
+    case TERADATA_ONLINE_PARTICIPANT:
+        emit onlineParticipantsReceived(items, reply_query);
+        break;
+    case TERADATA_ONLINE_USER:
+        emit onlineUsersReceived(items, reply_query);
+        break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/
 

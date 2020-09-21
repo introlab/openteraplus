@@ -134,7 +134,7 @@ void WebSocketManager::onSocketConnected()
     emit loginResult(true); // Logged in
 
     // Test purpose
-    registerForEvent(UserRegisterToEvent_EventType_EVENT_USER_CONNECTED);
+    // registerForEvent(UserRegisterToEvent_EventType_EVENT_USER_CONNECTED);
 }
 
 void WebSocketManager::onSocketDisconnected()
@@ -193,6 +193,16 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                    }
                }
 
+               ///// Device event
+               if (tera_event.events(i).Is<DeviceEvent>()){
+                   DeviceEvent device_event;
+                   if (tera_event.events(i).UnpackTo(&device_event)){
+                       emit deviceEventReceived(device_event);
+                   }else{
+                       LOG_ERROR("Error unpacking DeviceEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                   }
+               }
+
                ///// Join session event
                if (tera_event.events(i).Is<JoinSessionEvent>()){
                    JoinSessionEvent event;
@@ -200,6 +210,26 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                        emit joinSessionEventReceived(event);
                    }else{
                        LOG_ERROR("Error unpacking JoinSessionEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                   }
+               }
+
+               ///// Leave session event
+               if (tera_event.events(i).Is<LeaveSessionEvent>()){
+                   LeaveSessionEvent event;
+                   if (tera_event.events(i).UnpackTo(&event)){
+                       emit leaveSessionEventReceived(event);
+                   }else{
+                       LOG_ERROR("Error unpacking LeaveSessionEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                   }
+               }
+
+               ///// Stop session event
+               if (tera_event.events(i).Is<StopSessionEvent>()){
+                   StopSessionEvent event;
+                   if (tera_event.events(i).UnpackTo(&event)){
+                       emit stopSessionEventReceived(event);
+                   }else{
+                       LOG_ERROR("Error unpacking StopSessionEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
                    }
                }
 

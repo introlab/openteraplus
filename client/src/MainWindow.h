@@ -68,6 +68,8 @@ private slots:
     void showNextMessage();
     void notificationCompleted(NotificationWindow* notify);
 
+    void currentSiteChanged(QString site_name, int site_id);
+
     void addGlobalEvent(GlobalEvent event);
 
     void editorDialogFinished();

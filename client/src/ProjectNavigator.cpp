@@ -624,6 +624,9 @@ void ProjectNavigator::currentSiteChanged()
     query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_currentSiteId));
     query.addQueryItem(WEB_QUERY_LIST, "true");
     m_comManager->doQuery(WEB_PROJECTINFO_PATH, query);
+
+    // Emit signal
+    emit currentSiteWasChanged(ui->cmbSites->currentText(), m_currentSiteId);
 }
 
 void ProjectNavigator::currentNavItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)

@@ -596,3 +596,19 @@ QPushButton#btnShowOnlineUsers[checkable=true]:!checked,QPushButton#btnShowOnlin
 QFrame#frameError{
     background-color: rgba(200,0,0,25%);
 }
+
+/* Customizations for OnlineManagerWidget */
+QWidget#wdgParticipantsNum{
+    background-color: transparent;
+    color: white;
+    border-radius: 10px;
+}
+
+QListWidget#lstOnlineParticipants, QListWidget#lstOnlineUsers, QListWidget#lstOnlineDevices{
+    background-color: rgba(255,255,255,20%);
+    selection-color: black;
+}
+
+QFrame#frameOnlineParticipants, QFrame#frameOnlineUsers, QFrame#frameOnlineDevices{
+    background-color: transparent;
+}

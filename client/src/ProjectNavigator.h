@@ -96,6 +96,7 @@ private slots:
 signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);
      void dataDeleteRequest(TeraDataTypes data_type, int data_id);
+     void currentSiteWasChanged(QString site_name, int site_id);
 };
 
 #endif // PROJECTNAVIGATOR_H

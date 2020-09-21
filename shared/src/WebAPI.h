@@ -35,6 +35,10 @@
 
 #define WEB_SESSIONMANAGER_PATH             "/api/user/sessions/manager"
 
+#define WEB_ONLINEUSERINFO_PATH             "/api/user/users/online"
+#define WEB_ONLINEPARTICIPANTINFO_PATH      "/api/user/participants/online"
+#define WEB_ONLINEDEVICEINFO_PATH           "/api/user/devices/online"
+
 #define WEB_FORMS_PATH                  "/api/user/forms"
 #define WEB_FORMS_QUERY_USER            "type=user"
 #define WEB_FORMS_QUERY_SITE            "type=site"
