@@ -10,6 +10,7 @@ SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_searching = false;
+    m_comManager = nullptr;
 
     ui->frameSelector->hide();
 
@@ -19,6 +20,15 @@ SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
 SessionInviteWidget::~SessionInviteWidget()
 {
     delete ui;
+}
+
+void SessionInviteWidget::setComManager(ComManager *comMan)
+{
+    m_comManager = comMan;
+
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::userEventReceived, this, &SessionInviteWidget::ws_userEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &SessionInviteWidget::ws_participantEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::deviceEventReceived, this, &SessionInviteWidget::ws_deviceEvent);
 }
 
 void SessionInviteWidget::addParticipantsToSession(const QList<TeraData> &participants, const QList<int> &required_ids)
@@ -91,6 +101,7 @@ void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &partic
             m_participantsItems[id_participant] = nullptr;
         updateItem(participant);
     }
+    ui->btnParticipants->setVisible(!m_participants.isEmpty());
 }
 
 void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users)
@@ -102,6 +113,7 @@ void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users)
             m_usersItems[id_user] = nullptr;
         updateItem(user);
     }
+    ui->btnUsers->setVisible(!m_users.isEmpty());
 }
 
 void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices)
@@ -113,6 +125,7 @@ void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices)
             m_devicesItems[id_device] = nullptr;
         updateItem(device);
     }
+    ui->btnDevices->setVisible(!m_devices.isEmpty());
 }
 
 QList<TeraData> SessionInviteWidget::getParticipantsInSession()
@@ -195,6 +208,95 @@ void SessionInviteWidget::updateFilters()
         }
         item->setHidden(hidden);
     }
+}
+
+void SessionInviteWidget::selectDefaultFilter()
+{
+    // Remove invalid combination
+    if (ui->btnDevices->isChecked() && m_devices.isEmpty())
+        ui->btnDevices->setChecked(false);
+    if (ui->btnParticipants->isChecked() && m_participants.isEmpty())
+        ui->btnParticipants->setChecked(false);
+    if (ui->btnUsers->isChecked() && m_users.isEmpty())
+        ui->btnUsers->setChecked(false);
+
+    if (ui->btnDevices->isChecked() || ui->btnParticipants->isChecked() || ui->btnUsers->isChecked())
+        return; // At least one selected, no need to.
+
+    if (!m_participants.isEmpty())
+        ui->btnParticipants->setChecked(true);
+    else if(!m_users.isEmpty())
+        ui->btnUsers->setChecked(true);
+    else if(!m_devices.isEmpty())
+        ui->btnDevices->setChecked(true);
+    updateFilters();
+}
+
+void SessionInviteWidget::ws_userEvent(UserEvent event)
+{
+    QString uuid = QString::fromStdString(event.user_uuid());
+
+    TeraData* data = getUserFromUuid(uuid);
+
+    if (!data)
+        return; // Item not found, we don't have to manage it here!
+
+    if (event.type() == UserEvent_EventType_USER_CONNECTED || event.type() == UserEvent_EventType_USER_LEFT_SESSION){
+        data->setState("online");
+    }
+    if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
+        data->setState("offline");
+    }
+    if (event.type() == UserEvent_EventType_USER_JOINED_SESSION){
+        data->setState("busy");
+    }
+
+    updateItem(*data);
+
+}
+
+void SessionInviteWidget::ws_participantEvent(ParticipantEvent event)
+{
+    QString uuid = QString::fromStdString(event.participant_uuid());
+
+    TeraData* data = getParticipantFromUuid(uuid);
+
+    if (!data)
+        return; // Item not found, we don't have to manage it here!
+
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED || event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
+        data->setState("online");
+    }
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
+        data->setState("offline");
+    }
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_JOINED_SESSION){
+        data->setState("busy");
+    }
+
+    updateItem(*data);
+}
+
+void SessionInviteWidget::ws_deviceEvent(DeviceEvent event)
+{
+    QString uuid = QString::fromStdString(event.device_uuid());
+
+    TeraData* data = getDeviceFromUuid(uuid);
+
+    if (!data)
+        return; // Item not found, we don't have to manage it here!
+
+    if (event.type() == DeviceEvent_EventType_DEVICE_CONNECTED || event.type() == DeviceEvent_EventType_DEVICE_LEFT_SESSION){
+        data->setState("online");
+    }
+    if (event.type() == DeviceEvent_EventType_DEVICE_DISCONNECTED){
+        data->setState("offline");
+    }
+    if (event.type() == DeviceEvent_EventType_DEVICE_JOINED_SESSION){
+        data->setState("busy");
+    }
+
+    updateItem(*data);
 }
 
 void SessionInviteWidget::connectSignals()
@@ -318,6 +420,48 @@ quint8 SessionInviteWidget::getInviteesCount()
     return m_usersInSession.count() + m_participantsInSession.count() + m_devicesInSession.count();
 }
 
+TeraData *SessionInviteWidget::getUserFromUuid(const QString &uuid)
+{
+    TeraData* data = nullptr;
+
+    for (int i=0; i<m_users.values().count(); i++){
+        if (m_users.values().at(i).getFieldValue("user_uuid").toString() == uuid){
+            data = &m_users[m_users.keys().at(i)];
+            break;
+        }
+    }
+
+    return data;
+}
+
+TeraData *SessionInviteWidget::getParticipantFromUuid(const QString &uuid)
+{
+    TeraData* data = nullptr;
+
+    for (int i=0; i<m_participants.values().count(); i++){
+        if (m_participants.values().at(i).getFieldValue("participant_uuid").toString() == uuid){
+            data = &m_participants[m_participants.keys().at(i)];
+            break;
+        }
+    }
+
+    return data;
+}
+
+TeraData *SessionInviteWidget::getDeviceFromUuid(const QString &uuid)
+{
+    TeraData* data = nullptr;
+
+    for (int i=0; i<m_devices.values().count(); i++){
+        if (m_devices.values().at(i).getFieldValue("device_uuid").toString() == uuid){
+            data = &m_devices[m_devices.keys().at(i)];
+            break;
+        }
+    }
+
+    return data;
+}
+
 void SessionInviteWidget::setSearching(const bool &search)
 {
 
@@ -421,6 +565,7 @@ void SessionInviteWidget::on_btnRemove_clicked()
 
 void SessionInviteWidget::on_txtSearchInvitees_textChanged(const QString &arg1)
 {
+    Q_UNUSED(arg1)
     // Check if search field is empty
     setSearching(ui->txtSearchInvitees->text().count()>0);
     updateFilters();

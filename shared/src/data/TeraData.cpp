@@ -97,6 +97,11 @@ bool TeraData::isBusy() const
     return false;
 }
 
+void TeraData::setState(const QString &state)
+{
+    m_fieldsValue[m_stateField] = state;
+}
+
 bool TeraData::isNew()
 {
     return getId()<=0;

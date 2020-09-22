@@ -76,6 +76,7 @@ private slots:
     void processServicesReply(QList<TeraData> services);
     void deleteDataReply(QString path, int id);
     void onDownloadCompleted(DownloadedFile* file);
+    void ws_participantEvent(ParticipantEvent event);
 
     void btnDeleteSession_clicked();
     void btnAddDevice_clicked();

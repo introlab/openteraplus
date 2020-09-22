@@ -183,15 +183,15 @@ void OnlineManagerWidget::ws_userEvent(UserEvent event)
     user_data.setFieldValue("user_uuid",  QString::fromStdString(event.user_uuid()));
 
     if (event.type() == UserEvent_EventType_USER_CONNECTED || event.type() == UserEvent_EventType_USER_LEFT_SESSION){
-        user_data.setFieldValue("user_status", "online");
+        user_data.setState("online");
         updateOnlineUser(user_data);
     }
     if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
-        user_data.setFieldValue("user_status", "offline");
+        user_data.setState("offline");
         updateOnlineUser(user_data);
     }
     if (event.type() == UserEvent_EventType_USER_JOINED_SESSION){
-        user_data.setFieldValue("user_status", "busy");
+        user_data.setState("busy");
         updateOnlineUser(user_data);
     }
     updateCounts();
@@ -205,18 +205,18 @@ void OnlineManagerWidget::ws_participantEvent(ParticipantEvent event)
     participant_data.setFieldValue("participant_uuid",  QString::fromStdString(event.participant_uuid()));
 
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED || event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
-        participant_data.setFieldValue("participant_status", "online");
+        participant_data.setState("online");
         if (QString::fromStdString(event.participant_site_name()) == m_siteName)
             updateOnlineParticipant(participant_data);
     }
 
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
-        participant_data.setFieldValue("participant_status", "offline");
+        participant_data.setState("offline");
         updateOnlineParticipant(participant_data);
     }
 
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_JOINED_SESSION){
-        participant_data.setFieldValue("participant_status", "busy");
+        participant_data.setState("busy");
         updateOnlineParticipant(participant_data);
     }
 
@@ -230,18 +230,18 @@ void OnlineManagerWidget::ws_deviceEvent(DeviceEvent event)
     device_data.setFieldValue("device_uuid",  QString::fromStdString(event.device_uuid()));
 
     if (event.type() == DeviceEvent_EventType_DEVICE_CONNECTED || event.type() == DeviceEvent_EventType_DEVICE_LEFT_SESSION){
-        device_data.setFieldValue("device_status", "online");
+        device_data.setState("online");
         // TODO: Filter by site?
         updateOnlineDevice(device_data);
     }
 
     if (event.type() == DeviceEvent_EventType_DEVICE_DISCONNECTED){
-        device_data.setFieldValue("device_status", "offline");
+        device_data.setState("offline");
         updateOnlineDevice(device_data);
     }
 
     if (event.type() == DeviceEvent_EventType_DEVICE_JOINED_SESSION){
-        device_data.setFieldValue("device_status", "busy");
+        device_data.setState("busy");
         updateOnlineDevice(device_data);
     }
     updateCounts();
@@ -284,4 +284,32 @@ void OnlineManagerWidget::on_btnShowOnlineUsers_clicked()
 void OnlineManagerWidget::on_btnShowOnlineDevices_clicked()
 {
     ui->lstOnlineDevices->setVisible(ui->btnShowOnlineDevices->isChecked());
+}
+
+void OnlineManagerWidget::on_lstOnlineParticipants_itemClicked(QListWidgetItem *item)
+{
+    ui->lstOnlineDevices->clearSelection();
+    ui->lstOnlineUsers->clearSelection();
+
+    QString uuid = m_onlineParticipants.key(item);
+    emit dataDisplayRequest(TERADATA_PARTICIPANT, uuid);
+
+}
+
+void OnlineManagerWidget::on_lstOnlineUsers_itemClicked(QListWidgetItem *item)
+{
+    ui->lstOnlineDevices->clearSelection();
+    ui->lstOnlineParticipants->clearSelection();
+
+    QString uuid = m_onlineUsers.key(item);
+    emit dataDisplayRequest(TERADATA_USER, uuid);
+}
+
+void OnlineManagerWidget::on_lstOnlineDevices_itemClicked(QListWidgetItem *item)
+{
+    ui->lstOnlineParticipants->clearSelection();
+    ui->lstOnlineUsers->clearSelection();
+
+    QString uuid = m_onlineDevices.key(item);
+    emit dataDisplayRequest(TERADATA_DEVICE, uuid);
 }

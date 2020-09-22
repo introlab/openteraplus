@@ -91,6 +91,8 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
     connect(m_comManager, &ComManager::downloadCompleted, this, &ParticipantWidget::onDownloadCompleted);
 
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &ParticipantWidget::ws_participantEvent);
+
     connect(ui->btnDelSession, &QPushButton::clicked, this, &ParticipantWidget::btnDeleteSession_clicked);
     connect(ui->btnAddDevice, &QPushButton::clicked, this, &ParticipantWidget::btnAddDevice_clicked);
     connect(ui->btnDelDevice, &QPushButton::clicked, this, &ParticipantWidget::btnDelDevice_clicked);
@@ -128,14 +130,38 @@ void ParticipantWidget::updateFieldsValue()
         ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
         ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
         ui->chkWebAccess->setChecked(m_data->getFieldValue("participant_token_enabled").toBool());
-        //ui->txtWeb->setText(m_data->getFieldValue("participant_token").toString());
         refreshWebAccessUrl();
         ui->txtUsername->setText(m_data->getFieldValue("participant_username").toString());
+
+        // Hide service combo box if only one service
+        ui->cmbServices->setVisible(ui->cmbServices->count()>1);
+        ui->frameWeb->setVisible(ui->cmbServices->count()>0 && ui->chkWebAccess->isChecked());
+
         // Must "trigger" the slots for username - password, since they are not set otherwise
         on_txtUsername_textEdited(ui->txtUsername->text());
         on_txtPassword_textEdited("");
 
         ui->wdgParticipant->fillFormFromData(m_data->toJson());
+
+        // Status
+        ui->icoOnline->setVisible(m_data->isEnabled());
+        if (!m_data->hasStateField()){
+            if (m_data->isEnabled()){
+                m_data->setState("offline");
+            }else{
+                m_data->setState("");
+            }
+        }
+        if (m_data->hasStateField()){
+            ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
+            if (m_data->isOnline() || m_data->isBusy()){
+                ui->icoOnline->setPixmap(QPixmap("://status/status_online.png"));
+            }else{
+                ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
+            }
+        }
+
+        ui->frameNewSession->setVisible(m_data->isEnabled() && !m_data->isNew());
     }
 }
 
@@ -551,6 +577,26 @@ void ParticipantWidget::onDownloadCompleted(DownloadedFile *file)
     }
 
 
+}
+
+void ParticipantWidget::ws_participantEvent(ParticipantEvent event)
+{
+    if (!m_data)
+        return;
+
+    if (QString::fromStdString(event.participant_uuid()) != m_data->getFieldValue("participant_uuid").toString())
+        return; // Not for us!
+
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED || event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
+        m_data->setState("online");
+    }
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
+        m_data->setState("offline");
+    }
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_JOINED_SESSION){
+        m_data->setState("busy");
+    }
+    updateFieldsValue();
 }
 
 void ParticipantWidget::btnDeleteSession_clicked()

@@ -30,7 +30,7 @@
        </property>
       </widget>
      </item>
-     <item>
+     <item alignment="Qt::AlignRight">
       <widget class="QFrame" name="frameSessionSetup">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Expanding">

@@ -53,10 +53,8 @@ private slots:
     void com_posting(QString path, QString data);
     void com_querying(QString path);
     void com_deleting(QString path);
-
     void com_downloadProgress(DownloadedFile* file);
     void com_downloadCompleted(DownloadedFile* file);
-
     void com_sessionStarted(TeraData session_type, int id_session);
     void com_sessionStartRequested(TeraData session_type);
     void com_sessionStopped(int id_session);
@@ -74,6 +72,7 @@ private slots:
 
     void editorDialogFinished();
     void dataDisplayRequested(TeraDataTypes data_type, int data_id);
+    void dataDisplayRequestedByUuid(TeraDataTypes data_type, QString data_uuid);
     void dataDeleteRequested(TeraDataTypes data_type, int data_id);   
     void dataEditorCancelled();
 
@@ -97,7 +96,7 @@ private:
     // Messages and notifications
     void addMessage(Message::MessageType msg_type, QString msg);
     void addMessage(Message &msg);
-    void addNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath = QString());
+    void addNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath = QString(), const QString &soundPath = QString());
 
     // Events
     QIcon getGlobalEventIcon(GlobalEvent &global_event);

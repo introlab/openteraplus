@@ -41,7 +41,7 @@ QT5_WRAP_UI(ptz_test_moc_uis ${ptz_test_uis})
 QT5_ADD_RESOURCES(ptz_test_qrc_res ${ptz_test_qrcs})
 
 #This will generate moc_* for Qt
-qt5_wrap_cpp(ptz_test_moc_srcs ${ptz_test_headers})
+qt5_wrap_cpp(ptz_test_moc_uis ${ptz_test_headers})
 
 add_executable(ptz_test MACOSX_BUNDLE WIN32
     ${ptz_test_headers}

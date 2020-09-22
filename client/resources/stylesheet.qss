@@ -96,6 +96,30 @@ QTabBar::tab:!selected {
 }
 
 /*
+    QGroupBox
+*/
+
+QGroupBox {
+    border: 1px solid gray;
+    border-color: gray;
+    margin-top: 27px;
+    font-size: 12px;
+        font-weight: bold;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 5px 150px;
+    background-color: #FF17365D;
+    color: rgb(255, 255, 255);
+}
+
+/*
     QToolBox
 */
 QToolBox{
@@ -460,7 +484,7 @@ QLabel#lblWarning{
 
 
 /* Customizations for LoginDialog */
-QGroupBox#grpLogos{background-color:rgba(200,200,200,75%);}
+QFrame#frameLogos{background-color:rgba(200,200,200,75%);}
 QLabel#lblMessage{color:white;}
 QFrame#frameMessage{background-color: transparent;}
 
@@ -490,14 +514,14 @@ QPushButton#btnNewSession, QPushButton#btnStartSession {
     background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(10,140,10,100%), stop: 0.2  rgba(0,45,5,100%), stop:1 rgba(10,140,10,100%));
     color: white;
     border: 1px solid rgb(0,150,0);
-    min-height:48px;
+    min-height:36px;
 }
 
 QPushButton#btnNewSession:hover, QPushButton#btnStartSession:hover {
     background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,45,5,100%), stop: 0.2  rgba(10,140,10,100%), stop:1 rgba(0,45,5,100%));
     color: white;
     border: 1px solid rgb(0,150,0);
-    min-height:48px;
+    min-height:36px;
 }
 
 QPushButton#btnEditUser,QPushButton#btnConfig {background-color: rgba(100,100,100,50%); min-width: 0px;}
@@ -606,7 +630,8 @@ QWidget#wdgParticipantsNum{
 
 QListWidget#lstOnlineParticipants, QListWidget#lstOnlineUsers, QListWidget#lstOnlineDevices{
     background-color: rgba(255,255,255,20%);
-    selection-color: black;
+    selection-background-color: rgba(0,0,0,20%);
+    /*selection-color: black;*/
 }
 
 QFrame#frameOnlineParticipants, QFrame#frameOnlineUsers, QFrame#frameOnlineDevices{

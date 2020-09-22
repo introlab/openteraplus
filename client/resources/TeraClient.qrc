@@ -115,6 +115,11 @@
         <file>icons/play.png</file>
         <file>icons/view_off.png</file>
         <file>icons/view_on.png</file>
+        <file>status/status_unknown.png</file>
+        <file>status/status_online.png</file>
+        <file>status/status_offline.png</file>
+        <file>sounds/notify_offline.wav</file>
+        <file>sounds/notify_online.wav</file>
     </qresource>
     <qresource prefix="/videorehab"/>
 </RCC>

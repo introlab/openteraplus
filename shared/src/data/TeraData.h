@@ -76,6 +76,7 @@ public:
     bool hasStateField() const;
     bool isOnline() const;
     bool isBusy() const;
+    void setState(const QString& state);
 
     bool isNew();
 

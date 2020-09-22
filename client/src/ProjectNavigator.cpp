@@ -183,6 +183,8 @@ void ProjectNavigator::connectSignals()
     //connect(m_comManager, &ComManager::deleteResultsOK, this, &ProjectNavigator::processItemDeletedReply);
     connect(m_comManager, &ComManager::currentUserUpdated, this, &ProjectNavigator::processCurrentUserUpdated);
 
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &ProjectNavigator::ws_participantEvent);
+
     void (QComboBox::* comboIndexChangedSignal)(int) = &QComboBox::currentIndexChanged;
     connect(ui->cmbSites, comboIndexChangedSignal, this, &ProjectNavigator::currentSiteChanged);
     connect(ui->btnEditSite, &QPushButton::clicked, this, &ProjectNavigator::btnEditSite_clicked);
@@ -581,6 +583,34 @@ void ProjectNavigator::processParticipantsReply(QList<TeraData> participants)
     for (int i=0; i<participants.count(); i++){
         updateParticipant(&participants.at(i));
     }
+}
+
+void ProjectNavigator::ws_participantEvent(ParticipantEvent event)
+{
+    QString part_uuid = QString::fromStdString(event.participant_uuid());
+
+    if (!m_participants.contains(part_uuid))
+        return; // Participant isn't currently displayed, so nothing to do!
+
+    TeraData* part_data = &m_participants[part_uuid];
+    int part_id = part_data->getId();
+    QTreeWidgetItem* part_item = m_participants_items[part_id];
+
+    if (!part_item){
+        LOG_ERROR("Couldn't find the participant " + part_uuid + " in the TreeWidgetItem list - mismatch, possible bug...", "ProjectNavigator::ws_participantEvent");
+        return; // Mismatch between saved data and list of TreeWidgetItems... Shouldn't happen!
+    }
+
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED || event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
+        part_data->setState("online");
+    }
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
+        part_data->setState("offline");
+    }
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_JOINED_SESSION){
+        part_data->setState("busy");
+    }
+    updateParticipant(part_data);
 }
 
 void ProjectNavigator::processItemDeletedReply(QString path, int id)

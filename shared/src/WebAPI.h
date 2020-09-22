@@ -53,7 +53,7 @@
 #define WEB_FORMS_QUERY_SERVICE         "type=service"
 #define WEB_FORMS_QUERY_SERVICE_CONFIG  "type=service_config"
 
-#define WEB_QUERY_USERUUID          "user_uuid"
+#define WEB_QUERY_UUID              "uuid"
 #define WEB_QUERY_APPTAG            "app_tag"
 #define WEB_QUERY_ID_USER           "id_user"
 #define WEB_QUERY_ID                "id"

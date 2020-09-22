@@ -65,7 +65,8 @@ void SessionLobbyDialog::connectSignals()
 void SessionLobbyDialog::queryLists()
 {
     QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
+    if (m_idProject>0)
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
     args.addQueryItem(WEB_QUERY_LIST, "1");
     m_comManager->doQuery(WEB_USERINFO_PATH, args);
     m_gotUsers = false;
@@ -81,10 +82,16 @@ void SessionLobbyDialog::queryLists()
 void SessionLobbyDialog::checkReady()
 {
     setEnabled(m_gotDevices && m_gotParticipants && m_gotUsers);
+    if (isEnabled()){
+        ui->wdgSessionInvite->selectDefaultFilter();
+    }
 }
 
 void SessionLobbyDialog::configureWidget()
 {
+    // Session Invite Widget
+    ui->wdgSessionInvite->setComManager(m_comManager);
+
     // Get session type category
     TeraSessionCategory::SessionTypeCategories category = getSessionTypeCategory();
 

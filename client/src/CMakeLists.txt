@@ -36,6 +36,7 @@ set(headers
     OnlineManagerWidget.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
+    editors/UserSummaryWidget.h
     editors/TeraForm.h
     editors/DataListWidget.h
     editors/SiteWidget.h
@@ -87,6 +88,7 @@ set(srcs
     OnlineManagerWidget.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
+    editors/UserSummaryWidget.cpp
     editors/TeraForm.cpp
     editors/DataListWidget.cpp
     editors/SiteWidget.cpp
@@ -126,6 +128,7 @@ SET(uis
     SessionInviteWidget.ui
     OnlineManagerWidget.ui
     editors/UserWidget.ui
+    editors/UserSummaryWidget.ui
     editors/TeraForm.ui
     editors/DataListWidget.ui
     editors/SiteWidget.ui

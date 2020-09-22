@@ -82,6 +82,7 @@ private slots:
      void processProjectsReply(QList<TeraData> projects);
      void processGroupsReply(QList<TeraData> groups);
      void processParticipantsReply(QList<TeraData> participants);
+     void ws_participantEvent(ParticipantEvent event);
 
      void processItemDeletedReply(QString path, int id);
 

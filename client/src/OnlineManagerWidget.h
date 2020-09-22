@@ -54,6 +54,12 @@ private slots:
     void on_btnShowOnlineParticipants_clicked();
     void on_btnShowOnlineUsers_clicked();
     void on_btnShowOnlineDevices_clicked();
+    void on_lstOnlineParticipants_itemClicked(QListWidgetItem *item);
+    void on_lstOnlineUsers_itemClicked(QListWidgetItem *item);
+    void on_lstOnlineDevices_itemClicked(QListWidgetItem *item);
+
+signals:
+    void dataDisplayRequest(TeraDataTypes data_type, QString data_uuid);
 };
 
 #endif // ONLINEMANAGERWIDGET_H

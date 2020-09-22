@@ -2,6 +2,7 @@
 #include <QNetworkReply>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QSound>
 
 #include "ui_MainWindow.h"
 
@@ -9,6 +10,7 @@
 #include "editors/ProjectWidget.h"
 #include "editors/GroupWidget.h"
 #include "editors/ParticipantWidget.h"
+#include "editors/UserSummaryWidget.h"
 
 
 MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
@@ -78,6 +80,8 @@ void MainWindow::connectSignals()
     connect(ui->projNavigator, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
     connect(ui->projNavigator, &ProjectNavigator::dataDeleteRequest, this, &MainWindow::dataDeleteRequested);
     connect(ui->projNavigator, &ProjectNavigator::currentSiteWasChanged, this, &MainWindow::currentSiteChanged);
+
+    connect(ui->onlineManager, &OnlineManagerWidget::dataDisplayRequest, this, &MainWindow::dataDisplayRequestedByUuid);
 
     connect(GlobalEventLogger::instance(), &GlobalEventLogger::newEventLogged, this, &MainWindow::addGlobalEvent);
 }
@@ -160,6 +164,10 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
             limited = false;
         m_data_editor->setLimited(limited);
 
+    }
+
+    if (data_type == TERADATA_USER){
+        m_data_editor = new UserSummaryWidget(m_comManager, data);
     }
 
     if (m_data_editor){
@@ -377,8 +385,29 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID, QString::number(data_id));
+    if (data_type == TERADATA_PARTICIPANT){
+        // Also query for status
+        query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
+    }
     m_comManager->doQuery(TeraData::getPathForDataType(data_type), query);
 
+}
+
+void MainWindow::dataDisplayRequestedByUuid(TeraDataTypes data_type, QString data_uuid)
+{
+    // Request to display a specific item by uuid.
+    QUrlQuery query;
+    query.addQueryItem(WEB_QUERY_UUID, data_uuid);
+    if (data_type == TERADATA_PARTICIPANT || data_type == TERADATA_DEVICE || data_type == TERADATA_USER){
+        // Also query for status
+        query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
+    }
+    m_comManager->doQuery(TeraData::getPathForDataType(data_type), query);
+
+    // Set flag to wait for that specific data type
+    if (m_waiting_for_data_type != TERADATA_NONE)
+        LOG_WARNING("Request for new data for editor, but still waiting on previous one!", "MainWindow::dataDisplayRequested");
+    m_waiting_for_data_type = data_type;
 }
 
 void MainWindow::dataDeleteRequested(TeraDataTypes data_type, int data_id)
@@ -571,7 +600,7 @@ void MainWindow::ws_userEvent(UserEvent event)
     // TODO: Don't do anything for current user!
     if (event.type() == UserEvent_EventType_USER_CONNECTED){
         QString msg_text = "<font color=yellow>" + QString::fromStdString(event.user_fullname()) + "</font>" + tr(" est en ligne.");
-        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user_online.png");
+        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user_online.png", "://sounds/notify_online.wav");
 
         // Add a trace in events also
         GlobalEvent g_event(EVENT_LOGIN, msg_text);
@@ -583,7 +612,7 @@ void MainWindow::ws_userEvent(UserEvent event)
 
     if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
         QString msg_text = "<font color=yellow>" + QString::fromStdString(event.user_fullname()) + "</font>" +  tr(" est hors-ligne.");
-        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user_offline.png");
+        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user_offline.png", "://sounds/notify_offline.wav");
 
         GlobalEvent g_event(EVENT_LOGOUT, msg_text);
         addGlobalEvent(g_event);
@@ -600,7 +629,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
         if (QString::fromStdString(event.participant_site_name()) == ui->projNavigator->getCurrentSiteName()){
             QString msg_text = "<u>" + QString::fromStdString(event.participant_project_name()) + "</u><br/>";
             msg_text += "<font color=yellow>" + QString::fromStdString(event.participant_name()) + "</font>" + tr(" est en ligne.");
-            addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient_online.png");
+            addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient_online.png", "://sounds/notify_online.wav");
             // Add a trace in events also
             GlobalEvent g_event(EVENT_LOGIN, msg_text);
             addGlobalEvent(g_event);
@@ -615,7 +644,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
         if (QString::fromStdString(event.participant_site_name()) == ui->projNavigator->getCurrentSiteName()){
             QString msg_text = "<u>" + QString::fromStdString(event.participant_project_name()) + "</u><br/>";
             msg_text += "<font color=yellow>" + QString::fromStdString(event.participant_name()) + "</font>" + tr(" est hors-ligne.");
-            addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient.png");
+            addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/patient.png", "://sounds/notify_offline.wav");
             // Add a trace in events also
             GlobalEvent g_event(EVENT_LOGOUT, msg_text);
             addGlobalEvent(g_event);
@@ -663,7 +692,7 @@ void MainWindow::addMessage(Message &msg)
         showNextMessage();
 }
 
-void MainWindow::addNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath)
+void MainWindow::addNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath, const QString &soundPath)
 {
     // Notification window
     NotificationWindow* notify = new NotificationWindow(this, notification_type, m_notifications.count()+1);
@@ -673,6 +702,11 @@ void MainWindow::addNotification(const NotificationWindow::NotificationType noti
 
     connect(notify, &NotificationWindow::notificationFinished, this, &MainWindow::notificationCompleted);
     connect(notify, &NotificationWindow::notificationClosed, this, &MainWindow::notificationCompleted);
+
+    if (m_comManager->getCurrentPreferences().isNotifySounds() && !soundPath.isEmpty()){
+        if (!m_inSessionWidget) // Don't play sounds when in session!
+            QSound::play(soundPath);
+    }
 }
 
 bool MainWindow::hasWaitingMessage()
