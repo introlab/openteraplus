@@ -12,18 +12,22 @@
 #include <QGraphicsVideoItem>
 #include <QMediaPlayer>
 
-class MyVideoWidget : public QVideoWidget {
+
+class MyVideoItem : public QGraphicsVideoItem {
     Q_OBJECT
 public:
-    MyVideoWidget(QCamera *camera, QWidget *parent=nullptr);
+    MyVideoItem(QGraphicsItem *parent=nullptr);
 
 signals:
-    void videoClicked(int x, int y);
+    void videoClicked(int x, int y, QSizeF screenSize);
 
 protected:
-    virtual void mousePressEvent(QMouseEvent *event);
-    QCamera *m_camera;
+
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
 };
+
 
 class PTZTestMainWindow : public QMainWindow
 {
@@ -35,11 +39,10 @@ class PTZTestMainWindow : public QMainWindow
         Ui::MainWindow m_ui;
         Vivotek8111 m_ptz;
         VirtualCamera m_virtualCamera;
-        MyVideoWidget *m_cameraViewfinder;
         QCamera *m_camera;
         QGraphicsScene *m_scene;
         QGraphicsView *m_view;
-        QGraphicsVideoItem *m_videoItem;
+        MyVideoItem *m_videoItem;
 
 
 
@@ -48,7 +51,7 @@ private slots:
         void on_pushButton_RTSP_Stop_clicked();
         void on_pushButton_Quit_clicked();
         void on_pushButton_PTZ_Set_clicked();
-        void videoClicked(int x, int y);
+        void videoClicked(int x, int y, QSizeF screenSize);
         void cameraConnected(CameraInfo info);
 
 

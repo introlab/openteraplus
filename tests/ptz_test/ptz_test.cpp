@@ -7,37 +7,29 @@
 #include <QCameraViewfinderSettings>
 #include <QCameraImageCapture>
 #include <QtCore>
-
+#include <QGraphicsSceneMouseEvent>
 
 PTZTestMainWindow::PTZTestMainWindow(QWidget *parent)
-    : QMainWindow(parent), m_cameraViewfinder(nullptr), m_camera(nullptr)
+    : QMainWindow(parent),m_camera(nullptr), m_scene(nullptr), m_view(nullptr), m_videoItem(nullptr)
+
 {
     m_ui.setupUi(this);
-
-    //Setup camera view
-    //m_cameraViewfinder = new QCameraViewfinder(m_ui.widget_CameraView);
-    //m_ui.widget_CameraView->layout()->addWidget(m_cameraViewfinder);
-
 
     connect(&m_ptz, &ICameraDriver::cameraConnected, this, &PTZTestMainWindow::cameraConnected);
 
     //Create player
     m_scene = new QGraphicsScene(this);
     m_view = new QGraphicsView(m_ui.widget_CameraView);
+
     m_view->setScene(m_scene);
     m_ui.widget_CameraView->layout()->addWidget(m_view);
 
-    m_videoItem = new QGraphicsVideoItem();
+    m_videoItem = new MyVideoItem();
+    connect(m_videoItem, &MyVideoItem::videoClicked,this,&PTZTestMainWindow::videoClicked);
     m_scene->addItem(m_videoItem);
 
     fillCameraInfoCombo();
 }
-
-
-
-
-
-
 
 void PTZTestMainWindow::on_pushButton_RTSP_Start_clicked()
 {
@@ -71,8 +63,6 @@ void PTZTestMainWindow::on_pushButton_PTZ_Set_clicked()
 
     m_ptz.init(hostname, port, user, password);
 
-
-
 }
 
 void PTZTestMainWindow::fillCameraInfoCombo()
@@ -86,8 +76,6 @@ void PTZTestMainWindow::fillCameraInfoCombo()
         m_ui.comboBox_Camera->insertItem(-1,info.description(), info.deviceName());
     }
 }
-
-
 
 int main (int argc, char* argv[])
 {
@@ -121,83 +109,47 @@ void PTZTestMainWindow::on_comboBox_Camera_activated(int index)
     {
         m_camera->stop();
         m_camera->deleteLater();
-        if (m_cameraViewfinder)
-            m_cameraViewfinder->deleteLater();
     }
 
     m_camera = new QCamera(info);
     m_camera->setCaptureMode(QCamera::CaptureVideo);
     m_camera->setViewfinder(m_videoItem);
     m_camera->start();
-
-#if 0
-    m_camera->load();
-    QCameraImageCapture capture(m_camera);
-
-    auto resolutions = capture.supportedResolutions();
-    qDebug() << "resolutions" << resolutions;
-
-
-    //m_camera->load();
-    m_cameraViewfinder = new MyVideoWidget(m_camera, m_ui.widget_CameraView);
-
-
-    connect(m_cameraViewfinder, &MyVideoWidget::videoClicked, this, &PTZTestMainWindow::videoClicked);
-
-    //auto testView = new QVideoWidget(m_ui.widget_CameraView);
-    //QCameraViewfinderSettings settings;
-    auto formats = m_camera->supportedViewfinderSettings();
-
-    foreach(auto format, formats) {
-        qDebug() << format.resolution();
-    }
-
-    auto status = m_camera->status();
-    m_ui.widget_CameraView->layout()->addWidget(m_cameraViewfinder);
-    m_camera->setViewfinder(m_cameraViewfinder);
-    m_cameraViewfinder->show();
-    qDebug() << m_camera->errorString();
-    m_camera->start();
-
-#endif
 }
 
-MyVideoWidget::MyVideoWidget(QCamera *camera, QWidget *parent)
-    :   QVideoWidget(parent), m_camera(camera)
-{
-
-}
-
-void MyVideoWidget::mousePressEvent(QMouseEvent *event)
-{
-    qDebug() << "MyVideoWidget::mousePressEvent(QMouseEvent *event)";
-    auto x = event->x();
-    auto y = event->y();
-
-    qDebug() << x << "," << y;
-    auto media = this->mediaObject();
-    if (m_camera)
-    {
-        qDebug() << "Resolution:" << this->mediaObject()->metaData("Resolution");
-        auto settings  = m_camera->viewfinderSettings();
-        auto resolution = settings.resolution();
-        qDebug() << resolution;
-        emit videoClicked(x, y);
-    }
-
-    QVideoWidget::mousePressEvent(event);
-}
-
- void PTZTestMainWindow::videoClicked(int x, int y)
+ void PTZTestMainWindow::videoClicked(int x, int y, QSizeF screenSize)
  {
-    qDebug() << QString("void PTZTestMainWindow::videoClicked(int x=%1, int y=%2)").arg(x).arg(y);
-    QSize screenSize(640,480);
+    QSize mySize(screenSize.toSize());
     QPoint point(x,y);
-    m_ptz.setPointNClick(point, screenSize);
+    m_ptz.setPointNClick(point, mySize);
  }
 
  void PTZTestMainWindow::cameraConnected(CameraInfo info)
  {
     qDebug() << " void PTZTestMainWindow::cameraConnected(CameraInfo)";
     qDebug() << info.toXmlStr();
+ }
+
+ MyVideoItem::MyVideoItem(QGraphicsItem *item)
+     : QGraphicsVideoItem(item)
+ {
+
+ }
+
+ void MyVideoItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+ {
+
+    qDebug() << "MyVideoItem::mousePressEvent(QGraphicsSceneMouseEvent *event)";
+    qDebug() << event->pos();
+    qDebug() << "scale" << this->scale();
+    qDebug() << "size" << this->size();
+    qDebug() << "nativeSize" << this->nativeSize();
+    emit  videoClicked(event->pos().x(), event->pos().y(), this->size());
+    QGraphicsVideoItem::mousePressEvent(event);
+ }
+
+ void MyVideoItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+ {
+    qDebug() << " void MyVideoItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)";
+    QGraphicsVideoItem::mouseReleaseEvent(event);
  }
