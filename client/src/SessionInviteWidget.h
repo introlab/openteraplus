@@ -33,6 +33,10 @@ public:
     void setAvailableUsers(const QList<TeraData> &users);
     void setAvailableDevices(const QList<TeraData> &devices);
 
+    void addRequiredUser(const int& required_id);
+    void addRequiredParticipant(const int& required_id);
+    void addRequiredDevice(const int& required_id);
+
     QList<TeraData> getParticipantsInSession();
     QList<TeraData> getUsersInSession();
     QList<TeraData> getDevicesInSession();

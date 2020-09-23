@@ -19,7 +19,6 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QTimer>
-#include <QUuid>
 
 #include <QStringList>
 
@@ -51,7 +50,7 @@ public:
     void doUpdateCurrentUser();
     void doDownload(const QString& save_path, const QString &path, const QUrlQuery &query_args = QUrlQuery());
 
-    void startSession(const TeraData& session_type, const QStringList &participants_list, const QStringList &users_list = QStringList());
+    void startSession(const TeraData& session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list);
     void stopSession(const TeraData& session, const int &id_service = 0);
 
     TeraData &getCurrentUser();
@@ -168,6 +167,7 @@ signals:
     void sessionStartRequested(TeraData session_type);
     void sessionStopped(int id_session);
     void sessionStopRequested(TeraData session_type);
+    void sessionError(QString error);
 
 
 public slots:

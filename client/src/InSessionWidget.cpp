@@ -11,6 +11,7 @@ InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_typ
     m_comManager = comMan;
     m_serviceWidget = nullptr;
     m_startDiag = nullptr;
+    m_session = nullptr;
 
     connectSignals();
 
@@ -95,7 +96,11 @@ void InSessionWidget::on_btnEndSession_clicked()
         if (getSessionTypeCategory() == TeraSessionCategory::SESSION_TYPE_SERVICE){
             id_service = m_sessionType.getFieldValue("id_service").toInt();
         }
-        m_comManager->stopSession(*m_session, id_service);
+        if (m_session){
+            m_comManager->stopSession(*m_session, id_service);
+        }else{
+            LOG_CRITICAL("No session! Can't stop it!", "InSessionWidget::on_btnEndSession_clicked");
+        }
         showStartSessionDiag(tr("Arrêt de la séance en cours..."));
     }
 }

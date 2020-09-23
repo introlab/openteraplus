@@ -78,7 +78,7 @@ void UserSummaryWidget::updateFieldsValue()
         }
 
         ui->frameNewSession->setVisible(m_data->isEnabled() && !m_data->isNew() &&
-                                        m_data->getFieldValue("user_uuid") != m_comManager->getCurrentUser().getFieldValue("user_uuid"));
+                                        m_data->getUuid() != m_comManager->getCurrentUser().getUuid());
     }
 }
 
@@ -121,7 +121,7 @@ void UserSummaryWidget::ws_userEvent(UserEvent event)
     if (!m_data)
         return;
 
-    if (QString::fromStdString(event.user_uuid()) != m_data->getFieldValue("user_uuid").toString())
+    if (QString::fromStdString(event.user_uuid()) != m_data->getUuid())
         return; // Not for us!
 
     if (event.type() == UserEvent_EventType_USER_CONNECTED || event.type() == UserEvent_EventType_USER_LEFT_SESSION){
@@ -140,8 +140,11 @@ void UserSummaryWidget::sessionLobbyStartSessionRequested()
 {
     int id_session_type = ui->cmbSessionType->currentData().toInt();
     // Start session
-    // TODO: Get real participant list from SessionLobbyDialog!
-    m_comManager->startSession(*m_ids_session_types[id_session_type], QStringList(m_data->getFieldValue("participant_uuid").toString()), QStringList());
+    m_comManager->startSession(*m_ids_session_types[id_session_type],
+                               m_sessionLobby->getIdSession(),
+                               m_sessionLobby->getSessionParticipantsUuids(),
+                               m_sessionLobby->getSessionUsersUuids(),
+                               m_sessionLobby->getSessionDevicesUuids());
 
     m_sessionLobby->deleteLater();
     m_sessionLobby = nullptr;
@@ -168,7 +171,7 @@ void UserSummaryWidget::on_btnNewSession_clicked()
     if (m_sessionLobby)
         m_sessionLobby->deleteLater();
 
-    m_sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], -1, this);
+    m_sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], -1, 0, this);
 
     // Add current users to session
     m_sessionLobby->addUsersToSession(QList<TeraData>() << m_comManager->getCurrentUser() << *m_data, QList<int>() << m_comManager->getCurrentUser().getId() << m_data->getId());

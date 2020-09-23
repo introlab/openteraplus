@@ -39,8 +39,9 @@ private:
     Ui::ParticipantWidget *ui;
 
     QMap<int, QTableWidgetItem*>    m_listSessions_items; // ID Session to QTableWidgetItem* mapping
+
     QMap<int, TeraData*>            m_ids_session_types;
-    QMap<int, TeraData*>            m_ids_sessions;
+    QMap<int, TeraData*>            m_ids_sessions;       // ID Session to data mapping
 
     QMap<int, QListWidgetItem*>     m_listAvailDevices_items;   // int  = device_id
     QMap<int, QListWidgetItem*>     m_listDevices_items;        // int  = device_id
@@ -84,6 +85,7 @@ private slots:
     void btnDownloadSession_clicked();
     void btnDowloadAll_clicked();
     void btnViewSession_clicked();
+    void btnResumeSession_clicked();
 
     void currentSelectedSessionChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
     void currentCalendarDateChanged(QDate current_date);
@@ -92,6 +94,7 @@ private slots:
     void displayNextMonth();
     void displayPreviousMonth();
 
+    void showSessionLobby(const int& id_session_type, const int& id_session);
     void sessionLobbyStartSessionRequested();
     void sessionLobbyStartSessionCancelled();
 

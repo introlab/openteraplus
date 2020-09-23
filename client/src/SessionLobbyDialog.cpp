@@ -1,12 +1,13 @@
 #include "SessionLobbyDialog.h"
 #include "ui_SessionLobbyDialog.h"
 
-SessionLobbyDialog::SessionLobbyDialog(ComManager* comManager, TeraData &session_type, int id_project, QWidget *parent) :
+SessionLobbyDialog::SessionLobbyDialog(ComManager* comManager, TeraData &session_type, int id_project, int id_session, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SessionLobbyDialog),
     m_comManager(comManager),
     m_sessionType(session_type),
-    m_idProject(id_project)
+    m_idProject(id_project),
+    m_idSession(id_session)
 {
     ui->setupUi(this);
 
@@ -39,6 +40,44 @@ void SessionLobbyDialog::addDevicesToSession(const QList<TeraData> &devices, con
     ui->wdgSessionInvite->addDevicesToSession(devices, required_ids);
 }
 
+QStringList SessionLobbyDialog::getSessionParticipantsUuids()
+{
+    QStringList uuids;
+    QList<TeraData> participants = ui->wdgSessionInvite->getParticipantsInSession();
+
+    foreach(TeraData part, participants){
+        uuids.append(part.getUuid());
+    }
+    return uuids;
+}
+
+QStringList SessionLobbyDialog::getSessionUsersUuids()
+{
+    QStringList uuids;
+    QList<TeraData> users = ui->wdgSessionInvite->getUsersInSession();
+
+    foreach(TeraData user, users){
+        uuids.append(user.getUuid());
+    }
+    return uuids;
+}
+
+QStringList SessionLobbyDialog::getSessionDevicesUuids()
+{
+    QStringList uuids;
+    QList<TeraData> devices = ui->wdgSessionInvite->getDevicesInSession();
+
+    foreach(TeraData device, devices){
+        uuids.append(device.getUuid());
+    }
+    return uuids;
+}
+
+int SessionLobbyDialog::getIdSession() const
+{
+    return m_idSession;
+}
+
 void SessionLobbyDialog::setSetupWidget(QWidget *wdg)
 {
 
@@ -59,6 +98,7 @@ void SessionLobbyDialog::connectSignals()
     connect(m_comManager, &ComManager::usersReceived, this, &SessionLobbyDialog::processUsersReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &SessionLobbyDialog::processParticipantsReply);
     connect(m_comManager, &ComManager::devicesReceived, this, &SessionLobbyDialog::processDevicesReply);
+    connect(m_comManager, &ComManager::sessionsReceived, this, &SessionLobbyDialog::processSessionsReply);
 
 }
 
@@ -74,6 +114,11 @@ void SessionLobbyDialog::queryLists()
     m_gotParticipants = false;
     m_comManager->doQuery(WEB_DEVICEINFO_PATH, args);
     m_gotDevices = false;
+    if (m_idSession>0){
+        m_gotSession = false;
+    }else{
+        m_gotSession = true;
+    }
 
     // Disable form until we got everything we need!
     checkReady();
@@ -81,7 +126,14 @@ void SessionLobbyDialog::queryLists()
 
 void SessionLobbyDialog::checkReady()
 {
-    setEnabled(m_gotDevices && m_gotParticipants && m_gotUsers);
+    setEnabled(m_gotDevices && m_gotParticipants && m_gotUsers && m_gotSession);
+
+    if (m_gotDevices && m_gotParticipants && m_gotUsers && !m_gotSession){
+        // Query for session information to add invitees
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_idSession));
+        m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+    }
     if (isEnabled()){
         ui->wdgSessionInvite->selectDefaultFilter();
     }
@@ -149,5 +201,46 @@ void SessionLobbyDialog::processParticipantsReply(QList<TeraData> participants)
 {
     ui->wdgSessionInvite->setAvailableParticipants(participants);
     m_gotParticipants = true;
+    checkReady();
+}
+
+void SessionLobbyDialog::processSessionsReply(QList<TeraData> sessions)
+{
+    foreach(TeraData session, sessions){
+        if (session.getId() == m_idSession){
+            // Get participants, users and devices list, and mark them as "required" and invited
+            QVariantList item_list;
+
+            if (session.hasFieldName("session_participants")){
+                item_list = session.getFieldValue("session_participants").toList();
+
+                for(QVariant session_part:item_list){
+                    QVariantMap part_info = session_part.toMap();
+                    ui->wdgSessionInvite->addRequiredParticipant(part_info["id_participant"].toInt());
+                }
+            }
+
+            if (session.hasFieldName("session_users")){
+                item_list = session.getFieldValue("session_users").toList();
+
+                for(QVariant session_user:item_list){
+                    QVariantMap user_info = session_user.toMap();
+                    ui->wdgSessionInvite->addRequiredUser(user_info["id_user"].toInt());
+                }
+            }
+
+            if (session.hasFieldName("session_devices")){
+                item_list = session.getFieldValue("session_devices").toList();
+
+                for(QVariant session_device:item_list){
+                    QVariantMap device_info = session_device.toMap();
+                    ui->wdgSessionInvite->addRequiredDevice(device_info["id_device"].toInt());
+                }
+            }
+
+        }
+    }
+
+    m_gotSession = true;
     checkReady();
 }

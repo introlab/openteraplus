@@ -55,9 +55,11 @@ private slots:
     void com_deleting(QString path);
     void com_downloadProgress(DownloadedFile* file);
     void com_downloadCompleted(DownloadedFile* file);
+
     void com_sessionStarted(TeraData session_type, int id_session);
     void com_sessionStartRequested(TeraData session_type);
     void com_sessionStopped(int id_session);
+    void com_sessionError(QString error);
 
     void ws_userEvent(UserEvent event);
     void ws_participantEvent(ParticipantEvent event);

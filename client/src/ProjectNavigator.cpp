@@ -401,7 +401,7 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     item->setText(0, participant->getName());
     //item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
     item->setIcon(0, QIcon(participant->getIconStateFilename()));
-    m_participants[participant->getFieldValue("participant_uuid").toString()] = *participant;
+    m_participants[participant->getUuid()] = *participant;
 
 }
 

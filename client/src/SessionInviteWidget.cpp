@@ -38,7 +38,7 @@ void SessionInviteWidget::addParticipantsToSession(const QList<TeraData> &partic
         // Add in session - widget will be created and updated in updateItem
         int id_item = participant.getId();
         if (!m_participantsInSession.contains(id_item))
-            m_participantsInSession[id_item] = nullptr;
+            m_participantsInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
 
         // Update item display
         updateItem(participant);
@@ -58,7 +58,7 @@ void SessionInviteWidget::addUsersToSession(const QList<TeraData> &users, const 
         // Add in session - widget will be created and updated in updateItem
         int id_item = user.getId();
         if (!m_usersInSession.contains(id_item))
-            m_usersInSession[id_item] = nullptr;
+            m_usersInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
 
         // Update item display
         updateItem(user);
@@ -78,7 +78,7 @@ void SessionInviteWidget::addDevicesToSession(const QList<TeraData> &devices, co
         // Add in session - widget will be created and updated in updateItem
         int id_item = device.getId();
         if (!m_devicesInSession.contains(id_item))
-            m_devicesInSession[id_item] = nullptr;
+            m_devicesInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
 
         // Update item display
        updateItem(device);
@@ -126,6 +126,52 @@ void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices)
         updateItem(device);
     }
     ui->btnDevices->setVisible(!m_devices.isEmpty());
+}
+
+void SessionInviteWidget::addRequiredUser(const int &required_id)
+{
+    if (!m_requiredUsers.contains(required_id))
+        m_requiredUsers.append(required_id);
+
+    if (!m_users.contains(required_id)){
+        LOG_WARNING("Tried to add user id " + QString::number(required_id) + " to required list, but no data for it!", "SessionInviteWidget::addRequiredUser");
+    }else{
+        if (!m_usersInSession.contains(required_id)){
+            m_usersInSession[required_id] = nullptr; // Will create new TreeWidgetItem
+        }
+        updateItem(m_users[required_id]);
+    }
+}
+
+void SessionInviteWidget::addRequiredParticipant(const int &required_id)
+{
+    if (!m_requiredParticipants.contains(required_id))
+        m_requiredParticipants.append(required_id);
+
+    if (!m_participants.contains(required_id)){
+        LOG_WARNING("Tried to add participant id " + QString::number(required_id) + " to required list, but no data for it!", "SessionInviteWidget::addRequiredParticipant");
+    }else{
+        if (!m_participantsInSession.contains(required_id)){
+            m_participantsInSession[required_id] = nullptr; // Will create new TreeWidgetItem
+        }
+        updateItem(m_participants[required_id]);
+    }
+
+}
+
+void SessionInviteWidget::addRequiredDevice(const int &required_id)
+{
+    if (!m_requiredDevices.contains(required_id))
+        m_requiredDevices.append(required_id);
+
+    if (!m_devices.contains(required_id)){
+        LOG_WARNING("Tried to add device id " + QString::number(required_id) + " to required list, but no data for it!", "SessionInviteWidget::addRequiredDevice");
+    }else{
+        if (!m_devicesInSession.contains(required_id)){
+            m_devicesInSession[required_id] = nullptr; // Will create new TreeWidgetItem
+        }
+        updateItem(m_devices[required_id]);
+    }
 }
 
 QList<TeraData> SessionInviteWidget::getParticipantsInSession()
@@ -425,7 +471,7 @@ TeraData *SessionInviteWidget::getUserFromUuid(const QString &uuid)
     TeraData* data = nullptr;
 
     for (int i=0; i<m_users.values().count(); i++){
-        if (m_users.values().at(i).getFieldValue("user_uuid").toString() == uuid){
+        if (m_users.values().at(i).getUuid() == uuid){
             data = &m_users[m_users.keys().at(i)];
             break;
         }
@@ -439,7 +485,7 @@ TeraData *SessionInviteWidget::getParticipantFromUuid(const QString &uuid)
     TeraData* data = nullptr;
 
     for (int i=0; i<m_participants.values().count(); i++){
-        if (m_participants.values().at(i).getFieldValue("participant_uuid").toString() == uuid){
+        if (m_participants.values().at(i).getUuid() == uuid){
             data = &m_participants[m_participants.keys().at(i)];
             break;
         }
@@ -453,7 +499,7 @@ TeraData *SessionInviteWidget::getDeviceFromUuid(const QString &uuid)
     TeraData* data = nullptr;
 
     for (int i=0; i<m_devices.values().count(); i++){
-        if (m_devices.values().at(i).getFieldValue("device_uuid").toString() == uuid){
+        if (m_devices.values().at(i).getUuid() == uuid){
             data = &m_devices[m_devices.keys().at(i)];
             break;
         }

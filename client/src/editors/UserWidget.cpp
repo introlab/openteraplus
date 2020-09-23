@@ -322,7 +322,8 @@ void UserWidget::processUsersReply(QList<TeraData> users)
                 m_currentUserPasswordChanged = false;
             }
             // We found "ourself" in the list - update data.
-            *m_data = users.at(i);
+            //*m_data = users.at(i);
+            m_data->updateFrom(users.at(i));
             updateFieldsValue();
             break;
         }

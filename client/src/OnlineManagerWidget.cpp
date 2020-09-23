@@ -82,7 +82,7 @@ void OnlineManagerWidget::updateCounts()
 void OnlineManagerWidget::updateOnlineUser(const TeraData &online_user)
 {
 
-    QString uuid = online_user.getFieldValue("user_uuid").toString();
+    QString uuid = online_user.getUuid();
 
     QListWidgetItem* user_item = nullptr;
 
@@ -114,7 +114,7 @@ void OnlineManagerWidget::updateOnlineUser(const TeraData &online_user)
 
 void OnlineManagerWidget::updateOnlineParticipant(const TeraData &online_participant)
 {
-    QString uuid = online_participant.getFieldValue("participant_uuid").toString();
+    QString uuid = online_participant.getUuid();
 
     QListWidgetItem* participant_item = nullptr;
 
@@ -146,7 +146,7 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData &online_partici
 
 void OnlineManagerWidget::updateOnlineDevice(const TeraData &online_device)
 {
-    QString uuid = online_device.getFieldValue("device_uuid").toString();
+    QString uuid = online_device.getUuid();
 
     QListWidgetItem* device_item = nullptr;
 
@@ -180,7 +180,7 @@ void OnlineManagerWidget::ws_userEvent(UserEvent event)
 {
     TeraData user_data(TERADATA_ONLINE_USER);
     user_data.setName(QString::fromStdString(event.user_fullname()));
-    user_data.setFieldValue("user_uuid",  QString::fromStdString(event.user_uuid()));
+    user_data.setUuid(QString::fromStdString(event.user_uuid()));
 
     if (event.type() == UserEvent_EventType_USER_CONNECTED || event.type() == UserEvent_EventType_USER_LEFT_SESSION){
         user_data.setState("online");
@@ -202,7 +202,7 @@ void OnlineManagerWidget::ws_participantEvent(ParticipantEvent event)
 {
     TeraData participant_data(TERADATA_ONLINE_PARTICIPANT);
     participant_data.setName(QString::fromStdString(event.participant_name()));
-    participant_data.setFieldValue("participant_uuid",  QString::fromStdString(event.participant_uuid()));
+    participant_data.setUuid(QString::fromStdString(event.participant_uuid()));
 
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED || event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
         participant_data.setState("online");
@@ -227,7 +227,7 @@ void OnlineManagerWidget::ws_deviceEvent(DeviceEvent event)
 {
     TeraData device_data(TERADATA_ONLINE_DEVICE);
     device_data.setName(QString::fromStdString(event.device_name()));
-    device_data.setFieldValue("device_uuid",  QString::fromStdString(event.device_uuid()));
+    device_data.setUuid(QString::fromStdString(event.device_uuid()));
 
     if (event.type() == DeviceEvent_EventType_DEVICE_CONNECTED || event.type() == DeviceEvent_EventType_DEVICE_LEFT_SESSION){
         device_data.setState("online");

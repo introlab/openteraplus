@@ -224,7 +224,7 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     LOG_DEBUG("DOWNLOADING: " + path + ", with " + query_args.toString() + ", to " + save_path, "ComManager::doQuery");
 }
 
-void ComManager::startSession(const TeraData &session_type, const QStringList &participants_list, const QStringList &users_list)
+void ComManager::startSession(const TeraData &session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list)
 {
     if (session_type.getDataType() != TERADATA_SESSIONTYPE){
         LOG_ERROR("Received an invalid session_type object", "ComManager::startSession");
@@ -247,10 +247,21 @@ void ComManager::startSession(const TeraData &session_type, const QStringList &p
 
         QJsonObject item_obj;
         item_obj.insert("id_service", session_type.getFieldValue("id_service").toInt());
+        item_obj.insert("id_session", id_session);
         item_obj.insert("id_session_type", session_type.getId());
         item_obj.insert("action", "start");
         item_obj.insert("parameters", session_type.getFieldValue("session_type_config").toString());
 
+        // Devices
+        if (!devices_list.isEmpty()){
+            QJsonArray devices;
+            for(QString device_uuid:devices_list){
+                devices.append(QJsonValue(device_uuid));
+            }
+            item_obj.insert("session_devices", devices);
+        }
+
+        // Participants
         if (!participants_list.isEmpty()){
             QJsonArray participants;
             for(QString part_uuid:participants_list){
@@ -261,8 +272,8 @@ void ComManager::startSession(const TeraData &session_type, const QStringList &p
 
         // Always add the current user to the list
         QStringList current_users_list = users_list;
-        if (!current_users_list.contains(m_currentUser.getFieldValue("user_uuid").toString()))
-            current_users_list.append(m_currentUser.getFieldValue("user_uuid").toString());
+        if (!current_users_list.contains(m_currentUser.getUuid()))
+            current_users_list.append(m_currentUser.getUuid());
 
         if (!current_users_list.isEmpty()){
             QJsonArray users;
@@ -289,7 +300,6 @@ void ComManager::startSession(const TeraData &session_type, const QStringList &p
 
 void ComManager::stopSession(const TeraData &session, const int &id_service)
 {
-
     if (session.getDataType() != TERADATA_SESSION)
         LOG_ERROR("Received an invalid session object", "ComManager::stopSession");
 
@@ -477,7 +487,7 @@ bool ComManager::handleLoginReply(const QString &reply_data)
 
     // Query connected user information
 
-    m_currentUser.setFieldValue("user_uuid", QUuid(user_uuid));
+    m_currentUser.setFieldValue("user_uuid", user_uuid);
     //doUpdateCurrentUser();
 
     return true;
@@ -700,32 +710,53 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
 
     // Check the status in the reply
     QJsonObject reply_json = data_list.object();
-    if (reply_json.contains("session_status")){
-        TeraSessionStatus::SessionStatus status = static_cast<TeraSessionStatus::SessionStatus>(reply_json["session_status"].toInt());
-        if (status == TeraSessionStatus::STATUS_INPROGRESS){
-            if (reply_json.contains("id_session")){
-                emit sessionStarted(*m_currentSessionType, reply_json["id_session"].toInt());
-                return true;
+    if (reply_json.contains("status")){
+        QString status = reply_json["status"].toString();
+        if (status == "started"){
+            if (reply_json.contains("session")){
+                QJsonObject session_obj = reply_json["session"].toObject();
+                if (session_obj.contains("id_session")){
+                    emit sessionStarted(*m_currentSessionType, session_obj["id_session"].toInt());
+                }else{
+                    LOG_WARNING("Received a start session event, but no id_session into it", "ComManager::handleSessionManagerReply");
+                }
             }else{
-                LOG_WARNING("Received a start session event, but no id_session into it", "ComManager::handleSessionManagerReply");
+                LOG_ERROR("Received 'started' status but without any session", "ComManager::handleSessionManagerReply");
             }
+            return true;
         }
-        if (status == TeraSessionStatus::STATUS_COMPLETED){
-            if (reply_json.contains("id_session")){
-                emit sessionStopped(reply_json["id_session"].toInt());
-                // Delete current session type infos
-                m_currentSessionType->deleteLater();
-                m_currentSessionType = nullptr;
 
-                return true;
+        if (status == "stopped"){
+            if (reply_json.contains("session")){
+                QJsonObject session_obj = reply_json["session"].toObject();
+                if (session_obj.contains("id_session")){
+                    emit sessionStopped(session_obj["id_session"].toInt());
+                    // Delete current session type infos
+                    m_currentSessionType->deleteLater();
+                    m_currentSessionType = nullptr;
+                }else{
+                    LOG_WARNING("Received a stop session event, but no id_session into it", "ComManager::handleSessionManagerReply");
+                }
             }else{
-                LOG_WARNING("Received a stop session event, but no id_session into it", "ComManager::handleSessionManagerReply");
+                LOG_ERROR("Received 'stopped' status but without any session", "ComManager::handleSessionManagerReply");
+
             }
+            return true;
         }
+
+        if (status == "error"){
+            QString err_msg = tr("Erreur inconnue");
+            if (reply_json.contains("error_text")){
+                err_msg = reply_json["error_text"].toString();
+            }
+            emit sessionError(err_msg);
+            return true;
+        }
+    }else{
+        LOG_ERROR("Received a Session Manager reply, but no status in it.", "ComManager::handleSessionManagerReply");
     }
 
-    LOG_WARNING("Received a Session Manager reply, but no session status in it.", "ComManager::handleSessionManagerReply");
-    return true;
+    return false;
 
 }
 
@@ -738,7 +769,7 @@ bool ComManager::handleFormReply(const QUrlQuery &reply_query, const QString &re
 void ComManager::updateCurrentUser(const TeraData &user_data)
 {
     //qDebug() << "ComManager::updateCurrentUser";
-    if (m_currentUser.getFieldValue("user_uuid").toUuid() == user_data.getFieldValue("user_uuid").toUuid()){
+    if (m_currentUser.getUuid() == user_data.getUuid()){
         // Update fields that we received with the new values
         //qDebug() << "Updating user...";
         m_currentUser.updateFrom(user_data);

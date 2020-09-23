@@ -26,6 +26,7 @@ StartSessionDialog::StartSessionDialog(QString title, ComManager *comManager, QW
     // Signals
     connect(m_comManager, &ComManager::sessionStarted, this, &StartSessionDialog::closeRequest);
     connect(m_comManager, &ComManager::sessionStopped, this, &StartSessionDialog::closeRequest);
+    connect(m_comManager, &ComManager::sessionError, this, &StartSessionDialog::closeRequest);
     connect(m_comManager, &ComManager::networkError, this, &StartSessionDialog::closeRequest);
     connect(&m_timer, &QTimer::timeout, this, &StartSessionDialog::timerTimeOut);
 

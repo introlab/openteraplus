@@ -66,6 +66,10 @@ public:
     QString getIdFieldName() const;
     void setId(const int& id);
 
+    QString getUuid() const;
+    QString getUuidFieldName() const;
+    void setUuid(const QString& uuid);
+
     virtual QString getName() const;
     void setName(const QString& name);
     bool hasNameField();
@@ -110,6 +114,7 @@ private:
     QString     m_nameField;
     QString     m_enabledField;
     QString     m_stateField;
+    QString     m_uuidField;
 
     QVariantMap m_fieldsValue;
 

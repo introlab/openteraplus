@@ -65,8 +65,11 @@ void MainWindow::connectSignals()
     connect(m_comManager, &ComManager::deleteResultsOK, this, &MainWindow::com_deleteResultsOK);
     connect(m_comManager, &ComManager::downloadProgress, this, &MainWindow::com_downloadProgress);
     connect(m_comManager, &ComManager::downloadCompleted, this, &MainWindow::com_downloadCompleted);
+
     connect(m_comManager, &ComManager::sessionStarted, this, &MainWindow::com_sessionStarted);
     connect(m_comManager, &ComManager::sessionStopped, this, &MainWindow::com_sessionStopped);
+    connect(m_comManager, &ComManager::sessionError, this, &MainWindow::com_sessionError);
+
     connect(m_comManager, &ComManager::sessionStartRequested, this, &MainWindow::com_sessionStartRequested);
     connect(m_comManager, &ComManager::posting, this, &MainWindow::com_posting);
     connect(m_comManager, &ComManager::querying, this, &MainWindow::com_querying);
@@ -191,7 +194,8 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
     if (m_inSessionWidget){
         m_inSessionWidget->disconnectSignals();
         ui->wdgMainTop->layout()->removeWidget(m_inSessionWidget);
-        m_inSessionWidget->deleteLater();
+        //m_inSessionWidget->deleteLater();
+        delete m_inSessionWidget;
         m_inSessionWidget = nullptr;
     }
 
@@ -593,6 +597,13 @@ void MainWindow::com_sessionStartRequested(TeraData session_type)
 void MainWindow::com_sessionStopped(int id_session)
 {
     setInSession(false, nullptr, id_session);
+}
+
+void MainWindow::com_sessionError(QString error)
+{
+    setInSession(false, nullptr, -1);
+    GlobalMessageBox msg;
+    msg.showError(tr("Erreur de séance"), tr("Une erreur est survenue:\n") + error + tr("\n\nLa séance ne peut pas continuer."));
 }
 
 void MainWindow::ws_userEvent(UserEvent event)

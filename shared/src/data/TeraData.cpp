@@ -49,6 +49,26 @@ void TeraData::setId(const int &id)
     setFieldValue(m_idField, id);
 }
 
+QString TeraData::getUuid() const
+{
+    QVariant raw_uuid = getFieldValue(m_uuidField);
+
+    if (raw_uuid.isValid() && raw_uuid.canConvert(QMetaType::QString)){
+        return raw_uuid.toString();
+    }
+    return "";
+}
+
+QString TeraData::getUuidFieldName() const
+{
+    return m_uuidField;
+}
+
+void TeraData::setUuid(const QString &uuid)
+{
+    setFieldValue(m_uuidField, uuid);
+}
+
 QString TeraData::getName() const
 {
     QVariant raw_name = getFieldValue(m_nameField);
@@ -111,17 +131,6 @@ TeraData &TeraData::operator =(const TeraData &other)
 {
 
     setDataType(other.m_data_type);
-    // qDebug() << "Other: " << other.dynamicPropertyNames();
-
-    // qDebug() << "This: " << dynamicPropertyNames();
-    /*for (int i=0; i<other.dynamicPropertyNames().count(); i++){
-        //metaObject()->property(i).write(this, other.metaObject()->property(i).read(&other));
-        QString name = QString(other.dynamicPropertyNames().at(i));
-        // qDebug() << "TeraData::operator= - setting " << name;
-        setFieldValue(name, other.property(name.toStdString().c_str()));
-    }*/
-    // qDebug() << "This final: " << dynamicPropertyNames();
-
     m_fieldsValue = other.m_fieldsValue;
 
     return *this;
@@ -471,6 +480,7 @@ void TeraData::setDataType(TeraDataTypes data_type)
     m_nameField = m_objectName + "_name";
     m_enabledField = m_objectName + "_enabled";
     m_stateField = m_objectName + "_status";
+    m_uuidField = m_objectName + "_uuid";
 }
 
 bool TeraData::fromJson(const QJsonValue &value)
