@@ -232,8 +232,9 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
     }
 
     if (m_currentSessionType){
-        LOG_ERROR("Tried to start a session, but already one started.", "ComManager::startSession");
-        return;
+        LOG_WARNING("Tried to start a session, but already one started.", "ComManager::startSession");
+        m_currentSessionType->deleteLater();
+        m_currentSessionType = nullptr;
     }
 
     TeraSessionCategory::SessionTypeCategories session_type_category = static_cast<TeraSessionCategory::SessionTypeCategories>(session_type.getFieldValue("session_type_category").toInt());
@@ -729,18 +730,18 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
         if (status == "stopped"){
             if (reply_json.contains("session")){
                 QJsonObject session_obj = reply_json["session"].toObject();
+                qDebug() << reply_json;
                 if (session_obj.contains("id_session")){
                     emit sessionStopped(session_obj["id_session"].toInt());
-                    // Delete current session type infos
-                    m_currentSessionType->deleteLater();
-                    m_currentSessionType = nullptr;
                 }else{
                     LOG_WARNING("Received a stop session event, but no id_session into it", "ComManager::handleSessionManagerReply");
                 }
             }else{
                 LOG_ERROR("Received 'stopped' status but without any session", "ComManager::handleSessionManagerReply");
-
             }
+            // Delete current session type infos
+            m_currentSessionType->deleteLater();
+            m_currentSessionType = nullptr;
             return true;
         }
 

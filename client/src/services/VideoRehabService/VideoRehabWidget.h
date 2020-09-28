@@ -5,6 +5,7 @@
 #include <QWebEngineView>
 #include <QWebEngineProfile>
 #include <QHBoxLayout>
+#include <QMovie>
 
 #include "VideoRehabWebPage.h"
 
@@ -30,12 +31,24 @@ private slots:
     void on_txtURL_returnPressed();
     void webEngineURLChanged(QUrl url);
 
+    void webPageLoaded(bool ok);
+    void webPageReady();
+    void webPageVideoError(QString context, QString error);
+    void webPageAudioError(QString context, QString error);
+    void webPageGeneralError(QString context, QString error);
+
 private:
     void connectSignals();
+    void refreshWebpageSettings();
 
+    void setLoading(const bool& loading);
+    void showError(const QString& title, const QString& context, const QString& error);
+
+    // UI items
     Ui::VideoRehabWidget*   ui;
     QWebEngineView*         m_webEngine;
     VideoRehabWebPage*      m_webPage;
+    QMovie*         m_loadingIcon;
 };
 
 #endif // VIDEOREHABWIDGET_H

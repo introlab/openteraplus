@@ -26,7 +26,7 @@ SharedObject *VideoRehabWebPage::getSharedObject() const
 
 bool VideoRehabWebPage::certificateError(const QWebEngineCertificateError &certificateError)
 {
-#ifdef QT_DEBUG
+//#ifdef QT_DEBUG
 
     qDebug() << "Certificate error: " << certificateError.errorDescription();
     /*
@@ -35,10 +35,10 @@ bool VideoRehabWebPage::certificateError(const QWebEngineCertificateError &certi
     */
 
     return true; // Accept all certificates in debug
-#else
+/*#else
     // Refuse invalid certificates
     return false;
-#endif
+#endif*/
 }
 
 void VideoRehabWebPage::featurePermissionHandler(const QUrl &securityOrigin, QWebEnginePage::Feature feature)

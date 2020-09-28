@@ -34,7 +34,7 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
 void VideoRehabSetupWidget::initUI()
 {
     ui->frameError->hide();
-    ui->btnAdvancedConfig->hide(); // For now...s
+    ui->btnAdvancedConfig->hide(); // For now...
 
     //// Local device enumeration
     refreshAudioVideoDevices();
