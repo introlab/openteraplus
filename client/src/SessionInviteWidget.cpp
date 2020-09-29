@@ -10,6 +10,7 @@ SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_searching = false;
+    m_confirmRemove = false;
     m_comManager = nullptr;
 
     ui->frameSelector->hide();
@@ -128,6 +129,21 @@ void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices)
     ui->btnDevices->setVisible(!m_devices.isEmpty());
 }
 
+bool SessionInviteWidget::hasAvailableParticipants() const
+{
+    return !m_participants.isEmpty();
+}
+
+bool SessionInviteWidget::hasAvailableDevices() const
+{
+    return !m_devices.isEmpty();
+}
+
+bool SessionInviteWidget::hasAvailableUsers() const
+{
+    return !m_users.isEmpty();
+}
+
 void SessionInviteWidget::addRequiredUser(const int &required_id)
 {
     if (!m_requiredUsers.contains(required_id))
@@ -172,6 +188,11 @@ void SessionInviteWidget::addRequiredDevice(const int &required_id)
         }
         updateItem(m_devices[required_id]);
     }
+}
+
+void SessionInviteWidget::setConfirmOnRemove(const bool &confirm)
+{
+    m_confirmRemove = confirm;
 }
 
 QList<TeraData> SessionInviteWidget::getParticipantsInSession()
@@ -534,22 +555,35 @@ void SessionInviteWidget::on_btnInvite_clicked()
     }
 
     // Add all items to the session
+    QStringList invited_users;
+    QStringList invited_participants;
+    QStringList invited_devices;
+
     foreach(QListWidgetItem* item, ui->lstInvitables->selectedItems()){
         TeraData* item_data = nullptr;
         if (m_usersItems.values().contains(item)){
             item_data = &(m_users[m_usersItems.key(item)]);
             m_usersInSession[item_data->getId()] = nullptr;
+
+            invited_users.append(item_data->getUuid());
         }
         if (m_devicesItems.values().contains(item)){
             item_data = &(m_devices[m_devicesItems.key(item)]);
             m_devicesInSession[item_data->getId()] = nullptr;
+
+            invited_devices.append(item_data->getUuid());
         }
         if (m_participantsItems.values().contains(item)){
             item_data = &(m_participants[m_participantsItems.key(item)]);
             m_participantsInSession[item_data->getId()] = nullptr;
+
+            invited_participants.append(item_data->getUuid());
         }
         updateItem(*item_data);
     }
+
+    // Signals
+    emit newInvitees(invited_users, invited_participants, invited_devices);
 }
 
 void SessionInviteWidget::on_lstInvitables_itemSelectionChanged()
@@ -584,20 +618,33 @@ void SessionInviteWidget::on_treeInvitees_itemDoubleClicked(QTreeWidgetItem *ite
 
 void SessionInviteWidget::on_btnRemove_clicked()
 {
+    if (m_confirmRemove){
+        GlobalMessageBox msg;
+        if (msg.showYesNo(tr("Confirmation"), tr("Êtes-vous sûrs de vouloir retirer les invités sélectionnés de la séance?")) != QMessageBox::Yes){
+            return;
+        }
+    }
+
     // Remove all selected item from the session
+    QStringList removed_users;
+    QStringList removed_devices;
+    QStringList removed_participants;
     foreach(QTreeWidgetItem* item, ui->treeInvitees->selectedItems()){
         TeraData* item_data = nullptr;
         if (m_usersInSession.values().contains(item)){
             item_data = &(m_users[m_usersInSession.key(item)]);
             m_usersInSession.remove(item_data->getId());
+            removed_users.append(item_data->getUuid());
         }
         if (m_devicesInSession.values().contains(item)){
             item_data = &(m_devices[m_devicesInSession.key(item)]);
             m_devicesInSession.remove(item_data->getId());
+            removed_devices.append(item_data->getUuid());
         }
         if (m_participantsInSession.values().contains(item)){
             item_data = &(m_participants[m_participantsInSession.key(item)]);
             m_participantsInSession.remove(item_data->getId());
+            removed_participants.append(item_data->getUuid());
         }
 
         // Remove from view
@@ -607,6 +654,9 @@ void SessionInviteWidget::on_btnRemove_clicked()
         // Update item to add it back to invitable list
         updateItem(*item_data);
     }
+
+    // Emit signals
+    emit removedInvitees(removed_users, removed_participants, removed_devices);
 }
 
 void SessionInviteWidget::on_txtSearchInvitees_textChanged(const QString &arg1)

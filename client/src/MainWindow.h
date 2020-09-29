@@ -64,6 +64,8 @@ private slots:
     void ws_userEvent(UserEvent event);
     void ws_participantEvent(ParticipantEvent event);
 
+    void inSession_sessionEndedWithError();
+
     bool hasWaitingMessage();
     void showNextMessage();
     void notificationCompleted(NotificationWindow* notify);

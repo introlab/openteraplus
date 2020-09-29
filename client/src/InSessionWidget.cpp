@@ -1,10 +1,11 @@
 #include "InSessionWidget.h"
 #include "ui_InSessionWidget.h"
 
-InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_type, const int id_session, QWidget *parent) :
+InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_type, const int id_session, const int id_project, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::InSessionWidget),
-    m_sessionType(*session_type)
+    m_sessionType(*session_type),
+    m_projectId(id_project)
 {
     ui->setupUi(this);
 
@@ -13,12 +14,17 @@ InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_typ
     m_startDiag = nullptr;
     m_session = nullptr;
 
+    m_sessionTimer.setInterval(1000);
+    m_sessionTimer.setSingleShot(false);
+
     connectSignals();
 
     //Query session information
     if (id_session >0){
         setSessionId(id_session);
     }
+
+    queryLists();
 
     initUI();
 
@@ -70,7 +76,8 @@ void InSessionWidget::showStartSessionDiag(const QString &msg)
     m_startDiag = new StartSessionDialog(msg, m_comManager);
     m_startDiag->setModal(true);
     connect(m_startDiag, &StartSessionDialog::timeout, this, &InSessionWidget::startSessionDiagTimeout);
-    connect(m_startDiag, &StartSessionDialog::finished, this, &InSessionWidget::startSessionDiagClosed);
+    connect(m_startDiag, &StartSessionDialog::accepted, this, &InSessionWidget::startSessionDiagAccepted);
+    connect(m_startDiag, &StartSessionDialog::rejected, this, &InSessionWidget::startSessionDiagRejected);
     //diag.exec();
     m_startDiag->show();
 }
@@ -81,11 +88,115 @@ void InSessionWidget::startSessionDiagTimeout()
     msg_box.showError(tr("Délai expiré"), tr("L'opération n'a pu être complétée. Veuillez réessayer à nouveau."));
 }
 
-void InSessionWidget::startSessionDiagClosed()
+void InSessionWidget::startSessionDiagAccepted()
 {
     m_startDiag->deleteLater();
     m_startDiag = nullptr;
 }
+
+void InSessionWidget::startSessionDiagRejected()
+{
+    m_startDiag->deleteLater();
+    m_startDiag = nullptr;
+    emit sessionEndedWithError();
+}
+
+void InSessionWidget::newSessionInviteesRequested(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids)
+{
+    if (!m_session)
+        return;
+
+    QJsonDocument document;
+    QJsonObject base_obj;
+
+    QJsonObject item_obj;
+    item_obj.insert("id_session", m_session->getId());
+    item_obj.insert("id_service", m_sessionType.getFieldValue("id_service").toInt());
+    item_obj.insert("action", "invite");
+
+    // Devices
+    if (!device_uuids.isEmpty()){
+        QJsonArray devices;
+        for(QString device_uuid:device_uuids){
+            devices.append(QJsonValue(device_uuid));
+        }
+        item_obj.insert("session_devices", devices);
+    }
+
+    // Participants
+    if (!participant_uuids.isEmpty()){
+        QJsonArray participants;
+        for(QString part_uuid:participant_uuids){
+            participants.append(QJsonValue(part_uuid));
+        }
+        item_obj.insert("session_participants", participants);
+    }
+
+    if (!user_uuids.isEmpty()){
+        QJsonArray users;
+        for(QString user_uuid:user_uuids){
+            users.append(QJsonValue(user_uuid));
+        }
+        item_obj.insert("session_users", users);
+    }
+
+    // Update query
+    base_obj.insert("session_manage", item_obj);
+    document.setObject(base_obj);
+    m_comManager->doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+}
+
+void InSessionWidget::removeSessionInviteesRequested(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids)
+{
+    if (!m_session)
+        return;
+
+    QJsonDocument document;
+    QJsonObject base_obj;
+
+    QJsonObject item_obj;
+    item_obj.insert("id_session", m_session->getId());
+    item_obj.insert("id_service", m_sessionType.getFieldValue("id_service").toInt());
+    item_obj.insert("action", "remove");
+
+    // Devices
+    if (!device_uuids.isEmpty()){
+        QJsonArray devices;
+        for(QString device_uuid:device_uuids){
+            devices.append(QJsonValue(device_uuid));
+        }
+        item_obj.insert("session_devices", devices);
+    }
+
+    // Participants
+    if (!participant_uuids.isEmpty()){
+        QJsonArray participants;
+        for(QString part_uuid:participant_uuids){
+            participants.append(QJsonValue(part_uuid));
+        }
+        item_obj.insert("session_participants", participants);
+    }
+
+    if (!user_uuids.isEmpty()){
+        QJsonArray users;
+        for(QString user_uuid:user_uuids){
+            users.append(QJsonValue(user_uuid));
+        }
+        item_obj.insert("session_users", users);
+    }
+
+    // Update query
+    base_obj.insert("session_manage", item_obj);
+    document.setObject(base_obj);
+    m_comManager->doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+}
+
+void InSessionWidget::sessionTimer()
+{
+    m_sessionDuration = m_sessionDuration.addSecs(1);
+    ui->lblTimer->setText(m_sessionDuration.toString("hh:mm:ss"));
+}
+
 
 void InSessionWidget::on_btnEndSession_clicked()
 {
@@ -118,8 +229,62 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
             // This is an update to the session information we have
             delete m_session;
             m_session = new TeraData(session);
+            // Get participants, users and devices list, and mark them as "required" and invited
+            // Lock everyone that was initially in the session? Is that OK??
+            QVariantList item_list;
+
+           if (session.hasFieldName("session_participants")){
+                item_list = session.getFieldValue("session_participants").toList();
+
+                for(QVariant session_part:item_list){
+                    QVariantMap part_info = session_part.toMap();
+                    ui->wdgInvitees->addRequiredParticipant(part_info["id_participant"].toInt());
+                }
+            }
+
+            if (session.hasFieldName("session_users")){
+                item_list = session.getFieldValue("session_users").toList();
+
+                for(QVariant session_user:item_list){
+                    QVariantMap user_info = session_user.toMap();
+                    ui->wdgInvitees->addRequiredUser(user_info["id_user"].toInt());
+                }
+            }
+
+            if (session.hasFieldName("session_devices")){
+                item_list = session.getFieldValue("session_devices").toList();
+
+                for(QVariant session_device:item_list){
+                    QVariantMap device_info = session_device.toMap();
+                    ui->wdgInvitees->addRequiredDevice(device_info["id_device"].toInt());
+                }
+            }
+            ui->wdgInvitees->selectDefaultFilter();
+
+
             updateUI();
         }
+    }
+}
+
+void InSessionWidget::processDevicesReply(QList<TeraData> devices)
+{
+    if (!ui->wdgInvitees->hasAvailableDevices()){
+        ui->wdgInvitees->setAvailableDevices(devices);
+    }
+}
+
+void InSessionWidget::processUsersReply(QList<TeraData> users)
+{
+    if (!ui->wdgInvitees->hasAvailableUsers()){
+        ui->wdgInvitees->setAvailableUsers(users);
+    }
+}
+
+void InSessionWidget::processParticipantsReply(QList<TeraData> participants)
+{
+    if (!ui->wdgInvitees->hasAvailableParticipants()){
+        ui->wdgInvitees->setAvailableParticipants(participants);
     }
 }
 
@@ -162,11 +327,21 @@ void InSessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::sessionsReceived, this, &InSessionWidget::processSessionsReply);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &InSessionWidget::processJoinSessionEvent);
+
+    connect(m_comManager, &ComManager::usersReceived, this, &InSessionWidget::processUsersReply);
+    connect(m_comManager, &ComManager::participantsReceived, this, &InSessionWidget::processParticipantsReply);
+    connect(m_comManager, &ComManager::devicesReceived, this, &InSessionWidget::processDevicesReply);
+
+    connect(&m_sessionTimer, &QTimer::timeout, this, &InSessionWidget::sessionTimer);
+
+    connect(ui->wdgInvitees, &SessionInviteWidget::newInvitees, this, &InSessionWidget::newSessionInviteesRequested);
+    connect(ui->wdgInvitees, &SessionInviteWidget::removedInvitees, this, &InSessionWidget::removeSessionInviteesRequested);
 }
 
 void InSessionWidget::initUI()
 {
 
+    ui->wdgInvitees->setConfirmOnRemove(true);
     ui->btnInSessionInfos->setChecked(true);
     //ui->tabInfos->hide();
 
@@ -206,7 +381,24 @@ void InSessionWidget::initUI()
 
 void InSessionWidget::updateUI()
 {
+    if (m_session){
+        ui->lblSessionName->setText(m_session->getName());
+        if (!m_sessionTimer.isActive()){ // Session just started
+            // Update session timer initial value
+            int current_duration = m_session->getFieldValue("session_duration").toInt()-1; // -1 since we are going to increment it to display it with the timer's slot
+            m_sessionDuration = QTime(0,0).addSecs(current_duration);
 
+            // Display initial value
+            sessionTimer();
+
+            // Start timer
+            m_sessionTimer.start();
+
+            // Hide manager frame
+            ui->btnInSessionInfos->setChecked(false);
+
+        }
+    }
 }
 
 void InSessionWidget::setMainWidget(QWidget *wdg)
@@ -226,5 +418,20 @@ void InSessionWidget::setMainWidget(QWidget *wdg)
 TeraSessionCategory::SessionTypeCategories InSessionWidget::getSessionTypeCategory()
 {
     return static_cast<TeraSessionCategory::SessionTypeCategories>(m_sessionType.getFieldValue("session_type_category").toInt());
+}
+
+void InSessionWidget::queryLists()
+{
+    // Query available participants, devices and users list
+    QUrlQuery args;
+    if (m_projectId>0)
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_projectId));
+    args.addQueryItem(WEB_QUERY_ENABLED, "1");
+    args.addQueryItem(WEB_QUERY_LIST, "1");
+    m_comManager->doQuery(WEB_USERINFO_PATH, args);
+    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, args);
+    m_comManager->doQuery(WEB_DEVICEINFO_PATH, args);
+
+
 }
 

@@ -171,7 +171,7 @@
          <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>Participants</string>
+        <string>Inivités</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="leftMargin">
@@ -187,74 +187,7 @@
          <number>5</number>
         </property>
         <item>
-         <widget class="QListWidget" name="lstParticipants">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QToolButton" name="btnInviteParticipant">
-            <property name="toolTip">
-             <string>Ajouter des participants - utilisateurs</string>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources/TeraClient.qrc">
-              <normaloff>:/icons/new.png</normaloff>:/icons/new.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="btnDeleteParticipant">
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="toolTip">
-             <string>Retirer participant / utilisateur</string>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources/TeraClient.qrc">
-              <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="SessionInviteWidget" name="wdgInvitees" native="true"/>
         </item>
        </layout>
       </widget>
@@ -334,6 +267,13 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QLabel" name="lblSessionName">
+        <property name="text">
+         <string>Séance inconnue</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -358,6 +298,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SessionInviteWidget</class>
+   <extends>QWidget</extends>
+   <header>SessionInviteWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources/TeraClient.qrc"/>
  </resources>

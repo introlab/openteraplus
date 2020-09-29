@@ -30,7 +30,7 @@
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
-      <string>Ajouter des participants à la séance</string>
+      <string>Ajouter des invités à la séance</string>
      </property>
      <property name="icon">
       <iconset resource="../resources/TeraClient.qrc">

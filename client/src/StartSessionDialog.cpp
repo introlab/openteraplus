@@ -24,10 +24,10 @@ StartSessionDialog::StartSessionDialog(QString title, ComManager *comManager, QW
     m_timer.setInterval(1000);
 
     // Signals
-    connect(m_comManager, &ComManager::sessionStarted, this, &StartSessionDialog::closeRequest);
-    connect(m_comManager, &ComManager::sessionStopped, this, &StartSessionDialog::closeRequest);
-    connect(m_comManager, &ComManager::sessionError, this, &StartSessionDialog::closeRequest);
-    connect(m_comManager, &ComManager::networkError, this, &StartSessionDialog::closeRequest);
+    connect(m_comManager, &ComManager::sessionStarted, this, &StartSessionDialog::accepted);
+    connect(m_comManager, &ComManager::sessionStopped, this, &StartSessionDialog::accepted);
+    connect(m_comManager, &ComManager::sessionError, this, &StartSessionDialog::rejected);
+    connect(m_comManager, &ComManager::networkError, this, &StartSessionDialog::rejected);
     connect(&m_timer, &QTimer::timeout, this, &StartSessionDialog::timerTimeOut);
 
     m_timer.start();

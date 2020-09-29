@@ -201,9 +201,12 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
 
     ui->dockerLeft->setVisible(!in_session);
     ui->btnLogout->setVisible(!in_session);
+    ui->frameCentralBottom->setVisible(!in_session);
 
     if (in_session){
-        m_inSessionWidget = new InSessionWidget(m_comManager, session_type, id_session);
+        int id_project = ui->projNavigator->getCurrentProjectId();
+        m_inSessionWidget = new InSessionWidget(m_comManager, session_type, id_session, id_project);
+        connect(m_inSessionWidget, &InSessionWidget::sessionEndedWithError, this, &MainWindow::inSession_sessionEndedWithError);
         ui->wdgMainTop->layout()->addWidget(m_inSessionWidget);
     }else{
 
@@ -256,6 +259,10 @@ void MainWindow::showNextMessage()
     m_msgTimer.stop();
     if (m_messages.isEmpty()){
         m_currentMessage.setMessage(Message::MESSAGE_NONE,"");
+        if (m_inSessionWidget){
+            // Hide frame when no more message
+            ui->frameCentralBottom->hide();
+        }
         return;
     }
 
@@ -297,6 +304,7 @@ void MainWindow::showNextMessage()
     animate->setKeyValueAt(0.9, 0.8);
     animate->setEndValue(0.0);
     animate->start(QAbstractAnimation::DeleteWhenStopped);
+    ui->frameCentralBottom->show();
     ui->frameMessages->show();
 }
 
@@ -664,6 +672,11 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
             //updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), false);
         }
     }
+}
+
+void MainWindow::inSession_sessionEndedWithError()
+{
+    com_sessionError(tr("Erreur de serveur."));
 }
 
 void MainWindow::on_btnLogout_clicked()

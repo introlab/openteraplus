@@ -33,9 +33,15 @@ public:
     void setAvailableUsers(const QList<TeraData> &users);
     void setAvailableDevices(const QList<TeraData> &devices);
 
+    bool hasAvailableParticipants() const;
+    bool hasAvailableDevices() const;
+    bool hasAvailableUsers() const;
+
     void addRequiredUser(const int& required_id);
     void addRequiredParticipant(const int& required_id);
     void addRequiredDevice(const int& required_id);
+
+    void setConfirmOnRemove(const bool &confirm);
 
     QList<TeraData> getParticipantsInSession();
     QList<TeraData> getUsersInSession();
@@ -63,6 +69,7 @@ private:
     ComManager* m_comManager;
 
     bool m_searching;
+    bool m_confirmRemove;
 
     QHash<int, TeraData>    m_users; // id, data
     QHash<int, TeraData>    m_participants;
@@ -92,6 +99,10 @@ private:
     TeraData* getDeviceFromUuid(const QString& uuid);
 
     void setSearching(const bool &search);
+
+ signals:
+    void newInvitees(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
+    void removedInvitees(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
 
 };
 

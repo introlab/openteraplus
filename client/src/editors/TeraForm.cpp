@@ -1136,7 +1136,7 @@ void TeraForm::setDisabled(bool disable)
     for (int i=0; i<ui->toolboxMain->count(); i++){
         ui->toolboxMain->widget(i)->setDisabled(disable);
     }
-    m_disabled = true;
+    m_disabled = disable;
     //QWidget::setDisabled(disable);
 
 
@@ -1148,6 +1148,6 @@ void TeraForm::setEnabled(bool enable)
     for (int i=0; i<ui->toolboxMain->count(); i++){
         ui->toolboxMain->widget(i)->setEnabled(enable);
     }
-    m_disabled = false;
+    m_disabled = !enable;
     //QWidget::setEnabled(enable);
 }
