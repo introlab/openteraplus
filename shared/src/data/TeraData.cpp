@@ -69,6 +69,11 @@ void TeraData::setUuid(const QString &uuid)
     setFieldValue(m_uuidField, uuid);
 }
 
+bool TeraData::hasUuidField()
+{
+    return hasFieldName(m_uuidField);
+}
+
 QString TeraData::getName() const
 {
     QVariant raw_name = getFieldValue(m_nameField);
@@ -441,7 +446,7 @@ QString TeraData::getIconStateFilename() const
     case TERADATA_PARTICIPANT:
     case TERADATA_ONLINE_PARTICIPANT:
         if (isBusy())
-            return "://icons/patient_busy.png";
+            return "://icons/patient_online_busy.png";
         if (isOnline())
             return "://icons/patient_online.png";
         if (isEnabled())

@@ -207,6 +207,7 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
         int id_project = ui->projNavigator->getCurrentProjectId();
         m_inSessionWidget = new InSessionWidget(m_comManager, session_type, id_session, id_project);
         connect(m_inSessionWidget, &InSessionWidget::sessionEndedWithError, this, &MainWindow::inSession_sessionEndedWithError);
+        connect(m_inSessionWidget, &InSessionWidget::requestShowNotification, this, &MainWindow::addNotification);
         ui->wdgMainTop->layout()->addWidget(m_inSessionWidget);
     }else{
 
@@ -535,11 +536,12 @@ void MainWindow::com_deleteResultsOK(QString path, int id)
 void MainWindow::com_posting(QString path, QString data)
 {
     Q_UNUSED(data)
-
-    QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
-    if (!data_type.isEmpty()){
-        GlobalEvent event(EVENT_DATA_EDIT, data_type + tr(" - mise à jour..."));
-        addGlobalEvent(event);
+    if (path != WEB_SESSIONMANAGER_PATH){
+        QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
+        if (!data_type.isEmpty()){
+            GlobalEvent event(EVENT_DATA_EDIT, data_type + tr(" - mise à jour..."));
+            addGlobalEvent(event);
+        }
     }
 }
 
@@ -716,10 +718,10 @@ void MainWindow::addMessage(Message &msg)
         showNextMessage();
 }
 
-void MainWindow::addNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath, const QString &soundPath)
+void MainWindow::addNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath, const QString &soundPath, const int &width, const int &height, const int &duration)
 {
     // Notification window
-    NotificationWindow* notify = new NotificationWindow(this, notification_type, m_notifications.count()+1);
+    NotificationWindow* notify = new NotificationWindow(this, notification_type, m_notifications.count()+1, width, height, duration);
     notify->setNotificationText(text);
     notify->setNotificationIcon(iconPath);
     m_notifications.append(notify);

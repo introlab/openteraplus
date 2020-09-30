@@ -68,6 +68,7 @@ public:
     QString getUuid() const;
     QString getUuidFieldName() const;
     void setUuid(const QString& uuid);
+    bool hasUuidField();
 
     virtual QString getName() const;
     void setName(const QString& name);

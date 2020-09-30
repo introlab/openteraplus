@@ -23,7 +23,7 @@ NotificationWindow::NotificationWindow(QWidget *parent, NotificationType type, i
         mainScreenSize = QGuiApplication::primaryScreen()->availableGeometry();
 
     setGeometry(mainScreenSize.width() - m_width,
-                mainScreenSize.height() - (level * m_height),
+                mainScreenSize.height() - (level * m_height)-32,
                 m_width,
                 m_height);
 

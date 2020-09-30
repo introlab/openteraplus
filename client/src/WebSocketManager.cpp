@@ -75,12 +75,14 @@ void WebSocketManager::unregisterFromEvent(const UserRegisterToEvent_EventType e
 
 void WebSocketManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReply::ReplyType reply_type)
 {
+    LOG_WARNING("TODO: WebSocketManager::sendJoinSessionReply is deprecated - use /api/user/session/manage instead.", "WebSocketManager::sendJoinSessionReply");
     // Data
-    JoinSessionReply session_reply;
+    /*JoinSessionReply session_reply;
     session_reply.set_join_reply(reply_type);
     session_reply.set_session_uuid(session_uuid.toStdString());
 
-    sendModuleMessage(session_reply);
+    // TODO:
+    sendModuleMessage(session_reply);*/
 }
 
 TeraModuleMessage_Header *WebSocketManager::buildMessageHeader()
@@ -240,6 +242,16 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                        emit databaseEventReceived(event);
                    }else{
                        LOG_ERROR("Error unpacking DatabaseEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                   }
+               }
+
+               ///// Join Session Reply Event
+               if (tera_event.events(i).Is<JoinSessionReply>()){
+                   JoinSessionReply event;
+                   if (tera_event.events(i).UnpackTo(&event)){
+                       emit joinSessionReplyReceived(event);
+                   }else{
+                       LOG_ERROR("Error unpacking JoinSessionReply from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
                    }
                }
            }

@@ -91,6 +91,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
             if (handled) emit queryResultsOK(reply_path, reply_query);
         }
 
+
         /*if (reply_path == WEB_DEVICEDATAINFO_PATH && reply_query.hasQueryItem(WEB_QUERY_DOWNLOAD)){
             //qDebug() << "Download complete.";
             handled = true;
@@ -752,9 +753,10 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
         }
     }else{
         LOG_ERROR("Received a Session Manager reply, but no status in it.", "ComManager::handleSessionManagerReply");
+        return false;
     }
 
-    return false;
+    return true; // Consider all other unmanaged messages to be handled for now!
 
 }
 

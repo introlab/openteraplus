@@ -12,6 +12,7 @@ SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
     m_searching = false;
     m_confirmRemove = false;
     m_comManager = nullptr;
+    m_currentSessionUuid.clear();
 
     ui->frameSelector->hide();
 
@@ -30,6 +31,14 @@ void SessionInviteWidget::setComManager(ComManager *comMan)
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::userEventReceived, this, &SessionInviteWidget::ws_userEvent);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &SessionInviteWidget::ws_participantEvent);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::deviceEventReceived, this, &SessionInviteWidget::ws_deviceEvent);
+
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &SessionInviteWidget::ws_joinSessionEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::leaveSessionEventReceived, this, &SessionInviteWidget::ws_leaveSessionEvent);
+}
+
+void SessionInviteWidget::setCurrentSessionUuid(const QString &session_uuid)
+{
+    m_currentSessionUuid = session_uuid;
 }
 
 void SessionInviteWidget::addParticipantsToSession(const QList<TeraData> &participants, const QList<int> &required_ids)
@@ -93,13 +102,141 @@ void SessionInviteWidget::addDevicesToSession(const QList<TeraData> &devices, co
     }
 }
 
+void SessionInviteWidget::addUserToSession(const QString &user_uuid)
+{
+    TeraData* data = getUserFromUuid(user_uuid);
+
+    if (!data){
+        // We don't have the information for that user yet... put in queue for when we'll have it!
+        LOG_WARNING("No information for user uuid " + user_uuid, "SessionInviteWidget::addUserToSession");
+        m_unknownUserUuidsInSession.append(user_uuid);
+    }else{
+        // Check if already there
+        int id_item = data->getId();
+        if (!m_usersInSession.contains(id_item))
+            m_usersInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
+
+        // Update item display
+       updateItem(m_users[data->getId()]);
+    }
+}
+
+void SessionInviteWidget::addParticipantToSession(const QString &participant_uuid)
+{
+    TeraData* data = getParticipantFromUuid(participant_uuid);
+
+    if (!data){
+        // We don't have the information for that user yet... put in queue for when we'll have it!
+        LOG_WARNING("No information for participant uuid " + participant_uuid, "SessionInviteWidget::addParticipantToSession");
+        m_unknownParticipantUuidsInSession.append(participant_uuid);
+    }else{
+        // Check if already there
+        int id_item = data->getId();
+        if (!m_participantsInSession.contains(id_item))
+            m_participantsInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
+
+        // Update item display
+       updateItem(m_participants[data->getId()]);
+    }
+}
+
+void SessionInviteWidget::addDeviceToSession(const QString &device_uuid)
+{
+    TeraData* data = getDeviceFromUuid(device_uuid);
+
+    if (!data){
+        // We don't have the information for that user yet... put in queue for when we'll have it!
+        LOG_WARNING("No information for device uuid " + device_uuid, "SessionInviteWidget::addDeviceToSession");
+        m_unknownDeviceUuidsInSession.append(device_uuid);
+    }else{
+        // Check if already there
+        int id_item = data->getId();
+        if (!m_devicesInSession.contains(id_item))
+            m_devicesInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
+
+        // Update item display
+       updateItem(m_devices[data->getId()]);
+    }
+}
+
+void SessionInviteWidget::removeUserFromSession(const QString &user_uuid)
+{
+    TeraData* item_data = getUserFromUuid(user_uuid);
+
+    if (!item_data){
+        if (m_unknownUserUuidsInSession.contains(user_uuid))
+            m_unknownUserUuidsInSession.removeAll(user_uuid);
+        LOG_WARNING("Removed user " + user_uuid + " from session, but no information about it", "SessionInviteWidget::removeUserFromSession");
+        return;
+    }
+
+    int id_item = item_data->getId();
+    if (m_usersInSession.contains(id_item)){
+        m_usersInSession.remove(item_data->getId());
+    }
+
+    // Update item to add it back to invitable list
+    updateItem(*item_data);
+
+    emit removedUser(user_uuid);
+}
+
+void SessionInviteWidget::removeParticipantFromSession(const QString &participant_uuid)
+{
+    TeraData* item_data = getParticipantFromUuid(participant_uuid);
+
+    if (!item_data){
+        if (m_unknownParticipantUuidsInSession.contains(participant_uuid))
+            m_unknownParticipantUuidsInSession.removeAll(participant_uuid);
+        LOG_WARNING("Removed participant " + participant_uuid + " from session, but no information about it", "SessionInviteWidget::removeParticipantFromSession");
+        return;
+    }
+
+    int id_item = item_data->getId();
+    if (m_participantsInSession.contains(id_item)){
+        m_participantsInSession.remove(item_data->getId());
+    }
+
+    // Update item to add it back to invitable list
+    updateItem(*item_data);
+
+    emit removedParticipant(participant_uuid);
+}
+
+void SessionInviteWidget::removeDeviceFromSession(const QString &device_uuid)
+{
+    TeraData* item_data = getDeviceFromUuid(device_uuid);
+
+    if (!item_data){
+        if (m_unknownDeviceUuidsInSession.contains(device_uuid))
+            m_unknownDeviceUuidsInSession.removeAll(device_uuid);
+        LOG_WARNING("Removed device " + device_uuid + " from session, but no information about it", "SessionInviteWidget::removeDeviceFromSession");
+        return;
+    }
+
+    int id_item = item_data->getId();
+    if (m_devicesInSession.contains(id_item)){
+        m_devicesInSession.remove(item_data->getId());
+    }
+
+    // Update item to add it back to invitable list
+    updateItem(*item_data);
+
+    emit removedDevice(device_uuid);
+}
+
 void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &participants)
 {
     foreach(TeraData participant, participants){
         int id_participant = participant.getId();
         m_participants[id_participant] = participant;
-        if (!m_participantsItems.contains(id_participant))
-            m_participantsItems[id_participant] = nullptr;
+        if (m_unknownParticipantUuidsInSession.contains(participant.getUuid())){
+            m_participantsInSession[id_participant] = nullptr;
+            m_unknownParticipantUuidsInSession.removeAll(participant.getUuid());
+        }else{
+            if (!m_participantsItems.contains(id_participant))
+                m_participantsItems[id_participant] = nullptr;
+        }
         updateItem(participant);
     }
     ui->btnParticipants->setVisible(!m_participants.isEmpty());
@@ -110,8 +247,14 @@ void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users)
     foreach(TeraData user, users){
         int id_user = user.getId();
         m_users[id_user] = user;
-        if (!m_usersItems.contains(id_user))
-            m_usersItems[id_user] = nullptr;
+        if (m_unknownUserUuidsInSession.contains(user.getUuid())){
+            m_usersInSession[id_user] = nullptr;
+            m_unknownUserUuidsInSession.removeAll(user.getUuid());
+        }else{
+            if (!m_usersItems.contains(id_user))
+                m_usersItems[id_user] = nullptr;
+        }
+
         updateItem(user);
     }
     ui->btnUsers->setVisible(!m_users.isEmpty());
@@ -122,8 +265,13 @@ void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices)
     foreach(TeraData device, devices){
         int id_device = device.getId();
         m_devices[id_device] = device;
-        if (!m_devicesItems.contains(id_device))
-            m_devicesItems[id_device] = nullptr;
+        if (m_unknownDeviceUuidsInSession.contains(device.getUuid())){
+            m_devicesInSession[id_device] = nullptr;
+            m_unknownDeviceUuidsInSession.removeAll(device.getUuid());
+        }else{
+            if (!m_devicesItems.contains(id_device))
+                m_devicesItems[id_device] = nullptr;
+        }
         updateItem(device);
     }
     ui->btnDevices->setVisible(!m_devices.isEmpty());
@@ -366,6 +514,50 @@ void SessionInviteWidget::ws_deviceEvent(DeviceEvent event)
     updateItem(*data);
 }
 
+void SessionInviteWidget::ws_joinSessionEvent(JoinSessionEvent event)
+{
+    if (m_currentSessionUuid.isEmpty()){
+        LOG_WARNING("Received JoinSessionEvent, but no session uuid was setted beforehand - ignoring event", "SessionInviteWidget::ws_joinSessionEvent");
+        return;
+    }
+
+    if (m_currentSessionUuid != QString::fromStdString(event.session_uuid()))
+        return; // Not for us!
+
+    // Add invitees to list if not already there
+    for (int i=0; i<event.session_users_size(); i++){
+        addUserToSession(QString::fromStdString(event.session_users(i)));
+    }
+    for (int i=0; i<event.session_participants_size(); i++){
+        addParticipantToSession(QString::fromStdString(event.session_participants(i)));
+    }
+    for (int i=0; i<event.session_devices_size(); i++){
+        addDeviceToSession(QString::fromStdString(event.session_devices(i)));
+    }
+}
+
+void SessionInviteWidget::ws_leaveSessionEvent(LeaveSessionEvent event)
+{
+    if (m_currentSessionUuid.isEmpty()){
+        LOG_WARNING("Received LeaveSessionEvent, but no session uuid was setted beforehand - ignoring event", "SessionInviteWidget::ws_leaveSessionEvent");
+        return;
+    }
+
+    if (m_currentSessionUuid != QString::fromStdString(event.session_uuid()))
+        return; // Not for us!
+
+    // Remove all leaving invitees
+    for (int i=0; i<event.leaving_users_size(); i++){
+        removeUserFromSession(QString::fromStdString(event.leaving_users(i)));
+    }
+    for (int i=0; i<event.leaving_participants_size(); i++){
+        removeParticipantFromSession(QString::fromStdString(event.leaving_participants(i)));
+    }
+    for (int i=0; i<event.leaving_devices_size(); i++){
+        removeDeviceFromSession(QString::fromStdString(event.leaving_devices(i)));
+    }
+}
+
 void SessionInviteWidget::connectSignals()
 {
     connect(ui->btnDevices, &QToolButton::clicked, this, &SessionInviteWidget::updateFilters);
@@ -424,7 +616,8 @@ void SessionInviteWidget::updateItem(const TeraData &item)
 
         // Update informations
         tree_item->setText(0, item.getName());
-        tree_item->setIcon(0, QIcon(item.getIconStateFilename()));
+        if (item.hasStateField())
+            tree_item->setIcon(0, QIcon(item.getIconStateFilename()));
 
         tree_item->setDisabled(item_required->contains(id_item)); // Required, so can't be removed!
 
@@ -613,7 +806,8 @@ void SessionInviteWidget::on_treeInvitees_itemDoubleClicked(QTreeWidgetItem *ite
 {
     Q_UNUSED(item)
     Q_UNUSED(column)
-    on_btnRemove_clicked();
+    if (!item->isDisabled())
+        on_btnRemove_clicked();
 }
 
 void SessionInviteWidget::on_btnRemove_clicked()

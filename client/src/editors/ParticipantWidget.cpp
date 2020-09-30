@@ -329,9 +329,10 @@ void ParticipantWidget::updateSession(TeraData *session)
 
     // Download data
     if (btnDownload){
-        btnDownload->setVisible(session->getFieldValue("session_has_device_data").toBool());
+        /*btnDownload->setVisible(session->getFieldValue("session_has_device_data").toBool());
         if (session->getFieldValue("session_has_device_data").toBool())
-            ui->btnDownloadAll->show();
+            ui->btnDownloadAll->show();*/
+        btnDownload->hide();
     }
 
     // Resume session

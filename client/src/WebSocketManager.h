@@ -67,6 +67,7 @@ signals:
     void leaveSessionEventReceived(LeaveSessionEvent event);
     void stopSessionEventReceived(StopSessionEvent event);
     void databaseEventReceived(DatabaseEvent event);
+    void joinSessionReplyReceived(JoinSessionReply event);
 
 
 private slots:

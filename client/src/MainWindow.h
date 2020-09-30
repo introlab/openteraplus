@@ -69,6 +69,7 @@ private slots:
     bool hasWaitingMessage();
     void showNextMessage();
     void notificationCompleted(NotificationWindow* notify);
+    void addNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath = QString(), const QString &soundPath = QString(), const int &width=400, const int &height=100, const int &duration=5000);
 
     void currentSiteChanged(QString site_name, int site_id);
 
@@ -100,7 +101,7 @@ private:
     // Messages and notifications
     void addMessage(Message::MessageType msg_type, QString msg);
     void addMessage(Message &msg);
-    void addNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath = QString(), const QString &soundPath = QString());
+
 
     // Events
     QIcon getGlobalEventIcon(GlobalEvent &global_event);

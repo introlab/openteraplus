@@ -229,6 +229,9 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
             // This is an update to the session information we have
             delete m_session;
             m_session = new TeraData(session);
+
+            ui->wdgInvitees->setCurrentSessionUuid(m_session->getUuid());
+
             // Get participants, users and devices list, and mark them as "required" and invited
             // Lock everyone that was initially in the session? Is that OK??
             QVariantList item_list;
@@ -288,28 +291,27 @@ void InSessionWidget::processParticipantsReply(QList<TeraData> participants)
     }
 }
 
-void InSessionWidget::processJoinSessionEvent(JoinSessionEvent event)
+void InSessionWidget::ws_JoinSessionEvent(JoinSessionEvent event)
 {
     QString session_uuid = QString::fromStdString(event.session_uuid());
 
     // Check if that event is really for us
-    /*if (!m_session){
+    if (!m_session){
         LOG_ERROR("Received JoinSessionEvent, but no current session!", "InSessionWidget::processJoinSessionEvent");
         m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_DENIED);
         return;
     }
 
-    if (m_session->getFieldValue("session_uuid").toString() != session_uuid){
-        LOG_WARNING("Received JoinSessionEvent, but it's not for current session - replying busy", "InSessionWidget::processJoinSessionEvent");
-        m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_BUSY);
-        return;
-    }*/
-
-    // Update users list
-    // TODO
-
-    // Update participants list
-    // TODO
+    if (m_session->hasUuidField()){
+        if (m_session->getUuid() != session_uuid){
+            LOG_WARNING("Received JoinSessionEvent, but it's not for current session - replying busy", "InSessionWidget::processJoinSessionEvent");
+            m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_BUSY);
+            showNotification(NotificationWindow::TYPE_WARNING, QString::fromStdString(event.session_creator_name())
+                                         + tr(" vous a invité dans une séance, mais nous avons refusé l'invitation pour vous."),
+                                         "://icons/warning.png");
+            return;
+        }
+    }
 
     // Forward to widget
     if (m_serviceWidget){
@@ -326,7 +328,7 @@ void InSessionWidget::processJoinSessionEvent(JoinSessionEvent event)
 void InSessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::sessionsReceived, this, &InSessionWidget::processSessionsReply);
-    connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &InSessionWidget::processJoinSessionEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &InSessionWidget::ws_JoinSessionEvent);
 
     connect(m_comManager, &ComManager::usersReceived, this, &InSessionWidget::processUsersReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &InSessionWidget::processParticipantsReply);
@@ -342,6 +344,8 @@ void InSessionWidget::initUI()
 {
 
     ui->wdgInvitees->setConfirmOnRemove(true);
+    ui->wdgInvitees->setComManager(m_comManager);
+
     ui->btnInSessionInfos->setChecked(true);
     //ui->tabInfos->hide();
 
@@ -433,5 +437,10 @@ void InSessionWidget::queryLists()
     m_comManager->doQuery(WEB_DEVICEINFO_PATH, args);
 
 
+}
+
+void InSessionWidget::showNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath)
+{
+    emit requestShowNotification(notification_type, text, iconPath, QString(), 300, 75, 5000);
 }
 

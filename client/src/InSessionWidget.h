@@ -7,6 +7,7 @@
 #include "GlobalMessageBox.h"
 #include "StartSessionDialog.h"
 #include "Logger.h"
+#include "NotificationWindow.h"
 
 #include "services/BaseServiceWidget.h"
 #include "services/VideoRehabService/VideoRehabWidget.h"
@@ -39,7 +40,7 @@ private slots:
     void processUsersReply(QList<TeraData> users);
     void processParticipantsReply(QList<TeraData> participants);
 
-    void processJoinSessionEvent(JoinSessionEvent event);
+    void ws_JoinSessionEvent(JoinSessionEvent event);
 
     void showEvent(QShowEvent *event) override;
 
@@ -62,6 +63,8 @@ private:
 
     void queryLists();
 
+    void showNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath);
+
     Ui::InSessionWidget *ui;
 
     QTimer              m_sessionTimer;
@@ -78,6 +81,7 @@ private:
 
 signals:
     void sessionEndedWithError();
+    void requestShowNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath, const QString &soundPath, const int &width, const int &height, const int &duration);
 };
 
 #endif // INSESSIONWIDGET_H

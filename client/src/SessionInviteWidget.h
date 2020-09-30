@@ -22,10 +22,19 @@ public:
     ~SessionInviteWidget();
 
     void setComManager(ComManager* comMan);
+    void setCurrentSessionUuid(const QString &session_uuid);
 
     void addParticipantsToSession(const QList<TeraData>& participants, const QList<int>& required_ids = QList<int>());
     void addUsersToSession(const QList<TeraData>& users, const QList<int>& required_ids = QList<int>());
     void addDevicesToSession(const QList<TeraData>& devices, const QList<int>& required_ids = QList<int>());
+
+    void addUserToSession(const QString& user_uuid);
+    void addParticipantToSession(const QString& participant_uuid);
+    void addDeviceToSession(const QString& device_uuid);
+
+    void removeUserFromSession(const QString& user_uuid);
+    void removeParticipantFromSession(const QString& participant_uuid);
+    void removeDeviceFromSession(const QString& device_uuid);
 
     void selectDefaultFilter();
 
@@ -54,6 +63,8 @@ private slots:
     void ws_userEvent(UserEvent event);
     void ws_participantEvent(ParticipantEvent event);
     void ws_deviceEvent(DeviceEvent event);
+    void ws_joinSessionEvent(JoinSessionEvent event);
+    void ws_leaveSessionEvent(LeaveSessionEvent event);
 
     void on_btnInvite_clicked();
     void on_lstInvitables_itemSelectionChanged();
@@ -67,6 +78,7 @@ private:
     Ui::SessionInviteWidget *ui;
 
     ComManager* m_comManager;
+    QString m_currentSessionUuid;
 
     bool m_searching;
     bool m_confirmRemove;
@@ -87,6 +99,10 @@ private:
     QHash<int, QTreeWidgetItem*>    m_participantsInSession;
     QHash<int, QTreeWidgetItem*>    m_devicesInSession;
 
+    QStringList m_unknownUserUuidsInSession;
+    QStringList m_unknownDeviceUuidsInSession;
+    QStringList m_unknownParticipantUuidsInSession;
+
     void connectSignals();
 
     void updateItem(const TeraData &item);
@@ -103,6 +119,10 @@ private:
  signals:
     void newInvitees(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
     void removedInvitees(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
+
+    void removedUser(QString user_uuid);
+    void removedParticipant(QString participant_uuid);
+    void removedDevice(QString device_uuid);
 
 };
 

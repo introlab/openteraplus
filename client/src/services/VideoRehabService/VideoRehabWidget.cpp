@@ -67,7 +67,9 @@ bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
 {
     // Redirect web engine to session url
     if (m_webPage){
-        m_webPage->setUrl(QString::fromStdString(event.session_url()));
+        QString session_url = QString::fromStdString(event.session_url());
+        if (m_webPage->url().toString() != session_url)
+            m_webPage->setUrl(session_url);
     }
 
     return true; // Accepts the request
