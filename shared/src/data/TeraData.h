@@ -77,10 +77,12 @@ public:
     bool hasEnabledField() const;
     bool isEnabled() const;
 
-    bool hasStateField() const;
+    bool hasOnlineStateField() const;
+    bool hasBusyStateField() const;
     bool isOnline() const;
     bool isBusy() const;
-    void setState(const QString& state);
+    void setBusy(const bool &busy);
+    void setOnline(const bool &online);
 
     bool isNew();
 
@@ -113,7 +115,8 @@ private:
     QString     m_idField;
     QString     m_nameField;
     QString     m_enabledField;
-    QString     m_stateField;
+    QString     m_onlineField;
+    QString     m_busyField;
     QString     m_uuidField;
 
     QVariantMap m_fieldsValue;

@@ -601,14 +601,17 @@ void ProjectNavigator::ws_participantEvent(ParticipantEvent event)
         return; // Mismatch between saved data and list of TreeWidgetItems... Shouldn't happen!
     }
 
-    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED || event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
-        part_data->setState("online");
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED){
+        part_data->setOnline(true);
     }
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
-        part_data->setState("offline");
+        part_data->setOnline(false);
     }
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_JOINED_SESSION){
-        part_data->setState("busy");
+        part_data->setBusy(true);
+    }
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
+        part_data->setBusy(false);
     }
     updateParticipant(part_data);
 }

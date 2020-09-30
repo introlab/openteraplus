@@ -103,28 +103,39 @@ bool TeraData::isEnabled() const
     return getFieldValue(m_enabledField).toBool();
 }
 
-bool TeraData::hasStateField() const
+bool TeraData::hasOnlineStateField() const
 {
-    return hasFieldName(m_stateField);
+    return hasFieldName(m_onlineField);
 }
+
+bool TeraData::hasBusyStateField() const
+{
+    return hasFieldName(m_busyField);
+}
+
 
 bool TeraData::isOnline() const
 {
-    if (hasStateField())
-        return getFieldValue(m_stateField).toString() == "online";
+    if (hasOnlineStateField())
+        return getFieldValue(m_onlineField).toBool();
     return false;
 }
 
 bool TeraData::isBusy() const
 {
-    if (hasStateField())
-        return getFieldValue(m_stateField).toString() == "busy";
+    if (hasBusyStateField())
+        return getFieldValue(m_busyField).toBool();
     return false;
 }
 
-void TeraData::setState(const QString &state)
+void TeraData::setBusy(const bool &busy)
 {
-    m_fieldsValue[m_stateField] = state;
+    m_fieldsValue[m_busyField] = busy;
+}
+
+void TeraData::setOnline(const bool &online)
+{
+    m_fieldsValue[m_onlineField] = online;
 }
 
 bool TeraData::isNew()
@@ -431,12 +442,16 @@ QString TeraData::getIconStateFilename() const
     switch(m_data_type){
     case TERADATA_USER:
     case TERADATA_ONLINE_USER:
+        if (!hasOnlineStateField() && !hasBusyStateField())
+            return "://icons/software_user.png";
         if (isOnline())
             return "://icons/software_user_online.png";
         return "://icons/software_user.png";
 
     case TERADATA_DEVICE:
     case TERADATA_ONLINE_DEVICE:
+        if (!hasOnlineStateField() && !hasBusyStateField())
+            return "://icons/device_offline.png";
         if (isOnline())
             return "://icons/device_online.png";
         if (isEnabled())
@@ -445,8 +460,11 @@ QString TeraData::getIconStateFilename() const
 
     case TERADATA_PARTICIPANT:
     case TERADATA_ONLINE_PARTICIPANT:
+        if (!hasOnlineStateField() && !hasBusyStateField())
+            return "://icons/patient.png";
         if (isBusy())
             return "://icons/patient_online_busy.png";
+        // TODO: Busy but not online icon.
         if (isOnline())
             return "://icons/patient_online.png";
         if (isEnabled())
@@ -477,7 +495,8 @@ void TeraData::setDataType(TeraDataTypes data_type)
     m_idField = "id_" + m_objectName;
     m_nameField = m_objectName + "_name";
     m_enabledField = m_objectName + "_enabled";
-    m_stateField = m_objectName + "_status";
+    m_onlineField = m_objectName + "_online";
+    m_busyField = m_objectName + "_busy";
     m_uuidField = m_objectName + "_uuid";
 }
 

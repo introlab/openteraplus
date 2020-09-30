@@ -61,21 +61,14 @@ void UserSummaryWidget::updateFieldsValue()
 
         // Status
         ui->icoOnline->setVisible(m_data->isEnabled());
-        if (!m_data->hasStateField()){
-            if (m_data->isEnabled()){
-                m_data->setState("offline");
-            }else{
-                m_data->setState("");
-            }
+
+        ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
+        if (m_data->isOnline() || m_data->isBusy()){
+            ui->icoOnline->setPixmap(QPixmap("://status/status_online.png"));
+        }else{
+            ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
         }
-        if (m_data->hasStateField()){
-            ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
-            if (m_data->isOnline() || m_data->isBusy()){
-                ui->icoOnline->setPixmap(QPixmap("://status/status_online.png"));
-            }else{
-                ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
-            }
-        }
+
 
         ui->frameNewSession->setVisible(m_data->isEnabled() && !m_data->isNew() &&
                                         m_data->getUuid() != m_comManager->getCurrentUser().getUuid());
@@ -124,14 +117,17 @@ void UserSummaryWidget::ws_userEvent(UserEvent event)
     if (QString::fromStdString(event.user_uuid()) != m_data->getUuid())
         return; // Not for us!
 
-    if (event.type() == UserEvent_EventType_USER_CONNECTED || event.type() == UserEvent_EventType_USER_LEFT_SESSION){
-        m_data->setState("online");
+    if (event.type() == UserEvent_EventType_USER_CONNECTED){
+        m_data->setOnline(true);
     }
     if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
-        m_data->setState("offline");
+        m_data->setOnline(false);
     }
     if (event.type() == UserEvent_EventType_USER_JOINED_SESSION){
-        m_data->setState("busy");
+        m_data->setBusy(true);
+    }
+    if (event.type() == UserEvent_EventType_USER_LEFT_SESSION){
+        m_data->setBusy(false);
     }
     updateFieldsValue();
 }

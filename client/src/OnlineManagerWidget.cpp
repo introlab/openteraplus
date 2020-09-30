@@ -182,17 +182,20 @@ void OnlineManagerWidget::ws_userEvent(UserEvent event)
     user_data.setName(QString::fromStdString(event.user_fullname()));
     user_data.setUuid(QString::fromStdString(event.user_uuid()));
 
-    if (event.type() == UserEvent_EventType_USER_CONNECTED || event.type() == UserEvent_EventType_USER_LEFT_SESSION){
-        user_data.setState("online");
+    if (event.type() == UserEvent_EventType_USER_CONNECTED){
+        user_data.setOnline(true);
         updateOnlineUser(user_data);
     }
     if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
-        user_data.setState("offline");
+        user_data.setOnline(false);
         updateOnlineUser(user_data);
     }
     if (event.type() == UserEvent_EventType_USER_JOINED_SESSION){
-        user_data.setState("busy");
+        user_data.setBusy(true);
         updateOnlineUser(user_data);
+    }
+    if (event.type() == UserEvent_EventType_USER_LEFT_SESSION){
+        user_data.setBusy(false);
     }
     updateCounts();
 
@@ -204,19 +207,24 @@ void OnlineManagerWidget::ws_participantEvent(ParticipantEvent event)
     participant_data.setName(QString::fromStdString(event.participant_name()));
     participant_data.setUuid(QString::fromStdString(event.participant_uuid()));
 
-    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED || event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
-        participant_data.setState("online");
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED){
+        participant_data.setOnline(true);
         if (QString::fromStdString(event.participant_site_name()) == m_siteName)
             updateOnlineParticipant(participant_data);
     }
 
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
-        participant_data.setState("offline");
+        participant_data.setOnline(false);
         updateOnlineParticipant(participant_data);
     }
 
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_JOINED_SESSION){
-        participant_data.setState("busy");
+        participant_data.setBusy(true);
+        updateOnlineParticipant(participant_data);
+    }
+
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
+        participant_data.setBusy(false);
         updateOnlineParticipant(participant_data);
     }
 
@@ -229,19 +237,23 @@ void OnlineManagerWidget::ws_deviceEvent(DeviceEvent event)
     device_data.setName(QString::fromStdString(event.device_name()));
     device_data.setUuid(QString::fromStdString(event.device_uuid()));
 
-    if (event.type() == DeviceEvent_EventType_DEVICE_CONNECTED || event.type() == DeviceEvent_EventType_DEVICE_LEFT_SESSION){
-        device_data.setState("online");
+    if (event.type() == DeviceEvent_EventType_DEVICE_CONNECTED){
+        device_data.setOnline(true);
         // TODO: Filter by site?
         updateOnlineDevice(device_data);
     }
 
     if (event.type() == DeviceEvent_EventType_DEVICE_DISCONNECTED){
-        device_data.setState("offline");
+        device_data.setOnline(false);
         updateOnlineDevice(device_data);
     }
 
     if (event.type() == DeviceEvent_EventType_DEVICE_JOINED_SESSION){
-        device_data.setState("busy");
+        device_data.setBusy(true);
+        updateOnlineDevice(device_data);
+    }
+    if (event.type() == DeviceEvent_EventType_DEVICE_LEFT_SESSION){
+        device_data.setBusy(false);
         updateOnlineDevice(device_data);
     }
     updateCounts();

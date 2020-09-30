@@ -456,14 +456,17 @@ void SessionInviteWidget::ws_userEvent(UserEvent event)
     if (!data)
         return; // Item not found, we don't have to manage it here!
 
-    if (event.type() == UserEvent_EventType_USER_CONNECTED || event.type() == UserEvent_EventType_USER_LEFT_SESSION){
-        data->setState("online");
+    if (event.type() == UserEvent_EventType_USER_CONNECTED){
+        data->setOnline(true);
     }
     if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
-        data->setState("offline");
+        data->setOnline(false);
     }
     if (event.type() == UserEvent_EventType_USER_JOINED_SESSION){
-        data->setState("busy");
+        data->setBusy(true);
+    }
+    if (event.type() == UserEvent_EventType_USER_LEFT_SESSION){
+        data->setBusy(false);
     }
 
     updateItem(*data);
@@ -479,14 +482,17 @@ void SessionInviteWidget::ws_participantEvent(ParticipantEvent event)
     if (!data)
         return; // Item not found, we don't have to manage it here!
 
-    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED || event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
-        data->setState("online");
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED){
+        data->setOnline(true);
     }
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_DISCONNECTED){
-        data->setState("offline");
+        data->setOnline(false);
     }
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_JOINED_SESSION){
-        data->setState("busy");
+        data->setBusy(true);
+    }
+    if (event.type() == ParticipantEvent_EventType_PARTICIPANT_LEFT_SESSION){
+        data->setBusy(false);
     }
 
     updateItem(*data);
@@ -501,14 +507,17 @@ void SessionInviteWidget::ws_deviceEvent(DeviceEvent event)
     if (!data)
         return; // Item not found, we don't have to manage it here!
 
-    if (event.type() == DeviceEvent_EventType_DEVICE_CONNECTED || event.type() == DeviceEvent_EventType_DEVICE_LEFT_SESSION){
-        data->setState("online");
+    if (event.type() == DeviceEvent_EventType_DEVICE_CONNECTED){
+        data->setOnline(true);
     }
     if (event.type() == DeviceEvent_EventType_DEVICE_DISCONNECTED){
-        data->setState("offline");
+        data->setOnline(false);
     }
     if (event.type() == DeviceEvent_EventType_DEVICE_JOINED_SESSION){
-        data->setState("busy");
+        data->setBusy(true);
+    }
+    if (event.type() == DeviceEvent_EventType_DEVICE_LEFT_SESSION){
+        data->setBusy(false);
     }
 
     updateItem(*data);
@@ -616,8 +625,7 @@ void SessionInviteWidget::updateItem(const TeraData &item)
 
         // Update informations
         tree_item->setText(0, item.getName());
-        if (item.hasStateField())
-            tree_item->setIcon(0, QIcon(item.getIconStateFilename()));
+        tree_item->setIcon(0, QIcon(item.getIconStateFilename()));
 
         tree_item->setDisabled(item_required->contains(id_item)); // Required, so can't be removed!
 
