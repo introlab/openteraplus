@@ -91,7 +91,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
             if (handled) emit queryResultsOK(reply_path, reply_query);
         }
 
-        if (reply_path == WEB_DEVICEDATAINFO_PATH && reply_query.hasQueryItem(WEB_QUERY_DOWNLOAD)){
+        /*if (reply_path == WEB_DEVICEDATAINFO_PATH && reply_query.hasQueryItem(WEB_QUERY_DOWNLOAD)){
             //qDebug() << "Download complete.";
             handled = true;
 
@@ -101,7 +101,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
                 emit downloadCompleted(file);
                 file->deleteLater();
             }
-        }
+        }*/
 
         if (!handled){
             // General case
@@ -646,9 +646,6 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_DEVICESUBTYPE:
         emit deviceSubtypesReceived(items, reply_query);
-        break;
-    case TERADATA_DEVICEDATA:
-        emit deviceDatasReceived(items, reply_query);
         break;
     case TERADATA_SESSIONTYPEPROJECT:
         emit sessionTypesProjectsReceived(items, reply_query);

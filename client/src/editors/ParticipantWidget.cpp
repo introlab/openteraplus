@@ -726,11 +726,11 @@ void ParticipantWidget::btnDownloadSession_clicked()
                                                               QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
         if (!save_path.isEmpty()){
             int id_session = button->property("id_session").toInt();
-            QUrlQuery args;
+            /*QUrlQuery args;
             args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
             args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
             downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-            setWaiting();
+            setWaiting();*/
         }
     }
 }
@@ -741,11 +741,11 @@ void ParticipantWidget::btnDowloadAll_clicked()
                                                           QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
     if (!save_path.isEmpty()){
         int id_participant = m_data->getId();
-        QUrlQuery args;
+        /*QUrlQuery args;
         args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
         args.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(id_participant));
         downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-        setWaiting();
+        setWaiting();*/
     }
 }
 

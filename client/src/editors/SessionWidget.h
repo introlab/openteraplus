@@ -31,7 +31,7 @@ public:
 private:
     Ui::SessionWidget *ui;
 
-    QMap<int, QTableWidgetItem*> m_listDeviceDatas;
+    //QMap<int, QTableWidgetItem*> m_listDeviceDatas;
     QMap<int, QTableWidgetItem*> m_listSessionEvents;
 
     void updateControlsState();
@@ -41,7 +41,7 @@ private:
 
     void updateSessionParticipants();
     void updateSessionUsers();
-    void updateDeviceData(TeraData* device_data);
+    //void updateDeviceData(TeraData* device_data);
     void updateEvent(TeraData* event);
 
 private slots:
@@ -50,7 +50,7 @@ private slots:
     void btnDownloadAll_clicked();
 
     void processFormsReply(QString form_type, QString data);
-    void processDeviceDatasReply(QList<TeraData> device_datas);
+    //void processDeviceDatasReply(QList<TeraData> device_datas);
     void processSessionEventsReply(QList<TeraData> events);
     void postResultReply(QString path);
     void deleteDataReply(QString path, int id);

@@ -161,7 +161,7 @@ void SessionWidget::updateSessionUsers()
         }
     }
 }
-
+/*
 void SessionWidget::updateDeviceData(TeraData *device_data)
 {
     int id_device_data = device_data->getId();
@@ -210,7 +210,7 @@ void SessionWidget::updateDeviceData(TeraData *device_data)
     }
     ui->tableData->item(base_item->row(), 3)->setText(QString::number(file_size, 'f', 2) + suffix);
 }
-
+*/
 void SessionWidget::updateEvent(TeraData *event)
 {
     int id_event = event->getId();
@@ -256,7 +256,7 @@ void SessionWidget::processFormsReply(QString form_type, QString data)
         return;
     }
 }
-
+/*
 void SessionWidget::processDeviceDatasReply(QList<TeraData> device_datas)
 {
     for (TeraData device_data:device_datas){
@@ -265,7 +265,7 @@ void SessionWidget::processDeviceDatasReply(QList<TeraData> device_datas)
             updateDeviceData(&device_data);
         }
     }
-}
+}*/
 
 void SessionWidget::processSessionEventsReply(QList<TeraData> events)
 {
@@ -289,14 +289,14 @@ void SessionWidget::postResultReply(QString path)
 
 void SessionWidget::deleteDataReply(QString path, int id)
 {
-    if (path == WEB_DEVICEDATAINFO_PATH){
+   /* if (path == WEB_DEVICEDATAINFO_PATH){
         // Remove data from list
         if (m_listDeviceDatas.contains(id)){
             ui->tableData->removeRow(m_listDeviceDatas[id]->row());
             m_listDeviceDatas.remove(id);
             qDebug() << ui->tableData->rowCount();
         }
-    }
+    }*/
 }
 
 void SessionWidget::onDownloadCompleted(DownloadedFile *file)
@@ -320,7 +320,7 @@ void SessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &SessionWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SessionWidget::postResultReply);
-    connect(m_comManager, &ComManager::deviceDatasReceived, this, &SessionWidget::processDeviceDatasReply);
+    //connect(m_comManager, &ComManager::deviceDatasReceived, this, &SessionWidget::processDeviceDatasReply);
     connect(m_comManager, &ComManager::sessionEventsReceived, this, &SessionWidget::processSessionEventsReply);
     connect(m_comManager, &ComManager::downloadCompleted, this, &SessionWidget::onDownloadCompleted);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &SessionWidget::deleteDataReply);
@@ -339,12 +339,12 @@ void SessionWidget::btnDownload_clicked()
         QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
                                                               QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
         if (!save_path.isEmpty()){
-            int id_device_data = button->property("id_device_data").toInt();
+            /*int id_device_data = button->property("id_device_data").toInt();
             QUrlQuery args;
             args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
             args.addQueryItem(WEB_QUERY_ID_DEVICE_DATA, QString::number(id_device_data));
             downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-            setEnabled(false);
+            setEnabled(false);*/
         }
     }
 }
@@ -364,8 +364,8 @@ void SessionWidget::btnDeleteData_clicked()
                                                         tr("Êtes-vous sûrs de vouloir supprimer les données """) + data_name + """ de l'appareil '" + device_name + "'?");
     if (answer == QMessageBox::Yes){
         // We must delete!
-        int id_device_data = m_listDeviceDatas.key(ui->tableData->item(item_todel->row(), 0));
-        m_comManager->doDelete(WEB_DEVICEDATAINFO_PATH, id_device_data);
+        /*int id_device_data = m_listDeviceDatas.key(ui->tableData->item(item_todel->row(), 0));
+        m_comManager->doDelete(WEB_DEVICEDATAINFO_PATH, id_device_data);*/
     }
 }
 
@@ -375,11 +375,11 @@ void SessionWidget::btnDownloadAll_clicked()
     QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
                                                           QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
     if (!save_path.isEmpty()){
-        QUrlQuery args;
+        /*QUrlQuery args;
         args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
         args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
         downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-        setEnabled(false);
+        setEnabled(false);*/
     }
 }
 
@@ -398,11 +398,11 @@ void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
 
     if (current_tab == ui->tabData){
         // Data
-        if (m_listDeviceDatas.isEmpty()){
+        /*if (m_listDeviceDatas.isEmpty()){
             // Query session device data
             query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
             queryDataRequest(WEB_DEVICEDATAINFO_PATH, query);
-        }
+        }*/
     }
 
     if (current_tab == ui->tabTests){
