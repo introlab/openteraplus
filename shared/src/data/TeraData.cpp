@@ -442,16 +442,12 @@ QString TeraData::getIconStateFilename() const
     switch(m_data_type){
     case TERADATA_USER:
     case TERADATA_ONLINE_USER:
-        if (!hasOnlineStateField() && !hasBusyStateField())
-            return "://icons/software_user.png";
         if (isOnline())
             return "://icons/software_user_online.png";
         return "://icons/software_user.png";
 
     case TERADATA_DEVICE:
     case TERADATA_ONLINE_DEVICE:
-        if (!hasOnlineStateField() && !hasBusyStateField())
-            return "://icons/device_offline.png";
         if (isOnline())
             return "://icons/device_online.png";
         if (isEnabled())
@@ -460,8 +456,6 @@ QString TeraData::getIconStateFilename() const
 
     case TERADATA_PARTICIPANT:
     case TERADATA_ONLINE_PARTICIPANT:
-        if (!hasOnlineStateField() && !hasBusyStateField())
-            return "://icons/patient.png";
         if (isBusy())
             return "://icons/patient_online_busy.png";
         // TODO: Busy but not online icon.
