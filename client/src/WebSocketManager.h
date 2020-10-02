@@ -13,7 +13,7 @@
 #include "DeviceEvent.pb.h"
 #include "ParticipantEvent.pb.h"
 #include "JoinSessionEvent.pb.h"
-#include "JoinSessionReply.pb.h"
+#include "JoinSessionReplyEvent.pb.h"
 #include "LeaveSessionEvent.pb.h"
 #include "StopSessionEvent.pb.h"
 #include "TeraEvent.pb.h"
@@ -35,14 +35,12 @@ public:
 
     void connectWebSocket(QString &socketUrl, QString &user_uuid);
     void disconnectWebSocket();
-    void registerForEvent(const UserRegisterToEvent_EventType event_type);
-    void unregisterFromEvent(const UserRegisterToEvent_EventType event_type);
-
-    void sendJoinSessionReply(const QString& session_uuid, const JoinSessionReply::ReplyType reply_type);
+    // void registerForEvent(const UserRegisterToEvent_EventType event_type);
+    // void unregisterFromEvent(const UserRegisterToEvent_EventType event_type);
 
 private:
-    TeraModuleMessage_Header*   buildMessageHeader();
-    void sendModuleMessage(const google::protobuf::Message &data_msg);
+    // TeraModuleMessage_Header*   buildMessageHeader();
+    // void sendModuleMessage(const google::protobuf::Message &data_msg);
 
     quint32                 m_seq_num;
 
@@ -67,7 +65,7 @@ signals:
     void leaveSessionEventReceived(LeaveSessionEvent event);
     void stopSessionEventReceived(StopSessionEvent event);
     void databaseEventReceived(DatabaseEvent event);
-    void joinSessionReplyReceived(JoinSessionReply event);
+    void joinSessionReplyEventReceived(JoinSessionReplyEvent event);
 
 
 private slots:

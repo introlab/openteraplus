@@ -52,6 +52,7 @@ public:
 
     void startSession(const TeraData& session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list);
     void stopSession(const TeraData& session, const int &id_service = 0);
+    void sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg = QString());
 
     TeraData &getCurrentUser();
     TeraPreferences &getCurrentPreferences();

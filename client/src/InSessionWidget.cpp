@@ -298,14 +298,14 @@ void InSessionWidget::ws_JoinSessionEvent(JoinSessionEvent event)
     // Check if that event is really for us
     if (!m_session){
         LOG_ERROR("Received JoinSessionEvent, but no current session!", "InSessionWidget::processJoinSessionEvent");
-        m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_DENIED);
+        m_comManager->sendJoinSessionReply(session_uuid, JoinSessionReplyEvent::REPLY_DENIED, tr("En attente de démarrage de séance..."));
         return;
     }
 
     if (m_session->hasUuidField()){
         if (m_session->getUuid() != session_uuid){
             LOG_WARNING("Received JoinSessionEvent, but it's not for current session - replying busy", "InSessionWidget::processJoinSessionEvent");
-            m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_BUSY);
+            m_comManager->sendJoinSessionReply(session_uuid, JoinSessionReplyEvent::REPLY_BUSY, tr("Déjà en séance"));
             showNotification(NotificationWindow::TYPE_WARNING, QString::fromStdString(event.session_creator_name())
                                          + tr(" vous a invité dans une séance, mais nous avons refusé l'invitation pour vous."),
                                          "://icons/warning.png");
@@ -317,18 +317,69 @@ void InSessionWidget::ws_JoinSessionEvent(JoinSessionEvent event)
     if (m_serviceWidget){
         bool result = m_serviceWidget->handleJoinSessionEvent(event);
         if (result){
-            m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_ACCEPTED);
-        }else{
-            m_comManager->getWebSocketManager()->sendJoinSessionReply(session_uuid, JoinSessionReply::REPLY_DENIED);
+            // If we have a result here, it's that the join was accepted for the first time.
+            m_comManager->sendJoinSessionReply(session_uuid, JoinSessionReplyEvent::REPLY_ACCEPTED);
         }
+        // Don't reply anything here, since it might just be an update to the session (new invitees joined in).
+        /*else{
+            m_comManager->sendJoinSessionReply(session_uuid, JoinSessionReplyEvent::REPLY_DENIED);
+        }*/
     }
 
+}
+
+void InSessionWidget::ws_JoinSessionReplyEvent(JoinSessionReplyEvent event)
+{
+    if (!m_session){
+        LOG_ERROR("Received JoinSessionReplyEvent, but no session info!", "InSessionWidget::ws_JoinSessionReplyEvent");
+        return;
+    }
+
+    if (QString::fromStdString(event.session_uuid()) != m_session->getUuid()){
+        LOG_WARNING("Received JoinSessionReplyEvent, but not for the current session", "InSessionWidget::ws_JoinSessionReplyEvent");
+        return;
+    }
+
+    if (event.join_reply() != JoinSessionReplyEvent::REPLY_ACCEPTED){
+
+        TeraData* invitee_info = nullptr;
+        QString action = tr("n'a pas répondu à");
+        if (!event.user_uuid().empty()){
+            invitee_info = ui->wdgInvitees->getUserFromUuid(QString::fromStdString(event.user_uuid()));
+        }
+
+        if (!event.participant_uuid().empty()){
+            invitee_info = ui->wdgInvitees->getParticipantFromUuid(QString::fromStdString(event.participant_uuid()));
+        }
+
+        if (!event.device_uuid().empty()){
+            invitee_info = ui->wdgInvitees->getDeviceFromUuid(QString::fromStdString(event.device_uuid()));
+        }
+
+        if (event.join_reply() == JoinSessionReplyEvent::REPLY_DENIED){
+            action = tr("a refusé");
+        }
+
+        if (event.join_reply() == JoinSessionReplyEvent::REPLY_BUSY){
+            action = tr("est occupé et ne peut répondre à");
+        }
+
+        if (invitee_info){
+            // Show notification with message
+            QString notify_text = invitee_info->getName() + " " + action + tr(" l'invitation.");
+            if (!event.reply_msg().empty()){
+                notify_text += "\n" + tr("Raison: ") + QString::fromStdString(event.reply_msg());
+            }
+            showNotification(NotificationWindow::TYPE_MESSAGE, notify_text, TeraData::getIconFilenameForDataType(invitee_info->getDataType()));
+        }
+    }
 }
 
 void InSessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::sessionsReceived, this, &InSessionWidget::processSessionsReply);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &InSessionWidget::ws_JoinSessionEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionReplyEventReceived, this, &InSessionWidget::ws_JoinSessionReplyEvent);
 
     connect(m_comManager, &ComManager::usersReceived, this, &InSessionWidget::processUsersReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &InSessionWidget::processParticipantsReply);

@@ -56,6 +56,10 @@ public:
     QList<TeraData> getUsersInSession();
     QList<TeraData> getDevicesInSession();
 
+    TeraData* getUserFromUuid(const QString& uuid);
+    TeraData* getParticipantFromUuid(const QString& uuid);
+    TeraData* getDeviceFromUuid(const QString& uuid);
+
 private slots:
     void on_btnManageInvitees_clicked();
     void updateFilters();
@@ -109,10 +113,6 @@ private:
     void refreshInSessionTreeWidget();
 
     quint8 getInviteesCount();
-
-    TeraData* getUserFromUuid(const QString& uuid);
-    TeraData* getParticipantFromUuid(const QString& uuid);
-    TeraData* getDeviceFromUuid(const QString& uuid);
 
     void setSearching(const bool &search);
 

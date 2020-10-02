@@ -146,14 +146,15 @@ void ParticipantWidget::updateFieldsValue()
         // Status
         ui->icoOnline->setVisible(m_data->isEnabled());
         ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
-        if (m_data->isOnline() || m_data->isBusy()){
+        if (m_data->isBusy()){
+            ui->icoOnline->setPixmap(QPixmap("://status/status_busy.png"));
+        }else if (m_data->isOnline()){
             ui->icoOnline->setPixmap(QPixmap("://status/status_online.png"));
         }else{
             ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
         }
 
-
-        ui->frameNewSession->setVisible(m_data->isEnabled() && !m_data->isNew());
+        ui->frameNewSession->setVisible(m_data->isEnabled() && !m_data->isNew() && !m_data->isBusy());
     }
 }
 
@@ -1169,7 +1170,8 @@ void ParticipantWidget::on_btnNewSession_clicked()
             if (session_start_time.date() == QDate::currentDate()){
                 // Adds duration to have 1h since it was ended
                 session_start_time = session_start_time.addSecs(session->getFieldValue("session_duration").toInt());
-                if(session_start_time.secsTo(QDateTime::currentDateTime()) <= 3600){
+                // Allow for +/- 1h around the time of the session, in case of planned session
+                if(qAbs(session_start_time.secsTo(QDateTime::currentDateTime())) <= 3600){
                     GlobalMessageBox msg;
                     QString status_msg = tr("existe déjà.");
                     if (session_status == TeraSessionStatus::STATUS_INPROGRESS){

@@ -47,7 +47,7 @@ void WebSocketManager::disconnectWebSocket()
     m_webSocket->close();
     //while(m_webSocket->state() == QAbstractSocket::ConnectedState);
 }
-
+/*
 void WebSocketManager::registerForEvent(const opentera::protobuf::UserRegisterToEvent_EventType event_type)
 {
 
@@ -73,17 +73,6 @@ void WebSocketManager::unregisterFromEvent(const UserRegisterToEvent_EventType e
 
 }
 
-void WebSocketManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReply::ReplyType reply_type)
-{
-    LOG_WARNING("TODO: WebSocketManager::sendJoinSessionReply is deprecated - use /api/user/session/manage instead.", "WebSocketManager::sendJoinSessionReply");
-    // Data
-    /*JoinSessionReply session_reply;
-    session_reply.set_join_reply(reply_type);
-    session_reply.set_session_uuid(session_uuid.toStdString());
-
-    // TODO:
-    sendModuleMessage(session_reply);*/
-}
 
 TeraModuleMessage_Header *WebSocketManager::buildMessageHeader()
 {
@@ -118,7 +107,7 @@ void WebSocketManager::sendModuleMessage(const google::protobuf::Message &data_m
 
     // Clean up - since ownership was passed to the object, deleting it will clear all related ones.
     delete tera_msg;
-}
+}*/
 
 
 //////////////////////////////////////////////////////////////////////
@@ -246,12 +235,12 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                }
 
                ///// Join Session Reply Event
-               if (tera_event.events(i).Is<JoinSessionReply>()){
-                   JoinSessionReply event;
+               if (tera_event.events(i).Is<JoinSessionReplyEvent>()){
+                   JoinSessionReplyEvent event;
                    if (tera_event.events(i).UnpackTo(&event)){
-                       emit joinSessionReplyReceived(event);
+                       emit joinSessionReplyEventReceived(event);
                    }else{
-                       LOG_ERROR("Error unpacking JoinSessionReply from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
+                       LOG_ERROR("Error unpacking JoinSessionReplyEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
                    }
                }
            }

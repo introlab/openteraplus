@@ -324,9 +324,27 @@ void ComManager::stopSession(const TeraData &session, const int &id_service)
         delete m_currentSessionType;
         m_currentSessionType = nullptr;
     }
+}
 
+void ComManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
 
+    QJsonObject item_obj;
+    item_obj.insert("session_uuid", session_uuid);
+    item_obj.insert("action", "invite_reply");
+    QJsonObject parameters;
+    parameters.insert("reply_code", reply_type);
+    if (!join_msg.isEmpty())
+        parameters.insert("reply_msg", join_msg);
+    item_obj.insert("parameters", parameters);
 
+    // Update query
+    base_obj.insert("session_manage", item_obj);
+    document.setObject(base_obj);
+
+    doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
 }
 
 TeraData &ComManager::getCurrentUser()

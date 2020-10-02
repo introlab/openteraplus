@@ -120,6 +120,16 @@
         <file>status/status_offline.png</file>
         <file>sounds/notify_offline.wav</file>
         <file>sounds/notify_online.wav</file>
+        <file>status/status_busy.png</file>
+        <file>icons/software_user_offline_busy.png</file>
+        <file>icons/software_user_online_busy.png</file>
+        <file>icons/device_installed_busy.png</file>
+        <file>icons/device_online_busy.png</file>
+        <file>icons/patient_installed_busy.png</file>
+        <file>icons/ok2.png</file>
+        <file>icons/join.png</file>
+        <file>icons/leave.png</file>
+        <file>icons/error2.png</file>
     </qresource>
     <qresource prefix="/videorehab"/>
 </RCC>

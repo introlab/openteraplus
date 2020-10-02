@@ -41,6 +41,7 @@ private slots:
     void processParticipantsReply(QList<TeraData> participants);
 
     void ws_JoinSessionEvent(JoinSessionEvent event);
+    void ws_JoinSessionReplyEvent(JoinSessionReplyEvent event);
 
     void showEvent(QShowEvent *event) override;
 
