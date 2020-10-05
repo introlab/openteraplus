@@ -55,6 +55,8 @@ private:
     void updateFieldsValue();
     void initUI();
 
+    bool canStartNewSession();
+
     bool validateData();
 
     void updateSession(TeraData *session);

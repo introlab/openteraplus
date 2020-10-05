@@ -154,7 +154,7 @@ void ParticipantWidget::updateFieldsValue()
             ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
         }
 
-        ui->frameNewSession->setVisible(m_data->isEnabled() && !m_data->isNew() && !m_data->isBusy());
+        ui->frameNewSession->setVisible(canStartNewSession());
     }
 }
 
@@ -173,6 +173,14 @@ void ParticipantWidget::initUI()
     QStringList ignore_fields = {"participant_enabled", "participant_token_enabled", "participant_token", "participant_login_enabled",
                                 "participant_username", "participant_password"};
     ui->wdgParticipant->hideFields(ignore_fields);
+}
+
+bool ParticipantWidget::canStartNewSession()
+{
+    if (!m_data)
+        return false;
+
+    return m_data->isEnabled() && !m_data->isNew() && !m_data->isBusy();
 }
 
 bool ParticipantWidget::validateData()
@@ -332,7 +340,7 @@ void ParticipantWidget::updateSession(TeraData *session)
     if (btnResume){
         if (session->hasFieldName("session_start_datetime")){
             QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime();
-            btnResume->setVisible(session_date.date() == QDate::currentDate());
+            btnResume->setVisible(session_date.date() == QDate::currentDate() && canStartNewSession());
         }else{
             btnResume->hide();
         }

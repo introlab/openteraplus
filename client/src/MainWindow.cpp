@@ -25,6 +25,7 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_data_editor = nullptr;
     m_inSessionWidget = nullptr;
     m_download_dialog = nullptr;
+    m_joinSession_dialog = nullptr;
     m_initialLanguageSetted = false;
     m_waiting_for_data_type = TERADATA_NONE;
     m_currentDataType = TERADATA_NONE;
@@ -77,6 +78,7 @@ void MainWindow::connectSignals()
 
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::userEventReceived, this, &MainWindow::ws_userEvent);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &MainWindow::ws_participantEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &MainWindow::ws_joinSessionEvent);
 
     connect(&m_msgTimer, &QTimer::timeout, this, &MainWindow::showNextMessage);
 
@@ -357,6 +359,24 @@ void MainWindow::editorDialogFinished()
 
     // Enable selection in the project manager
     ui->projNavigator->setOnHold(false);
+}
+
+void MainWindow::joinSessionDialogFinished()
+{
+    if (m_joinSession_dialog->result() == JoinSessionDialog::Accepted){
+        m_comManager->sendJoinSessionReply(QString::fromStdString(m_joinSession_dialog->getEvent()->session_uuid()),
+                                           m_joinSession_dialog->getSelectedReply());
+
+        // Join session
+        m_comManager->joinSession(m_joinSession_dialog->getSessionType(), m_joinSession_dialog->getSessionId());
+    }else{
+        // Rejected dialog (because closed manually, for example) always generate a refuse reply.
+        m_comManager->sendJoinSessionReply(QString::fromStdString(m_joinSession_dialog->getEvent()->session_uuid()),
+                                           JoinSessionReplyEvent_ReplyType::JoinSessionReplyEvent_ReplyType_REPLY_TIMEOUT);
+    }
+
+    m_joinSession_dialog->deleteLater();
+    m_joinSession_dialog = nullptr;
 }
 
 void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
@@ -672,6 +692,33 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
 
             // Update online participants list
             //updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), false);
+        }
+    }
+}
+
+void MainWindow::ws_joinSessionEvent(JoinSessionEvent event)
+{
+    if (m_inSessionWidget){
+        // If we are in a session, the InSession Widget will handle that event for us.
+        return;
+    }
+
+    // Don't display join session event for session we created!
+    if (QString::fromStdString(event.session_creator_name()) == m_comManager->getCurrentUser().getName()){
+        return;
+    }
+
+    // Ensure we are in the invitees list
+    for (int i=0; i<event.session_users_size(); i++){
+        if (QString::fromStdString(event.session_users(i)) == m_comManager->getCurrentUser().getUuid()){
+            // Display JoinSession dialog
+            if (m_joinSession_dialog)
+                m_joinSession_dialog->deleteLater();
+
+            m_joinSession_dialog = new JoinSessionDialog(m_comManager, event, this);
+            connect(m_joinSession_dialog, &JoinSessionDialog::finished, this, &MainWindow::joinSessionDialogFinished);
+            m_joinSession_dialog->open();
+            return;
         }
     }
 }

@@ -12,7 +12,7 @@
 #include "services/BaseServiceWidget.h"
 #include "services/VideoRehabService/VideoRehabWidget.h"
 
-#include "JoinSessionReply.pb.h"
+#include "JoinSessionReplyEvent.pb.h"
 
 namespace Ui {
 class InSessionWidget;
@@ -54,6 +54,8 @@ private slots:
     void removeSessionInviteesRequested(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
 
     void sessionTimer();
+
+    void on_btnLeaveSession_clicked();
 
 private:
     void connectSignals();

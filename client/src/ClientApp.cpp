@@ -201,6 +201,7 @@ void ClientApp::loginRequested(QString username, QString password, QString serve
 void ClientApp::logoutRequested()
 {
     m_comMan->disconnectFromServer();
+    showLogin();
 }
 
 void ClientApp::on_loginResult(bool logged)
@@ -222,7 +223,7 @@ void ClientApp::on_loginResult(bool logged)
 
 void ClientApp::on_serverDisconnected()
 {
-    showLogin();
+    LOG_DEBUG("Disconnected from server.", "ClientApp::on_serverDisconnected");
 }
 
 void ClientApp::on_serverError(QAbstractSocket::SocketError error, QString error_str)

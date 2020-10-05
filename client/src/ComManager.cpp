@@ -300,6 +300,24 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
     emit sessionStartRequested(session_type);
 }
 
+void ComManager::joinSession(const TeraData &session_type, const int &id_session)
+{
+    if (session_type.getDataType() != TERADATA_SESSIONTYPE){
+        LOG_ERROR("Received an invalid session_type object", "ComManager::joinSession");
+        return;
+    }
+
+    if (m_currentSessionType){
+        LOG_WARNING("Tried to join a session, but already one in progress.", "ComManager::joinSession");
+        m_currentSessionType->deleteLater();
+        m_currentSessionType = nullptr;
+    }
+
+    m_currentSessionType = new TeraData(session_type);
+    emit sessionStarted(session_type, id_session);
+
+}
+
 void ComManager::stopSession(const TeraData &session, const int &id_service)
 {
     if (session.getDataType() != TERADATA_SESSION)
@@ -324,6 +342,28 @@ void ComManager::stopSession(const TeraData &session, const int &id_service)
         delete m_currentSessionType;
         m_currentSessionType = nullptr;
     }
+}
+
+void ComManager::leaveSession(const int &id_session)
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+
+    QJsonObject item_obj;
+    item_obj.insert("id_session", id_session);
+    item_obj.insert("action", "remove");
+
+    // Add ourself to the list
+    QJsonArray users;
+    users.append(QJsonValue(m_currentUser.getUuid()));
+    item_obj.insert("session_users", users);
+
+    // Update query
+    base_obj.insert("session_manage", item_obj);
+    document.setObject(base_obj);
+    doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+
+    emit sessionStopped(id_session);
 }
 
 void ComManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)

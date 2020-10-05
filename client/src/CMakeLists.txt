@@ -34,6 +34,7 @@ set(headers
     SessionLobbyDialog.h
     SessionInviteWidget.h
     OnlineManagerWidget.h
+    JoinSessionDialog.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -86,6 +87,7 @@ set(srcs
     SessionLobbyDialog.cpp
     SessionInviteWidget.cpp
     OnlineManagerWidget.cpp
+    JoinSessionDialog.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
@@ -127,6 +129,7 @@ SET(uis
     SessionLobbyDialog.ui
     SessionInviteWidget.ui
     OnlineManagerWidget.ui
+    JoinSessionDialog.ui
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
     editors/TeraForm.ui
