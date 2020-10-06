@@ -941,5 +941,6 @@ void ComManager::onWebSocketLoginResult(bool logged_in)
 void ComManager::setRequestLanguage(QNetworkRequest &request) {
     //Locale will be initialized with default locale
     QString localeString = QLocale().bcp47Name();
+    qDebug() << "localeString : " << localeString;
     request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
 }

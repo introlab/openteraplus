@@ -148,7 +148,9 @@ void ClientApp::setTranslation(QString language)
    bool lang_changed = false;
 
    if (language.isEmpty()){
-       m_currentLocale = QLocale(); // Use system locale by default
+       //Set French as default
+       m_currentLocale = QLocale(QLocale::French);
+       //m_currentLocale = QLocale(); // Use system locale by default
        lang_changed = true;
    }
    if (language.toLower() == "en" && m_currentLocale != QLocale::English){
@@ -167,6 +169,7 @@ void ClientApp::setTranslation(QString language)
    //qDebug() << QLocale();
 
    if (lang_changed){
+       QLocale::setDefault(m_currentLocale);
        if (m_translator->load(m_currentLocale, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
            this->installTranslator(m_translator);
            //qDebug() << "Installed translator";
