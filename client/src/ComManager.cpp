@@ -144,6 +144,8 @@ void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
         query.setQuery(query_args);
     }
     QNetworkRequest request(query);
+
+    setCredentials(request);
     setRequestLanguage(request);
 
 
@@ -160,6 +162,7 @@ void ComManager::doPost(const QString &path, const QString &post_data)
 
     query.setPath(path);
     QNetworkRequest request(query);
+    setCredentials(request);
     setRequestLanguage(request);
 
     request.setRawHeader("Content-Type", "application/json");
@@ -178,6 +181,7 @@ void ComManager::doDelete(const QString &path, const int &id)
     query.setPath(path);
     query.setQuery("id=" + QString::number(id));
     QNetworkRequest request(query);
+    setCredentials(request);
     setRequestLanguage(request);
 
     m_netManager->deleteResource(request);
@@ -210,6 +214,7 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     }
 
     QNetworkRequest request(query);
+    setCredentials(request);
     setRequestLanguage(request);
 
     QNetworkReply* reply = m_netManager->get(request);
@@ -943,4 +948,17 @@ void ComManager::setRequestLanguage(QNetworkRequest &request) {
     QString localeString = QLocale().bcp47Name();
     qDebug() << "localeString : " << localeString;
     request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
+}
+
+void ComManager::setCredentials(QNetworkRequest &request)
+{
+    //Needed?
+    request.setAttribute(QNetworkRequest::AuthenticationReuseAttribute, false);
+
+    // Pack in credentials
+    QString concatenatedCredentials = m_username + ":" + m_password;
+    QByteArray data = concatenatedCredentials.toLocal8Bit().toBase64();
+    QString headerData = "Basic " + data;
+    request.setRawHeader( "Authorization", headerData.toLocal8Bit() );
+
 }
