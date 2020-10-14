@@ -6,6 +6,7 @@
 #include <QWebEngineProfile>
 #include <QHBoxLayout>
 #include <QMovie>
+#include <QWebEngineSettings>
 
 #include "VideoRehabWebPage.h"
 

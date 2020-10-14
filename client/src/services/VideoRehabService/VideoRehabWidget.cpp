@@ -35,6 +35,7 @@ void VideoRehabWidget::initUI()
     ui->icoLoading->setMovie(m_loadingIcon);
     m_loadingIcon->start();
 
+    QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &VideoRehabWidget::webPageLoaded);
 
