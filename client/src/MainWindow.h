@@ -20,6 +20,7 @@
 #include "DownloadedFile.h"
 #include "TeraSessionCategory.h"
 #include "InSessionWidget.h"
+#include "JoinSessionDialog.h"
 
 // Protobuf
 #include "UserEvent.pb.h"
@@ -63,6 +64,7 @@ private slots:
 
     void ws_userEvent(UserEvent event);
     void ws_participantEvent(ParticipantEvent event);
+    void ws_joinSessionEvent(JoinSessionEvent event);
 
     void inSession_sessionEndedWithError();
 
@@ -76,6 +78,7 @@ private slots:
     void addGlobalEvent(GlobalEvent event);
 
     void editorDialogFinished();
+    void joinSessionDialogFinished();
     void dataDisplayRequested(TeraDataTypes data_type, int data_id);
     void dataDisplayRequestedByUuid(TeraDataTypes data_type, QString data_uuid);
     void dataDeleteRequested(TeraDataTypes data_type, int data_id);   
@@ -89,8 +92,6 @@ private slots:
     void on_btnLog_toggled(bool checked);
 
     void on_tableHistory_itemDoubleClicked(QTableWidgetItem *item);
-
-
 
 private:
     void connectSignals();
@@ -115,6 +116,7 @@ private:
     DataEditorWidget*       m_data_editor;
     InSessionWidget*        m_inSessionWidget;
     DownloadProgressDialog* m_download_dialog;
+    JoinSessionDialog*      m_joinSession_dialog;
     TeraDataTypes           m_waiting_for_data_type;
     TeraDataTypes           m_currentDataType;
     int                     m_currentDataId;

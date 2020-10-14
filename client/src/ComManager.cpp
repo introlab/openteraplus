@@ -144,6 +144,8 @@ void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
         query.setQuery(query_args);
     }
     QNetworkRequest request(query);
+
+    setCredentials(request);
     setRequestLanguage(request);
 
 
@@ -160,6 +162,7 @@ void ComManager::doPost(const QString &path, const QString &post_data)
 
     query.setPath(path);
     QNetworkRequest request(query);
+    setCredentials(request);
     setRequestLanguage(request);
 
     request.setRawHeader("Content-Type", "application/json");
@@ -178,6 +181,7 @@ void ComManager::doDelete(const QString &path, const int &id)
     query.setPath(path);
     query.setQuery("id=" + QString::number(id));
     QNetworkRequest request(query);
+    setCredentials(request);
     setRequestLanguage(request);
 
     m_netManager->deleteResource(request);
@@ -210,6 +214,7 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     }
 
     QNetworkRequest request(query);
+    setCredentials(request);
     setRequestLanguage(request);
 
     QNetworkReply* reply = m_netManager->get(request);
@@ -300,6 +305,24 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
     emit sessionStartRequested(session_type);
 }
 
+void ComManager::joinSession(const TeraData &session_type, const int &id_session)
+{
+    if (session_type.getDataType() != TERADATA_SESSIONTYPE){
+        LOG_ERROR("Received an invalid session_type object", "ComManager::joinSession");
+        return;
+    }
+
+    if (m_currentSessionType){
+        LOG_WARNING("Tried to join a session, but already one in progress.", "ComManager::joinSession");
+        m_currentSessionType->deleteLater();
+        m_currentSessionType = nullptr;
+    }
+
+    m_currentSessionType = new TeraData(session_type);
+    emit sessionStarted(session_type, id_session);
+
+}
+
 void ComManager::stopSession(const TeraData &session, const int &id_service)
 {
     if (session.getDataType() != TERADATA_SESSION)
@@ -324,6 +347,28 @@ void ComManager::stopSession(const TeraData &session, const int &id_service)
         delete m_currentSessionType;
         m_currentSessionType = nullptr;
     }
+}
+
+void ComManager::leaveSession(const int &id_session)
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+
+    QJsonObject item_obj;
+    item_obj.insert("id_session", id_session);
+    item_obj.insert("action", "remove");
+
+    // Add ourself to the list
+    QJsonArray users;
+    users.append(QJsonValue(m_currentUser.getUuid()));
+    item_obj.insert("session_users", users);
+
+    // Update query
+    base_obj.insert("session_manage", item_obj);
+    document.setObject(base_obj);
+    doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+
+    emit sessionStopped(id_session);
 }
 
 void ComManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)
@@ -901,5 +946,19 @@ void ComManager::onWebSocketLoginResult(bool logged_in)
 void ComManager::setRequestLanguage(QNetworkRequest &request) {
     //Locale will be initialized with default locale
     QString localeString = QLocale().bcp47Name();
+    qDebug() << "localeString : " << localeString;
     request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
+}
+
+void ComManager::setCredentials(QNetworkRequest &request)
+{
+    //Needed?
+    request.setAttribute(QNetworkRequest::AuthenticationReuseAttribute, false);
+
+    // Pack in credentials
+    QString concatenatedCredentials = m_username + ":" + m_password;
+    QByteArray data = concatenatedCredentials.toLocal8Bit().toBase64();
+    QString headerData = "Basic " + data;
+    request.setRawHeader( "Authorization", headerData.toLocal8Bit() );
+
 }

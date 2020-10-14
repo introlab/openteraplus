@@ -201,7 +201,6 @@ void InSessionWidget::sessionTimer()
 void InSessionWidget::on_btnEndSession_clicked()
 {
     GlobalMessageBox msg_box;
-    // TODO: Manage if we are the session creator or not...
     if (msg_box.showYesNo(tr("Terminer la séance?"), tr("Mettre fin à la séance?")) == QMessageBox::Yes){
         int id_service = 0;
         if (getSessionTypeCategory() == TeraSessionCategory::SESSION_TYPE_SERVICE){
@@ -400,6 +399,8 @@ void InSessionWidget::initUI()
     ui->btnInSessionInfos->setChecked(true);
     //ui->tabInfos->hide();
 
+    ui->btnEndSession->hide();
+
     // Clean up, if needed
     if (m_serviceWidget){
         m_serviceWidget->deleteLater();
@@ -451,8 +452,10 @@ void InSessionWidget::updateUI()
 
             // Hide manager frame
             ui->btnInSessionInfos->setChecked(false);
-
         }
+        bool user_is_creator = m_session->getFieldValue("id_creator_user").toInt() == m_comManager->getCurrentUser().getId();
+        ui->btnEndSession->setVisible(user_is_creator);
+        ui->btnLeaveSession->setVisible(!user_is_creator);
     }
 }
 
@@ -496,3 +499,15 @@ void InSessionWidget::showNotification(const NotificationWindow::NotificationTyp
     emit requestShowNotification(notification_type, text, iconPath, QString(), 300, 75, 5000);
 }
 
+
+void InSessionWidget::on_btnLeaveSession_clicked()
+{
+    GlobalMessageBox msg_box;
+    if (msg_box.showYesNo(tr("Quitter la séance?"), tr("Désirez-vous quitter la séance?")) == QMessageBox::Yes){
+        if (m_session){
+            m_comManager->leaveSession(m_session->getId());
+        }else{
+            LOG_CRITICAL("No session! Can't leave it!", "InSessionWidget::on_btnLeaveSession_clicked");
+        }
+    }
+}

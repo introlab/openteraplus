@@ -69,6 +69,7 @@
 #define WEB_QUERY_ID_SERVICE        "id_service"
 #define WEB_QUERY_ID_SPECIFIC       "id_specific"
 #define WEB_QUERY_SERVICE_KEY       "service_key"
+#define WEB_QUERY_SESSION_UUID      "session_uuid"
 
 #define WEB_QUERY_LIST              "list"
 #define WEB_QUERY_AVAILABLE         "available"

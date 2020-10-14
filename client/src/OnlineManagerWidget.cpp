@@ -89,7 +89,7 @@ void OnlineManagerWidget::updateOnlineUser(const TeraData &online_user)
     if (m_onlineUsers.contains(uuid)){
         user_item = m_onlineUsers[uuid];
     }else{
-        if (online_user.isOnline() || online_user.isBusy()){ // Not online and not busy = don't need to add!
+        if (online_user.isOnline()/* || online_user.isBusy()*/){ // Not online and not busy = don't need to add!
             user_item = new QListWidgetItem(QIcon(online_user.getIconStateFilename()), online_user.getName());
             ui->lstOnlineUsers->addItem(user_item);
             m_onlineUsers[uuid] = user_item;
@@ -97,7 +97,7 @@ void OnlineManagerWidget::updateOnlineUser(const TeraData &online_user)
     }
 
     if (user_item){
-        if (!online_user.isOnline() && !online_user.isBusy()){
+        if (!online_user.isOnline() /*&& !online_user.isBusy()*/){
             // We must remove that item
             delete user_item;
             m_onlineUsers.remove(uuid);
@@ -121,7 +121,7 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData &online_partici
     if (m_onlineParticipants.contains(uuid)){
         participant_item = m_onlineParticipants[uuid];
     }else{
-        if (online_participant.isOnline() || online_participant.isBusy()){ // Not online and not busy = don't need to add!
+        if (online_participant.isOnline()/* || online_participant.isBusy()*/){ // Not online and not busy = don't need to add!
             participant_item = new QListWidgetItem(QIcon(online_participant.getIconStateFilename()), online_participant.getName());
             ui->lstOnlineParticipants->addItem(participant_item);
             m_onlineParticipants[uuid] = participant_item;
@@ -129,7 +129,7 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData &online_partici
     }
 
     if (participant_item){
-        if (!online_participant.isOnline() && !online_participant.isBusy()){
+        if (!online_participant.isOnline()/* && !online_participant.isBusy()*/){
             // We must remove that item
             delete participant_item;
             m_onlineParticipants.remove(uuid);
@@ -153,7 +153,7 @@ void OnlineManagerWidget::updateOnlineDevice(const TeraData &online_device)
     if (m_onlineDevices.contains(uuid)){
         device_item = m_onlineDevices[uuid];
     }else{
-        if (online_device.isOnline() || online_device.isBusy()){ // Not online and not busy = don't need to add!
+        if (online_device.isOnline()/* || online_device.isBusy()*/){ // Not online and not busy = don't need to add!
             device_item = new QListWidgetItem(QIcon(online_device.getIconStateFilename()), online_device.getName());
             ui->lstOnlineDevices->addItem(device_item);
             m_onlineDevices[uuid] = device_item;
@@ -161,7 +161,7 @@ void OnlineManagerWidget::updateOnlineDevice(const TeraData &online_device)
     }
 
     if (device_item){
-        if (!online_device.isOnline() && !online_device.isBusy()){
+        if (!online_device.isOnline()/* && !online_device.isBusy()*/){
             // We must remove that item
             delete device_item;
             m_onlineDevices.remove(uuid);
