@@ -520,6 +520,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::sessionsReceived;
     case TERADATA_DEVICESUBTYPE:
         return &ComManager::deviceSubtypesReceived;
+    case TERADATA_DEVICETYPE:
+        return &ComManager::deviceTypesReceived;
     case TERADATA_SERVICE:
         return &ComManager::servicesReceived;
     case TERADATA_SERVICE_ACCESS:
@@ -710,6 +712,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_DEVICESUBTYPE:
         emit deviceSubtypesReceived(items, reply_query);
+        break;
+    case TERADATA_DEVICETYPE:
+        emit deviceTypesReceived(items, reply_query);
         break;
     case TERADATA_SESSIONTYPEPROJECT:
         emit sessionTypesProjectsReceived(items, reply_query);

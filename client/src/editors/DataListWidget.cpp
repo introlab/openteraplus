@@ -6,6 +6,7 @@
 #include "editors/DeviceWidget.h"
 #include "editors/SessionTypeWidget.h"
 #include "editors/DeviceSubTypeWidget.h"
+#include "editors/DeviceTypeWidget.h"
 #include "editors/UserGroupWidget.h"
 #include "editors/ServiceWidget.h"
 #include "editors/ServiceConfigWidget.h"
@@ -225,6 +226,9 @@ void DataListWidget::showEditor(TeraData *data)
         break;
         case TERADATA_DEVICESUBTYPE:
             m_editor = new DeviceSubTypeWidget(m_comManager, data);
+        break;
+        case TERADATA_DEVICETYPE:
+            m_editor = new DeviceTypeWidget(m_comManager, data);
         break;
         case TERADATA_USERGROUP:
             m_editor = new UserGroupWidget(m_comManager, data);

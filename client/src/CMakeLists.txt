@@ -48,6 +48,7 @@ set(headers
     editors/SessionTypeWidget.h
     editors/SessionWidget.h
     editors/DeviceSubTypeWidget.h
+    editors/DeviceTypeWidget.h
     editors/UserGroupWidget.h
     editors/ServiceWidget.h
     editors/ServiceConfigWidget.h
@@ -101,6 +102,7 @@ set(srcs
     editors/SessionTypeWidget.cpp
     editors/SessionWidget.cpp
     editors/DeviceSubTypeWidget.cpp
+    editors/DeviceTypeWidget.cpp
     editors/UserGroupWidget.cpp
     editors/ServiceWidget.cpp
     editors/ServiceConfigWidget.cpp
@@ -142,6 +144,7 @@ SET(uis
     editors/SessionTypeWidget.ui
     editors/SessionWidget.ui
     editors/DeviceSubTypeWidget.ui
+    editors/DeviceTypeWidget.ui
     editors/UserGroupWidget.ui
     editors/ServiceWidget.ui
     editors/ServiceConfigWidget.ui
