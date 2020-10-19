@@ -48,7 +48,7 @@ private slots:
 
     void on_serverDisconnected();
     void on_serverError(QAbstractSocket::SocketError error, QString error_str);
-    void on_networkError(QNetworkReply::NetworkError error, QString error_str);
+    void on_networkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation, int status_code);
 
     void preferencesUpdated();
 };

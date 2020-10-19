@@ -107,7 +107,7 @@ protected:
 
 signals:
     void serverDisconnected();
-    void networkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation, int status_code);
+    void networkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
     void socketError(QAbstractSocket::SocketError, QString);
     void waitingForReply(bool waiting);
 

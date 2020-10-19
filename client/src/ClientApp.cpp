@@ -240,8 +240,10 @@ void ClientApp::on_serverError(QAbstractSocket::SocketError error, QString error
     // TODO: Manage error in main UI
 }
 
-void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error_str)
+void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation op, int status_code)
 {
+    Q_UNUSED(op);
+
     if (m_loginDiag){
         switch(error){
             case QNetworkReply::ConnectionRefusedError:
@@ -258,10 +260,11 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
                 error_str = tr("Le serveur est introuvable.");
             break;
             default:
-                error_str = tr("Impossible de se connecter (Code erreur: ") + QString::number(error) + ")";
+                error_str = tr("Impossible de se connecter (Code erreur: ") + QString::number(status_code) + " " + error_str + ")";
         }
 
-        m_loginDiag->setStatusMessage(error_str, true);
+        //Remove \n from error_str
+        m_loginDiag->setStatusMessage(error_str.replace("\n", ""), true);
     }
     // TODO: Manage error in main UI
 }
