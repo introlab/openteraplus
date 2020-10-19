@@ -145,9 +145,9 @@ void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
     }
     QNetworkRequest request(query);
 
-    setCredentials(request);
+    setRequestCredentials(request);
     setRequestLanguage(request);
-
+    setRequestVersions(request);
 
     m_netManager->get(request);
     emit waitingForReply(true);
@@ -162,8 +162,9 @@ void ComManager::doPost(const QString &path, const QString &post_data)
 
     query.setPath(path);
     QNetworkRequest request(query);
-    setCredentials(request);
+    setRequestCredentials(request);
     setRequestLanguage(request);
+    setRequestVersions(request);
 
     request.setRawHeader("Content-Type", "application/json");
 
@@ -181,8 +182,9 @@ void ComManager::doDelete(const QString &path, const int &id)
     query.setPath(path);
     query.setQuery("id=" + QString::number(id));
     QNetworkRequest request(query);
-    setCredentials(request);
+    setRequestCredentials(request);
     setRequestLanguage(request);
+    setRequestVersions(request);
 
     m_netManager->deleteResource(request);
     emit waitingForReply(true);
@@ -214,8 +216,9 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     }
 
     QNetworkRequest request(query);
-    setCredentials(request);
+    setRequestCredentials(request);
     setRequestLanguage(request);
+    setRequestVersions(request);
 
     QNetworkReply* reply = m_netManager->get(request);
     if (reply){
@@ -955,7 +958,7 @@ void ComManager::setRequestLanguage(QNetworkRequest &request) {
     request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
 }
 
-void ComManager::setCredentials(QNetworkRequest &request)
+void ComManager::setRequestCredentials(QNetworkRequest &request)
 {
     //Needed?
     request.setAttribute(QNetworkRequest::AuthenticationReuseAttribute, false);
@@ -966,4 +969,10 @@ void ComManager::setCredentials(QNetworkRequest &request)
     QString headerData = "Basic " + data;
     request.setRawHeader( "Authorization", headerData.toLocal8Bit() );
 
+}
+
+void ComManager::setRequestVersions(QNetworkRequest &request)
+{
+    request.setRawHeader("X-Client-Name", QByteArray(OPENTERAPLUS_CLIENT_NAME));
+    request.setRawHeader("X-Client-Version", QByteArray(OPENTERAPLUS_VERSION));
 }

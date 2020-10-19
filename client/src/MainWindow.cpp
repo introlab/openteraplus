@@ -117,7 +117,7 @@ void MainWindow::initUi()
     ui->tabMainMenu->setCurrentIndex(0); // Select "Navigator" tab by default
 
     // Set version number
-    ui->lblVersion->setText(QString(TERAPLUS_VERSION));
+    ui->lblVersion->setText(QString(OPENTERAPLUS_VERSION));
 
 }
 

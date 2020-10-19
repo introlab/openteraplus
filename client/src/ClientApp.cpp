@@ -24,7 +24,7 @@ ClientApp::ClientApp(int &argc, char **argv)
     QString stylesheet = QLatin1String(file.readAll());
     setStyleSheet(stylesheet);
 
-    setApplicationName(QString("TeraClient v") + QString(TERAPLUS_VERSION));
+    setApplicationName(QString("TeraClient v") + QString(OPENTERAPLUS_VERSION));
     qDebug() << "Starting App " << applicationName();
 
     // Load config

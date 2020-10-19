@@ -177,7 +177,8 @@ public slots:
 
 protected:
     void setRequestLanguage(QNetworkRequest &request);
-    void setCredentials(QNetworkRequest &request);
+    void setRequestCredentials(QNetworkRequest &request);
+    void setRequestVersions(QNetworkRequest &request);
 
 private slots:
     // Network
