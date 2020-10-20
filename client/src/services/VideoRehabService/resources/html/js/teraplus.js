@@ -60,7 +60,7 @@ function setupSharedObjectCallbacks(channel) {
     SharedObject.getExtraParams();
 
     // Request contact info...
-    SharedObject.getContactInformation();
+    //SharedObject.getContactInformation();
 
     // Request current camera
     //SharedObject.getCurrentVideoSource();

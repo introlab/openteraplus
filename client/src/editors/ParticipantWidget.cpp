@@ -421,6 +421,7 @@ void ParticipantWidget::refreshWebAccessUrl()
     if (current_service->hasFieldName("service_endpoint_participant"))
         participant_endpoint = current_service->getFieldValue("service_endpoint_participant").toString();
     QString service_url = "https://" + server_url.host() + ":" + QString::number(server_url.port()) +
+    //QString service_url = "https://" + current_service->getFieldValue("service_hostname").toString() + ":" + QString::number(server_url.port()) +
             current_service->getFieldValue("service_clientendpoint").toString() +
             participant_endpoint + "?token=" +
             m_data->getFieldValue("participant_token").toString();
@@ -943,6 +944,8 @@ void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &
 
 void ParticipantWidget::sessionLobbyStartSessionRequested()
 {
+
+    // Delete setup widget
     int id_session_type = ui->cmbSessionType->currentData().toInt();
     // Start session
     m_comManager->startSession(*m_ids_session_types[id_session_type],

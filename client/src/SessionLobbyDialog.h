@@ -41,6 +41,7 @@ private:
     Ui::SessionLobbyDialog  *ui;
     ComManager*             m_comManager;
     TeraData                m_sessionType;
+    QWidget*                m_setupWdg;
     int                     m_idProject;
     int                     m_idSession;
 
@@ -51,6 +52,7 @@ private:
 
     void configureWidget();
     void setSetupWidget(QWidget *wdg);
+    void removeSetupWidget();
     void connectSignals();
 
     void queryLists();

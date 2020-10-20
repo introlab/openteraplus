@@ -10,6 +10,7 @@ SessionLobbyDialog::SessionLobbyDialog(ComManager* comManager, TeraData &session
     m_idSession(id_session)
 {
     ui->setupUi(this);
+    m_setupWdg = nullptr;
 
     ui->lblTitle->setText(m_sessionType.getFieldValue("session_type_name").toString());
 
@@ -92,6 +93,17 @@ void SessionLobbyDialog::setSetupWidget(QWidget *wdg)
     ui->wdgSessionConfig->layout()->addWidget(wdg);
 }
 
+void SessionLobbyDialog::removeSetupWidget()
+{
+    if (ui->wdgSessionConfig->layout()){
+        ui->wdgSessionConfig->layout()->takeAt(0);
+        if (m_setupWdg){
+            delete m_setupWdg;
+            m_setupWdg = nullptr;
+        }
+    }
+}
+
 void SessionLobbyDialog::connectSignals()
 {
 
@@ -155,7 +167,8 @@ void SessionLobbyDialog::configureWidget()
         QString service_key = m_sessionType.getFieldValue("session_type_service_key").toString();
         bool handled = false;
         if (service_key == "VideoRehabService"){
-            setSetupWidget(new VideoRehabSetupWidget(m_comManager, this));
+            m_setupWdg = new VideoRehabSetupWidget(m_comManager, this);
+            setSetupWidget(m_setupWdg);
             handled = true;
         }
 
@@ -182,6 +195,7 @@ void SessionLobbyDialog::on_btnCancel_clicked()
 
 void SessionLobbyDialog::on_btnStartSession_clicked()
 {
+    removeSetupWidget();
     accept();
 }
 

@@ -38,10 +38,12 @@ void SharedObject::setCurrentCameraIndex(const int &index){
     m_cameraIndex = index;
 }
 
-void SharedObject::getContactInformation()
+QString SharedObject::getContactInformation()
 {
     //Will update client with info when requested.
-    sendContactInformation(m_userName,m_userUUID);
+    //sendContactInformation(m_userName,m_userUUID);
+
+    return serializeContactInfo();
 }
 
 void SharedObject::zoomInClicked(QString uuid)
@@ -91,17 +93,20 @@ void SharedObject::imageClicked(QString uuid, int x, int y, int w, int h)
     emit move(uuid, x, y, w, h);
 }
 
-void SharedObject::getCurrentVideoSource()
+QString SharedObject::getCurrentVideoSource()
 {
+    return serializeVideoSource();
     //Will update client with info when requested.
-    sendCurrentVideoSource(m_cameraName, m_cameraIndex);
+    //sendCurrentVideoSource(m_cameraName, m_cameraIndex);
 }
 
-void SharedObject::getCurrentAudioSource()
+QString SharedObject::getCurrentAudioSource()
 {
+    return serializeAudioSource();
     //Will update client with info when requested.
-    sendCurrentAudioSource();
+    //sendCurrentAudioSource();
 }
+
 
 void SharedObject::getSecondSources(){
     sendSecondSources();
@@ -118,50 +123,43 @@ void SharedObject::cameraChanged(QString name, int index){
     emit currentCameraWasChanged();
 }
 
-void SharedObject::sendContactInformation(){
-    sendContactInformation(m_userName, m_userUUID);
+
+void SharedObject::sendContactInformation()
+{
+    QString contact_info = serializeContactInfo();
+    qDebug() << "js: Sending : " << QString(contact_info);
+    emit newContactInformation(contact_info);
+
 }
 
-void SharedObject::sendContactInformation(const QString &name, const QString & uuid)
+void SharedObject::sendCurrentVideoSource(){
+
+
+    QString video_src = serializeVideoSource();
+    qDebug() << "js: Sending Video Source: " << video_src;
+
+    emit newVideoSource(video_src);
+}
+
+QString SharedObject::serializeContactInfo()
 {
     //Create JSON Object for contact
     QJsonObject myObject
     {
-        {"name", name},
-        {"uuid", uuid}
+        {"name", m_userName},
+        {"uuid", m_userUUID}
     };
 
     QJsonDocument doc(myObject);
 
-    qDebug() << "js: Sending : " << QString(doc.toJson(QJsonDocument::Compact));
+    QString rval = doc.toJson(QJsonDocument::Compact);
 
-    emit newContactInformation(QString(doc.toJson(QJsonDocument::Compact)));
+    return rval;
 
 }
 
-
-void SharedObject::sendCurrentVideoSource(){
-    sendCurrentVideoSource(m_cameraName, m_cameraIndex);
-}
-
-void SharedObject::sendCurrentVideoSource(const QString &name, const int &index){
-    //Create JSON Object for contact
-    QJsonObject myObject
-    {
-        {"name", name},
-        {"index", index}
-    };
-
-    QJsonDocument doc(myObject);
-
-    qDebug() << "js: Sending Video Source: " << QString(doc.toJson(QJsonDocument::Compact));
-
-    emit newVideoSource(QString(doc.toJson(QJsonDocument::Compact)));
-}
-
-
-void SharedObject::sendCurrentAudioSource(){
-    //Create JSON Object for contact
+QString SharedObject::serializeAudioSource()
+{
     QJsonObject myObject
     {
         {"name", m_audioName}
@@ -169,9 +167,42 @@ void SharedObject::sendCurrentAudioSource(){
 
     QJsonDocument doc(myObject);
 
-    qDebug() << "js: Sending : " << QString(doc.toJson(QJsonDocument::Compact));
+    return doc.toJson(QJsonDocument::Compact);
+}
 
-    emit newAudioSource(QString(doc.toJson(QJsonDocument::Compact)));
+QString SharedObject::serializeVideoSource()
+{
+    //Create JSON Object for contact
+    QJsonObject myObject
+    {
+        {"name", m_cameraName},
+        {"index", m_cameraIndex}
+    };
+
+    QJsonDocument doc(myObject);
+    return doc.toJson(QJsonDocument::Compact);
+}
+
+QString SharedObject::serialize2ndSources()
+{
+    //Create JSON Object for contact
+    QJsonObject myObject
+    {
+        {"audio", m_2ndAudioName},
+        {"video", m_2ndVideoName}
+    };
+
+    QJsonDocument doc(myObject);
+    return doc.toJson(QJsonDocument::Compact);
+}
+
+
+void SharedObject::sendCurrentAudioSource(){
+    QString audio_src = serializeAudioSource();
+
+    qDebug() << "js: Sending : " << audio_src;
+
+    emit newAudioSource(audio_src);
 }
 
 void SharedObject::sendSecondSources(){
@@ -236,11 +267,13 @@ void SharedObject::dataForwardReceived(QString json){
 
 void SharedObject::setLocalMirror(const bool &mirror){
     m_localMirror = mirror;
+    emit setLocalMirrorSignal(m_localMirror);
 }
 
 void SharedObject::setExtraParams(const QString &params)
 {
     m_extraParams = params;
+    emit newExtraParams(m_extraParams);
 }
 
 void SharedObject::sendExtraParams(){
@@ -258,13 +291,36 @@ bool SharedObject::isPageReady()
     return m_pageIsReady;
 }
 
-void SharedObject::getLocalMirror(){
-    emit setLocalMirrorSignal(m_localMirror);
+bool SharedObject::getLocalMirror(){
+    return m_localMirror;
+    //emit setLocalMirrorSignal(m_localMirror);
 }
 
 void SharedObject::getExtraParams()
 {
     sendExtraParams();
+}
+
+QString SharedObject::getAllSettings()
+{
+    //Create JSON Object for contact
+    QJsonObject myObject
+    {
+        {"contactInfo", serializeContactInfo()},
+        {"audio", serializeAudioSource()},
+        {"video", serializeVideoSource()},
+        {"mirror", m_localMirror},
+        {"extraParams", m_extraParams},
+        {"secondAudioVideo", serialize2ndSources()}
+    };
+
+    QJsonDocument doc(myObject);
+
+    QString rval = QString(doc.toJson(QJsonDocument::Compact));
+
+    qDebug() << "js: Sending : " << rval;
+
+    return rval;
 }
 
 void SharedObject::setPageReady()

@@ -28,6 +28,8 @@ public:
 
     bool handleJoinSessionEvent(const JoinSessionEvent &event) override;
 
+    void reload();
+
 private slots:
     void on_txtURL_returnPressed();
     void webEngineURLChanged(QUrl url);

@@ -31,24 +31,27 @@ public:
     void setLocalMirror(const bool &mirror);
     void setExtraParams(const QString &params);
 
-    void sendContactInformation();
     void sendCurrentVideoSource();
     void sendCurrentAudioSource();
     void sendSecondSources();
     void sendExtraParams();
     void sendPTZCapabilities();
 
+    void sendContactInformation();
+
     bool isPageReady();
 
 
 public slots:
 
-    Q_INVOKABLE void getContactInformation();
-    Q_INVOKABLE void getCurrentVideoSource();
-    Q_INVOKABLE void getCurrentAudioSource();
+    Q_INVOKABLE QString getContactInformation();
+    Q_INVOKABLE QString getCurrentVideoSource();
+    Q_INVOKABLE QString getCurrentAudioSource();
     Q_INVOKABLE void getSecondSources();
-    Q_INVOKABLE void getLocalMirror();
+    Q_INVOKABLE bool getLocalMirror();
     Q_INVOKABLE void getExtraParams();
+
+    Q_INVOKABLE QString getAllSettings();
 
     Q_INVOKABLE void setPageReady();
     Q_INVOKABLE void setVideoError(QString context, QString error);
@@ -105,9 +108,14 @@ signals:
 
 protected:
 
-    //TODO add more information as needed...
-    void sendContactInformation(const QString &name, const QString & uuid);
-    void sendCurrentVideoSource(const QString &name, const int &index);
+
+
+    QString serializeContactInfo();
+    QString serializeAudioSource();
+    QString serializeVideoSource();
+    QString serialize2ndSources();
+
+    QString serializeAll();
 
     QString m_userName;
     QString m_userUUID;

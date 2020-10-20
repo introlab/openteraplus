@@ -10,7 +10,9 @@
 #include "NotificationWindow.h"
 
 #include "services/BaseServiceWidget.h"
+
 #include "services/VideoRehabService/VideoRehabWidget.h"
+#include "services/VideoRehabService/VideoRehabToolsWidget.h"
 
 #include "JoinSessionReplyEvent.pb.h"
 
@@ -28,7 +30,6 @@ public:
 
     void disconnectSignals();
     void setSessionId(int session_id);
-
 
 
 private slots:
@@ -62,6 +63,7 @@ private:
     void initUI();
     void updateUI();
     void setMainWidget(QWidget* wdg);
+    void setToolsWidget(QWidget* wdg);
     TeraSessionCategory::SessionTypeCategories getSessionTypeCategory();
 
     void queryLists();
@@ -73,11 +75,12 @@ private:
     QTimer              m_sessionTimer;
     QTime               m_sessionDuration;
 
-    ComManager*         m_comManager;
-    TeraData            m_sessionType;
-    TeraData*           m_session;
-    BaseServiceWidget*  m_serviceWidget;
-    StartSessionDialog* m_startDiag;
+    ComManager*             m_comManager;
+    TeraData                m_sessionType;
+    TeraData*               m_session;
+    BaseServiceWidget*      m_serviceWidget;
+    BaseServiceToolsWidget* m_serviceToolsWidget;
+    StartSessionDialog*     m_startDiag;
 
     int                 m_projectId;
 

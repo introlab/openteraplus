@@ -11,6 +11,7 @@ InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_typ
 
     m_comManager = comMan;
     m_serviceWidget = nullptr;
+    m_serviceToolsWidget = nullptr;
     m_startDiag = nullptr;
     m_session = nullptr;
 
@@ -39,6 +40,8 @@ InSessionWidget::~InSessionWidget()
         m_serviceWidget->deleteLater();
     if (m_startDiag)
         m_startDiag->deleteLater();
+    if (m_serviceToolsWidget)
+        m_serviceToolsWidget->deleteLater();
 }
 
 void InSessionWidget::disconnectSignals()
@@ -417,8 +420,10 @@ void InSessionWidget::initUI()
         bool handled = false;
         if (service_key == "VideoRehabService"){
             // Main widget = QWebEngine
-            m_serviceWidget = new VideoRehabWidget(m_comManager);
+            m_serviceWidget = new VideoRehabWidget(m_comManager, this);
             setMainWidget(m_serviceWidget);
+            m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
+            setToolsWidget(m_serviceToolsWidget);
             handled = true;
         }
 
@@ -471,6 +476,19 @@ void InSessionWidget::setMainWidget(QWidget *wdg)
 
     ui->widgetMain->layout()->addWidget(wdg);
 
+}
+
+void InSessionWidget::setToolsWidget(QWidget *wdg)
+{
+    // Check for layout
+    if (!ui->widgetTools->layout()){
+        // No existing layout - create one
+        QHBoxLayout* layout = new QHBoxLayout();
+        layout->setContentsMargins(0,0,0,0);
+        ui->widgetTools->setLayout(layout);
+    }
+
+    ui->widgetTools->layout()->addWidget(wdg);
 }
 
 TeraSessionCategory::SessionTypeCategories InSessionWidget::getSessionTypeCategory()

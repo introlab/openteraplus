@@ -36,15 +36,21 @@ void VideoRehabWidget::initUI()
     m_loadingIcon->start();
 
     QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
+    QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PlaybackRequiresUserGesture, false);
+
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &VideoRehabWidget::webPageLoaded);
 
-    //Create a new page
+    // Create a new page
     m_webPage = new VideoRehabWebPage(m_webEngine);
     connect(m_webPage->getSharedObject(), &SharedObject::pageIsReady, this, &VideoRehabWidget::webPageReady);
     connect(m_webPage->getSharedObject(), &SharedObject::videoErrorOccured, this, &VideoRehabWidget::webPageVideoError);
     connect(m_webPage->getSharedObject(), &SharedObject::audioErrorOccured, this, &VideoRehabWidget::webPageAudioError);
     connect(m_webPage->getSharedObject(), &SharedObject::generalErrorOccured, this, &VideoRehabWidget::webPageGeneralError);
+
+    // Set current user informations
+    m_webPage->getSharedObject()->setContactInformation(m_comManager->getCurrentUser().getName(),
+                                                        m_comManager->getCurrentUser().getUuid());
 
     //Set page to view
     m_webEngine->setPage(m_webPage);
@@ -70,6 +76,8 @@ bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
     if (m_webPage){
         QString session_url = QString::fromStdString(event.session_url());
         if (m_webPage->url().toString() != session_url){
+            // Append source to the URL to connect QWebChannel
+            session_url += "&source=openteraplus";
             m_webPage->setUrl(session_url);
             return true;  // Accepts the request
         }
@@ -77,6 +85,11 @@ bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
 
     return false;  // Refuses the request
 
+}
+
+void VideoRehabWidget::reload()
+{
+    m_webEngine->reload();
 }
 
 void VideoRehabWidget::on_txtURL_returnPressed()

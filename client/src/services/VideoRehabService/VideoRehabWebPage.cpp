@@ -1,4 +1,5 @@
 #include "VideoRehabWebPage.h"
+#include "Logger.h"
 
 VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
 {
@@ -7,7 +8,10 @@ VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
 
     // Create websocket for communication with page
     m_webSocketServer = new QWebSocketServer("localpage", QWebSocketServer::NonSecureMode, this);
-    m_webSocketServer->listen(QHostAddress::LocalHost, 12345);
+    if (!m_webSocketServer->listen(QHostAddress::LocalHost, 12345)){
+        LOG_ERROR("Can't start WebSocket Server: " + m_webSocketServer->errorString(), "VideoRehabWebPage::VideoRehabWebPage");
+        return;
+    }
 
     m_clientWrapper = new WebSocketClientWrapper(m_webSocketServer,this);
     m_webChannel = new QWebChannel(this);
@@ -17,6 +21,12 @@ VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
     connect(this, &VideoRehabWebPage::featurePermissionRequested, this, &VideoRehabWebPage::featurePermissionHandler);
 
     m_webChannel->registerObject(QStringLiteral("SharedObject"), m_sharedObject);
+}
+
+VideoRehabWebPage::~VideoRehabWebPage()
+{
+    m_webSocketServer->close();
+    delete m_webSocketServer;
 }
 
 SharedObject *VideoRehabWebPage::getSharedObject() const

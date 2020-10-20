@@ -16,6 +16,7 @@ class VideoRehabWebPage : public QWebEnginePage
     Q_OBJECT
 public:
     VideoRehabWebPage(QObject *parent = nullptr);
+    ~VideoRehabWebPage();
 
     SharedObject* getSharedObject() const;
 

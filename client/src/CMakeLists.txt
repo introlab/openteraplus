@@ -55,9 +55,11 @@ set(headers
     wizards/UserWizard.h
     wizards/BaseWizard.h
     services/BaseServiceWidget.h
+    services/BaseServiceToolsWidget.h
     services/VideoRehabService/VideoRehabWidget.h
     services/VideoRehabService/VideoRehabWebPage.h
     services/VideoRehabService/VideoRehabSetupWidget.h
+    services/VideoRehabService/VideoRehabToolsWidget.h
     services/VideoRehabService/WebSocket/SharedObject.h
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
     services/VideoRehabService/WebSocket/WebSocketTransport.h
@@ -109,9 +111,11 @@ set(srcs
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
     services/BaseServiceWidget.cpp
+    services/BaseServiceToolsWidget.cpp
     services/VideoRehabService/VideoRehabWidget.cpp
     services/VideoRehabService/VideoRehabWebPage.cpp
     services/VideoRehabService/VideoRehabSetupWidget.cpp
+    services/VideoRehabService/VideoRehabToolsWidget.cpp
     services/VideoRehabService/WebSocket/SharedObject.cpp
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
@@ -150,6 +154,7 @@ SET(uis
     editors/ServiceConfigWidget.ui
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
+    services/VideoRehabService/VideoRehabToolsWidget.ui
 )
 
 SET(qrcs

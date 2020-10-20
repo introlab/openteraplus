@@ -131,5 +131,4 @@
         <file>icons/leave.png</file>
         <file>icons/error2.png</file>
     </qresource>
-    <qresource prefix="/videorehab"/>
 </RCC>
