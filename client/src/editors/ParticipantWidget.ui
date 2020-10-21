@@ -412,7 +412,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                 <property name="sizeConstraint">
                  <enum>QLayout::SetDefaultConstraint</enum>
                 </property>
-                <item>
+                <item alignment="Qt::AlignLeft">
                  <widget class="QCheckBox" name="chkWebAccess">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -1376,7 +1376,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tabParticipant">
           <attribute name="icon">

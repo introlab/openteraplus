@@ -115,14 +115,20 @@ void ParticipantWidget::connectSignals()
 
 void ParticipantWidget::updateControlsState()
 {
-    //ui->tabParticipantInfos->setEnabled(!m_data->isNew());
-    /*ui->wdgParticipant->setEnabled(!isWaitingOrLoading() && !m_limited);
+    if (dataIsNew()){
+        // Clean up the widget
 
-    // Buttons update
-    ui->btnSave->setEnabled(!isWaitingOrLoading());
-    ui->btnUndo->setEnabled(!isWaitingOrLoading());
+        if (ui->tabNav->count() > 1){
+            ui->tabNav->setCurrentWidget(ui->tabDetails);
+            ui->tabNav->removeTab(0);
 
-    ui->frameButtons->setVisible(!m_limited);*/
+            int tabCount = ui->tabInfos->count();
+            for (int i=1; i<tabCount; i++){
+                ui->tabInfos->removeTab(1);
+            }
+        }
+
+    }
 }
 
 void ParticipantWidget::updateFieldsValue()

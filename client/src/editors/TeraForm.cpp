@@ -187,9 +187,6 @@ bool TeraForm::getFieldDirty(QWidget *widget)
 {
     if (m_widgets.values().contains(widget)){
         QString widget_id = m_widgets.key(widget);
-        if (m_hiddenFields.contains(widget_id)) // Hidden fields are always clean!
-            return false;
-
         if (dynamic_cast<QLabel*>(widget)){
             return false; // QLabel are never dirty
         }
