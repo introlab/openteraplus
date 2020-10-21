@@ -484,7 +484,7 @@ QLabel#lblWarning{
 
 
 /* Customizations for LoginDialog */
-QFrame#frameLogos{background-color:rgba(200,200,200,75%);}
+QFrame#frameLogos{background-color:rgba(200,200,200,100%);}
 QLabel#lblMessage{color:white;}
 QFrame#frameMessage{background-color: transparent;}
 

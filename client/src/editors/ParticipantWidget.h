@@ -19,6 +19,8 @@
 #include "ServiceConfigWidget.h"
 #include "SessionLobbyDialog.h"
 
+#include "EmailInviteDialog.h"
+
 namespace Ui {
 class ParticipantWidget;
 }
@@ -113,10 +115,11 @@ private slots:
     void on_txtPasswordConfirm_textEdited(const QString &current);
     void on_tabInfos_currentChanged(int index);
     void on_btnNewSession_clicked();
-    void on_btnCheckSesstionTypes_clicked();
+    void on_btnCheckSessionTypes_clicked();
     void on_btnUnchekSessionTypes_clicked();
     void on_btnViewLink_clicked();
     void on_cmbServices_currentIndexChanged(int index);
+    void on_btnEmailWeb_clicked();
 };
 
 #endif // PARTICIPANTWIDGET_H

@@ -1126,7 +1126,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                        <number>0</number>
                       </property>
                       <item>
-                       <widget class="QToolButton" name="btnCheckSesstionTypes">
+                       <widget class="QToolButton" name="btnCheckSessionTypes">
                         <property name="minimumSize">
                          <size>
                           <width>24</width>

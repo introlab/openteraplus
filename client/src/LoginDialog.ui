@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>450</height>
+    <height>400</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,7 +35,7 @@
    <string>OpenTeraPlus - Login</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources/TeraClient.qrc">
+   <iconset>
     <normaloff>:/icons/ESTRAD.ico</normaloff>:/icons/ESTRAD.ico</iconset>
   </property>
   <property name="styleSheet">
@@ -107,7 +107,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/logos/LOGO Transparent.png</pixmap>
+         <pixmap>:/logos/LOGO Transparent.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -134,7 +134,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="../resources/TeraClient.qrc">:/logos/logo_CDRV.png</pixmap>
+           <pixmap>:/logos/logo_CDRV.png</pixmap>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -159,10 +159,13 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="../resources/TeraClient.qrc">:/logos/Estrad.png</pixmap>
+           <pixmap>:/logos/Estrad.png</pixmap>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
+          </property>
+          <property name="openExternalLinks">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -184,7 +187,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="../resources/TeraClient.qrc">:/logos/IntRoLab.png</pixmap>
+           <pixmap>:/logos/IntRoLab.png</pixmap>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -314,7 +317,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/icons/software_user.png</pixmap>
+         <pixmap>:/icons/software_user.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -345,7 +348,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/icons/password.png</pixmap>
+         <pixmap>:/icons/password.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -376,7 +379,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/icons/server.png</pixmap>
+         <pixmap>:/icons/server.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -437,7 +440,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/status/warning.png</pixmap>
+         <pixmap>:/status/warning.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -462,7 +465,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/status/loading.gif</pixmap>
+         <pixmap>:/status/loading.gif</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -471,9 +474,15 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
       </item>
       <item>
        <widget class="QLabel" name="lblMessage">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
-          <pointsize>12</pointsize>
+          <pointsize>10</pointsize>
          </font>
         </property>
         <property name="text">
@@ -520,7 +529,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <string>Connecter</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset>
           <normaloff>:/controls/branch_closed.png</normaloff>:/controls/branch_closed.png</iconset>
         </property>
         <property name="iconSize">
@@ -546,7 +555,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <string>Quitter</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset>
           <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
         </property>
         <property name="iconSize">
@@ -569,8 +578,6 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
   <tabstop>btnConnect</tabstop>
   <tabstop>btnQuit</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources/TeraClient.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -227,6 +227,7 @@ void ClientApp::on_loginResult(bool logged)
 void ClientApp::on_serverDisconnected()
 {
     LOG_DEBUG("Disconnected from server.", "ClientApp::on_serverDisconnected");
+    showLogin();
 }
 
 void ClientApp::on_serverError(QAbstractSocket::SocketError error, QString error_str)

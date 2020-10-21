@@ -571,7 +571,7 @@ void MainWindow::com_querying(QString path)
         QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
         if (!data_type.isEmpty()){
             GlobalEvent event(EVENT_DATA_QUERY, tr("Récupération de ") + data_type + "...");
-            addGlobalEvent(event);
+            //addGlobalEvent(event);
         }
     }
 }

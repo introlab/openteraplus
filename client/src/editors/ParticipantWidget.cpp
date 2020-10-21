@@ -36,10 +36,12 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     setData(data);
 
     // Query sessions types
-    queryDataRequest(WEB_SESSIONTYPE_PATH);
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+    queryDataRequest(WEB_SESSIONTYPE_PATH, args);
 
     // Query services
-    QUrlQuery args;
+    args.clear();
     args.addQueryItem(WEB_QUERY_LIST, "1");
     args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
     queryDataRequest(WEB_SERVICEINFO_PATH, args);
@@ -165,9 +167,6 @@ void ParticipantWidget::initUI()
     ui->frameActive->hide();
     ui->frameWeb->hide();
     ui->txtWeb->hide();
-
-    // TODO: Implement template email feature
-    ui->btnEmailWeb->hide();
 
     // Hide some fields in the detailled participant widget
     QStringList ignore_fields = {"participant_enabled", "participant_token_enabled", "participant_token", "participant_login_enabled",
@@ -1037,9 +1036,9 @@ void ParticipantWidget::on_btnCopyWeb_clicked()
 
     clipboard->setText(ui->txtWeb->text(), QClipboard::Clipboard);
 
-    if (clipboard->supportsSelection()) {
+    /*if (clipboard->supportsSelection()) {
         clipboard->setText(ui->txtWeb->text(), QClipboard::Selection);
-    }
+    }*/
 
     #if defined(Q_OS_LINUX)
         QThread::msleep(1); //workaround for copied text not being available...
@@ -1204,7 +1203,7 @@ void ParticipantWidget::on_btnNewSession_clicked()
     showSessionLobby(id_session_type, id_session);
 }
 
-void ParticipantWidget::on_btnCheckSesstionTypes_clicked()
+void ParticipantWidget::on_btnCheckSessionTypes_clicked()
 {
     for (int i=0; i<ui->lstFilters->count(); i++){
         ui->lstFilters->item(i)->setCheckState(Qt::Checked);
@@ -1228,4 +1227,16 @@ void ParticipantWidget::on_cmbServices_currentIndexChanged(int index)
     Q_UNUSED(index)
     refreshWebAccessUrl();
 
+}
+
+void ParticipantWidget::on_btnEmailWeb_clicked()
+{
+    EmailInviteDialog email_diag(m_comManager);
+
+    QHash<QString, QString>fields;
+    fields["url"] = ui->txtWeb->text();
+
+    email_diag.setFieldValues(fields);
+
+    email_diag.exec();
 }

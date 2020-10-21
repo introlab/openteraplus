@@ -42,6 +42,9 @@ void LoginDialog::setServerNames(QStringList servers)
     }
     if(servers.count()>0)
         ui->cmbServers->setCurrentIndex(0);
+    if(servers.count() == 1){
+        showServers(false); // No need to show server box if only one server in the list!
+    }
 }
 
 void LoginDialog::showServers(bool show)
