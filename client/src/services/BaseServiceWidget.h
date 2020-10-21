@@ -13,7 +13,7 @@ public:
     virtual bool handleJoinSessionEvent(const JoinSessionEvent &event);
 
 protected:
-    ComManager* m_comManager;
+    ComManager*     m_comManager;
 
 signals:
 

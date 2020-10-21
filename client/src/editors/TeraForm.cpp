@@ -102,6 +102,8 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
         }
     }
 
+    emit formIsNowDirty(false);
+
 }
 
 void TeraForm::fillFormFromData(const QString &structure)
@@ -176,11 +178,30 @@ QVariant TeraForm::getFieldValue(const QString &field)
 bool TeraForm::getFieldDirty(const QString &field)
 {
     if (m_widgets.contains(field)){
+        return getFieldDirty(m_widgets[field]);
+    }
+    return false;
+}
+
+bool TeraForm::getFieldDirty(QWidget *widget)
+{
+    if (m_widgets.values().contains(widget)){
+        QString widget_id = m_widgets.key(widget);
+        if (m_hiddenFields.contains(widget_id)) // Hidden fields are always clean!
+            return false;
+
+        if (dynamic_cast<QLabel*>(widget)){
+            return false; // QLabel are never dirty
+        }
         QVariant value, id;
-        getWidgetValues(m_widgets[field], &id, &value);
+        getWidgetValues(widget, &id, &value);
         if (!id.isNull())
             value = id;
-        return m_initialValues[field] != value;
+
+        if (m_initialValues.contains(widget_id))
+            return m_initialValues[m_widgets.key(widget)] != value;
+        // No initial value. So dirty if not empty!
+        return !value.toString().isEmpty();
     }
     return false;
 }
@@ -189,11 +210,22 @@ void TeraForm::hideField(const QString &field)
 {
     QWidget* widget = getWidgetForField(field);
     if (widget){
-        QFormLayout* form_layout = dynamic_cast<QFormLayout*>(widget->parentWidget()->layout());
+        setWidgetVisibility(widget, nullptr, false);
+        checkConditions(widget);
+        /*QFormLayout* form_layout = dynamic_cast<QFormLayout*>(widget->parentWidget()->layout());
 
         m_hidden_rows[widget] = form_layout->takeRow(widget);
         widget->hide();
-        m_hidden_rows[widget].labelItem->widget()->hide();
+        m_hidden_rows[widget].labelItem->widget()->hide();*/
+    }
+}
+
+void TeraForm::showField(const QString &field)
+{
+    QWidget* widget = getWidgetForField(field);
+    if (widget){
+        setWidgetVisibility(widget, nullptr, true);
+        checkConditions(widget);
     }
 }
 
@@ -216,6 +248,18 @@ void TeraForm::setFieldRequired(const QString &field, const bool &required)
         setWidgetRequired(widget, widget_label, required);
     }
 
+}
+
+bool TeraForm::isDirty()
+{
+    bool dirty = false;
+    foreach(QWidget* wdg, m_widgets.values()){
+        if (getFieldDirty(wdg)){
+            dirty = true;
+            break;
+        }
+    }
+    return dirty;
 }
 
 QString TeraForm::getFormData(bool include_unmodified_data)
@@ -752,7 +796,7 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
 
                     // Hide/show that item
                     //if (item->isVisible() != condition_met){
-                        setWidgetVisibility(item, check_item, condition_met);
+                    setWidgetVisibility(item, check_item, condition_met);
                         //qDebug() << "Hiding...";
                     //}
 
@@ -1087,13 +1131,9 @@ void TeraForm::widgetValueChanged()
             sender_widget->setProperty("last_value", getWidgetValue(sender_widget));
             emit widgetValueHasChanged(sender_widget, getWidgetValue(sender_widget));
             checkConditions(sender_widget);
-        }
+        }    
+        emit formIsNowDirty(isDirty());
     }
-
-
-
-
-
 }
 
 void TeraForm::colorWidgetClicked()

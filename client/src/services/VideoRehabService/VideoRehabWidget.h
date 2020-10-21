@@ -44,6 +44,8 @@ private:
     void connectSignals();
     void refreshWebpageSettings();
 
+    void processSessionConfig();
+
     void setLoading(const bool& loading);
     void showError(const QString& title, const QString& context, const QString& error);
 

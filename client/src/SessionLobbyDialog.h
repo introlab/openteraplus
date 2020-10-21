@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "ComManager.h"
 
+#include "services/BaseServiceSetupWidget.h"
 #include "services/VideoRehabService/VideoRehabSetupWidget.h"
 
 namespace Ui {
@@ -25,6 +26,7 @@ public:
     QStringList getSessionParticipantsUuids();
     QStringList getSessionUsersUuids();
     QStringList getSessionDevicesUuids();
+    QJsonDocument getSessionConfig();
 
     int getIdSession() const;
 
@@ -41,9 +43,10 @@ private:
     Ui::SessionLobbyDialog  *ui;
     ComManager*             m_comManager;
     TeraData                m_sessionType;
-    QWidget*                m_setupWdg;
+    BaseServiceSetupWidget* m_setupWdg;
     int                     m_idProject;
     int                     m_idSession;
+    QJsonDocument           m_sessionConfig;
 
     bool                    m_gotUsers;
     bool                    m_gotParticipants;

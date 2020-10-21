@@ -4,9 +4,8 @@
 #include "Utils.h"
 
 VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::VideoRehabSetupWidget),
-    m_comManager(comManager)
+    BaseServiceSetupWidget(comManager, parent),
+    ui(new Ui::VideoRehabSetupWidget)
 {
     ui->setupUi(this);
 
@@ -15,12 +14,10 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
     initUI();
     connectSignals();
 
-    // Query current service configuration
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_comManager->getCurrentUser().getId()));
-    args.addQueryItem(WEB_QUERY_SERVICE_KEY, "VideoRehabService");
-    args.addQueryItem(WEB_QUERY_ID_SPECIFIC, Utils::getMachineUniqueId());
-    m_comManager->doQuery(WEB_SERVICECONFIGINFO_PATH, args);
+    // Query service config form for VideoRehab
+    QUrlQuery args(WEB_FORMS_QUERY_SERVICE_CONFIG);
+    args.addQueryItem(WEB_QUERY_KEY, "VideoRehabService");
+    m_comManager->doQuery(WEB_FORMS_PATH, args);
 }
 
 VideoRehabSetupWidget::~VideoRehabSetupWidget()
@@ -31,13 +28,14 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
     m_webEngine->deleteLater();
 }
 
+QJsonDocument VideoRehabSetupWidget::getSetupConfig()
+{
+    return ui->widgetSetup->getFormDataJson(true);
+}
+
 void VideoRehabSetupWidget::initUI()
 {
     ui->frameError->hide();
-    ui->btnAdvancedConfig->hide(); // For now...
-
-    //// Local device enumeration
-    refreshAudioVideoDevices();
 
     //// Web engine setup
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
@@ -71,55 +69,23 @@ void VideoRehabSetupWidget::initUI()
     //m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
 }
 
-void VideoRehabSetupWidget::refreshAudioVideoDevices()
-{
-    QStringList audio_devices = Utils::getAudioDeviceNames();
-    foreach(QString input, audio_devices){
-        ui->cmbAudioSrc->addItem(input, input);
-    }
-
-    QStringList video_devices = Utils::getVideoDeviceNames();
-    foreach(QString input, video_devices){
-        ui->cmbVideoSrc->addItem(input, input);
-    }
-}
 
 void VideoRehabSetupWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::servicesConfigReceived, this, &VideoRehabSetupWidget::processServiceConfigsReply);
+    connect(m_comManager, &ComManager::formReceived, this, &VideoRehabSetupWidget::processFormsReply);
 
-    // UI updates to webpage
-    connect(ui->cmbVideoSrc, &QComboBox::currentTextChanged, this, &VideoRehabSetupWidget::refreshWebpageSettings);
-    connect(ui->cmbAudioSrc, &QComboBox::currentTextChanged, this, &VideoRehabSetupWidget::refreshWebpageSettings);
-    connect(ui->chkMirror, &QCheckBox::stateChanged, this, &VideoRehabSetupWidget::refreshWebpageSettings);
+    connect(ui->widgetSetup, &TeraForm::widgetValueHasChanged, this, &VideoRehabSetupWidget::refreshWebpageSettings);
+    connect(ui->widgetSetup, &TeraForm::formIsNowDirty, this, &VideoRehabSetupWidget::setupFormDirtyChanged);
 
-}
-
-void VideoRehabSetupWidget::selectVideoSrcByName(const QString &name)
-{
-    for (int i=0; i<ui->cmbVideoSrc->count(); i++){
-        if (ui->cmbVideoSrc->itemText(i) == name){
-            ui->cmbVideoSrc->setCurrentIndex(i);
-            return;
-        }
-    }
-    LOG_WARNING(tr("La source vidéo ") + name + tr(" n'a pas été trouvée sur ce système."), "VideoRehabSetupWidget::selectVideoSrcByName");
-}
-
-void VideoRehabSetupWidget::selectAudioSrcByName(const QString &name)
-{
-    for (int i=0; i<ui->cmbAudioSrc->count(); i++){
-        if (ui->cmbAudioSrc->itemText(i) == name){
-            ui->cmbAudioSrc->setCurrentIndex(i);
-            return;
-        }
-    }
-    LOG_WARNING(tr("La source audio ") + name + tr(" n'a pas été trouvée sur ce système."), "VideoRehabSetupWidget::selectAudioSrcByName");
 }
 
 void VideoRehabSetupWidget::setLoading(const bool &loading)
 {
-    ui->frameSetup->setEnabled(!loading);
+    ui->widgetSetup->setVisible(!loading);
+    ui->widgetSetup->setEnabled(!loading);
+    ui->splitter->setVisible(!loading);
+    ui->frameButtons->setVisible(!loading);
     if (!ui->frameError->isVisible()){
         ui->wdgWebEngine->setVisible(!loading);
         ui->lblLoading->setVisible(loading);
@@ -146,23 +112,28 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
         return;
 
     // Set PTZ capabilities
-    // TODO: use real settings!
-    m_webPage->getSharedObject()->setPTZCapabilities(false, false, false);
+    bool ptz = ui->widgetSetup->getFieldValue("camera_ptz").toBool();
+    m_webPage->getSharedObject()->setPTZCapabilities(ptz, ptz, ptz);
     m_webPage->getSharedObject()->sendPTZCapabilities();
 
     // Update video source
-    qDebug() << "Setting Video Src to " << ui->cmbVideoSrc->currentText();
-    m_webPage->getSharedObject()->setCurrentCameraName(ui->cmbVideoSrc->currentText());
+    QString video_src = ui->widgetSetup->getFieldValue("camera").toString();
+    qDebug() << "Setting Video Src to " << video_src;
+    m_webPage->getSharedObject()->setCurrentCameraName(video_src);
     m_webPage->getSharedObject()->sendCurrentVideoSource();
 
+    // Update audio source
+    QString audio_src = ui->widgetSetup->getFieldValue("audio").toString();
+    qDebug() << "Setting Audio Src to " << audio_src;
+    m_webPage->getSharedObject()->setCurrentAudioSrcName(audio_src);
+    m_webPage->getSharedObject()->sendCurrentAudioSource();
+
     // Update mirror
-    m_webPage->getSharedObject()->setLocalMirror(ui->chkMirror->isChecked());
+    bool mirror = ui->widgetSetup->getFieldValue("mirror").toBool();
+    m_webPage->getSharedObject()->setLocalMirror(mirror);
     m_webPage->getSharedObject()->getLocalMirror();
 
-    // Update audio source
-    qDebug() << "Setting Audio Src to " << ui->cmbAudioSrc->currentText();
-    m_webPage->getSharedObject()->setCurrentAudioSrcName(ui->cmbAudioSrc->currentText());
-    m_webPage->getSharedObject()->sendCurrentAudioSource();
+
 }
 
 void VideoRehabSetupWidget::webPageLoaded(bool ok)
@@ -208,7 +179,7 @@ void VideoRehabSetupWidget::processServiceConfigsReply(QList<TeraData> configs, 
         // Only use the first returned config
         TeraData config = configs.first();
         if (config.getFieldValue("id_user") == m_comManager->getCurrentUser().getId()){
-            QVariantMap config_values = config.getFieldValue("service_config_config").toMap();
+            /*QVariantMap config_values = config.getFieldValue("service_config_config").toMap();
 
             if (config_values.contains("camera")){
                 selectVideoSrcByName(config_values["camera"].toString());
@@ -216,15 +187,20 @@ void VideoRehabSetupWidget::processServiceConfigsReply(QList<TeraData> configs, 
 
             if (config_values.contains("audio")){
                 selectAudioSrcByName(config_values["audio"].toString());
-            }
+            }*/
+            ui->widgetSetup->fillFormFromData(config.toJson("service_config_config"));
+
+            m_id_service_config = config.getId();
         }
+    }else{
+        m_id_service_config = 0;
     }
 
     // Load page
     if (m_webEngine && m_webPage){
         if (m_webEngine->url().isEmpty()){
             // Set initial video source
-            m_webPage->getSharedObject()->setCurrentCameraName(ui->cmbVideoSrc->currentText());
+            m_webPage->getSharedObject()->setCurrentCameraName(ui->widgetSetup->getFieldValue("camera").toString());
 
             // Load page
             m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
@@ -235,10 +211,61 @@ void VideoRehabSetupWidget::processServiceConfigsReply(QList<TeraData> configs, 
 
 }
 
+void VideoRehabSetupWidget::processFormsReply(QString form_type, QString data)
+{
+    if (form_type.contains(WEB_FORMS_QUERY_SERVICE_CONFIG)){
+        ui->widgetSetup->buildUiFromStructure(data);
+        // Hide default fields
+        on_btnAdvancedConfig_clicked();
+
+        // Query current service configuration
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_comManager->getCurrentUser().getId()));
+        args.addQueryItem(WEB_QUERY_SERVICE_KEY, "VideoRehabService");
+        args.addQueryItem(WEB_QUERY_ID_SPECIFIC, Utils::getMachineUniqueId());
+        m_comManager->doQuery(WEB_SERVICECONFIGINFO_PATH, args);
+    }
+}
+
 void VideoRehabSetupWidget::on_btnRefresh_clicked()
 {
     if (m_webEngine){
         setLoading(true);
         m_webEngine->reload();
     }
+}
+
+void VideoRehabSetupWidget::on_btnAdvancedConfig_clicked()
+{
+    // Hide - show fields
+    if (ui->btnAdvancedConfig->isChecked()){
+        ui->widgetSetup->showField("camera_ptz");
+        ui->widgetSetup->showField("camera2");
+    }else{
+        ui->widgetSetup->hideField("camera_ptz");
+        ui->widgetSetup->hideField("camera2");
+    }
+}
+
+void VideoRehabSetupWidget::on_btnSaveConfig_clicked()
+{
+    QJsonDocument service_config_data = ui->widgetSetup->getFormDataJson();
+    QJsonObject service_config_obj;// = service_config_data.object();
+    QJsonObject service_config_base = {
+        {WEB_QUERY_ID_SPECIFIC,  Utils::getMachineUniqueId()},
+        {WEB_QUERY_ID_USER, m_comManager->getCurrentUser().getId()},
+        {WEB_QUERY_ID_SERVICE_CONFIG, m_id_service_config},
+        {WEB_QUERY_SERVICE_KEY, "VideoRehabService"}
+    };
+    service_config_base.insert("service_config_config", service_config_data.object()["service_config_config"]);
+
+    service_config_obj.insert("service_config", service_config_base);
+    service_config_data.setObject(service_config_obj);
+
+    m_comManager->doPost(WEB_SERVICECONFIGINFO_PATH, service_config_data.toJson());
+}
+
+void VideoRehabSetupWidget::setupFormDirtyChanged(bool dirty)
+{
+    ui->btnSaveConfig->setEnabled(dirty);
 }

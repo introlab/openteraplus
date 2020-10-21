@@ -82,8 +82,7 @@ private:
     BaseServiceToolsWidget* m_serviceToolsWidget;
     StartSessionDialog*     m_startDiag;
 
-    int                 m_projectId;
-
+    int                     m_projectId;
 
 signals:
     void sessionEndedWithError();

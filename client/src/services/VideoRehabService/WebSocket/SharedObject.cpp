@@ -196,6 +196,20 @@ QString SharedObject::serialize2ndSources()
     return doc.toJson(QJsonDocument::Compact);
 }
 
+QString SharedObject::serializePtzCapabilities()
+{
+    //Create JSON Object for contact
+    QJsonObject myObject //  &zoom, const bool &presets, const bool &settings
+    {
+        {"zoom", m_camCanZoom},
+        {"presets", m_camHasPresets},
+        {"settings", m_camHasSettings}
+    };
+
+    QJsonDocument doc(myObject);
+    return doc.toJson(QJsonDocument::Compact);
+}
+
 
 void SharedObject::sendCurrentAudioSource(){
     QString audio_src = serializeAudioSource();
@@ -311,7 +325,8 @@ QString SharedObject::getAllSettings()
         {"video", serializeVideoSource()},
         {"mirror", m_localMirror},
         {"extraParams", m_extraParams},
-        {"secondAudioVideo", serialize2ndSources()}
+        {"secondAudioVideo", serialize2ndSources()},
+        {"ptz", serializePtzCapabilities()}
     };
 
     QJsonDocument doc(myObject);

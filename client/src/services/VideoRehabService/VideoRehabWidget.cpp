@@ -52,6 +52,9 @@ void VideoRehabWidget::initUI()
     m_webPage->getSharedObject()->setContactInformation(m_comManager->getCurrentUser().getName(),
                                                         m_comManager->getCurrentUser().getUuid());
 
+    // Build shared object from session config
+    processSessionConfig();
+
     //Set page to view
     m_webEngine->setPage(m_webPage);
 
@@ -145,6 +148,27 @@ void VideoRehabWidget::connectSignals()
 void VideoRehabWidget::refreshWebpageSettings()
 {
     // TODO: Set camera and audio
+}
+
+void VideoRehabWidget::processSessionConfig()
+{
+    if (m_webPage){
+        QJsonDocument session_config = m_comManager->getCurrentSessionConfig();
+        SharedObject* shared = m_webPage->getSharedObject();
+        if (session_config.object().contains("service_config_config")){
+            QVariantHash session_params = session_config["service_config_config"].toObject().toVariantHash();
+            if (session_params.contains("camera")) shared->setCurrentCameraName(session_params["camera"].toString());
+            if (session_params.contains("audio")) shared->setCurrentAudioSrcName(session_params["audio"].toString());
+            if (session_params.contains("mirror")) shared->setLocalMirror(session_params["mirror"].toBool());
+            if (session_params.contains("extra_params")) shared->setExtraParams(session_params["extra_params"].toString());
+            if (session_params.contains("camera2")) shared->setSecondVideoName(session_params["camera2"].toString());
+            if (session_params.contains("audio2")) shared->setSecondAudioSrcName(session_params["audio2"].toString());
+            if (session_params.contains("camera_ptz")) shared->setPTZCapabilities(session_params["camera_ptz"].toBool(),
+                    session_params["camera_ptz"].toBool(), session_params["camera_ptz"].toBool()); // For now, all features enabled!
+        }else{
+            LOG_WARNING("Wrong session config format for that service", "VideoRehabWidget::processSessionConfig");
+        }
+    }
 }
 
 void VideoRehabWidget::setLoading(const bool &loading)

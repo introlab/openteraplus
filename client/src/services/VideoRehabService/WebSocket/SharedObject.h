@@ -114,6 +114,7 @@ protected:
     QString serializeAudioSource();
     QString serializeVideoSource();
     QString serialize2ndSources();
+    QString serializePtzCapabilities();
 
     QString serializeAll();
 

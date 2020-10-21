@@ -58,9 +58,13 @@ public:
     bool setFieldValue(const QString& field, const QVariant& value);
     QVariant getFieldValue(const QString& field);
     bool getFieldDirty(const QString& field);
+    bool getFieldDirty(QWidget *widget);
     void hideField(const QString& field);
+    void showField(const QString& field);
     void hideFields(const QStringList& fields);
     void setFieldRequired(const QString& field, const bool& required);
+
+    bool isDirty();
 
     QString getFormData(bool include_unmodified_data=false);
     QJsonDocument getFormDataJson(bool include_unmodified_data=false);
@@ -138,6 +142,7 @@ public slots:
 
 signals:
     void widgetValueHasChanged(QWidget* widget, QVariant value);
+    void formIsNowDirty(bool dirty);
 
 };
 

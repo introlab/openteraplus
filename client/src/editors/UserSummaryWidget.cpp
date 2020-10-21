@@ -140,7 +140,8 @@ void UserSummaryWidget::sessionLobbyStartSessionRequested()
                                m_sessionLobby->getIdSession(),
                                m_sessionLobby->getSessionParticipantsUuids(),
                                m_sessionLobby->getSessionUsersUuids(),
-                               m_sessionLobby->getSessionDevicesUuids());
+                               m_sessionLobby->getSessionDevicesUuids(),
+                               m_sessionLobby->getSessionConfig());
 
     m_sessionLobby->deleteLater();
     m_sessionLobby = nullptr;

@@ -233,7 +233,7 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     LOG_DEBUG("DOWNLOADING: " + path + ", with " + query_args.toString() + ", to " + save_path, "ComManager::doQuery");
 }
 
-void ComManager::startSession(const TeraData &session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list)
+void ComManager::startSession(const TeraData &session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list, const QJsonDocument &session_config)
 {
     if (session_type.getDataType() != TERADATA_SESSIONTYPE){
         LOG_ERROR("Received an invalid session_type object", "ComManager::startSession");
@@ -305,6 +305,7 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
     }
 
     m_currentSessionType = new TeraData(session_type);
+    m_currentSessionConfig = session_config;
     emit sessionStartRequested(session_type);
 }
 
@@ -349,6 +350,7 @@ void ComManager::stopSession(const TeraData &session, const int &id_service)
         // Changes the session status only.
         delete m_currentSessionType;
         m_currentSessionType = nullptr;
+        m_currentSessionConfig = QJsonDocument();
     }
 }
 
@@ -539,6 +541,11 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         LOG_WARNING("Signal for object " + TeraData::getDataTypeName(data_type) + " unspecified.", "ComManager::getSignalFunctionForDataType");
         return nullptr;
     }
+}
+
+QJsonDocument ComManager::getCurrentSessionConfig()
+{
+    return m_currentSessionConfig;
 }
 
 bool ComManager::handleLoginReply(const QString &reply_data)

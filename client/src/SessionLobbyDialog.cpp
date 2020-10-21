@@ -74,6 +74,14 @@ QStringList SessionLobbyDialog::getSessionDevicesUuids()
     return uuids;
 }
 
+QJsonDocument SessionLobbyDialog::getSessionConfig()
+{
+    if (m_setupWdg){
+        return m_setupWdg->getSetupConfig();
+    }
+    return m_sessionConfig;
+}
+
 int SessionLobbyDialog::getIdSession() const
 {
     return m_idSession;
@@ -98,6 +106,8 @@ void SessionLobbyDialog::removeSetupWidget()
     if (ui->wdgSessionConfig->layout()){
         ui->wdgSessionConfig->layout()->takeAt(0);
         if (m_setupWdg){
+            // Makes a copy of the session config
+            m_sessionConfig = m_setupWdg->getSetupConfig();
             delete m_setupWdg;
             m_setupWdg = nullptr;
         }

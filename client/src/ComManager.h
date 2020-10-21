@@ -50,7 +50,7 @@ public:
     void doUpdateCurrentUser();
     void doDownload(const QString& save_path, const QString &path, const QUrlQuery &query_args = QUrlQuery());
 
-    void startSession(const TeraData& session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list);
+    void startSession(const TeraData& session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list, const QJsonDocument &session_config);
     void joinSession(const TeraData& session_type, const int &id_session);
     void stopSession(const TeraData& session, const int &id_service = 0);
     void leaveSession(const int &id_session);
@@ -73,6 +73,8 @@ public:
     WebSocketManager* getWebSocketManager();
 
     static signal_ptr getSignalFunctionForDataType(const TeraDataTypes& data_type);
+
+    QJsonDocument getCurrentSessionConfig();
 
 protected:
     bool handleLoginReply(const QString& reply_data);
@@ -104,6 +106,7 @@ protected:
     TeraData                m_currentUser;
     TeraPreferences         m_currentPreferences;
     TeraData*               m_currentSessionType;
+    QJsonDocument           m_currentSessionConfig;
 
 signals:
     void serverDisconnected();

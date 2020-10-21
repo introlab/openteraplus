@@ -56,6 +56,7 @@ set(headers
     wizards/BaseWizard.h
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
+    services/BaseServiceSetupWidget.h
     services/VideoRehabService/VideoRehabWidget.h
     services/VideoRehabService/VideoRehabWebPage.h
     services/VideoRehabService/VideoRehabSetupWidget.h
@@ -112,6 +113,7 @@ set(srcs
     wizards/BaseWizard.cpp
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
+    services/BaseServiceSetupWidget.cpp
     services/VideoRehabService/VideoRehabWidget.cpp
     services/VideoRehabService/VideoRehabWebPage.cpp
     services/VideoRehabService/VideoRehabSetupWidget.cpp
