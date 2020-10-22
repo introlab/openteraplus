@@ -36,6 +36,7 @@ set(headers
     OnlineManagerWidget.h
     JoinSessionDialog.h
     EmailInviteDialog.h
+    ClickableLabel.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -94,6 +95,7 @@ set(srcs
     OnlineManagerWidget.cpp
     JoinSessionDialog.cpp
     EmailInviteDialog.cpp
+    ClickableLabel.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
