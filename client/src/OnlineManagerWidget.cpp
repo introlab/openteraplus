@@ -286,16 +286,28 @@ void OnlineManagerWidget::processOnlineDevices(QList<TeraData> devices)
 void OnlineManagerWidget::on_btnShowOnlineParticipants_clicked()
 {
     ui->lstOnlineParticipants->setVisible(ui->btnShowOnlineParticipants->isChecked());
+    ui->btnShowOnlineDevices->setChecked(false);
+    ui->lstOnlineDevices->hide();
+    ui->btnShowOnlineUsers->setChecked(false);
+    ui->lstOnlineUsers->hide();
 }
 
 void OnlineManagerWidget::on_btnShowOnlineUsers_clicked()
 {
     ui->lstOnlineUsers->setVisible(ui->btnShowOnlineUsers->isChecked());
+    ui->btnShowOnlineDevices->setChecked(false);
+    ui->lstOnlineDevices->hide();
+    ui->btnShowOnlineParticipants->setChecked(false);
+    ui->lstOnlineParticipants->hide();
 }
 
 void OnlineManagerWidget::on_btnShowOnlineDevices_clicked()
 {
     ui->lstOnlineDevices->setVisible(ui->btnShowOnlineDevices->isChecked());
+    ui->btnShowOnlineParticipants->setChecked(false);
+    ui->lstOnlineParticipants->hide();
+    ui->btnShowOnlineUsers->setChecked(false);
+    ui->lstOnlineUsers->hide();
 }
 
 void OnlineManagerWidget::on_lstOnlineParticipants_itemClicked(QListWidgetItem *item)

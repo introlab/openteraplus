@@ -494,7 +494,10 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
             ui->lstFilters->addItem(s);
 
             // New session ComboBox
-            ui->cmbSessionType->addItem(st.getName(), st.getId());
+            QString ses_type_name = st.getName();
+            if (st.getFieldValue("session_type_online").toBool())
+                ses_type_name += " (en ligne)";
+            ui->cmbSessionType->addItem(ses_type_name, st.getId());
         }else{
             *m_ids_session_types[st.getId()] = st;
         }
@@ -1021,6 +1024,7 @@ void ParticipantWidget::on_chkWebAccess_stateChanged(int checkState)
     }
 
     ui->frameWeb->setVisible(checkState == Qt::Checked);
+    on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
 }
 
 void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
@@ -1034,6 +1038,7 @@ void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
     }
 
     ui->frameLogin->setVisible(checkState == Qt::Checked);
+    on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
 }
 
 void ParticipantWidget::on_btnCopyWeb_clicked()
@@ -1245,4 +1250,42 @@ void ParticipantWidget::on_btnEmailWeb_clicked()
     email_diag.setFieldValues(fields);
 
     email_diag.exec();
+}
+
+void ParticipantWidget::on_cmbSessionType_currentIndexChanged(int index)
+{
+    Q_UNUSED(index)
+
+    if (ui->cmbSessionType->currentIndex() < 0){
+        ui->btnNewSession->setDisabled(true);
+        return;
+    }
+
+    if (!m_data)
+        return;
+
+    // Online session - make sure that the participant can login to allow such a session
+    int id_session_type = ui->cmbSessionType->currentData().toInt();
+    if (m_ids_session_types[id_session_type]->getFieldValue("session_type_online").toBool()){
+
+        if (m_data->getFieldValue("participant_login_enabled").toBool() || m_data->getFieldValue("participant_token_enabled").toBool()){
+            ui->btnNewSession->setEnabled(true);
+        }else{
+            ui->btnNewSession->setEnabled(false);
+        }
+    }else{
+        ui->btnNewSession->setEnabled(true);
+    }
+
+    // Session type related to a service: select the correct item in the link combo box to generate correct link
+    if (m_ids_session_types[id_session_type]->hasFieldName("session_type_service_key")){
+        QString service_key = m_ids_session_types[id_session_type]->getFieldValue("session_type_service_key").toString();
+        for(int i=0; i<ui->cmbServices->count(); i++){
+            if (ui->cmbServices->itemData(i).toString() == service_key){
+                ui->cmbServices->setCurrentIndex(i);
+                break;
+            }
+        }
+    }
+
 }

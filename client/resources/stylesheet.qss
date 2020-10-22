@@ -524,6 +524,13 @@ QPushButton#btnNewSession:hover, QPushButton#btnStartSession:hover {
     min-height:36px;
 }
 
+QPushButton#btnNewSession:disabled, QPushButton#btnStartSession:disabled {
+    background-color: rgba(45,0,5,100%);
+    color: grey;
+    border: 1px solid rgb(75,0,0);
+    min-height:36px;
+}
+
 QPushButton#btnEditUser,QPushButton#btnConfig {background-color: rgba(100,100,100,50%); min-width: 0px;}
 QPushButton#btnEditUser::hover, QPushButton#btnConfig::hover{color:white;}
 

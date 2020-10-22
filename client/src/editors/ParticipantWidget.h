@@ -120,6 +120,7 @@ private slots:
     void on_btnViewLink_clicked();
     void on_cmbServices_currentIndexChanged(int index);
     void on_btnEmailWeb_clicked();
+    void on_cmbSessionType_currentIndexChanged(int index);
 };
 
 #endif // PARTICIPANTWIDGET_H
