@@ -32,15 +32,23 @@ private:
     QHash<QString, QListWidgetItem*> m_onlineParticipants; // Participant UUID mapping of online participants
     QHash<QString, QListWidgetItem*> m_onlineDevices;      // Participant UUID mapping of online participants
 
+    QHash<QString, TeraData>        m_onlineUsersData;     // UUID mapping to data of online users
+    QHash<QString, TeraData>        m_onlineParticipantsData;     // UUID mapping to data of online users
+    QHash<QString, TeraData>        m_onlineDevicesData;     // UUID mapping to data of online users
+
     void initUi();
     void connectSignals();
 
     void refreshOnlines();
     void updateCounts();
 
-    void updateOnlineUser(const TeraData &online_user);
-    void updateOnlineParticipant(const TeraData &online_participant);
-    void updateOnlineDevice(const TeraData &online_device);
+    void updateOnlineUser(const TeraData *online_user);
+    void updateOnlineParticipant(const TeraData *online_participant);
+    void updateOnlineDevice(const TeraData *online_device);
+
+    void createOnlineUser(const QString& uuid, const QString& name);
+    void createOnlineParticipant(const QString& uuid, const QString& name);
+    void createOnlineDevice(const QString& uuid, const QString& name);
 
 private slots:
     void ws_userEvent(UserEvent event);

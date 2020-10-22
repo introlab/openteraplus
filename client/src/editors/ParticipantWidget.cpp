@@ -1242,7 +1242,7 @@ void ParticipantWidget::on_cmbServices_currentIndexChanged(int index)
 
 void ParticipantWidget::on_btnEmailWeb_clicked()
 {
-    EmailInviteDialog email_diag(m_comManager);
+    EmailInviteDialog email_diag(m_comManager, m_data);
 
     QHash<QString, QString>fields;
     fields["url"] = ui->txtWeb->text();

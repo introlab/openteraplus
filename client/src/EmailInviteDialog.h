@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QClipboard>
 #include <QThread>
+#include <QDesktopServices>
+#include "GlobalMessageBox.h"
 
 #include "ComManager.h"
 
@@ -16,7 +18,7 @@ class EmailInviteDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit EmailInviteDialog(ComManager* comMan, QWidget *parent = nullptr);
+    explicit EmailInviteDialog(ComManager* comMan, TeraData* participant, QWidget *parent = nullptr);
     ~EmailInviteDialog();
 
     void setFieldValues(const QHash<QString, QString> &fields);
@@ -26,10 +28,14 @@ private slots:
 
     void on_btnCopy_clicked();
 
+    void on_btnSendLocalEmail_clicked();
+
 private:
     Ui::EmailInviteDialog *ui;
 
-    ComManager* m_comManager;
+    ComManager*     m_comManager;
+    TeraData*       m_participant;
+    QHash<QString, QString> m_fields;
 };
 
 #endif // EMAILINVITEDIALOG_H
