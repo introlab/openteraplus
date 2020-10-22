@@ -138,7 +138,7 @@ void TeraData::setOnline(const bool &online)
     m_fieldsValue[m_onlineField] = online;
 }
 
-bool TeraData::isNew()
+bool TeraData::isNew() const
 {
     return getId()<=0;
 }

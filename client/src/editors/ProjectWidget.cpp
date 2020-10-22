@@ -246,20 +246,27 @@ void ProjectWidget::updateServiceProject(const TeraData *sp)
 }
 
 void ProjectWidget::updateControlsState()
-{
-    bool is_site_admin = isSiteAdmin();
+{   
+    if (dataIsNew()){
+        ui->grpSummary->hide();
+        if (ui->tabNav->count() > 1){
+            ui->tabNav->removeTab(1);
+        }
+    }else{
+        bool is_site_admin = isSiteAdmin();
 
-    // m_limited = true if current user isn't project admin
-    ui->btnUpdateRoles->setVisible(!m_limited);
-    ui->lblInherited->setVisible(!m_limited);
+        // m_limited = true if current user isn't project admin
+        ui->btnUpdateRoles->setVisible(!m_limited);
+        ui->lblInherited->setVisible(!m_limited);
 
-    ui->btnManageUserGroups->setVisible(!m_limited);
-    ui->btnManageSessionTypes->setVisible(!m_limited);
+        ui->btnManageUserGroups->setVisible(!m_limited);
+        ui->btnManageSessionTypes->setVisible(!m_limited);
 
-    ui->lstServices->setEnabled(is_site_admin);
-    ui->btnUpdateServices->setVisible(is_site_admin);
+        ui->lstServices->setEnabled(is_site_admin);
+        ui->btnUpdateServices->setVisible(is_site_admin);
 
-    ui->btnManageServices->setVisible(is_site_admin);
+        ui->btnManageServices->setVisible(is_site_admin);
+    }
 
 }
 

@@ -85,7 +85,7 @@ public:
     void setBusy(const bool &busy);
     void setOnline(const bool &online);
 
-    bool isNew();
+    bool isNew() const;
 
     virtual TeraData &operator = (const TeraData& other);
     virtual bool operator == (const TeraData& other) const;

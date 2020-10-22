@@ -174,6 +174,16 @@ void ProjectNavigator::setOnHold(const bool &hold)
     m_selectionHold = hold;
 }
 
+void ProjectNavigator::refreshCurrentItem()
+{
+    currentNavItemChanged(ui->treeNavigator->currentItem(), nullptr);
+}
+
+bool ProjectNavigator::hasCurrentItem()
+{
+    return (ui->treeNavigator->currentItem() != nullptr);
+}
+
 void ProjectNavigator::connectSignals()
 {
     connect(m_comManager, &ComManager::sitesReceived, this, &ProjectNavigator::processSitesReply);
@@ -496,7 +506,10 @@ TeraDataTypes ProjectNavigator::getItemType(QTreeWidgetItem *item)
 
 QAction *ProjectNavigator::addNewItemAction(const TeraDataTypes &data_type, const QString &label)
 {
-    QAction* new_action = new QAction(QIcon(TeraData::getIconFilenameForDataType(data_type)), label);
+    QIcon icon = QIcon(TeraData::getIconFilenameForDataType(data_type));
+    if (data_type == TERADATA_PARTICIPANT)
+        icon = QIcon("://icons/patient_installed.png");
+    QAction* new_action = new QAction(icon, label);
     new_action->setData(data_type);
     m_newItemActions.append(new_action);
 

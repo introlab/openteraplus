@@ -142,12 +142,14 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
 
     if (data_type == TERADATA_SITE){
         m_data_editor = new SiteWidget(m_comManager, data);
-        m_data_editor->setLimited(!(m_comManager->isCurrentUserSiteAdmin(data->getId())) && data->getId()>0);
+        if (!data->isNew())
+            m_data_editor->setLimited(!(m_comManager->isCurrentUserSiteAdmin(data->getId())) && data->getId()>0);
     }
 
     if (data_type == TERADATA_PROJECT){
         m_data_editor = new ProjectWidget(m_comManager, data);
-        m_data_editor->setLimited(!(m_comManager->isCurrentUserProjectAdmin(data->getId())) && data->getId()>0);
+        if (!data->isNew())
+            m_data_editor->setLimited(!(m_comManager->isCurrentUserProjectAdmin(data->getId())) && data->getId()>0);
     }
 
     if (data_type == TERADATA_GROUP){
@@ -156,7 +158,8 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
         if (data->hasFieldName("id_project")){
             limited = !(m_comManager->isCurrentUserProjectAdmin(data->getFieldValue("id_project").toInt()));
         }
-        m_data_editor->setLimited(limited);
+        if (!data->isNew())
+            m_data_editor->setLimited(limited);
     }
 
     if (data_type == TERADATA_PARTICIPANT){
@@ -167,7 +170,8 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
         }
         if (data->getId()==0)
             limited = false;
-        m_data_editor->setLimited(limited);
+        if (!data->isNew())
+            m_data_editor->setLimited(limited);
 
     }
 
@@ -454,7 +458,12 @@ void MainWindow::dataDeleteRequested(TeraDataTypes data_type, int data_id)
 
 void MainWindow::dataEditorCancelled()
 {
-    showDataEditor(TERADATA_NONE, nullptr);
+    if (ui->projNavigator->hasCurrentItem()){
+        ui->projNavigator->refreshCurrentItem();
+    }else{
+        showDataEditor(TERADATA_NONE, nullptr);
+    }
+
     ui->projNavigator->setEnabled(true);
 }
 
