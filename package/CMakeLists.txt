@@ -5,20 +5,9 @@ set(CPACK_PACKAGE_NAME "OpenTeraClient")
 set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus_${CPACK_PACKAGE_VERSION}_setup)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenTera - Client - Installateur")
 set(CPACK_PACKAGE_VENDOR "Regroupement INTER")
-set(CPACK_COMPONENTS_ALL openteraclient_installer)
+set(CPACK_COMPONENTS_ALL openteraplus libprotobuf)
 set(CPACK_PACKAGE_EXECUTABLES "TeraClient" "OpenTeraClient")
 set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.TXT")
-
-# SB - Those are required if using QT Installer Framework
-#set(CPACK_GENERATOR IFW)
-#set(CPACK_IFW_VERBOSE ON)
-#set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY INTER_OpenTeraClient)
-#set(CPACK_IFW_PACKAGE_NAME "OpenTeraClient")
-#set(CPACK_IFW_PACKAGE_MAINTENANCE_TOOL_NAME "Uninstaller")
-#set(CPACK_IFW_TARGET_DIRECTORY "@ApplicationsDirX64@/INTER/OpenTeraClient")
-#set(CPACK_IFW_PACKAGE_WIZARD_STYLE "Modern")
-#set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "INTER/OpenTeraClient")
-#include(CPackIFW REQUIRED)
 
 include(InstallRequiredSystemLibraries)
 get_target_property(_qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
@@ -55,10 +44,10 @@ if (WIN32)
         # COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/defaults" "$<TARGET_FILE_DIR:TeraClient>/deploy"
     )
 
-    # add SSL libraries
-    file(GLOB OPENSSL_LIBRARIES "${qt5_install_prefix}/../../Tools/OpenSSL/Win_x86/bin/*.dll")
-    message(STATUS "******************* ${SSL_LIBRARIES} ${qt5_install_prefix}")
-    install(FILES ${OPENSSL_LIBRARIES} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+    # add SSL librariesOpenSSL\Win_x64\bin
+    file(GLOB OPENSSL_LIBRARIES "${qt5_install_prefix}/../../Tools/OpenSSL/Win_x64/bin/*.dll")
+    message(STATUS "******************* ${OPENSSL_LIBRARIES} ${qt5_install_prefix} ${CPACK_PACKAGING_INSTALL_PREFIX}")
+    install(FILES ${OPENSSL_LIBRARIES} DESTINATION bin)
 
 
     # Uses NSIS packaging system on Windows
@@ -98,16 +87,6 @@ if (WIN32)
    #    REQUIRED
    #)
 
-# SB - Used with Qt Installer Framework
-#    cpack_ifw_configure_component(
-#        openteraclient_installer
-#        NAME opentera.client.installer
-#        VERSION "${CPACK_PACKAGE_VERSION}" # Version of component
-#        # LICENSES License ${qt_cpackifw_SOURCE_DIR}/LICENSE
-#        DEFAULT TRUE
-#    )
-
-
 
    # Run VC++ redistributable
    list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\VC_redist.x64.exe /install /passive /norestart'")
@@ -122,6 +101,7 @@ if (WIN32)
    include(CPack REQUIRED)
 
 
-   add_custom_target(nsis-package DEPENDS client_package package install)
+   add_custom_target(nsis-package DEPENDS install client_package package)
+
 
 endif (WIN32)
