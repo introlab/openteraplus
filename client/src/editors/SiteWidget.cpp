@@ -226,6 +226,11 @@ void SiteWidget::updateControlsState()
     ui->btnManageProjects->setVisible(is_site_admin);
     ui->btnUserGroups->setVisible(is_site_admin);
 
+    ui->grpSummary->setVisible(!dataIsNew());
+    if (ui->tabNav->count() > 1 && dataIsNew()){
+        ui->tabNav->removeTab(1);
+    }
+
 }
 
 void SiteWidget::updateFieldsValue()

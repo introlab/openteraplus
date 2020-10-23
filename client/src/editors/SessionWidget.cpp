@@ -43,6 +43,25 @@ void SessionWidget::saveData(bool signal){
     // If data is new, we request all the fields.
     QJsonDocument group_data = ui->wdgSession->getFormDataJson(m_data->isNew());
 
+    // Filter empty creator fields
+    QJsonObject session_data = group_data["session"].toObject();
+    QJsonObject base_obj;
+
+    if (session_data["id_creator_device"].toInt() == 0){
+        session_data.remove("id_creator_device");
+    }
+    if (session_data["id_creator_participant"].toInt() == 0){
+        session_data.remove("id_creator_participant");
+    }
+    if (session_data["id_creator_service"].toInt() == 0){
+        session_data.remove("id_creator_service");
+    }
+    if (session_data["id_creator_user"].toInt() == 0){
+        session_data.remove("id_creator_user");
+    }
+    base_obj.insert("session", session_data);
+    group_data.setObject(base_obj);
+
     postDataRequest(WEB_SESSIONINFO_PATH, group_data.toJson());
 
     if (signal){
