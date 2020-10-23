@@ -78,7 +78,7 @@ bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
     // Redirect web engine to session url
     if (m_webPage){
         QString session_url = QString::fromStdString(event.session_url());
-        if (m_webPage->url().toString() != session_url){
+        if (!m_webPage->url().toString().contains(session_url)){
             // Append source to the URL to connect QWebChannel
             session_url += "&source=openteraplus";
             m_webPage->setUrl(session_url);

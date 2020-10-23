@@ -40,6 +40,13 @@ void OnlineManagerWidget::setCurrentSite(const QString &site_name, const int &si
     // Clear participant list since site was changed
     ui->lstOnlineDevices->clear();
     ui->lstOnlineParticipants->clear();
+    ui->lstOnlineDevices->clear();
+    m_onlineUsers.clear();
+    m_onlineDevices.clear();
+    m_onlineParticipants.clear();
+    m_onlineUsersData.clear();
+    m_onlineDevicesData.clear();
+    m_onlineParticipantsData.clear();
 
     refreshOnlines();
 }

@@ -68,8 +68,9 @@ void ServiceConfigWidget::saveData(bool signal){
     if (!ui->wdgServiceConfig->setFieldValue("service_config_config", service_config)){
         LOG_ERROR(tr("Field service_config_config can't be set."), "ServiceConfigWidget::saveData");
     }
+    qDebug() << service_config;
 
-    QJsonDocument service_config_data = ui->wdgServiceConfig->getFormDataJson();
+    QJsonDocument service_config_data = ui->wdgServiceConfig->getFormDataJson(true);
     QJsonObject service_config_obj = service_config_data.object();
     QJsonObject service_config_base = service_config_obj.value("service_config").toObject();
 
