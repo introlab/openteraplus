@@ -243,7 +243,7 @@ void OnlineManagerWidget::ws_participantEvent(ParticipantEvent event)
     if (!m_onlineParticipantsData.contains(uuid)){
        createOnlineParticipant(uuid, QString::fromStdString(event.participant_name()));
     }
-    TeraData* participant_data = &m_onlineUsersData[uuid];
+    TeraData* participant_data = &m_onlineParticipantsData[uuid];
 
     if (event.type() == ParticipantEvent_EventType_PARTICIPANT_CONNECTED){
         participant_data->setOnline(true);
@@ -277,7 +277,7 @@ void OnlineManagerWidget::ws_deviceEvent(DeviceEvent event)
     if (!m_onlineDevicesData.contains(uuid)){
        createOnlineDevice(uuid, QString::fromStdString(event.device_name()));
     }
-    TeraData* device_data = &m_onlineUsersData[uuid];
+    TeraData* device_data = &m_onlineDevicesData[uuid];
 
     if (event.type() == DeviceEvent_EventType_DEVICE_CONNECTED){
         device_data->setOnline(true);
