@@ -739,7 +739,11 @@ void MainWindow::inSession_sessionEndedWithError()
 
 void MainWindow::on_btnLogout_clicked()
 {
-    //qDebug() << "on_btnLogout_clicked()";
+    GlobalMessageBox msg;
+
+    if (msg.showYesNo(tr("Déconnexion"), tr("Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.\n\nSouhaitez-vous continuer?")) != QMessageBox::Yes){
+        return;
+    }
 
     // Add logged action
     GlobalEvent logout_event(EVENT_LOGOUT, tr("Déconnexion"));
