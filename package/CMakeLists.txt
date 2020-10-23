@@ -2,11 +2,12 @@ find_package(Qt5Core REQUIRED)
 message(STATUS "Entering package directory.")
 
 set(CPACK_PACKAGE_NAME "OpenTeraClient")
-set(CPACK_PACKAGE_FILE_NAME OpenTera_${CPACK_PACKAGE_VERSION}_setup)
+set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus_${CPACK_PACKAGE_VERSION}_setup)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenTera - Client - Installateur")
 set(CPACK_PACKAGE_VENDOR "Regroupement INTER")
-#set(CPACK_COMPONENTS_ALL openteraclient_installer)
+set(CPACK_COMPONENTS_ALL openteraclient_installer)
 set(CPACK_PACKAGE_EXECUTABLES "TeraClient" "OpenTeraClient")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.TXT")
 
 # SB - Those are required if using QT Installer Framework
 #set(CPACK_GENERATOR IFW)
@@ -45,19 +46,24 @@ if (WIN32)
     # Create files for installation
     add_custom_target(client_package
         # Collect and copy required dependencies
-        COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/deploy"
-        COMMAND ${qt5_install_prefix}/bin/windeployqt "$<TARGET_FILE_DIR:TeraClient>/TeraClient.exe" --release --dir "$<TARGET_FILE_DIR:TeraClient>/deploy"
+        # COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/deploy"
+        COMMAND ${qt5_install_prefix}/bin/windeployqt "$<TARGET_FILE_DIR:TeraClient>/TeraClient.exe" --release --dir "${CMAKE_INSTALL_PREFIX}/bin"
         # Copy executables to deploy directory
-        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE_DIR:TeraClient>/TeraClient.exe" "$<TARGET_FILE_DIR:TeraClient>/deploy/TeraClient.exe"
-        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE_DIR:TeraClient>/opentera_shared.dll" "$<TARGET_FILE_DIR:TeraClient>/deploy/opentera_shared.dll"
+        # COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE_DIR:TeraClient>/TeraClient.exe" "$<TARGET_FILE_DIR:TeraClient>/deploy/TeraClient.exe"
+        # COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE_DIR:opentera_shared>/opentera_shared.dll" "$<TARGET_FILE_DIR:TeraClient>/deploy/opentera_shared.dll"
         # Copy default configs to deploy directory
         # COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/defaults" "$<TARGET_FILE_DIR:TeraClient>/deploy"
     )
 
+    # add SSL libraries
+    file(GLOB OPENSSL_LIBRARIES "${qt5_install_prefix}/../../Tools/OpenSSL/Win_x86/bin/*.dll")
+    message(STATUS "******************* ${SSL_LIBRARIES} ${qt5_install_prefix}")
+    install(FILES ${OPENSSL_LIBRARIES} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+
     # Uses NSIS packaging system on Windows
-    # SET(CPACK_SOURCE_GENERATOR "NSIS")
-    # dTODO: License file
-    # SET(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/COPYING.txt")
+    SET(CPACK_SOURCE_GENERATOR "NSIS")
+
 
     SET(CPACK_NSIS_INSTALL_ROOT "C:\\\\INTER")
     SET(CPACK_PACKAGE_INSTALL_DIRECTORY "OpenTeraClient")
@@ -65,6 +71,10 @@ if (WIN32)
     SET(CPACK_NSIS_MODIFY_PATH OFF)
     SET(CPACK_NSIS_EXECUTABLES_DIRECTORY .)
     SET(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+
+    SET(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/introlab/openteraplus")
+    SET(CPACK_NSIS_CONTACT "simon.briere@usherbrooke.ca")
+
 
     SET(CPACK_NSIS_DEFINES "!define MUI_STARTMENUPAGE_DEFAULTFOLDER \\\"OpenTeraClient\\\"
                                     VIProductVersion ${CPACK_PACKAGE_VERSION}.0
@@ -79,14 +89,14 @@ if (WIN32)
                                     VIAddVersionKey FileVersion ${CPACK_PACKAGE_VERSION}
                                     VIAddVersionKey ProductVersion ${CPACK_PACKAGE_VERSION}")
 
-   include(CPack REQUIRED)
 
-#   cpack_add_component(
-#       openteraclient_installer
-#       DISPLAY_NAME "OpenTera - Client"
-#       DESCRIPTION "Le logiciel client d'OpenTera"
-#       REQUIRED
-#   )
+
+   #cpack_add_component(
+   #    openteraclient_installer
+   #    DISPLAY_NAME "OpenTera - Client"
+   #    DESCRIPTION "Le logiciel client d'OpenTera"
+   #    REQUIRED
+   #)
 
 # SB - Used with Qt Installer Framework
 #    cpack_ifw_configure_component(
@@ -103,10 +113,15 @@ if (WIN32)
    list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\VC_redist.x64.exe /install /passive /norestart'")
 
    # Set files to install - everything in deploy folder
-   install(
-       DIRECTORY $<TARGET_FILE_DIR:TeraClient>/deploy/
-       DESTINATION .
-      # COMPONENT openteraclient_installer
-   )
+   #install(
+   #    # DIRECTORY $<TARGET_FILE_DIR:TeraClient>/deploy/
+   #    DIRECTORY ${CMAKE_INSTALL_PREFIX}
+   #    DESTINATION .
+   #    COMPONENT openteraclient_installer
+   #)
+   include(CPack REQUIRED)
+
+
+   add_custom_target(nsis-package DEPENDS client_package package install)
 
 endif (WIN32)

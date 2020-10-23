@@ -1,45 +1,21 @@
 {
 	"Settings": {
-                "showServers": true,
-                "logToFile": true,
-                "logPath": "./logs"
+			"showServers": true,
+			"logToFile": true,
+			"logPath": "./logs"
 	},	
 	"Servers": {
-                "Local-40075": {
+            "Local-40075": {
 			"url": "localhost",
-                        "port": 40075,
+            "port": 40075,
 			"webport": 40001, 
 			"pref": 1
 		},
-                "Local-Secure-443": {
-                        "url": "localhost",
-                        "port": 443,
-                        "webport": 40001,
-                        "pref": 2
-                },
-                "Local-Secure-4041": {
-                        "url": "localhost",
-                        "port": 4041,
-                        "webport": 40001,
-                        "pref": 2
-                },
-		"Local-Dominic": {
-			"url": "10.0.1.8",
-			"port": 4040,
-			"webport": 40001, 
-			"pref": 3
-		},
-                "TeraStation": {
-                        "url": "192.168.10.1",
-                        "port": 4040,
-                        "webport": 40001,
-                        "pref": 4
-                },
 		"3IT-Telesante": {
 			"url": "telesante.3it.usherbrooke.ca",
-			"port": 40040,
+			"port": 40075,
 			"webport": 40001,
-                        "pref": 5
-                }
+            "pref": 5
+        }
 	}
 }

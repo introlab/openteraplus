@@ -36,4 +36,9 @@ target_link_libraries(VirtualCameraDriver Qt5::Core Qt5::Qml Qt5::Concurrent Qt5
 set(VIRTUAL_CAMERA_LIBS VirtualCameraDriver CACHE INTERNAL "doc string")
 set(VIRTUAL_CAMERA_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "doc string")
 
+# Install
+install(TARGETS VirtualCameraDriver
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
