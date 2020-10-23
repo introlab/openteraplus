@@ -11,6 +11,9 @@ class TeraPreferences : public QObject
 
 public:
     explicit TeraPreferences(QObject *parent = nullptr);
+    TeraPreferences(const TeraPreferences& copy, QObject *parent=nullptr);
+
+    TeraPreferences &operator = (const TeraPreferences& other);
 
     Q_PROPERTY(bool isSet READ isSet WRITE setSet)
     Q_PROPERTY(QString language READ getLanguage WRITE setLanguage)

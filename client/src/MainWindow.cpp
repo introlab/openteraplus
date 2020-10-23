@@ -26,7 +26,7 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_inSessionWidget = nullptr;
     m_download_dialog = nullptr;
     m_joinSession_dialog = nullptr;
-    m_initialLanguageSetted = false;
+    m_currentLanguage = m_comManager->getCurrentPreferences().getLanguage();
     m_waiting_for_data_type = TERADATA_NONE;
     m_currentDataType = TERADATA_NONE;
     m_currentDataId = -1;
@@ -58,6 +58,8 @@ MainWindow::~MainWindow()
 void MainWindow::connectSignals()
 {
     connect(m_comManager, &ComManager::currentUserUpdated, this, &MainWindow::updateCurrentUser);
+    connect(m_comManager, &ComManager::preferencesUpdated, this, &MainWindow::com_preferencesUpdated);
+
     connect(m_comManager, &ComManager::networkError, this, &MainWindow::com_networkError);
     connect(m_comManager, &ComManager::socketError, this, &MainWindow::com_socketError);
     connect(m_comManager, &ComManager::waitingForReply, this, &MainWindow::com_waitingForReply);
@@ -616,6 +618,17 @@ void MainWindow::com_downloadCompleted(DownloadedFile *file)
     }
 }
 
+void MainWindow::com_preferencesUpdated()
+{
+    if (m_currentLanguage != m_comManager->getCurrentPreferences().getLanguage()){ // Filter initial language change
+        GlobalMessageBox msg;
+        if (msg.showYesNo(tr("Changement de langue"), tr("La langue a été modifiée.\nSouhaitez-vous vous déconnecter pour appliquer les changements?")) == QMessageBox::Yes){
+            emit logout_request();
+        }
+        m_currentLanguage = m_comManager->getCurrentPreferences().getLanguage();
+    }
+}
+
 void MainWindow::com_sessionStarted(TeraData session_type, int id_session)
 {
     if (!m_inSessionWidget){
@@ -880,8 +893,8 @@ void MainWindow::changeEvent(QEvent* event)
     if (event) {
         switch(event->type()) {
 
-        case QEvent::LanguageChange:
-            if (m_initialLanguageSetted){ // Filter initial language change
+        case QEvent::LanguageChange:{
+            /*if (m_initialLanguageSetted){ // Filter initial language change
                 GlobalMessageBox msg;
                 if (msg.showYesNo(tr("Changement de langue"), tr("La langue a été modifiée.\nSouhaitez-vous vous déconnecter pour appliquer les changements?")) == QMessageBox::Yes){
                     emit logout_request();
@@ -889,9 +902,10 @@ void MainWindow::changeEvent(QEvent* event)
 
             }else{
                 m_initialLanguageSetted = true;
-            }
+            }*/
 
             //qDebug() << "MainWindow::changeEvent - LanguageChange";
+        }
             break;
 
             // this event is send, if the system, language changes
