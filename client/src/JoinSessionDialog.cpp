@@ -15,7 +15,7 @@ JoinSessionDialog::JoinSessionDialog(ComManager *comMan, opentera::protobuf::Joi
 
     // Query session information for session uuid in event
     QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_SESSION_UUID, "1");
+    args.addQueryItem(WEB_QUERY_SESSION_UUID, QString::fromStdString(event.service_uuid()));
     args.addQueryItem(WEB_QUERY_LIST, "1");
     m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
 
