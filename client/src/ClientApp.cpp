@@ -195,6 +195,7 @@ void ClientApp::loginRequested(QString username, QString password, QString serve
     connect(m_comMan, &ComManager::loginResult, this, &ClientApp::on_loginResult);
     connect(m_comMan, &ComManager::networkError, this, &ClientApp::on_networkError);
     connect(m_comMan, &ComManager::preferencesUpdated, this, &ClientApp::preferencesUpdated);
+    connect(m_comMan, &ComManager::newVersionAvailable, this, &ClientApp::on_newVersionAvailable);
 
     // Connect to server
     m_comMan->connectToServer(username, password);
@@ -268,6 +269,18 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
         m_loginDiag->setStatusMessage(error_str.replace("\n", ""), true);
     }
     // TODO: Manage error in main UI
+}
+
+void ClientApp::on_newVersionAvailable(QString version, QString download_url)
+{
+    GlobalMessageBox msg;
+    QString version_info = tr("Une nouvelle version (") + version + tr(") du logiciel est disponible.\n\n");
+    if (download_url.isEmpty()){
+        version_info += tr("Veuillez contacter votre fournisseur pour l'obtenir.");
+    }else{
+        version_info += tr("Cliquez ") + "<a href=" + download_url + ">" + tr("ICI") + "</a>" + tr(" pour la télécharger.");
+    }
+    msg.showInfo(tr("Nouvelle version disponible!"), version_info);
 }
 
 void ClientApp::preferencesUpdated()

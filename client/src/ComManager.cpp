@@ -567,6 +567,9 @@ bool ComManager::handleLoginReply(const QString &reply_data)
     m_currentUser.setFieldValue("user_uuid", user_uuid);
     //doUpdateCurrentUser();
 
+    // Query versions informations
+    doQuery(WEB_VERSIONSINFO_PATH);
+
     return true;
 }
 
@@ -581,6 +584,11 @@ bool ComManager::handleLoginSequence(const QString &reply_path, const QString &r
     if (json_error.error!= QJsonParseError::NoError){
         LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "ComManager::handleDataReply");
         return false;
+    }
+
+    // Versions information reply
+    if (reply_path == WEB_VERSIONSINFO_PATH){
+        return handleVersionsReply(data_list);
     }
 
     QList<TeraData> items;
@@ -630,6 +638,11 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     if (json_error.error!= QJsonParseError::NoError){
         LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "ComManager::handleDataReply");
         return false;
+    }
+
+    // Versions information reply
+    if (reply_path == WEB_VERSIONSINFO_PATH){
+        return handleVersionsReply(data_list);
     }
 
     // Browse each items received
@@ -841,6 +854,32 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
 bool ComManager::handleFormReply(const QUrlQuery &reply_query, const QString &reply_data)
 {
     emit formReceived(reply_query.toString(), reply_data);
+    return true;
+}
+
+bool ComManager::handleVersionsReply(const QJsonDocument &version_data)
+{
+    QJsonObject clients = version_data["clients"].toObject();
+    if (!clients.isEmpty()){
+        QJsonObject openteraplus = clients["OpenTeraPlus"].toObject();
+        if (!openteraplus.isEmpty()){
+            QString current_client_version = openteraplus["client_version"].toString();
+            if (current_client_version != OPENTERAPLUS_VERSION){
+                // New version available... maybe!
+                QString current_version_url;
+#ifdef Q_OS_WIN
+                current_version_url = openteraplus["client_windows_download_url"].toString();
+#endif
+#ifdef Q_OS_LINUX
+                current_version_url = openteraplus["client_linux_download_url"].toString();
+#endif
+#ifdef Q_OS_MACOS
+                current_version_url = openteraplus["client_mac_download_url"].toString();
+#endif
+                emit newVersionAvailable(current_client_version, current_version_url);
+            }
+        }
+    }
     return true;
 }
 

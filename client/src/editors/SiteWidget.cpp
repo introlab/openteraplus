@@ -220,10 +220,7 @@ void SiteWidget::updateControlsState()
     bool is_site_admin = isSiteAdmin();
     ui->btnUpdateRoles->setVisible(is_site_admin);
     //ui->btnDevices->setVisible(is_site_admin);
-    ui->btnManageUsers->setVisible(is_site_admin);
-    ui->btnManageDevices->setVisible(is_site_admin);
-    ui->btnManageUserGroups->setVisible(is_site_admin);
-    ui->btnManageProjects->setVisible(is_site_admin);
+
     ui->btnUserGroups->setVisible(is_site_admin);
 
     ui->grpSummary->setVisible(!dataIsNew());
@@ -516,30 +513,6 @@ void SiteWidget::on_tabSiteInfos_currentChanged(int index)
 
 }
 
-void SiteWidget::on_btnManageUsers_clicked()
-{
-    ui->tabSiteInfos->setCurrentWidget(ui->tabUsers);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
-}
-
-void SiteWidget::on_btnManageProjects_clicked()
-{
-    ui->tabSiteInfos->setCurrentWidget(ui->tabProjects);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
-}
-
-void SiteWidget::on_btnManageDevices_clicked()
-{
-    ui->tabSiteInfos->setCurrentWidget(ui->tabDevices);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
-}
-
-void SiteWidget::on_btnManageUserGroups_clicked()
-{
-    ui->tabSiteInfos->setCurrentWidget(ui->tabUserGroups);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
-}
-
 
 void SiteWidget::on_btnUserGroups_clicked()
 {
@@ -559,4 +532,22 @@ void SiteWidget::on_btnUserGroups_clicked()
     m_diag_editor->setFixedSize(size().width(), size().height());
 
     m_diag_editor->open();
+}
+
+void SiteWidget::on_icoUsers_clicked()
+{
+    ui->tabSiteInfos->setCurrentWidget(ui->tabUsers);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SiteWidget::on_icoProjects_clicked()
+{
+    ui->tabSiteInfos->setCurrentWidget(ui->tabProjects);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SiteWidget::on_icoDevices_clicked()
+{
+    ui->tabSiteInfos->setCurrentWidget(ui->tabDevices);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }

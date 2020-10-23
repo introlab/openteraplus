@@ -25,7 +25,8 @@ DeviceSubTypeWidget::DeviceSubTypeWidget(ComManager *comMan, const TeraData *dat
     setData(data);
 
     // Loads first detailled informations tab
-    on_tabDeviceSubInfos_currentChanged(0);
+    if (!dataIsNew())
+        on_tabDeviceSubInfos_currentChanged(0);
 
 }
 
@@ -51,10 +52,11 @@ void DeviceSubTypeWidget::saveData(bool signal){
 }
 
 void DeviceSubTypeWidget::updateControlsState(){
-    if (!dataIsNew()){
-        ui->tabDetails->setEnabled(!dataIsNew());
-    }
-
+   if (dataIsNew()){
+       if (ui->tabNav->count() > 1){
+           ui->tabNav->removeTab(1);
+       }
+   }
 }
 
 void DeviceSubTypeWidget::updateFieldsValue(){

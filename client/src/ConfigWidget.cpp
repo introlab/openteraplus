@@ -52,7 +52,7 @@ void ConfigWidget::setupSections()
     addSection(tr("Type appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICETYPE)), TERADATA_DEVICETYPE);
     addSection(tr("Sous-types appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICESUBTYPE)), TERADATA_DEVICESUBTYPE);
     addSection(tr("Types de séances"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSIONTYPE)), TERADATA_SESSIONTYPE);
-    addSection(tr("Évaluations"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_TESTDEF)), TERADATA_TESTDEF);
+    //addSection(tr("Évaluations"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_TESTDEF)), TERADATA_TESTDEF);
     if (m_comManager->isCurrentUserSuperAdmin()){
         addSection(tr("Services"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE)), TERADATA_SERVICE);
     }

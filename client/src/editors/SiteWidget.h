@@ -38,15 +38,11 @@ private slots:
 
     void on_tabSiteInfos_currentChanged(int index);
 
-    void on_btnManageProjects_clicked();
-
-    void on_btnManageDevices_clicked();
-
-    void on_btnManageUserGroups_clicked();
-
-    void on_btnManageUsers_clicked();
-
     void on_btnUserGroups_clicked();
+
+    void on_icoUsers_clicked();
+    void on_icoProjects_clicked();
+    void on_icoDevices_clicked();
 
 private:
     Ui::SiteWidget *ui;

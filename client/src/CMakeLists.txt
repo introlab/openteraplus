@@ -37,6 +37,8 @@ set(headers
     JoinSessionDialog.h
     EmailInviteDialog.h
     ClickableLabel.h
+    AboutDialog.h
+    AboutDialogPage.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -96,6 +98,8 @@ set(srcs
     JoinSessionDialog.cpp
     EmailInviteDialog.cpp
     ClickableLabel.cpp
+    AboutDialog.cpp
+    AboutDialogPage.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
@@ -143,6 +147,7 @@ SET(uis
     OnlineManagerWidget.ui
     JoinSessionDialog.ui
     EmailInviteDialog.ui
+    AboutDialog.ui
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
     editors/TeraForm.ui

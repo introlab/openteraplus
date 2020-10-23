@@ -39,6 +39,8 @@
 #define WEB_ONLINEPARTICIPANTINFO_PATH      "/api/user/participants/online"
 #define WEB_ONLINEDEVICEINFO_PATH           "/api/user/devices/online"
 
+#define WEB_VERSIONSINFO_PATH               "/api/user/versions"
+
 #define WEB_FORMS_PATH                  "/api/user/forms"
 #define WEB_FORMS_QUERY_USER            "type=user"
 #define WEB_FORMS_QUERY_SITE            "type=site"

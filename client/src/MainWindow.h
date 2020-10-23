@@ -22,6 +22,8 @@
 #include "InSessionWidget.h"
 #include "JoinSessionDialog.h"
 
+#include "AboutDialog.h"
+
 // Protobuf
 #include "UserEvent.pb.h"
 
@@ -92,6 +94,8 @@ private slots:
     void on_btnLog_toggled(bool checked);
 
     void on_tableHistory_itemDoubleClicked(QTableWidgetItem *item);
+
+    void on_lblLogo_clicked();
 
 private:
     void connectSignals();

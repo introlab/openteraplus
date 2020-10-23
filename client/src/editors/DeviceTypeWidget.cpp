@@ -25,7 +25,8 @@ DeviceTypeWidget::DeviceTypeWidget(ComManager *comMan, const TeraData *data, QWi
     setData(data);
 
     // Loads first detailled informations tab
-    on_tabDeviceTypeInfos_currentChanged(0);
+    if (!dataIsNew())
+        on_tabDeviceTypeInfos_currentChanged(0);
 
 }
 
@@ -51,8 +52,10 @@ void DeviceTypeWidget::saveData(bool signal){
 }
 
 void DeviceTypeWidget::updateControlsState(){
-    if (!dataIsNew()){
-        ui->tabDetails->setEnabled(!dataIsNew());
+    if (dataIsNew()){
+        if (ui->tabNav->count() > 1){
+            ui->tabNav->removeTab(1);
+        }
     }
 
 }

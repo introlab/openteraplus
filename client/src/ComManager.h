@@ -82,6 +82,7 @@ protected:
     bool handleDataReply(const QString& reply_path, const QString& reply_data, const QUrlQuery& reply_query);
     bool handleSessionManagerReply(const QString& reply_data, const QUrlQuery& reply_query);
     bool handleFormReply(const QUrlQuery& reply_query, const QString& reply_data);
+    bool handleVersionsReply(const QJsonDocument &version_data);
 
     void updateCurrentUser(const TeraData& user_data);
     void updateCurrentPrefs(const TeraData& user_prefs);
@@ -174,6 +175,9 @@ signals:
     void sessionStopped(int id_session);
     void sessionStopRequested(TeraData session_type);
     void sessionError(QString error);
+
+    // Version management
+    void newVersionAvailable(QString version, QString download_url);
 
 
 public slots:

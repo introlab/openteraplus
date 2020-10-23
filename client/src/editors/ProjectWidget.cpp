@@ -259,13 +259,9 @@ void ProjectWidget::updateControlsState()
         ui->btnUpdateRoles->setVisible(!m_limited);
         ui->lblInherited->setVisible(!m_limited);
 
-        ui->btnManageUserGroups->setVisible(!m_limited);
-        ui->btnManageSessionTypes->setVisible(!m_limited);
-
         ui->lstServices->setEnabled(is_site_admin);
         ui->btnUpdateServices->setVisible(is_site_admin);
 
-        ui->btnManageServices->setVisible(is_site_admin);
     }
 
 }
@@ -666,20 +662,14 @@ void ProjectWidget::on_btnUpdateServices_clicked()
     }
 }
 
-void ProjectWidget::on_btnManageUserGroups_clicked()
+void ProjectWidget::on_icoUsers_clicked()
 {
-    ui->tabProjectInfos->setCurrentWidget(ui->tabUserGroups);
+    ui->tabProjectInfos->setCurrentWidget(ui->tabUsers);
     ui->tabNav->setCurrentWidget(ui->tabDetails);
 }
 
-void ProjectWidget::on_btnManageSessionTypes_clicked()
+void ProjectWidget::on_icoSessions_clicked()
 {
     ui->tabProjectInfos->setCurrentWidget(ui->tabSessionTypes);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
-}
-
-void ProjectWidget::on_btnManageServices_clicked()
-{
-    ui->tabProjectInfos->setCurrentWidget(ui->tabServices);
     ui->tabNav->setCurrentWidget(ui->tabDetails);
 }

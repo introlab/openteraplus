@@ -41,6 +41,7 @@ private:
 
     void updateSessionParticipants();
     void updateSessionUsers();
+    void updateSessionDevices();
     //void updateDeviceData(TeraData* device_data);
     void updateEvent(TeraData* event);
 
@@ -52,6 +53,7 @@ private slots:
     void processFormsReply(QString form_type, QString data);
     //void processDeviceDatasReply(QList<TeraData> device_datas);
     void processSessionEventsReply(QList<TeraData> events);
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
     void postResultReply(QString path);
     void deleteDataReply(QString path, int id);
 
@@ -59,6 +61,12 @@ private slots:
 
     void currentSelectedDataChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
     void on_tabSessionInfos_tabBarClicked(int index);
+    void on_icoUsers_clicked();
+    void on_icoParticipant_clicked();
+    void on_icoDevices_clicked();
+    void on_icoEvents_clicked();
+    void on_icoAssets_clicked();
+    void on_icoTests_clicked();
 };
 
 #endif // SESSIONWIDGET_H
