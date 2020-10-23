@@ -179,7 +179,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
+        <pixmap>:/icons/patient.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -217,7 +217,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../resources/TeraClient.qrc">:/status/status_unknown.png</pixmap>
+        <pixmap>:/status/status_unknown.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -315,7 +315,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
          <string>Nouvelle Séance</string>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/TeraClient.qrc">
+         <iconset>
           <normaloff>:/icons/new.png</normaloff>:/icons/new.png</iconset>
         </property>
         <property name="iconSize">
@@ -339,7 +339,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
+       <iconset>
         <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
       </attribute>
       <attribute name="title">
@@ -486,7 +486,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                       <string>Copier le lien</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../resources/TeraClient.qrc">
+                      <iconset>
                        <normaloff>:/icons/copy.png</normaloff>:/icons/copy.png</iconset>
                      </property>
                      <property name="iconSize">
@@ -524,7 +524,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                       <string>Envoyer le lien par courriel</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../resources/TeraClient.qrc">
+                      <iconset>
                        <normaloff>:/icons/email.png</normaloff>:/icons/email.png</iconset>
                      </property>
                      <property name="iconSize">
@@ -562,7 +562,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                       <string>...</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../resources/TeraClient.qrc">
+                      <iconset>
                        <normaloff>:/icons/view_off.png</normaloff>
                        <activeon>:/icons/view_on.png</activeon>:/icons/view_off.png</iconset>
                      </property>
@@ -692,7 +692,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                       <string>...</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../resources/TeraClient.qrc">
+                      <iconset>
                        <normaloff>:/icons/refresh.png</normaloff>:/icons/refresh.png</iconset>
                      </property>
                      <property name="iconSize">
@@ -747,7 +747,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                       <string>...</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../resources/TeraClient.qrc">
+                      <iconset>
                        <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
                      </property>
                      <property name="iconSize">
@@ -865,7 +865,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../resources/TeraClient.qrc">
+                    <iconset>
                      <normaloff>:/controls/branch_left.png</normaloff>:/controls/branch_left.png</iconset>
                    </property>
                   </widget>
@@ -1094,7 +1094,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                     <string>...</string>
                    </property>
                    <property name="icon">
-                    <iconset resource="../../resources/TeraClient.qrc">
+                    <iconset>
                      <normaloff>:/controls/branch_closed.png</normaloff>:/controls/branch_closed.png</iconset>
                    </property>
                   </widget>
@@ -1143,7 +1143,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                          <string>...</string>
                         </property>
                         <property name="icon">
-                         <iconset resource="../../resources/TeraClient.qrc">
+                         <iconset>
                           <normaloff>:/controls/check2_on.png</normaloff>:/controls/check2_on.png</iconset>
                         </property>
                         <property name="iconSize">
@@ -1172,7 +1172,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                          <string>...</string>
                         </property>
                         <property name="icon">
-                         <iconset resource="../../resources/TeraClient.qrc">
+                         <iconset>
                           <normaloff>:/controls/check2_off.png</normaloff>:/controls/check2_off.png</iconset>
                         </property>
                         <property name="iconSize">
@@ -1363,7 +1363,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
      </widget>
      <widget class="QWidget" name="tabDetails">
       <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
+       <iconset>
         <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
       </attribute>
       <attribute name="title">
@@ -1380,7 +1380,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
          </property>
          <widget class="QWidget" name="tabParticipant">
           <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
+           <iconset>
             <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
           </attribute>
           <attribute name="title">
@@ -1417,7 +1417,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                 <string>Éditer</string>
                </property>
                <property name="icon">
-                <iconset resource="../../resources/TeraClient.qrc">
+                <iconset>
                  <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
                </property>
                <property name="iconSize">
@@ -1458,7 +1458,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                  <string>Sauvegarder</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../../resources/TeraClient.qrc">
+                 <iconset>
                   <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -1487,7 +1487,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                  <string>Annuler</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../../resources/TeraClient.qrc">
+                 <iconset>
                   <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -1505,7 +1505,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
          </widget>
          <widget class="QWidget" name="tabDevices">
           <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
+           <iconset>
             <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
           </attribute>
           <attribute name="title">
@@ -1634,7 +1634,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
          </widget>
          <widget class="QWidget" name="tabConfig">
           <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
+           <iconset>
             <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
           </attribute>
           <attribute name="title">
@@ -1685,7 +1685,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
         <string>Tout télécharger</string>
        </property>
        <property name="icon">
-        <iconset resource="../../resources/TeraClient.qrc">
+        <iconset>
          <normaloff>:/icons/download.png</normaloff>:/icons/download.png</iconset>
        </property>
        <property name="iconSize">
@@ -1714,7 +1714,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
         <string>Supprimer</string>
        </property>
        <property name="icon">
-        <iconset resource="../../resources/TeraClient.qrc">
+        <iconset>
          <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
        </property>
        <property name="iconSize">
@@ -1742,8 +1742,6 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
    <header>HistoryCalendarWidget.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../resources/TeraClient.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

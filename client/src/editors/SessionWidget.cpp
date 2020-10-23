@@ -65,7 +65,7 @@ void SessionWidget::saveData(bool signal){
     postDataRequest(WEB_SESSIONINFO_PATH, group_data.toJson());
 
     if (signal){
-        TeraData* new_data = ui->wdgSession->getFormDataObject(TERADATA_GROUP);
+        TeraData* new_data = ui->wdgSession->getFormDataObject(TERADATA_SESSION);
         *m_data = *new_data;
         delete new_data;
         emit dataWasChanged();
@@ -80,12 +80,24 @@ void SessionWidget::setData(const TeraData *data)
         // Loads first detailled informations tab
         on_tabSessionInfos_tabBarClicked(0);
 
+        // Query stats
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
+        queryDataRequest(WEB_STATS_PATH, args);
+
     }else{
         ui->tabDetails->setEnabled(false);
     }
 }
 
-void SessionWidget::updateControlsState(){
+void SessionWidget::updateControlsState()
+{
+    if (dataIsNew()){
+        ui->grpSummary->setVisible(!dataIsNew());
+        if (ui->tabNav->count() > 1){
+            ui->tabNav->removeTab(1);
+        }
+    }
 
 }
 
@@ -166,7 +178,7 @@ void SessionWidget::updateSessionUsers()
                     break;
                 }
             }
-            // New participant
+            // New user
             if (!item){
                 item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)), user_name);
                 item->setData(Qt::UserRole, id_user);
@@ -177,6 +189,40 @@ void SessionWidget::updateSessionUsers()
             item->setText(user_name);
 
 
+        }
+    }
+}
+
+void SessionWidget::updateSessionDevices()
+{
+    if (!m_data)
+        return;
+
+    if (m_data->hasFieldName("session_devices")){
+        QVariantList session_devices_list = m_data->getFieldValue("session_devices").toList();
+
+        for(QVariant session_device:session_devices_list){
+            QVariantMap device_info = session_device.toMap();
+            int id_device = device_info["id_device"].toInt();
+            QString device_name = device_info["device_name"].toString();
+            QListWidgetItem* item = nullptr;
+            for(int i=0; i<ui->lstDevices->count(); i++){
+                int device_id = ui->lstDevices->item(i)->data(Qt::UserRole).toInt();
+                if (device_id == id_device){
+                    // User already present
+                    item = ui->lstDevices->item(i);
+                    break;
+                }
+            }
+            // New device
+            if (!item){
+                item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)), device_name);
+                item->setData(Qt::UserRole, id_device);
+                ui->lstDevices->addItem(item);
+            }
+
+            // Update name
+            item->setText(device_name);
         }
     }
 }
@@ -296,6 +342,24 @@ void SessionWidget::processSessionEventsReply(QList<TeraData> events)
     }
 }
 
+void SessionWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
+{
+    // Check if stats are for us
+    if (!reply_query.hasQueryItem("id_session"))
+        return;
+
+    if (reply_query.queryItemValue("id_session").toInt() != m_data->getId())
+        return;
+
+    // Fill stats information
+    ui->lblUsersStats->setText(stats.getFieldValue("users_total_count").toString() + tr(" Utilisateurs"));
+    ui->lblParticipantsStats->setText(stats.getFieldValue("participants_total_count").toString() + tr(" Participants"));
+    ui->lblDevicesStats->setText(stats.getFieldValue("devices_total_count").toString() + tr(" Appareils"));
+    ui->lblAssets->setText(stats.getFieldValue("assets_total_count").toString() + tr(" Fichiers de données"));
+    ui->lblEvents->setText(stats.getFieldValue("events_total_count").toString() + tr(" Événements"));
+    ui->lblTests->setText(stats.getFieldValue("tests_total_count").toString() + tr(" Évaluations"));
+}
+
 void SessionWidget::postResultReply(QString path)
 {
     Q_UNUSED(path)
@@ -341,6 +405,8 @@ void SessionWidget::connectSignals()
     connect(m_comManager, &ComManager::postResultsOK, this, &SessionWidget::postResultReply);
     //connect(m_comManager, &ComManager::deviceDatasReceived, this, &SessionWidget::processDeviceDatasReply);
     connect(m_comManager, &ComManager::sessionEventsReceived, this, &SessionWidget::processSessionEventsReply);
+    connect(m_comManager, &ComManager::statsReceived, this, &SessionWidget::processStatsReply);
+
     connect(m_comManager, &ComManager::downloadCompleted, this, &SessionWidget::onDownloadCompleted);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &SessionWidget::deleteDataReply);
 
@@ -409,10 +475,11 @@ void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
 
     QWidget* current_tab = ui->tabSessionInfos->widget(index);
 
-    if (current_tab == ui->tabParticipants){
+    if (current_tab == ui->tabInvitees){
         // Participants
         updateSessionParticipants();
         updateSessionUsers();
+        updateSessionDevices();
     }
 
     if (current_tab == ui->tabData){
@@ -436,4 +503,40 @@ void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
             queryDataRequest(WEB_SESSIONEVENT_PATH, query);
         }
     }
+}
+
+void SessionWidget::on_icoUsers_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabInvitees);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoParticipant_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabInvitees);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoDevices_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabInvitees);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoEvents_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabEvents);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoAssets_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabData);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoTests_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabTests);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }

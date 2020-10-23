@@ -43,11 +43,10 @@ private slots:
 
     void on_btnUpdateServices_clicked();
 
-    void on_btnManageUserGroups_clicked();
 
-    void on_btnManageSessionTypes_clicked();
+    void on_icoUsers_clicked();
 
-    void on_btnManageServices_clicked();
+    void on_icoSessions_clicked();
 
 private:
     Ui::ProjectWidget *ui;
