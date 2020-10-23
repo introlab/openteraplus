@@ -250,7 +250,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
       <number>4</number>
      </property>
      <item>
-      <widget class="QLabel" name="lblLogo">
+      <widget class="ClickableLabel" name="lblLogo">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -790,6 +790,14 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
   </widget>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>ClickableLabel.h</header>
+   <slots>
+    <signal>clicked()</signal>
+   </slots>
+  </customwidget>
   <customwidget>
    <class>ProjectNavigator</class>
    <extends>QWidget</extends>

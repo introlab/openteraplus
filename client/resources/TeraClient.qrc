@@ -130,5 +130,6 @@
         <file>icons/join.png</file>
         <file>icons/leave.png</file>
         <file>icons/error2.png</file>
+        <file>icons/smile.png</file>
     </qresource>
 </RCC>

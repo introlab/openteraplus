@@ -905,3 +905,13 @@ void MainWindow::changeEvent(QEvent* event)
 
 }
 
+
+void MainWindow::on_lblLogo_clicked()
+{
+    AboutDialog about(m_comManager->getServerUrl(), this);
+
+    about.setFixedSize(size().width()-50, size().height()-150);
+    about.move(this->x()+25, this->y()+75);
+
+    about.exec();
+}
