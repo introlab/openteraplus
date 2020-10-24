@@ -13,6 +13,7 @@ ClientApp::ClientApp(int &argc, char **argv)
     m_comMan = nullptr;
     m_loginDiag = nullptr;
     m_mainWindow = nullptr;
+
     m_translator = new QTranslator();
 
     //Translations
@@ -130,6 +131,8 @@ void ClientApp::showMainWindow()
     GlobalEventLogger::instance()->logEvent(login_event);
 
     m_mainWindow->showMaximized();
+
+    processQueuedEvents();
 }
 
 void ClientApp::setupLogger()
@@ -140,6 +143,24 @@ void ClientApp::setupLogger()
     }else{
         GlobalEventLogger::instance()->startLogging();
     }
+}
+
+void ClientApp::processQueuedEvents()
+{
+    if (!m_mainWindow)
+        return;
+
+    for (int i=0; i<m_eventQueue.count(); i++){
+        for(int j=0; j< m_eventQueue.at(i).events_size(); j++){
+            if (m_eventQueue.at(i).events(j).Is<JoinSessionEvent>()){
+                JoinSessionEvent event;
+                if (m_eventQueue.at(i).events(j).UnpackTo(&event))
+                    m_mainWindow->ws_joinSessionEvent(event);
+            }
+        }
+    }
+
+    m_eventQueue.clear();
 }
 
 void ClientApp::setTranslation(QString language)
@@ -196,6 +217,8 @@ void ClientApp::loginRequested(QString username, QString password, QString serve
     connect(m_comMan, &ComManager::networkError, this, &ClientApp::on_networkError);
     connect(m_comMan, &ComManager::preferencesUpdated, this, &ClientApp::preferencesUpdated);
     connect(m_comMan, &ComManager::newVersionAvailable, this, &ClientApp::on_newVersionAvailable);
+
+    connect(m_comMan->getWebSocketManager(), &WebSocketManager::genericEventReceived, this, &ClientApp::ws_genericEventReceived);
 
     // Connect to server
     m_comMan->connectToServer(username, password);
@@ -282,6 +305,15 @@ void ClientApp::on_newVersionAvailable(QString version, QString download_url)
     }
     msg.showInfo(tr("Nouvelle version disponible!"), version_info);
 }
+
+void ClientApp::ws_genericEventReceived(TeraEvent event)
+{
+    if (m_mainWindow)
+        return; // Don't stack for nothing
+
+    m_eventQueue.append(event);
+}
+
 
 void ClientApp::preferencesUpdated()
 {

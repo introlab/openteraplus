@@ -172,7 +172,11 @@ void SessionInviteWidget::removeUserFromSession(const QString &user_uuid)
 
     int id_item = item_data->getId();
     if (m_usersInSession.contains(id_item)){
-        m_usersInSession.remove(item_data->getId());
+        // Remove from ui
+        QTreeWidgetItem* base_tree_item = ui->treeInvitees->topLevelItem(1);
+        base_tree_item->removeChild( m_usersInSession[id_item]);
+        delete m_usersInSession[id_item];
+        m_usersInSession.remove(id_item);
     }
 
     // Update item to add it back to invitable list
@@ -194,7 +198,11 @@ void SessionInviteWidget::removeParticipantFromSession(const QString &participan
 
     int id_item = item_data->getId();
     if (m_participantsInSession.contains(id_item)){
-        m_participantsInSession.remove(item_data->getId());
+        // Remove from ui
+        QTreeWidgetItem* base_tree_item = ui->treeInvitees->topLevelItem(0);
+        base_tree_item->removeChild( m_participantsInSession[id_item]);
+        delete m_participantsInSession[id_item];
+        m_participantsInSession.remove(id_item);
     }
 
     // Update item to add it back to invitable list
@@ -216,7 +224,11 @@ void SessionInviteWidget::removeDeviceFromSession(const QString &device_uuid)
 
     int id_item = item_data->getId();
     if (m_devicesInSession.contains(id_item)){
-        m_devicesInSession.remove(item_data->getId());
+        // Remove from ui
+        QTreeWidgetItem* base_tree_item = ui->treeInvitees->topLevelItem(2);
+        base_tree_item->removeChild( m_devicesInSession[id_item]);
+        delete m_devicesInSession[id_item];
+        m_devicesInSession.remove(id_item);
     }
 
     // Update item to add it back to invitable list
@@ -609,7 +621,7 @@ void SessionInviteWidget::updateItem(const TeraData &item)
 
     int id_item = item.getId();
     // Check in which list the item is
-    bool invited = item_invitees->contains(id_item);
+    bool invited = item_invitees->contains(id_item) || item_required->contains(id_item);
 
     //qDebug() << item.getName() << " - " << item.getDataTypeName(item.getDataType()) << " ID " << id_item << ": " << invited;
 

@@ -67,6 +67,8 @@ signals:
     void databaseEventReceived(DatabaseEvent event);
     void joinSessionReplyEventReceived(JoinSessionReplyEvent event);
 
+    void genericEventReceived(TeraEvent event);
+
 
 private slots:
     void onSocketConnected();

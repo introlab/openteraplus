@@ -25,11 +25,12 @@ class InSessionWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit InSessionWidget(ComManager *comMan, const TeraData* session_type, const int id_session, const int id_project, QWidget *parent = nullptr);
+    explicit InSessionWidget(ComManager *comMan, const TeraData* session_type, const int id_session, const int id_project, JoinSessionEvent *initial_event = nullptr, QWidget *parent = nullptr);
     ~InSessionWidget();
 
     void disconnectSignals();
     void setSessionId(int session_id);
+    void setPendingEvent(JoinSessionEvent* event);
 
 
 private slots:
@@ -81,6 +82,8 @@ private:
     BaseServiceWidget*      m_serviceWidget;
     BaseServiceToolsWidget* m_serviceToolsWidget;
     StartSessionDialog*     m_startDiag;
+
+    JoinSessionEvent*       m_pendingEvent;
 
     int                     m_projectId;
 

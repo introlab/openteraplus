@@ -1,7 +1,7 @@
 #include "InSessionWidget.h"
 #include "ui_InSessionWidget.h"
 
-InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_type, const int id_session, const int id_project, QWidget *parent) :
+InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_type, const int id_session, const int id_project, JoinSessionEvent* initial_event, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::InSessionWidget),
     m_sessionType(*session_type),
@@ -14,6 +14,9 @@ InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_typ
     m_serviceToolsWidget = nullptr;
     m_startDiag = nullptr;
     m_session = nullptr;
+
+    // Do we have an initial event (i.e. session invitation)?
+    setPendingEvent(initial_event);
 
     m_sessionTimer.setInterval(1000);
     m_sessionTimer.setSingleShot(false);
@@ -58,6 +61,15 @@ void InSessionWidget::setSessionId(int session_id)
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(session_id));
     m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+}
+
+void InSessionWidget::setPendingEvent(JoinSessionEvent *event)
+{
+    if (event != nullptr){
+        m_pendingEvent = new JoinSessionEvent(*event);
+    }else{
+        m_pendingEvent = nullptr;
+    }
 }
 
 void InSessionWidget::showEvent(QShowEvent *event)
@@ -268,6 +280,13 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
 
 
             updateUI();
+
+            // Check if we already have a pending event
+            if (m_pendingEvent){
+                ws_JoinSessionEvent(*m_pendingEvent);
+                delete m_pendingEvent;
+                m_pendingEvent = nullptr;
+            }
         }
     }
 }

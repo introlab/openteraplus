@@ -243,6 +243,8 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                        LOG_ERROR("Error unpacking JoinSessionReplyEvent from TeraEvent.", "WebSocketManager::onSocketTextMessageReceived");
                    }
                }
+
+               emit genericEventReceived(tera_event);
            }
         }else{
             LOG_WARNING("Got unhandled message on websocket", "WebSocketManager::onSocketTextMessageReceived");

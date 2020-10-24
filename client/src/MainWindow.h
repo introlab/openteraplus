@@ -41,8 +41,15 @@ public:
     explicit MainWindow(ComManager* com_manager, QWidget *parent = nullptr);
     ~MainWindow();
 
+    bool isInSession();
+
 signals:
     void logout_request();
+
+public slots:
+    void ws_userEvent(UserEvent event);
+    void ws_participantEvent(ParticipantEvent event);
+    void ws_joinSessionEvent(JoinSessionEvent event);
 
 private slots:
     void updateCurrentUser();
@@ -65,10 +72,6 @@ private slots:
     void com_sessionStartRequested(TeraData session_type);
     void com_sessionStopped(int id_session);
     void com_sessionError(QString error);
-
-    void ws_userEvent(UserEvent event);
-    void ws_participantEvent(ParticipantEvent event);
-    void ws_joinSessionEvent(JoinSessionEvent event);
 
     void inSession_sessionEndedWithError();
 
@@ -103,7 +106,7 @@ private:
     void connectSignals();
     void initUi();
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
-    void setInSession(bool in_session, const TeraData *session_type, const int& id_session);
+    void setInSession(bool in_session, const TeraData *session_type, const int& id_session, int id_project=0);
 
     // Messages and notifications
     void addMessage(Message::MessageType msg_type, QString msg);

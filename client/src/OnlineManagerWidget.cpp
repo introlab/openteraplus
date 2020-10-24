@@ -111,8 +111,8 @@ void OnlineManagerWidget::updateOnlineUser(const TeraData* online_user)
             m_onlineUsersData.remove(uuid);
         }else{
             // Update name / icon if needed
-            if (!online_user->getName().isEmpty())
-                user_item->setText(online_user->getName());
+            /*if (!online_user->getName().isEmpty())
+                user_item->setText(online_user->getName());*/
             user_item->setIcon(QIcon(online_user->getIconStateFilename()));
 
             // Resort items
@@ -145,8 +145,8 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData *online_partici
             m_onlineParticipantsData.remove(uuid);
         }else{
             // Update name / icon if needed
-            if (!online_participant->getName().isEmpty())
-                participant_item->setText(online_participant->getName());
+            /*if (!online_participant->getName().isEmpty())
+                participant_item->setText(online_participant->getName());*/
             participant_item->setIcon(QIcon(online_participant->getIconStateFilename()));
 
             // Resort items
@@ -179,8 +179,8 @@ void OnlineManagerWidget::updateOnlineDevice(const TeraData *online_device)
             m_onlineDevicesData.remove(uuid);
         }else{
             // Update name / icon if needed
-            if (!online_device->getName().isEmpty())
-                device_item->setText(online_device->getName());
+            /*if (!online_device->getName().isEmpty())
+                device_item->setText(online_device->getName());*/
             device_item->setIcon(QIcon(online_device->getIconStateFilename()));
 
             // Resort items

@@ -31,11 +31,15 @@ protected:
     void showMainWindow();
     void setupLogger();
 
+    void processQueuedEvents();
+
     void setTranslation(QString language = "");
 
     ConfigManagerClient m_config;
     LoginDialog*        m_loginDiag;
     MainWindow*         m_mainWindow;
+
+    QList<TeraEvent>  m_eventQueue; // Queue to stack missed events when just connected, but no MainWindow yet.
 
     ComManager*         m_comMan;
     QTranslator*        m_translator;
@@ -52,6 +56,9 @@ private slots:
     void on_networkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation, int status_code);
 
     void on_newVersionAvailable(QString version, QString download_url);
+
+    void ws_genericEventReceived(TeraEvent event);
+
 
     void preferencesUpdated();
 };

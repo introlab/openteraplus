@@ -23,7 +23,8 @@ public:
 
     JoinSessionReplyEvent_ReplyType getSelectedReply();
     JoinSessionEvent *getEvent();
-    TeraData getSessionType();
+    TeraData *getSessionType();
+    TeraData* getSession();
 
     int getSessionId();
 

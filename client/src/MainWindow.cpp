@@ -55,6 +55,11 @@ MainWindow::~MainWindow()
 
 }
 
+bool MainWindow::isInSession()
+{
+    return m_inSessionWidget != nullptr;
+}
+
 void MainWindow::connectSignals()
 {
     connect(m_comManager, &ComManager::currentUserUpdated, this, &MainWindow::updateCurrentUser);
@@ -191,7 +196,7 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
 
 }
 
-void MainWindow::setInSession(bool in_session, const TeraData *session_type, const int &id_session)
+void MainWindow::setInSession(bool in_session, const TeraData *session_type, const int &id_session, int id_project)
 {
     if (m_data_editor){
         m_data_editor->disconnectSignals();
@@ -212,7 +217,8 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
     ui->frameCentralBottom->setVisible(!in_session);
 
     if (in_session){
-        int id_project = ui->projNavigator->getCurrentProjectId();
+        if (id_project == 0)
+            id_project = ui->projNavigator->getCurrentProjectId();
         m_inSessionWidget = new InSessionWidget(m_comManager, session_type, id_session, id_project);
         connect(m_inSessionWidget, &InSessionWidget::sessionEndedWithError, this, &MainWindow::inSession_sessionEndedWithError);
         connect(m_inSessionWidget, &InSessionWidget::requestShowNotification, this, &MainWindow::addNotification);
@@ -374,7 +380,18 @@ void MainWindow::joinSessionDialogFinished()
                                            m_joinSession_dialog->getSelectedReply());
 
         // Join session
-        m_comManager->joinSession(m_joinSession_dialog->getSessionType(), m_joinSession_dialog->getSessionId());
+        TeraData* session = m_joinSession_dialog->getSession();
+        int id_project = -1;
+        // Find id project of the first participant in the project, if there
+        if (session->hasFieldName("session_participants")){
+            QVariantList participants = session->getFieldValue("session_participants").toList();
+            if (participants.count() > 0){
+                id_project = participants.first().toHash()["id_project"].toInt();
+            }
+        }
+        setInSession(true, m_joinSession_dialog->getSessionType(), m_joinSession_dialog->getSessionId(), id_project);
+        m_inSessionWidget->setPendingEvent(m_joinSession_dialog->getEvent());
+        m_comManager->joinSession(*m_joinSession_dialog->getSessionType(), m_joinSession_dialog->getSessionId());
     }else{
         // Rejected dialog (because closed manually, for example) always generate a refuse reply.
         m_comManager->sendJoinSessionReply(QString::fromStdString(m_joinSession_dialog->getEvent()->session_uuid()),
@@ -720,7 +737,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
 
 void MainWindow::ws_joinSessionEvent(JoinSessionEvent event)
 {
-    if (m_inSessionWidget){
+    if (isInSession()){
         // If we are in a session, the InSession Widget will handle that event for us.
         return;
     }
