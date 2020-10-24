@@ -1,13 +1,7 @@
 find_package(Qt5Core REQUIRED)
 message(STATUS "Entering package directory.")
 
-set(CPACK_PACKAGE_NAME "OpenTeraClient")
-set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus_${CPACK_PACKAGE_VERSION}_setup)
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenTera - Client - Installateur")
-set(CPACK_PACKAGE_VENDOR "Regroupement INTER")
-set(CPACK_COMPONENTS_ALL openteraplus libprotobuf qt_dist_component)
-set(CPACK_PACKAGE_EXECUTABLES "TeraClient" "OpenTeraClient")
-set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.TXT")
+
 
 include(InstallRequiredSystemLibraries)
 get_target_property(_qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
@@ -31,6 +25,26 @@ if (APPLE)
 endif(APPLE)
 
 if (WIN32)
+    set(CPACK_PACKAGE_NAME "OpenTeraClient")
+    set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus_${CPACK_PACKAGE_VERSION}_setup)
+    set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenTera - Client - Installateur")
+    set(CPACK_PACKAGE_VENDOR "Regroupement INTER")
+
+
+    set(CPACK_PACKAGE_EXECUTABLES "TeraClient" "OpenTeraClient")
+    set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.TXT")
+
+    # Put special configuration file in config/TeraClientConfig.txt if desired
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/TeraClientConfig.txt")
+        # The components that will be packaged
+        set(CPACK_COMPONENTS_ALL openteraplus libprotobuf qt_dist_component special_configuration)
+
+        #set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL}special_configuration)
+        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/TeraClientConfig.txt DESTINATION bin/config/client COMPONENT special_configuration)
+    else()
+        # The components that will be packaged
+        set(CPACK_COMPONENTS_ALL openteraplus libprotobuf qt_dist_component)
+    endif()
 
     # Create files for installation
     add_custom_target(windows_deploy_qt
@@ -80,19 +94,10 @@ if (WIN32)
 
 
    include(CPack REQUIRED)
-   # cpack_add_component(
-   #    qt_windows_deploy
-   #    DISPLAY_NAME "OpenTera - Qt Components"
-   #    DESCRIPTION "Qt libraries required for OpenTeraPlus"
-   #    REQUIRED
-   #)
 
 
    # Run VC++ redistributable
    list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\VC_redist.x64.exe /install /passive /norestart'")
-
-
-
 
    # Set files to install - everything in deploy folder
    #install(
@@ -104,8 +109,10 @@ if (WIN32)
 
    # install(CODE " ")
 
+   # The trick is to deploy Qt to a directory and then install the directory in the bin folder
    install(DIRECTORY ${CMAKE_INSTALL_PREFIX}/qtdeploy/ DESTINATION bin COMPONENT qt_dist_component)
 
+   # Deploy before packaging
    add_custom_target(nsis-package DEPENDS windows_deploy_qt package)
 
 
