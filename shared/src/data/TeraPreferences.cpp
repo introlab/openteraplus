@@ -5,6 +5,21 @@ TeraPreferences::TeraPreferences(QObject *parent) : QObject(parent)
     clear();
 }
 
+TeraPreferences::TeraPreferences(const TeraPreferences &copy, QObject *parent)
+{
+    *this = copy;
+}
+
+TeraPreferences &TeraPreferences::operator =(const TeraPreferences &other)
+{
+
+    m_language = other.m_language;
+    m_notifySounds = other.m_notifySounds;
+    m_isSet = other.m_isSet;
+
+    return *this;
+}
+
 void TeraPreferences::load(const TeraData &pref_obj)
 {
     if (!pref_obj.hasFieldName("user_preference_preference")){

@@ -59,6 +59,8 @@ private slots:
     void com_downloadProgress(DownloadedFile* file);
     void com_downloadCompleted(DownloadedFile* file);
 
+    void com_preferencesUpdated();
+
     void com_sessionStarted(TeraData session_type, int id_session);
     void com_sessionStartRequested(TeraData session_type);
     void com_sessionStopped(int id_session);
@@ -111,7 +113,7 @@ private:
     // Events
     QIcon getGlobalEventIcon(GlobalEvent &global_event);
     void changeEvent(QEvent* event);
-    bool m_initialLanguageSetted;
+    QString m_currentLanguage;
 
     Ui::MainWindow *ui;
 

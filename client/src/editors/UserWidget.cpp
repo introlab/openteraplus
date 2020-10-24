@@ -246,6 +246,11 @@ void UserWidget::buildUserPreferencesWidget()
                                 "}";
     ui->wdgPrefs->buildUiFromStructure(json_form_structure);
     ui->wdgPrefs->setEnabled(true);
+
+    // Set preferences with current ones, for now
+    ui->wdgPrefs->setFieldValue("notify_sounds", m_comManager->getCurrentPreferences().isNotifySounds());
+    ui->wdgPrefs->setFieldValue("language", m_comManager->getCurrentPreferences().getLanguage());
+
 }
 
 
