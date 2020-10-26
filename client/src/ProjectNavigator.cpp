@@ -309,7 +309,8 @@ void ProjectNavigator::updateGroup(const TeraData *group)
         item = new QTreeWidgetItem();
         item->setData(0, Qt::UserRole, id_group);
         QTreeWidgetItem* project_item = m_projects_items[id_project];
-        project_item->addChild(item);
+        //project_item->addChild(item);
+        project_item->insertChild(0, item); // Groups always first
         m_groups_items[id_group] = item;
         //project_item->setExpanded(true);
     }

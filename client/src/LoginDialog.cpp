@@ -50,7 +50,8 @@ void LoginDialog::setServerNames(QStringList servers)
     QVariant current_server = TeraSettings::getGlobalSetting("last_used_server");
     if (current_server.isValid()){
         QString server_name = current_server.toString();
-        ui->cmbServers->setCurrentText(server_name);
+        if (servers.contains(server_name))
+            ui->cmbServers->setCurrentText(server_name);
     }
 }
 

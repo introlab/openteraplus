@@ -68,6 +68,7 @@ private slots:
 
 signals:
     void dataDisplayRequest(TeraDataTypes data_type, QString data_uuid);
+    void totalCountUpdated(int count);
 };
 
 #endif // ONLINEMANAGERWIDGET_H

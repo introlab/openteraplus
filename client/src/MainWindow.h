@@ -53,6 +53,8 @@ public slots:
 
 private slots:
     void updateCurrentUser();
+    void updateOnlineCounts(int count);
+
     void processGenericDataReply(TeraDataTypes item_data_type, QList<TeraData> datas);
 
     void com_socketError(QAbstractSocket::SocketError error, QString error_msg);

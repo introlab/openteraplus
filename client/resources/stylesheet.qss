@@ -553,6 +553,11 @@ QToolButton#btnVideo:checked, QToolButton#btnLog:checked, QToolButton#btnInSessi
     border: 0px;
 }
 
+QLineEdit#txtPartSearch{
+    color: white;
+    background-color: rgba(0,0,0,15%);
+}
+
 /* Customizations for DataListWidget */
 QWidget#DataListWidget{background-image: url(://TeRA_Background.png); }
 QWidget#txtSearch{

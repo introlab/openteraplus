@@ -173,6 +173,7 @@ void ParticipantWidget::initUI()
     ui->frameActive->hide();
     ui->frameWeb->hide();
     ui->txtWeb->hide();
+    ui->btnCheckSessionTypes->hide();
 
     // Hide some fields in the detailled participant widget
     QStringList ignore_fields = {"participant_enabled", "participant_token_enabled", "participant_token", "participant_login_enabled",
@@ -1219,6 +1220,8 @@ void ParticipantWidget::on_btnCheckSessionTypes_clicked()
     for (int i=0; i<ui->lstFilters->count(); i++){
         ui->lstFilters->item(i)->setCheckState(Qt::Checked);
     }
+    ui->btnUnchekSessionTypes->show();
+    ui->btnCheckSessionTypes->hide();
 }
 
 void ParticipantWidget::on_btnUnchekSessionTypes_clicked()
@@ -1226,6 +1229,8 @@ void ParticipantWidget::on_btnUnchekSessionTypes_clicked()
     for (int i=0; i<ui->lstFilters->count(); i++){
         ui->lstFilters->item(i)->setCheckState(Qt::Unchecked);
     }
+    ui->btnUnchekSessionTypes->hide();
+    ui->btnCheckSessionTypes->show();
 }
 
 void ParticipantWidget::on_btnViewLink_clicked()

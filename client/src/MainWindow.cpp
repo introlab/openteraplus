@@ -95,6 +95,7 @@ void MainWindow::connectSignals()
     connect(ui->projNavigator, &ProjectNavigator::refreshButtonClicked, this, &MainWindow::dataRefreshRequested);
 
     connect(ui->onlineManager, &OnlineManagerWidget::dataDisplayRequest, this, &MainWindow::dataDisplayRequestedByUuid);
+    connect(ui->onlineManager, &OnlineManagerWidget::totalCountUpdated, this, &MainWindow::updateOnlineCounts);
 
     connect(GlobalEventLogger::instance(), &GlobalEventLogger::newEventLogged, this, &MainWindow::addGlobalEvent);
 }
@@ -499,6 +500,12 @@ void MainWindow::updateCurrentUser()
         ui->lblUser->setText(m_comManager->getCurrentUser().getName());
         ui->btnConfig->setVisible(m_comManager->getCurrentUser().getFieldValue("user_superadmin").toBool());
     }
+}
+
+void MainWindow::updateOnlineCounts(int count)
+{
+    int index = ui->tabMainMenu->indexOf(ui->tabOnline);
+    ui->tabMainMenu->setTabText(index, tr("En ligne (") + QString::number(count) + ")");
 }
 
 void MainWindow::processGenericDataReply(TeraDataTypes item_data_type, QList<TeraData> datas)

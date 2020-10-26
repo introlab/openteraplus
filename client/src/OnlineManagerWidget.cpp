@@ -83,6 +83,8 @@ void OnlineManagerWidget::updateCounts()
     ui->lblDevicesNum->setText(QString::number(ui->lstOnlineDevices->count()));
     ui->lblParticipantsNum->setText(QString::number(ui->lstOnlineParticipants->count()));
     ui->lblUsersNum->setText(QString::number(ui->lstOnlineUsers->count()));
+
+    emit totalCountUpdated(ui->lstOnlineDevices->count() + ui->lstOnlineParticipants->count() + ui->lstOnlineUsers->count());
 }
 
 void OnlineManagerWidget::updateOnlineUser(const TeraData* online_user)

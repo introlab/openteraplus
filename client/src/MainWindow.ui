@@ -640,7 +640,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="txtSearch">
+             <widget class="QLineEdit" name="txtPartSearch">
               <property name="enabled">
                <bool>true</bool>
               </property>
@@ -671,6 +671,16 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblNotImplemented">
+            <property name="text">
+             <string>Cette fonctionnalité n'est pas encore disponible!</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QListWidget" name="lstSearchResults">
@@ -784,7 +794,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
      <x>0</x>
      <y>0</y>
      <width>1107</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
