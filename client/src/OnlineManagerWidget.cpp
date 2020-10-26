@@ -72,7 +72,6 @@ void OnlineManagerWidget::refreshOnlines()
     m_onlineParticipantsData.clear();
 
     QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_WITH_BUSY, "1");
     m_comManager->doQuery(WEB_ONLINEDEVICEINFO_PATH, args);
     m_comManager->doQuery(WEB_ONLINEPARTICIPANTINFO_PATH, args);
     m_comManager->doQuery(WEB_ONLINEUSERINFO_PATH, args);
