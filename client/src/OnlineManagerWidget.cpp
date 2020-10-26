@@ -251,9 +251,9 @@ void OnlineManagerWidget::ws_participantEvent(ParticipantEvent event)
 
     QString uuid = QString::fromStdString(event.participant_uuid());
 
-    if (QString::fromStdString(event.participant_site_name()) != m_siteName)
+    /*if (QString::fromStdString(event.participant_site_name()) != m_siteName)
         LOG_DEBUG("Ignoring participant " + QString::fromStdString(event.participant_name()) + " - not for the current site.", "OnlineManagerWidget::ws_participantEvent");
-        return;
+        return;*/
 
     if (!m_onlineParticipantsData.contains(uuid)){
        createOnlineParticipant(uuid, QString::fromStdString(event.participant_name()));

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>400</height>
+    <height>409</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -87,7 +87,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
-       <number>0</number>
+       <number>6</number>
       </property>
       <item alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="lblLogo">

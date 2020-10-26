@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>defaults/TeraClientConfig.txt</file>
         <file>logos/Estrad.png</file>
         <file>logos/IntRoLab.png</file>
         <file>logos/LOGO Transparent.png</file>
@@ -131,5 +130,6 @@
         <file>icons/leave.png</file>
         <file>icons/error2.png</file>
         <file>icons/smile.png</file>
+        <file>defaults/OpenTeraPlus.json</file>
     </qresource>
 </RCC>

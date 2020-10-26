@@ -7,6 +7,7 @@
 #include <QAbstractSocket> // For error codes
 #include <QUuid>
 #include <QTranslator>
+#include <QStandardPaths>
 
 #include "MainWindow.h"
 #include "LoginDialog.h"

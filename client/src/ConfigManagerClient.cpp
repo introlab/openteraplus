@@ -42,34 +42,12 @@ QUrl ConfigManagerClient::getServerUrl(const QString &server_name)
     return server_url;
 }
 
-QUrl ConfigManagerClient::getWebServerUrl(const QString &server_name)
-{
-    QUrl server_url;
-    if (!m_config.isNull()){
-        QHash<QString, QVariant> servers = m_config["Servers"].toObject().toVariantHash();
-        QVariantMap server_info = servers[server_name].toMap();
-        server_url.setHost(server_info["url"].toString());
-        server_url.setPort(server_info["webport"].toInt());
-    }
-    return server_url;
-}
-
 bool ConfigManagerClient::getLogToFile()
 {
     bool rval = false;
     if (!m_config.isNull()){
         QHash<QString, QVariant> settings = m_config["Settings"].toObject().toVariantHash();
         rval = settings["logToFile"].toBool();
-    }
-    return rval;
-}
-
-const QString ConfigManagerClient::getLogPath()
-{
-    QString rval = "./logs";
-    if (!m_config.isNull()){
-        QHash<QString, QVariant> settings = m_config["Settings"].toObject().toVariantHash();
-        rval = settings["logPath"].toString();
     }
     return rval;
 }

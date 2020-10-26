@@ -25,7 +25,7 @@ ClientApp::ClientApp(int &argc, char **argv)
     QString stylesheet = QLatin1String(file.readAll());
     setStyleSheet(stylesheet);
 
-    setApplicationName(QString("TeraClient v") + QString(OPENTERAPLUS_VERSION));
+    setApplicationName(QString("OpenTeraPlus v") + QString(OPENTERAPLUS_VERSION));
     qDebug() << "Starting App " << applicationName();
 
     // Load config
@@ -60,7 +60,9 @@ ComManager *ClientApp::getComManager()
 
 void ClientApp::loadConfig()
 {
-    QString configFile = applicationDirPath() + "/config/client/TeraClientConfig.txt";
+    //QString configFile = applicationDirPath() + "/config/client/TeraClientConfig.txt";
+    QStringList documents_paths = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    QString configFile = documents_paths.first() + "/OpenTeraPlus/config/OpenTeraPlus.json";
     qDebug() << "Loading config file: " << configFile;
 
     // Check if config file exists and, if not, copy from QRC
@@ -70,7 +72,7 @@ void ClientApp::loadConfig()
         QFileInfo config_file_info(configFile);
         QDir config_folder;
         config_folder.mkpath(config_file_info.path());
-        QFile::copy("://defaults/TeraClientConfig.txt", configFile);
+        QFile::copy("://defaults/OpenTeraPlus.json", configFile);
     }
 
     m_config.setFilename(configFile);
@@ -138,9 +140,12 @@ void ClientApp::showMainWindow()
 
 void ClientApp::setupLogger()
 {
-    // TODO: Disable logging to file for security reasons in most case!
+
     if (m_config.getLogToFile()){
-        GlobalEventLogger::instance()->startLogging(m_config.getLogPath());
+        // Log to file
+        QStringList documents_paths = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+        QString logFile = documents_paths.first() + "/OpenTeraPlus/logs";
+        GlobalEventLogger::instance()->startLogging(logFile);
     }else{
         GlobalEventLogger::instance()->startLogging();
     }
