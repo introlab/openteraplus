@@ -97,7 +97,7 @@ void OnlineManagerWidget::updateOnlineUser(const TeraData* online_user)
         user_item = m_onlineUsers[uuid];
     }else{
         if (online_user->isOnline()/* || online_user.isBusy()*/){ // Not online and not busy = don't need to add!
-            user_item = new QListWidgetItem(QIcon(online_user->getIconStateFilename()), online_user->getName());
+            user_item = new QListWidgetItem(QIcon(online_user->getIconStateFilename()), online_user->getName() + " " + uuid);
             ui->lstOnlineUsers->addItem(user_item);
             m_onlineUsers[uuid] = user_item;
         }
@@ -131,7 +131,7 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData *online_partici
         participant_item = m_onlineParticipants[uuid];
     }else{
         if (online_participant->isOnline()/* || online_participant.isBusy()*/){ // Not online and not busy = don't need to add!
-            participant_item = new QListWidgetItem(QIcon(online_participant->getIconStateFilename()), online_participant->getName());
+            participant_item = new QListWidgetItem(QIcon(online_participant->getIconStateFilename()), online_participant->getName() + " " + uuid);
             ui->lstOnlineParticipants->addItem(participant_item);
             m_onlineParticipants[uuid] = participant_item;
         }
@@ -165,7 +165,7 @@ void OnlineManagerWidget::updateOnlineDevice(const TeraData *online_device)
         device_item = m_onlineDevices[uuid];
     }else{
         if (online_device->isOnline()/* || online_device.isBusy()*/){ // Not online and not busy = don't need to add!
-            device_item = new QListWidgetItem(QIcon(online_device->getIconStateFilename()), online_device->getName());
+            device_item = new QListWidgetItem(QIcon(online_device->getIconStateFilename()), online_device->getName() + " " + uuid);
             ui->lstOnlineDevices->addItem(device_item);
             m_onlineDevices[uuid] = device_item;
         }

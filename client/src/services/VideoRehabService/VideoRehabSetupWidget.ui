@@ -7,13 +7,25 @@
     <x>0</x>
     <y>0</y>
     <width>776</width>
-    <height>475</height>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QFrame" name="frameError">
      <property name="sizePolicy">
@@ -123,7 +135,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>100</height>
+        <height>150</height>
        </size>
       </property>
      </widget>
@@ -142,7 +154,7 @@
        <widget class="QPushButton" name="btnAdvancedConfig">
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>250</width>
           <height>32</height>
          </size>
         </property>

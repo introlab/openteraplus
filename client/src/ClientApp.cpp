@@ -132,7 +132,8 @@ void ClientApp::showMainWindow()
 
     m_mainWindow->showMaximized();
 
-    processQueuedEvents();
+    if (m_comMan->getCurrentUser().hasNameField())
+        processQueuedEvents();
 }
 
 void ClientApp::setupLogger()
@@ -217,6 +218,7 @@ void ClientApp::loginRequested(QString username, QString password, QString serve
     connect(m_comMan, &ComManager::networkError, this, &ClientApp::on_networkError);
     connect(m_comMan, &ComManager::preferencesUpdated, this, &ClientApp::preferencesUpdated);
     connect(m_comMan, &ComManager::newVersionAvailable, this, &ClientApp::on_newVersionAvailable);
+    connect(m_comMan, &ComManager::currentUserUpdated, this, &ClientApp::on_currentUserUpdated);
 
     connect(m_comMan->getWebSocketManager(), &WebSocketManager::genericEventReceived, this, &ClientApp::ws_genericEventReceived);
 
@@ -304,6 +306,14 @@ void ClientApp::on_newVersionAvailable(QString version, QString download_url)
         version_info += tr("Cliquez ") + "<a href=" + download_url + ">" + tr("ICI") + "</a>" + tr(" pour la télécharger.");
     }
     msg.showInfo(tr("Nouvelle version disponible!"), version_info);
+}
+
+void ClientApp::on_currentUserUpdated()
+{
+    if (!m_mainWindow)
+        return;
+
+    processQueuedEvents();
 }
 
 void ClientApp::ws_genericEventReceived(TeraEvent event)

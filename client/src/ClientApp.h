@@ -57,6 +57,8 @@ private slots:
 
     void on_newVersionAvailable(QString version, QString download_url);
 
+    void on_currentUserUpdated();
+
     void ws_genericEventReceived(TeraEvent event);
 
 

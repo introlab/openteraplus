@@ -17,6 +17,18 @@
    <string notr="true"/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_5">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item alignment="Qt::AlignLeft">
     <widget class="QListWidget" name="lstServiceConfig">
      <property name="sizePolicy">
@@ -27,7 +39,7 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>75</width>
+       <width>115</width>
        <height>16777215</height>
       </size>
      </property>
