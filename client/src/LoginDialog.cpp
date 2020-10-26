@@ -45,6 +45,13 @@ void LoginDialog::setServerNames(QStringList servers)
     if(servers.count() == 1){
         showServers(false); // No need to show server box if only one server in the list!
     }
+
+    // Select server from the list if we have a setting for that
+    QVariant current_server = TeraSettings::getGlobalSetting("last_used_server");
+    if (current_server.isValid()){
+        QString server_name = current_server.toString();
+        ui->cmbServers->setCurrentText(server_name);
+    }
 }
 
 void LoginDialog::showServers(bool show)
@@ -94,5 +101,6 @@ void LoginDialog::on_btnConnect_clicked()
 
     emit loginRequest(ui->txtUsername->text(), ui->txtPassword->text(), ui->cmbServers->currentText());
 
+    TeraSettings::setGlobalSetting("last_used_server", ui->cmbServers->currentText());
 
 }
