@@ -411,7 +411,7 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
 
     item->setText(0, participant->getName());
     //item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
-    if (participant->hasBusyStateField() && participant->hasOnlineStateField())
+    if (participant->hasBusyStateField() || participant->hasOnlineStateField())
         item->setIcon(0, QIcon(participant->getIconStateFilename()));
     m_participants[participant->getUuid()] = *participant;
 
