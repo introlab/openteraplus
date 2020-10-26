@@ -354,25 +354,26 @@ void ComManager::stopSession(const TeraData &session, const int &id_service)
     }
 }
 
-void ComManager::leaveSession(const int &id_session)
+void ComManager::leaveSession(const int &id_session, bool signal_server)
 {
-    QJsonDocument document;
-    QJsonObject base_obj;
+    if (signal_server){
+        QJsonDocument document;
+        QJsonObject base_obj;
 
-    QJsonObject item_obj;
-    item_obj.insert("id_session", id_session);
-    item_obj.insert("action", "remove");
+        QJsonObject item_obj;
+        item_obj.insert("id_session", id_session);
+        item_obj.insert("action", "remove");
 
-    // Add ourself to the list
-    QJsonArray users;
-    users.append(QJsonValue(m_currentUser.getUuid()));
-    item_obj.insert("session_users", users);
+        // Add ourself to the list
+        QJsonArray users;
+        users.append(QJsonValue(m_currentUser.getUuid()));
+        item_obj.insert("session_users", users);
 
-    // Update query
-    base_obj.insert("session_manage", item_obj);
-    document.setObject(base_obj);
-    doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
-
+        // Update query
+        base_obj.insert("session_manage", item_obj);
+        document.setObject(base_obj);
+        doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+    }
     emit sessionStopped(id_session);
 }
 

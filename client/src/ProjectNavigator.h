@@ -100,6 +100,8 @@ signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);
      void dataDeleteRequest(TeraDataTypes data_type, int data_id);
      void currentSiteWasChanged(QString site_name, int site_id);
+
+     void refreshButtonClicked();
 };
 
 #endif // PROJECTNAVIGATOR_H

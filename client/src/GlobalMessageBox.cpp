@@ -9,7 +9,7 @@ GlobalMessageBox::GlobalMessageBox(QWidget *parent) :
 
     // Initialize look and feel
     setStyleSheet(//"QWidget{background-color: rgba(0,0,0,0);color:white;border-radius:5px}"
-                  "QMessageBox{background-color:rgba(10,10,10,100%); color:white;}"
+                  "QMessageBox{background-color:rgba(75,75,75,100%); color:white;}"
                   "QMessageBox QLabel{color:white; font-size:10pt;}"
                   "QMessageBox QPushButton{min-height:30px; min-width:75px;}");
                          /*"QMessageBox QPushButton{background-color:rgb(80,80,80); max-width:200px;"

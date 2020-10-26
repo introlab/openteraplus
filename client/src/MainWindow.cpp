@@ -338,6 +338,11 @@ void MainWindow::currentSiteChanged(QString site_name, int site_id)
     ui->onlineManager->setCurrentSite(site_name, site_id);
 }
 
+void MainWindow::dataRefreshRequested()
+{
+    ui->onlineManager->refreshOnlines();
+}
+
 void MainWindow::addGlobalEvent(GlobalEvent event)
 {
     // Keep max 50 events in the log

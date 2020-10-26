@@ -563,6 +563,8 @@ void ProjectNavigator::refreshRequested()
     if (ui->treeNavigator->currentItem()){
         currentNavItemChanged(ui->treeNavigator->currentItem(), nullptr);
     }
+
+    emit refreshButtonClicked();
 }
 
 void ProjectNavigator::processSitesReply(QList<TeraData> sites)

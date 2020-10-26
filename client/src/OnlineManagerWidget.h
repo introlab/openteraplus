@@ -20,6 +20,7 @@ public:
 
     void setComManager(ComManager* comMan);
     void setCurrentSite(const QString& site_name, const int& site_id);
+    void refreshOnlines();
 
 private:
     Ui::OnlineManagerWidget     *ui;
@@ -39,7 +40,6 @@ private:
     void initUi();
     void connectSignals();
 
-    void refreshOnlines();
     void updateCounts();
 
     void updateOnlineUser(const TeraData *online_user);

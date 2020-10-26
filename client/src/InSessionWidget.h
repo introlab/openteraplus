@@ -44,6 +44,7 @@ private slots:
 
     void ws_JoinSessionEvent(JoinSessionEvent event);
     void ws_JoinSessionReplyEvent(JoinSessionReplyEvent event);
+    void ws_StopSessionEvent(StopSessionEvent event);
 
     void showEvent(QShowEvent *event) override;
 

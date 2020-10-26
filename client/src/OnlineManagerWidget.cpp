@@ -37,17 +37,6 @@ void OnlineManagerWidget::setCurrentSite(const QString &site_name, const int &si
     m_siteName = site_name;
     m_siteId = site_id;
 
-    // Clear participant list since site was changed
-    ui->lstOnlineUsers->clear();
-    ui->lstOnlineDevices->clear();
-    ui->lstOnlineParticipants->clear();
-    m_onlineUsers.clear();
-    m_onlineDevices.clear();
-    m_onlineParticipants.clear();
-    m_onlineUsersData.clear();
-    m_onlineDevicesData.clear();
-    m_onlineParticipantsData.clear();
-
     refreshOnlines();
 }
 
@@ -71,6 +60,17 @@ void OnlineManagerWidget::connectSignals()
 
 void OnlineManagerWidget::refreshOnlines()
 {
+    // Clear participant list since site was changed
+    ui->lstOnlineUsers->clear();
+    ui->lstOnlineDevices->clear();
+    ui->lstOnlineParticipants->clear();
+    m_onlineUsers.clear();
+    m_onlineDevices.clear();
+    m_onlineParticipants.clear();
+    m_onlineUsersData.clear();
+    m_onlineDevicesData.clear();
+    m_onlineParticipantsData.clear();
+
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_WITH_BUSY, "1");
     m_comManager->doQuery(WEB_ONLINEDEVICEINFO_PATH, args);

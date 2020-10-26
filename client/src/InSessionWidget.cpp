@@ -396,11 +396,24 @@ void InSessionWidget::ws_JoinSessionReplyEvent(JoinSessionReplyEvent event)
     }
 }
 
+void InSessionWidget::ws_StopSessionEvent(StopSessionEvent event)
+{
+    if (QString::fromStdString(event.session_uuid()) != m_session->getUuid()){
+        LOG_WARNING("Received StopSessionEvent, but not for the current session", "InSessionWidget::ws_StopSessionEvent");
+        return;
+    }
+
+    if (m_session){
+        m_comManager->leaveSession(m_session->getId(), false);
+    }
+}
+
 void InSessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::sessionsReceived, this, &InSessionWidget::processSessionsReply);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &InSessionWidget::ws_JoinSessionEvent);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionReplyEventReceived, this, &InSessionWidget::ws_JoinSessionReplyEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::stopSessionEventReceived, this, &InSessionWidget::ws_StopSessionEvent);
 
     connect(m_comManager, &ComManager::usersReceived, this, &InSessionWidget::processUsersReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &InSessionWidget::processParticipantsReply);
