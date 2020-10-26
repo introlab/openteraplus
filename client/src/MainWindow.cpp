@@ -92,6 +92,7 @@ void MainWindow::connectSignals()
     connect(ui->projNavigator, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
     connect(ui->projNavigator, &ProjectNavigator::dataDeleteRequest, this, &MainWindow::dataDeleteRequested);
     connect(ui->projNavigator, &ProjectNavigator::currentSiteWasChanged, this, &MainWindow::currentSiteChanged);
+    connect(ui->projNavigator, &ProjectNavigator::refreshButtonClicked, this, &MainWindow::dataRefreshRequested);
 
     connect(ui->onlineManager, &OnlineManagerWidget::dataDisplayRequest, this, &MainWindow::dataDisplayRequestedByUuid);
 
