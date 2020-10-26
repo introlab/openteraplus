@@ -30,15 +30,31 @@ if (WIN32)
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenTeraPlus - Installateur")
     set(CPACK_PACKAGE_VENDOR "CdRV / ESTRAD / IntRoLab / Université de Sherbrooke")
 
-    set(CPACK_PACKAGE_EXECUTABLES "OpenTeraPlus" "OpenTeraPlus")
+    set(CPACK_PACKAGE_EXECUTABLES "bin\\\\OpenTeraPlus" "OpenTeraPlus")
     set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.TXT")
 
-    # Put special configuration file in config/TeraClientConfig.txt if desired
     set(CPACK_COMPONENTS_ALL openteraplus libprotobuf qt_dist_component openssl)
+
+    set(CPACK_COMPONENT_LIBPROTOBUF_DISPLAY_NAME "Librairies Protobuf")
+    set(CPACK_COMPONENT_LIBPROTOBUF_REQUIRED ON)
+
+    set(CPACK_COMPONENT_QT_DIST_COMPONENT_DISPLAY_NAME "Librairies Qt")
+    set(CPACK_COMPONENT_QT_DIST_COMPONENT_REQUIRED ON)
+
+    set(CPACK_COMPONENT_OPENSSL_DISPLAY_NAME "OpenSSL")
+    set(CPACK_COMPONENT_OPENSSL_REQUIRED ON)
+
+    set(CPACK_COMPONENT_OPENTERAPLUS_DISPLAY_NAME "OpenTeraPlus")
+    set(CPACK_COMPONENT_OPENTERAPLUS_DEPENDS libprotobuf qt_dist_component openssl)
+    set(CPACK_COMPONENT_OPENTERAPLUS_REQUIRED ON)
+
+    # Put special configuration file in config/TeraClientConfig.txt if desired
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
         # The components that will be packaged
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} special_configuration)
+        set(CPACK_COMPONENT_special_configuration_DISPLAY_NAME "Configuration pré-définie")
         install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json DESTINATION bin/config/client COMPONENT special_configuration)
+
     endif()
 
     # Create files for installation
@@ -60,7 +76,7 @@ if (WIN32)
     # SET(CPACK_NSIS_INSTALL_ROOT "C:\\\\INTER")
     SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
     SET(CPACK_PACKAGE_INSTALL_DIRECTORY "OpenTeraPlus")
-    SET(CPACK_NSIS_PACKAGE_NAME "OpenTeraPlus v${CPACK_PACKAGE_VERSION}")
+    SET(CPACK_NSIS_PACKAGE_NAME "OpenTeraPlus")
     SET(CPACK_NSIS_MODIFY_PATH OFF)
     SET(CPACK_NSIS_EXECUTABLES_DIRECTORY .)
     SET(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
@@ -73,7 +89,7 @@ if (WIN32)
                                     VIProductVersion ${CPACK_PACKAGE_VERSION}.0
                                     VIAddVersionKey ProductName \\\"${CPACK_PACKAGE_NAME}\\\"
                                     VIAddVersionKey FileDescription \\\"${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\\\"
-                                    VIAddVersionKey Comments \\\"Installateur de ${CPACK_PACKAGE_NAME}\\\"
+                                    VIAddVersionKey Comments \\\"Installateur de ${CPACK_PACKAGE_NAME} v${CPACK_PACKAGE_VERSION}\\\"
                                     VIAddVersionKey CompanyName \\\"${CPACK_PACKAGE_VENDOR}\\\"
                                     VIAddVersionKey LegalCopyright \\\"${CPACK_PACKAGE_VENDOR}\\\"
                                     VIAddVersionKey InternalName \\\"${CPACK_PACKAGE_NAME} Installer\\\"
