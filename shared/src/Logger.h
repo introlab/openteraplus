@@ -59,7 +59,7 @@ public:
 		\param path The path of the log file, this has effect only on first call to instance(...)
 		\return Logger* The pointer on the single instance of Logger
 	*/
-	static Logger* instance(const QString &path = "Logfile.txt");
+    static Logger* instance(const QString &path = "");
 
     /**
         Convert priority type (int) to string.
@@ -73,6 +73,8 @@ public:
 		This function is thread safe.
 	*/
 	static void destroy();
+
+    void setFileName(const QString &path);
 
 	/*
 		Destructor. Closes the log file.

@@ -36,7 +36,7 @@ void GlobalEventLogger::startLogging(const QString &log_path)
 
     // Open file for writing
     m_logging = true;
-    m_log_file = new QFile(log_path + "/" + QDate::currentDate().toString("yyyy_MM_dd.txt"));
+    m_log_file = new QFile(log_path + "/events_" + QDate::currentDate().toString("yyyy_MM_dd.txt"));
     if (m_log_file->open(QIODevice::Text | QIODevice::Append)){
         m_log_stream.setDevice(m_log_file);
     }else{

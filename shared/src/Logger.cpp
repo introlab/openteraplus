@@ -31,17 +31,31 @@ void Logger::destroy()
     m_instance = nullptr;
 }
 
-Logger::Logger(const QString &path)
-	: m_file(path)
+void Logger::setFileName(const QString &path)
 {
-	if (!m_file.open(QIODevice::WriteOnly| QIODevice::Text | QIODevice::Append))
-	{
-		qDebug("Cannot open log file");
-	}
-	else
-	{
-		logINFO("Log file opened : " + path ,"Logger");
-	}
+    if (m_file.isOpen())
+    {
+        logINFO("Log file closed","Logger");
+        m_file.close();
+    }
+
+    if (path.isEmpty())
+        return;
+
+    m_file.setFileName(path);
+    if (!m_file.open(QIODevice::WriteOnly| QIODevice::Text | QIODevice::Append))
+    {
+        qDebug("Cannot open log file");
+    }
+    else
+    {
+        logINFO("Log file opened : " + path ,"Logger");
+    }
+}
+
+Logger::Logger(const QString &path)
+{
+    setFileName(path);
 
 }
 

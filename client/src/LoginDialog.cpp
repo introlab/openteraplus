@@ -42,9 +42,6 @@ void LoginDialog::setServerNames(QStringList servers)
     }
     if(servers.count()>0)
         ui->cmbServers->setCurrentIndex(0);
-    if(servers.count() == 1){
-        showServers(false); // No need to show server box if only one server in the list!
-    }
 
     // Select server from the list if we have a setting for that
     QVariant current_server = TeraSettings::getGlobalSetting("last_used_server");
@@ -53,10 +50,17 @@ void LoginDialog::setServerNames(QStringList servers)
         if (servers.contains(server_name))
             ui->cmbServers->setCurrentText(server_name);
     }
+
+    /*if(servers.count() == 1){
+        showServers(false); // No need to show server box if only one server in the list!
+    }*/
 }
 
 void LoginDialog::showServers(bool show)
 {
+    if (ui->cmbServers->count() == 1)
+        show = false; // Never show server list if only one item.
+
     ui->lblServer->setVisible(show);
     ui->cmbServers->setVisible(show);
     ui->icoServer->setVisible(show);

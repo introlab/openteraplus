@@ -41,7 +41,7 @@ ComManager::~ComManager()
 
 void ComManager::connectToServer(QString username, QString password)
 {
-    qDebug() << "ComManager::Connecting to " << m_serverUrl.toString();
+    LOG_DEBUG("ComManager::Connecting to " + m_serverUrl.toString(), "ComManager::connectToServer");
 
     setCredentials(username, password);
 
@@ -153,7 +153,10 @@ void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
     emit waitingForReply(true);
     emit querying(path);
 
-    LOG_DEBUG("GET: " + path + ", with " + query_args.toString(), "ComManager::doQuery");
+    if (!query_args.isEmpty())
+        LOG_DEBUG("GET: " + path + " with " + query_args.toString(), "ComManager::doQuery");
+    else
+        LOG_DEBUG("GET: " + path, "ComManager::doQuery");
 }
 
 void ComManager::doPost(const QString &path, const QString &post_data)
@@ -172,7 +175,12 @@ void ComManager::doPost(const QString &path, const QString &post_data)
     emit waitingForReply(true);
     emit posting(path, post_data);
 
+#ifndef QT_NO_DEBUG
     LOG_DEBUG("POST: " + path + ", with " + post_data, "ComManager::doPost");
+#else
+    // Strip data from logging in release, since this might contains passwords!
+    LOG_DEBUG("POST: " + path, "ComManager::doPost");
+#endif
 }
 
 void ComManager::doDelete(const QString &path, const int &id)
@@ -820,7 +828,7 @@ bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrl
         if (status == "stopped"){
             if (reply_json.contains("session")){
                 QJsonObject session_obj = reply_json["session"].toObject();
-                qDebug() << reply_json;
+                //qDebug() << reply_json;
                 if (session_obj.contains("id_session")){
                     emit sessionStopped(session_obj["id_session"].toInt());
                 }else{
@@ -966,7 +974,8 @@ void ComManager::onNetworkFinished(QNetworkReply *reply)
         int status_code = -1;
         if (reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).isValid())
             status_code = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).toInt();
-        qDebug() << "ComManager::onNetworkFinished - Reply error: " << reply->error() << ", Reply message: " << reply_msg;
+        //qDebug() << "ComManager::onNetworkFinished - Reply error: " << reply->error() << ", Reply message: " << reply_msg;
+        LOG_ERROR("ComManager::onNetworkFinished - Reply error: " + reply->errorString() + ", Reply message: " + reply_msg, "ComManager::onNetworkFinished");
         /*if (reply_msg.isEmpty())
             reply_msg = reply->errorString();*/
         emit networkError(reply->error(), reply_msg, reply->operation(), status_code);

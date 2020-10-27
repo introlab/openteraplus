@@ -65,8 +65,7 @@ void JoinSessionDialog::initUi()
         ui->lblInviteMsg->setText(tr("L'invitation comporte le message suivant:<br><i>") + QString::fromStdString(m_event.join_msg()) + "</i>");
     }
 
-
-
+    QSound::play("://sounds/notify_invite.wav");
 }
 
 void JoinSessionDialog::connectSignals()
@@ -109,6 +108,7 @@ void JoinSessionDialog::processSessionsReply(QList<TeraData> sessions)
             return;
         }
     }
+
 }
 
 void JoinSessionDialog::processSessionsTypesReply(QList<TeraData> session_types)

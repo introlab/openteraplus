@@ -2,6 +2,8 @@
 #define JOINSESSIONDIALOG_H
 
 #include <QDialog>
+#include <QSound>
+
 #include "ComManager.h"
 
 // Protobuf

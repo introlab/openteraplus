@@ -72,7 +72,16 @@ void ClientApp::loadConfig()
         QFileInfo config_file_info(configFile);
         QDir config_folder;
         config_folder.mkpath(config_file_info.path());
-        QFile::copy("://defaults/OpenTeraPlus.json", configFile);
+
+        QString localConfigFile = applicationDirPath() + "/config/OpenTeraPlus.json";
+        if (QFile::exists(localConfigFile)){
+            // Copy from installation directory
+            QFile::copy(localConfigFile, configFile);
+        }else{
+            // Copy from QRC
+            QFile::copy("://defaults/OpenTeraPlus.json", configFile);
+        }
+        QFile::setPermissions(configFile, QFile::WriteUser);
     }
 
     m_config.setFilename(configFile);
@@ -145,6 +154,7 @@ void ClientApp::setupLogger()
         // Log to file
         QStringList documents_paths = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
         QString logFile = documents_paths.first() + "/OpenTeraPlus/logs";
+        Logger::instance()->setFileName(logFile + "/logs_" + QDateTime::currentDateTime().toString("yyyy_MM_dd") + ".txt");
         GlobalEventLogger::instance()->startLogging(logFile);
     }else{
         GlobalEventLogger::instance()->startLogging();

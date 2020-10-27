@@ -113,7 +113,7 @@ void WebSocketManager::sendModuleMessage(const google::protobuf::Message &data_m
 //////////////////////////////////////////////////////////////////////
 void WebSocketManager::onSocketError(QAbstractSocket::SocketError error)
 {
-    qDebug() << "ComManager::Socket error - " << error;
+    LOG_DEBUG("Socket error - " + m_webSocket->errorString(), "WebSocketManager::onSocketError");
     emit websocketError(error, m_webSocket->errorString());
 }
 
@@ -132,7 +132,7 @@ void WebSocketManager::onSocketDisconnected()
 {
     m_connectTimer.stop();
     m_keepAliveTimer.stop();
-    qDebug() << "WebSocketManager::Disconnected from " << m_socketUrl.toString();
+    LOG_DEBUG("WebSocketManager::Disconnected from " + m_socketUrl.toString(), "WebSocketManager::onSocketDisconnected");
     emit serverDisconnected();
 }
 
@@ -263,7 +263,7 @@ void WebSocketManager::onTimerConnectTimeout()
 {
     // Connection timeout
     if (m_webSocket){
-        qDebug() << "ComManager::onTimerConnectTimeout()";
+        //qDebug() << "ComManager::onTimerConnectTimeout()";
         m_webSocket->abort();
         emit websocketError(QAbstractSocket::SocketTimeoutError, tr("Le serveur ne répond pas."));
     }

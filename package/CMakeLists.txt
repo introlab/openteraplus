@@ -31,29 +31,30 @@ if (WIN32)
     set(CPACK_PACKAGE_VENDOR "CdRV / ESTRAD / IntRoLab / Université de Sherbrooke")
 
     set(CPACK_PACKAGE_EXECUTABLES "bin\\\\OpenTeraPlus" "OpenTeraPlus")
+    set(CPACK_CREATE_DESKTOP_LINKS "OpenTeraPlus")
     set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.TXT")
 
     set(CPACK_COMPONENTS_ALL openteraplus libprotobuf qt_dist_component openssl)
 
-    set(CPACK_COMPONENT_LIBPROTOBUF_DISPLAY_NAME "Librairies Protobuf")
-    set(CPACK_COMPONENT_LIBPROTOBUF_REQUIRED ON)
+    set(CPACK_COMPONENT_OPENTERAPLUS_DISPLAY_NAME "OpenTeraPlus")
+    set(CPACK_COMPONENT_OPENTERAPLUS_DEPENDS libprotobuf qt_dist_component openssl)
+    set(CPACK_COMPONENT_OPENTERAPLUS_REQUIRED ON)
 
     set(CPACK_COMPONENT_QT_DIST_COMPONENT_DISPLAY_NAME "Librairies Qt")
     set(CPACK_COMPONENT_QT_DIST_COMPONENT_REQUIRED ON)
 
-    set(CPACK_COMPONENT_OPENSSL_DISPLAY_NAME "OpenSSL")
-    set(CPACK_COMPONENT_OPENSSL_REQUIRED ON)
+    set(CPACK_COMPONENT_LIBPROTOBUF_DISPLAY_NAME "Librairies Protobuf")
+    set(CPACK_COMPONENT_LIBPROTOBUF_REQUIRED ON)
 
-    set(CPACK_COMPONENT_OPENTERAPLUS_DISPLAY_NAME "OpenTeraPlus")
-    set(CPACK_COMPONENT_OPENTERAPLUS_DEPENDS libprotobuf qt_dist_component openssl)
-    set(CPACK_COMPONENT_OPENTERAPLUS_REQUIRED ON)
+    set(CPACK_COMPONENT_OPENSSL_DISPLAY_NAME "OpenSSL")
+    set(CPACK_COMPONENT_OPENSSL_REQUIRED ON)    
 
     # Put special configuration file in config/TeraClientConfig.txt if desired
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
         # The components that will be packaged
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} special_configuration)
         set(CPACK_COMPONENT_special_configuration_DISPLAY_NAME "Configuration pré-définie")
-        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json DESTINATION bin/config/client COMPONENT special_configuration)
+        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json DESTINATION bin/config COMPONENT special_configuration)
 
     endif()
 
@@ -80,6 +81,7 @@ if (WIN32)
     SET(CPACK_NSIS_MODIFY_PATH OFF)
     SET(CPACK_NSIS_EXECUTABLES_DIRECTORY .)
     SET(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+    SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "bin\\\\OpenTeraPlus")
 
     SET(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/introlab/openteraplus")
     SET(CPACK_NSIS_CONTACT "simon.briere@usherbrooke.ca")
