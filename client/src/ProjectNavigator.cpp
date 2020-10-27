@@ -390,6 +390,10 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
                 // In a group currently displayed
                 group_item->addChild(item);
                 m_participants_items[id_participant] = item;
+            }else{
+                // No group displayed, don't add to the list!
+                delete item;
+                return;
             }
         }else{
             // Participant has no group - attach it to its project
@@ -398,7 +402,15 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
                 if (project_item->isExpanded()){
                     project_item->addChild(item);
                     m_participants_items[id_participant] = item;
+                }else{
+                    // No project expanded, don't add to the list!
+                    delete item;
+                    return;
                 }
+            }else{
+                // No project displayed, don't add to the list!
+                delete item;
+                return;
             }
         }
         //project_item->setExpanded(true);

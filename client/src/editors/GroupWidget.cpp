@@ -99,14 +99,16 @@ void GroupWidget::updateParticipant(TeraData *participant)
        ui->tableParticipants->item(item->row(), 1)->setForeground(Qt::red);
     }
     QString date_val_str = tr("Aucune connexion");
-    if (!participant->getFieldValue("participant_lastonline").isNull()){
-        date_val_str = participant->getFieldValue("participant_lastonline").toDateTime().toString("dd MMMM yyyy - hh:mm");
+    if (participant->hasFieldName("participant_lastonline")){
+        if (!participant->getFieldValue("participant_lastonline").isNull()){
+            date_val_str = participant->getFieldValue("participant_lastonline").toDateTime().toLocalTime().toString("dd MMMM yyyy - hh:mm");
+        }
     }
     ui->tableParticipants->item(item->row(), 2)->setText(date_val_str);
     date_val_str = tr("Aucune séance");
     if (participant->hasFieldName("participant_lastsession")){
         if (!participant->getFieldValue("participant_lastsession").isNull()){
-            QDateTime date_val = participant->getFieldValue("participant_lastsession").toDateTime();
+            QDateTime date_val = participant->getFieldValue("participant_lastsession").toDateTime().toLocalTime();
             date_val_str = date_val.toString("dd MMMM yyyy - hh:mm");
             if (participant->isEnabled()){
                 // Set background color for last session date
