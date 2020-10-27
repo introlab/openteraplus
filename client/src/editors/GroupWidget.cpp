@@ -92,10 +92,10 @@ void GroupWidget::updateParticipant(TeraData *participant)
     // Update values
     item->setText(participant->getName());
     if (participant->isEnabled()){
-       ui->tableParticipants->item(item->row(), 1)->setText(tr("En cours"));
+       ui->tableParticipants->item(item->row(), 1)->setText(tr("Actif"));
        ui->tableParticipants->item(item->row(), 1)->setForeground(Qt::green);
     }else{
-       ui->tableParticipants->item(item->row(), 1)->setText(tr("Terminé"));
+       ui->tableParticipants->item(item->row(), 1)->setText(tr("Inactif"));
        ui->tableParticipants->item(item->row(), 1)->setForeground(Qt::red);
     }
     QString date_val_str = tr("Aucune connexion");

@@ -171,7 +171,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -341,8 +341,8 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>832</width>
-            <height>267</height>
+            <width>828</width>
+            <height>260</height>
            </rect>
           </property>
           <attribute name="label">
@@ -680,7 +680,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <property name="iconSize">
           <size>
@@ -903,6 +903,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
             <widget class="QTableWidget" name="tableEvents">
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
              <attribute name="horizontalHeaderDefaultSectionSize">
               <number>125</number>
              </attribute>
