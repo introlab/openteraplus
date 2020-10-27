@@ -131,13 +131,16 @@ void SessionLobbyDialog::queryLists()
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
     args.addQueryItem(WEB_QUERY_LIST, "1");
     args.addQueryItem(WEB_QUERY_ENABLED, "1");
+    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, args);
+    m_gotParticipants = false;
+
     args.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
     m_comManager->doQuery(WEB_USERINFO_PATH, args);
     m_gotUsers = false;
-    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, args);
-    m_gotParticipants = false;
+
     m_comManager->doQuery(WEB_DEVICEINFO_PATH, args);
     m_gotDevices = false;
+
     if (m_idSession>0){
         m_gotSession = false;
     }else{

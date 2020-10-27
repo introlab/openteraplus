@@ -422,9 +422,11 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     }*/
 
     item->setText(0, participant->getName());
-    //item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
     if (participant->hasBusyStateField() || participant->hasOnlineStateField())
         item->setIcon(0, QIcon(participant->getIconStateFilename()));
+    /*else{
+        item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
+    }*/
     m_participants[participant->getUuid()] = *participant;
 
 }
@@ -761,7 +763,7 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         query.clear();
         query.addQueryItem(WEB_QUERY_NO_GROUP,"true");
         query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
-        query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
+        //query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
         m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
 
     }
@@ -775,7 +777,7 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_GROUP, QString::number(id));
         query.addQueryItem(WEB_QUERY_LIST, "true");
-        query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
+        //query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
         m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
 
     }

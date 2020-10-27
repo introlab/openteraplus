@@ -448,10 +448,10 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID, QString::number(data_id));
-    if (data_type == TERADATA_PARTICIPANT){
+    /*if (data_type == TERADATA_PARTICIPANT){
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
-    }
+    }*/
     m_comManager->doQuery(TeraData::getPathForDataType(data_type), query);
 
 }
@@ -461,7 +461,7 @@ void MainWindow::dataDisplayRequestedByUuid(TeraDataTypes data_type, QString dat
     // Request to display a specific item by uuid.
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_UUID, data_uuid);
-    if (data_type == TERADATA_PARTICIPANT || data_type == TERADATA_DEVICE || data_type == TERADATA_USER){
+    if (/*data_type == TERADATA_PARTICIPANT ||*/ data_type == TERADATA_DEVICE || data_type == TERADATA_USER){
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
     }

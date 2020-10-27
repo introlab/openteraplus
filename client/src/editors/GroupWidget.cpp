@@ -22,11 +22,11 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_GROUP));
 
     // Query participants of that group
-    if (data->getId() != 0){
+    /*if (data->getId() != 0){
         QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_GROUP, QString::number(m_data->getId()));
         queryDataRequest(WEB_PARTICIPANTINFO_PATH, query);
-    }
+    }*/
 
     ui->wdgGroup->setComManager(m_comManager);
     setData(data);
@@ -64,7 +64,7 @@ void GroupWidget::updateFieldsValue(){
         ui->lblTitle->setText(m_data->getName());
     }
 }
-
+/*
 void GroupWidget::updateParticipant(TeraData *participant)
 {
     int id_participant = participant->getId();
@@ -119,12 +119,16 @@ void GroupWidget::updateParticipant(TeraData *participant)
         }
     }
     ui->tableParticipants->item(item->row(), 3)->setText(date_val_str);
-}
-
+}*/
+/*
 void GroupWidget::updateStats()
 {
+
+
     ui->lblParticipant->setText(QString::number(ui->tableParticipants->rowCount()) + tr(" participant(s)"));
-}
+
+
+}*/
 
 void GroupWidget::setData(const TeraData *data)
 {
@@ -134,6 +138,7 @@ void GroupWidget::setData(const TeraData *data)
         // Query stats
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_GROUP, QString::number(m_data->getId()));
+        args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "1");
         queryDataRequest(WEB_STATS_PATH, args);
 
     }
@@ -169,6 +174,76 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
                                 + stats.getFieldValue("participants_enabled_count").toString() + tr(" Participants actifs"));
     ui->lblSessions->setText(stats.getFieldValue("sessions_total_count").toString() + tr(" Séances planifiées \nou réalisées"));
 
+     // Fill participants information
+    if (stats.hasFieldName("participants")){
+        ui->tableSummary->clearContents();
+        m_tableParticipants_items.clear();
+
+        QVariantList parts_list = stats.getFieldValue("participants").toList();
+
+        for(QVariant part:parts_list){
+            QVariantMap part_info = part.toMap();
+            int part_id = part_info["id_participant"].toInt();
+
+            ui->tableSummary->setRowCount(ui->tableSummary->rowCount()+1);
+            int current_row = ui->tableSummary->rowCount()-1;
+            QTableWidgetItem* item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)),
+                                                                part_info["participant_name"].toString());
+            m_tableParticipants_items[part_id] = item;
+            ui->tableSummary->setItem(current_row, 0, item);
+
+            item = new QTableWidgetItem();
+            QString status;
+            if (part_info["participant_enabled"].toBool() == true){
+                status = tr("Actif");
+                item->setForeground(Qt::green);
+            }else{
+                status = tr("Inactif");
+                item->setForeground(Qt::red);
+            }
+            item->setText(status);
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tableSummary->setItem(current_row, 1, item);
+
+            item = new QTableWidgetItem(part_info["participant_sessions_count"].toString());
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tableSummary->setItem(current_row, 2, item);
+
+            item = new QTableWidgetItem(part_info["participant_first_session"].toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tableSummary->setItem(current_row, 3, item);
+
+            QDateTime last_session_datetime = part_info["participant_last_session"].toDateTime().toLocalTime();
+            item = new QTableWidgetItem(last_session_datetime.toString("dd-MM-yyyy hh:mm:ss"));
+            if (part_info["participant_enabled"].toBool() == true && last_session_datetime.isValid()){
+                // Set background color
+                QColor back_color = TeraForm::getGradientColor(0, 5, 10, static_cast<int>(last_session_datetime.daysTo(QDateTime::currentDateTime())));
+                back_color.setAlphaF(0.5);
+                item->setBackground(back_color);
+            }
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tableSummary->setItem(current_row, 4, item);
+
+            QString last_connect;
+            QDateTime last_connect_datetime;
+            if (part_info.contains("participant_last_online")){
+                last_connect_datetime =  part_info["participant_last_online"].toDateTime().toLocalTime();
+                if (last_connect_datetime.isValid())
+                    last_connect = last_connect_datetime.toString("dd-MM-yyyy hh:mm:ss");
+            }
+            item = new QTableWidgetItem(last_connect);
+            item->setTextAlignment(Qt::AlignCenter);
+
+            if (part_info["participant_enabled"].toBool() == true && last_connect_datetime.isValid()){
+                // Set background color
+                QColor back_color = TeraForm::getGradientColor(0, 5, 10, static_cast<int>(last_connect_datetime.daysTo(QDateTime::currentDateTime())));
+                back_color.setAlphaF(0.5);
+                item->setBackground(back_color);
+            }
+            ui->tableSummary->setItem(current_row, 5, item);
+        }
+    }
+
 }
 
 void GroupWidget::postResultReply(QString path)
@@ -179,7 +254,7 @@ void GroupWidget::postResultReply(QString path)
             emit closeRequest();
     }
 }
-
+/*
 void GroupWidget::processParticipants(QList<TeraData> participants)
 {
     for (TeraData participant:participants){
@@ -190,13 +265,12 @@ void GroupWidget::processParticipants(QList<TeraData> participants)
 
     //ui->tableParticipants->resizeColumnsToContents();
     updateStats();
-}
+}*/
 
 void GroupWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &GroupWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &GroupWidget::postResultReply);
-    connect(m_comManager, &ComManager::participantsReceived, this, &GroupWidget::processParticipants);
     connect(m_comManager, &ComManager::statsReceived, this, &GroupWidget::processStatsReply);
 }
 

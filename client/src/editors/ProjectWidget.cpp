@@ -428,14 +428,38 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
             item->setTextAlignment(Qt::AlignCenter);
             ui->tableSummary->setItem(current_row, 2, item);
 
-            item = new QTableWidgetItem(part_info["participant_first_session"].toDateTime().toString("dd-MM-yyyy hh:mm:ss"));
+            item = new QTableWidgetItem(part_info["participant_first_session"].toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
             item->setTextAlignment(Qt::AlignCenter);
             ui->tableSummary->setItem(current_row, 3, item);
 
-            item = new QTableWidgetItem(part_info["participant_last_session"].toDateTime().toString("dd-MM-yyyy hh:mm:ss"));
+            QDateTime last_session_datetime = part_info["participant_last_session"].toDateTime().toLocalTime();
+            item = new QTableWidgetItem(last_session_datetime.toString("dd-MM-yyyy hh:mm:ss"));
+            if (part_info["participant_enabled"].toBool() == true && last_session_datetime.isValid()){
+                // Set background color
+                QColor back_color = TeraForm::getGradientColor(0, 5, 10, static_cast<int>(last_session_datetime.daysTo(QDateTime::currentDateTime())));
+                back_color.setAlphaF(0.5);
+                item->setBackground(back_color);
+            }
             item->setTextAlignment(Qt::AlignCenter);
             ui->tableSummary->setItem(current_row, 4, item);
 
+            QString last_connect;
+            QDateTime last_connect_datetime;
+            if (part_info.contains("participant_last_online")){
+                last_connect_datetime =  part_info["participant_last_online"].toDateTime().toLocalTime();
+                if (last_connect_datetime.isValid())
+                    last_connect = last_connect_datetime.toString("dd-MM-yyyy hh:mm:ss");
+            }
+            item = new QTableWidgetItem(last_connect);
+            item->setTextAlignment(Qt::AlignCenter);
+
+            if (part_info["participant_enabled"].toBool() == true && last_connect_datetime.isValid()){
+                // Set background color
+                QColor back_color = TeraForm::getGradientColor(0, 5, 10, static_cast<int>(last_connect_datetime.daysTo(QDateTime::currentDateTime())));
+                back_color.setAlphaF(0.5);
+                item->setBackground(back_color);
+            }
+            ui->tableSummary->setItem(current_row, 5, item);
         }
     }
 }

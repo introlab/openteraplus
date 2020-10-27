@@ -295,8 +295,8 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>717</width>
-            <height>529</height>
+            <width>713</width>
+            <height>522</height>
            </rect>
           </property>
           <attribute name="label">
@@ -521,6 +521,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                <property name="selectionBehavior">
                 <enum>QAbstractItemView::SelectRows</enum>
                </property>
+               <property name="sortingEnabled">
+                <bool>true</bool>
+               </property>
                <attribute name="horizontalHeaderDefaultSectionSize">
                 <number>125</number>
                </attribute>
@@ -528,6 +531,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <bool>true</bool>
                </attribute>
                <attribute name="horizontalHeaderStretchLastSection">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
                 <bool>false</bool>
                </attribute>
                <column>
@@ -562,6 +568,14 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                <column>
                 <property name="text">
                  <string>Dernière séance</string>
+                </property>
+                <property name="textAlignment">
+                 <set>AlignCenter</set>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Dernière connexion</string>
                 </property>
                 <property name="textAlignment">
                  <set>AlignCenter</set>
