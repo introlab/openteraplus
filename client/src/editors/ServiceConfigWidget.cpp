@@ -221,6 +221,7 @@ void ServiceConfigWidget::postResultReply(QString path)
     if (path==WEB_SERVICECONFIGINFO_PATH){
         // Refresh value
         on_lstServiceConfig_itemClicked(ui->lstServiceConfig->currentItem());
+        m_gotServiceForm = true;
         if (parent())
             emit closeRequest();
     }
