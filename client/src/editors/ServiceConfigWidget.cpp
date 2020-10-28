@@ -175,6 +175,7 @@ void ServiceConfigWidget::processFormsReply(QString form_type, QString data)
             updateFieldsValue();
             ui->frameEditor->setVisible(true);
         }
+        m_gotServiceForm = true;
         return;
     }
 }
@@ -193,10 +194,12 @@ void ServiceConfigWidget::processServiceConfigsReply(QList<TeraData> configs, QU
     }
 
     // Request form for that specific config
-    int id_service = m_listServices_items.key(ui->lstServiceConfig->currentItem());
-    QUrlQuery args(WEB_FORMS_QUERY_SERVICE_CONFIG);
-    args.addQueryItem(WEB_QUERY_ID, QString::number(id_service));
-    queryDataRequest(WEB_FORMS_PATH, args);
+    if (!m_gotServiceForm){
+        int id_service = m_listServices_items.key(ui->lstServiceConfig->currentItem());
+        QUrlQuery args(WEB_FORMS_QUERY_SERVICE_CONFIG);
+        args.addQueryItem(WEB_QUERY_ID, QString::number(id_service));
+        queryDataRequest(WEB_FORMS_PATH, args);
+    }
 }
 
 void ServiceConfigWidget::processServicesReply(QList<TeraData> services, QUrlQuery query)
@@ -247,6 +250,8 @@ void ServiceConfigWidget::on_lstServiceConfig_itemClicked(QListWidgetItem *item)
         args.addQueryItem(WEB_QUERY_ID_SPECIFIC, m_specificId);
     }
     queryDataRequest(WEB_SERVICECONFIGINFO_PATH, args);
+
+    m_gotServiceForm = false;
 
     // Query form for that service
     /*

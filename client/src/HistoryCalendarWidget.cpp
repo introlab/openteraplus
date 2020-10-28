@@ -139,7 +139,7 @@ void HistoryCalendarWidget::setData(const QList<TeraData *> &sessions){
     qDeleteAll(m_sessions);
     m_sessions.clear();
     for (TeraData* ses:sessions){
-        QDate session_date = ses->getFieldValue("session_start_datetime").toDateTime().date();
+        QDate session_date = ses->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date.isValid())
             //m_sessions.insertMulti(session_date, new TeraData(*ses));
             m_sessions.insert(session_date, new TeraData(*ses));

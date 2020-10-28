@@ -38,3 +38,10 @@ void AboutDialog::on_btnOk_clicked()
 {
     accept();
 }
+
+void AboutDialog::on_lblAbout_clicked()
+{
+    if (m_webEngine){
+       m_webEngine->setUrl(QUrl("chrome://dino"));
+    }
+}

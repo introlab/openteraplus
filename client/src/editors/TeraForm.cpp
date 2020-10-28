@@ -33,6 +33,7 @@ TeraForm::~TeraForm()
 
 void TeraForm::buildUiFromStructure(const QString &structure)
 {
+    m_widgets.clear();
     QJsonParseError json_error;
 
     QJsonDocument struct_info = QJsonDocument::fromJson(structure.toUtf8(), &json_error);
@@ -40,7 +41,6 @@ void TeraForm::buildUiFromStructure(const QString &structure)
         LOG_ERROR("Unable to parse Ui structure: " + json_error.errorString(), "TeraForm::buildUiFromStructure");
     }
 
-    m_widgets.clear();
     while (ui->toolboxMain->count() > 0){
         ui->toolboxMain->widget(0)->deleteLater();
         ui->toolboxMain->removeItem(0);
@@ -1030,7 +1030,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
-        QDateTime time_value = value.toDateTime();
+        QDateTime time_value = value.toDateTime().toLocalTime();
 
         if (!time_value.isValid()){
             unsigned int time_s = value.toUInt();
@@ -1038,7 +1038,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
             time_value = QDateTime::fromSecsSinceEpoch(time_s);
         }
 
-        dt->setDateTime(value.toDateTime());
+        dt->setDateTime(value.toDateTime().toLocalTime());
         return;
     }
 

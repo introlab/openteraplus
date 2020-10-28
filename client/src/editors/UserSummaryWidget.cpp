@@ -56,7 +56,7 @@ void UserSummaryWidget::updateFieldsValue()
             email = tr("N/D");
         ui->lblEmailValue->setText(email);
         ui->lblFullNameValue->setText(m_data->getName());
-        ui->lblLastOnlineValue->setText(m_data->getFieldValue("user_lastonline").toDateTime().toString("dd-MM-yyyy hh:mm:ss"));
+        ui->lblLastOnlineValue->setText(m_data->getFieldValue("user_lastonline").toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
         ui->chkEnabled->setChecked(m_data->isEnabled());
 
         // Status

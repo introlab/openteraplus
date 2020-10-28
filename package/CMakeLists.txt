@@ -53,7 +53,7 @@ if (WIN32)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
         # The components that will be packaged
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} special_configuration)
-        set(CPACK_COMPONENT_special_configuration_DISPLAY_NAME "Configuration pré-définie")
+        set(CPACK_COMPONENT_SPECIAL_CONFIGURATION_DISPLAY_NAME "Fichier de configuration")
         install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json DESTINATION bin/config COMPONENT special_configuration)
 
     endif()

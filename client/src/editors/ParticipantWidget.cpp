@@ -301,7 +301,7 @@ void ParticipantWidget::updateSession(TeraData *session)
 
     // Update values
     name_item->setText(session->getName());
-    QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime();
+    QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
     date_item->setText(session_date.toString("dd-MM-yyyy hh:mm:ss"));
     int session_type = session->getFieldValue("id_session_type").toInt();
     if (m_ids_session_types.contains(session_type)){
@@ -345,7 +345,7 @@ void ParticipantWidget::updateSession(TeraData *session)
     // Resume session
     if (btnResume){
         if (session->hasFieldName("session_start_datetime")){
-            QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime();
+            QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
             btnResume->setVisible(session_date.date() == QDate::currentDate() && canStartNewSession());
         }else{
             btnResume->hide();
@@ -815,7 +815,7 @@ void ParticipantWidget::currentCalendarDateChanged(QDate current_date)
     // Select all the sessions in the list that fits with that date
     QTableWidgetItem* first_item = nullptr;
     foreach(TeraData* session, m_ids_sessions.values()){
-        if (session->getFieldValue("session_start_datetime").toDateTime().date() == current_date){
+        if (session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date() == current_date){
             QTableWidgetItem* session_item = m_listSessions_items.value(session->getId());
             if (session_item){
                 ui->tableSessions->selectRow(session_item->row());
@@ -907,7 +907,7 @@ QDate ParticipantWidget::getMinimumSessionDate()
 {
     QDate min_date = QDate::currentDate();
     for (TeraData* session:m_ids_sessions.values()){
-        QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().date();
+        QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date < min_date)
             min_date = session_date;
     }
@@ -1188,7 +1188,7 @@ void ParticipantWidget::on_btnNewSession_clicked()
     foreach(TeraData* session, m_ids_sessions.values()){
         int session_status = session->getFieldValue("session_status").toInt();
         if (session_status == TeraSessionStatus::STATUS_INPROGRESS || session_status == TeraSessionStatus::STATUS_NOTSTARTED){
-            QDateTime session_start_time = session->getFieldValue("session_start_datetime").toDateTime();
+            QDateTime session_start_time = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
 
             if (session_start_time.date() == QDate::currentDate()){
                 // Adds duration to have 1h since it was ended

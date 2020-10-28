@@ -19,6 +19,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="ClickableLabel" name="lblAbout">
+     <property name="text">
+      <string>À propos d'OpenTeraPlus...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QWidget" name="wdgWebView" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -73,6 +80,16 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>ClickableLabel.h</header>
+   <slots>
+    <slot>clicked()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources/TeraClient.qrc"/>
  </resources>

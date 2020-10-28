@@ -21,6 +21,7 @@ public:
 
 private slots:
     void on_btnOk_clicked();
+    void on_lblAbout_clicked();
 
 private:
     Ui::AboutDialog *ui;
