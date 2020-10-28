@@ -7,17 +7,23 @@ NotificationWindow::NotificationWindow(QWidget *parent, NotificationType type, i
  : QWidget(parent), m_type(type), m_width(width), m_height(height), m_duration(duration),m_id(-1)
 {
     setupUi(this);
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     setContentsMargins(0,0,0,0);
 
     //QDesktopWidget desktop;
     //or screenGeometry(), depending on your needs
     //QRect mainScreenSize = desktop.availableGeometry(desktop.primaryScreen());
-    QRect mainScreenSize = QGuiApplication::primaryScreen()->availableGeometry();
+    QRect mainScreenSize;
+
+    //FIXME Not working properly on a 2 screen setup on Linux...
+    if (parent)
+        mainScreenSize = parent->screen()->availableGeometry();
+    else
+        mainScreenSize = QGuiApplication::primaryScreen()->availableGeometry();
 
     setGeometry(mainScreenSize.width() - m_width,
-                mainScreenSize.height() - (level * m_height),
+                mainScreenSize.height() - (level * m_height)-32,
                 m_width,
                 m_height);
 
@@ -61,8 +67,8 @@ NotificationWindow::NotificationWindow(QWidget *parent, NotificationType type, i
     animate->setEndValue(0.0);
     animate->start(QAbstractAnimation::DeleteWhenStopped);
 
-    connect(animate,SIGNAL(finished()),this,SLOT(animationFinished()));
-    connect(btnClose,SIGNAL(clicked()),this,SLOT(notificationClosed()));
+    connect(animate, &QPropertyAnimation::finished, this, &NotificationWindow::animationFinished);
+    connect(btnNotificationClose, &QPushButton::clicked, this, &NotificationWindow::notificationCloseRequest);
 }
 
 NotificationWindow::~NotificationWindow()
@@ -79,6 +85,11 @@ void NotificationWindow::setNotificationText(const QString &message)
         // Message box with the warning
         QMessageBox::warning(nullptr,"Attention!", m_text);
     }*/
+}
+
+void NotificationWindow::setNotificationIcon(const QString &iconPath)
+{
+    lblImg->setPixmap(QPixmap(iconPath));
 }
 
 void NotificationWindow::setNotificationID(int id)
@@ -120,7 +131,7 @@ void NotificationWindow::animationFinished()
     emit notificationFinished(this);
 }
 
-void NotificationWindow::notificationClosed()
+void NotificationWindow::notificationCloseRequest()
 {
     emit notificationClosed(this);
 }

@@ -20,7 +20,10 @@ QStringList ConfigManagerClient::getServerNames()
         foreach (QString name, servers.keys()){
             QVariantMap infos = servers[name].toMap();
             int pref = infos["pref"].toInt()-1;
-            server_names.insert(pref, name);
+            if (pref < server_names.count())
+                server_names.insert(pref, name);
+            else
+                server_names.append(name);
         }
     }
 
@@ -39,16 +42,14 @@ QUrl ConfigManagerClient::getServerUrl(const QString &server_name)
     return server_url;
 }
 
-QUrl ConfigManagerClient::getWebServerUrl(const QString &server_name)
+bool ConfigManagerClient::getLogToFile()
 {
-    QUrl server_url;
+    bool rval = false;
     if (!m_config.isNull()){
-        QHash<QString, QVariant> servers = m_config["Servers"].toObject().toVariantHash();
-        QVariantMap server_info = servers[server_name].toMap();
-        server_url.setHost(server_info["url"].toString());
-        server_url.setPort(server_info["webport"].toInt());
+        QHash<QString, QVariant> settings = m_config["Settings"].toObject().toVariantHash();
+        rval = settings["logToFile"].toBool();
     }
-    return server_url;
+    return rval;
 }
 
 bool ConfigManagerClient::showServers()

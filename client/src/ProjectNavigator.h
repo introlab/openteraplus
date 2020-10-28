@@ -27,13 +27,18 @@ public:
     void initUi();
 
     int getCurrentSiteId() const;
+    QString getCurrentSiteName() const;
     int getCurrentProjectId() const;
+    QString getCurrentProjetName() const;
     int getCurrentGroupId() const;
+    QString getCurrentGroupName() const;
 
     void selectItem(const TeraDataTypes& data_type, const int& id);
     void removeItem(const TeraDataTypes& data_type, const int& id);
 
     void setOnHold(const bool& hold);
+    void refreshCurrentItem();
+    bool hasCurrentItem();
 
 private:
     Ui::ProjectNavigator        *ui;
@@ -47,6 +52,8 @@ private:
     QMap<int, QTreeWidgetItem*> m_projects_items;
     QMap<int, QTreeWidgetItem*> m_groups_items;
     QMap<int, QTreeWidgetItem*> m_participants_items;
+
+    QMap<QString, TeraData>     m_participants; // UUID - TeraData mapping for participants, required for online status
 
     void updateSite(const TeraData* site);
     void updateProject(const TeraData* project);
@@ -77,6 +84,7 @@ private slots:
      void processProjectsReply(QList<TeraData> projects);
      void processGroupsReply(QList<TeraData> groups);
      void processParticipantsReply(QList<TeraData> participants);
+     void ws_participantEvent(ParticipantEvent event);
 
      void processItemDeletedReply(QString path, int id);
 
@@ -84,12 +92,16 @@ private slots:
 
      void currentSiteChanged();
      void currentNavItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+     void navItemClicked(QTreeWidgetItem* item);
      void navItemExpanded(QTreeWidgetItem* item);
      void btnEditSite_clicked();
 
 signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);
      void dataDeleteRequest(TeraDataTypes data_type, int data_id);
+     void currentSiteWasChanged(QString site_name, int site_id);
+
+     void refreshButtonClicked();
 };
 
 #endif // PROJECTNAVIGATOR_H

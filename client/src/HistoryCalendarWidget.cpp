@@ -50,11 +50,33 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
         QCalendarWidget::paintCell (painter, rect, date);
         return;
     }
+    // Check to be sure that we don't have all filtered out sessions types for that date
+    QList<TeraData*> sessions = m_sessions.values(date);
+    QHash<int,QString> display_colors;
+
+    for (int i=0; i<sessions.count();i++){
+        int ses_type = sessions.at(i)->getFieldValue("id_session_type").toInt();
+        if (!m_displayTypes.contains(ses_type))
+            continue;
+        if (display_colors.contains(ses_type))
+            continue;
+        // We have a session that we need to display, find color for the correct session type
+        if (m_ids_session_types.contains(ses_type)){
+            display_colors[ses_type] = m_ids_session_types.value(ses_type)->getFieldValue("session_type_color").toString();
+        }else{
+            LOG_WARNING("No session type match - ignoring.", "HistoryCalendarWidget::paintCell");
+        }
+    }
+    int count = 0;
+    int total = display_colors.count(); //m_sessions->at(m_dates.value(date))->sessionsTypesCount(*m_displayTypes);
+    if (total==0){
+        // All session types filtered for today, paint with default
+        QCalendarWidget::paintCell (painter, rect, date);
+        return;
+    }
 
     painter->save(); // save standard settings
 
-    // TODO: Adjust!
-    QList<TeraData*> sessions = m_sessions.values(date);
     /*bool has_alert_today = false;
     for (int i=0; i<sessions->count(); i++){
         if (sessions->at(i)->hasTechAlert()){
@@ -80,23 +102,7 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
     painter->setBrush(brush);
     painter->drawRect(rect.adjusted(2,2,-2,-2));
 
-    QHash<int,QString> display_colors;
 
-    for (int i=0; i<sessions.count();i++){
-        int ses_type = sessions.at(i)->getFieldValue("id_session_type").toInt();
-        if (!m_displayTypes.contains(ses_type))
-            continue;
-        if (display_colors.contains(ses_type))
-            continue;
-        // We have a session that we need to display, find color for the correct session type
-        if (m_ids_session_types.contains(ses_type)){
-            display_colors[ses_type] = m_ids_session_types.value(ses_type)->getFieldValue("session_type_color").toString();
-        }else{
-            LOG_WARNING("No session type match - ignoring.", "HistoryCalendarWidget::paintCell");
-        }
-    }
-    int count = 0;
-    int total = display_colors.count(); //m_sessions->at(m_dates.value(date))->sessionsTypesCount(*m_displayTypes);
     //qDebug() << date.toString() << ": Count = " << QString::number(count) << ", Total = " << QString::number(total);
 
     for (int i=0; i<display_colors.count(); i++){
@@ -133,9 +139,10 @@ void HistoryCalendarWidget::setData(const QList<TeraData *> &sessions){
     qDeleteAll(m_sessions);
     m_sessions.clear();
     for (TeraData* ses:sessions){
-        QDate session_date = ses->getFieldValue("session_start_datetime").toDateTime().date();
+        QDate session_date = ses->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date.isValid())
-            m_sessions.insertMulti(session_date, new TeraData(*ses));
+            //m_sessions.insertMulti(session_date, new TeraData(*ses));
+            m_sessions.insert(session_date, new TeraData(*ses));
         else
             LOG_WARNING("Invalid session date", "HistoryCalendarWidget::setData");
     }

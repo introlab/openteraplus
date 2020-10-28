@@ -19,6 +19,7 @@ class NotificationWindow : public QWidget, public Ui::NotifyWindow
 {
     Q_OBJECT
 
+public:
     typedef enum {
         TYPE_MESSAGE,
         TYPE_YES_NO_QUESTION,
@@ -26,13 +27,12 @@ class NotificationWindow : public QWidget, public Ui::NotifyWindow
         TYPE_CUSTOM}
     NotificationType;
 
-public:
-
     NotificationWindow(QWidget *parent, NotificationType type, int level = 1, int width = 400, int height = 100, int duration = 5000);
 
     ~NotificationWindow();
 
     void setNotificationText(const QString &message);
+    void setNotificationIcon(const QString &iconPath);
 
     void setNotificationID(int id);
 
@@ -47,7 +47,7 @@ public:
 protected slots:
 
     void animationFinished();
-    void notificationClosed();
+    void notificationCloseRequest();
 
     void yesClicked();
     void noClicked();

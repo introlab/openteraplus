@@ -9,7 +9,7 @@ GlobalMessageBox::GlobalMessageBox(QWidget *parent) :
 
     // Initialize look and feel
     setStyleSheet(//"QWidget{background-color: rgba(0,0,0,0);color:white;border-radius:5px}"
-                  "QMessageBox{background-color:rgba(10,10,10,100%); color:white;}"
+                  "QMessageBox{background-color:rgba(75,75,75,100%); color:white;}"
                   "QMessageBox QLabel{color:white; font-size:10pt;}"
                   "QMessageBox QPushButton{min-height:30px; min-width:75px;}");
                          /*"QMessageBox QPushButton{background-color:rgb(80,80,80); max-width:200px;"
@@ -81,9 +81,12 @@ void GlobalMessageBox::showError(const QString &title, const QString &text)
     exec();
 }
 
-void GlobalMessageBox::showInfo(const QString &title, const QString &text)
+void GlobalMessageBox::showInfo(const QString &title, const QString &text, QIcon *icon)
 {
-    setIcon(QMessageBox::Information);
+    if (!icon)
+        setIcon(QMessageBox::Information);
+    else
+        setIconPixmap(icon->pixmap(64,64));
     setWindowTitle(title);
     setTextFormat(Qt::RichText);
     QString display_text = text;

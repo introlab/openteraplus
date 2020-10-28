@@ -12,30 +12,27 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
+    ui->tabNav->setCurrentIndex(0);
+
+    // Use base class to manage editing
+    setEditorControls(ui->wdgDevice, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_DEVICE));
 
-    // Query available sites
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_LIST, "true");
-    queryDataRequest(WEB_SITEINFO_PATH, args);
-
-    // Query associated participants and session types
-    if (!dataIsNew()){
-        args.removeAllQueryItems(WEB_QUERY_LIST);
-        args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
-        queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, args);
-
-        args.removeAllQueryItems(WEB_QUERY_ID_DEVICE);
-        args.addQueryItem(WEB_QUERY_ID_DEVICE_TYPE, m_data->getFieldValue("device_type").toString());
-        queryDataRequest(WEB_SESSIONTYPEDEVICETYPE_PATH, args);
-    }
-
     ui->wdgDevice->setHighlightConditions(false);
     ui->wdgDevice->setComManager(m_comManager);
+
+    setData(data);
+
+    /*if (!dataIsNew()){
+        // Loads first detailled informations tab
+        on_tabDeviceInfos_currentChanged(0);
+
+    }*/
 }
 
 DeviceWidget::~DeviceWidget()
@@ -47,6 +44,18 @@ void DeviceWidget::saveData(bool signal)
 {
     // Site data
     QJsonDocument device_data = ui->wdgDevice->getFormDataJson(m_data->isNew());
+
+    if (m_data->isNew() && ui->lstSites->isEnabled()){
+        QJsonObject base_obj = device_data.object();
+        QJsonObject base_st = base_obj["device"].toObject();
+        QJsonArray projects = getSelectedProjectsAsJsonArray();
+        // For new device, also sends the projects at the same time
+        if (!projects.isEmpty()){
+            base_st.insert("device_projects", projects);
+            base_obj.insert("device", base_st);
+            device_data.setObject(base_obj);
+        }
+    }
 
     //qDebug() << user_data.toJson();
     postDataRequest(WEB_DEVICEINFO_PATH, device_data.toJson());
@@ -62,6 +71,33 @@ void DeviceWidget::saveData(bool signal)
 void DeviceWidget::updateControlsState()
 {
    ui->tabSites->setEnabled(!dataIsNew());
+   //ui->tabDetails->setEnabled(!dataIsNew());
+
+   if (dataIsNew() && ui->tabNav->count()>1){
+
+       // Move sites / projects list to first tab
+       ui->tabSites->layout()->removeWidget(ui->lstSites);
+       ui->tabDashboard->layout()->removeWidget(ui->frameButtons);
+
+       QLabel* lbl = new QLabel(tr("Sites / Projets associés"));
+       QFont labelFont;
+       labelFont.setBold(true);
+       labelFont.setPointSize(10);
+       lbl->setFont(labelFont);
+
+       ui->tabDashboard->layout()->addWidget(lbl);
+       ui->tabDashboard->layout()->addWidget(ui->lstSites);
+       ui->tabDashboard->layout()->addWidget(ui->frameButtons);
+       while (ui->tabNav->count() > 1)
+           ui->tabNav->removeTab(1);
+
+       // Query sites and projects if needed
+       if (m_listSites_items.isEmpty() || m_listProjects_items.isEmpty()){
+           QUrlQuery args;
+           args.addQueryItem(WEB_QUERY_LIST, "true");
+           queryDataRequest(WEB_SITEINFO_PATH, args);
+       }
+   }
 }
 
 void DeviceWidget::updateFieldsValue()
@@ -72,11 +108,16 @@ void DeviceWidget::updateFieldsValue()
         }else {
             ui->wdgDevice->resetFormValues();
         }
+        ui->lblTitle->setText(m_data->getName());
     }
 }
 
 bool DeviceWidget::validateData()
 {
+    if (dataIsNew()){
+        if (!validateSitesProjects())
+            return false;
+    }
     return ui->wdgDevice->validateFormData();
 }
 
@@ -87,11 +128,9 @@ void DeviceWidget::connectSignals()
     connect(m_comManager, &ComManager::deviceSitesReceived, this, &DeviceWidget::processDeviceSitesReply);
     connect(m_comManager, &ComManager::deviceProjectsReceived, this, &DeviceWidget::processDeviceProjectsReply);
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &DeviceWidget::processDeviceParticipantsReply);
-    connect(m_comManager, &ComManager::sessionTypesDeviceTypesReceived, this, &DeviceWidget::processSessionTypesReply);
     connect(m_comManager, &ComManager::projectsReceived, this, &DeviceWidget::processProjectsReply);
+    connect(m_comManager, &ComManager::deleteResultsOK, this, &DeviceWidget::deleteDataReply);
 
-    connect(ui->btnSave, &QPushButton::clicked, this, &DeviceWidget::btnSave_clicked);
-    connect(ui->btnUndo, &QPushButton::clicked, this, &DeviceWidget::btnUndo_clicked);
     connect(ui->btnSites, &QPushButton::clicked, this, &DeviceWidget::btnSaveSites_clicked);
 
     connect(ui->lstSites, &QTreeWidget::itemExpanded, this, &DeviceWidget::lstSites_itemExpanded);
@@ -146,26 +185,58 @@ void DeviceWidget::updateParticipant(TeraData *participant)
     QString participant_name = participant->getFieldValue("participant_name").toString();
     if (m_listParticipants_items.contains(id_participant)){
         QListWidgetItem* item = m_listParticipants_items[id_participant];
+        item->setData(Qt::UserRole, participant->getFieldValue("id_device_participant"));
         item->setText(participant_name);
     }else{
         QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant_name);
+        item->setData(Qt::UserRole, participant->getFieldValue("id_device_participant"));
         ui->lstParticipants->addItem(item);
         m_listParticipants_items[id_participant] = item;
     }
 }
 
-void DeviceWidget::updateSessionType(TeraData *session_type)
+bool DeviceWidget::validateSitesProjects()
 {
-    int id_session_type = session_type->getFieldValue("id_session_type").toInt();
-    QString session_type_name = session_type->getFieldValue("session_type_name").toString();
-    if (m_listSessionTypes_items.contains(id_session_type)){
-        QListWidgetItem* item = m_listSessionTypes_items[id_session_type];
-        item->setText(session_type_name);
-    }else{
-        QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSIONTYPE)), session_type_name);
-        ui->lstSessionTypes->addItem(item);
-        m_listSessionTypes_items[id_session_type] = item;
+    if (!m_comManager->isCurrentUserSuperAdmin()){
+        bool at_least_one_selected = false;
+        for (int i=0; i<m_listSites_items.count(); i++){
+            if (m_listSites_items.values().at(i)->checkState(0) == Qt::Checked){
+                at_least_one_selected = true;
+                break;
+            }
+        }
+        if (!at_least_one_selected){
+            for (int i=0; i<m_listProjects_items.count(); i++){
+                if (m_listProjects_items.values().at(i)->checkState(0) == Qt::Checked){
+                    at_least_one_selected = true;
+                    break;
+                }
+            }
+        }
+
+        if (!at_least_one_selected){
+            // Warning: that device not having any site/project meaning that it will be not available to the current user
+            GlobalMessageBox msgbox;
+            msgbox.showError(tr("Attention"), tr("Aucun site / projet n'a été spécifié.\nVous devez spécifier au moins un site / projet"));
+            return false;
+        }
     }
+    return true;
+}
+
+QJsonArray DeviceWidget::getSelectedProjectsAsJsonArray()
+{
+    QJsonArray projects;
+    for (int i=0; i<m_listProjects_items.count(); i++){
+        int project_id = m_listProjects_items.keys().at(i);
+        QTreeWidgetItem* item = m_listProjects_items.values().at(i);
+        if (item->checkState(0) == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_project", project_id);
+            projects.append(data_obj);
+        }
+    }
+    return projects;
 }
 
 void DeviceWidget::processFormsReply(QString form_type, QString data)
@@ -263,20 +334,6 @@ void DeviceWidget::processDeviceParticipantsReply(QList<TeraData> device_parts)
     }
 }
 
-void DeviceWidget::processSessionTypesReply(QList<TeraData> session_types)
-{
-    if (session_types.isEmpty())
-        return;
-
-    // Check if it is for us
-    if (session_types.first().getFieldValue("id_device_type").toInt() != m_data->getFieldValue("device_type").toInt())
-        return;
-
-    for (TeraData session_type:session_types){
-        updateSessionType(&session_type);
-    }
-}
-
 void DeviceWidget::processProjectsReply(QList<TeraData> projects)
 {
     // If our project list is empty, already query projects for that device
@@ -295,34 +352,12 @@ void DeviceWidget::processProjectsReply(QList<TeraData> projects)
     }
 }
 
-void DeviceWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgDevice->getInvalidFormDataLabels();
-
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
-    }
-
-     saveData();
-}
-
-void DeviceWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-}
-
 void DeviceWidget::btnSaveSites_clicked()
 {
+
+    if (!validateSitesProjects())
+        return;
+
     QJsonDocument document;
     QJsonObject base_obj;
     QJsonArray devices;
@@ -358,10 +393,27 @@ void DeviceWidget::btnSaveSites_clicked()
     }
 
     // Update query
-    base_obj.insert("device_project", devices);
-    document.setObject(base_obj);
-    postDataRequest(WEB_DEVICEPROJECTINFO_PATH, document.toJson());
+    if (!devices.isEmpty()){
+        base_obj.insert("device_project", devices);
+        document.setObject(base_obj);
+        postDataRequest(WEB_DEVICEPROJECTINFO_PATH, document.toJson());
+    }
 
+}
+
+void DeviceWidget::deleteDataReply(QString path, int id)
+{
+    if (path == WEB_DEVICEPARTICIPANTINFO_PATH){
+        // A participant device association was deleted
+        for (int i=0; i<ui->lstParticipants->count(); i++){
+            if (ui->lstParticipants->item(i)->data(Qt::UserRole).toInt() == id){
+                int id_participant = m_listParticipants_items.key(ui->lstParticipants->item(i));
+                m_listParticipants_items.remove(id_participant);
+                delete ui->lstParticipants->takeItem(i);
+                return;
+            }
+        }
+    }
 }
 
 void DeviceWidget::lstSites_itemExpanded(QTreeWidgetItem *item)
@@ -414,4 +466,66 @@ void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
 
     updating = false;
 
+}
+
+void DeviceWidget::on_tabNav_currentChanged(int index)
+{
+    // Load data depending on selected tab
+    QUrlQuery args;
+    //args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+
+    QWidget* current_tab = ui->tabNav->widget(index);
+
+
+    if (current_tab == ui->tabSites){
+        // Sites / Projets
+        if (m_listSites_items.isEmpty() || m_listProjects_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_SITEINFO_PATH, args);
+        }
+    }
+
+    if (current_tab == ui->tabParticipants){
+        // Participants
+        if (m_listParticipants_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
+            queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, args);
+        }
+    }
+
+    if (current_tab == ui->tabServiceConfig){
+        // Service configuration
+        if (!ui->wdgServiceConfig->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgServiceConfig->setLayout(layout);
+        }
+        if (ui->wdgServiceConfig->layout()->count() == 0){
+            ServiceConfigWidget* service_config_widget = new ServiceConfigWidget(m_comManager, m_data->getIdFieldName(), m_data->getId(), ui->wdgServiceConfig);
+            ui->wdgServiceConfig->layout()->addWidget(service_config_widget);
+        }
+    }
+
+
+}
+
+void DeviceWidget::on_lstParticipants_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+   Q_UNUSED(previous)
+   ui->btnRemoveParticipant->setEnabled(current);
+}
+
+void DeviceWidget::on_btnRemoveParticipant_clicked()
+{
+    if (!ui->lstParticipants->currentItem()){
+        ui->btnRemoveParticipant->setEnabled(false);
+        return;
+    }
+
+    GlobalMessageBox msg;
+    int rval = msg.showYesNo(tr("Retirer l'appareil"), tr("Êtes-vous sûrs de vouloir retirer cet appareil de ce participant?\nSi l'appareil est présentement déployé, les données ne seront plus collectés et l'appareil ne sera plus utilisable pendant les séances."));
+    if (rval == QMessageBox::Yes){
+        int id_device_participant = ui->lstParticipants->currentItem()->data(Qt::UserRole).toInt();
+        deleteDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, id_device_participant);
+    }
 }

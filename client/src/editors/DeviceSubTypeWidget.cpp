@@ -12,6 +12,9 @@ DeviceSubTypeWidget::DeviceSubTypeWidget(ComManager *comMan, const TeraData *dat
 
     setLimited(false);
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgDeviceSubType, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
@@ -20,6 +23,10 @@ DeviceSubTypeWidget::DeviceSubTypeWidget(ComManager *comMan, const TeraData *dat
 
     ui->wdgDeviceSubType->setComManager(m_comManager);
     setData(data);
+
+    // Loads first detailled informations tab
+    if (!dataIsNew())
+        on_tabDeviceSubInfos_currentChanged(0);
 
 }
 
@@ -45,20 +52,33 @@ void DeviceSubTypeWidget::saveData(bool signal){
 }
 
 void DeviceSubTypeWidget::updateControlsState(){
-
-    ui->wdgDeviceSubType->setEnabled(!isWaitingOrLoading() && !m_limited);
-
-    // Buttons update
-    ui->btnSave->setEnabled(!isWaitingOrLoading());
-    ui->btnUndo->setEnabled(!isWaitingOrLoading());
-
-    ui->frameButtons->setVisible(!m_limited);
-
+   if (dataIsNew()){
+       if (ui->tabNav->count() > 1){
+           ui->tabNav->removeTab(1);
+       }
+   }
 }
 
 void DeviceSubTypeWidget::updateFieldsValue(){
     if (m_data){
         ui->wdgDeviceSubType->fillFormFromData(m_data->toJson());
+        ui->lblTitle->setText(m_data->getName());
+    }
+
+
+}
+
+void DeviceSubTypeWidget::updateDevice(const TeraData *device)
+{
+    int id_device = device->getId();
+    QString device_name = device->getName();
+    if (m_listDevices_items.contains(id_device)){
+        QListWidgetItem* item = m_listDevices_items[id_device];
+        item->setText(device_name);
+    }else{
+        QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)), device_name);
+        ui->lstDevices->addItem(item);
+        m_listDevices_items[id_device] = item;
     }
 }
 
@@ -78,6 +98,18 @@ void DeviceSubTypeWidget::processFormsReply(QString form_type, QString data)
     }
 }
 
+void DeviceSubTypeWidget::processDevicesReply(QList<TeraData> devices)
+{
+    if (!m_data)
+        return;
+
+    for (int i=0; i<devices.count(); i++){
+        if (devices.at(i).getFieldValue("id_device_subtype").toInt() == m_data->getId()){
+            updateDevice(&devices.at(i));
+        }
+    }
+}
+
 void DeviceSubTypeWidget::postResultReply(QString path)
 {
     // OK, data was saved!
@@ -91,34 +123,18 @@ void DeviceSubTypeWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &DeviceSubTypeWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &DeviceSubTypeWidget::postResultReply);
-
-    connect(ui->btnUndo, &QPushButton::clicked, this, &DeviceSubTypeWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &DeviceSubTypeWidget::btnSave_clicked);
+    connect(m_comManager, &ComManager::devicesReceived, this, &DeviceSubTypeWidget::processDevicesReply);
 }
 
-void DeviceSubTypeWidget::btnSave_clicked()
+void DeviceSubTypeWidget::on_tabDeviceSubInfos_currentChanged(int index)
 {
-    if (!validateData()){
-        QStringList invalids = ui->wdgDeviceSubType->getInvalidFormDataLabels();
+    QUrlQuery query;
 
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
+    if (index==0){
+        // Devices
+        if (m_listDevices_items.isEmpty() && m_data){
+            query.addQueryItem(WEB_QUERY_ID_DEVICE_SUBTYPE, QString::number(m_data->getId()));
+            queryDataRequest(WEB_DEVICEINFO_PATH, query);
         }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
     }
-    saveData();
 }
-
-void DeviceSubTypeWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-
-}
-

@@ -29,6 +29,7 @@
 
 #include "TeraData.h"
 #include "ComManager.h"
+#include "Utils.h"
 
 namespace Ui {
 class TeraForm;
@@ -46,6 +47,7 @@ public:
     void fillFormFromData(const QJsonObject& data);
     void fillFormFromData(const QString& structure);
     bool formHasData();
+    bool formHasStructure();
     void resetFormValues();
     void setHighlightConditions(const bool& hightlight);
 
@@ -55,7 +57,14 @@ public:
     QWidget* getWidgetForField(const QString& field);
     bool setFieldValue(const QString& field, const QVariant& value);
     QVariant getFieldValue(const QString& field);
+    bool getFieldDirty(const QString& field);
+    bool getFieldDirty(QWidget *widget);
     void hideField(const QString& field);
+    void showField(const QString& field);
+    void hideFields(const QStringList& fields);
+    void setFieldRequired(const QString& field, const bool& required);
+
+    bool isDirty();
 
     QString getFormData(bool include_unmodified_data=false);
     QJsonDocument getFormDataJson(bool include_unmodified_data=false);
@@ -68,10 +77,18 @@ public:
 private:
     Ui::TeraForm*                                   ui;
     QMap<QString, QWidget*>                         m_widgets;
-    QMap<QWidget*, QFormLayout::TakeRowResult>      m_hidden_rows;
+    QHash<QWidget*, QLabel*>                        m_widgetsLabels;
+    QHash<QWidget*, QFormLayout::TakeRowResult>     m_hidden_rows;
     QString                                         m_objectType;
     QVariantMap                                     m_initialValues;
     bool                                            m_highlightConditionals;
+    QStringList                                     m_hiddenFields;
+    bool                                            m_disabled;
+
+    //QList<QAudioDeviceInfo>                         m_audioInputs;
+    //QList<QCameraInfo>                              m_videoInputs;
+    QStringList                                     m_audioInputs;
+    QStringList                                     m_videoInputs;
 
     // Hook interface for dynamic url requests
     QMap<QWidget*, TeraDataTypes>                   m_widgetsHookRequests;
@@ -80,18 +97,21 @@ private:
     void buildFormFromStructure(QWidget* page, const QVariantList &structure);
     void setDefaultValues();
 
-    QWidget* createVideoInputsWidget(const QVariantMap& structure);
-    QWidget* createAudioInputsWidget(const QVariantMap& structure);
-    QWidget* createArrayWidget(const QVariantMap& structure);
-    QWidget* createTextWidget(const QVariantMap& structure, bool is_masked);
-    QWidget* createBooleanWidget(const QVariantMap& structure);
-    QWidget* createNumericWidget(const QVariantMap& structure);
-    QWidget* createLabelWidget(const QVariantMap& structure);
-    QWidget* createListWidget(const QVariantMap& structure);
-    QWidget* createLongTextWidget(const QVariantMap& structure);
-    QWidget* createColorWidget(const QVariantMap& structure);
-    QWidget* createDateTimeWidget(const QVariantMap& structure);
-    QWidget* createDurationWidget(const QVariantMap& structure);
+    QWidget* createVideoInputsWidget(const QVariantHash& structure);
+    QWidget* createAudioInputsWidget(const QVariantHash& structure);
+    QWidget* createArrayWidget(const QVariantHash& structure);
+    QWidget* createTextWidget(const QVariantHash& structure, bool is_masked);
+    QWidget* createBooleanWidget(const QVariantHash& structure);
+    QWidget* createNumericWidget(const QVariantHash& structure);
+    QWidget* createLabelWidget(const QVariantHash& structure);
+    QWidget* createListWidget(const QVariantHash& structure);
+    QWidget* createLongTextWidget(const QVariantHash& structure);
+    QWidget* createColorWidget(const QVariantHash& structure);
+    QWidget* createDateTimeWidget(const QVariantHash& structure);
+    QWidget* createDurationWidget(const QVariantHash& structure);
+
+    void loadAudioInputs();
+    void loadVideoInputs();
 
     void checkConditions(QWidget* item_triggering = nullptr);
     void checkConditionsForItem(QWidget* item, QWidget* item_triggering = nullptr);
@@ -99,6 +119,8 @@ private:
     void getWidgetValues(QWidget *widget, QVariant *id, QVariant* value);
     QVariant getWidgetValue(QWidget* widget);
     void setWidgetValue(QWidget* widget, const QVariant& value);
+
+    void setWidgetRequired(QWidget* item_widget, QLabel* item_label, const bool& required);
 
     void updateWidgetChoices(QWidget* widget, const QList<TeraData> values);
 
@@ -113,8 +135,14 @@ private slots:
     // Hooks
     void hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas);
 
+public slots:
+
+    void setDisabled(bool disable);
+    void setEnabled(bool enable);
+
 signals:
     void widgetValueHasChanged(QWidget* widget, QVariant value);
+    void formIsNowDirty(bool dirty);
 
 };
 

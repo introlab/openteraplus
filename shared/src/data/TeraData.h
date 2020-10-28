@@ -13,6 +13,9 @@
 enum TeraDataTypes {
     TERADATA_NONE,
     TERADATA_USER,
+    TERADATA_USERGROUP,
+    TERADATA_USERUSERGROUP,
+    TERADATA_USERPREFERENCE,
     TERADATA_SITE,
     TERADATA_SESSIONTYPE,
     TERADATA_TESTDEF,
@@ -27,12 +30,18 @@ enum TeraDataTypes {
     TERADATA_DEVICEPROJECT,
     TERADATA_DEVICEPARTICIPANT,
     TERADATA_DEVICESUBTYPE,
-    TERADATA_SESSIONTYPEDEVICETYPE,
-    TERADATA_DEVICEDATA,
+    TERADATA_DEVICETYPE,
     TERADATA_SESSIONTYPEPROJECT,
-    TERADATA_SESSIONEVENT
+    TERADATA_SESSIONEVENT,
+    TERADATA_SERVICE,
+    TERADATA_SERVICE_PROJECT,
+    TERADATA_SERVICE_ACCESS,
+    TERADATA_SERVICE_CONFIG,
+    TERADATA_STATS,
+    TERADATA_ONLINE_USER,
+    TERADATA_ONLINE_PARTICIPANT,
+    TERADATA_ONLINE_DEVICE
 };
-
 
 Q_DECLARE_METATYPE(TeraDataTypes)
 
@@ -45,28 +54,42 @@ class TeraData : public QObject
     Q_PROPERTY(TeraDataTypes data_type READ getDataType WRITE setDataType)
 
 public:
-    //explicit TeraData(QObject *parent = nullptr);
+    explicit TeraData(QObject *parent = nullptr);
     explicit TeraData(TeraDataTypes obj_type, QObject *parent = nullptr);
     TeraData(const TeraData& copy, QObject *parent=nullptr);
     explicit TeraData(TeraDataTypes obj_type, const QJsonValue& json, QObject *parent = nullptr);
 
     virtual bool        fromJson(const QJsonValue& value);
-    virtual QJsonObject toJson();
+    virtual QJsonObject toJson(const QString specific_fieldName = QString());
 
     int getId() const;
     QString getIdFieldName() const;
     void setId(const int& id);
 
+    QString getUuid() const;
+    QString getUuidFieldName() const;
+    void setUuid(const QString& uuid);
+    bool hasUuidField();
+
     virtual QString getName() const;
     void setName(const QString& name);
+    bool hasNameField();
 
-    bool hasEnabledField();
-    bool isEnabled();
+    bool hasEnabledField() const;
+    bool isEnabled() const;
 
-    bool isNew();
+    bool hasOnlineStateField() const;
+    bool hasBusyStateField() const;
+    bool isOnline() const;
+    bool isBusy() const;
+    void setBusy(const bool &busy);
+    void setOnline(const bool &online);
+
+    bool isNew() const;
 
     virtual TeraData &operator = (const TeraData& other);
     virtual bool operator == (const TeraData& other) const;
+    void updateFrom(const TeraData& other);
 
     TeraDataTypes getDataType() const;
     bool hasFieldName(const QString& fieldName) const;
@@ -74,12 +97,15 @@ public:
     QVariant getFieldValue(const QString &fieldName) const;
     void setFieldValue(const QString& fieldName, const QVariant& fieldValue);
     QList<QString> getFieldList() const;
+    QVariantMap getFieldValues();
 
     static QString getDataTypeName(const TeraDataTypes& data_type);
+    static QString getDataTypeNameText(const TeraDataTypes& data_type);
     static TeraDataTypes getDataTypeFromPath(const QString& path);
     static QString getPathForDataType(const TeraDataTypes& data_type);
 
     static QString getIconFilenameForDataType(const TeraDataTypes& data_type);
+    QString getIconStateFilename() const;
 
 protected:
 
@@ -90,6 +116,9 @@ private:
     QString     m_idField;
     QString     m_nameField;
     QString     m_enabledField;
+    QString     m_onlineField;
+    QString     m_busyField;
+    QString     m_uuidField;
 
     QVariantMap m_fieldsValue;
 

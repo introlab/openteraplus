@@ -17,24 +17,17 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
 
     setLimited(false);
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgSession, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
     // Query form definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION));
 
-    // Query session participants
-    QUrlQuery query;
-    query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
-    queryDataRequest(WEB_PARTICIPANTINFO_PATH, query);
-
-    // Query session device data
-    queryDataRequest(WEB_DEVICEDATAINFO_PATH, query);
-
-    // Query session events
-    queryDataRequest(WEB_SESSIONEVENT_PATH, query);
-
     ui->wdgSession->setComManager(m_comManager);
+    ui->tabNav->setCurrentIndex(0);
     setData(data);
 
 }
@@ -50,31 +43,68 @@ void SessionWidget::saveData(bool signal){
     // If data is new, we request all the fields.
     QJsonDocument group_data = ui->wdgSession->getFormDataJson(m_data->isNew());
 
+    // Filter empty creator fields
+    QJsonObject session_data = group_data["session"].toObject();
+    QJsonObject base_obj;
+
+    if (session_data["id_creator_device"].toInt() == 0){
+        session_data.remove("id_creator_device");
+    }
+    if (session_data["id_creator_participant"].toInt() == 0){
+        session_data.remove("id_creator_participant");
+    }
+    if (session_data["id_creator_service"].toInt() == 0){
+        session_data.remove("id_creator_service");
+    }
+    if (session_data["id_creator_user"].toInt() == 0){
+        session_data.remove("id_creator_user");
+    }
+    base_obj.insert("session", session_data);
+    group_data.setObject(base_obj);
+
     postDataRequest(WEB_SESSIONINFO_PATH, group_data.toJson());
 
     if (signal){
-        TeraData* new_data = ui->wdgSession->getFormDataObject(TERADATA_GROUP);
+        TeraData* new_data = ui->wdgSession->getFormDataObject(TERADATA_SESSION);
         *m_data = *new_data;
         delete new_data;
         emit dataWasChanged();
     }
 }
 
-void SessionWidget::updateControlsState(){
+void SessionWidget::setData(const TeraData *data)
+{
+    DataEditorWidget::setData(data);
 
-    ui->wdgSession->setEnabled(!isWaitingOrLoading() && !m_limited);
+    if (!dataIsNew()){
+        // Loads first detailled informations tab
+        on_tabSessionInfos_tabBarClicked(0);
 
-    // Buttons update
-    ui->btnSave->setEnabled(!isWaitingOrLoading());
-    ui->btnUndo->setEnabled(!isWaitingOrLoading());
+        // Query stats
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
+        queryDataRequest(WEB_STATS_PATH, args);
 
-    ui->frameButtons->setVisible(!m_limited);
+    }else{
+        ui->tabDetails->setEnabled(false);
+    }
+}
+
+void SessionWidget::updateControlsState()
+{
+    if (dataIsNew()){
+        ui->grpSummary->setVisible(!dataIsNew());
+        if (ui->tabNav->count() > 1){
+            ui->tabNav->removeTab(1);
+        }
+    }
 
 }
 
 void SessionWidget::updateFieldsValue(){
     if (m_data){
         ui->wdgSession->fillFormFromData(m_data->toJson());
+        ui->lblTitle->setText(m_data->getName());
 
         int session_status = m_data->getFieldValue("session_status").toInt();
         ui->lblStatus->setText(tr("Séance: ") + TeraSessionStatus::getStatusName(session_status));
@@ -90,29 +120,113 @@ bool SessionWidget::validateData(){
     return valid;
 }
 
-void SessionWidget::updateParticipant(TeraData *participant)
+void SessionWidget::updateSessionParticipants()
 {
-    QListWidgetItem* item = nullptr;
-    for(int i=0; i<ui->lstParticipants->count(); i++){
-        int part_id = ui->lstParticipants->item(i)->data(Qt::UserRole).toInt();
-        if (part_id == participant->getId()){
-            // Participant already present
-            item = ui->lstParticipants->item(i);
-            break;
+    if (!m_data)
+        return;
+
+
+    if (m_data->hasFieldName("session_participants")){
+        QVariantList session_parts_list = m_data->getFieldValue("session_participants").toList();
+
+        for(QVariant session_part:session_parts_list){
+            QVariantMap part_info = session_part.toMap();
+            int id_participant = part_info["id_participant"].toInt();
+            QString participant_name = part_info["participant_name"].toString();
+            QListWidgetItem* item = nullptr;
+            for(int i=0; i<ui->lstParticipants->count(); i++){
+                int part_id = ui->lstParticipants->item(i)->data(Qt::UserRole).toInt();
+                if (part_id == id_participant){
+                    // Participant already present
+                    item = ui->lstParticipants->item(i);
+                    break;
+                }
+            }
+            // New participant
+            if (!item){
+                item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant_name);
+                item->setData(Qt::UserRole, id_participant);
+                ui->lstParticipants->addItem(item);
+            }
+
+            // Update participant name
+            item->setText(participant_name);
+
+
         }
     }
-
-    // New participant
-    if (!item){
-        item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant->getName());
-        item->setData(Qt::UserRole, participant->getId());
-        ui->lstParticipants->addItem(item);
-    }
-
-    // Update participant name
-    item->setText(participant->getName());
 }
 
+void SessionWidget::updateSessionUsers()
+{
+    if (!m_data)
+        return;
+
+    if (m_data->hasFieldName("session_users")){
+        QVariantList session_users_list = m_data->getFieldValue("session_users").toList();
+
+        for(QVariant session_user:session_users_list){
+            QVariantMap user_info = session_user.toMap();
+            int id_user = user_info["id_user"].toInt();
+            QString user_name = user_info["user_name"].toString();
+            QListWidgetItem* item = nullptr;
+            for(int i=0; i<ui->lstUsers->count(); i++){
+                int user_id = ui->lstUsers->item(i)->data(Qt::UserRole).toInt();
+                if (user_id == id_user){
+                    // User already present
+                    item = ui->lstUsers->item(i);
+                    break;
+                }
+            }
+            // New user
+            if (!item){
+                item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)), user_name);
+                item->setData(Qt::UserRole, id_user);
+                ui->lstUsers->addItem(item);
+            }
+
+            // Update name
+            item->setText(user_name);
+
+
+        }
+    }
+}
+
+void SessionWidget::updateSessionDevices()
+{
+    if (!m_data)
+        return;
+
+    if (m_data->hasFieldName("session_devices")){
+        QVariantList session_devices_list = m_data->getFieldValue("session_devices").toList();
+
+        for(QVariant session_device:session_devices_list){
+            QVariantMap device_info = session_device.toMap();
+            int id_device = device_info["id_device"].toInt();
+            QString device_name = device_info["device_name"].toString();
+            QListWidgetItem* item = nullptr;
+            for(int i=0; i<ui->lstDevices->count(); i++){
+                int device_id = ui->lstDevices->item(i)->data(Qt::UserRole).toInt();
+                if (device_id == id_device){
+                    // User already present
+                    item = ui->lstDevices->item(i);
+                    break;
+                }
+            }
+            // New device
+            if (!item){
+                item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)), device_name);
+                item->setData(Qt::UserRole, id_device);
+                ui->lstDevices->addItem(item);
+            }
+
+            // Update name
+            item->setText(device_name);
+        }
+    }
+}
+/*
 void SessionWidget::updateDeviceData(TeraData *device_data)
 {
     int id_device_data = device_data->getId();
@@ -161,7 +275,7 @@ void SessionWidget::updateDeviceData(TeraData *device_data)
     }
     ui->tableData->item(base_item->row(), 3)->setText(QString::number(file_size, 'f', 2) + suffix);
 }
-
+*/
 void SessionWidget::updateEvent(TeraData *event)
 {
     int id_event = event->getId();
@@ -207,26 +321,7 @@ void SessionWidget::processFormsReply(QString form_type, QString data)
         return;
     }
 }
-
-void SessionWidget::processParticipantsReply(QList<TeraData> participants)
-{
-    if (!m_data)
-        return;
-
-    QList<QVariant> part_ids;
-    if (m_data->hasFieldName("session_participants_ids")){
-        part_ids = m_data->getFieldValue("session_participants_ids").toList();
-    }
-
-    for (TeraData part:participants){
-        // Participant is part of the current session
-        if (part_ids.contains(part.getId())){
-            updateParticipant(&part);
-        }
-    }
-
-}
-
+/*
 void SessionWidget::processDeviceDatasReply(QList<TeraData> device_datas)
 {
     for (TeraData device_data:device_datas){
@@ -235,7 +330,7 @@ void SessionWidget::processDeviceDatasReply(QList<TeraData> device_datas)
             updateDeviceData(&device_data);
         }
     }
-}
+}*/
 
 void SessionWidget::processSessionEventsReply(QList<TeraData> events)
 {
@@ -247,25 +342,44 @@ void SessionWidget::processSessionEventsReply(QList<TeraData> events)
     }
 }
 
+void SessionWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
+{
+    // Check if stats are for us
+    if (!reply_query.hasQueryItem("id_session"))
+        return;
+
+    if (reply_query.queryItemValue("id_session").toInt() != m_data->getId())
+        return;
+
+    // Fill stats information
+    ui->lblUsersStats->setText(stats.getFieldValue("users_total_count").toString() + tr(" Utilisateurs"));
+    ui->lblParticipantsStats->setText(stats.getFieldValue("participants_total_count").toString() + tr(" Participants"));
+    ui->lblDevicesStats->setText(stats.getFieldValue("devices_total_count").toString() + tr(" Appareils"));
+    ui->lblAssets->setText(stats.getFieldValue("assets_total_count").toString() + tr(" Fichiers de données"));
+    ui->lblEvents->setText(stats.getFieldValue("events_total_count").toString() + tr(" Événements"));
+    ui->lblTests->setText(stats.getFieldValue("tests_total_count").toString() + tr(" Évaluations"));
+}
+
 void SessionWidget::postResultReply(QString path)
 {
+    Q_UNUSED(path)
     // OK, data was saved!
-    if (path == WEB_SESSIONINFO_PATH){
+    /*if (path == WEB_SESSIONINFO_PATH){
         if (parent())
             emit closeRequest();
-    }
+    }*/
 }
 
 void SessionWidget::deleteDataReply(QString path, int id)
 {
-    if (path == WEB_DEVICEDATAINFO_PATH){
+   /* if (path == WEB_DEVICEDATAINFO_PATH){
         // Remove data from list
         if (m_listDeviceDatas.contains(id)){
             ui->tableData->removeRow(m_listDeviceDatas[id]->row());
             m_listDeviceDatas.remove(id);
             qDebug() << ui->tableData->rowCount();
         }
-    }
+    }*/
 }
 
 void SessionWidget::onDownloadCompleted(DownloadedFile *file)
@@ -289,43 +403,16 @@ void SessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &SessionWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SessionWidget::postResultReply);
-    connect(m_comManager, &ComManager::participantsReceived, this, &SessionWidget::processParticipantsReply);
-    connect(m_comManager, &ComManager::deviceDatasReceived, this, &SessionWidget::processDeviceDatasReply);
+    //connect(m_comManager, &ComManager::deviceDatasReceived, this, &SessionWidget::processDeviceDatasReply);
     connect(m_comManager, &ComManager::sessionEventsReceived, this, &SessionWidget::processSessionEventsReply);
+    connect(m_comManager, &ComManager::statsReceived, this, &SessionWidget::processStatsReply);
+
     connect(m_comManager, &ComManager::downloadCompleted, this, &SessionWidget::onDownloadCompleted);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &SessionWidget::deleteDataReply);
 
-    connect(ui->btnUndo, &QPushButton::clicked, this, &SessionWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &SessionWidget::btnSave_clicked);
     connect(ui->btnDelData, &QPushButton::clicked, this, &SessionWidget::btnDeleteData_clicked);
     connect(ui->btnDownloadAll, &QPushButton::clicked, this, &SessionWidget::btnDownloadAll_clicked);
     connect(ui->tableData, &QTableWidget::currentItemChanged, this, &SessionWidget::currentSelectedDataChanged);
-}
-
-void SessionWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgSession->getInvalidFormDataLabels();
-
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
-    }
-    saveData();
-}
-
-void SessionWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-
 }
 
 void SessionWidget::btnDownload_clicked()
@@ -337,12 +424,12 @@ void SessionWidget::btnDownload_clicked()
         QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
                                                               QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
         if (!save_path.isEmpty()){
-            int id_device_data = button->property("id_device_data").toInt();
+            /*int id_device_data = button->property("id_device_data").toInt();
             QUrlQuery args;
             args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
             args.addQueryItem(WEB_QUERY_ID_DEVICE_DATA, QString::number(id_device_data));
             downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-            setEnabled(false);
+            setEnabled(false);*/
         }
     }
 }
@@ -362,8 +449,8 @@ void SessionWidget::btnDeleteData_clicked()
                                                         tr("Êtes-vous sûrs de vouloir supprimer les données """) + data_name + """ de l'appareil '" + device_name + "'?");
     if (answer == QMessageBox::Yes){
         // We must delete!
-        int id_device_data = m_listDeviceDatas.key(ui->tableData->item(item_todel->row(), 0));
-        m_comManager->doDelete(WEB_DEVICEDATAINFO_PATH, id_device_data);
+        /*int id_device_data = m_listDeviceDatas.key(ui->tableData->item(item_todel->row(), 0));
+        m_comManager->doDelete(WEB_DEVICEDATAINFO_PATH, id_device_data);*/
     }
 }
 
@@ -373,10 +460,83 @@ void SessionWidget::btnDownloadAll_clicked()
     QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
                                                           QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
     if (!save_path.isEmpty()){
-        QUrlQuery args;
+        /*QUrlQuery args;
         args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
         args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
         downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-        setEnabled(false);
+        setEnabled(false);*/
     }
+}
+
+void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
+{
+    // Load data depending on selected tab
+    QUrlQuery query;
+
+    QWidget* current_tab = ui->tabSessionInfos->widget(index);
+
+    if (current_tab == ui->tabInvitees){
+        // Participants
+        updateSessionParticipants();
+        updateSessionUsers();
+        updateSessionDevices();
+    }
+
+    if (current_tab == ui->tabData){
+        // Data
+        /*if (m_listDeviceDatas.isEmpty()){
+            // Query session device data
+            query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
+            queryDataRequest(WEB_DEVICEDATAINFO_PATH, query);
+        }*/
+    }
+
+    if (current_tab == ui->tabTests){
+        // Tests
+        // TODO
+    }
+
+    if (current_tab == ui->tabEvents){
+        // Session events
+        if (m_listSessionEvents.isEmpty()){
+            query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
+            queryDataRequest(WEB_SESSIONEVENT_PATH, query);
+        }
+    }
+}
+
+void SessionWidget::on_icoUsers_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabInvitees);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoParticipant_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabInvitees);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoDevices_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabInvitees);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoEvents_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabEvents);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoAssets_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabData);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SessionWidget::on_icoTests_clicked()
+{
+    ui->tabSessionInfos->setCurrentWidget(ui->tabTests);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }

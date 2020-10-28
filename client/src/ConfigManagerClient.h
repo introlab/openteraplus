@@ -13,7 +13,8 @@ public:
 
     QStringList     getServerNames();
     QUrl            getServerUrl(const QString &server_name);
-    QUrl            getWebServerUrl(const QString &server_name);
+
+    bool            getLogToFile();
 
     bool            showServers();
 protected:

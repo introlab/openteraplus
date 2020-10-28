@@ -1,4 +1,5 @@
 find_package(Qt5Core REQUIRED)
+find_package(Qt5Multimedia  REQUIRED)
 
 add_definitions(-DSHAREDLIB_LIBRARY)
 if (MSVC)
@@ -14,18 +15,26 @@ set(sharedlib_headers
     SharedLib.h
     Logger.h
     ConfigManager.h
+    Utils.h
     data/TeraData.h
     data/TeraSessionStatus.h
     data/TeraSessionEvent.h
+    data/TeraSessionCategory.h
+    data/TeraPreferences.h
+    data/TeraSettings.h
     WebAPI.h
 )
 
 set(sharedlib_srcs
     Logger.cpp
     ConfigManager.cpp
+    Utils.cpp
     data/TeraData.cpp
     data/TeraSessionStatus.cpp
     data/TeraSessionEvent.cpp
+    data/TeraSessionCategory.cpp
+    data/TeraPreferences.cpp
+    data/TeraSettings.cpp
 )
 
 include_directories(
@@ -39,11 +48,12 @@ qt5_wrap_cpp(sharedlib_moc_srcs ${sharedlib_headers})
 
 #compile library
 add_library(opentera_shared SHARED ${sharedlib_headers} ${sharedlib_srcs} ${sharedlib_moc_srcs})
-qt5_use_modules(opentera_shared Core Network)
+# qt5_use_modules(opentera_shared Core Network)
+
 set_target_properties(opentera_shared PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
-target_link_libraries(opentera_shared ${OPENTERA_MESSAGES_LIBS})
+target_link_libraries(opentera_shared ${OPENTERA_MESSAGES_LIBS} Qt5::Core Qt5::Multimedia)
 if (MSVC)
 target_compile_definitions(opentera_shared PUBLIC OPENTERAMESSAGES_EXPORT=__declspec\(dllimport\))
 endif(MSVC)
