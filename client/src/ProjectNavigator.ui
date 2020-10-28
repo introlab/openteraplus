@@ -61,6 +61,12 @@
           <height>24</height>
          </size>
         </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
        </widget>
       </item>
       <item>
@@ -88,11 +94,23 @@
    </item>
    <item>
     <widget class="QTreeWidget" name="treeNavigator">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
      <property name="iconSize">
       <size>
        <width>24</width>
        <height>24</height>
       </size>
+     </property>
+     <property name="rootIsDecorated">
+      <bool>true</bool>
      </property>
      <attribute name="headerVisible">
       <bool>false</bool>

@@ -32,6 +32,12 @@ QString TeraSessionEvent::getEventTypeName(const TeraSessionEvent::SessionEventT
             return tr("Événement");
         case(USER_EVENT):
             return tr("Marque");
+        case(SESSION_JOIN):
+            return tr("Arrivée");
+        case(SESSION_LEAVE):
+            return tr("Départ");
+        case(SESSION_JOIN_REFUSED):
+            return tr("Refus");
     }
 
     return tr("Inconnu");
@@ -52,11 +58,10 @@ QString TeraSessionEvent::getIconFilenameForEventType(const TeraSessionEvent::Se
         case(DEVICE_EVENT):
         case(USER_EVENT):
             return "://icons/info.png";
-
         case(SESSION_START):
-            return "://status/status_ok.png";
+            return "://icons/play.png";
         case(SESSION_STOP):
-            return "://status/status_notok.png";
+            return "://icons/stop.png";
         case(DEVICE_ON_CHARGE):
         case(DEVICE_OFF_CHARGE):
             return "://status/status_incomplete.png";
@@ -64,6 +69,12 @@ QString TeraSessionEvent::getIconFilenameForEventType(const TeraSessionEvent::Se
         case(DEVICE_LOW_BATT):
         case(DEVICE_STORAGE_LOW):
             return "://icons/warning.png";
+        case SESSION_JOIN:
+            return "://icons/join.png";
+        case SESSION_LEAVE:
+            return "://icons/leave.png";
+        case SESSION_JOIN_REFUSED:
+            return "://icons/error2.png";
 
     }
     return "";

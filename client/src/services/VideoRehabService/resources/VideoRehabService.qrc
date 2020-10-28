@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/VideoRehabService">
+        <file>html/index.html</file>
+        <file>html/css/teraplus.css</file>
+        <file>html/images/1383780689_fullscreen.png</file>
+        <file>html/images/micro_off.png</file>
+        <file>html/images/micro.png</file>
+        <file>html/images/sensors_off.png</file>
+        <file>html/images/sensors.png</file>
+        <file>html/images/settings.png</file>
+        <file>html/images/speaker_off.png</file>
+        <file>html/images/speaker.png</file>
+        <file>html/images/video_off.png</file>
+        <file>html/images/video.png</file>
+        <file>html/images/zoom_custom.png</file>
+        <file>html/images/Zoom-in1.png</file>
+        <file>html/images/Zoom-max.png</file>
+        <file>html/images/Zoom-min.png</file>
+        <file>html/images/Zoom-out1.png</file>
+        <file>html/js/teraplus.js</file>
+        <file>html/js/volume-meter.js</file>
+        <file>html/js/main_audio_test.js</file>
+    </qresource>
+</RCC>

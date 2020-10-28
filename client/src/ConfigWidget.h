@@ -29,7 +29,7 @@ private slots:
 
     void currentSectionChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void com_Waiting(bool waiting);
-    void com_NetworkError(QNetworkReply::NetworkError error, QString error_str);
+    void com_NetworkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation op);
 
 private:
 

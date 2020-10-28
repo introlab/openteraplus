@@ -3,8 +3,10 @@
 
 #include <QWidget>
 #include <QListWidgetItem>
+#include <QTreeWidgetItem>
 
 #include "DataEditorWidget.h"
+#include "ServiceConfigWidget.h"
 
 namespace Ui {
 class DeviceWidget;
@@ -23,10 +25,10 @@ public:
 private:
     Ui::DeviceWidget *ui;
 
-    QMap<int, QListWidgetItem*>  m_listSites_items;
-    QMap<int, QListWidgetItem*>  m_listDeviceSites_items;
+    QMap<int, QTreeWidgetItem*>  m_listSites_items;
+    QMap<int, QTreeWidgetItem*>  m_listProjects_items;
+    QMap<int, QTreeWidgetItem*>  m_listDeviceProjects_items;
     QMap<int, QListWidgetItem*>  m_listParticipants_items;
-    QMap<int, QListWidgetItem*>  m_listSessionTypes_items;
 
     void updateControlsState();
     void updateFieldsValue();
@@ -35,20 +37,30 @@ private:
     void connectSignals();
 
     void updateSite(TeraData *site);
+    void updateProject(TeraData * project);
     void updateParticipant(TeraData *participant);
-    void updateSessionType(TeraData *session_type);
+
+    bool validateSitesProjects();
+    QJsonArray getSelectedProjectsAsJsonArray();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
     void processSitesReply(QList<TeraData> sites);
     void processDeviceSitesReply(QList<TeraData> device_sites);
+    void processDeviceProjectsReply(QList<TeraData> device_projects);
     void processDeviceParticipantsReply(QList<TeraData> device_parts);
-    void processSessionTypesReply(QList<TeraData> session_types);
+    void processProjectsReply(QList<TeraData> projects);
 
-    void btnSave_clicked();
-    void btnUndo_clicked();
     void btnSaveSites_clicked();
 
+    void deleteDataReply(QString path, int id);
+
+    void lstSites_itemExpanded(QTreeWidgetItem* item);
+    void lstSites_itemChanged(QTreeWidgetItem* item, int column);
+
+    void on_tabNav_currentChanged(int index);
+    void on_lstParticipants_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void on_btnRemoveParticipant_clicked();
 };
 
 #endif // DEVICEWIDGET_H

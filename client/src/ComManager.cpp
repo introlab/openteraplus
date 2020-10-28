@@ -1,34 +1,30 @@
 #include "ComManager.h"
 #include <sstream>
+#include <QLocale>
 
 ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     QObject(parent),
-    m_currentUser(TERADATA_USER)
+    m_currentUser(TERADATA_USER),
+    m_currentSessionType(nullptr)
 {
+
     // Initialize communication objects
-    m_webSocket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, parent);
-    m_connectTimer.setSingleShot(true);
     m_netManager = new QNetworkAccessManager(this);
     m_netManager->setCookieJar(&m_cookieJar);
 
+    m_webSocketMan = new WebSocketManager();
+
     // Setup signals and slots
-    // Websocket
-    connect(m_webSocket, &QWebSocket::connected, this, &ComManager::onSocketConnected);
-    connect(m_webSocket, &QWebSocket::disconnected, this, &ComManager::onSocketDisconnected);
-    connect(m_webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
-    connect(m_webSocket, &QWebSocket::sslErrors, this, &ComManager::onSocketSslErrors);
-    connect(m_webSocket, &QWebSocket::textMessageReceived, this, &ComManager::onSocketTextMessageReceived);
-    connect(m_webSocket, &QWebSocket::binaryMessageReceived, this, &ComManager::onSocketBinaryMessageReceived);
+    // Websocket manager
+    connect(m_webSocketMan, &WebSocketManager::serverDisconnected, this, &ComManager::serverDisconnected); // Pass-thru signal
+    connect(m_webSocketMan, &WebSocketManager::websocketError, this, &ComManager::socketError); // Pass-thru signal
+    connect(m_webSocketMan, &WebSocketManager::loginResult, this, &ComManager::onWebSocketLoginResult);
 
     // Network manager
     connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &ComManager::onNetworkAuthenticationRequired);
     connect(m_netManager, &QNetworkAccessManager::encrypted, this, &ComManager::onNetworkEncrypted);
     connect(m_netManager, &QNetworkAccessManager::finished, this, &ComManager::onNetworkFinished);
-    connect(m_netManager, &QNetworkAccessManager::networkAccessibleChanged, this, &ComManager::onNetworkAccessibleChanged);
     connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ComManager::onNetworkSslErrors);
-
-    // Other objects
-    connect(&m_connectTimer, &QTimer::timeout, this, &ComManager::onTimerConnectTimeout);
 
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
@@ -37,17 +33,19 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
 
 ComManager::~ComManager()
 {
-    m_webSocket->deleteLater();
+    m_webSocketMan->disconnectWebSocket();
+    m_webSocketMan->deleteLater();
+    if (m_currentSessionType)
+        delete m_currentSessionType;
 }
 
 void ComManager::connectToServer(QString username, QString password)
 {
-    qDebug() << "ComManager::Connecting to " << m_serverUrl.toString();
+    LOG_DEBUG("ComManager::Connecting to " + m_serverUrl.toString(), "ComManager::connectToServer");
 
-    m_username = username;
-    m_password = password;
+    setCredentials(username, password);
 
-    m_loggingInProgress = true; // Indicate that a login request was sent, but not processed
+    m_loggingInProgress = true;     // Indicate that a login request was sent, but not processed
 
     doQuery(QString(WEB_LOGIN_PATH));
 
@@ -56,6 +54,10 @@ void ComManager::connectToServer(QString username, QString password)
 void ComManager::disconnectFromServer()
 {
     doQuery(QString(WEB_LOGOUT_PATH));
+    m_webSocketMan->disconnectWebSocket();
+
+    clearCurrentUser();
+    m_settedCredentials = false;
 }
 
 bool ComManager::processNetworkReply(QNetworkReply *reply)
@@ -63,7 +65,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
     QString reply_path = reply->url().path();
     QString reply_data = reply->readAll();
     QUrlQuery reply_query = QUrlQuery(reply->url().query());
-    //qDebug() << reply_path << " ---> " << reply_data << ": " << reply_query;
+    //qDebug() << reply_path << " ---> " << reply_data << ": " << reply->url().query();
 
     bool handled = false;
 
@@ -71,8 +73,12 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
         if (reply_path == WEB_LOGIN_PATH){
             // Initialize cookies
             m_cookieJar.cookiesForUrl(reply->url());
-
             handled=handleLoginReply(reply_data);
+        }
+
+        if (m_loggingInProgress && !handled){
+            // While not logged in, wait for user and user prefs
+            handled = handleLoginSequence(reply_path, reply_data, reply_query);
         }
 
         if (reply_path == WEB_LOGOUT_PATH){
@@ -85,7 +91,8 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
             if (handled) emit queryResultsOK(reply_path, reply_query);
         }
 
-        if (reply_path == WEB_DEVICEDATAINFO_PATH && reply_query.hasQueryItem(WEB_QUERY_DOWNLOAD)){
+
+        /*if (reply_path == WEB_DEVICEDATAINFO_PATH && reply_query.hasQueryItem(WEB_QUERY_DOWNLOAD)){
             //qDebug() << "Download complete.";
             handled = true;
 
@@ -95,7 +102,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
                 emit downloadCompleted(file);
                 file->deleteLater();
             }
-        }
+        }*/
 
         if (!handled){
             // General case
@@ -105,8 +112,14 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
     }
 
     if (reply->operation()==QNetworkAccessManager::PostOperation){
-        handled=handleDataReply(reply_path, reply_data, reply_query);
-        if (handled) emit postResultsOK(reply_path);
+        if (reply_path == WEB_SESSIONMANAGER_PATH){
+            handled = handleSessionManagerReply(reply_data, reply_query);
+        }
+
+        if (!handled){
+            handled=handleDataReply(reply_path, reply_data, reply_query);
+            if (handled) emit postResultsOK(reply_path);
+        }
     }
 
     if (reply->operation()==QNetworkAccessManager::DeleteOperation){
@@ -130,10 +143,20 @@ void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
     if (!query_args.isEmpty()){
         query.setQuery(query_args);
     }
-    m_netManager->get(QNetworkRequest(query));
-    emit waitingForReply(true);
+    QNetworkRequest request(query);
 
-    LOG_DEBUG("GET: " + path + ", with " + query_args.toString(), "ComManager::doQuery");
+    setRequestCredentials(request);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
+    m_netManager->get(request);
+    emit waitingForReply(true);
+    emit querying(path);
+
+    if (!query_args.isEmpty())
+        LOG_DEBUG("GET: " + path + " with " + query_args.toString(), "ComManager::doQuery");
+    else
+        LOG_DEBUG("GET: " + path, "ComManager::doQuery");
 }
 
 void ComManager::doPost(const QString &path, const QString &post_data)
@@ -142,11 +165,22 @@ void ComManager::doPost(const QString &path, const QString &post_data)
 
     query.setPath(path);
     QNetworkRequest request(query);
+    setRequestCredentials(request);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
     request.setRawHeader("Content-Type", "application/json");
+
     m_netManager->post(request, post_data.toUtf8());
     emit waitingForReply(true);
+    emit posting(path, post_data);
 
+#ifndef QT_NO_DEBUG
     LOG_DEBUG("POST: " + path + ", with " + post_data, "ComManager::doPost");
+#else
+    // Strip data from logging in release, since this might contains passwords!
+    LOG_DEBUG("POST: " + path, "ComManager::doPost");
+#endif
 }
 
 void ComManager::doDelete(const QString &path, const int &id)
@@ -156,14 +190,28 @@ void ComManager::doDelete(const QString &path, const int &id)
     query.setPath(path);
     query.setQuery("id=" + QString::number(id));
     QNetworkRequest request(query);
+    setRequestCredentials(request);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
     m_netManager->deleteResource(request);
     emit waitingForReply(true);
+    emit deleting(path);
+
     LOG_DEBUG("DELETE: " + path + ", with id=" + QString::number(id), "ComManager::doDelete");
 }
 
 void ComManager::doUpdateCurrentUser()
 {
-    doQuery(QString(WEB_USERINFO_PATH), QUrlQuery("user_uuid=" + m_currentUser.getFieldValue("user_uuid").toUuid().toString(QUuid::WithoutBraces)));
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_SELF, "");
+    args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1");
+    doQuery(QString(WEB_USERINFO_PATH), args);
+
+    // Update preferences
+    args.clear();
+    args.addQueryItem(WEB_QUERY_APPTAG, APPLICATION_TAG);
+    doQuery(WEB_USERPREFSINFO_PATH, args);
 }
 
 void ComManager::doDownload(const QString &save_path, const QString &path, const QUrlQuery &query_args)
@@ -174,7 +222,13 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     if (!query_args.isEmpty()){
         query.setQuery(query_args);
     }
-    QNetworkReply* reply = m_netManager->get(QNetworkRequest(query));
+
+    QNetworkRequest request(query);
+    setRequestCredentials(request);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
+    QNetworkReply* reply = m_netManager->get(request);
     if (reply){
         DownloadedFile* file_to_download = new DownloadedFile(reply, save_path);
         m_currentDownloads[reply] = file_to_download;
@@ -187,12 +241,182 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     LOG_DEBUG("DOWNLOADING: " + path + ", with " + query_args.toString() + ", to " + save_path, "ComManager::doQuery");
 }
 
+void ComManager::startSession(const TeraData &session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list, const QJsonDocument &session_config)
+{
+    if (session_type.getDataType() != TERADATA_SESSIONTYPE){
+        LOG_ERROR("Received an invalid session_type object", "ComManager::startSession");
+        return;
+    }
+
+    if (m_currentSessionType){
+        LOG_WARNING("Tried to start a session, but already one started.", "ComManager::startSession");
+        m_currentSessionType->deleteLater();
+        m_currentSessionType = nullptr;
+    }
+
+    TeraSessionCategory::SessionTypeCategories session_type_category = static_cast<TeraSessionCategory::SessionTypeCategories>(session_type.getFieldValue("session_type_category").toInt());
+
+    // Do the correct request to server, depending on the type of the session we want to start
+    switch(session_type_category){
+    case TeraSessionCategory::SESSION_TYPE_SERVICE:
+       {
+        QJsonDocument document;
+        QJsonObject base_obj;
+
+        QJsonObject item_obj;
+        item_obj.insert("id_service", session_type.getFieldValue("id_service").toInt());
+        item_obj.insert("id_session", id_session);
+        item_obj.insert("id_session_type", session_type.getId());
+        item_obj.insert("action", "start");
+        item_obj.insert("parameters", session_type.getFieldValue("session_type_config").toString());
+
+        // Devices
+        if (!devices_list.isEmpty()){
+            QJsonArray devices;
+            for(QString device_uuid:devices_list){
+                devices.append(QJsonValue(device_uuid));
+            }
+            item_obj.insert("session_devices", devices);
+        }
+
+        // Participants
+        if (!participants_list.isEmpty()){
+            QJsonArray participants;
+            for(QString part_uuid:participants_list){
+                participants.append(QJsonValue(part_uuid));
+            }
+            item_obj.insert("session_participants", participants);
+        }
+
+        // Always add the current user to the list
+        QStringList current_users_list = users_list;
+        if (!current_users_list.contains(m_currentUser.getUuid()))
+            current_users_list.append(m_currentUser.getUuid());
+
+        if (!current_users_list.isEmpty()){
+            QJsonArray users;
+            for(QString user_uuid:current_users_list){
+                users.append(QJsonValue(user_uuid));
+            }
+            item_obj.insert("session_users", users);
+        }
+
+        // Update query
+        base_obj.insert("session_manage", item_obj);
+        document.setObject(base_obj);
+        doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+        }
+        break;
+    default:
+        // TODO: Manage other service category types
+        break;
+    }
+
+    m_currentSessionType = new TeraData(session_type);
+    m_currentSessionConfig = session_config;
+    emit sessionStartRequested(session_type);
+}
+
+void ComManager::joinSession(const TeraData &session_type, const int &id_session)
+{
+    if (session_type.getDataType() != TERADATA_SESSIONTYPE){
+        LOG_ERROR("Received an invalid session_type object", "ComManager::joinSession");
+        return;
+    }
+
+    if (m_currentSessionType){
+        LOG_WARNING("Tried to join a session, but already one in progress.", "ComManager::joinSession");
+        m_currentSessionType->deleteLater();
+        m_currentSessionType = nullptr;
+    }
+
+    m_currentSessionType = new TeraData(session_type);
+    emit sessionStarted(session_type, id_session);
+
+}
+
+void ComManager::stopSession(const TeraData &session, const int &id_service)
+{
+    if (session.getDataType() != TERADATA_SESSION)
+        LOG_ERROR("Received an invalid session object", "ComManager::stopSession");
+
+    if (id_service > 0){
+        // Do a request to stop the current session on the service
+        QJsonDocument document;
+        QJsonObject base_obj;
+
+        QJsonObject item_obj;
+        item_obj.insert("id_service", id_service);
+        item_obj.insert("id_session", session.getId());
+        item_obj.insert("action", "stop");
+
+        // Update query
+        base_obj.insert("session_manage", item_obj);
+        document.setObject(base_obj);
+        doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+    }else{
+        // Changes the session status only.
+        delete m_currentSessionType;
+        m_currentSessionType = nullptr;
+        m_currentSessionConfig = QJsonDocument();
+    }
+}
+
+void ComManager::leaveSession(const int &id_session, bool signal_server)
+{
+    if (signal_server){
+        QJsonDocument document;
+        QJsonObject base_obj;
+
+        QJsonObject item_obj;
+        item_obj.insert("id_session", id_session);
+        item_obj.insert("action", "remove");
+
+        // Add ourself to the list
+        QJsonArray users;
+        users.append(QJsonValue(m_currentUser.getUuid()));
+        item_obj.insert("session_users", users);
+
+        // Update query
+        base_obj.insert("session_manage", item_obj);
+        document.setObject(base_obj);
+        doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+    }
+    emit sessionStopped(id_session);
+}
+
+void ComManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+
+    QJsonObject item_obj;
+    item_obj.insert("session_uuid", session_uuid);
+    item_obj.insert("action", "invite_reply");
+    QJsonObject parameters;
+    parameters.insert("reply_code", reply_type);
+    if (!join_msg.isEmpty())
+        parameters.insert("reply_msg", join_msg);
+    item_obj.insert("parameters", parameters);
+
+    // Update query
+    base_obj.insert("session_manage", item_obj);
+    document.setObject(base_obj);
+
+    doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
+}
+
 TeraData &ComManager::getCurrentUser()
 {
     return m_currentUser;
 }
 
-QString ComManager::getCurrentUserSiteRole(int site_id)
+TeraPreferences &ComManager::getCurrentPreferences()
+{
+   return m_currentPreferences;
+}
+
+QString ComManager::getCurrentUserSiteRole(const int &site_id)
 {
     QString rval = "";
 
@@ -214,7 +438,7 @@ QString ComManager::getCurrentUserSiteRole(int site_id)
     return rval;
 }
 
-QString ComManager::getCurrentUserProjectRole(int project_id)
+QString ComManager::getCurrentUserProjectRole(const int &project_id)
 {
     QString rval = "";
 
@@ -236,6 +460,16 @@ QString ComManager::getCurrentUserProjectRole(int project_id)
     return rval;
 }
 
+bool ComManager::isCurrentUserProjectAdmin(const int &project_id)
+{
+    return getCurrentUserProjectRole(project_id) == "admin";
+}
+
+bool ComManager::isCurrentUserSiteAdmin(const int &site_id)
+{
+    return getCurrentUserSiteRole(site_id) == "admin";
+}
+
 bool ComManager::isCurrentUserSuperAdmin()
 {
     bool rval = false;
@@ -250,6 +484,24 @@ bool ComManager::hasPendingDownloads()
     return !m_currentDownloads.isEmpty();
 }
 
+void ComManager::setCredentials(const QString &username, const QString &password)
+{
+    m_username = username;
+    m_password = password;
+
+    m_settedCredentials = false;  // Credentials were changed, must update on next request
+}
+
+QUrl ComManager::getServerUrl() const
+{
+    return m_serverUrl;
+}
+
+WebSocketManager *ComManager::getWebSocketManager()
+{
+    return m_webSocketMan;
+}
+
 ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTypes &data_type)
 {
     switch(data_type){
@@ -258,6 +510,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return nullptr;
     case TERADATA_USER:
         return &ComManager::usersReceived;
+    case TERADATA_USERGROUP:
+        return &ComManager::userGroupsReceived;
     case TERADATA_SITE:
         return &ComManager::sitesReceived;
     case TERADATA_SESSIONTYPE:
@@ -278,12 +532,30 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::projectAccessReceived;
     case TERADATA_SESSION:
         return &ComManager::sessionsReceived;
+    case TERADATA_DEVICESUBTYPE:
+        return &ComManager::deviceSubtypesReceived;
+    case TERADATA_DEVICETYPE:
+        return &ComManager::deviceTypesReceived;
+    case TERADATA_SERVICE:
+        return &ComManager::servicesReceived;
+    case TERADATA_SERVICE_ACCESS:
+        return &ComManager::servicesAccessReceived;
+    case TERADATA_SERVICE_PROJECT:
+        return &ComManager::servicesProjectsReceived;
+    case TERADATA_SESSIONTYPEPROJECT:
+        return &ComManager::sessionTypesProjectsReceived;
+    case TERADATA_SERVICE_CONFIG:
+        return &ComManager::servicesConfigReceived;
     default:
         LOG_WARNING("Signal for object " + TeraData::getDataTypeName(data_type) + " unspecified.", "ComManager::getSignalFunctionForDataType");
         return nullptr;
     }
 }
 
+QJsonDocument ComManager::getCurrentSessionConfig()
+{
+    return m_currentSessionConfig;
+}
 
 bool ComManager::handleLoginReply(const QString &reply_data)
 {
@@ -295,15 +567,71 @@ bool ComManager::handleLoginReply(const QString &reply_data)
         return false;
 
     // Connect websocket
+    QString user_uuid = login_info["user_uuid"].toString();
     QString web_socket_url = login_info["websocket_url"].toString();
-    m_connectTimer.setInterval(60000); //TODO: Reduce this delay - was set that high because of the time required to connect in MAC OS
-    m_connectTimer.start();
-    m_webSocket->open(QUrl(web_socket_url));
+    m_webSocketMan->connectWebSocket(web_socket_url, user_uuid);
 
     // Query connected user information
-    QString user_uuid = login_info["user_uuid"].toString();
-    m_currentUser.setFieldValue("user_uuid", QUuid(user_uuid));
-    doUpdateCurrentUser();
+
+    m_currentUser.setFieldValue("user_uuid", user_uuid);
+    //doUpdateCurrentUser();
+
+    // Query versions informations
+    doQuery(WEB_VERSIONSINFO_PATH);
+
+    return true;
+}
+
+bool ComManager::handleLoginSequence(const QString &reply_path, const QString &reply_data, const QUrlQuery &reply_query)
+{
+    QJsonParseError json_error;
+
+    // Process reply
+    QString data_str = filterReplyString(reply_data);
+
+    QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
+    if (json_error.error!= QJsonParseError::NoError){
+        LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "ComManager::handleDataReply");
+        return false;
+    }
+
+    // Versions information reply
+    if (reply_path == WEB_VERSIONSINFO_PATH){
+        return handleVersionsReply(data_list);
+    }
+
+    QList<TeraData> items;
+    TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
+
+    if (items_type != TERADATA_USER && items_type != TERADATA_USERPREFERENCE)
+        return false;
+
+    QJsonValue data = data_list.array().first();
+
+    if (items_type == TERADATA_USER){
+        TeraData item_data(items_type, data);
+        updateCurrentUser(item_data);
+    }
+
+    if (items_type == TERADATA_USERPREFERENCE){
+        if (data.isUndefined()){
+            // No preference for that user, will use default.
+            m_currentPreferences.setSet(true);
+        }else{
+            TeraData item_data(items_type, data);
+            updateCurrentPrefs(item_data);
+        }
+    }
+
+    // Check if we received current user and preference, when login, before emitting signal
+    if (m_loggingInProgress){
+        //qDebug() << "Still logging in...";
+        if (m_currentPreferences.isSet()){
+            //qDebug() << "All set!";
+            emit loginResult(true);
+            m_loggingInProgress = false;
+        }
+    }
 
     return true;
 }
@@ -313,23 +641,47 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     QJsonParseError json_error;
 
     // Process reply
-    QJsonDocument data_list = QJsonDocument::fromJson(reply_data.toUtf8(), &json_error);
-    if (json_error.error!= QJsonParseError::NoError)
+    QString data_str = filterReplyString(reply_data);
+
+    QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
+    if (json_error.error!= QJsonParseError::NoError){
+        LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "ComManager::handleDataReply");
         return false;
+    }
+
+    // Versions information reply
+    if (reply_path == WEB_VERSIONSINFO_PATH){
+        return handleVersionsReply(data_list);
+    }
 
     // Browse each items received
     QList<TeraData> items;
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
-    for (QJsonValue data:data_list.array()){
-        TeraData item_data(items_type, data);
+    if (data_list.isArray()){
+        for (QJsonValue data:data_list.array()){
+            TeraData item_data(items_type, data);
 
-        // Check if the currently connected user was updated and not requesting a list (limited information)
-        if (items_type == TERADATA_USER){
-            if (m_currentUser.getFieldValue("user_uuid").toUuid() == item_data.getFieldValue("user_uuid").toUuid() &&
-                    !reply_query.hasQueryItem(WEB_QUERY_LIST)){
-                m_currentUser = item_data;
-                emit currentUserUpdated();
+            // Check if the currently connected user was updated and not requesting a list (limited information)
+            if (items_type == TERADATA_USER){
+                if (!reply_query.hasQueryItem(WEB_QUERY_LIST))
+                    updateCurrentUser(item_data);
             }
+
+            // Check if we received user preferences that need to be updated
+            if (items_type == TERADATA_USERPREFERENCE){
+                updateCurrentPrefs(item_data);
+            }
+
+            items.append(item_data);
+        }
+    }else{
+        TeraData item_data(items_type, data_list.object());
+        if (items_type == TERADATA_USER){
+            if (!reply_query.hasQueryItem(WEB_QUERY_LIST))
+                updateCurrentUser(item_data);
+        }
+        if (items_type == TERADATA_USERPREFERENCE){
+            updateCurrentPrefs(item_data);
         }
         items.append(item_data);
     }
@@ -340,55 +692,91 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         LOG_ERROR("Unknown object - don't know what to do with it.", "ComManager::handleDataReply");
         break;
     case TERADATA_USER:
-        emit usersReceived(items);
+        emit usersReceived(items, reply_query);
+        break;
+    case TERADATA_USERGROUP:
+        emit userGroupsReceived(items, reply_query);
+        break;
+    case TERADATA_USERUSERGROUP:
+        emit userUserGroupsReceived(items, reply_query);
+        break;
+    case TERADATA_USERPREFERENCE:
+        emit userPreferencesReceived(items, reply_query);
         break;
     case TERADATA_SITE:
-        emit sitesReceived(items);
+        emit sitesReceived(items, reply_query);
         break;
     case TERADATA_SESSIONTYPE:
-        emit sessionTypesReceived(items);
+        emit sessionTypesReceived(items, reply_query);
         break;
     case TERADATA_TESTDEF:
-        emit testDefsReceived(items);
+        emit testDefsReceived(items, reply_query);
         break;
     case TERADATA_PROJECT:
-        emit projectsReceived(items);
+        emit projectsReceived(items, reply_query);
         break;
     case TERADATA_DEVICE:
-        emit devicesReceived(items);
+        emit devicesReceived(items, reply_query);
         break;
     case TERADATA_PARTICIPANT:
-        emit participantsReceived(items);
+        emit participantsReceived(items, reply_query);
         break;
     case TERADATA_GROUP:
-        emit groupsReceived(items);
+        emit groupsReceived(items, reply_query);
         break;
     case TERADATA_SITEACCESS:
-        emit siteAccessReceived(items);
+        emit siteAccessReceived(items, reply_query);
         break;
     case TERADATA_PROJECTACCESS:
-        emit projectAccessReceived(items);
+        emit projectAccessReceived(items, reply_query);
         break;
     case TERADATA_SESSION:
-        emit sessionsReceived(items);
+        emit sessionsReceived(items, reply_query);
         break;
     case TERADATA_DEVICESITE:
-        emit deviceSitesReceived(items);
+        emit deviceSitesReceived(items, reply_query);
+        break;
+    case TERADATA_DEVICEPROJECT:
+        emit deviceProjectsReceived(items, reply_query);
         break;
     case TERADATA_DEVICEPARTICIPANT:
-        emit deviceParticipantsReceived(items);
+        emit deviceParticipantsReceived(items, reply_query);
         break;
-    case TERADATA_SESSIONTYPEDEVICETYPE:
-        emit sessionTypesDeviceTypesReceived(items);
+    case TERADATA_DEVICESUBTYPE:
+        emit deviceSubtypesReceived(items, reply_query);
         break;
-    case TERADATA_DEVICEDATA:
-        emit deviceDatasReceived(items);
+    case TERADATA_DEVICETYPE:
+        emit deviceTypesReceived(items, reply_query);
         break;
     case TERADATA_SESSIONTYPEPROJECT:
-        emit sessionTypesProjectsReceived(items);
+        emit sessionTypesProjectsReceived(items, reply_query);
         break;
     case TERADATA_SESSIONEVENT:
-        emit sessionEventsReceived(items);
+        emit sessionEventsReceived(items, reply_query);
+        break;
+    case TERADATA_SERVICE:
+        emit servicesReceived(items, reply_query);
+        break;
+    case TERADATA_SERVICE_PROJECT:
+        emit servicesProjectsReceived(items, reply_query);
+        break;
+    case TERADATA_SERVICE_ACCESS:
+        emit servicesAccessReceived(items, reply_query);
+        break;
+    case TERADATA_SERVICE_CONFIG:
+        emit servicesConfigReceived(items, reply_query);
+    case TERADATA_STATS:
+        if (items.count() > 0)
+            emit statsReceived(items.first(), reply_query);
+        break;
+    case TERADATA_ONLINE_DEVICE:
+        emit onlineDevicesReceived(items, reply_query);
+        break;
+    case TERADATA_ONLINE_PARTICIPANT:
+        emit onlineParticipantsReceived(items, reply_query);
+        break;
+    case TERADATA_ONLINE_USER:
+        emit onlineUsersReceived(items, reply_query);
         break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/
@@ -396,9 +784,80 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     }
 
     // Always emit generic signal
-    emit dataReceived(items);
+    emit dataReceived(items_type, items, reply_query);
 
     return true;
+}
+
+bool ComManager::handleSessionManagerReply(const QString &reply_data, const QUrlQuery &reply_query)
+{
+    if (!m_currentSessionType){
+        LOG_WARNING("Received a Session Manager reply, but no session type was defined", "ComManager::handleSessionManagerReply");
+        return false;
+    }
+    QJsonParseError json_error;
+
+    // Process reply
+    QString data_str = filterReplyString(reply_data);
+
+    // Convert reply to json structure
+    QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
+    if (json_error.error!= QJsonParseError::NoError){
+        LOG_ERROR("Received a JSON string from SessionManager with " + reply_query.toString() + " with error: " + json_error.errorString(), "ComManager::handleSessionManagerReply");
+        return false;
+    }
+
+    // Check the status in the reply
+    QJsonObject reply_json = data_list.object();
+    if (reply_json.contains("status")){
+        QString status = reply_json["status"].toString();
+        if (status == "started"){
+            if (reply_json.contains("session")){
+                QJsonObject session_obj = reply_json["session"].toObject();
+                if (session_obj.contains("id_session")){
+                    emit sessionStarted(*m_currentSessionType, session_obj["id_session"].toInt());
+                }else{
+                    LOG_WARNING("Received a start session event, but no id_session into it", "ComManager::handleSessionManagerReply");
+                }
+            }else{
+                LOG_ERROR("Received 'started' status but without any session", "ComManager::handleSessionManagerReply");
+            }
+            return true;
+        }
+
+        if (status == "stopped"){
+            if (reply_json.contains("session")){
+                QJsonObject session_obj = reply_json["session"].toObject();
+                //qDebug() << reply_json;
+                if (session_obj.contains("id_session")){
+                    emit sessionStopped(session_obj["id_session"].toInt());
+                }else{
+                    LOG_WARNING("Received a stop session event, but no id_session into it", "ComManager::handleSessionManagerReply");
+                }
+            }else{
+                LOG_ERROR("Received 'stopped' status but without any session", "ComManager::handleSessionManagerReply");
+            }
+            // Delete current session type infos
+            m_currentSessionType->deleteLater();
+            m_currentSessionType = nullptr;
+            return true;
+        }
+
+        if (status == "error"){
+            QString err_msg = tr("Erreur inconnue");
+            if (reply_json.contains("error_text")){
+                err_msg = reply_json["error_text"].toString();
+            }
+            emit sessionError(err_msg);
+            return true;
+        }
+    }else{
+        LOG_ERROR("Received a Session Manager reply, but no status in it.", "ComManager::handleSessionManagerReply");
+        return false;
+    }
+
+    return true; // Consider all other unmanaged messages to be handled for now!
+
 }
 
 bool ComManager::handleFormReply(const QUrlQuery &reply_query, const QString &reply_data)
@@ -407,57 +866,82 @@ bool ComManager::handleFormReply(const QUrlQuery &reply_query, const QString &re
     return true;
 }
 
-
-//////////////////////////////////////////////////////////////////////
-void ComManager::onSocketError(QAbstractSocket::SocketError error)
+bool ComManager::handleVersionsReply(const QJsonDocument &version_data)
 {
-    qDebug() << "ComManager::Socket error - " << error;
-    emit serverError(error, m_webSocket->errorString());
+    QJsonObject clients = version_data["clients"].toObject();
+    if (!clients.isEmpty()){
+        QJsonObject openteraplus = clients["OpenTeraPlus"].toObject();
+        if (!openteraplus.isEmpty()){
+            QString current_client_version = openteraplus["client_version"].toString();
+            if (current_client_version != OPENTERAPLUS_VERSION){
+                // New version available... maybe!
+                QString current_version_url;
+#ifdef Q_OS_WIN
+                current_version_url = openteraplus["client_windows_download_url"].toString();
+#endif
+#ifdef Q_OS_LINUX
+                current_version_url = openteraplus["client_linux_download_url"].toString();
+#endif
+#ifdef Q_OS_MACOS
+                current_version_url = openteraplus["client_mac_download_url"].toString();
+#endif
+                emit newVersionAvailable(current_client_version, current_version_url);
+            }
+        }
+    }
+    return true;
 }
 
-void ComManager::onSocketConnected()
+void ComManager::updateCurrentUser(const TeraData &user_data)
 {
-    m_connectTimer.stop();
-    emit loginResult(true); // Logged in
+    //qDebug() << "ComManager::updateCurrentUser";
+    if (m_currentUser.getUuid() == user_data.getUuid()){
+        // Update fields that we received with the new values
+        //qDebug() << "Updating user...";
+        m_currentUser.updateFrom(user_data);
+        emit currentUserUpdated();
+    }
 }
 
-void ComManager::onSocketDisconnected()
+void ComManager::updateCurrentPrefs(const TeraData &user_prefs)
 {
-    m_connectTimer.stop();
-    qDebug() << "ComManager::Disconnected from " << m_serverUrl.toString();
-    emit serverDisconnected();
+    //qDebug() << "ComManager::updateCurrentPrefs";
+
+    if ((!m_currentUser.hasFieldName("id_user") || m_currentUser.getId() == user_prefs.getFieldValue("id_user").toInt())
+         && user_prefs.getFieldValue("user_preference_app_tag").toString() == APPLICATION_TAG){
+        // Update preferences
+        //qDebug() << "Updating preferences...";
+        m_currentPreferences.load(user_prefs);
+        emit preferencesUpdated();
+    }
 }
 
-void ComManager::onSocketSslErrors(const QList<QSslError> &errors)
+void ComManager::clearCurrentUser()
 {
-    Q_UNUSED(errors)
-
-    // WARNING: Never ignore SSL errors in production code.
-    // The proper way to handle self-signed certificates is to add a custom root
-    // to the CA store.
-    qDebug() << "ComManager::SSlErrors " << errors;
-    m_webSocket->ignoreSslErrors();
+    m_currentPreferences.clear();
+    m_currentUser = TeraData(TERADATA_USER);
 }
 
-void ComManager::onSocketTextMessageReceived(const QString &message)
+QString ComManager::filterReplyString(const QString &data_str)
 {
-    LOG_DEBUG(message, "ComManager::onSocketTextMessageReceived");
+    QString filtered_str = data_str;
+    if (data_str.isEmpty() || data_str == "\n" || data_str == "null\n")
+        filtered_str = "[]"; // Replace empty string with empty list!
+
+    return filtered_str;
 }
 
-void ComManager::onSocketBinaryMessageReceived(const QByteArray &message)
-{
-    Q_UNUSED(message)
-}
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
     Q_UNUSED(reply)
-    if (m_loggingInProgress){
+    if (!m_settedCredentials){
         LOG_DEBUG("Sending authentication request...", "ComManager::onNetworkAuthenticationRequired");
         authenticator->setUser(m_username);
         authenticator->setPassword(m_password);
-        m_loggingInProgress = false; // Not logging anymore - we sent the credentials
+        m_settedCredentials = true; // We setted the credentials in authentificator
     }else{
         LOG_DEBUG("Authentication error", "ComManager::onNetworkAuthenticationRequired");
         emit loginResult(false);
@@ -486,21 +970,18 @@ void ComManager::onNetworkFinished(QNetworkReply *reply)
             //reply_msg = tr("Erreur non-détaillée.");
             reply_msg = reply->errorString();
         }
-        qDebug() << "ComManager::onNetworkFinished - Reply error: " << reply->error() << ", Reply message: " << reply_msg;
+
+        int status_code = -1;
+        if (reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).isValid())
+            status_code = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        //qDebug() << "ComManager::onNetworkFinished - Reply error: " << reply->error() << ", Reply message: " << reply_msg;
+        LOG_ERROR("ComManager::onNetworkFinished - Reply error: " + reply->errorString() + ", Reply message: " + reply_msg, "ComManager::onNetworkFinished");
         /*if (reply_msg.isEmpty())
             reply_msg = reply->errorString();*/
-        emit networkError(reply->error(), reply_msg);
+        emit networkError(reply->error(), reply_msg, reply->operation(), status_code);
     }
 
     reply->deleteLater();
-}
-
-void ComManager::onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible)
-{
-    Q_UNUSED(accessible)
-
-    qDebug() << "ComManager::onNetworkAccessibleChanged";
-    //TODO: Emit signal
 }
 
 void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
@@ -514,13 +995,40 @@ void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError>
     }
 }
 
-void ComManager::onTimerConnectTimeout()
+void ComManager::onWebSocketLoginResult(bool logged_in)
 {
-    // Connection timeout
-    if (m_webSocket){
-        qDebug() << "ComManager::onTimerConnectTimeout()";
-        m_webSocket->abort();
-        emit serverError(QAbstractSocket::SocketTimeoutError, tr("Le serveur ne répond pas."));
+    if (!logged_in){
+        clearCurrentUser();
+        emit loginResult(logged_in);
+        return;
     }
 
+    doUpdateCurrentUser();
+}
+
+
+void ComManager::setRequestLanguage(QNetworkRequest &request) {
+    //Locale will be initialized with default locale
+    QString localeString = QLocale().bcp47Name();
+    //qDebug() << "localeString : " << localeString;
+    request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
+}
+
+void ComManager::setRequestCredentials(QNetworkRequest &request)
+{
+    //Needed?
+    request.setAttribute(QNetworkRequest::AuthenticationReuseAttribute, false);
+
+    // Pack in credentials
+    QString concatenatedCredentials = m_username + ":" + m_password;
+    QByteArray data = concatenatedCredentials.toLocal8Bit().toBase64();
+    QString headerData = "Basic " + data;
+    request.setRawHeader( "Authorization", headerData.toLocal8Bit() );
+
+}
+
+void ComManager::setRequestVersions(QNetworkRequest &request)
+{
+    request.setRawHeader("X-Client-Name", QByteArray(OPENTERAPLUS_CLIENT_NAME));
+    request.setRawHeader("X-Client-Version", QByteArray(OPENTERAPLUS_VERSION));
 }

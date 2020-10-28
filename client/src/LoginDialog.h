@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QMovie>
+#include "TeraSettings.h"
 
 namespace Ui {
 class LoginDialog;

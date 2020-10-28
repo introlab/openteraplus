@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>defaults/TeraClientConfig.txt</file>
         <file>logos/Estrad.png</file>
         <file>logos/IntRoLab.png</file>
         <file>logos/LOGO Transparent.png</file>
@@ -84,5 +83,54 @@
         <file>icons/device_online.png</file>
         <file>stylesheet.qss</file>
         <file>icons/info.png</file>
+        <file>icons/camera.png</file>
+        <file>icons/navtree.png</file>
+        <file>icons/history.png</file>
+        <file>icons/config.png</file>
+        <file>icons/dashboard.png</file>
+        <file>icons/details.png</file>
+        <file>icons/password.png</file>
+        <file>icons/server.png</file>
+        <file>icons/email.png</file>
+        <file>controls/check_off.png</file>
+        <file>controls/check_on.png</file>
+        <file>controls/check2_off_disabled.png</file>
+        <file>controls/check2_off.png</file>
+        <file>controls/check2_on_disabled.png</file>
+        <file>controls/check2_on.png</file>
+        <file>controls/check_on_disabled.png</file>
+        <file>controls/check_off_disabled.png</file>
+        <file>icons/download.png</file>
+        <file>icons/session_type.png</file>
+        <file>icons/service.png</file>
+        <file>icons/stop.png</file>
+        <file>status/session_loading.gif</file>
+        <file>icons/software_user_offline.png</file>
+        <file>icons/software_user_online.png</file>
+        <file>controls/radio-off.png</file>
+        <file>controls/radio-on.png</file>
+        <file>translations/openteraplus_en.qm</file>
+        <file>translations/openteraplus_fr.qm</file>
+        <file>icons/play.png</file>
+        <file>icons/view_off.png</file>
+        <file>icons/view_on.png</file>
+        <file>status/status_unknown.png</file>
+        <file>status/status_online.png</file>
+        <file>status/status_offline.png</file>
+        <file>sounds/notify_offline.wav</file>
+        <file>sounds/notify_online.wav</file>
+        <file>status/status_busy.png</file>
+        <file>icons/software_user_offline_busy.png</file>
+        <file>icons/software_user_online_busy.png</file>
+        <file>icons/device_installed_busy.png</file>
+        <file>icons/device_online_busy.png</file>
+        <file>icons/patient_installed_busy.png</file>
+        <file>icons/ok2.png</file>
+        <file>icons/join.png</file>
+        <file>icons/leave.png</file>
+        <file>icons/error2.png</file>
+        <file>icons/smile.png</file>
+        <file>defaults/OpenTeraPlus.json</file>
+        <file>sounds/notify_invite.wav</file>
     </qresource>
 </RCC>

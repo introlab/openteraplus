@@ -7,18 +7,18 @@
     <x>0</x>
     <y>0</y>
     <width>291</width>
-    <height>133</height>
+    <height>144</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>OpenTeraPlus Notification</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget#NotifyWindow {background-color: rgb(49,49,49);border-style:solid;border-width:0px;border-color:rgb(0,173,238);padding:0px;}
+   <string notr="true">/*QWidget#NotifyWindow {background-color: rgb(49,49,49);border-style:solid;border-width:0px;border-color:rgb(0,173,238);padding:0px;}
 
 QFrame{background-color:rgba(170,170,170,100%); border-radius:10px;}
 
-QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
+QLabel{background-color:rgba(0,0,0,0%); color: black;}*/</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -55,7 +55,7 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnClose">
+      <widget class="QPushButton" name="btnNotificationClose">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -81,8 +81,8 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../menuPlugins/TeraMenu/Tera.qrc">
-         <normaloff>:/pictures/status/status_notok.png</normaloff>:/pictures/status/status_notok.png</iconset>
+        <iconset resource="../resources/TeraClient.qrc">
+         <normaloff>:/status/status_notok.png</normaloff>:/status/status_notok.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -95,7 +95,7 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="frameText">
+    <widget class="QFrame" name="frameNotificationText">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -130,7 +130,7 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="core.qrc">:/pictures/notification.png</pixmap>
+         <pixmap>:/pictures/notification.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -151,6 +151,9 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -221,7 +224,7 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
          <string>Oui</string>
         </property>
         <property name="icon">
-         <iconset resource="../menuPlugins/TeraMenu/Tera.qrc">
+         <iconset>
           <normaloff>:/pictures/status/status_ok.png</normaloff>:/pictures/status/status_ok.png</iconset>
         </property>
         <property name="iconSize">
@@ -253,7 +256,7 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
          <string>Non</string>
         </property>
         <property name="icon">
-         <iconset resource="core.qrc">
+         <iconset>
           <normaloff>:/pictures/close-red.png</normaloff>:/pictures/close-red.png</iconset>
         </property>
         <property name="iconSize">
@@ -283,8 +286,7 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}</string>
   </layout>
  </widget>
  <resources>
-  <include location="core.qrc"/>
-  <include location="../menuPlugins/TeraMenu/Tera.qrc"/>
+  <include location="../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>

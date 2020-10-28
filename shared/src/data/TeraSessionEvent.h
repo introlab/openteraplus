@@ -21,7 +21,10 @@ public:
         DEVICE_STORAGE_LOW = 8,
         DEVICE_STORAGE_FULL = 9,
         DEVICE_EVENT = 10,
-        USER_EVENT = 11
+        USER_EVENT = 11,
+        SESSION_JOIN = 12,
+        SESSION_LEAVE = 13,
+        SESSION_JOIN_REFUSED = 14
     };
 
     static QString getEventTypeName(const SessionEventType& event);

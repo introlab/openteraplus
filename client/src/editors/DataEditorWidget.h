@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QComboBox>
+#include <QPushButton>
+
+#include "TeraForm.h"
 
 #include "data/TeraData.h"
 
@@ -53,6 +56,8 @@ public:
     void deleteDataRequest(const QString &path, const int &id);
     void downloadDataRequest(const QString& save_path, const QString &path, const QUrlQuery &query_args);
 
+    ComManager* getComManager();
+
 private:
     virtual void updateControlsState()=0;
     virtual void updateFieldsValue()=0;
@@ -64,6 +69,14 @@ private:
 
     EditorState     m_editState;
 
+    // Common controls to toggle editing state
+    QPushButton*    m_editToggle;
+    QFrame*         m_frameSave;
+    QPushButton*    m_saveButton;
+    QPushButton*    m_cancelButton;
+    TeraForm*       m_mainForm;
+
+
 protected:
     bool            m_undoing;
     bool            m_limited;
@@ -71,6 +84,10 @@ protected:
     ComManager*     m_comManager;
 
     QComboBox*      buildRolesComboBox();
+    QComboBox*      buildRolesComboBox(const QMap<int, QString> &roles);
+    QString         getRoleName(const QString& role);
+
+    virtual void setEditorControls(TeraForm* mainForm, QPushButton* editToggle, QFrame* frameSave, QPushButton* saveButton, QPushButton* cancelButton);
 
 signals:
     void dataWasChanged();
@@ -94,6 +111,12 @@ private slots:
     void postDataReplyOK(const QString &path);
     void deleteDataReplyOK(const QString &path, const int &id);
     void comDataError(QNetworkReply::NetworkError error, QString error_str);
+
+protected slots:
+    void editToggleClicked();
+    void saveButtonClicked();
+    void undoButtonClicked();
+
 };
 
 #endif // DATAEDITORWIDGET_H

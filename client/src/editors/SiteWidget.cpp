@@ -17,16 +17,21 @@ SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     // Limited by default
     m_limited = true;
 
+    // Use base class to manage editing
+    setEditorControls(ui->wdgSite, ui->btnEdit, ui->frameSave, ui->btnSave, ui->btnUndo);
+
     // Connect signals and slots
     connectSignals();
 
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SITE));
 
-    // Query accessible users list
-    queryDataRequest(WEB_USERINFO_PATH, QUrlQuery(WEB_QUERY_LIST));
-
+    ui->wdgSite->setComManager(m_comManager);
     setData(data);
+
+    // Set default tabs
+    ui->tabNav->setCurrentIndex(0);
+    ui->tabSiteInfos->setCurrentIndex(0);
 }
 
 SiteWidget::~SiteWidget()
@@ -55,18 +60,14 @@ void SiteWidget::setData(const TeraData *data)
 {
     DataEditorWidget::setData(data);
 
-    // Query projects & devices
     if (!dataIsNew()){
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(data->getFieldValue("id_site").toInt()));
-        args.addQueryItem(WEB_QUERY_LIST, "");
-        queryDataRequest(WEB_PROJECTINFO_PATH, args);
+        // Loads first detailled informations tab
+        on_tabSiteInfos_currentChanged(0);
 
-        // Query full devices information
-        args.removeQueryItem(WEB_QUERY_LIST);
-        args.addQueryItem(WEB_QUERY_PARTICIPANTS, "");
-        args.addQueryItem(WEB_QUERY_SITES, "");
-        queryDataRequest(WEB_DEVICEINFO_PATH, args);
+        // Query stats
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+        queryDataRequest(WEB_STATS_PATH, args);
     }else{
         ui->tabSiteInfos->setEnabled(false);
     }
@@ -75,55 +76,72 @@ void SiteWidget::setData(const TeraData *data)
 void SiteWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &SiteWidget::processFormsReply);
-    connect(m_comManager, &ComManager::siteAccessReceived, this, &SiteWidget::processSiteAccessReply);
-    connect(m_comManager, &ComManager::usersReceived, this, &SiteWidget::processUsersReply);
-    connect(m_comManager, &ComManager::projectsReceived, this, &SiteWidget::processProjectsReply);
-    connect(m_comManager, &ComManager::devicesReceived, this, &SiteWidget::processDevicesReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SiteWidget::processPostOKReply);
+    connect(m_comManager, &ComManager::siteAccessReceived, this, &SiteWidget::processSiteAccessReply);
+    connect(m_comManager, &ComManager::statsReceived, this, &SiteWidget::processStatsReply);
 
-    connect(ui->btnUndo, &QPushButton::clicked, this, &SiteWidget::btnUndo_clicked);
-    connect(ui->btnSave, &QPushButton::clicked, this, &SiteWidget::btnSave_clicked);
+    //connect(ui->btnUndo, &QPushButton::clicked, this, &SiteWidget::btnUndo_clicked);
+    //connect(ui->btnSave, &QPushButton::clicked, this, &SiteWidget::btnSave_clicked);
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &SiteWidget::btnUpdateAccess_clicked);
     //connect(ui->btnProjects, &QPushButton::clicked, this, &SiteWidget::btnProjects_clicked);
-    connect(ui->btnDevices, &QPushButton::clicked, this, &SiteWidget::btnDevices_clicked);
-    connect(ui->btnUsers, &QPushButton::clicked, this, &SiteWidget::btnUsers_clicked);
+    //connect(ui->btnDevices, &QPushButton::clicked, this, &SiteWidget::btnDevices_clicked);
 
 }
 
-void SiteWidget::updateSiteAccess(const TeraData *access)
+void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
 {
-    if (m_tableUsers_ids_rows.contains(access->getFieldValue("id_user").toInt())){
-        // Already there - update the user access
-        int row = m_tableUsers_ids_rows[access->getFieldValue("id_user").toInt()];
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableUsers->cellWidget(row,1));
-        if (combo_roles){
-            int index = -1;
-            if (access->hasFieldName("site_access_role"))
-                index = combo_roles->findData(access->getFieldValue("site_access_role").toString());
-            if (index >= 0){
-                combo_roles->setCurrentIndex(index);
-            }else{
-                combo_roles->setCurrentIndex(0);
-            }
-            combo_roles->setProperty("original_index", index);
+    QTableWidgetItem* item;
+    int id_user_group = access->getFieldValue("id_user_group").toInt();
+    QString site_role = access->getFieldValue("site_access_role").toString();
+    QComboBox* combo_roles;
+    QTableWidgetItem* inherited_item;
 
-            if (access->hasFieldName("site_access_inherited")){
-                if (access->getFieldValue("site_access_inherited").toBool()){
-                    // Inherited access - disable combobox
-                    combo_roles->setDisabled(true);
-                }
+    if (m_tableUserGroups_items.contains(id_user_group)){
+        item = m_tableUserGroups_items[id_user_group];
+        combo_roles = dynamic_cast<QComboBox*>(ui->tableUserGroups->cellWidget(item->row(),1));
+        inherited_item = ui->tableUserGroups->item(item->row(), 2);
+
+    }else{
+        // Not there - must add the usergroup and role
+        ui->tableUserGroups->setRowCount(ui->tableUserGroups->rowCount()+1);
+        int current_row = ui->tableUserGroups->rowCount()-1;
+        QTableWidgetItem* item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_USERGROUP)),
+                                                      access->getFieldValue("user_group_name").toString());
+        ui->tableUserGroups->setItem(current_row, 0, item);
+        combo_roles = buildRolesComboBox();
+        ui->tableUserGroups->setCellWidget(current_row, 1, combo_roles);
+        inherited_item = new QTableWidgetItem("");
+        inherited_item->setForeground(Qt::green);
+        ui->tableUserGroups->setItem(current_row, 2, inherited_item);
+        m_tableUserGroups_items.insert(id_user_group, item);
+    }
+
+    if (combo_roles){
+        int index = -1;
+
+        if (inherited_item)
+            inherited_item->setText("");
+
+        if (access->hasFieldName("site_access_inherited")){
+            if (access->getFieldValue("site_access_inherited").toBool()){
+                // Inherited access - disable combobox
+                //combo_roles->setDisabled(true);
+                if (combo_roles->count() == 3)
+                    combo_roles->removeItem(0); // Remove "no role" item
+                if (inherited_item)
+                    inherited_item->setText("Administrateur / Utilisateur dans au moins un projet du site");
             }
         }
-    }else{
-        // Not there - must add the user
-        ui->tableUsers->setRowCount(ui->tableUsers->rowCount()+1);
-        int current_row = ui->tableUsers->rowCount()-1;
-        QTableWidgetItem* item = new QTableWidgetItem(access->getFieldValue("user_name").toString());
-        ui->tableUsers->setItem(current_row,0,item);
-        QComboBox* combo_roles = buildRolesComboBox();
-        ui->tableUsers->setCellWidget(current_row,1,combo_roles);
-        m_tableUsers_ids_rows.insert(access->getFieldValue("id_user").toInt(), current_row);
+        index = combo_roles->findData(site_role);
+        if (index >= 0){
+            combo_roles->setCurrentIndex(index);
+        }else{
+            combo_roles->setCurrentIndex(0);
+        }
+        combo_roles->setProperty("original_index", index);
+        combo_roles->setEnabled(!m_limited);
     }
+
 }
 
 void SiteWidget::updateProject(const TeraData *project)
@@ -139,7 +157,7 @@ void SiteWidget::updateProject(const TeraData *project)
     }
 }
 
-void SiteWidget::updateDevice(const TeraData *device)
+/*void SiteWidget::updateDevice(const TeraData *device)
 {
     int id_device = device->getId();
 
@@ -193,13 +211,22 @@ void SiteWidget::updateDevice(const TeraData *device)
         ui->lstDevices->setItem(ui->lstDevices->rowCount()-1, 1, item);
     }  
 
-}
+}*/
 
 void SiteWidget::updateControlsState()
 {
-    ui->btnDevices->setVisible(!m_limited);
-    ui->btnUsers->setVisible(!m_limited);
+    //ui->btnDevices->setVisible(!m_limited);
     //ui->btnProjects->setVisible(!m_limited);
+    bool is_site_admin = isSiteAdmin();
+    ui->btnUpdateRoles->setVisible(is_site_admin);
+    //ui->btnDevices->setVisible(is_site_admin);
+
+    ui->btnUserGroups->setVisible(is_site_admin);
+
+    ui->grpSummary->setVisible(!dataIsNew());
+    if (ui->tabNav->count() > 1 && dataIsNew()){
+        ui->tabNav->removeTab(1);
+    }
 
 }
 
@@ -207,12 +234,32 @@ void SiteWidget::updateFieldsValue()
 {
     if (m_data){
         ui->wdgSite->fillFormFromData(m_data->toJson());
+        ui->lblTitle->setText(m_data->getName());
     }
 }
 
 bool SiteWidget::validateData()
 {
     return ui->wdgSite->validateFormData();
+}
+
+bool SiteWidget::isSiteAdmin()
+{
+    if (m_data){
+        return m_comManager->isCurrentUserSiteAdmin((m_data->getId()));
+    }
+    else{
+        return false;
+    }
+}
+
+void SiteWidget::queryUserGroupsSiteAccess()
+{
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
+    queryDataRequest(WEB_SITEACCESS_PATH, args);
+
 }
 
 void SiteWidget::processFormsReply(QString form_type, QString data)
@@ -223,31 +270,23 @@ void SiteWidget::processFormsReply(QString form_type, QString data)
     }
 }
 
-void SiteWidget::processSiteAccessReply(QList<TeraData> access)
+void SiteWidget::processSiteAccessReply(QList<TeraData> access, QUrlQuery reply_query)
 {
     if (!m_data)
         return;
 
-    for (int i=0; i<access.count(); i++){
-        if (access.at(i).getFieldValue("id_site").toInt() == m_data->getFieldValue("id_site").toInt()){
-            // Ok, we need to update information in the table
-            updateSiteAccess(&access.at(i));
+    // Check if that reply is for us or not.
+    if (!reply_query.hasQueryItem(WEB_QUERY_ID_SITE))
+        return;
+
+    if (reply_query.queryItemValue(WEB_QUERY_ID_SITE).toInt() != m_data->getId())
+        return;
+
+    if (!reply_query.hasQueryItem(WEB_QUERY_BY_USERS)){
+        // User groups in reply
+        for (int i=0; i<access.count(); i++) {
+           updateUserGroupSiteAccess(&access.at(i));
         }
-
-    }
-}
-
-void SiteWidget::processUsersReply(QList<TeraData> users)
-{
-    for (int i=0; i<users.count(); i++){
-        updateSiteAccess(&users.at(i));
-    }
-
-    // Query access for those users
-    if (m_data && !dataIsNew()){
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
-        queryDataRequest(WEB_SITEACCESS_PATH, args);
     }
 }
 
@@ -263,7 +302,7 @@ void SiteWidget::processProjectsReply(QList<TeraData> projects)
     }
 }
 
-void SiteWidget::processDevicesReply(QList<TeraData> devices)
+/*void SiteWidget::processDevicesReply(QList<TeraData> devices)
 {
     if (!m_data)
         return;
@@ -282,6 +321,28 @@ void SiteWidget::processDevicesReply(QList<TeraData> devices)
     }
 
 }
+*/
+void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
+{
+
+    // Check if stats are for us
+    if (!reply_query.hasQueryItem("id_site"))
+        return;
+
+    if (reply_query.queryItemValue("id_site").toInt() != m_data->getId())
+        return;
+
+    // Fill stats information
+    ui->lblUsers->setText(stats.getFieldValue("users_total_count").toString() + tr(" Utilisateurs") + "\n"
+                          + stats.getFieldValue("users_enabled_count").toString() + " Utilisateurs actifs");
+    ui->lblProjects->setText(stats.getFieldValue("projects_count").toString() + tr(" Projets"));
+    ui->lblGroups->setText(stats.getFieldValue("participants_groups_count").toString() + tr(" Groupes participants"));
+    ui->lblParticipant->setText(stats.getFieldValue("participants_total_count").toString() + tr(" Participants") + "\n"
+                                + stats.getFieldValue("participants_enabled_count").toString() + tr(" Participants actifs"));
+    ui->lblSessions->setText(stats.getFieldValue("sessions_total_count").toString() + tr(" Séances planifiées \nou réalisées"));
+    ui->lblDevices->setText(stats.getFieldValue("devices_total_count").toString() + tr(" Appareils"));
+
+}
 
 void SiteWidget::processPostOKReply(QString path)
 {
@@ -289,33 +350,10 @@ void SiteWidget::processPostOKReply(QString path)
         // Update current user access list for the newly created site
         m_comManager->doUpdateCurrentUser();
     }
-}
-
-void SiteWidget::btnSave_clicked()
-{
-    if (!validateData()){
-        QStringList invalids = ui->wdgSite->getInvalidFormDataLabels();
-
-        QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-        for (QString field:invalids){
-            msg += "<li>" + field + "</li>";
-        }
-        msg += "</ul>";
-        GlobalMessageBox msgbox(this);
-        msgbox.showError(tr("Champs invalides"), msg);
-        return;
+    if (path == WEB_SITEACCESS_PATH){
+        // Refresh roles
+        queryUserGroupsSiteAccess();
     }
-
-     saveData();
-}
-
-void SiteWidget::btnUndo_clicked()
-{
-    undoOrDeleteData();
-
-    if (parent())
-        emit closeRequest();
-
 }
 
 void SiteWidget::btnUpdateAccess_clicked()
@@ -325,16 +363,16 @@ void SiteWidget::btnUpdateAccess_clicked()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for (int i=0; i<m_tableUsers_ids_rows.count(); i++){
-        int user_id = m_tableUsers_ids_rows.keys().at(i);
-        int row = m_tableUsers_ids_rows[user_id];
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableUsers->cellWidget(row,1));
+    for (int i=0; i<m_tableUserGroups_items.count(); i++){
+        int user_group_id = m_tableUserGroups_items.keys().at(i);
+        int row = m_tableUserGroups_items[user_group_id]->row();
+        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableUserGroups->cellWidget(row,1));
         if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
             QJsonObject data_obj;
             // Ok, value was modified - must add!
             QJsonValue role = combo_roles->currentData().toString();
             data_obj.insert("id_site", m_data->getId());
-            data_obj.insert("id_user", user_id);
+            data_obj.insert("id_user_group", user_group_id);
             data_obj.insert("site_access_role", role);
             roles.append(data_obj);
         }
@@ -361,11 +399,12 @@ void SiteWidget::btnProjects_clicked()
     m_diag_editor->setCentralWidget(list_widget);
 
     m_diag_editor->setWindowTitle(tr("Projets"));
+    m_diag_editor->setFixedSize(size().width(), size().height());
 
     m_diag_editor->open();
 }
 
-void SiteWidget::btnDevices_clicked()
+/*void SiteWidget::btnDevices_clicked()
 {
     if (m_diag_editor){
         m_diag_editor->deleteLater();
@@ -375,22 +414,140 @@ void SiteWidget::btnDevices_clicked()
     m_diag_editor->setCentralWidget(list_widget);
 
     m_diag_editor->setWindowTitle(tr("Appareils"));
-    m_diag_editor->setMinimumHeight(700);
+    m_diag_editor->setFixedSize(size().width(), size().height());
 
     m_diag_editor->open();
+}*/
+
+void SiteWidget::on_tabSiteInfos_currentChanged(int index)
+{
+
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+
+    QWidget* current_tab = ui->tabSiteInfos->widget(index);
+
+    if (current_tab == ui->tabProjects){
+        // Projects
+        if (m_listProjects_items.isEmpty()){
+            // Connect signal to receive updates
+            connect(m_comManager, &ComManager::projectsReceived, this, &SiteWidget::processProjectsReply);
+
+            // Query
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_PROJECTINFO_PATH, args);
+        }
+    }
+
+    if (current_tab == ui->tabDevices){
+        // Devices
+        if (!ui->wdgDevices->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgDevices->setLayout(layout);
+        }
+        if (ui->wdgDevices->layout()->count() == 0){
+            args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "");
+            args.addQueryItem(WEB_QUERY_WITH_SITES, "");
+            DataListWidget* deviceslist_editor = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList("device_participants.participant_name"), ui->wdgUsers);
+            deviceslist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
+            deviceslist_editor->setFilterText(tr("Seuls les appareils associés au site sont affichés."));
+            ui->wdgDevices->layout()->addWidget(deviceslist_editor);
+        }
+        /*if (m_listDevices_items.isEmpty()){
+            // Connect signal to receive updates
+            connect(m_comManager, &ComManager::devicesReceived, this, &SiteWidget::processDevicesReply);
+
+            // Query
+            args.addQueryItem(WEB_QUERY_PARTICIPANTS, "");
+            args.addQueryItem(WEB_QUERY_SITES, "");
+            queryDataRequest(WEB_DEVICEINFO_PATH, args);
+        }*/
+    }
+
+    if (current_tab == ui->tabUsers){
+        // Users
+        if (!ui->wdgUsers->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgUsers->setLayout(layout);
+        }
+        if (ui->wdgUsers->layout()->count() == 0){
+            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
+            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups details
+            DataListWidget* userlist_editor = new DataListWidget(m_comManager, TERADATA_USER, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), ui->wdgUsers);
+            userlist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
+            userlist_editor->setFilterText(tr("Seuls les utilisateurs ayant un accès au site sont affichés."));
+            ui->wdgUsers->layout()->addWidget(userlist_editor);
+        }
+        /*if (m_tableUsers_items.isEmpty()){
+            // Query
+            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
+            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups details
+            queryDataRequest(WEB_SITEACCESS_PATH, args);
+        }*/
+    }
+
+    if (current_tab == ui->tabUserGroups){
+        // User groups
+        if (m_tableUserGroups_items.isEmpty()){
+            // Query
+            queryUserGroupsSiteAccess();
+
+        /*
+           if (!ui->wdgUserGroups->layout()){
+                QHBoxLayout* layout = new QHBoxLayout();
+                layout->setMargin(0);
+                ui->wdgUserGroups->setLayout(layout);
+            }
+            if (ui->wdgUserGroups->layout()->count() == 0){
+                //args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
+                DataListWidget* usergroupslist_editor = new DataListWidget(m_comManager, TERADATA_USERGROUP, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), ui->wdgUserGroups);
+                usergroupslist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
+                usergroupslist_editor->setFilterText(tr("Seuls les groupes utilisateurs ayant un accès au site sont affichés."));
+                ui->wdgUserGroups->layout()->addWidget(usergroupslist_editor);
+            }*/
+        }
+    }
+
 }
 
-void SiteWidget::btnUsers_clicked()
+
+void SiteWidget::on_btnUserGroups_clicked()
 {
     if (m_diag_editor){
         m_diag_editor->deleteLater();
     }
+
     m_diag_editor = new BaseDialog(this);
-    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USER, nullptr);
+    //DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USERGROUP, nullptr);
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USERGROUP, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), nullptr);
+    list_widget->setFilterText(tr("Seuls les groupes utilisateurs ayant un accès au site sont affichés."));
     m_diag_editor->setCentralWidget(list_widget);
 
-    m_diag_editor->setWindowTitle(tr("Utilisateurs"));
-    m_diag_editor->setMinimumHeight(700);
+    m_diag_editor->setWindowTitle(tr("Groupes Utilisateurs"));
+    m_diag_editor->setFixedSize(size().width(), size().height());
 
     m_diag_editor->open();
+}
+
+void SiteWidget::on_icoUsers_clicked()
+{
+    ui->tabSiteInfos->setCurrentWidget(ui->tabUsers);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SiteWidget::on_icoProjects_clicked()
+{
+    ui->tabSiteInfos->setCurrentWidget(ui->tabProjects);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SiteWidget::on_icoDevices_clicked()
+{
+    ui->tabSiteInfos->setCurrentWidget(ui->tabDevices);
+    ui->tabNav->setCurrentWidget(ui->tabDetails);
 }

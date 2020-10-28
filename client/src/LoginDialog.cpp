@@ -1,18 +1,20 @@
 #include "LoginDialog.h"
 #include "ui_LoginDialog.h"
+#include <QStyledItemDelegate>
 
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::LoginDialog)
 {
     ui->setupUi(this);
+    ui->cmbServers->setItemDelegate(new QStyledItemDelegate());
     //setAttribute(Qt::WA_StyledBackground);
     //setStyleSheet("QDialog{background-image: url(://TeRA_Background.png); }");
 
     // Setup properties
     setSizeGripEnabled(false);
     setFixedWidth(450);
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
     // Setup loading icon animation
     m_animatedIcon = new QMovie("://status/loading.gif");
@@ -40,12 +42,28 @@ void LoginDialog::setServerNames(QStringList servers)
     }
     if(servers.count()>0)
         ui->cmbServers->setCurrentIndex(0);
+
+    // Select server from the list if we have a setting for that
+    QVariant current_server = TeraSettings::getGlobalSetting("last_used_server");
+    if (current_server.isValid()){
+        QString server_name = current_server.toString();
+        if (servers.contains(server_name))
+            ui->cmbServers->setCurrentText(server_name);
+    }
+
+    /*if(servers.count() == 1){
+        showServers(false); // No need to show server box if only one server in the list!
+    }*/
 }
 
 void LoginDialog::showServers(bool show)
 {
+    if (ui->cmbServers->count() == 1)
+        show = false; // Never show server list if only one item.
+
     ui->lblServer->setVisible(show);
     ui->cmbServers->setVisible(show);
+    ui->icoServer->setVisible(show);
 }
 
 void LoginDialog::setStatusMessage(QString message, bool error)
@@ -88,5 +106,6 @@ void LoginDialog::on_btnConnect_clicked()
 
     emit loginRequest(ui->txtUsername->text(), ui->txtPassword->text(), ui->cmbServers->currentText());
 
+    TeraSettings::setGlobalSetting("last_used_server", ui->cmbServers->currentText());
 
 }

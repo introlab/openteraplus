@@ -25,12 +25,13 @@ public:
     ~SessionWidget();
 
     void saveData(bool signal=true);
+    void setData(const TeraData *data);
 
     void connectSignals();
 private:
     Ui::SessionWidget *ui;
 
-    QMap<int, QTableWidgetItem*> m_listDeviceDatas;
+    //QMap<int, QTableWidgetItem*> m_listDeviceDatas;
     QMap<int, QTableWidgetItem*> m_listSessionEvents;
 
     void updateControlsState();
@@ -38,27 +39,34 @@ private:
 
     bool validateData();
 
-    void updateParticipant(TeraData* participant);
-    void updateDeviceData(TeraData* device_data);
+    void updateSessionParticipants();
+    void updateSessionUsers();
+    void updateSessionDevices();
+    //void updateDeviceData(TeraData* device_data);
     void updateEvent(TeraData* event);
 
 private slots:
-    void btnSave_clicked();
-    void btnUndo_clicked();
     void btnDownload_clicked();
     void btnDeleteData_clicked();
     void btnDownloadAll_clicked();
 
     void processFormsReply(QString form_type, QString data);
-    void processParticipantsReply(QList<TeraData> participants);
-    void processDeviceDatasReply(QList<TeraData> device_datas);
+    //void processDeviceDatasReply(QList<TeraData> device_datas);
     void processSessionEventsReply(QList<TeraData> events);
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
     void postResultReply(QString path);
     void deleteDataReply(QString path, int id);
 
     void onDownloadCompleted(DownloadedFile* file);
 
     void currentSelectedDataChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
+    void on_tabSessionInfos_tabBarClicked(int index);
+    void on_icoUsers_clicked();
+    void on_icoParticipant_clicked();
+    void on_icoDevices_clicked();
+    void on_icoEvents_clicked();
+    void on_icoAssets_clicked();
+    void on_icoTests_clicked();
 };
 
 #endif // SESSIONWIDGET_H

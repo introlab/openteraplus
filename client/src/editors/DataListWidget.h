@@ -20,21 +20,39 @@ class DataListWidget :  public QWidget
 
 public:
     explicit DataListWidget(ComManager* comMan, TeraDataTypes data_type, QWidget *parent = nullptr);
+    explicit DataListWidget(ComManager* comMan, TeraDataTypes data_type, QUrlQuery args, QWidget *parent = nullptr);
+    explicit DataListWidget(ComManager* comMan, TeraDataTypes data_type, QUrlQuery args, QStringList extra_display_fields = QStringList(), QWidget *parent = nullptr);
+    explicit DataListWidget(ComManager* comMan, TeraDataTypes data_type, QString query_path, QUrlQuery args, QStringList extra_display_fields = QStringList(), QWidget *parent = nullptr);
     ~DataListWidget();
+
+    void setPermissions(const bool& can_view, const bool& can_edit);
+    void setFilterText(const QString& text);
 
 private:
     Ui::DataListWidget*                 ui;
     DataEditorWidget*                   m_editor;
     QMap<TeraData*, QListWidgetItem*>   m_datamap;
+    QMap<int, QString>                  m_extraInfos; // int = TeraData ID
     ComManager*                         m_comManager;
     TeraDataTypes                       m_dataType;
+    QString                             m_queryPath;
+    QStringList                         m_extraDisplayFields;
 
     bool                                m_copying;
     bool                                m_searching;
     bool                                m_newdata;
 
+    // Permissions
+    bool                                m_canEdit;
+    bool                                m_canView;
+
+    QUrlQuery                           m_queryArgs;
+
     void connectSignals();
     void queryDataList();
+    void queryDataList(QUrlQuery args);
+
+    void updateControlsState();
 
     TeraData *getCurrentData();
     QListWidgetItem *getItemForData(TeraData *data);
@@ -65,6 +83,8 @@ private slots:
     void newDataRequested();
     void deleteDataRequested();
     void copyDataRequested();
+    void on_radBtnFilter_toggled(bool checked);
+    void on_radBtnAll_toggled(bool checked);
 };
 
 
