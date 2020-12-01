@@ -517,6 +517,8 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
 
 void DataListWidget::newDataRequested()
 {
+    clearSearch();
+
     TeraData* new_data = new TeraData(m_dataType);
     new_data->setId(0);
     m_newdata = true;
