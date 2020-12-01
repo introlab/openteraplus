@@ -482,7 +482,7 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
     // New participant
     QAction* new_part = getActionForDataType(TERADATA_PARTICIPANT);
     if (new_part){
-        new_part->setEnabled(is_project_admin && (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT));
+        new_part->setEnabled(/*is_project_admin &&*/ (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT));
         if (new_part->isEnabled()) at_least_one_enabled = true;
     }
 

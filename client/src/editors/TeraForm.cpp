@@ -1163,6 +1163,11 @@ void TeraForm::hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas)
         QWidget* target_widget = m_widgetsHookRequests.key(data_type);
         // Update widget values
         updateWidgetChoices(target_widget, datas);
+
+        // Update widget value if value was already set
+        if (m_initialValues.contains(m_widgets.key(target_widget)))
+            setWidgetValue(target_widget, m_initialValues[m_widgets.key(target_widget)]);
+
         m_widgetsHookRequests.remove(target_widget);
     }
 }
