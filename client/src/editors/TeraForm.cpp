@@ -708,7 +708,7 @@ QWidget *TeraForm::createDateTimeWidget(const QVariantHash &structure)
     Q_UNUSED(structure)
     QDateTimeEdit* item_dt = new QDateTimeEdit();
     item_dt->setDisplayFormat("dd MMMM yyyy - hh:mm");
-    item_dt->setCalendarPopup(true);
+    //item_dt->setCalendarPopup(true);
 
     return item_dt;
 
@@ -1030,6 +1030,13 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
+        if (value.canConvert(QVariant::String)){
+            if (value.toString().isEmpty()){
+                widget->hide();
+                return;
+            }
+        }
+
         QDateTime time_value = value.toDateTime().toLocalTime();
 
         if (!time_value.isValid()){
@@ -1038,7 +1045,12 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
             time_value = QDateTime::fromSecsSinceEpoch(time_s);
         }
 
-        dt->setDateTime(value.toDateTime().toLocalTime());
+        if (time_value.isValid()){
+            dt->setDateTime(time_value);
+            widget->show();
+        }else{
+            widget->hide();
+        }
         return;
     }
 
