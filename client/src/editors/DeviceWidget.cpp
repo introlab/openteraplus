@@ -95,6 +95,10 @@ void DeviceWidget::updateControlsState()
        if (m_listSites_items.isEmpty() || m_listProjects_items.isEmpty()){
            QUrlQuery args;
            args.addQueryItem(WEB_QUERY_LIST, "true");
+           if (m_data->hasFieldName("id_site")){
+               args.addQueryItem(WEB_QUERY_ID_SITE, m_data->getFieldValue("id_site").toString());
+               m_data->removeFieldName("id_site");
+           }
            queryDataRequest(WEB_SITEINFO_PATH, args);
        }
    }
@@ -197,7 +201,7 @@ void DeviceWidget::updateParticipant(TeraData *participant)
 
 bool DeviceWidget::validateSitesProjects()
 {
-    if (!m_comManager->isCurrentUserSuperAdmin()){
+    //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
         for (int i=0; i<m_listSites_items.count(); i++){
             if (m_listSites_items.values().at(i)->checkState(0) == Qt::Checked){
@@ -220,7 +224,7 @@ bool DeviceWidget::validateSitesProjects()
             msgbox.showError(tr("Attention"), tr("Aucun site / projet n'a été spécifié.\nVous devez spécifier au moins un site / projet"));
             return false;
         }
-    }
+    //}
     return true;
 }
 

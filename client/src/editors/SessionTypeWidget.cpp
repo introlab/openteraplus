@@ -84,7 +84,11 @@ void SessionTypeWidget::updateControlsState(){
         // Query sites and projects if needed
         if (m_listProjects_items.isEmpty()){
             QUrlQuery args;
-            args.addQueryItem(WEB_QUERY_LIST, "true");
+            //args.addQueryItem(WEB_QUERY_LIST, "true");
+            if (m_data->hasFieldName("id_project")){
+                args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+                m_data->removeFieldName("id_project");
+            }
             queryDataRequest(WEB_PROJECTINFO_PATH, args);
         }
     }
@@ -104,7 +108,12 @@ void SessionTypeWidget::updateProject(TeraData *project)
         QListWidgetItem* item = m_listProjects_items[id_project];
         item->setText(project->getName());
     }else{
-        QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)), project->getName());
+        QString item_name = project->getName();
+        if (project->hasFieldName("site_name")){
+            item_name = project->getFieldValue("site_name").toString() + " / " + item_name;
+        }
+
+        QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)), item_name);
         if(!m_comManager->isCurrentUserProjectAdmin(id_project)){
             item->setForeground(Qt::gray);
         }
@@ -127,7 +136,7 @@ bool SessionTypeWidget::validateData(){
 
 bool SessionTypeWidget::validateProjects()
 {
-    if (!m_comManager->isCurrentUserSuperAdmin()){
+    //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
         for (int i=0; i<m_listProjects_items.count(); i++){
             if (m_listProjects_items.values().at(i)->checkState() == Qt::Checked){
@@ -141,7 +150,7 @@ bool SessionTypeWidget::validateProjects()
             msgbox.showError(tr("Attention"), tr("Aucun projet n'a été associé.\nVous devez associer au moins un projet."));
             return false;
         }
-    }
+    //}
     return true;
 }
 
@@ -212,6 +221,11 @@ void SessionTypeWidget::processProjectsReply(QList<TeraData> projects)
         args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getId()));
         args.addQueryItem(WEB_QUERY_LIST, "true");
         queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
+    }else{
+        if (dataIsNew() && m_listProjects_items.count() == 1){
+            // New data and only one item in list - auto-check!
+            m_listProjects_items.first()->setCheckState(Qt::Checked);
+        }
     }
 }
 
@@ -301,7 +315,7 @@ void SessionTypeWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabProjects){
         // Query available projects
         if (m_listProjects_items.isEmpty()){
-            args.addQueryItem(WEB_QUERY_LIST, "true");
+            //args.addQueryItem(WEB_QUERY_LIST, "true");
             queryDataRequest(WEB_PROJECTINFO_PATH, args);
         }
     }

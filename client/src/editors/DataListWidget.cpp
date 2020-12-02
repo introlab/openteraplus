@@ -520,6 +520,16 @@ void DataListWidget::newDataRequested()
     clearSearch();
 
     TeraData* new_data = new TeraData(m_dataType);
+    // Check if we have some filter information we need to set in the object passed to the editor
+    //if (ui->radBtnFilter->isChecked()){
+        for (int i=0; i<m_queryArgs.queryItems().count(); i++){
+            if (m_queryArgs.queryItems().at(i).first.startsWith("id_")){
+                new_data->setFieldValue(m_queryArgs.queryItems().at(i).first, m_queryArgs.queryItems().at(i).second);
+            }
+        }
+
+    //}
+
     new_data->setId(0);
     m_newdata = true;
     updateDataInList(new_data, true);

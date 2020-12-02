@@ -48,7 +48,16 @@ void UserWidget::setData(const TeraData *data){
    DataEditorWidget::setData(data);
 
    // Query available user groups
-   queryDataRequest(WEB_USERGROUPINFO_PATH);
+   if (!m_data->hasFieldName("id_site"))
+        queryDataRequest(WEB_USERGROUPINFO_PATH);
+   else{
+       // We have a new user with a specific id_site - we must query the correct user groups then
+       QUrlQuery args;
+       args.addQueryItem(WEB_QUERY_ID_SITE, m_data->getFieldValue("id_site").toString());
+       m_data->removeFieldName("id_site");
+       queryDataRequest(WEB_USERGROUPINFO_PATH, args);
+   }
+
 
    /* QString user_uuid = m_data->getFieldValue("user_uuid").toUuid().toString(QUuid::WithoutBraces);
     queryDataRequest(WEB_SITEINFO_PATH, QUrlQuery(QString(WEB_QUERY_USERUUID) + "=" + user_uuid));
@@ -298,7 +307,7 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
 
 bool UserWidget::validateUserGroups()
 {
-    if (!m_comManager->isCurrentUserSuperAdmin()){
+    //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
         for (int i=0; i<m_listUserGroups_items.count(); i++){
             if (m_listUserGroups_items.values().at(i)->checkState() == Qt::Checked){
@@ -312,7 +321,7 @@ bool UserWidget::validateUserGroups()
             msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
             return false;
         }
-    }
+    //}
     return true;
 }
 
