@@ -30,13 +30,21 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     // Connect signals and slots
     connectSignals();
 
-    // Query form definition
-    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PARTICIPANT));
-    ui->wdgParticipant->setComManager(m_comManager);
     setData(data);
 
+    // Query form definition
+    QUrlQuery args(WEB_FORMS_QUERY_PARTICIPANT);
+    if (m_data->hasFieldName("id_project")){
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+    }else{
+        if (!dataIsNew())
+            args.addQueryItem(WEB_QUERY_ID, QString::number(m_data->getId()));
+    }
+    queryDataRequest(WEB_FORMS_PATH, args);
+    ui->wdgParticipant->setComManager(m_comManager);
+
     // Query sessions types
-    QUrlQuery args;
+    args.clear();
     args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
     queryDataRequest(WEB_SESSIONTYPE_PATH, args);
 
@@ -437,7 +445,7 @@ void ParticipantWidget::refreshWebAccessUrl()
 
 void ParticipantWidget::processFormsReply(QString form_type, QString data)
 {
-    if (form_type == WEB_FORMS_QUERY_PARTICIPANT){
+    if (form_type.startsWith(WEB_FORMS_QUERY_PARTICIPANT)){
         if (!ui->wdgParticipant->formHasStructure())
             ui->wdgParticipant->buildUiFromStructure(data);
         return;

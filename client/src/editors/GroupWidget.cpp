@@ -18,9 +18,6 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
     // Connect signals and slots
     connectSignals();
 
-    // Query form definition
-    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_GROUP));
-
     // Query participants of that group
     /*if (data->getId() != 0){
         QUrlQuery query;
@@ -30,6 +27,19 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
 
     ui->wdgGroup->setComManager(m_comManager);
     setData(data);
+
+    // Query form definition
+    QUrlQuery args(WEB_FORMS_QUERY_GROUP);
+    if (m_data->hasFieldName("id_site")){
+        args.addQueryItem(WEB_QUERY_ID_SITE, m_data->getFieldValue("id_site").toString());
+        m_data->removeFieldName("id_site");
+    }else{
+        if (!dataIsNew()){
+            args.addQueryItem(WEB_QUERY_ID, QString::number(m_data->getId()));
+        }
+    }
+
+    queryDataRequest(WEB_FORMS_PATH, args);
 
 }
 
@@ -154,7 +164,7 @@ bool GroupWidget::validateData(){
 
 void GroupWidget::processFormsReply(QString form_type, QString data)
 {
-    if (form_type == WEB_FORMS_QUERY_GROUP){
+    if (form_type.startsWith(WEB_FORMS_QUERY_GROUP)){
         ui->wdgGroup->buildUiFromStructure(data);
         return;
     }

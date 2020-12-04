@@ -428,6 +428,7 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
         if (data_type == TERADATA_GROUP){
             new_data->setFieldValue("id_project", ui->projNavigator->getCurrentProjectId());
+            new_data->setFieldValue("id_site", ui->projNavigator->getCurrentSiteId());
         }
 
         if (data_type == TERADATA_PARTICIPANT){

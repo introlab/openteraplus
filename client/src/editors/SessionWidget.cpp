@@ -23,12 +23,24 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     // Connect signals and slots
     connectSignals();
 
+    setData(data);
+
     // Query form definition
-    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION));
+    QUrlQuery args(WEB_FORMS_QUERY_SESSION);
+    if (m_data->hasFieldName("id_project")){
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+        m_data->removeFieldName("id_project");
+    }else{
+        if (!dataIsNew()){
+            args.addQueryItem(WEB_QUERY_ID, QString::number(m_data->getId()));
+        }
+    }
+
+    queryDataRequest(WEB_FORMS_PATH, args);
 
     ui->wdgSession->setComManager(m_comManager);
     ui->tabNav->setCurrentIndex(0);
-    setData(data);
+    ui->tabSessionInfos->setCurrentIndex(0);
 
 }
 
@@ -316,7 +328,7 @@ void SessionWidget::updateEvent(TeraData *event)
 
 void SessionWidget::processFormsReply(QString form_type, QString data)
 {
-    if (form_type == WEB_FORMS_QUERY_SESSION){
+    if (form_type.startsWith(WEB_FORMS_QUERY_SESSION)){
         ui->wdgSession->buildUiFromStructure(data);
         return;
     }
