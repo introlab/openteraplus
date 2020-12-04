@@ -106,6 +106,43 @@ void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
         }
         return;
     }
+
+    // TODO Other item types?!?
+}
+
+bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QString &name)
+{
+    if (data_type == TERADATA_GROUP){
+        for(int i=0; i<m_groups_items.values().count(); i++){
+            if (m_groups_items.values().at(i)->text(0) == name){
+                ui->treeNavigator->setCurrentItem(m_groups_items.values().at(i));
+                currentNavItemChanged(m_groups_items.values().at(i), nullptr);
+                return true;
+            }
+        }
+    }
+
+    if (data_type == TERADATA_PROJECT){
+        for(int i=0; i<m_projects_items.values().count(); i++){
+            if (m_projects_items.values().at(i)->text(0) == name){
+                ui->treeNavigator->setCurrentItem(m_projects_items.values().at(i));
+                currentNavItemChanged(m_projects_items.values().at(i), nullptr);
+                return true;
+            }
+        }
+    }
+
+    if (data_type == TERADATA_PARTICIPANT){
+        for(int i=0; i<m_participants_items.values().count(); i++){
+            if (m_participants_items.values().at(i)->text(0) == name){
+                ui->treeNavigator->setCurrentItem(m_participants_items.values().at(i));
+                currentNavItemChanged(m_participants_items.values().at(i), nullptr);
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)

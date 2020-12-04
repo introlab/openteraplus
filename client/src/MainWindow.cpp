@@ -522,8 +522,11 @@ void MainWindow::processGenericDataReply(TeraDataTypes item_data_type, QList<Ter
                     // New project - update access!
                     m_comManager->doUpdateCurrentUser();
                 }
-                // Yes, it is - close data editor
-                showDataEditor(TERADATA_NONE, nullptr);
+                // Try to update project navigator with new created item
+                if (!ui->projNavigator->selectItemByName(item_data_type, datas.first().getName())){
+                    // Not found in project navigator - close data editor
+                    showDataEditor(TERADATA_NONE, nullptr);
+                }
                 ui->projNavigator->setEnabled(true);
             }
         }

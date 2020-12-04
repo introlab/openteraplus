@@ -247,6 +247,14 @@ void TeraForm::setFieldRequired(const QString &field, const bool &required)
 
 }
 
+void TeraForm::setFieldEnabled(const QString &field, const bool &enabled)
+{
+    QWidget* widget = getWidgetForField(field);
+    if (widget){
+        widget->setEnabled(enabled);
+    }
+}
+
 bool TeraForm::isDirty()
 {
     bool dirty = false;

@@ -56,13 +56,18 @@ public:
 
     QWidget* getWidgetForField(const QString& field);
     bool setFieldValue(const QString& field, const QVariant& value);
+
     QVariant getFieldValue(const QString& field);
     bool getFieldDirty(const QString& field);
     bool getFieldDirty(QWidget *widget);
+
     void hideField(const QString& field);
-    void showField(const QString& field);
     void hideFields(const QStringList& fields);
+    void showField(const QString& field);
+
     void setFieldRequired(const QString& field, const bool& required);
+
+    void setFieldEnabled(const QString& field, const bool& enabled);
 
     bool isDirty();
 
