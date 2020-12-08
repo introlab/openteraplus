@@ -5,7 +5,7 @@
     },
     "Servers": {
         "Local-40075": {
-                "url": "localhost",
+                "url": "127.0.0.1",
                 "port": 40075
         },
         "3IT-Telesante": {

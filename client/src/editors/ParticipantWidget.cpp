@@ -141,7 +141,7 @@ void ParticipantWidget::updateControlsState()
 
 void ParticipantWidget::updateFieldsValue()
 {
-    if (m_data){
+    if (m_data && !dataIsNew()){
         ui->lblTitle->setText(m_data->getName());
         ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
         ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
@@ -426,7 +426,7 @@ void ParticipantWidget::updateDeviceParticipant(TeraData *device_participant)
 void ParticipantWidget::refreshWebAccessUrl()
 {
     int index = ui->cmbServices->currentIndex();
-    if (index >= m_services.count() || index <0)
+    if (index >= m_services.count() || index <0 || dataIsNew())
         return;
 
     TeraData* current_service = &m_services[index];
@@ -1004,7 +1004,21 @@ void ParticipantWidget::on_chkEnabled_stateChanged(int checkState)
     if (m_data){
         if (m_data->getFieldValue("participant_enabled").toBool() != current_state){
             ui->wdgParticipant->setFieldValue("participant_enabled", current_state);
-            saveData();
+            //saveData();
+            QJsonDocument document;
+            QJsonObject data_obj;
+            QJsonObject base_obj;
+
+            TeraData* part_info = ui->wdgParticipant->getFormDataObject(TERADATA_PARTICIPANT);
+            data_obj.insert("id_participant", QJsonValue::fromVariant(part_info->getId()));
+            data_obj.insert("id_project", QJsonValue::fromVariant(part_info->getFieldValue("id_project")));
+            data_obj.insert("participant_enabled", QJsonValue::fromVariant(current_state));
+
+            base_obj.insert(TeraData::getDataTypeName(TERADATA_PARTICIPANT), data_obj);
+            document.setObject(base_obj);
+
+            postDataRequest(WEB_PARTICIPANTINFO_PATH, document.toJson());
+
         }
     }
 
@@ -1028,7 +1042,20 @@ void ParticipantWidget::on_chkWebAccess_stateChanged(int checkState)
     if (m_data){
         if (m_data->getFieldValue("participant_token_enabled").toBool() != current_state){
             ui->wdgParticipant->setFieldValue("participant_token_enabled", current_state);
-            saveData();
+            //saveData();
+            QJsonDocument document;
+            QJsonObject data_obj;
+            QJsonObject base_obj;
+
+            TeraData* part_info = ui->wdgParticipant->getFormDataObject(TERADATA_PARTICIPANT);
+            data_obj.insert("id_participant", QJsonValue::fromVariant(part_info->getId()));
+            data_obj.insert("id_project", QJsonValue::fromVariant(part_info->getFieldValue("id_project")));
+            data_obj.insert("participant_token_enabled", QJsonValue::fromVariant(current_state));
+
+            base_obj.insert(TeraData::getDataTypeName(TERADATA_PARTICIPANT), data_obj);
+            document.setObject(base_obj);
+
+            postDataRequest(WEB_PARTICIPANTINFO_PATH, document.toJson());
         }
     }
 
@@ -1042,7 +1069,22 @@ void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
     if (m_data){
         if (m_data->getFieldValue("participant_login_enabled").toBool() != current_state){
             ui->wdgParticipant->setFieldValue("participant_login_enabled", current_state);
-            saveData();
+            //saveData();
+            if (!current_state){ // Disable login
+                QJsonDocument document;
+                QJsonObject data_obj;
+                QJsonObject base_obj;
+
+                TeraData* part_info = ui->wdgParticipant->getFormDataObject(TERADATA_PARTICIPANT);
+                data_obj.insert("id_participant", QJsonValue::fromVariant(part_info->getId()));
+                data_obj.insert("id_project", QJsonValue::fromVariant(part_info->getFieldValue("id_project")));
+                data_obj.insert("participant_login_enabled", QJsonValue::fromVariant(current_state));
+
+                base_obj.insert(TeraData::getDataTypeName(TERADATA_PARTICIPANT), data_obj);
+                document.setObject(base_obj);
+
+                postDataRequest(WEB_PARTICIPANTINFO_PATH, document.toJson());
+            }
         }
     }
 
@@ -1098,6 +1140,11 @@ void ParticipantWidget::on_btnSaveLogin_clicked()
             all_ok = false;
             err_msg.append(tr("Les mots de passe ne correspondent pas."));
         }
+    }
+
+    if (ui->txtPassword->text().isEmpty()){
+        all_ok = false;
+        err_msg.append(tr("Aucun mot de passe spécifié."));
     }
 
     if (!all_ok){

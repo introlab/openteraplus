@@ -641,6 +641,14 @@ void SessionInviteWidget::updateItem(const TeraData &item)
 
         tree_item->setDisabled(item_required->contains(id_item)); // Required, so can't be removed!
 
+        // Check if super admin, and hide if required
+        if(item.getDataType() == TERADATA_USER){
+            if (item.hasFieldName("user_superadmin"))
+                if (item.getFieldValue("user_superadmin").toBool() == true && !m_comManager->isCurrentUserSuperAdmin()){
+                    tree_item->setHidden(true);
+                }
+        }
+
         // Make sure item isn't in available list anymore
         if (item_availables->contains(id_item)){
             delete ui->lstInvitables->takeItem(ui->lstInvitables->row((*item_availables)[id_item]));
@@ -661,6 +669,14 @@ void SessionInviteWidget::updateItem(const TeraData &item)
         list_item->setText(item.getName());
         list_item->setIcon(QIcon(item.getIconStateFilename()));
         ui->lstInvitables->addItem(list_item);
+
+        // Check if super admin, and hide if required
+        if(item.getDataType() == TERADATA_USER){
+            if (item.hasFieldName("user_superadmin"))
+                if (item.getFieldValue("user_superadmin").toBool() == true && !m_comManager->isCurrentUserSuperAdmin()){
+                    list_item->setHidden(true);
+                }
+        }
 
         // Make sure item isn't in invited list anymore
         if (item_invitees->contains(id_item)){

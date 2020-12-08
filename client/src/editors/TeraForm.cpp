@@ -311,10 +311,11 @@ TeraData* TeraForm::getFormDataObject(const TeraDataTypes data_type)
     TeraData* rval = new TeraData(data_type);
     for(QString field:m_widgets.keys()){
         QVariant value, id;
-        getWidgetValues(m_widgets[field], &id, &value);
-        if (!id.isNull())
-            value = id;
-        rval->setFieldValue(field, value);
+        if (getWidgetValues(m_widgets[field], &id, &value)){
+            if (!id.isNull())
+                value = id;
+            rval->setFieldValue(field, value);
+        }
     }
     return rval;
 }
@@ -718,6 +719,13 @@ QWidget *TeraForm::createDateTimeWidget(const QVariantHash &structure)
     item_dt->setDisplayFormat("dd MMMM yyyy - hh:mm");
     //item_dt->setCalendarPopup(true);
 
+    // Hide by default if read only
+    if (structure.contains("readonly")){
+        if (structure["readonly"].toBool() == true){
+            m_hiddenFields.append(structure["id"].toString());
+        }
+    }
+
     return item_dt;
 
 }
@@ -852,17 +860,24 @@ void TeraForm::setWidgetVisibility(QWidget *widget, QWidget *linked_widget, bool
 
                     // Ensure the item is at the correct row order
                     if (widget->dynamicPropertyNames().contains("_order")){
+                        //qDebug() << "Showing " <<  m_widgets.key(widget) << ", order = " << widget->property("_order").toInt();
                         for (int row = 0; row<form_layout->rowCount(); row++){
                             if (form_layout->itemAt(row, QFormLayout::FieldRole)){
                                 QWidget* form_widget = form_layout->itemAt(row, QFormLayout::FieldRole)->widget();
                                 if (form_widget->dynamicPropertyNames().contains("_order")){
+                                     //qDebug() << "Comparing to " <<  m_widgets.key(form_widget) << ", order = " << form_widget->property("_order").toInt();
                                     if (widget->property("_order").toInt() < form_widget->property("_order").toInt()){
+                                        //qDebug() << "YES";
                                         parent_row = row - 1;
                                         break;
                                     }
+                                    //qDebug() << "NO";
                                 }
                             }
-
+                        }
+                        if (parent_row <0){
+                            // No before any present widget, insert last!
+                            parent_row = form_layout->rowCount();
                         }
                     }
                     form_layout->insertRow(parent_row+1, row.labelItem->widget(), row.fieldItem->widget());
@@ -882,7 +897,7 @@ void TeraForm::setWidgetVisibility(QWidget *widget, QWidget *linked_widget, bool
 
 }
 
-void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
+bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
 {
 /*    if (id)
         *id = QVariant();*/
@@ -899,7 +914,7 @@ void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
 
     if (QTextEdit* text = dynamic_cast<QTextEdit*>(widget)){
         *value = text->toPlainText();
-        return;
+        return true;
     }
 
     if (QCheckBox* check = dynamic_cast<QCheckBox*>(widget)){
@@ -921,7 +936,11 @@ void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
     }
 
     if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
-        *value = dt->dateTime();
+        if (dt->dateTime().isValid() && dt->dateTime().date().year()>2000){
+            *value = dt->dateTime();
+        }else{
+            return false; // Invalid date
+        }
     }
 
     if (QTimeEdit* te = dynamic_cast<QTimeEdit*>(widget)){
@@ -946,10 +965,13 @@ void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
             QJsonDocument doc = QJsonDocument::fromJson(string_val.toUtf8(), &err);
             if (err.error == QJsonParseError::NoError){
                 *value = doc;
+            }else{
+                return false;
             }
         }
 
     }
+    return true;
 }
 
 QVariant TeraForm::getWidgetValue(QWidget *widget)
@@ -1053,11 +1075,11 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
             time_value = QDateTime::fromSecsSinceEpoch(time_s);
         }
 
-        if (time_value.isValid()){
+        if (time_value.isValid() && time_value.date().year()>2000){
             dt->setDateTime(time_value);
-            widget->show();
+            setWidgetVisibility(widget, nullptr, true);
         }else{
-            widget->hide();
+            setWidgetVisibility(widget, nullptr, false);
         }
         return;
     }

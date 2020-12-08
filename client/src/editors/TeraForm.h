@@ -121,7 +121,7 @@ private:
     void checkConditions(QWidget* item_triggering = nullptr);
     void checkConditionsForItem(QWidget* item, QWidget* item_triggering = nullptr);
     void setWidgetVisibility(QWidget* widget, QWidget *linked_widget, bool visible);
-    void getWidgetValues(QWidget *widget, QVariant *id, QVariant* value);
+    bool getWidgetValues(QWidget *widget, QVariant *id, QVariant* value);
     QVariant getWidgetValue(QWidget* widget);
     void setWidgetValue(QWidget* widget, const QVariant& value);
 
