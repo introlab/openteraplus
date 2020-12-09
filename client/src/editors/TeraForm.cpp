@@ -102,6 +102,7 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
         }
     }
 
+    validateFormData(false);
     emit formIsNowDirty(false);
 
 }
@@ -906,6 +907,7 @@ bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
         if (id)
             *id = combo->currentData();
         *value = combo->currentText();
+        return true;
     }
 
     if (QLineEdit* text = dynamic_cast<QLineEdit*>(widget)){
@@ -935,21 +937,24 @@ bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
         }
     }
 
-    if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
-        if (dt->dateTime().isValid() && dt->dateTime().date().year()>2000){
-            *value = dt->dateTime();
-        }else{
-            return false; // Invalid date
-        }
-    }
-
     if (QTimeEdit* te = dynamic_cast<QTimeEdit*>(widget)){
         if (te->property("item_type") == "duration"){
             *value = QTime(0,0).secsTo(te->time());
         }else{
             *value = te->time();
         }
+        return true;
     }
+
+    if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
+        if (dt->dateTime().isValid() && dt->dateTime().date().year()>2000){
+            *value = dt->dateTime();
+        }else{
+            return false; // Invalid date
+        }
+        return true;
+    }
+
 
     if (value->canConvert(QMetaType::QString)){
         bool ok;
@@ -1136,6 +1141,7 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
             if (widget->property("required").toBool()){
                 QVariant id, value;
                 getWidgetValues(widget, &id, &value);
+                //qDebug() << widget->metaObject()->className() << " - " << m_widgets.key(widget) << " - " << value;
                 if (value.isNull() || value.toInt()==-1 || value.toString().isEmpty()){
                     rval = false;
                 }
