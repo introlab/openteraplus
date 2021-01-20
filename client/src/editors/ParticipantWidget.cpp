@@ -4,9 +4,12 @@
 #include <QLocale>
 #include <QClipboard>
 #include <QThread>
+#include <QStyledItemDelegate>
 
 #include "editors/DataListWidget.h"
 #include "editors/SessionWidget.h"
+
+#include "GeneratePasswordDialog.h"
 
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -17,6 +20,9 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     m_sessionLobby = nullptr;
 
     ui->setupUi(this);
+
+    ui->cmbServices->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate());
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
     setLimited(false);
@@ -1110,18 +1116,15 @@ void ParticipantWidget::on_btnCopyWeb_clicked()
 
 void ParticipantWidget::on_btnRandomPass_clicked()
 {
-    // Generate random password
-    QString password = Utils::generatePassword(10);
+    // Show random password dialog
+    GeneratePasswordDialog dlg;
 
-
-    GlobalMessageBox msg(this);
-    msg.showInfo(tr("Mot de passe généré"), password);
-
-    ui->txtPassword->setText(password);
-    ui->txtPasswordConfirm->setText(password);
-
-
-
+    if (dlg.exec() == QDialog::Accepted){
+        QString password = dlg.getPassword();
+        ui->txtPassword->setText(password);
+        ui->txtPasswordConfirm->setText(password);
+        on_txtPassword_textEdited(password);
+    }
 }
 
 void ParticipantWidget::on_btnSaveLogin_clicked()
@@ -1176,7 +1179,7 @@ void ParticipantWidget::on_txtUsername_textEdited(const QString &current)
 void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
 {
     QString confirm_pass = ui->txtPasswordConfirm->text();
-    if (current != confirm_pass || ui->txtUsername->text().isEmpty()){
+    if (current != confirm_pass || ui->txtPassword->text().isEmpty()){
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
         ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
     }else{
@@ -1188,7 +1191,7 @@ void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
 void ParticipantWidget::on_txtPasswordConfirm_textEdited(const QString &current)
 {
     QString pass = ui->txtPassword->text();
-    if (current != pass || ui->txtUsername->text().isEmpty()){
+    if (current != pass || ui->txtPassword->text().isEmpty()){
         ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
     }else{

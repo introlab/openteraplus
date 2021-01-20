@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "DataEditorWidget.h"
 #include <QDebug>
+#include <QStyledItemDelegate>
 
 TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
     QWidget(parent),
@@ -539,6 +540,7 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QComboBox* item_combo = new QComboBox();
+    item_combo->setItemDelegate(new QStyledItemDelegate());
 
     // Add empty item
     item_combo->addItem("", "");
@@ -564,6 +566,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QComboBox* item_combo = new QComboBox();
+    item_combo->setItemDelegate(new QStyledItemDelegate());
 
     // Add empty item
     item_combo->addItem("", "");
@@ -587,6 +590,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
 QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
 {
     QComboBox* item_combo = new QComboBox();
+    item_combo->setItemDelegate(new QStyledItemDelegate());
 
     // Add empty item
     item_combo->addItem("", "");
@@ -614,8 +618,9 @@ QWidget *TeraForm::createTextWidget(const QVariantHash &structure, bool is_maske
     Q_UNUSED(structure)
     QLineEdit* item_text = new QLineEdit();
 
-    if (is_masked)
+    if (is_masked){
         item_text->setEchoMode(QLineEdit::Password);
+    }
 
     if (structure.contains("max_length")){
         item_text->setMaxLength(structure["max_length"].toInt());

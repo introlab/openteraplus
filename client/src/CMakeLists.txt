@@ -39,6 +39,7 @@ set(headers
     ClickableLabel.h
     AboutDialog.h
     AboutDialogPage.h
+    GeneratePasswordDialog.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -100,6 +101,7 @@ set(srcs
     ClickableLabel.cpp
     AboutDialog.cpp
     AboutDialogPage.cpp
+    GeneratePasswordDialog.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
@@ -148,6 +150,7 @@ SET(uis
     JoinSessionDialog.ui
     EmailInviteDialog.ui
     AboutDialog.ui
+    GeneratePasswordDialog.ui
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
     editors/TeraForm.ui

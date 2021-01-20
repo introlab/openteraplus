@@ -585,6 +585,10 @@ QFrame#frameCheckSessionTypes{
     background-color: black;
 }
 
+QToolButton#btnRandomPass{
+    background-color: rgba(255,255,255,60%);
+}
+
 /* Customizations for SiteWidget */
 QLabel#lblInherited{
     font-weight: bold;
