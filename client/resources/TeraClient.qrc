@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>logos/Estrad.png</file>
         <file>logos/IntRoLab.png</file>
-        <file>logos/LOGO Transparent.png</file>
         <file>logos/logo_CDRV.png</file>
         <file>status/calling.gif</file>
         <file>status/connecting.gif</file>
@@ -11,7 +10,6 @@
         <file>status/status_notok.png</file>
         <file>status/status_ok.png</file>
         <file>status/warning.png</file>
-        <file>icons/ESTRAD.ico</file>
         <file>controls/branch_closed.png</file>
         <file>controls/branch_left.png</file>
         <file>controls/branch_opened.png</file>
@@ -133,5 +131,7 @@
         <file>defaults/OpenTeraPlus.json</file>
         <file>sounds/notify_invite.wav</file>
         <file>icons/random.png</file>
+        <file>logos/LogoOpenTeraPlus.png</file>
+        <file>icons/OpenTeraPlus.ico</file>
     </qresource>
 </RCC>

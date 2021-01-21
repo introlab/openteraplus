@@ -605,3 +605,8 @@ void UserWidget::on_btnUpdatePrefs_clicked()
     postDataRequest(WEB_USERPREFSINFO_PATH, user_pref_doc.toJson());
 
 }
+
+void UserWidget::on_btnGeneratePassword_clicked()
+{
+
+}
