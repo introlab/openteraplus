@@ -179,11 +179,16 @@ void UserGroupWidget::updateProjectAccess(const TeraData *access)
         // Not there - must add the site and role
         ui->tableProjects->setRowCount(ui->tableProjects->rowCount()+1);
         int current_row = ui->tableProjects->rowCount()-1;
-        QTableWidgetItem* item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_PROJECT)),
-                                                      access->getFieldValue("project_name").toString());
+        QTableWidgetItem* item;
+        item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_SITE)),
+                                                      access->getFieldValue("site_name").toString());
+
         ui->tableProjects->setItem(current_row, 0, item);
+        item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_PROJECT)),
+                                                      access->getFieldValue("project_name").toString());
+        ui->tableProjects->setItem(current_row, 1, item);
         combo_roles = buildRolesComboBox();
-        ui->tableProjects->setCellWidget(current_row, 1, combo_roles);
+        ui->tableProjects->setCellWidget(current_row, 2, combo_roles);
         m_tableProjects_items.insert(id_project, item);
     }
 
@@ -464,6 +469,7 @@ void UserGroupWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabProjects){
         // Projects
         args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1");
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
         queryDataRequest(WEB_PROJECTACCESS_PATH, args);
     }
 
