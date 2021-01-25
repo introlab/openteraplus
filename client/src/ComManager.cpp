@@ -617,6 +617,7 @@ bool ComManager::handleLoginSequence(const QString &reply_path, const QString &r
         if (data.isUndefined()){
             // No preference for that user, will use default.
             m_currentPreferences.setSet(true);
+            emit preferencesUpdated();
         }else{
             TeraData item_data(items_type, data);
             updateCurrentPrefs(item_data);

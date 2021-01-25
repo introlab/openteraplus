@@ -314,7 +314,7 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
 void ClientApp::on_newVersionAvailable(QString version, QString download_url)
 {
     GlobalMessageBox msg;
-    QString version_info = tr("Une nouvelle version (") + version + tr(") du logiciel est disponible.\n\n");
+    QString version_info = tr("Une nouvelle version (") + version + tr(") du logiciel est disponible.") + "\n\n";
     if (download_url.isEmpty()){
         version_info += tr("Veuillez contacter votre fournisseur pour l'obtenir.");
     }else{
@@ -343,5 +343,5 @@ void ClientApp::ws_genericEventReceived(TeraEvent event)
 void ClientApp::preferencesUpdated()
 {
     // Update translation
-    setTranslation( m_comMan->getCurrentPreferences().getLanguage());
+    setTranslation(m_comMan->getCurrentPreferences().getLanguage());
 }

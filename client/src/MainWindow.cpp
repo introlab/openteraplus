@@ -788,7 +788,7 @@ void MainWindow::on_btnLogout_clicked()
 {
     GlobalMessageBox msg;
 
-    if (msg.showYesNo(tr("Déconnexion"), tr("Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.\n\nSouhaitez-vous continuer?")) != QMessageBox::Yes){
+    if (msg.showYesNo(tr("Déconnexion"), tr("Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.") + "\n\n" + tr("Souhaitez-vous continuer?")) != QMessageBox::Yes){
         return;
     }
 
