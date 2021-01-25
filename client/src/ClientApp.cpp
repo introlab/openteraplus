@@ -313,14 +313,26 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
 
 void ClientApp::on_newVersionAvailable(QString version, QString download_url)
 {
-    GlobalMessageBox msg;
-    QString version_info = tr("Une nouvelle version (") + version + tr(") du logiciel est disponible.") + "\n\n";
-    if (download_url.isEmpty()){
-        version_info += tr("Veuillez contacter votre fournisseur pour l'obtenir.");
-    }else{
-        version_info += tr("Cliquez ") + "<a href=" + download_url + ">" + tr("ICI") + "</a>" + tr(" pour la télécharger.");
+    // Check to be sure that the new version is an updated version and not a previous one...
+    QStringList versions = version.split(".");
+    if (versions.count() < 3){
+        LOG_WARNING(tr("Le format de la version est inconnu: ") + version, "ClientApp::on_newVersionAvailable");
     }
-    msg.showInfo(tr("Nouvelle version disponible!"), version_info);
+
+    if (versions.at(0).toInt() > QString(OPENTERAPLUS_VERSION_MAJOR).toInt() ||
+            versions.at(1).toInt() > QString(OPENTERAPLUS_VERSION_MINOR).toInt() ||
+            versions.at(2).toInt() > QString(OPENTERAPLUS_VERSION_PATCH).toInt())
+    {
+
+        GlobalMessageBox msg;
+        QString version_info = tr("Une nouvelle version (") + version + tr(") du logiciel est disponible.") + "\n\n";
+        if (download_url.isEmpty()){
+            version_info += tr("Veuillez contacter votre fournisseur pour l'obtenir.");
+        }else{
+            version_info += tr("Cliquez ") + "<a href=" + download_url + ">" + tr("ICI") + "</a>" + tr(" pour la télécharger.");
+        }
+        msg.showInfo(tr("Nouvelle version disponible!"), version_info);
+    }
 }
 
 void ClientApp::on_currentUserUpdated()

@@ -109,37 +109,42 @@
         <translation>Unable to connect (Error code: </translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="317"/>
+        <location filename="../../src/ClientApp.cpp" line="319"/>
+        <source>Le format de la version est inconnu: </source>
+        <translation>Unknown version format: </translation>
+    </message>
+    <message>
+        <location filename="../../src/ClientApp.cpp" line="328"/>
         <source>Une nouvelle version (</source>
         <translation>A software update (</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="317"/>
+        <location filename="../../src/ClientApp.cpp" line="328"/>
         <source>) du logiciel est disponible.</source>
         <translation>) is available.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="319"/>
+        <location filename="../../src/ClientApp.cpp" line="330"/>
         <source>Veuillez contacter votre fournisseur pour l&apos;obtenir.</source>
         <translation>Please contact your provider to update.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="321"/>
+        <location filename="../../src/ClientApp.cpp" line="332"/>
         <source>Cliquez </source>
         <translation>Click </translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="321"/>
+        <location filename="../../src/ClientApp.cpp" line="332"/>
         <source>ICI</source>
         <translation>HERE</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="321"/>
+        <location filename="../../src/ClientApp.cpp" line="332"/>
         <source> pour la télécharger.</source>
         <translation> to download.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="323"/>
+        <location filename="../../src/ClientApp.cpp" line="334"/>
         <source>Nouvelle version disponible!</source>
         <translation>Software update available!</translation>
     </message>
@@ -147,7 +152,7 @@
 <context>
     <name>ComManager</name>
     <message>
-        <location filename="../../src/ComManager.cpp" line="847"/>
+        <location filename="../../src/ComManager.cpp" line="848"/>
         <source>Erreur inconnue</source>
         <translation>Unknown error</translation>
     </message>

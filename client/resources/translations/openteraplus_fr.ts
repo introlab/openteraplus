@@ -109,37 +109,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="317"/>
+        <location filename="../../src/ClientApp.cpp" line="319"/>
+        <source>Le format de la version est inconnu: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ClientApp.cpp" line="328"/>
         <source>Une nouvelle version (</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="317"/>
+        <location filename="../../src/ClientApp.cpp" line="328"/>
         <source>) du logiciel est disponible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="319"/>
+        <location filename="../../src/ClientApp.cpp" line="330"/>
         <source>Veuillez contacter votre fournisseur pour l&apos;obtenir.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="321"/>
+        <location filename="../../src/ClientApp.cpp" line="332"/>
         <source>Cliquez </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="321"/>
+        <location filename="../../src/ClientApp.cpp" line="332"/>
         <source>ICI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="321"/>
+        <location filename="../../src/ClientApp.cpp" line="332"/>
         <source> pour la télécharger.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="323"/>
+        <location filename="../../src/ClientApp.cpp" line="334"/>
         <source>Nouvelle version disponible!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -147,7 +152,7 @@
 <context>
     <name>ComManager</name>
     <message>
-        <location filename="../../src/ComManager.cpp" line="847"/>
+        <location filename="../../src/ComManager.cpp" line="848"/>
         <source>Erreur inconnue</source>
         <translation type="unfinished"></translation>
     </message>
