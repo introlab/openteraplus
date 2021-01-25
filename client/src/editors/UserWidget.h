@@ -45,6 +45,7 @@ private:
     QMap<int, QListWidgetItem*>     m_listUserUserGroups_items;
 
     bool m_currentUserPasswordChanged;
+    bool m_passwordJustGenerated;
 
     void updateControlsState();
     void updateFieldsValue();

@@ -10,14 +10,50 @@ QString Utils::generatePassword(const int &len)
    // Available char list
    const QString possibleCharacters("ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789$%*&!()?#");
 
+   bool validPassword = false;
    QString password;
-   for(int i=0; i<len; ++i)
-   {
-       quint32 index = QRandomGenerator::global()->bounded(possibleCharacters.length());
-       QChar nextChar = possibleCharacters.at(index);
-       password.append(nextChar);
+   while (!validPassword){
+       password.clear();
+       for(int i=0; i<len; ++i)
+       {
+           quint32 index = QRandomGenerator::global()->bounded(possibleCharacters.length());
+           QChar nextChar = possibleCharacters.at(index);
+           password.append(nextChar);
+       }
+       validPassword = validatePassword(password).isEmpty();
    }
    return password;
+}
+
+QList<Utils::PasswordValidationErrors> Utils::validatePassword(const QString &password)
+{
+    QList<Utils::PasswordValidationErrors> errors;
+
+    if (password.length()<10){
+        errors.append(PASSWORD_LENGTH);
+    }
+
+    QRegExp validator("[A-Z]");
+    if (validator.indexIn(password) == -1){
+        errors.append(PASSWORD_NOCAPS);
+    }
+
+    validator.setPattern("[a-z]");
+    if (validator.indexIn(password) == -1){
+        errors.append(PASSWORD_NONOCAPS);
+    }
+
+    validator.setPattern("[0-9]");
+    if (validator.indexIn(password) == -1){
+        errors.append(PASSWORD_NODIGITS);
+    }
+
+    validator.setPattern("[^A-Za-z0-9]");
+    if (validator.indexIn(password) == -1){
+        errors.append(PASSWORD_NOCHAR);
+    }
+
+    return errors;
 }
 
 QString Utils::getMachineUniqueId()

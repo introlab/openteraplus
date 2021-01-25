@@ -40,6 +40,7 @@ set(headers
     AboutDialog.h
     AboutDialogPage.h
     GeneratePasswordDialog.h
+    PasswordStrengthDialog.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -102,6 +103,7 @@ set(srcs
     AboutDialog.cpp
     AboutDialogPage.cpp
     GeneratePasswordDialog.cpp
+    PasswordStrengthDialog.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
@@ -151,6 +153,7 @@ SET(uis
     EmailInviteDialog.ui
     AboutDialog.ui
     GeneratePasswordDialog.ui
+    PasswordStrengthDialog.ui
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
     editors/TeraForm.ui

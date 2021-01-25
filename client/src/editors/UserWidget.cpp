@@ -8,6 +8,9 @@
 
 #include <QtMultimedia/QAudioDeviceInfo>
 
+#include "GeneratePasswordDialog.h"
+#include "PasswordStrengthDialog.h"
+
 
 UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -20,6 +23,8 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
         ui->setupUi(this);
     }
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
+
+    m_passwordJustGenerated = false;
 
     setLimited(false);
     ui->tabMain->setCurrentIndex(0);
@@ -582,6 +587,21 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
     if (widget == ui->wdgUser->getWidgetForField("user_superadmin")){
         ui->lstGroups->setEnabled(!value.toBool());
     }
+
+    if (widget == ui->wdgUser->getWidgetForField("user_password")){
+        QString current_pass = value.toString();
+        if (!current_pass.isEmpty() && !m_passwordJustGenerated){
+            // Show password dialog
+            PasswordStrengthDialog dlg(current_pass);
+            if (dlg.exec() == QDialog::Accepted){
+                ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
+            }else{
+                ui->wdgUser->setFieldValue("user_password", "");
+            }
+        }
+        if (m_passwordJustGenerated)
+            m_passwordJustGenerated = false;
+    }
 }
 
 void UserWidget::on_btnUpdatePrefs_clicked()
@@ -608,5 +628,12 @@ void UserWidget::on_btnUpdatePrefs_clicked()
 
 void UserWidget::on_btnGeneratePassword_clicked()
 {
+    // Show random password dialog
+    GeneratePasswordDialog dlg;
 
+    if (dlg.exec() == QDialog::Accepted){
+        QString password = dlg.getPassword();
+        m_passwordJustGenerated = true;
+        ui->wdgUser->setFieldValue("user_password", password);
+    }
 }
