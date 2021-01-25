@@ -197,6 +197,11 @@ QLineEdit:!enabled, QSpinBox:!enabled, QTextEdit:!enabled, QDateTimeEdit:!enable
 }
 
 
+QDateTimeEdit::down-arrow:!enabled, QDateTimeEdit::up-arrow:!enabled {
+    image: none;
+}
+
+
 /*
     QPlainTextEdit
 */
@@ -240,8 +245,13 @@ QComboBox {
 }
 
 QComboBox:!enabled {
-    background-color: rgba(255,255,255,10%);
+    background-color: rgba(255,255,255,0%);
     color: white;
+    border: 0px solid transparent;
+}
+
+QComboBox::down-arrow:!enabled {
+    image: none;
 }
 
 QComboBox QAbstractItemView {
@@ -455,13 +465,13 @@ QWidget#ConfigWidget{background-image: url(://TeRA_Background.png); }
 QWidget#SessionWidget{background-image: url(://TeRA_Background.png); }
 
 /* Customizations for Editors */
-QPushButton#btnEdit:hover{
+QPushButton#btnEdit:hover, QPushButton#btnGeneratePassword:hover{
     background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,5,45,100%), stop: 0.2  rgba(0,0,155,100%), stop:1 rgba(0,5,45,100%));
     color: white;
     border: 0px solid transparent;
 }
 
-QPushButton#btnEdit{
+QPushButton#btnEdit, QPushButton#btnGeneratePassword{
     background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,0,155,100%), stop: 0.2  rgba(0,5,45,100%), stop:1 rgba(0,0,155,100%));
     border: 0px solid transparent;
 }

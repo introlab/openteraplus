@@ -610,6 +610,11 @@ QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
     // Using old-style connect since SLOT has less parameter and not working with new-style connect
     connect(item_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(widgetValueChanged()));
 
+    // Hide combo box if empty
+    if (item_combo->count() == 1){
+        hideField(structure["id"].toString());
+    }
+
     return item_combo;
 }
 
@@ -1128,6 +1133,12 @@ void TeraForm::updateWidgetChoices(QWidget *widget, const QList<TeraData> values
         for (TeraData value:values){
             combo->addItem(value.getName(), value.getId());
         }
+
+        if (combo->count() == 1){
+            // Hide field value if empty
+            hideField(m_widgets.key(combo));
+        }
+
         return;
     }
     LOG_WARNING("Unhandled widget: "+ QString(widget->metaObject()->className()), "TeraForm::updateWidgetValues");
