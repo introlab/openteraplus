@@ -63,7 +63,7 @@ void UserGroupWidget::saveData(bool signal)
         for (int i=0; i<m_tableProjects_items.count(); i++){
             int project_id = m_tableProjects_items.keys().at(i);
             int row = m_tableProjects_items[project_id]->row();
-            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,1));
+            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
             if (combo_roles->currentIndex()>0){
                 QJsonObject data_obj;
                 QJsonValue role = combo_roles->currentData().toString();
@@ -174,7 +174,7 @@ void UserGroupWidget::updateProjectAccess(const TeraData *access)
     QComboBox* combo_roles;
     if (m_tableProjects_items.contains(id_project)){
         item = m_tableProjects_items[id_project];
-        combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(item->row(),1));
+        combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(item->row(),2));
     }else{
         // Not there - must add the site and role
         ui->tableProjects->setRowCount(ui->tableProjects->rowCount()+1);
@@ -391,7 +391,7 @@ void UserGroupWidget::processPostOKReply(QString path)
         for (int i=0; i<m_tableProjects_items.count(); i++){
            int project_id = m_tableProjects_items.keys().at(i);
            int row = m_tableProjects_items[project_id]->row();
-           QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,1));
+           QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
            if (combo_roles){
                combo_roles->setProperty("original_index", combo_roles->currentIndex());
            }
@@ -439,7 +439,7 @@ void UserGroupWidget::btnUpdateProjectAccess_clicked()
     for (int i=0; i<m_tableProjects_items.count(); i++){
         int project_id = m_tableProjects_items.keys().at(i);
         int row = m_tableProjects_items[project_id]->row();
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,1));
+        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
         if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
             QJsonObject data_obj;
             // Ok, value was modified - must add!

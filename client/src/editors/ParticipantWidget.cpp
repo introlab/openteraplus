@@ -84,6 +84,7 @@ void ParticipantWidget::saveData(bool signal)
 {
     // If data is new, we request all the fields.
     QJsonDocument part_data = ui->wdgParticipant->getFormDataJson(m_data->isNew());
+    qDebug() << part_data.toJson();
 
     postDataRequest(WEB_PARTICIPANTINFO_PATH, part_data.toJson());
 
@@ -147,36 +148,40 @@ void ParticipantWidget::updateControlsState()
 
 void ParticipantWidget::updateFieldsValue()
 {
-    if (m_data && !dataIsNew()){
-        ui->lblTitle->setText(m_data->getName());
-        ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
-        ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
-        ui->chkWebAccess->setChecked(m_data->getFieldValue("participant_token_enabled").toBool());
-        refreshWebAccessUrl();
-        ui->txtUsername->setText(m_data->getFieldValue("participant_username").toString());
+    if (m_data){
+        if (!dataIsNew()){
+            ui->lblTitle->setText(m_data->getName());
+            ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
+            ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
+            ui->chkWebAccess->setChecked(m_data->getFieldValue("participant_token_enabled").toBool());
+            refreshWebAccessUrl();
+            ui->txtUsername->setText(m_data->getFieldValue("participant_username").toString());
 
-        // Hide service combo box if only one service
-        ui->cmbServices->setVisible(ui->cmbServices->count()>1);
-        ui->frameWeb->setVisible(ui->cmbServices->count()>0 && ui->chkWebAccess->isChecked());
+            // Hide service combo box if only one service
+            ui->cmbServices->setVisible(ui->cmbServices->count()>1);
+            ui->frameWeb->setVisible(ui->cmbServices->count()>0 && ui->chkWebAccess->isChecked());
 
-        // Must "trigger" the slots for username - password, since they are not set otherwise
-        on_txtUsername_textEdited(ui->txtUsername->text());
-        on_txtPassword_textEdited("");
+            // Must "trigger" the slots for username - password, since they are not set otherwise
+            on_txtUsername_textEdited(ui->txtUsername->text());
+            on_txtPassword_textEdited("");
 
-        ui->wdgParticipant->fillFormFromData(m_data->toJson());
+            // Status
+            ui->icoOnline->setVisible(m_data->isEnabled());
+            ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
+            if (m_data->isBusy()){
+                ui->icoOnline->setPixmap(QPixmap("://status/status_busy.png"));
+            }else if (m_data->isOnline()){
+                ui->icoOnline->setPixmap(QPixmap("://status/status_online.png"));
+            }else{
+                ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
+            }
 
-        // Status
-        ui->icoOnline->setVisible(m_data->isEnabled());
-        ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
-        if (m_data->isBusy()){
-            ui->icoOnline->setPixmap(QPixmap("://status/status_busy.png"));
-        }else if (m_data->isOnline()){
-            ui->icoOnline->setPixmap(QPixmap("://status/status_online.png"));
-        }else{
-            ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
+            ui->frameNewSession->setVisible(canStartNewSession());
         }
 
-        ui->frameNewSession->setVisible(canStartNewSession());
+        ui->wdgParticipant->fillFormFromData(m_data->toJson());
+        on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
+
     }
 }
 
@@ -1066,7 +1071,6 @@ void ParticipantWidget::on_chkWebAccess_stateChanged(int checkState)
     }
 
     ui->frameWeb->setVisible(checkState == Qt::Checked);
-    on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
 }
 
 void ParticipantWidget::on_chkLogin_stateChanged(int checkState)

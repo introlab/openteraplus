@@ -202,7 +202,7 @@ QList<QString> TeraData::getFieldList() const
 {
     QList<QString> rval;
     //for (QByteArray fieldname:dynamicPropertyNames()){
-    for (QString fieldname:m_fieldsValue.keys()){
+    for (const QString &fieldname:m_fieldsValue.keys()){
         rval.append(fieldname);
     }
 

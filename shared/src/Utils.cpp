@@ -131,3 +131,16 @@ QStringList Utils::getVideoDeviceNames()
     return names;
 }
 
+void Utils::inStringUnicodeConverter(QString *str)
+{
+    if (str->contains("\\u")) {
+       do {
+          int idx = str->indexOf("\\u");
+          QString strHex = str->mid(idx, 6);
+          strHex = strHex.replace("\\u", QString());
+          int nHex = strHex.toInt(0, 16);
+          str->replace(idx, 6, QChar(nHex));
+       } while (str->indexOf("\\u") != -1);
+    }
+}
+

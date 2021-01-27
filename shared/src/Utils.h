@@ -31,6 +31,8 @@ public:
     static QStringList getAudioDeviceNames();
     static QStringList getVideoDeviceNames();
 
+    static void inStringUnicodeConverter(QString* str);
+
 signals:
 
 };

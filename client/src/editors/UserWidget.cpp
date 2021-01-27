@@ -594,13 +594,16 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
             // Show password dialog
             PasswordStrengthDialog dlg(current_pass);
             if (dlg.exec() == QDialog::Accepted){
+                m_passwordJustGenerated = true;
                 ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
             }else{
                 ui->wdgUser->setFieldValue("user_password", "");
             }
+
+        }else{
+            if (m_passwordJustGenerated)
+                m_passwordJustGenerated = false;
         }
-        if (m_passwordJustGenerated)
-            m_passwordJustGenerated = false;
     }
 }
 

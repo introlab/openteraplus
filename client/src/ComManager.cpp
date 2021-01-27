@@ -1,6 +1,7 @@
 #include "ComManager.h"
 #include <sstream>
 #include <QLocale>
+#include "Utils.h"
 
 ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     QObject(parent),
@@ -966,7 +967,13 @@ void ComManager::onNetworkFinished(QNetworkReply *reply)
         }
     }
     else {
-        QString reply_msg = QString::fromUtf8(reply->readAll()).replace("\"", "");
+        QByteArray reply_data = reply->readAll();
+
+        QString reply_msg = QString::fromUtf8(reply_data).replace("\"", "");
+
+        // Convert in-string unicode characters
+        Utils::inStringUnicodeConverter(&reply_msg);
+
         if (reply_msg.isEmpty() || reply_msg.startsWith("\"\"") || reply_msg == "\n"){
             //reply_msg = tr("Erreur non-détaillée.");
             reply_msg = reply->errorString();

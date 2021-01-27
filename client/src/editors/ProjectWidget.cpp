@@ -261,6 +261,7 @@ void ProjectWidget::updateControlsState()
 
         ui->lstServices->setEnabled(is_site_admin);
         ui->btnUpdateServices->setVisible(is_site_admin);
+        ui->btnUserGroups->setVisible(is_site_admin);
 
     }
 
@@ -292,6 +293,15 @@ bool ProjectWidget::isSiteAdmin()
     else{
         return false;
     }
+}
+
+void ProjectWidget::queryUserGroupsProjectAccess()
+{
+    QUrlQuery args;
+
+    args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups without any access
+    queryDataRequest(WEB_PROJECTACCESS_PATH, args);
 }
 
 void ProjectWidget::processFormsReply(QString form_type, QString data)
@@ -518,20 +528,6 @@ void ProjectWidget::btnUpdateAccess_clicked()
     }
 }
 
-void ProjectWidget::btnDevices_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new QDialog(this);
-    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_DEVICE, m_diag_editor);
-    Q_UNUSED(list_widget)
-
-    m_diag_editor->setWindowTitle(tr("Appareils"));
-
-    m_diag_editor->open();
-}
-
 void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
 {
     // Load data depending on selected tab
@@ -590,9 +586,7 @@ void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
         // User groups
         if (m_tableUserGroups_items.isEmpty()){
             // Query
-            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups without any access
-            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+           queryUserGroupsProjectAccess();
         }
     }
 
@@ -701,4 +695,40 @@ void ProjectWidget::on_icoSessions_clicked()
 {
     ui->tabProjectInfos->setCurrentWidget(ui->tabSessionTypes);
     ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void ProjectWidget::on_btnUserGroups_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+
+    m_diag_editor = new BaseDialog(this);
+    //DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USERGROUP, nullptr);
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USERGROUP, WEB_PROJECTACCESS_PATH, args, QStringList("project_access_role"), nullptr);
+    list_widget->setPermissions(isSiteAdmin(), isSiteAdmin());
+    list_widget->setFilterText(tr("Seuls les groupes utilisateurs ayant un accès au projet sont affichés."));
+    m_diag_editor->setCentralWidget(list_widget);
+
+    m_diag_editor->setWindowTitle(tr("Groupes Utilisateurs"));
+    m_diag_editor->setFixedSize(size().width(), size().height());
+
+    connect(m_diag_editor, &BaseDialog::finished, this, &ProjectWidget::userGroupsEditor_finished);
+    m_diag_editor->open();
+}
+
+void ProjectWidget::userGroupsEditor_finished()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+        m_diag_editor = nullptr;
+    }
+
+    // Refresh user groups informations
+    ui->tableUserGroups->clearContents();
+    ui->tableUserGroups->setRowCount(0);
+    m_tableUserGroups_items.clear();
+    queryUserGroupsProjectAccess();
 }
