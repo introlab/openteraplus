@@ -4,13 +4,9 @@
         "logToFile": true
     },
     "Servers": {
-        "Local-40075": {
+        "Local - Port 40075": {
                 "url": "127.0.0.1",
                 "port": 40075
-        },
-        "3IT-Telesante": {
-                "url": "telesante.3it.usherbrooke.ca",
-                "port": 40075
-	}
+        }
     }
 }

@@ -866,12 +866,13 @@ void MainWindow::on_btnEditUser_clicked()
     ui->projNavigator->setOnHold(true);
 
     m_diag_editor = new BaseDialog(this);
+    m_diag_editor->setMinimumHeight(600);
     UserWidget* user_editor = new UserWidget(m_comManager, &(m_comManager->getCurrentUser()), nullptr);
 
     m_diag_editor->setCentralWidget(user_editor);
 
     user_editor->setLimited(true);
-    connect(user_editor, &UserWidget::closeRequest, m_diag_editor, &QDialog::accept);
+    connect(user_editor, &UserWidget::dataWasChanged, m_diag_editor, &QDialog::accept);
     connect(m_diag_editor, &QDialog::finished, this, &MainWindow::editorDialogFinished);
 
     m_diag_editor->setWindowTitle(tr("Votre compte"));

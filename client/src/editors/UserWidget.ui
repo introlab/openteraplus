@@ -269,6 +269,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </item>
              <item>
               <widget class="QPushButton" name="btnGeneratePassword">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>0</width>

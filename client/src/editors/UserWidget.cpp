@@ -640,3 +640,24 @@ void UserWidget::on_btnGeneratePassword_clicked()
         ui->wdgUser->setFieldValue("user_password", password);
     }
 }
+
+void UserWidget::editToggleClicked()
+{
+    DataEditorWidget::editToggleClicked();
+
+    ui->btnGeneratePassword->setEnabled(true);
+}
+
+void UserWidget::saveButtonClicked()
+{
+    DataEditorWidget::saveButtonClicked();
+
+    ui->btnGeneratePassword->setEnabled(false);
+}
+
+void UserWidget::undoButtonClicked()
+{
+    DataEditorWidget::undoButtonClicked();
+
+    ui->btnGeneratePassword->setEnabled(false);
+}

@@ -40,7 +40,6 @@ set(sharedlib_srcs
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${OPENTERA_MESSAGES_INCLUDES}
 )
 
 #This will generate moc_* for Qt
@@ -53,7 +52,7 @@ add_library(opentera_shared SHARED ${sharedlib_headers} ${sharedlib_srcs} ${shar
 set_target_properties(opentera_shared PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
-target_link_libraries(opentera_shared ${OPENTERA_MESSAGES_LIBS} Qt5::Core Qt5::Multimedia)
+target_link_libraries(opentera_shared Qt5::Core Qt5::Multimedia)
 if (MSVC)
 target_compile_definitions(opentera_shared PUBLIC OPENTERAMESSAGES_EXPORT=__declspec\(dllimport\))
 endif(MSVC)

@@ -83,6 +83,11 @@ private slots:
     void userFormValueChanged(QWidget* widget, QVariant value);
     void on_btnUpdatePrefs_clicked();
     void on_btnGeneratePassword_clicked();
+
+    void editToggleClicked() override;
+    void saveButtonClicked() override;
+    void undoButtonClicked() override;
+
 };
 
 
