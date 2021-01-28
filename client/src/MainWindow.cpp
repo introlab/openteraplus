@@ -128,6 +128,9 @@ void MainWindow::initUi()
     // Set version number
     ui->lblVersion->setText(QString(OPENTERAPLUS_VERSION));
 
+    // Disable incomplete features
+    ui->tabMainMenu->removeTab(2); // Search tab
+
 }
 
 void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*data)
