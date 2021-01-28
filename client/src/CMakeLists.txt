@@ -39,6 +39,8 @@ set(headers
     ClickableLabel.h
     AboutDialog.h
     AboutDialogPage.h
+    GeneratePasswordDialog.h
+    PasswordStrengthDialog.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -100,6 +102,8 @@ set(srcs
     ClickableLabel.cpp
     AboutDialog.cpp
     AboutDialogPage.cpp
+    GeneratePasswordDialog.cpp
+    PasswordStrengthDialog.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
@@ -148,6 +152,8 @@ SET(uis
     JoinSessionDialog.ui
     EmailInviteDialog.ui
     AboutDialog.ui
+    GeneratePasswordDialog.ui
+    PasswordStrengthDialog.ui
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
     editors/TeraForm.ui
@@ -247,7 +253,7 @@ add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc
 # qt5_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
 
 # Linking with Qt libraries and others
-target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS}  Qt5::Core Qt5::Network Qt5::Multimedia Qt5::WebSockets Qt5::WebEngine Qt5::WebEngineWidgets)
+target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt5::Core Qt5::Network Qt5::Multimedia Qt5::WebSockets Qt5::WebEngine Qt5::WebEngineWidgets)
 
 # DL - Temporary for tests
 target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
@@ -268,6 +274,9 @@ set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION "Res
 
 # Install target
 install(TARGETS OpenTeraPlus DESTINATION bin)
+
+# Doesn't seem to be installed otherwise??
+install(TARGETS opentera_messages DESTINATION bin)
 
 
 

@@ -257,7 +257,7 @@ void SiteWidget::queryUserGroupsSiteAccess()
 {
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
-    args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
+    //args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
     queryDataRequest(WEB_SITEACCESS_PATH, args);
 
 }
@@ -525,12 +525,14 @@ void SiteWidget::on_btnUserGroups_clicked()
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
     DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USERGROUP, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), nullptr);
+    list_widget->setPermissions(isSiteAdmin(), isSiteAdmin());
     list_widget->setFilterText(tr("Seuls les groupes utilisateurs ayant un accès au site sont affichés."));
     m_diag_editor->setCentralWidget(list_widget);
 
     m_diag_editor->setWindowTitle(tr("Groupes Utilisateurs"));
     m_diag_editor->setFixedSize(size().width(), size().height());
 
+    connect(m_diag_editor, &BaseDialog::finished, this, &SiteWidget::userGroupsEditor_finished);
     m_diag_editor->open();
 }
 
@@ -550,4 +552,18 @@ void SiteWidget::on_icoDevices_clicked()
 {
     ui->tabSiteInfos->setCurrentWidget(ui->tabDevices);
     ui->tabNav->setCurrentWidget(ui->tabDetails);
+}
+
+void SiteWidget::userGroupsEditor_finished()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+        m_diag_editor = nullptr;
+    }
+
+    // Refresh user groups informations
+    ui->tableUserGroups->clearContents();
+    ui->tableUserGroups->setRowCount(0);
+    m_tableUserGroups_items.clear();
+    queryUserGroupsSiteAccess();
 }

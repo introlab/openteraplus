@@ -57,6 +57,8 @@ void DataEditorWidget::setLimited(bool limited){
 
     if (m_frameSave && m_limited){
         m_frameSave->hide();
+        if (m_cancelButton)
+            m_cancelButton->hide();
     }
 
     if (m_editToggle){
@@ -371,7 +373,7 @@ void DataEditorWidget::saveButtonClicked()
         return;
     }
 
-     saveData();
+     saveData(true);
      m_frameSave->hide();
      //m_editToggle->setDisabled(false);
      if (m_editToggle)

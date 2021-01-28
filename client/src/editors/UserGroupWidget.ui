@@ -80,7 +80,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -363,7 +363,7 @@
           <bool>true</bool>
          </property>
          <property name="columnCount">
-          <number>2</number>
+          <number>3</number>
          </property>
          <attribute name="horizontalHeaderDefaultSectionSize">
           <number>250</number>
@@ -374,6 +374,11 @@
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>
+         <column>
+          <property name="text">
+           <string>Site</string>
+          </property>
+         </column>
          <column>
           <property name="text">
            <string>Projet</string>

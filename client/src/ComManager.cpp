@@ -1,6 +1,7 @@
 #include "ComManager.h"
 #include <sstream>
 #include <QLocale>
+#include "Utils.h"
 
 ComManager::ComManager(QUrl serverUrl, QObject *parent) :
     QObject(parent),
@@ -617,6 +618,7 @@ bool ComManager::handleLoginSequence(const QString &reply_path, const QString &r
         if (data.isUndefined()){
             // No preference for that user, will use default.
             m_currentPreferences.setSet(true);
+            emit preferencesUpdated();
         }else{
             TeraData item_data(items_type, data);
             updateCurrentPrefs(item_data);
@@ -965,7 +967,13 @@ void ComManager::onNetworkFinished(QNetworkReply *reply)
         }
     }
     else {
-        QString reply_msg = QString::fromUtf8(reply->readAll()).replace("\"", "");
+        QByteArray reply_data = reply->readAll();
+
+        QString reply_msg = QString::fromUtf8(reply_data).replace("\"", "");
+
+        // Convert in-string unicode characters
+        Utils::inStringUnicodeConverter(&reply_msg);
+
         if (reply_msg.isEmpty() || reply_msg.startsWith("\"\"") || reply_msg == "\n"){
             //reply_msg = tr("Erreur non-détaillée.");
             reply_msg = reply->errorString();

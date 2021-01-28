@@ -8,6 +8,9 @@
 
 #include <QtMultimedia/QAudioDeviceInfo>
 
+#include "GeneratePasswordDialog.h"
+#include "PasswordStrengthDialog.h"
+
 
 UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -20,6 +23,8 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
         ui->setupUi(this);
     }
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
+
+    m_passwordJustGenerated = false;
 
     setLimited(false);
     ui->tabMain->setCurrentIndex(0);
@@ -48,7 +53,16 @@ void UserWidget::setData(const TeraData *data){
    DataEditorWidget::setData(data);
 
    // Query available user groups
-   queryDataRequest(WEB_USERGROUPINFO_PATH);
+   if (!m_data->hasFieldName("id_site"))
+        queryDataRequest(WEB_USERGROUPINFO_PATH);
+   else{
+       // We have a new user with a specific id_site - we must query the correct user groups then
+       QUrlQuery args;
+       args.addQueryItem(WEB_QUERY_ID_SITE, m_data->getFieldValue("id_site").toString());
+       m_data->removeFieldName("id_site");
+       queryDataRequest(WEB_USERGROUPINFO_PATH, args);
+   }
+
 
    /* QString user_uuid = m_data->getFieldValue("user_uuid").toUuid().toString(QUuid::WithoutBraces);
     queryDataRequest(WEB_SITEINFO_PATH, QUrlQuery(QString(WEB_QUERY_USERUUID) + "=" + user_uuid));
@@ -298,7 +312,7 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
 
 bool UserWidget::validateUserGroups()
 {
-    if (!m_comManager->isCurrentUserSuperAdmin()){
+    //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
         for (int i=0; i<m_listUserGroups_items.count(); i++){
             if (m_listUserGroups_items.values().at(i)->checkState() == Qt::Checked){
@@ -312,7 +326,7 @@ bool UserWidget::validateUserGroups()
             msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
             return false;
         }
-    }
+    //}
     return true;
 }
 
@@ -573,6 +587,24 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
     if (widget == ui->wdgUser->getWidgetForField("user_superadmin")){
         ui->lstGroups->setEnabled(!value.toBool());
     }
+
+    if (widget == ui->wdgUser->getWidgetForField("user_password")){
+        QString current_pass = value.toString();
+        if (!current_pass.isEmpty() && !m_passwordJustGenerated){
+            // Show password dialog
+            PasswordStrengthDialog dlg(current_pass);
+            if (dlg.exec() == QDialog::Accepted){
+                m_passwordJustGenerated = true;
+                ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
+            }else{
+                ui->wdgUser->setFieldValue("user_password", "");
+            }
+
+        }else{
+            if (m_passwordJustGenerated)
+                m_passwordJustGenerated = false;
+        }
+    }
 }
 
 void UserWidget::on_btnUpdatePrefs_clicked()
@@ -595,4 +627,37 @@ void UserWidget::on_btnUpdatePrefs_clicked()
 
     postDataRequest(WEB_USERPREFSINFO_PATH, user_pref_doc.toJson());
 
+}
+
+void UserWidget::on_btnGeneratePassword_clicked()
+{
+    // Show random password dialog
+    GeneratePasswordDialog dlg;
+
+    if (dlg.exec() == QDialog::Accepted){
+        QString password = dlg.getPassword();
+        m_passwordJustGenerated = true;
+        ui->wdgUser->setFieldValue("user_password", password);
+    }
+}
+
+void UserWidget::editToggleClicked()
+{
+    DataEditorWidget::editToggleClicked();
+
+    ui->btnGeneratePassword->setEnabled(true);
+}
+
+void UserWidget::saveButtonClicked()
+{
+    DataEditorWidget::saveButtonClicked();
+
+    ui->btnGeneratePassword->setEnabled(false);
+}
+
+void UserWidget::undoButtonClicked()
+{
+    DataEditorWidget::undoButtonClicked();
+
+    ui->btnGeneratePassword->setEnabled(false);
 }

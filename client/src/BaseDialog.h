@@ -21,6 +21,8 @@ protected:
     Ui::BaseDialog m_ui;
     QVBoxLayout *m_centralWidgetLayout;
 
+    void showEvent(QShowEvent *) override;
+
 };
 
 #endif

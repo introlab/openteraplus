@@ -22,5 +22,16 @@ void BaseDialog::setCentralWidget(QWidget *widget)
     widget->setParent(m_ui.centralWidget);
     m_centralWidgetLayout->addWidget(widget);
     widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+
 }
+
+void BaseDialog::showEvent(QShowEvent * event)
+{
+    QDialog::showEvent(event);
+
+   /* if (parentWidget()){
+        move(parentWidget()->width()/2 - width()/2, parentWidget()->height()/2 - height()/2);
+    }*/
+}
+
 

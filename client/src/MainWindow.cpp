@@ -128,6 +128,9 @@ void MainWindow::initUi()
     // Set version number
     ui->lblVersion->setText(QString(OPENTERAPLUS_VERSION));
 
+    // Disable incomplete features
+    ui->tabMainMenu->removeTab(2); // Search tab
+
 }
 
 void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*data)
@@ -428,6 +431,7 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
         if (data_type == TERADATA_GROUP){
             new_data->setFieldValue("id_project", ui->projNavigator->getCurrentProjectId());
+            new_data->setFieldValue("id_site", ui->projNavigator->getCurrentSiteId());
         }
 
         if (data_type == TERADATA_PARTICIPANT){
@@ -521,8 +525,11 @@ void MainWindow::processGenericDataReply(TeraDataTypes item_data_type, QList<Ter
                     // New project - update access!
                     m_comManager->doUpdateCurrentUser();
                 }
-                // Yes, it is - close data editor
-                showDataEditor(TERADATA_NONE, nullptr);
+                // Try to update project navigator with new created item
+                if (!ui->projNavigator->selectItemByName(item_data_type, datas.first().getName())){
+                    // Not found in project navigator - close data editor
+                    showDataEditor(TERADATA_NONE, nullptr);
+                }
                 ui->projNavigator->setEnabled(true);
             }
         }
@@ -784,7 +791,7 @@ void MainWindow::on_btnLogout_clicked()
 {
     GlobalMessageBox msg;
 
-    if (msg.showYesNo(tr("Déconnexion"), tr("Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.\n\nSouhaitez-vous continuer?")) != QMessageBox::Yes){
+    if (msg.showYesNo(tr("Déconnexion"), tr("Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.") + "\n\n" + tr("Souhaitez-vous continuer?")) != QMessageBox::Yes){
         return;
     }
 
@@ -862,12 +869,13 @@ void MainWindow::on_btnEditUser_clicked()
     ui->projNavigator->setOnHold(true);
 
     m_diag_editor = new BaseDialog(this);
+    m_diag_editor->setMinimumHeight(600);
     UserWidget* user_editor = new UserWidget(m_comManager, &(m_comManager->getCurrentUser()), nullptr);
 
     m_diag_editor->setCentralWidget(user_editor);
 
     user_editor->setLimited(true);
-    connect(user_editor, &UserWidget::closeRequest, m_diag_editor, &QDialog::accept);
+    connect(user_editor, &UserWidget::dataWasChanged, m_diag_editor, &QDialog::accept);
     connect(m_diag_editor, &QDialog::finished, this, &MainWindow::editorDialogFinished);
 
     m_diag_editor->setWindowTitle(tr("Votre compte"));

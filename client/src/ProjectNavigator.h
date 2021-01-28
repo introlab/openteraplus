@@ -34,6 +34,7 @@ public:
     QString getCurrentGroupName() const;
 
     void selectItem(const TeraDataTypes& data_type, const int& id);
+    bool selectItemByName(const TeraDataTypes& data_type, const QString& name);
     void removeItem(const TeraDataTypes& data_type, const int& id);
 
     void setOnHold(const bool& hold);

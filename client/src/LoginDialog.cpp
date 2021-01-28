@@ -8,6 +8,10 @@ LoginDialog::LoginDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->cmbServers->setItemDelegate(new QStyledItemDelegate());
+
+    // Hide logos for now
+    ui->frameLogos->hide();
+
     //setAttribute(Qt::WA_StyledBackground);
     //setStyleSheet("QDialog{background-image: url(://TeRA_Background.png); }");
 

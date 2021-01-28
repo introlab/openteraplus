@@ -44,6 +44,8 @@ private slots:
     void on_icoProjects_clicked();
     void on_icoDevices_clicked();
 
+    void userGroupsEditor_finished();
+
 private:
     Ui::SiteWidget *ui;
 

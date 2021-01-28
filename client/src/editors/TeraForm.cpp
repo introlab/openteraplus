@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "DataEditorWidget.h"
 #include <QDebug>
+#include <QStyledItemDelegate>
 
 TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
     QWidget(parent),
@@ -102,6 +103,7 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
         }
     }
 
+    validateFormData(false);
     emit formIsNowDirty(false);
 
 }
@@ -247,6 +249,14 @@ void TeraForm::setFieldRequired(const QString &field, const bool &required)
 
 }
 
+void TeraForm::setFieldEnabled(const QString &field, const bool &enabled)
+{
+    QWidget* widget = getWidgetForField(field);
+    if (widget){
+        widget->setEnabled(enabled);
+    }
+}
+
 bool TeraForm::isDirty()
 {
     bool dirty = false;
@@ -303,10 +313,11 @@ TeraData* TeraForm::getFormDataObject(const TeraDataTypes data_type)
     TeraData* rval = new TeraData(data_type);
     for(QString field:m_widgets.keys()){
         QVariant value, id;
-        getWidgetValues(m_widgets[field], &id, &value);
-        if (!id.isNull())
-            value = id;
-        rval->setFieldValue(field, value);
+        if (getWidgetValues(m_widgets[field], &id, &value)){
+            if (!id.isNull())
+                value = id;
+            rval->setFieldValue(field, value);
+        }
     }
     return rval;
 }
@@ -529,6 +540,7 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QComboBox* item_combo = new QComboBox();
+    item_combo->setItemDelegate(new QStyledItemDelegate());
 
     // Add empty item
     item_combo->addItem("", "");
@@ -554,6 +566,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QComboBox* item_combo = new QComboBox();
+    item_combo->setItemDelegate(new QStyledItemDelegate());
 
     // Add empty item
     item_combo->addItem("", "");
@@ -577,6 +590,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
 QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
 {
     QComboBox* item_combo = new QComboBox();
+    item_combo->setItemDelegate(new QStyledItemDelegate());
 
     // Add empty item
     item_combo->addItem("", "");
@@ -596,6 +610,11 @@ QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
     // Using old-style connect since SLOT has less parameter and not working with new-style connect
     connect(item_combo, SIGNAL(currentIndexChanged(int)), this, SLOT(widgetValueChanged()));
 
+    // Hide combo box if empty
+    if (item_combo->count() == 1){
+        hideField(structure["id"].toString());
+    }
+
     return item_combo;
 }
 
@@ -604,8 +623,9 @@ QWidget *TeraForm::createTextWidget(const QVariantHash &structure, bool is_maske
     Q_UNUSED(structure)
     QLineEdit* item_text = new QLineEdit();
 
-    if (is_masked)
+    if (is_masked){
         item_text->setEchoMode(QLineEdit::Password);
+    }
 
     if (structure.contains("max_length")){
         item_text->setMaxLength(structure["max_length"].toInt());
@@ -708,7 +728,14 @@ QWidget *TeraForm::createDateTimeWidget(const QVariantHash &structure)
     Q_UNUSED(structure)
     QDateTimeEdit* item_dt = new QDateTimeEdit();
     item_dt->setDisplayFormat("dd MMMM yyyy - hh:mm");
-    item_dt->setCalendarPopup(true);
+    //item_dt->setCalendarPopup(true);
+
+    // Hide by default if read only
+    if (structure.contains("readonly")){
+        if (structure["readonly"].toBool() == true){
+            m_hiddenFields.append(structure["id"].toString());
+        }
+    }
 
     return item_dt;
 
@@ -844,17 +871,24 @@ void TeraForm::setWidgetVisibility(QWidget *widget, QWidget *linked_widget, bool
 
                     // Ensure the item is at the correct row order
                     if (widget->dynamicPropertyNames().contains("_order")){
+                        //qDebug() << "Showing " <<  m_widgets.key(widget) << ", order = " << widget->property("_order").toInt();
                         for (int row = 0; row<form_layout->rowCount(); row++){
                             if (form_layout->itemAt(row, QFormLayout::FieldRole)){
                                 QWidget* form_widget = form_layout->itemAt(row, QFormLayout::FieldRole)->widget();
                                 if (form_widget->dynamicPropertyNames().contains("_order")){
+                                     //qDebug() << "Comparing to " <<  m_widgets.key(form_widget) << ", order = " << form_widget->property("_order").toInt();
                                     if (widget->property("_order").toInt() < form_widget->property("_order").toInt()){
+                                        //qDebug() << "YES";
                                         parent_row = row - 1;
                                         break;
                                     }
+                                    //qDebug() << "NO";
                                 }
                             }
-
+                        }
+                        if (parent_row <0){
+                            // No before any present widget, insert last!
+                            parent_row = form_layout->rowCount();
                         }
                     }
                     form_layout->insertRow(parent_row+1, row.labelItem->widget(), row.fieldItem->widget());
@@ -874,7 +908,7 @@ void TeraForm::setWidgetVisibility(QWidget *widget, QWidget *linked_widget, bool
 
 }
 
-void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
+bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
 {
 /*    if (id)
         *id = QVariant();*/
@@ -883,6 +917,7 @@ void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
         if (id)
             *id = combo->currentData();
         *value = combo->currentText();
+        return true;
     }
 
     if (QLineEdit* text = dynamic_cast<QLineEdit*>(widget)){
@@ -891,7 +926,7 @@ void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
 
     if (QTextEdit* text = dynamic_cast<QTextEdit*>(widget)){
         *value = text->toPlainText();
-        return;
+        return true;
     }
 
     if (QCheckBox* check = dynamic_cast<QCheckBox*>(widget)){
@@ -912,17 +947,24 @@ void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
         }
     }
 
-    if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
-        *value = dt->dateTime();
-    }
-
     if (QTimeEdit* te = dynamic_cast<QTimeEdit*>(widget)){
         if (te->property("item_type") == "duration"){
             *value = QTime(0,0).secsTo(te->time());
         }else{
             *value = te->time();
         }
+        return true;
     }
+
+    if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
+        if (dt->dateTime().isValid() && dt->dateTime().date().year()>2000){
+            *value = dt->dateTime();
+        }else{
+            return false; // Invalid date
+        }
+        return true;
+    }
+
 
     if (value->canConvert(QMetaType::QString)){
         bool ok;
@@ -938,10 +980,13 @@ void TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
             QJsonDocument doc = QJsonDocument::fromJson(string_val.toUtf8(), &err);
             if (err.error == QJsonParseError::NoError){
                 *value = doc;
+            }else{
+                return false;
             }
         }
 
     }
+    return true;
 }
 
 QVariant TeraForm::getWidgetValue(QWidget *widget)
@@ -1030,6 +1075,13 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
+        if (value.canConvert(QVariant::String)){
+            if (value.toString().isEmpty()){
+                widget->hide();
+                return;
+            }
+        }
+
         QDateTime time_value = value.toDateTime().toLocalTime();
 
         if (!time_value.isValid()){
@@ -1038,7 +1090,12 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
             time_value = QDateTime::fromSecsSinceEpoch(time_s);
         }
 
-        dt->setDateTime(value.toDateTime().toLocalTime());
+        if (time_value.isValid() && time_value.date().year()>2000){
+            dt->setDateTime(time_value);
+            setWidgetVisibility(widget, nullptr, true);
+        }else{
+            setWidgetVisibility(widget, nullptr, false);
+        }
         return;
     }
 
@@ -1076,6 +1133,12 @@ void TeraForm::updateWidgetChoices(QWidget *widget, const QList<TeraData> values
         for (TeraData value:values){
             combo->addItem(value.getName(), value.getId());
         }
+
+        if (combo->count() == 1){
+            // Hide field value if empty
+            hideField(m_widgets.key(combo));
+        }
+
         return;
     }
     LOG_WARNING("Unhandled widget: "+ QString(widget->metaObject()->className()), "TeraForm::updateWidgetValues");
@@ -1094,6 +1157,7 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
             if (widget->property("required").toBool()){
                 QVariant id, value;
                 getWidgetValues(widget, &id, &value);
+                //qDebug() << widget->metaObject()->className() << " - " << m_widgets.key(widget) << " - " << value;
                 if (value.isNull() || value.toInt()==-1 || value.toString().isEmpty()){
                     rval = false;
                 }
@@ -1163,6 +1227,11 @@ void TeraForm::hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas)
         QWidget* target_widget = m_widgetsHookRequests.key(data_type);
         // Update widget values
         updateWidgetChoices(target_widget, datas);
+
+        // Update widget value if value was already set
+        if (m_initialValues.contains(m_widgets.key(target_widget)))
+            setWidgetValue(target_widget, m_initialValues[m_widgets.key(target_widget)]);
+
         m_widgetsHookRequests.remove(target_widget);
     }
 }

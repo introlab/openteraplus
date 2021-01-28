@@ -63,7 +63,7 @@ void UserGroupWidget::saveData(bool signal)
         for (int i=0; i<m_tableProjects_items.count(); i++){
             int project_id = m_tableProjects_items.keys().at(i);
             int row = m_tableProjects_items[project_id]->row();
-            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,1));
+            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
             if (combo_roles->currentIndex()>0){
                 QJsonObject data_obj;
                 QJsonValue role = combo_roles->currentData().toString();
@@ -174,16 +174,21 @@ void UserGroupWidget::updateProjectAccess(const TeraData *access)
     QComboBox* combo_roles;
     if (m_tableProjects_items.contains(id_project)){
         item = m_tableProjects_items[id_project];
-        combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(item->row(),1));
+        combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(item->row(),2));
     }else{
         // Not there - must add the site and role
         ui->tableProjects->setRowCount(ui->tableProjects->rowCount()+1);
         int current_row = ui->tableProjects->rowCount()-1;
-        QTableWidgetItem* item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_PROJECT)),
-                                                      access->getFieldValue("project_name").toString());
+        QTableWidgetItem* item;
+        item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_SITE)),
+                                                      access->getFieldValue("site_name").toString());
+
         ui->tableProjects->setItem(current_row, 0, item);
+        item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_PROJECT)),
+                                                      access->getFieldValue("project_name").toString());
+        ui->tableProjects->setItem(current_row, 1, item);
         combo_roles = buildRolesComboBox();
-        ui->tableProjects->setCellWidget(current_row, 1, combo_roles);
+        ui->tableProjects->setCellWidget(current_row, 2, combo_roles);
         m_tableProjects_items.insert(id_project, item);
     }
 
@@ -386,7 +391,7 @@ void UserGroupWidget::processPostOKReply(QString path)
         for (int i=0; i<m_tableProjects_items.count(); i++){
            int project_id = m_tableProjects_items.keys().at(i);
            int row = m_tableProjects_items[project_id]->row();
-           QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,1));
+           QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
            if (combo_roles){
                combo_roles->setProperty("original_index", combo_roles->currentIndex());
            }
@@ -434,7 +439,7 @@ void UserGroupWidget::btnUpdateProjectAccess_clicked()
     for (int i=0; i<m_tableProjects_items.count(); i++){
         int project_id = m_tableProjects_items.keys().at(i);
         int row = m_tableProjects_items[project_id]->row();
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,1));
+        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
         if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
             QJsonObject data_obj;
             // Ok, value was modified - must add!
@@ -464,6 +469,7 @@ void UserGroupWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabProjects){
         // Projects
         args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1");
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
         queryDataRequest(WEB_PROJECTACCESS_PATH, args);
     }
 

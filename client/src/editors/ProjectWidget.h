@@ -7,6 +7,7 @@
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
+#include "BaseDialog.h"
 
 namespace Ui {
 class ProjectWidget;
@@ -37,7 +38,6 @@ private slots:
     void deleteDataReply(QString path, int del_id);
 
     void btnUpdateAccess_clicked();
-    void btnDevices_clicked();
 
     void on_tabProjectInfos_currentChanged(int index);
 
@@ -47,6 +47,9 @@ private slots:
     void on_icoUsers_clicked();
 
     void on_icoSessions_clicked();
+
+    void on_btnUserGroups_clicked();
+    void userGroupsEditor_finished();
 
 private:
     Ui::ProjectWidget *ui;
@@ -60,7 +63,7 @@ private:
     QMap<int, QListWidgetItem*>   m_listServicesProjects_items;
     QMap<int, QListWidgetItem*>   m_listServices_items;
 
-    QDialog*                      m_diag_editor;
+    BaseDialog*                   m_diag_editor;
 
     void connectSignals();
 
@@ -75,6 +78,8 @@ private:
     bool validateData();
 
     bool isSiteAdmin();
+
+    void queryUserGroupsProjectAccess();
 };
 
 #endif // ProjectWidget_H

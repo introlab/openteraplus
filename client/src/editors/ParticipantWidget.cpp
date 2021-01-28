@@ -4,9 +4,12 @@
 #include <QLocale>
 #include <QClipboard>
 #include <QThread>
+#include <QStyledItemDelegate>
 
 #include "editors/DataListWidget.h"
 #include "editors/SessionWidget.h"
+
+#include "GeneratePasswordDialog.h"
 
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -17,6 +20,9 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     m_sessionLobby = nullptr;
 
     ui->setupUi(this);
+
+    ui->cmbServices->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate());
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
     setLimited(false);
@@ -30,13 +36,21 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     // Connect signals and slots
     connectSignals();
 
-    // Query form definition
-    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PARTICIPANT));
-    ui->wdgParticipant->setComManager(m_comManager);
     setData(data);
 
+    // Query form definition
+    QUrlQuery args(WEB_FORMS_QUERY_PARTICIPANT);
+    if (m_data->hasFieldName("id_project")){
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+    }else{
+        if (!dataIsNew())
+            args.addQueryItem(WEB_QUERY_ID, QString::number(m_data->getId()));
+    }
+    queryDataRequest(WEB_FORMS_PATH, args);
+    ui->wdgParticipant->setComManager(m_comManager);
+
     // Query sessions types
-    QUrlQuery args;
+    args.clear();
     args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
     queryDataRequest(WEB_SESSIONTYPE_PATH, args);
 
@@ -70,6 +84,7 @@ void ParticipantWidget::saveData(bool signal)
 {
     // If data is new, we request all the fields.
     QJsonDocument part_data = ui->wdgParticipant->getFormDataJson(m_data->isNew());
+    qDebug() << part_data.toJson();
 
     postDataRequest(WEB_PARTICIPANTINFO_PATH, part_data.toJson());
 
@@ -134,35 +149,39 @@ void ParticipantWidget::updateControlsState()
 void ParticipantWidget::updateFieldsValue()
 {
     if (m_data){
-        ui->lblTitle->setText(m_data->getName());
-        ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
-        ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
-        ui->chkWebAccess->setChecked(m_data->getFieldValue("participant_token_enabled").toBool());
-        refreshWebAccessUrl();
-        ui->txtUsername->setText(m_data->getFieldValue("participant_username").toString());
+        if (!dataIsNew()){
+            ui->lblTitle->setText(m_data->getName());
+            ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
+            ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
+            ui->chkWebAccess->setChecked(m_data->getFieldValue("participant_token_enabled").toBool());
+            refreshWebAccessUrl();
+            ui->txtUsername->setText(m_data->getFieldValue("participant_username").toString());
 
-        // Hide service combo box if only one service
-        ui->cmbServices->setVisible(ui->cmbServices->count()>1);
-        ui->frameWeb->setVisible(ui->cmbServices->count()>0 && ui->chkWebAccess->isChecked());
+            // Hide service combo box if only one service
+            ui->cmbServices->setVisible(ui->cmbServices->count()>1);
+            ui->frameWeb->setVisible(ui->cmbServices->count()>0 && ui->chkWebAccess->isChecked());
 
-        // Must "trigger" the slots for username - password, since they are not set otherwise
-        on_txtUsername_textEdited(ui->txtUsername->text());
-        on_txtPassword_textEdited("");
+            // Must "trigger" the slots for username - password, since they are not set otherwise
+            on_txtUsername_textEdited(ui->txtUsername->text());
+            on_txtPassword_textEdited("");
 
-        ui->wdgParticipant->fillFormFromData(m_data->toJson());
+            // Status
+            ui->icoOnline->setVisible(m_data->isEnabled());
+            ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
+            if (m_data->isBusy()){
+                ui->icoOnline->setPixmap(QPixmap("://status/status_busy.png"));
+            }else if (m_data->isOnline()){
+                ui->icoOnline->setPixmap(QPixmap("://status/status_online.png"));
+            }else{
+                ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
+            }
 
-        // Status
-        ui->icoOnline->setVisible(m_data->isEnabled());
-        ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
-        if (m_data->isBusy()){
-            ui->icoOnline->setPixmap(QPixmap("://status/status_busy.png"));
-        }else if (m_data->isOnline()){
-            ui->icoOnline->setPixmap(QPixmap("://status/status_online.png"));
-        }else{
-            ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
+            ui->frameNewSession->setVisible(canStartNewSession());
         }
 
-        ui->frameNewSession->setVisible(canStartNewSession());
+        ui->wdgParticipant->fillFormFromData(m_data->toJson());
+        on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
+
     }
 }
 
@@ -418,7 +437,7 @@ void ParticipantWidget::updateDeviceParticipant(TeraData *device_participant)
 void ParticipantWidget::refreshWebAccessUrl()
 {
     int index = ui->cmbServices->currentIndex();
-    if (index >= m_services.count() || index <0)
+    if (index >= m_services.count() || index <0 || dataIsNew())
         return;
 
     TeraData* current_service = &m_services[index];
@@ -437,7 +456,7 @@ void ParticipantWidget::refreshWebAccessUrl()
 
 void ParticipantWidget::processFormsReply(QString form_type, QString data)
 {
-    if (form_type == WEB_FORMS_QUERY_PARTICIPANT){
+    if (form_type.startsWith(WEB_FORMS_QUERY_PARTICIPANT)){
         if (!ui->wdgParticipant->formHasStructure())
             ui->wdgParticipant->buildUiFromStructure(data);
         return;
@@ -996,7 +1015,21 @@ void ParticipantWidget::on_chkEnabled_stateChanged(int checkState)
     if (m_data){
         if (m_data->getFieldValue("participant_enabled").toBool() != current_state){
             ui->wdgParticipant->setFieldValue("participant_enabled", current_state);
-            saveData();
+            //saveData();
+            QJsonDocument document;
+            QJsonObject data_obj;
+            QJsonObject base_obj;
+
+            TeraData* part_info = ui->wdgParticipant->getFormDataObject(TERADATA_PARTICIPANT);
+            data_obj.insert("id_participant", QJsonValue::fromVariant(part_info->getId()));
+            data_obj.insert("id_project", QJsonValue::fromVariant(part_info->getFieldValue("id_project")));
+            data_obj.insert("participant_enabled", QJsonValue::fromVariant(current_state));
+
+            base_obj.insert(TeraData::getDataTypeName(TERADATA_PARTICIPANT), data_obj);
+            document.setObject(base_obj);
+
+            postDataRequest(WEB_PARTICIPANTINFO_PATH, document.toJson());
+
         }
     }
 
@@ -1020,12 +1053,24 @@ void ParticipantWidget::on_chkWebAccess_stateChanged(int checkState)
     if (m_data){
         if (m_data->getFieldValue("participant_token_enabled").toBool() != current_state){
             ui->wdgParticipant->setFieldValue("participant_token_enabled", current_state);
-            saveData();
+            //saveData();
+            QJsonDocument document;
+            QJsonObject data_obj;
+            QJsonObject base_obj;
+
+            TeraData* part_info = ui->wdgParticipant->getFormDataObject(TERADATA_PARTICIPANT);
+            data_obj.insert("id_participant", QJsonValue::fromVariant(part_info->getId()));
+            data_obj.insert("id_project", QJsonValue::fromVariant(part_info->getFieldValue("id_project")));
+            data_obj.insert("participant_token_enabled", QJsonValue::fromVariant(current_state));
+
+            base_obj.insert(TeraData::getDataTypeName(TERADATA_PARTICIPANT), data_obj);
+            document.setObject(base_obj);
+
+            postDataRequest(WEB_PARTICIPANTINFO_PATH, document.toJson());
         }
     }
 
     ui->frameWeb->setVisible(checkState == Qt::Checked);
-    on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
 }
 
 void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
@@ -1034,7 +1079,22 @@ void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
     if (m_data){
         if (m_data->getFieldValue("participant_login_enabled").toBool() != current_state){
             ui->wdgParticipant->setFieldValue("participant_login_enabled", current_state);
-            saveData();
+            //saveData();
+            if (!current_state){ // Disable login
+                QJsonDocument document;
+                QJsonObject data_obj;
+                QJsonObject base_obj;
+
+                TeraData* part_info = ui->wdgParticipant->getFormDataObject(TERADATA_PARTICIPANT);
+                data_obj.insert("id_participant", QJsonValue::fromVariant(part_info->getId()));
+                data_obj.insert("id_project", QJsonValue::fromVariant(part_info->getFieldValue("id_project")));
+                data_obj.insert("participant_login_enabled", QJsonValue::fromVariant(current_state));
+
+                base_obj.insert(TeraData::getDataTypeName(TERADATA_PARTICIPANT), data_obj);
+                document.setObject(base_obj);
+
+                postDataRequest(WEB_PARTICIPANTINFO_PATH, document.toJson());
+            }
         }
     }
 
@@ -1060,18 +1120,15 @@ void ParticipantWidget::on_btnCopyWeb_clicked()
 
 void ParticipantWidget::on_btnRandomPass_clicked()
 {
-    // Generate random password
-    QString password = Utils::generatePassword(10);
+    // Show random password dialog
+    GeneratePasswordDialog dlg;
 
-
-    GlobalMessageBox msg(this);
-    msg.showInfo(tr("Mot de passe généré"), password);
-
-    ui->txtPassword->setText(password);
-    ui->txtPasswordConfirm->setText(password);
-
-
-
+    if (dlg.exec() == QDialog::Accepted){
+        QString password = dlg.getPassword();
+        ui->txtPassword->setText(password);
+        ui->txtPasswordConfirm->setText(password);
+        on_txtPassword_textEdited(password);
+    }
 }
 
 void ParticipantWidget::on_btnSaveLogin_clicked()
@@ -1090,6 +1147,11 @@ void ParticipantWidget::on_btnSaveLogin_clicked()
             all_ok = false;
             err_msg.append(tr("Les mots de passe ne correspondent pas."));
         }
+    }
+
+    if (ui->txtPassword->text().isEmpty()){
+        all_ok = false;
+        err_msg.append(tr("Aucun mot de passe spécifié."));
     }
 
     if (!all_ok){
@@ -1121,7 +1183,7 @@ void ParticipantWidget::on_txtUsername_textEdited(const QString &current)
 void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
 {
     QString confirm_pass = ui->txtPasswordConfirm->text();
-    if (current != confirm_pass || ui->txtUsername->text().isEmpty()){
+    if (current != confirm_pass || ui->txtPassword->text().isEmpty()){
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
         ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
     }else{
@@ -1133,7 +1195,7 @@ void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
 void ParticipantWidget::on_txtPasswordConfirm_textEdited(const QString &current)
 {
     QString pass = ui->txtPassword->text();
-    if (current != pass || ui->txtUsername->text().isEmpty()){
+    if (current != pass || ui->txtPassword->text().isEmpty()){
         ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
     }else{

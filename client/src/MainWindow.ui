@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1107</width>
+    <width>1689</width>
     <height>897</height>
    </rect>
   </property>
@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resources/TeraClient.qrc">
-    <normaloff>:/icons/ESTRAD.ico</normaloff>:/icons/ESTRAD.ico</iconset>
+    <normaloff>:/icons/OpenTeraPlus.ico</normaloff>:/icons/OpenTeraPlus.ico</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
@@ -210,7 +210,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
    </property>
    <property name="minimumSize">
     <size>
-     <width>707</width>
+     <width>1689</width>
      <height>50</height>
     </size>
    </property>
@@ -232,7 +232,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
    <attribute name="dockWidgetArea">
     <number>4</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents_2">
+   <widget class="QWidget" name="docketTopWidget">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <property name="spacing">
       <number>4</number>
@@ -241,7 +241,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
       <number>4</number>
      </property>
      <property name="topMargin">
-      <number>4</number>
+      <number>0</number>
      </property>
      <property name="rightMargin">
       <number>4</number>
@@ -251,23 +251,29 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
      </property>
      <item>
       <widget class="ClickableLabel" name="lblLogo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
-         <width>0</width>
-         <height>32</height>
+         <width>87</width>
+         <height>50</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>120</width>
-         <height>16777215</height>
+         <width>87</width>
+         <height>50</height>
         </size>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../resources/TeraClient.qrc">:/logos/LOGO Transparent.png</pixmap>
+        <pixmap resource="../resources/TeraClient.qrc">:/logos/LogoOpenTeraPlus.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -527,7 +533,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
          <enum>QTabWidget::West</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="iconSize">
          <size>
@@ -793,7 +799,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1107</width>
+     <width>1689</width>
      <height>20</height>
     </rect>
    </property>
