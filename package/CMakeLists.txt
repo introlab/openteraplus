@@ -65,7 +65,8 @@ if (WIN32)
     )
 
     # add SSL librariesOpenSSL\Win_x64\bin
-    file(GLOB OPENSSL_LIBRARIES "${qt5_install_prefix}/../../Tools/OpenSSL/Win_x64/bin/*.dll")
+    # file(GLOB OPENSSL_LIBRARIES "${qt5_install_prefix}/../../Tools/OpenSSL/Win_x64/bin/*.dll")
+    file(GLOB OPENSSL_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/openssl/64bits/*.dll")
     message(STATUS "******************* ${OPENSSL_LIBRARIES} ${qt5_install_prefix} ${CPACK_PACKAGING_INSTALL_PREFIX}")
     install(FILES ${OPENSSL_LIBRARIES} DESTINATION bin COMPONENT openssl)
 
@@ -105,7 +106,7 @@ if (WIN32)
 
 
    # Run VC++ redistributable
-   list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\VC_redist.x64.exe /install /passive /norestart'")
+   list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\bin\\\\VC_redist.x64.exe /install /passive /norestart'")
 
    # Set files to install - everything in deploy folder
    #install(
