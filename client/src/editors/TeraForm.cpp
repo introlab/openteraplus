@@ -817,6 +817,11 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
                         if (!sender_index.isNull() || !sender_value.isNull())
                             condition_met = true;
                     }
+                    if (op.toUpper() == "CONTAINS"){
+                        if (sender_index == value || sender_value.toString().contains(value.toString())){
+                            condition_met = true;
+                        }
+                    }
 
                     // Hide/show that item
                     //if (item->isVisible() != condition_met){

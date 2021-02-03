@@ -13,6 +13,7 @@
 #include "services/BaseServiceSetupWidget.h"
 
 #include "VideoRehabWebPage.h"
+#include "VideoRehabVirtualCamSetupDialog.h"
 #include "ComManager.h"
 #include "Utils.h"
 
@@ -38,6 +39,8 @@ private:
     VideoRehabWebPage*      m_webPage;
 
     int                     m_id_service_config;
+
+    bool                    m_valueJustChanged;
 
     void initUI();
     void connectSignals();
@@ -66,6 +69,7 @@ private slots:
     void on_btnSaveConfig_clicked();
 
     void setupFormDirtyChanged(bool dirty);
+    void setupFormValueChanged(QWidget* wdg, QVariant value);
 };
 
 #endif // VIDEOREHABSETUPWIDGET_H

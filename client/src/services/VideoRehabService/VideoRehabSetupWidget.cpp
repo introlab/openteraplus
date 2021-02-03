@@ -11,6 +11,8 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
 
     setLoading(true); // Disable until page is fully loaded
 
+    m_valueJustChanged = false;
+
     initUI();
     connectSignals();
 
@@ -18,6 +20,7 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
     QUrlQuery args(WEB_FORMS_QUERY_SERVICE_CONFIG);
     args.addQueryItem(WEB_QUERY_KEY, "VideoRehabService");
     m_comManager->doQuery(WEB_FORMS_PATH, args);
+
 }
 
 VideoRehabSetupWidget::~VideoRehabSetupWidget()
@@ -75,7 +78,7 @@ void VideoRehabSetupWidget::connectSignals()
     connect(m_comManager, &ComManager::servicesConfigReceived, this, &VideoRehabSetupWidget::processServiceConfigsReply);
     connect(m_comManager, &ComManager::formReceived, this, &VideoRehabSetupWidget::processFormsReply);
 
-    connect(ui->widgetSetup, &TeraForm::widgetValueHasChanged, this, &VideoRehabSetupWidget::refreshWebpageSettings);
+    connect(ui->widgetSetup, &TeraForm::widgetValueHasChanged, this, &VideoRehabSetupWidget::setupFormValueChanged);
     connect(ui->widgetSetup, &TeraForm::formIsNowDirty, this, &VideoRehabSetupWidget::setupFormDirtyChanged);
 
 }
@@ -268,4 +271,23 @@ void VideoRehabSetupWidget::on_btnSaveConfig_clicked()
 void VideoRehabSetupWidget::setupFormDirtyChanged(bool dirty)
 {
     ui->btnSaveConfig->setEnabled(dirty);
+}
+
+void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
+{
+    if (m_valueJustChanged){
+        m_valueJustChanged = false;
+        return;
+    }
+    if (wdg == ui->widgetSetup->getWidgetForField("teracam_src")){
+        VideoRehabVirtualCamSetupDialog dlg(ui->widgetSetup->getFieldValue("teracam_src").toString());
+        m_valueJustChanged = true;
+        if (dlg.exec() == QDialog::Accepted){
+            ui->widgetSetup->setFieldValue("teracam_src", dlg.getCurrentSource());
+        }else{
+            ui->widgetSetup->setFieldValue("teracam_src", "");
+        }
+    }
+
+    refreshWebpageSettings();
 }

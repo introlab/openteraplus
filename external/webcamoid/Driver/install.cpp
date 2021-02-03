@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
         qDebug() << "PATH : " << VirtualCameraPtr->property("driverPath");
         //Install camera
-        QMetaObject::invokeMethod(VirtualCameraPtr.data(),"createWebcam",Q_ARG(QString,"TeraCam"),Q_ARG(QString,""));
+        QMetaObject::invokeMethod(VirtualCameraPtr.data(),"createWebcam",Q_ARG(QString,"OpenTeraCam"),Q_ARG(QString,""));
 
         return 0;
     }

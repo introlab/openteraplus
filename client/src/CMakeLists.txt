@@ -67,6 +67,7 @@ set(headers
     services/VideoRehabService/VideoRehabWebPage.h
     services/VideoRehabService/VideoRehabSetupWidget.h
     services/VideoRehabService/VideoRehabToolsWidget.h
+    services/VideoRehabService/VideoRehabVirtualCamSetupDialog.h
     services/VideoRehabService/WebSocket/SharedObject.h
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
     services/VideoRehabService/WebSocket/WebSocketTransport.h
@@ -130,6 +131,7 @@ set(srcs
     services/VideoRehabService/VideoRehabWebPage.cpp
     services/VideoRehabService/VideoRehabSetupWidget.cpp
     services/VideoRehabService/VideoRehabToolsWidget.cpp
+    services/VideoRehabService/VideoRehabVirtualCamSetupDialog.cpp
     services/VideoRehabService/WebSocket/SharedObject.cpp
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
@@ -173,6 +175,7 @@ SET(uis
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
     services/VideoRehabService/VideoRehabToolsWidget.ui
+    services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
 )
 
 SET(qrcs
