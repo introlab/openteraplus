@@ -34,4 +34,6 @@ add_subdirectory(protobuf/cmake)
 add_subdirectory(messages/cpp)
 
 #Webcamoid
-add_subdirectory(opentera-webcamoid)
+add_subdirectory(webcamoid)
+
+

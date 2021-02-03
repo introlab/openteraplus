@@ -5,7 +5,8 @@
 VirtualCamera::VirtualCamera(QObject *parent)
     : QObject(parent)
 {
-    Ak::registerTypes();
+    //Ak::registerTypes();
+    qRegisterMetaType<AkPacket>("AkPacket");
 
     //This is required and will initialize the IPC system on Windows
     Ak::setQmlEngine(nullptr);
