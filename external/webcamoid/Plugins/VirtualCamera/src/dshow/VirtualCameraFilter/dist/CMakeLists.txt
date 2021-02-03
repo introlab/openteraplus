@@ -10,4 +10,4 @@ set (dshow_filter_dll
 INSTALL(FILES ${dshow_filter_dll} DESTINATION bin)
 
 #For IN-SOURCE debug
-# file(COPY ${dshow_filter_dll} DESTINATION ${EXECUTABLE_OUTPUT_PATH})
+file(COPY ${dshow_filter_dll} DESTINATION ${EXECUTABLE_OUTPUT_PATH})

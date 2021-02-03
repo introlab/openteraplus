@@ -30,7 +30,7 @@ VirtualCamera::~VirtualCamera()
     stop();
 }
 
-bool VirtualCamera::init(const QString &source, const QString& device)
+bool VirtualCamera::init(const QString &source/*, const QString& device*/)
 {
 
     m_virtualCameraPtr = AkElement::create("VirtualCamera");
@@ -38,7 +38,7 @@ bool VirtualCamera::init(const QString &source, const QString& device)
     //Configure virtual camera
     if (m_virtualCameraPtr)
     {
-        m_virtualCameraPtr->setProperty("media", device);
+        //m_virtualCameraPtr->setProperty("media", device);
         m_virtualCameraPtr->setProperty("fps", "15.0");
         m_virtualCameraPtr->setProperty("swapRgb", false);
     }

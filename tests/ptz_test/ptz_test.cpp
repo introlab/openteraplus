@@ -38,7 +38,7 @@ void PTZTestMainWindow::on_pushButton_RTSP_Start_clicked()
     QString rtsp = m_ui.lineEdit_RTSP_URL->text();
 
     //TODO Hard coded device for now
-    m_virtualCamera.init(rtsp, "/akvcam/video0");
+    m_virtualCamera.init(rtsp/*, "/akvcam/video0"*/);
     m_virtualCamera.start();
 }
 

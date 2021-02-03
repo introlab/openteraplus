@@ -17,7 +17,7 @@ public:
 
     virtual ~VirtualCamera();
 
-    bool init(const QString &source, const QString &device);
+    bool init(const QString &source/*, const QString &device*/);
     bool start();
     bool stop();
 
