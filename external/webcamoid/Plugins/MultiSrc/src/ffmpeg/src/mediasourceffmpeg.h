@@ -100,6 +100,8 @@ class MediaSourceFFmpeg: public MediaSource
         void mediasChanged(const QStringList &medias);
         void mediaChanged(const QString &media);
         void streamsChanged(const QList<int> &streams);
+        void reconnectingStream();
+        void streamConnected();
 
     public slots:
         void setMedia(const QString &media);

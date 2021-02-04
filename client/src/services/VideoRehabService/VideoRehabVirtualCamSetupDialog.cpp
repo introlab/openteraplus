@@ -7,6 +7,11 @@ VideoRehabVirtualCamSetupDialog::VideoRehabVirtualCamSetupDialog(QString current
 {
     ui->setupUi(this);
     setCurrentSource(current_src);
+
+    connect(ui->txtVCamSrc, &QLineEdit::textChanged, this, &VideoRehabVirtualCamSetupDialog::validateValues);
+    connect(ui->txtPassword, &QLineEdit::textChanged, this, &VideoRehabVirtualCamSetupDialog::validateValues);
+    connect(ui->txtURL, &QLineEdit::textChanged, this, &VideoRehabVirtualCamSetupDialog::validateValues);
+    connect(ui->txtUsername, &QLineEdit::textChanged, this, &VideoRehabVirtualCamSetupDialog::validateValues);
 }
 
 VideoRehabVirtualCamSetupDialog::~VideoRehabVirtualCamSetupDialog()
@@ -45,12 +50,25 @@ void VideoRehabVirtualCamSetupDialog::on_chkManual_stateChanged(int arg1)
     }
 }
 
-void VideoRehabVirtualCamSetupDialog::on_txtVCamSrc_textChanged(const QString &arg1)
+void VideoRehabVirtualCamSetupDialog::validateValues()
 {
+    bool valid = false;
+    if (!ui->chkManual->isChecked()){
+        valid = !ui->txtVCamSrc->text().isEmpty();
+    }else{
+        valid = !ui->txtURL->text().isEmpty() && !ui->txtPassword->text().isEmpty() && !ui->txtUsername->text().isEmpty();
+        if (valid)
+            buildCamSrc();
+    }
 
+    ui->btnOK->setEnabled(valid);
 }
 
-void VideoRehabVirtualCamSetupDialog::on_btnTestParams_clicked()
+void VideoRehabVirtualCamSetupDialog::buildCamSrc()
 {
-
+    if (ui->cmbSource->currentIndex()==0){ // Vivotek camera
+        QString src = "rtsp://" + ui->txtUsername->text() + ":" + ui->txtPassword->text() + "@" + ui->txtURL->text() + ":554/live.sdp";
+        ui->txtVCamSrc->setText(src);
+    }
 }
+

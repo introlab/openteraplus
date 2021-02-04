@@ -17,6 +17,8 @@
 #include "ComManager.h"
 #include "Utils.h"
 
+#include "VirtualCamera.h"
+
 
 namespace Ui {
 class VideoRehabSetupWidget;
@@ -38,6 +40,8 @@ private:
     QWebEngineView*         m_webEngine;
     VideoRehabWebPage*      m_webPage;
 
+    VirtualCamera*          m_virtualCam;
+
     int                     m_id_service_config;
 
     bool                    m_valueJustChanged;
@@ -49,7 +53,10 @@ private:
     void selectAudioSrcByName(const QString& name);*/
 
     void setLoading(const bool& loading);
-    void showError(const QString& title, const QString& context, const QString& error);
+    void showError(const QString& title, const QString& context, const QString& error, bool hide_retry = false);
+
+    void startVirtualCamera(const QString& src);
+    void stopVirtualCamera();
 
 
 private slots:
@@ -70,6 +77,8 @@ private slots:
 
     void setupFormDirtyChanged(bool dirty);
     void setupFormValueChanged(QWidget* wdg, QVariant value);
+
+    void virtualCameraDisconnected();
 };
 
 #endif // VIDEOREHABSETUPWIDGET_H

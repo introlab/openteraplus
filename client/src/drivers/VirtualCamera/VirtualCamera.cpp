@@ -8,6 +8,8 @@ VirtualCamera::VirtualCamera(QObject *parent)
     //Ak::registerTypes();
     qRegisterMetaType<AkPacket>("AkPacket");
 
+    m_retryCounts = 0;
+
     //This is required and will initialize the IPC system on Windows
     Ak::setQmlEngine(nullptr);
 
@@ -39,9 +41,10 @@ bool VirtualCamera::init(const QString &source/*, const QString& device*/)
     if (m_virtualCameraPtr)
     {
         //m_virtualCameraPtr->setProperty("media", device);
-        m_virtualCameraPtr->setProperty("fps", "15.0");
+        m_virtualCameraPtr->setProperty("fps", "30.0");
         m_virtualCameraPtr->setProperty("swapRgb", false);
     }
+
 
     if (source.startsWith("screen"))
     {
@@ -66,10 +69,17 @@ bool VirtualCamera::init(const QString &source/*, const QString& device*/)
 
         if (m_virtualCameraPtr && m_multiSrcPtr)
         {
+
             //Set Parameters
             m_multiSrcPtr->setProperty("media", source);
             m_multiSrcPtr->setProperty("loop", false);
             m_multiSrcPtr->setProperty("showLog", true);
+
+            // Connect signals
+            QObject::connect(m_multiSrcPtr.data(), SIGNAL(error(QString)), this, SIGNAL(virtualCamError(QString)));
+            QObject::connect(m_multiSrcPtr.data(), SIGNAL(reconnectingStream()), this, SLOT(virtualCamReconnecting()));
+            QObject::connect(m_multiSrcPtr.data(), SIGNAL(streamConnected()), this, SLOT(virtualCamConnected()));
+            //connect(m_multiSrcPtr.get(), &AkElement::stateChanged, this, &VirtualCamera::virtualCamStateChanged);
 
             //Connect to virtual camera sink
             m_multiSrcPtr->link(m_virtualCameraPtr);
@@ -84,6 +94,7 @@ bool VirtualCamera::init(const QString &source/*, const QString& device*/)
 
 bool VirtualCamera::start()
 {
+    m_retryCounts = 0;
     if (m_virtualCameraPtr && m_multiSrcPtr) {
         m_multiSrcPtr->setState(AkElement::ElementStatePlaying);
         m_virtualCameraPtr->setState(AkElement::ElementStatePlaying);
@@ -112,4 +123,42 @@ bool VirtualCamera::stop()
     }
 
     return false;
+}
+
+void VirtualCamera::printSignals(QObject *obj)
+{
+    const QMetaObject *moTest = obj->metaObject();
+    for(int methodIdx = moTest->methodOffset(); methodIdx < moTest->methodCount(); ++methodIdx) {
+      QMetaMethod mmTest = moTest->method(methodIdx);
+      switch((int)mmTest.methodType()) {
+        case QMetaMethod::Signal:
+          qDebug() << "Signal: " << (QString(mmTest.methodSignature())); // Requires Qt 5.0 or newer
+          break;
+        case QMetaMethod::Slot:
+          qDebug() << "Slot: " << (QString(mmTest.methodSignature())); // Requires Qt 5.0 or newer
+          break;
+      }
+    }
+}
+
+void VirtualCamera::virtualCamStateChanged(AkElement::ElementState state)
+{
+    qDebug() << "VirtualCamera State Changed: " << state;
+}
+
+void VirtualCamera::virtualCamReconnecting()
+{
+    qDebug() << "VirtualCamera reconnecting...";
+    m_retryCounts++;
+
+    if (m_retryCounts > 3){
+        qDebug() << "Aborting... ";
+        emit virtualCamDisconnected();
+    }
+}
+
+void VirtualCamera::virtualCamConnected()
+{
+     qDebug() << "VirtualCamera connected!";
+     m_retryCounts = 0;
 }

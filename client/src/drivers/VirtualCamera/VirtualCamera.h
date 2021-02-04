@@ -22,12 +22,23 @@ public:
     bool stop();
 
 signals:
-
+    void virtualCamError(const QString &message);
+    void virtualCamDisconnected();
 
 private:
     AkElementPtr m_multiSrcPtr;
     AkElementPtr m_virtualCameraPtr;
     AkElementPtr m_desktopCapturePtr;
+
+    int m_retryCounts;
+
+    void printSignals(QObject* obj);
+
+private slots:
+
+    void virtualCamStateChanged(AkElement::ElementState state);
+    void virtualCamReconnecting();
+    void virtualCamConnected();
 };
 
 #endif // VIRTUALCAMERA_H

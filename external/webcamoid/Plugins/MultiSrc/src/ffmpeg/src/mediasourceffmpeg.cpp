@@ -19,6 +19,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QThread>
 
 #include "mediasourceffmpeg.h"
 #include "videostream.h"
@@ -331,7 +332,7 @@ void MediaSourceFFmpeg::readPackets()
                     stream->packetEnqueue(nullptr);
             }
 
-            this->m_run = false;
+            //this->m_run = false;
         }
 
         this->m_dataMutex.unlock();
@@ -611,20 +612,21 @@ void MediaSourceFFmpeg::doLoop()
 }
 
 void MediaSourceFFmpeg::reconnectStream(){
-    bool rval = false;
+    //bool rval = false;
 
     if (m_curState != AkElement::ElementStateReconnecting){
         qDebug() << "reconnectStream() - bad state.";
         return;
     }
 
-    qDebug() << "reconnectStream()";
-    rval=this->setState(AkElement::ElementStatePlaying);
+    //qDebug() << "reconnectStream()";
+    emit reconnectingStream();
+    /*rval=*/this->setState(AkElement::ElementStatePlaying);
 
-    if (!rval){
+    /*if (!rval){
         // Prime timer to reconnect
         reconnectTimer.start();
-    }
+    }*/
 }
 
 void MediaSourceFFmpeg::packetConsumed()
@@ -700,7 +702,7 @@ bool MediaSourceFFmpeg::initContext()
         }
         else
         {
-            qDebug() << "Error opening : " << uriCopy;
+            //qDebug() << "Error opening : " << uriCopy;
         }
     }
 
@@ -715,6 +717,7 @@ bool MediaSourceFFmpeg::initContext()
 
     this->m_inputContext = FormatContextPtr(inputContext, this->deleteFormatContext);
 
+    emit streamConnected();
     return true;
 }
 

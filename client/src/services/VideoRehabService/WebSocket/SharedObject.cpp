@@ -136,7 +136,7 @@ void SharedObject::sendCurrentVideoSource(){
 
 
     QString video_src = serializeVideoSource();
-    qDebug() << "js: Sending Video Source: " << video_src;
+   // qDebug() << "js: Sending Video Source: " << video_src;
 
     emit newVideoSource(video_src);
 }
@@ -214,7 +214,7 @@ QString SharedObject::serializePtzCapabilities()
 void SharedObject::sendCurrentAudioSource(){
     QString audio_src = serializeAudioSource();
 
-    qDebug() << "js: Sending : " << audio_src;
+    //qDebug() << "js: Sending : " << audio_src;
 
     emit newAudioSource(audio_src);
 }

@@ -2,7 +2,6 @@
 #define VIDEOREHABVIRTUALCAMSETUPDIALOG_H
 
 #include <QDialog>
-#include "VirtualCamera.h"
 
 namespace Ui {
 class VideoRehabVirtualCamSetupDialog;
@@ -26,14 +25,12 @@ private slots:
 
     void on_chkManual_stateChanged(int arg1);
 
-    void on_txtVCamSrc_textChanged(const QString &arg1);
-
-    void on_btnTestParams_clicked();
+    void validateValues();
 
 private:
     Ui::VideoRehabVirtualCamSetupDialog *ui;
 
-    VirtualCamera* m_virtualCam;
+    void buildCamSrc();
 };
 
 #endif // VIDEOREHABVIRTUALCAMSETUPDIALOG_H

@@ -190,8 +190,10 @@ void MultiSrcElement::resetCodecLib()
 
 bool MultiSrcElement::setState(AkElement::ElementState state)
 {
-    if (!this->m_mediaSource->setState(state))
+    if (!this->m_mediaSource->setState(state)){
+        //emit stateChanged(state);
         return false;
+    }
 
     return AkElement::setState(state);
 }
@@ -243,6 +245,14 @@ void MultiSrcElement::codecLibUpdated(const QString &codecLib)
                      SIGNAL(streamsChanged(const QList<int> &)),
                      this,
                      SIGNAL(streamsChanged(const QList<int> &)));
+    QObject::connect(this->m_mediaSource.data(),
+                     SIGNAL(reconnectingStream()),
+                     this,
+                     SIGNAL(reconnectingStream()));
+    QObject::connect(this->m_mediaSource.data(),
+                     SIGNAL(streamConnected()),
+                     this,
+                     SIGNAL(streamConnected()));
 
     this->m_mutexLib.unlock();
 

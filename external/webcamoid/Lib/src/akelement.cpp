@@ -423,7 +423,7 @@ bool AkElement::unlink(const QObject *srcElement, const QObject *dstElement)
 AkElementPtr AkElement::create(const QString &pluginId,
                                const QString &elementName)
 {
-    qDebug() << "****************** Trying to create element : " << pluginId<<","<<elementName;
+    //qDebug() << "****************** Trying to create element : " << pluginId<<","<<elementName;
 
     auto element = AkElement::createPtr(pluginId, elementName);
 
@@ -436,7 +436,7 @@ AkElementPtr AkElement::create(const QString &pluginId,
 AkElement *AkElement::createPtr(const QString &pluginId, const QString &elementName)
 {
 
-    qDebug() << "****************** Trying to create element Ptr : " << pluginId<<","<<elementName;
+    //qDebug() << "****************** Trying to create element Ptr : " << pluginId<<","<<elementName;
 
     QString filePath = AkElement::pluginPath(pluginId);
 
@@ -907,19 +907,21 @@ bool AkElement::setState(AkElement::ElementState state)
         switch (state) {
         case ElementStatePaused:
             emit this->stateChanged(state);
-            emit this->stateChange(preState, state);
+            this->stateChange(preState, state);
 
             break;
         case ElementStatePlaying:
             emit this->stateChanged(ElementStatePaused);
-            emit this->stateChange(preState, ElementStatePaused);
+            this->stateChange(preState, ElementStatePaused);
 
             emit this->stateChanged(state);
-            emit this->stateChange(ElementStatePaused, state);
+            this->stateChange(ElementStatePaused, state);
 
             break;
         case ElementStateNull:
             break;
+        default:
+            emit this->stateChanged(state);
         }
 
         break;
@@ -929,11 +931,13 @@ bool AkElement::setState(AkElement::ElementState state)
         case ElementStateNull:
         case ElementStatePlaying:
             emit this->stateChanged(state);
-            emit this->stateChange(preState, state);
+            this->stateChange(preState, state);
 
             break;
         case ElementStatePaused:
             break;
+        default:
+            emit this->stateChanged(state);
         }
 
         break;
@@ -942,23 +946,28 @@ bool AkElement::setState(AkElement::ElementState state)
         switch (state) {
         case ElementStateNull:
             emit this->stateChanged(ElementStatePaused);
-            emit this->stateChange(preState, ElementStatePaused);
+            this->stateChange(preState, ElementStatePaused);
 
             emit this->stateChanged(state);
-            emit this->stateChange(ElementStatePaused, state);
+            this->stateChange(ElementStatePaused, state);
 
             break;
         case ElementStatePaused:
             emit this->stateChanged(state);
-            emit this->stateChange(preState, state);
+            this->stateChange(preState, state);
 
             break;
         case ElementStatePlaying:
             break;
+        default:
+            emit this->stateChanged(state);
         }
+
 
         break;
     }
+    default:
+        emit this->stateChanged(state);
     }
 
     return true;

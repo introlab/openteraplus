@@ -12,6 +12,7 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
     setLoading(true); // Disable until page is fully loaded
 
     m_valueJustChanged = false;
+    m_virtualCam = nullptr;
 
     initUI();
     connectSignals();
@@ -29,6 +30,9 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
 
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
+
+    if (m_virtualCam)
+        m_virtualCam->deleteLater();
 }
 
 QJsonDocument VideoRehabSetupWidget::getSetupConfig()
@@ -96,7 +100,7 @@ void VideoRehabSetupWidget::setLoading(const bool &loading)
 
 }
 
-void VideoRehabSetupWidget::showError(const QString &title, const QString &context, const QString &error)
+void VideoRehabSetupWidget::showError(const QString &title, const QString &context, const QString &error, bool hide_retry)
 {
     ui->lblTitle->setText(title);
 #ifdef QT_DEBUG
@@ -105,7 +109,28 @@ void VideoRehabSetupWidget::showError(const QString &title, const QString &conte
     ui->lblError->setText(error);
 #endif
     ui->lblLoading->hide();
+    ui->btnRefresh->setVisible(!hide_retry);
     ui->frameError->show();
+}
+
+void VideoRehabSetupWidget::startVirtualCamera(const QString &src)
+{
+    if (m_virtualCam){
+        m_virtualCam->deleteLater();
+    }
+    ui->frameError->hide();
+    m_virtualCam = new VirtualCamera();
+    connect(m_virtualCam, &VirtualCamera::virtualCamDisconnected, this, &VideoRehabSetupWidget::virtualCameraDisconnected);
+    m_virtualCam->init(src);
+    m_virtualCam->start();
+}
+
+void VideoRehabSetupWidget::stopVirtualCamera()
+{
+    if (m_virtualCam){
+        m_virtualCam->deleteLater();
+        m_virtualCam = nullptr;
+    }
 }
 
 void VideoRehabSetupWidget::refreshWebpageSettings()
@@ -121,13 +146,13 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
 
     // Update video source
     QString video_src = ui->widgetSetup->getFieldValue("camera").toString();
-    qDebug() << "Setting Video Src to " << video_src;
+    //qDebug() << "Setting Video Src to " << video_src;
     m_webPage->getSharedObject()->setCurrentCameraName(video_src);
     m_webPage->getSharedObject()->sendCurrentVideoSource();
 
     // Update audio source
     QString audio_src = ui->widgetSetup->getFieldValue("audio").toString();
-    qDebug() << "Setting Audio Src to " << audio_src;
+    //qDebug() << "Setting Audio Src to " << audio_src;
     m_webPage->getSharedObject()->setCurrentAudioSrcName(audio_src);
     m_webPage->getSharedObject()->sendCurrentAudioSource();
 
@@ -279,15 +304,40 @@ void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
         m_valueJustChanged = false;
         return;
     }
+
+    // OpenTeraCam camera source
     if (wdg == ui->widgetSetup->getWidgetForField("teracam_src")){
         VideoRehabVirtualCamSetupDialog dlg(ui->widgetSetup->getFieldValue("teracam_src").toString());
         m_valueJustChanged = true;
         if (dlg.exec() == QDialog::Accepted){
             ui->widgetSetup->setFieldValue("teracam_src", dlg.getCurrentSource());
+            startVirtualCamera(dlg.getCurrentSource());
         }else{
-            ui->widgetSetup->setFieldValue("teracam_src", "");
+            dynamic_cast<QLineEdit*>(ui->widgetSetup->getWidgetForField("teracam_src"))->undo();
         }
     }
 
+    // Camera source
+    if (wdg == ui->widgetSetup->getWidgetForField("camera")){
+        if (value.toString().contains("OpenTeraCam")){
+            QString src = ui->widgetSetup->getFieldValue("teracam_src").toString();
+            if (!src.isEmpty()){
+                startVirtualCamera(src);
+            }
+        }else{
+            if (m_virtualCam)
+                stopVirtualCamera();
+        }
+    }
+
+
+
     refreshWebpageSettings();
+}
+
+void VideoRehabSetupWidget::virtualCameraDisconnected()
+{
+    showError(tr("Erreur de caméra"), "VideoRehabSetupWidget::virtualCameraDisconnected", tr("Impossible de se connecter à la source vidéo."), true);
+    stopVirtualCamera();
+
 }

@@ -99,6 +99,8 @@ class MultiSrcElement: public AkMultimediaSourceElement
         void maxPacketQueueSizeChanged(qint64 maxPacketQueue);
         void showLogChanged(bool showLog);
         void codecLibChanged(const QString &codecLib);
+        void reconnectingStream();
+        void streamConnected();
 
     public slots:
         void setMedia(const QString &media);
