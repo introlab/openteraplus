@@ -68,6 +68,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     // Default display
     ui->tabNav->setCurrentIndex(0);
     ui->tabInfos->setCurrentIndex(0);
+    ui->frameFilterSessionTypes->hide();
 }
 
 ParticipantWidget::~ParticipantWidget()
@@ -1355,4 +1356,9 @@ void ParticipantWidget::on_cmbSessionType_currentIndexChanged(int index)
         }
     }
 
+}
+
+void ParticipantWidget::on_btnFilterSessionsTypes_clicked()
+{
+    ui->frameFilterSessionTypes->setVisible(ui->btnFilterSessionsTypes->isChecked());
 }
