@@ -210,7 +210,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
    </property>
    <property name="minimumSize">
     <size>
-     <width>1689</width>
+     <width>0</width>
      <height>50</height>
     </size>
    </property>
