@@ -5,10 +5,14 @@ find_package(Qt5Concurrent REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
 set(VirtualCamera_headers
-    VirtualCamera.h)
+    VirtualCamera.h
+    VirtualCameraThread.h
+)
 
 set(VirtualCamera_srcs
-    VirtualCamera.cpp)
+    VirtualCamera.cpp
+    VirtualCameraThread.cpp
+)
 
 SET(VirtualCamera_qrcs
 

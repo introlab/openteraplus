@@ -17,7 +17,7 @@
 #include "ComManager.h"
 #include "Utils.h"
 
-#include "VirtualCamera.h"
+#include "VirtualCameraThread.h"
 
 
 namespace Ui {
@@ -40,7 +40,7 @@ private:
     QWebEngineView*         m_webEngine;
     VideoRehabWebPage*      m_webPage;
 
-    VirtualCamera*          m_virtualCam;
+    VirtualCameraThread*    m_virtualCamThread;
 
     int                     m_id_service_config;
 

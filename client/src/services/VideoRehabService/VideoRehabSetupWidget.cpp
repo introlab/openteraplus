@@ -12,7 +12,7 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
     setLoading(true); // Disable until page is fully loaded
 
     m_valueJustChanged = false;
-    m_virtualCam = nullptr;
+    m_virtualCamThread = nullptr;
 
     initUI();
     connectSignals();
@@ -31,8 +31,10 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
 
-    if (m_virtualCam)
-        m_virtualCam->deleteLater();
+    if (m_virtualCamThread){
+        m_virtualCamThread->quit();
+        m_virtualCamThread->deleteLater();
+     }
 }
 
 QJsonDocument VideoRehabSetupWidget::getSetupConfig()
@@ -115,21 +117,22 @@ void VideoRehabSetupWidget::showError(const QString &title, const QString &conte
 
 void VideoRehabSetupWidget::startVirtualCamera(const QString &src)
 {
-    if (m_virtualCam){
-        m_virtualCam->deleteLater();
+    if (m_virtualCamThread){
+        stopVirtualCamera();
     }
     ui->frameError->hide();
-    m_virtualCam = new VirtualCamera();
-    connect(m_virtualCam, &VirtualCamera::virtualCamDisconnected, this, &VideoRehabSetupWidget::virtualCameraDisconnected);
-    m_virtualCam->init(src);
-    m_virtualCam->start();
+    m_virtualCamThread = new VirtualCameraThread(src);
+    connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &VideoRehabSetupWidget::virtualCameraDisconnected);
+    m_virtualCamThread->start();
 }
 
 void VideoRehabSetupWidget::stopVirtualCamera()
 {
-    if (m_virtualCam){
-        m_virtualCam->deleteLater();
-        m_virtualCam = nullptr;
+    if (m_virtualCamThread){
+        m_virtualCamThread->quit();
+        m_virtualCamThread->wait();
+        m_virtualCamThread->deleteLater();
+        m_virtualCamThread = nullptr;
     }
 }
 
@@ -325,7 +328,7 @@ void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
                 startVirtualCamera(src);
             }
         }else{
-            if (m_virtualCam)
+            if (m_virtualCamThread)
                 stopVirtualCamera();
         }
     }

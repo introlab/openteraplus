@@ -5,13 +5,16 @@
 VirtualCamera::VirtualCamera(QObject *parent)
     : QObject(parent)
 {
+    qDebug() << "** Creating VirtualCamera on thread" << thread();
+
     //Ak::registerTypes();
-    qRegisterMetaType<AkPacket>("AkPacket");
+    //qRegisterMetaType<AkPacket>("AkPacket");
 
     m_retryCounts = 0;
+    m_running = false;
 
     //This is required and will initialize the IPC system on Windows
-    Ak::setQmlEngine(nullptr);
+    //Ak::setQmlEngine(nullptr);
 
     //Tell the library where to look for plugins
     //TODO Hardcoded for now...
@@ -21,15 +24,18 @@ VirtualCamera::VirtualCamera(QObject *parent)
     AkElement::setSearchPaths(searchPaths);
 
 
-    qDebug() << "MultiSrc submodules: " << AkElement::listSubModules("MultiSrc");
-    qDebug() << "VirtualCamera submodules: "<< AkElement::listSubModules("VirtualCamera");
-    qDebug() << "DesktopCapture submodules: "<< AkElement::listSubModules("DesktopCapture");
+    //qDebug() << "MultiSrc submodules: " << AkElement::listSubModules("MultiSrc");
+    //qDebug() << "VirtualCamera submodules: "<< AkElement::listSubModules("VirtualCamera");
+    //qDebug() << "DesktopCapture submodules: "<< AkElement::listSubModules("DesktopCapture");
 
 }
 
 VirtualCamera::~VirtualCamera()
 {
-    stop();
+    qDebug() << "** Stopping VirtualCamera on thread " << thread();
+
+    /*if (m_running)
+        stop();*/
 }
 
 bool VirtualCamera::init(const QString &source/*, const QString& device*/)
@@ -73,12 +79,12 @@ bool VirtualCamera::init(const QString &source/*, const QString& device*/)
             //Set Parameters
             m_multiSrcPtr->setProperty("media", source);
             m_multiSrcPtr->setProperty("loop", false);
-            m_multiSrcPtr->setProperty("showLog", true);
+            m_multiSrcPtr->setProperty("showLog", false);
 
             // Connect signals
             QObject::connect(m_multiSrcPtr.data(), SIGNAL(error(QString)), this, SIGNAL(virtualCamError(QString)));
             QObject::connect(m_multiSrcPtr.data(), SIGNAL(reconnectingStream()), this, SLOT(virtualCamReconnecting()));
-            QObject::connect(m_multiSrcPtr.data(), SIGNAL(streamConnected()), this, SLOT(virtualCamConnected()));
+            QObject::connect(m_multiSrcPtr.data(), SIGNAL(streamConnected()), this, SIGNAL(virtualCamConnected()));
             //connect(m_multiSrcPtr.get(), &AkElement::stateChanged, this, &VirtualCamera::virtualCamStateChanged);
 
             //Connect to virtual camera sink
@@ -95,6 +101,8 @@ bool VirtualCamera::init(const QString &source/*, const QString& device*/)
 bool VirtualCamera::start()
 {
     m_retryCounts = 0;
+    m_running = true;
+
     if (m_virtualCameraPtr && m_multiSrcPtr) {
         m_multiSrcPtr->setState(AkElement::ElementStatePlaying);
         m_virtualCameraPtr->setState(AkElement::ElementStatePlaying);
@@ -111,6 +119,7 @@ bool VirtualCamera::start()
 
 bool VirtualCamera::stop()
 {
+    m_running = false;
     if (m_virtualCameraPtr && m_multiSrcPtr) {
         m_multiSrcPtr->setState(AkElement::ElementStatePaused);
         m_virtualCameraPtr->setState(AkElement::ElementStatePaused);
@@ -148,17 +157,13 @@ void VirtualCamera::virtualCamStateChanged(AkElement::ElementState state)
 
 void VirtualCamera::virtualCamReconnecting()
 {
-    qDebug() << "VirtualCamera reconnecting...";
     m_retryCounts++;
 
-    if (m_retryCounts > 3){
+    if (m_retryCounts >= 3){
         qDebug() << "Aborting... ";
+        //stop();
         emit virtualCamDisconnected();
+        return;
     }
-}
-
-void VirtualCamera::virtualCamConnected()
-{
-     qDebug() << "VirtualCamera connected!";
-     m_retryCounts = 0;
+    qDebug() << "VirtualCamera reconnecting...";
 }
