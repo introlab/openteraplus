@@ -26,14 +26,19 @@ SET(AVKYS_PLUGIN_LIBRARIES
 #Useful definitions
 if(APPLE)
     #Installed DLLS (from homebrew)
-    FILE(GLOB FFMPEG_DLL "${CMAKE_CURRENT_SOURCE_DIR}/ffmpeg/ffmpeg-4.2.3-macos64-shared/bin/*.dylib")
+    FILE(GLOB FFMPEG_AV_LIBS "/usr/local/lib/libav*.dylib")
+    FILE(GLOB FFMPEG_SWRESAMPLE_LIBS "/usr/local/lib/libswresample*.dylib")
+    FILE(GLOB FFMPEG_SWSCALE_LIBS "/usr/local/lib/libswscale*.dylib")
+
+    FILE(GLOB FFMPEG_DLL ${FFMPEG_AV_LIBS} ${FFMPEG_SWRESAMPLE_LIBS} ${FFMPEG_SWSCALE_LIBS})
+
     MESSAGE ( STATUS "FFMpeg libs = ${FFMPEG_DLL}")
 
     #For IN-SOURCE debug
     file(COPY ${FFMPEG_DLL} DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 
 
-    set(FFMPEG_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/ffmpeg/ffmpeg-4.2.3-macos64-dev/include CACHE INTERNAL "doc string")
+    set(FFMPEG_INCLUDES /usr/local/include CACHE INTERNAL "doc string")
     set(FFMPEG_LIBS ${FFMPEG_DLL} CACHE INTERNAL "doc string")
 endif()
 
