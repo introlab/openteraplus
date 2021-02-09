@@ -84,7 +84,7 @@ void VideoRehabSetupWidget::setLoading(const bool &loading)
 {
     ui->widgetSetup->setVisible(!loading);
     ui->widgetSetup->setEnabled(!loading);
-    ui->splitter->setVisible(!loading);
+    //ui->splitter->setVisible(!loading);
     ui->frameButtons->setVisible(!loading);
     if (!ui->frameError->isVisible()){
         ui->wdgWebEngine->setVisible(!loading);

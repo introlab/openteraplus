@@ -597,6 +597,11 @@ QToolButton#btnNextCal, QToolButton#btnPrevCal {
     border-radius: 5px;
     border: 2px solid rgb(186, 186, 186);
 }
+
+QPushButton#btnAddDevice, QPushButton#btnDelDevice{
+    min-width: 0px;
+}
+
 QFrame#frameCheckSessionTypes{
     background-color: black;
 }
@@ -630,7 +635,6 @@ QFrame#frameInvitees{
     background-color: rgba(0,0,100,50%);
 }
 
-/* Customizations for ParticipantWidget */
 QPushButton#btnFilterSessionsTypes:checked{
     color:white;
     background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgb(100,100,100), stop: 0.2 black, stop:1 rgb(100,100,100));

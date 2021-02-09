@@ -958,6 +958,7 @@ void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &
         m_sessionLobby->deleteLater();
     m_sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], m_data->getFieldValue("id_project").toInt(), id_session, this);
 
+
     // Add current participant to session
     m_sessionLobby->addParticipantsToSession(QList<TeraData>() << *m_data, QList<int>() << m_data->getId());
 
@@ -966,6 +967,8 @@ void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &
 
     connect(m_sessionLobby, &QDialog::accepted, this, &ParticipantWidget::sessionLobbyStartSessionRequested);
     connect(m_sessionLobby, &QDialog::rejected, this, &ParticipantWidget::sessionLobbyStartSessionCancelled);
+    if (height()<800)
+        m_sessionLobby->showMaximized();
 
     // Show Session Lobby
     m_sessionLobby->exec();
