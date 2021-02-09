@@ -1,6 +1,7 @@
 #include "LoginDialog.h"
 #include "ui_LoginDialog.h"
 #include <QStyledItemDelegate>
+#include <QTextDocumentFragment>
 
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent),
@@ -75,12 +76,14 @@ void LoginDialog::setStatusMessage(QString message, bool error)
     if (message.isEmpty()){
         ui->frameMessage->hide();
     }else{
+        QString filtered_msg = QTextDocumentFragment::fromHtml(message).toPlainText();
+        filtered_msg = filtered_msg.replace("\n"," - ");
         if (error)
             ui->lblMessage->setStyleSheet("color:red;");
         else {
             ui->lblMessage->setStyleSheet("color:yellow;");
         }
-        ui->lblMessage->setText(message);
+        ui->lblMessage->setText(filtered_msg);
         ui->lblWarningIcon->setVisible(error);
         ui->lblLoadingIcon->setVisible(!error);
         ui->frameMessage->show();

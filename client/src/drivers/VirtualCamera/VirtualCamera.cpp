@@ -8,7 +8,7 @@ VirtualCamera::VirtualCamera(QObject *parent)
     qDebug() << "** Creating VirtualCamera on thread" << thread();
 
     //Ak::registerTypes();
-    //qRegisterMetaType<AkPacket>("AkPacket");
+    qRegisterMetaType<AkPacket>("AkPacket");
 
     m_retryCounts = 0;
     m_running = false;

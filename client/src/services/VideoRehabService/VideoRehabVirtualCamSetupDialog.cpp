@@ -29,6 +29,11 @@ void VideoRehabVirtualCamSetupDialog::setCurrentSource(QString &src)
     ui->txtVCamSrc->setText(src);
 }
 
+void VideoRehabVirtualCamSetupDialog::setCursorPosition(int pos)
+{
+    ui->txtVCamSrc->setCursorPosition(pos);
+}
+
 void VideoRehabVirtualCamSetupDialog::on_btnOK_clicked()
 {
     accept();

@@ -593,11 +593,15 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
         if (!current_pass.isEmpty() && !m_passwordJustGenerated){
             // Show password dialog
             PasswordStrengthDialog dlg(current_pass);
+            //QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->wdgUser->getWidgetForField("user_password"));
+            //dlg.setCursorPosition(wdg_editor->cursorPosition());
+
             if (dlg.exec() == QDialog::Accepted){
                 m_passwordJustGenerated = true;
                 ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
             }else{
                 ui->wdgUser->setFieldValue("user_password", "");
+                //wdg_editor->undo();
             }
 
         }else{

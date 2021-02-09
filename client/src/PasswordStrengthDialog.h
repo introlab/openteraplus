@@ -18,6 +18,7 @@ public:
 
     void setCurrentPassword(const QString& password);
     QString getCurrentPassword();
+    void setCursorPosition(int pos);
 
 private:
     void setValidationItemState(int index, bool state);

@@ -17,6 +17,7 @@ public:
 
     QString getCurrentSource();
     void setCurrentSource(QString& src);
+    void setCursorPosition(int pos);
 
 private slots:
     void on_btnOK_clicked();

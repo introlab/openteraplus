@@ -27,6 +27,7 @@ public:
     void setPTZCapabilities(const bool &zoom, const bool &presets, const bool &settings);
     //void sendCameraSettings(const QString &uuid, CameraImageSettings &settings, const QString &owner="");
     void getCameraSettings(const QString &uuid);
+    void removeVideoSource(const QString &name);
 
     void setLocalMirror(const bool &mirror);
     void setExtraParams(const QString &params);
@@ -84,6 +85,7 @@ signals:
     void newRemoteStream();
     void newExtraParams(QString);
     void newPTZCapabilities(QString, bool, bool, bool);
+    void videoSourceRemoved(QString);
 
     void zoomIn(QString uuid);
     void zoomOut(QString uuid);

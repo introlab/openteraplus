@@ -25,6 +25,11 @@ QString PasswordStrengthDialog::getCurrentPassword()
     return ui->txtPassword->text();
 }
 
+void PasswordStrengthDialog::setCursorPosition(int pos)
+{
+    ui->txtPassword->setCursorPosition(pos);
+}
+
 void PasswordStrengthDialog::setValidationItemState(int index, bool state)
 {
     if (index < ui->lstValidate->count() && index >= 0){

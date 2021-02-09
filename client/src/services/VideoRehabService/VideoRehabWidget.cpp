@@ -7,8 +7,11 @@ VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_virtualCamThread = nullptr;
+
     initUI();
     connectSignals();
+
 
 }
 
@@ -17,6 +20,11 @@ VideoRehabWidget::~VideoRehabWidget()
     m_loadingIcon->deleteLater();
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
+    if (m_virtualCamThread){
+        m_virtualCamThread->quit();
+        m_virtualCamThread->deleteLater();
+     }
+
     delete ui;
 
 }
@@ -134,6 +142,12 @@ void VideoRehabWidget::webPageGeneralError(QString context, QString error)
     showError(tr("Erreur"), context, error);
 }
 
+void VideoRehabWidget::virtualCameraDisconnected()
+{
+    showError(tr("Erreur de caméra"), "VideoRehabSetupWidget::virtualCameraDisconnected", tr("Impossible de se connecter à la source vidéo."));
+    stopVirtualCamera();
+}
+
 void VideoRehabWidget::connectSignals()
 {
     if (m_webEngine){
@@ -147,7 +161,19 @@ void VideoRehabWidget::connectSignals()
 
 void VideoRehabWidget::refreshWebpageSettings()
 {
-    // TODO: Set camera and audio
+    QJsonDocument session_config = m_comManager->getCurrentSessionConfig();
+    if (session_config.object().contains("service_config_config")){
+        SharedObject* shared = m_webPage->getSharedObject();
+        QVariantHash session_params = session_config["service_config_config"].toObject().toVariantHash();
+        // Check if we must hide "OpenTeraCam" from video source list
+        if (session_params.contains("teracam_src")){
+            if (session_params["teracam_src"].toString().isEmpty()){
+                shared->removeVideoSource("OpenTeraCam");
+            }
+        }else{
+            shared->removeVideoSource("OpenTeraCam");
+        }
+    }
 }
 
 void VideoRehabWidget::processSessionConfig()
@@ -165,6 +191,13 @@ void VideoRehabWidget::processSessionConfig()
             if (session_params.contains("audio2")) shared->setSecondAudioSrcName(session_params["audio2"].toString());
             if (session_params.contains("camera_ptz")) shared->setPTZCapabilities(session_params["camera_ptz"].toBool(),
                     session_params["camera_ptz"].toBool(), session_params["camera_ptz"].toBool()); // For now, all features enabled!
+
+            if (session_params.contains("teracam_src")){
+                if (!session_params["teracam_src"].toString().isEmpty()){
+                    // Start virtual camera driver
+                    startVirtualCamera(session_params["teracam_src"].toString());
+               }
+            }
         }else{
             LOG_WARNING("Wrong session config format for that service", "VideoRehabWidget::processSessionConfig");
         }
@@ -191,4 +224,25 @@ void VideoRehabWidget::showError(const QString &title, const QString &context, c
     ui->frameLoading->hide();
     ui->frameError->show();
     ui->wdgWebEngine->hide();
+}
+
+void VideoRehabWidget::startVirtualCamera(const QString &src)
+{
+    if (m_virtualCamThread){
+        stopVirtualCamera();
+    }
+    ui->frameError->hide();
+    m_virtualCamThread = new VirtualCameraThread(src);
+    connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &VideoRehabWidget::virtualCameraDisconnected);
+    m_virtualCamThread->start();
+}
+
+void VideoRehabWidget::stopVirtualCamera()
+{
+    if (m_virtualCamThread){
+        m_virtualCamThread->quit();
+        m_virtualCamThread->wait();
+        m_virtualCamThread->deleteLater();
+        m_virtualCamThread = nullptr;
+    }
 }

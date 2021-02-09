@@ -30,6 +30,11 @@ void SharedObject::setPTZCapabilities(const bool &zoom, const bool &presets, con
     m_camHasSettings = settings;
 }
 
+void SharedObject::removeVideoSource(const QString &name)
+{
+    emit videoSourceRemoved(name);
+}
+
 void SharedObject::setSecondAudioSrcName(const QString &name){
     m_2ndAudioName = name;
 }

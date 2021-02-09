@@ -310,17 +310,19 @@ void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
 
     // OpenTeraCam camera source
     if (wdg == ui->widgetSetup->getWidgetForField("teracam_src")){
+        QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->widgetSetup->getWidgetForField("teracam_src"));
         VideoRehabVirtualCamSetupDialog dlg(ui->widgetSetup->getFieldValue("teracam_src").toString());
+        dlg.setCursorPosition(wdg_editor->cursorPosition());
         m_valueJustChanged = true;
         if (dlg.exec() == QDialog::Accepted){
             ui->widgetSetup->setFieldValue("teracam_src", dlg.getCurrentSource());
             startVirtualCamera(dlg.getCurrentSource());
         }else{
-            dynamic_cast<QLineEdit*>(ui->widgetSetup->getWidgetForField("teracam_src"))->undo();
+            wdg_editor->undo();
         }
     }
 
-    // Camera source
+    // Video source
     if (wdg == ui->widgetSetup->getWidgetForField("camera")){
         if (value.toString().contains("OpenTeraCam")){
             QString src = ui->widgetSetup->getFieldValue("teracam_src").toString();
@@ -332,8 +334,6 @@ void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
                 stopVirtualCamera();
         }
     }
-
-
 
     refreshWebpageSettings();
 }
