@@ -76,6 +76,9 @@ void VideoRehabSetupWidget::initUI()
 
     // Wait for service configuration before setting url
     //m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
+
+    // Hide PTZ fields in setup widget
+    //ui->widgetSetup->hideFields(QStringList() << "camera_ptz_type" << "camera_ptz_ip" << "camera_ptz_port" << "camera_ptz_username" << "camera_ptz_password");
 }
 
 
@@ -133,6 +136,30 @@ void VideoRehabSetupWidget::stopVirtualCamera()
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
         m_virtualCamThread = nullptr;
+    }
+}
+
+void VideoRehabSetupWidget::showPTZDialog()
+{
+    ui->widgetSetup->setFieldsEnabled(QStringList() << "camera_ptz_type" << "camera_ptz_ip" << "camera_ptz_port" << "camera_ptz_username" << "camera_ptz_password", false);
+
+    VideoRehabPTZDialog dlg;
+    dlg.setCurrentValues(ui->widgetSetup->getFieldValue("camera_ptz_type").toInt(),
+                         ui->widgetSetup->getFieldValue("camera_ptz_ip").toString(),
+                         ui->widgetSetup->getFieldValue("camera_ptz_port").toInt(),
+                         ui->widgetSetup->getFieldValue("camera_ptz_username").toString(),
+                         ui->widgetSetup->getFieldValue("camera_ptz_password").toString()
+                         );
+    //dlg.setCursorPosition(wdg_editor->cursorPosition());
+    if (dlg.exec() == QDialog::Accepted){
+        ui->widgetSetup->setFieldValue("camera_ptz_type", dlg.getCurrentSrcIndex());
+        ui->widgetSetup->setFieldValue("camera_ptz_ip", dlg.getCurrentUrl());
+        ui->widgetSetup->setFieldValue("camera_ptz_port", dlg.getCurrentPort());
+        ui->widgetSetup->setFieldValue("camera_ptz_username", dlg.getCurrentUsername());
+        ui->widgetSetup->setFieldValue("camera_ptz_password", dlg.getCurrentPassword());
+        //startVirtualCamera(dlg.getCurrentSource());
+    }else{
+        ui->widgetSetup->setFieldValue("camera_ptz", false);
     }
 }
 
@@ -333,6 +360,17 @@ void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
             if (m_virtualCamThread)
                 stopVirtualCamera();
         }
+    }
+
+    // PTZ changes
+    if (wdg == ui->widgetSetup->getWidgetForField(("camera_ptz")) /*||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_type") ||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_ip") ||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_port") ||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_username") ||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_password")*/){
+        if (value.toBool())
+            showPTZDialog();
     }
 
     refreshWebpageSettings();

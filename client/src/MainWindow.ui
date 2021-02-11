@@ -37,8 +37,8 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1050</width>
-         <height>736</height>
+         <width>1069</width>
+         <height>750</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -823,7 +823,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
      <x>0</x>
      <y>0</y>
      <width>1689</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
@@ -832,21 +832,22 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
   <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
-   <header>ClickableLabel.h</header>
+   <header>widgets/ClickableLabel.h</header>
    <slots>
     <signal>clicked()</signal>
+    <slot>clicked()</slot>
    </slots>
   </customwidget>
   <customwidget>
    <class>ProjectNavigator</class>
    <extends>QWidget</extends>
-   <header>ProjectNavigator.h</header>
+   <header>widgets/ProjectNavigator.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>OnlineManagerWidget</class>
    <extends>QWidget</extends>
-   <header>OnlineManagerWidget.h</header>
+   <header>widgets/OnlineManagerWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

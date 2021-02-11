@@ -14,7 +14,7 @@
    <string>À propos d'OpenTera...</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources/TeraClient.qrc">
+   <iconset>
     <normaloff>:/icons/ESTRAD.ico</normaloff>:/icons/ESTRAD.ico</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -65,7 +65,7 @@
         <string>Merci!</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/TeraClient.qrc">
+        <iconset resource="../../resources/TeraClient.qrc">
          <normaloff>:/icons/smile.png</normaloff>:/icons/smile.png</iconset>
        </property>
        <property name="iconSize">
@@ -84,14 +84,14 @@
   <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
-   <header>ClickableLabel.h</header>
+   <header>widgets/ClickableLabel.h</header>
    <slots>
     <slot>clicked()</slot>
    </slots>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>

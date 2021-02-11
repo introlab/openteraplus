@@ -133,7 +133,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../resources/TeraClient.qrc">:/icons/session.png</pixmap>
+        <pixmap>:/icons/session.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -171,11 +171,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
+       <iconset>
         <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
       </attribute>
       <attribute name="title">
@@ -241,7 +241,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <string>Éditer</string>
            </property>
            <property name="icon">
-            <iconset resource="../../resources/TeraClient.qrc">
+            <iconset>
              <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
            </property>
            <property name="iconSize">
@@ -288,7 +288,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <string>Sauvegarder</string>
             </property>
             <property name="icon">
-             <iconset resource="../../resources/TeraClient.qrc">
+             <iconset>
               <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
             </property>
             <property name="iconSize">
@@ -314,7 +314,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <string>Annuler</string>
             </property>
             <property name="icon">
-             <iconset resource="../../resources/TeraClient.qrc">
+             <iconset>
               <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
             </property>
             <property name="iconSize">
@@ -404,7 +404,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
+                 <pixmap>:/icons/patient.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -438,7 +438,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/device.png</pixmap>
+                 <pixmap>:/icons/device.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -479,7 +479,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/software_user.png</pixmap>
+                 <pixmap>:/icons/software_user.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -510,7 +510,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/test.png</pixmap>
+                 <pixmap>:/icons/test.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -576,7 +576,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/data.png</pixmap>
+                 <pixmap>:/icons/data.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -617,7 +617,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/log.png</pixmap>
+                 <pixmap>:/icons/log.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -655,7 +655,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      </widget>
      <widget class="QWidget" name="tabDetails">
       <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
+       <iconset>
         <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
       </attribute>
       <attribute name="title">
@@ -690,7 +690,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </property>
          <widget class="QWidget" name="tabInvitees">
           <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
+           <iconset>
             <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
           </attribute>
           <attribute name="title">
@@ -743,7 +743,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </widget>
          <widget class="QWidget" name="tabData">
           <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
+           <iconset>
             <normaloff>:/icons/sensors.png</normaloff>:/icons/sensors.png</iconset>
           </attribute>
           <attribute name="title">
@@ -823,7 +823,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <string>Tout télécharger</string>
                </property>
                <property name="icon">
-                <iconset resource="../../resources/TeraClient.qrc">
+                <iconset>
                  <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
                </property>
                <property name="iconSize">
@@ -865,7 +865,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <string>Supprimer</string>
                </property>
                <property name="icon">
-                <iconset resource="../../resources/TeraClient.qrc">
+                <iconset>
                  <normaloff>:/icons/delete.png</normaloff>:/icons/delete.png</iconset>
                </property>
               </widget>
@@ -876,7 +876,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </widget>
          <widget class="QWidget" name="tabTests">
           <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
+           <iconset>
             <normaloff>:/icons/test.png</normaloff>:/icons/test.png</iconset>
           </attribute>
           <attribute name="title">
@@ -894,7 +894,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </widget>
          <widget class="QWidget" name="tabEvents">
           <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
+           <iconset>
             <normaloff>:/icons/log.png</normaloff>:/icons/log.png</iconset>
           </attribute>
           <attribute name="title">
@@ -946,22 +946,21 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
  </widget>
  <customwidgets>
   <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>widgets/ClickableLabel.h</header>
+   <slots>
+    <signal>clicked()</signal>
+    <slot>clicked()</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
    <class>TeraForm</class>
    <extends>QWidget</extends>
    <header>TeraForm.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>ClickableLabel</class>
-   <extends>QLabel</extends>
-   <header>ClickableLabel.h</header>
-   <slots>
-    <signal>clicked()</signal>
-   </slots>
-  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../resources/TeraClient.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

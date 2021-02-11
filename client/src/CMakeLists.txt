@@ -13,34 +13,26 @@ add_subdirectory(drivers)
 set(headers
     ClientApp.h
     ConfigManagerClient.h
-    LoginDialog.h
+    dialogs/LoginDialog.h
     ComManager.h
     WebSocketManager.h
     MainWindow.h
-    ProjectNavigator.h
-    NotificationWindow.h
     Message.h
     GlobalMessageBox.h
-    ConfigWidget.h
-    HistoryCalendarWidget.h
-    DeviceAssignDialog.h
     DownloadedFile.h
-    DownloadProgressDialog.h
-    BaseDialog.h
     GlobalEvent.h
     GlobalEventLogger.h
-    InSessionWidget.h
-    StartSessionDialog.h
-    SessionLobbyDialog.h
-    SessionInviteWidget.h
-    OnlineManagerWidget.h
-    JoinSessionDialog.h
-    EmailInviteDialog.h
-    ClickableLabel.h
-    AboutDialog.h
-    AboutDialogPage.h
-    GeneratePasswordDialog.h
-    PasswordStrengthDialog.h
+    dialogs/StartSessionDialog.h
+    dialogs/SessionLobbyDialog.h
+    dialogs/JoinSessionDialog.h
+    dialogs/EmailInviteDialog.h
+    dialogs/AboutDialog.h
+    dialogs/AboutDialogPage.h
+    dialogs/GeneratePasswordDialog.h
+    dialogs/PasswordStrengthDialog.h
+    dialogs/DownloadProgressDialog.h
+    dialogs/BaseDialog.h
+    dialogs/DeviceAssignDialog.h
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -68,43 +60,44 @@ set(headers
     services/VideoRehabService/VideoRehabSetupWidget.h
     services/VideoRehabService/VideoRehabToolsWidget.h
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.h
+    services/VideoRehabService/VideoRehabPTZDialog.h
     services/VideoRehabService/WebSocket/SharedObject.h
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
     services/VideoRehabService/WebSocket/WebSocketTransport.h
+    widgets/InSessionWidget.h
+    widgets/SessionInviteWidget.h
+    widgets/OnlineManagerWidget.h
+    widgets/ClickableLabel.h
+    widgets/ConfigWidget.h
+    widgets/HistoryCalendarWidget.h
+    widgets/ProjectNavigator.h
+    widgets/NotificationWindow.h
 )
 
 set(srcs
     main.cpp
     ClientApp.cpp
     ConfigManagerClient.cpp
-    LoginDialog.cpp
     ComManager.cpp
     WebSocketManager.cpp
     MainWindow.cpp
-    ProjectNavigator.cpp
-    NotificationWindow.cpp
     Message.cpp
     GlobalMessageBox.cpp
-    ConfigWidget.cpp
-    HistoryCalendarWidget.cpp
-    DeviceAssignDialog.cpp
     DownloadedFile.cpp
-    DownloadProgressDialog.cpp
-    BaseDialog.cpp
     GlobalEvent.cpp
     GlobalEventLogger.cpp
-    InSessionWidget.cpp
-    StartSessionDialog.cpp
-    SessionLobbyDialog.cpp
-    SessionInviteWidget.cpp
-    OnlineManagerWidget.cpp
-    JoinSessionDialog.cpp
-    EmailInviteDialog.cpp
-    ClickableLabel.cpp
-    AboutDialog.cpp
-    AboutDialogPage.cpp
-    GeneratePasswordDialog.cpp
-    PasswordStrengthDialog.cpp
+    dialogs/LoginDialog.cpp
+    dialogs/DeviceAssignDialog.cpp
+    dialogs/DownloadProgressDialog.cpp
+    dialogs/BaseDialog.cpp
+    dialogs/StartSessionDialog.cpp
+    dialogs/SessionLobbyDialog.cpp
+    dialogs/JoinSessionDialog.cpp
+    dialogs/EmailInviteDialog.cpp
+    dialogs/AboutDialog.cpp
+    dialogs/AboutDialogPage.cpp
+    dialogs/GeneratePasswordDialog.cpp
+    dialogs/PasswordStrengthDialog.cpp
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
@@ -132,30 +125,33 @@ set(srcs
     services/VideoRehabService/VideoRehabSetupWidget.cpp
     services/VideoRehabService/VideoRehabToolsWidget.cpp
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.cpp
+    services/VideoRehabService/VideoRehabPTZDialog.cpp
     services/VideoRehabService/WebSocket/SharedObject.cpp
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
+    widgets/ProjectNavigator.cpp
+    widgets/NotificationWindow.cpp
+    widgets/ConfigWidget.cpp
+    widgets/HistoryCalendarWidget.cpp
+    widgets/InSessionWidget.cpp
+    widgets/SessionInviteWidget.cpp
+    widgets/OnlineManagerWidget.cpp
+    widgets/ClickableLabel.cpp
 )
 
 SET(uis
-    LoginDialog.ui
+    dialogs/LoginDialog.ui
     MainWindow.ui
-    ProjectNavigator.ui
-    notification.ui
-    ConfigWidget.ui
-    DeviceAssignDialog.ui
-    DownloadProgressDialog.ui
-    BaseDialog.ui
-    InSessionWidget.ui
-    StartSessionDialog.ui
-    SessionLobbyDialog.ui
-    SessionInviteWidget.ui
-    OnlineManagerWidget.ui
-    JoinSessionDialog.ui
-    EmailInviteDialog.ui
-    AboutDialog.ui
-    GeneratePasswordDialog.ui
-    PasswordStrengthDialog.ui
+    dialogs/DeviceAssignDialog.ui
+    dialogs/DownloadProgressDialog.ui
+    dialogs/BaseDialog.ui
+    dialogs/StartSessionDialog.ui
+    dialogs/SessionLobbyDialog.ui
+    dialogs/JoinSessionDialog.ui
+    dialogs/EmailInviteDialog.ui
+    dialogs/AboutDialog.ui
+    dialogs/GeneratePasswordDialog.ui
+    dialogs/PasswordStrengthDialog.ui
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
     editors/TeraForm.ui
@@ -176,6 +172,13 @@ SET(uis
     services/VideoRehabService/VideoRehabSetupWidget.ui
     services/VideoRehabService/VideoRehabToolsWidget.ui
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
+    services/VideoRehabService/VideoRehabPTZDialog.ui
+    widgets/ProjectNavigator.ui
+    widgets/notification.ui
+    widgets/ConfigWidget.ui
+    widgets/InSessionWidget.ui
+    widgets/SessionInviteWidget.ui
+    widgets/OnlineManagerWidget.ui
 )
 
 SET(qrcs

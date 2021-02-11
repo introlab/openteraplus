@@ -8,8 +8,8 @@
 
 #include <QtMultimedia/QAudioDeviceInfo>
 
-#include "GeneratePasswordDialog.h"
-#include "PasswordStrengthDialog.h"
+#include "dialogs/GeneratePasswordDialog.h"
+#include "dialogs/PasswordStrengthDialog.h"
 
 
 UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :

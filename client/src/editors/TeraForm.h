@@ -68,6 +68,7 @@ public:
     void setFieldRequired(const QString& field, const bool& required);
 
     void setFieldEnabled(const QString& field, const bool& enabled);
+    void setFieldsEnabled(const QStringList& fields, const bool& enabled);
 
     bool isDirty();
 

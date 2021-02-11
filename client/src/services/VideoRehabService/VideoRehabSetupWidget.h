@@ -14,6 +14,7 @@
 
 #include "VideoRehabWebPage.h"
 #include "VideoRehabVirtualCamSetupDialog.h"
+#include "VideoRehabPTZDialog.h"
 #include "ComManager.h"
 #include "Utils.h"
 
@@ -57,6 +58,8 @@ private:
 
     void startVirtualCamera(const QString& src);
     void stopVirtualCamera();
+
+    void showPTZDialog();
 
 
 private slots:

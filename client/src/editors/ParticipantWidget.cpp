@@ -9,7 +9,7 @@
 #include "editors/DataListWidget.h"
 #include "editors/SessionWidget.h"
 
-#include "GeneratePasswordDialog.h"
+#include "dialogs/GeneratePasswordDialog.h"
 
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),

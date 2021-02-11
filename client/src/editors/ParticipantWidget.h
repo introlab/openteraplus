@@ -11,15 +11,15 @@
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
-#include "DeviceAssignDialog.h"
-#include "BaseDialog.h"
+#include "dialogs/DeviceAssignDialog.h"
+#include "dialogs/BaseDialog.h"
 #include "TeraSessionStatus.h"
 #include "Utils.h"
 //#include "StartSessionDialog.h"
 #include "ServiceConfigWidget.h"
-#include "SessionLobbyDialog.h"
+#include "dialogs/SessionLobbyDialog.h"
 
-#include "EmailInviteDialog.h"
+#include "dialogs/EmailInviteDialog.h"
 
 namespace Ui {
 class ParticipantWidget;

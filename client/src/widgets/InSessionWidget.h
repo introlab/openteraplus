@@ -5,9 +5,9 @@
 #include "ComManager.h"
 #include "TeraData.h"
 #include "GlobalMessageBox.h"
-#include "StartSessionDialog.h"
+#include "dialogs/StartSessionDialog.h"
 #include "Logger.h"
-#include "NotificationWindow.h"
+#include "widgets/NotificationWindow.h"
 
 #include "services/BaseServiceWidget.h"
 

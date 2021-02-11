@@ -1,4 +1,4 @@
-#include "ProjectNavigator.h"
+#include "widgets/ProjectNavigator.h"
 #include "GlobalMessageBox.h"
 #include "ui_ProjectNavigator.h"
 #include <QStyledItemDelegate>

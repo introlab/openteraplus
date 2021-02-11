@@ -211,11 +211,11 @@ void TeraForm::hideField(const QString &field)
     if (widget){
         setWidgetVisibility(widget, nullptr, false);
         checkConditions(widget);
-        /*QFormLayout* form_layout = dynamic_cast<QFormLayout*>(widget->parentWidget()->layout());
-
-        m_hidden_rows[widget] = form_layout->takeRow(widget);
-        widget->hide();
-        m_hidden_rows[widget].labelItem->widget()->hide();*/
+        // Disable condition
+        if (widget->property("condition").isValid()){
+            widget->setProperty("_condition", widget->property("condition"));
+            widget->setProperty("condition", QVariant::Invalid);
+        }
     }
 }
 
@@ -224,6 +224,11 @@ void TeraForm::showField(const QString &field)
     QWidget* widget = getWidgetForField(field);
     if (widget){
         setWidgetVisibility(widget, nullptr, true);
+        // Enable condition
+        if (widget->property("_condition").isValid()){
+            widget->setProperty("condition", widget->property("_condition"));
+            widget->setProperty("_condition", QVariant::Invalid);
+        }
         checkConditions(widget);
     }
 }
@@ -254,6 +259,13 @@ void TeraForm::setFieldEnabled(const QString &field, const bool &enabled)
     QWidget* widget = getWidgetForField(field);
     if (widget){
         widget->setEnabled(enabled);
+    }
+}
+
+void TeraForm::setFieldsEnabled(const QStringList &fields, const bool &enabled)
+{
+    for(QString field:fields){
+        setFieldEnabled(field, enabled);
     }
 }
 
@@ -824,10 +836,7 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
                     }
 
                     // Hide/show that item
-                    //if (item->isVisible() != condition_met){
                     setWidgetVisibility(item, check_item, condition_met);
-                        //qDebug() << "Hiding...";
-                    //}
 
                     // We have a hook requesting data for that specific widget...
                     if (!hook.isNull()){
@@ -936,10 +945,12 @@ bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
 
     if (QCheckBox* check = dynamic_cast<QCheckBox*>(widget)){
         *value = check->isChecked();
+        return true;
     }
 
     if (QSpinBox* spin = dynamic_cast<QSpinBox*>(widget)){
         *value = spin->value();
+        return true;
     }
 
     if (QLabel* label = dynamic_cast<QLabel*>(widget)){
@@ -1010,6 +1021,8 @@ QVariant TeraForm::getWidgetValue(QWidget *widget)
 
 void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
 {
+
+    widget->setProperty("last_value", value);
     if (QComboBox* combo = dynamic_cast<QComboBox*>(widget)){
         int index = combo->findText(value.toString());
         if (index>=0){
@@ -1192,12 +1205,14 @@ void TeraForm::widgetValueChanged()
 
     QWidget* sender_widget = dynamic_cast<QWidget*>(sender);
     if (sender_widget){
-        if (sender_widget->property("last_value") != getWidgetValue(sender_widget)){
+        //qDebug() << m_widgets.key(sender_widget) << " - " << sender_widget->property("last_value");
+        QVariant current_value = getWidgetValue(sender_widget);
+        if (!sender_widget->property("last_value").isValid() || sender_widget->property("last_value") != current_value){
             validateWidget(sender_widget);
-            sender_widget->setProperty("last_value", getWidgetValue(sender_widget));
+            sender_widget->setProperty("last_value", current_value);
             emit widgetValueHasChanged(sender_widget, getWidgetValue(sender_widget));
             checkConditions(sender_widget);
-        }    
+        }
         emit formIsNowDirty(isDirty());
     }
 }

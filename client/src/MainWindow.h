@@ -7,11 +7,11 @@
 #include <QDialog>
 
 #include "editors/UserWidget.h"
-#include "BaseDialog.h"
-#include "ConfigWidget.h"
+#include "dialogs/BaseDialog.h"
+#include "widgets/ConfigWidget.h"
 
-#include "DownloadProgressDialog.h"
-#include "NotificationWindow.h"
+#include "dialogs/DownloadProgressDialog.h"
+#include "widgets/NotificationWindow.h"
 
 #include "ComManager.h"
 #include "Message.h"
@@ -19,10 +19,10 @@
 #include "GlobalEvent.h"
 #include "DownloadedFile.h"
 #include "TeraSessionCategory.h"
-#include "InSessionWidget.h"
-#include "JoinSessionDialog.h"
+#include "widgets/InSessionWidget.h"
+#include "dialogs/JoinSessionDialog.h"
 
-#include "AboutDialog.h"
+#include "dialogs/AboutDialog.h"
 
 // Protobuf
 #include "UserEvent.pb.h"

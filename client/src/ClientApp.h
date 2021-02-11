@@ -10,7 +10,7 @@
 #include <QStandardPaths>
 
 #include "MainWindow.h"
-#include "LoginDialog.h"
+#include "dialogs/LoginDialog.h"
 #include "GlobalMessageBox.h"
 
 #include "ComManager.h"

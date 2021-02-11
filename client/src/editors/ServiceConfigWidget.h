@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QListWidgetItem>
 
-#include "DataEditorWidget.h"
+#include "editors/DataEditorWidget.h"
 #include "GlobalMessageBox.h"
 
 #include "Utils.h"

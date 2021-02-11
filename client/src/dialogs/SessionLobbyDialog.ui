@@ -14,7 +14,7 @@
    <string>Vestibule</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources/TeraClient.qrc">
+   <iconset resource="../../resources/TeraClient.qrc">
     <normaloff>:/icons/OpenTeraPlus.ico</normaloff>:/icons/OpenTeraPlus.ico</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -28,8 +28,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1083</width>
-        <height>727</height>
+        <width>1087</width>
+        <height>731</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -136,7 +136,7 @@
              <string>Démarrer la séance</string>
             </property>
             <property name="icon">
-             <iconset resource="../resources/TeraClient.qrc">
+             <iconset resource="../../resources/TeraClient.qrc">
               <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
             </property>
             <property name="iconSize">
@@ -168,7 +168,7 @@
              <string>Annuler</string>
             </property>
             <property name="icon">
-             <iconset resource="../resources/TeraClient.qrc">
+             <iconset resource="../../resources/TeraClient.qrc">
               <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
             </property>
             <property name="iconSize">
@@ -192,12 +192,12 @@
   <customwidget>
    <class>SessionInviteWidget</class>
    <extends>QWidget</extends>
-   <header>SessionInviteWidget.h</header>
+   <header>widgets/SessionInviteWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>
