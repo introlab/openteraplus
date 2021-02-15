@@ -127,7 +127,7 @@ void PTZTestMainWindow::on_comboBox_Camera_activated(int index)
  void PTZTestMainWindow::cameraConnected(CameraInfo info)
  {
     qDebug() << " void PTZTestMainWindow::cameraConnected(CameraInfo)";
-    qDebug() << info.toXmlStr();
+    //qDebug() << info.toXmlStr();
  }
 
  MyVideoItem::MyVideoItem(QGraphicsItem *item)

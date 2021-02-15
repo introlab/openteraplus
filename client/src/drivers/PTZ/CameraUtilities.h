@@ -219,7 +219,7 @@ public:
     ///
     QString deviceName() const;
     QString deviceConnectionInfo() const;
-    CameraInfoFunct deviceFunct() const;
+    QList<CameraInfoFunct> deviceFunct() const;
     CameraInfoStatus deviceStatus() const;
     CameraInfoError deviceError() const;
     CameraInfoUnit unit() const;
@@ -240,7 +240,7 @@ public:
     ///
     void setDeviceName(const QString &deviceName);
     void setDeviceConnection(const QString deviceConnectionInfo);
-    void setDeviceFunct(CameraInfoFunct flag);
+    void setDeviceFunct(const QList<CameraInfoFunct> functs);
     void setDeviceStatus(CameraInfoStatus flag);
     void setDeviceError(CameraInfoError flag);
     void setUnit(CameraInfoUnit unit);
@@ -255,20 +255,20 @@ public:
     void setPresetID(int id);
 
     ///XML Functionnalities
-    bool fromXml(QString xmlStr);
+    /*bool fromXml(QString xmlStr);
     bool fromXml(QDomElement &e);
     void toXml(QDomDocument &doc, QDomElement &e);
-    QString toXmlStr(void);
+    QString toXmlStr(void);*/
 
 
 protected:
     ///device name
-    QString m_deviceName;
-    QString m_deviceConnectionInfo;
-    CameraInfoFunct m_deviceFunct;
-    CameraInfoStatus m_deviceStatus;
-    CameraInfoError m_deviceError;
-    CameraImageSettings m_imageSettings;
+    QString                 m_deviceName;
+    QString                 m_deviceConnectionInfo;
+    QList<CameraInfoFunct>  m_deviceFunct;
+    CameraInfoStatus        m_deviceStatus;
+    CameraInfoError         m_deviceError;
+    CameraImageSettings     m_imageSettings;
 
     CameraInfoUnit m_unit;
     double m_pan;

@@ -20,6 +20,9 @@
 
 #include "VirtualCameraThread.h"
 
+#include "drivers/PTZ/ICameraDriver.h"
+#include "drivers/PTZ/Vivotek8111.h"
+
 
 namespace Ui {
 class VideoRehabSetupWidget;
@@ -60,6 +63,8 @@ private:
     void stopVirtualCamera();
 
     void showPTZDialog();
+    void startPTZCamera();
+    void stopPTZCamera();
 
 
 private slots:
@@ -82,6 +87,8 @@ private slots:
     void setupFormValueChanged(QWidget* wdg, QVariant value);
 
     void virtualCameraDisconnected();
+
+    void ptzCameraError(CameraInfo infos);
 };
 
 #endif // VIDEOREHABSETUPWIDGET_H

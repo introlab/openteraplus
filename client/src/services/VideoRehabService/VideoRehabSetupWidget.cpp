@@ -163,6 +163,42 @@ void VideoRehabSetupWidget::showPTZDialog()
     }
 }
 
+void VideoRehabSetupWidget::startPTZCamera()
+{
+    int camera_src = ui->widgetSetup->getFieldValue("camera_ptz_type").toInt();
+
+    if (camera_src == 0){ // TODO: Better manage camera sources
+        // Vivotek
+        if (m_webPage){
+            SharedObject* shared = m_webPage->getSharedObject();
+            if (shared){
+                shared->startPTZCameraDriver(camera_src,
+                                             ui->widgetSetup->getFieldValue("camera_ptz_ip").toString(),
+                                             ui->widgetSetup->getFieldValue("camera_ptz_port").toInt(),
+                                             ui->widgetSetup->getFieldValue("camera_ptz_username").toString(),
+                                             ui->widgetSetup->getFieldValue("camera_ptz_password").toString());
+                // Connect signal
+                connect(shared->getPTZCameraDriver(), &ICameraDriver::cameraError, this, &VideoRehabSetupWidget::ptzCameraError);
+            }
+        }
+
+        return;
+    }
+
+    showError(tr("Caméra PTZ"), "VideoRehabSetupWidget::startPTZCamera", tr("Type de caméra PTZ non-supporté"), true);
+
+}
+
+void VideoRehabSetupWidget::stopPTZCamera()
+{
+    if (m_webPage){
+        SharedObject* shared = m_webPage->getSharedObject();
+        if (shared){
+            shared->stopPTZCameraDriver();
+        }
+    }
+}
+
 void VideoRehabSetupWidget::refreshWebpageSettings()
 {
 
@@ -173,12 +209,19 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
     bool ptz = ui->widgetSetup->getFieldValue("camera_ptz").toBool();
     m_webPage->getSharedObject()->setPTZCapabilities(ptz, ptz, ptz);
     m_webPage->getSharedObject()->sendPTZCapabilities();
+    if (ptz)
+        startPTZCamera();
 
     // Update video source
     QString video_src = ui->widgetSetup->getFieldValue("camera").toString();
     //qDebug() << "Setting Video Src to " << video_src;
     m_webPage->getSharedObject()->setCurrentCameraName(video_src);
     m_webPage->getSharedObject()->sendCurrentVideoSource();
+    if (video_src.contains("OpenTeraCam")){
+        if (!m_virtualCamThread){
+            startVirtualCamera(ui->widgetSetup->getFieldValue("teracam_src").toString());
+        }
+    }
 
     // Update audio source
     QString audio_src = ui->widgetSetup->getFieldValue("audio").toString();
@@ -288,6 +331,7 @@ void VideoRehabSetupWidget::processFormsReply(QString form_type, QString data)
 void VideoRehabSetupWidget::on_btnRefresh_clicked()
 {
     if (m_webEngine){
+        ui->frameError->hide();
         setLoading(true);
         m_webEngine->reload();
     }
@@ -381,4 +425,27 @@ void VideoRehabSetupWidget::virtualCameraDisconnected()
     showError(tr("Erreur de caméra"), "VideoRehabSetupWidget::virtualCameraDisconnected", tr("Impossible de se connecter à la source vidéo."), true);
     stopVirtualCamera();
 
+}
+
+void VideoRehabSetupWidget::ptzCameraError(CameraInfo infos)
+{
+    QString error_msg;
+
+    switch(infos.deviceError()){
+    case CameraInfo::CIE_NO_CONNECTION:
+        error_msg = tr("Caméra PTZ: Impossible de se connecter.");
+        break;
+    case CameraInfo::CIE_PROTOCOL_ERROR:
+        error_msg = tr("Caméra PTZ: Erreur de communication.");
+        break;
+    case CameraInfo::CIE_INVALID_LOGIN:
+        error_msg = tr("Caméra PTZ: Authentification refusée.");
+        break;
+    case CameraInfo::CIE_NO_ERROR:
+        // Shouldn't get here, but managed in case
+        return;
+        break;
+
+    }
+    showError(tr("Caméra PTZ"), "VideoRehabSetupWidget::ptzCameraError", error_msg);
 }

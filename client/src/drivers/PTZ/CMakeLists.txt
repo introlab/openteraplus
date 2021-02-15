@@ -11,7 +11,7 @@ set(PTZDrivers_headers
 
 set(PTZDrivers_srcs
     #Empty for now
-    #ICameraDriver.cpp
+    ICameraDriver.cpp
     CameraUtilities.cpp
     Vivotek8111.cpp
 )

@@ -3,6 +3,46 @@
 SharedObject::SharedObject(QObject *parent) : QObject(parent)
 {
     m_cameraIndex = -1;
+    m_ptzCameraDriver = nullptr;
+}
+
+SharedObject::~SharedObject()
+{
+    if (m_ptzCameraDriver){
+        stopPTZCameraDriver();
+    }
+}
+
+void SharedObject::startPTZCameraDriver(const int &camera_src, const QString &hostname, const int port, const QString &user, const QString &password)
+{
+    if (camera_src == 0){ // TODO - Better handle camera types
+        // Vivotek
+        m_ptzCameraDriver = new Vivotek8111();
+        m_ptzCameraDriver->init(hostname, port, user, password);
+
+    }
+    if (m_ptzCameraDriver){
+        bool canZoom = m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_ZOOM_ABS) || m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_ZOOM_REL);
+        //bool canPtz = m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_PAN_TILT_ABS) || m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_PAN_TILT_REL) || m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_POINT_N_CLICK);
+        bool hasPresets = m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_PRESET_POS);
+        bool hasSettings = m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_IMAGE_SETTINGS);
+        setPTZCapabilities(canZoom, hasPresets, hasSettings);
+    }
+
+}
+
+void SharedObject::stopPTZCameraDriver()
+{
+    if (m_ptzCameraDriver){
+        m_ptzCameraDriver->deleteLater();
+        m_ptzCameraDriver = nullptr;
+    }
+    setPTZCapabilities(false, false, false);
+}
+
+ICameraDriver *SharedObject::getPTZCameraDriver() const
+{
+    return m_ptzCameraDriver;
 }
 
 void SharedObject::setContactInformation(const QString &name, const QString &uuid)
@@ -54,47 +94,68 @@ QString SharedObject::getContactInformation()
 void SharedObject::zoomInClicked(QString uuid)
 {
     //qDebug() << "Zoom In! UUID = " << uuid;
+    if (m_ptzCameraDriver){
+        m_ptzCameraDriver->zoomIn();
+    }
     emit zoomIn(uuid);
 }
 
 void SharedObject::zoomOutClicked(QString uuid)
 {
     //qDebug() << "Zoom Out! UUID = " << uuid;
+    if (m_ptzCameraDriver){
+        m_ptzCameraDriver->zoomOut();
+    }
     emit zoomOut(uuid);
 }
 
 void SharedObject::zoomMinClicked(QString uuid)
 {
     //qDebug() << "Zoom Min! UUID = " << uuid;
+    if (m_ptzCameraDriver){
+        m_ptzCameraDriver->zoomMin();
+    }
     emit zoomMin(uuid);
 }
 
 void SharedObject::zoomMaxClicked(QString uuid)
 {
     //qDebug() << "Zoom Max! UUID = " << uuid;
+    if (m_ptzCameraDriver){
+        m_ptzCameraDriver->zoomMax();
+    }
     emit zoomMax(uuid);
 }
 
 void SharedObject::camSettingsClicked(QString uuid)
 {
-    qDebug() << "SharedObjet -> Cam Settings! UUID = " << uuid;
+    qDebug() << "SharedObject -> Cam Settings! UUID = " << uuid;
     emit camSettings(uuid);
 }
 
 void SharedObject::gotoPresetClicked(QString uuid, int preset)
 {
-    //qDebug() << "Goto Preset! UUID = " << uuid << ", position = " << preset;
+    //qDebug() << "SharedObject -> Goto Preset UUID = " << uuid << ", position = " << preset;
+    if (m_ptzCameraDriver){
+        m_ptzCameraDriver->gotoPresetID(preset);
+    }
     emit gotoPreset(uuid, preset);
 }
 
 void SharedObject::setPresetClicked(QString uuid, int preset)
 {
+    if (m_ptzCameraDriver){
+        m_ptzCameraDriver->setPresetID(preset);
+    }
     emit setPreset(uuid, preset);
 }
 
 void SharedObject::imageClicked(QString uuid, int x, int y, int w, int h)
 {
-    qDebug() << "Click! UUID = " << uuid << ", x = " << x << " y = " << y << " width = " << w << " height = " << h;
+    //qDebug() << "SharedObject -> Click UUID = " << uuid << ", x = " << x << " y = " << y << " width = " << w << " height = " << h;
+    if (m_ptzCameraDriver){
+        m_ptzCameraDriver->setPointNClick(QPoint(x,y), QSize(w,h));
+    }
     emit move(uuid, x, y, w, h);
 }
 

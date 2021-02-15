@@ -25,6 +25,11 @@ Vivotek8111::Vivotek8111() : ICameraDriver(),
     m_cameraInfo.imageSettings()->setContrastLimits(-5,5);
     m_cameraInfo.imageSettings()->setSharpnessLimits(-3,3);
     m_cameraInfo.imageSettings()->setWhiteLimits(0,8);
+
+    // Request timeout timer
+    connect(&m_requestTimer, &QTimer::timeout, this, &Vivotek8111::requestTimeout);
+    m_requestTimer.setInterval(5000);
+    m_requestTimer.setSingleShot(true);
 }
 
 Vivotek8111::~Vivotek8111()
@@ -63,7 +68,11 @@ void Vivotek8111::init(const QString &hostname, const int port, const QString &u
 
     m_cameraInfo.setDeviceName(CAMERA_NAME);
     m_cameraInfo.setDeviceConnection(QString("%1:%2").arg(m_hostname).arg(m_port));
-    m_cameraInfo.setDeviceFunct((CameraInfo::CameraInfoFunct)(CameraInfo::CIF_POINT_N_CLICK + CameraInfo::CIF_ZOOM_REL + CameraInfo::CIF_PRESET_POS + CameraInfo::CIF_IMAGE_SETTINGS));
+    m_cameraInfo.setDeviceFunct(QList<CameraInfo::CameraInfoFunct>()
+                                << CameraInfo::CIF_POINT_N_CLICK
+                                << CameraInfo::CIF_ZOOM_REL
+                                << CameraInfo::CIF_PRESET_POS
+                                << CameraInfo::CIF_IMAGE_SETTINGS);
     m_cameraInfo.setNumberPreset(VIVOTEK_NUM_PRESET);
 
     m_CameraManager = new QNetworkAccessManager(this);
@@ -73,7 +82,8 @@ void Vivotek8111::init(const QString &hostname, const int port, const QString &u
 
     //Start the connection by asking resolution
     connect(&m_connectionTimer,SIGNAL(timeout()),this,SLOT(connectionTimeout()));
-    m_connectionTimer.setInterval(200);
+    m_connectionTimer.setSingleShot(true);
+    m_connectionTimer.setInterval(500);
     m_connectionTimer.start();
 
 }
@@ -133,10 +143,10 @@ void Vivotek8111::setCameraInfo(CameraInfo info)
     case CameraRequest::CRF_PRESET:
         if (info.cameraRequest()->getCameraAction()==CameraRequest::CRA_GET){
             m_cameraInfo.setPresetID(info.presetID());  //mostly for log....
-            setPresetID(info.presetID());
+            gotoPresetID(info.presetID());
         }
         if (info.cameraRequest()->getCameraAction()==CameraRequest::CRA_SET){ // Set preset
-            configPresetID(info.presetID());
+            setPresetID(info.presetID());
         }
         break;
     case CameraRequest::CRF_IMG_SETTINGS:
@@ -167,14 +177,13 @@ void Vivotek8111::setPointNClick(QPoint coordinates, QSize screenSize)
     params.addQueryItem("resolution",QString("%1x%2").arg(m_cameraInfo.resolution().width()).arg(m_cameraInfo.resolution().height()));
     params.addQueryItem("stretch","1");
 
-    if(m_CameraManager)
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+    doPost(request, params);
 }
 
 void Vivotek8111::setRelZoom(double value)
 {
 
-    setZoomSpeed(convertZoomToSpeed(value));
+    //setZoomSpeed(convertZoomToSpeed(value));
 
     QString path =  QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/camctrl/camctrl.cgi");
 
@@ -182,7 +191,6 @@ void Vivotek8111::setRelZoom(double value)
     request.setUrl(QUrl(path));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
 
-    //NOTICE : QUrl does not support anymore the addQueryItem in Qt 5.0.0+
     QUrlQuery  params;
     bool proceed = true;
     if(value > 0)
@@ -195,18 +203,38 @@ void Vivotek8111::setRelZoom(double value)
 
     if(m_CameraManager && proceed)
     {
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+        doPost(request, params);
 
         //Special patch for max and min
         if(value >= 100 || value <= -100)
         {
             for(int i=0;i<6;i++)
-                m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+                doPost(request, params);
         }
     }
 }
 
-void Vivotek8111::setPresetID(int id)
+void Vivotek8111::zoomIn()
+{
+    setRelZoom(0.05);
+}
+
+void Vivotek8111::zoomOut()
+{
+    setRelZoom(-0.05);
+}
+
+void Vivotek8111::zoomMax()
+{
+    setRelZoom(100);
+}
+
+void Vivotek8111::zoomMin()
+{
+    setRelZoom(-100);
+}
+
+void Vivotek8111::gotoPresetID(int id)
 {
     QString path =  QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/camctrl/recall.cgi");
 
@@ -214,15 +242,13 @@ void Vivotek8111::setPresetID(int id)
     request.setUrl(QUrl(path));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
 
-    //NOTICE : QUrl does not support anymore the addQueryItem in Qt 5.0.0+
     QUrlQuery  params;
     params.addQueryItem("recall",QString("pos_%1").arg(id));
 
-    if(m_CameraManager)
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+    doPost(request, params);
 }
 
-void Vivotek8111::configPresetID(int id)
+void Vivotek8111::setPresetID(int id)
 {
     QString path =  QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/operator/preset.cgi");
 
@@ -234,14 +260,12 @@ void Vivotek8111::configPresetID(int id)
     QUrlQuery  params;
     params.addQueryItem("delpos",QString("pos_%1").arg(id));
 
-    if(m_CameraManager)
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+    doPost(request, params);
 
     // Create "new" position
     params.clear();
     params.addQueryItem("addpos",QString("pos_%1").arg(id));
-    if(m_CameraManager)
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+    doPost(request, params);
 
 
     //NOTIFY_TEXT_MESSAGE(this,"Position #" + QString::number(id+1) + " définie.");
@@ -250,7 +274,7 @@ void Vivotek8111::configPresetID(int id)
 
 void Vivotek8111::requestInformation()
 {
-    qDebug() << QString("requestInformation"),this->metaObject()->className();
+    //qDebug() << QString("requestInformation"),this->metaObject()->className();
     QString path = QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/admin/getparam.cgi");
 
     QNetworkRequest request;
@@ -258,19 +282,16 @@ void Vivotek8111::requestInformation()
     //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
 
-    //NOTICE : QUrl does not support anymore the addQueryItem in Qt 5.0.0+
     QUrlQuery  params;
 
     params.addQueryItem("videoin_c0_s0_resolution","");
 
     //Post command
-    //m_CameraManager->post(QNetworkRequest(QUrl(path)),command);
-    if(m_CameraManager)
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+    doPost(request, params);
 }
 
 void Vivotek8111::requestImageSettings(){
-    qDebug() << QString("requestImageSettings"),this->metaObject()->className();
+    //qDebug() << QString("requestImageSettings"),this->metaObject()->className();
     QString path = QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/admin/getparam.cgi");
 
     QNetworkRequest request;
@@ -283,13 +304,11 @@ void Vivotek8111::requestImageSettings(){
     params.addQueryItem("videoin_c0_autotrackingwhitebalance","");
 
     //Post command
-    //m_CameraManager->post(QNetworkRequest(QUrl(path)),command);
-    if(m_CameraManager)
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+    doPost(request, params);
 }
 
 void Vivotek8111::setImageSettings(CameraImageSettings settings){
-    qDebug() << QString("requestImageSettings"),this->metaObject()->className();
+    //qDebug() << QString("requestImageSettings"),this->metaObject()->className();
     QString path = QString("http://%1:%2%3").arg(m_hostname).arg(m_port).arg("/cgi-bin/admin/setparam.cgi");
 
     QNetworkRequest request;
@@ -306,9 +325,7 @@ void Vivotek8111::setImageSettings(CameraImageSettings settings){
     params.addQueryItem("videoin_c0_whitebalancemode","0");
 
     //Post command
-    //m_CameraManager->post(QNetworkRequest(QUrl(path)),command);
-    if(m_CameraManager)
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+    doPost(request, params);
 }
 
 void Vivotek8111::setZoomSpeed(const int &speed)
@@ -324,8 +341,7 @@ void Vivotek8111::setZoomSpeed(const int &speed)
     //params.addQueryItem("camctrl_c0_zoomspeed",QString("%1").arg(speed));
     params.addQueryItem("speedzoom",QString("%1").arg(speed));
 
-    if(m_CameraManager)
-        m_CameraManager->post(request,params.query(QUrl::FullyEncoded).toUtf8());
+    doPost(request, params);
 }
 
 int Vivotek8111::convertZoomToSpeed(const double &value)
@@ -345,12 +361,22 @@ int Vivotek8111::convertZoomToSpeed(const double &value)
     return speedfactor;
 }
 
+void Vivotek8111::doPost(const QNetworkRequest &request, const QUrlQuery &args)
+{
+    if (m_CameraManager){
+         m_CameraManager->post(request, args.query(QUrl::FullyEncoded).toUtf8());
+         if (!m_requestTimer.isActive())
+             m_requestTimer.start();
+    }
+}
+
 /// PUBLIC SLOTS
 void Vivotek8111::cameraDataRdy(QNetworkReply *netReply)
 {
+    m_requestTimer.stop();
     m_lastStatusCode = netReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
-    qDebug() << QString("cameraDataRdy - Http Status : %1").arg(m_lastStatusCode.toInt()),this->metaObject()->className();
+    //qDebug() << QString("cameraDataRdy - Http Status : %1").arg(m_lastStatusCode.toInt()),this->metaObject()->className();
 
     // "200 OK" received?
     if (m_lastStatusCode.toInt()>=200 && m_lastStatusCode.toInt() < 300 )
@@ -466,8 +492,15 @@ void Vivotek8111::cameraDataRdy(QNetworkReply *netReply)
     {
         //Client or Server error
         m_cameraInfo.cameraRequest()->clearCameraRequest();
-        m_cameraInfo.setDeviceError(CameraInfo::CIE_PROTOCOL_ERROR);
+        if (m_connectionTimer.isActive()){
+            // Error occured at connection - abort.
+            m_cameraInfo.setDeviceError(CameraInfo::CIE_NO_CONNECTION);
+            m_connectionTimer.stop();
+        }else{
+            m_cameraInfo.setDeviceError(CameraInfo::CIE_PROTOCOL_ERROR);
+        }
         emit cameraError(m_cameraInfo);
+
     }
 
     netReply->deleteLater();
@@ -489,6 +522,13 @@ void Vivotek8111::connectionTimeout()
 
     //And images settings
     requestImageSettings();
+}
+
+void Vivotek8111::requestTimeout()
+{
+    qDebug() << "Vivotek8111::requestTimeout()";
+    m_cameraInfo.setDeviceError(CameraInfo::CIE_NO_CONNECTION);
+    emit cameraError(m_cameraInfo);
 }
 
 void Vivotek8111::onQuitDriver()

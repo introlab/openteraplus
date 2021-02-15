@@ -10,6 +10,9 @@
 #include <QJsonValue>
 #include <QWebChannel>
 
+#include "drivers/PTZ/ICameraDriver.h"
+#include "drivers/PTZ/Vivotek8111.h"
+
 //#include "camsettings.h"
 
 class SharedObject : public QObject
@@ -17,6 +20,11 @@ class SharedObject : public QObject
     Q_OBJECT
 public:
     SharedObject(QObject *parent = nullptr);
+    ~SharedObject();
+
+    void startPTZCameraDriver(const int& camera_src, const QString &hostname, const int port, const QString &user, const QString &password);
+    void stopPTZCameraDriver();
+    ICameraDriver* getPTZCameraDriver() const;
 
     void setContactInformation(const QString &name, const QString &uuid);
     void setCurrentCameraName(const QString &name);
@@ -107,6 +115,9 @@ signals:
     void videoErrorOccured(QString context, QString error);
     void audioErrorOccured(QString context, QString error);
     void generalErrorOccured(QString context, QString error);
+
+private:
+    ICameraDriver* m_ptzCameraDriver;
 
 protected:
 
