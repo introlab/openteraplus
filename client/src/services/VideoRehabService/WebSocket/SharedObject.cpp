@@ -129,7 +129,9 @@ void SharedObject::zoomMaxClicked(QString uuid)
 
 void SharedObject::camSettingsClicked(QString uuid)
 {
-    qDebug() << "SharedObject -> Cam Settings! UUID = " << uuid;
+    //qDebug() << "SharedObject -> Cam Settings! UUID = " << uuid;
+    if (m_ptzCameraDriver)
+        m_ptzCameraDriver->showImageSettingsDialog();
     emit camSettings(uuid);
 }
 
@@ -152,8 +154,11 @@ void SharedObject::setPresetClicked(QString uuid, int preset)
 
 void SharedObject::imageClicked(QString uuid, int x, int y, int w, int h)
 {
-    //qDebug() << "SharedObject -> Click UUID = " << uuid << ", x = " << x << " y = " << y << " width = " << w << " height = " << h;
+    qDebug() << "SharedObject -> Click UUID = " << uuid << ", x = " << x << " y = " << y << " width = " << w << " height = " << h;
     if (m_ptzCameraDriver){
+        if (m_localMirror) // Image mirrored - invert x
+            x = w-x;
+
         m_ptzCameraDriver->setPointNClick(QPoint(x,y), QSize(w,h));
     }
     emit move(uuid, x, y, w, h);

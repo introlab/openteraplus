@@ -23,6 +23,8 @@ public slots:
     bool start();
     bool stop();
 
+
+
 signals:
     void virtualCamError(const QString &message);
     void virtualCamDisconnected();
@@ -39,6 +41,8 @@ private:
     void printSignals(QObject* obj);
 
 private slots:
+
+    void virtualCamStreamConnected();
 
     void virtualCamStateChanged(AkElement::ElementState state);
     void virtualCamReconnecting();

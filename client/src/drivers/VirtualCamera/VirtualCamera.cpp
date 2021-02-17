@@ -84,7 +84,7 @@ bool VirtualCamera::init(const QString &source/*, const QString& device*/)
             // Connect signals
             QObject::connect(m_multiSrcPtr.data(), SIGNAL(error(QString)), this, SIGNAL(virtualCamError(QString)));
             QObject::connect(m_multiSrcPtr.data(), SIGNAL(reconnectingStream()), this, SLOT(virtualCamReconnecting()));
-            QObject::connect(m_multiSrcPtr.data(), SIGNAL(streamConnected()), this, SIGNAL(virtualCamConnected()));
+            QObject::connect(m_multiSrcPtr.data(), SIGNAL(streamConnected()), this, SLOT(virtualCamStreamConnected()));
             //connect(m_multiSrcPtr.get(), &AkElement::stateChanged, this, &VirtualCamera::virtualCamStateChanged);
 
             //Connect to virtual camera sink
@@ -150,6 +150,13 @@ void VirtualCamera::printSignals(QObject *obj)
     }
 }
 
+void VirtualCamera::virtualCamStreamConnected()
+{
+    qDebug() << "VirtualCamera - got stream!";
+    m_retryCounts = 0;
+    emit virtualCamConnected();
+}
+
 void VirtualCamera::virtualCamStateChanged(AkElement::ElementState state)
 {
     qDebug() << "VirtualCamera State Changed: " << state;
@@ -163,6 +170,7 @@ void VirtualCamera::virtualCamReconnecting()
         qDebug() << "Aborting... ";
         //stop();
         emit virtualCamDisconnected();
+
         return;
     }
     qDebug() << "VirtualCamera reconnecting...";

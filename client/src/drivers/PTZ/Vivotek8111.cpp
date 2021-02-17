@@ -416,7 +416,7 @@ void Vivotek8111::cameraDataRdy(QNetworkReply *netReply)
                 m_cameraInfo.setResolution(resolution);
                 m_cameraInfo.setUnit(CameraInfo::CIU_PIXEL);
 
-                qDebug() << QString("cameraDataRdy - Rcv resolution wxh : %1 x %2").arg(resolution.width()).arg(resolution.height()),this->metaObject()->className();
+                //qDebug() << QString("cameraDataRdy - Rcv resolution wxh : %1 x %2").arg(resolution.width()).arg(resolution.height()),this->metaObject()->className();
 
                 //Detect if this is the first time you go here
                 if(m_firstTime)

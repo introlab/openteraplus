@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "CameraUtilities.h"
+#include "CamImageSettingsDialog.h"
 
 class ICameraDriver: public QObject
 {
@@ -17,6 +18,8 @@ public:
 
     QList<CameraInfo::CameraInfoFunct> getCameraFunctions();
     bool hasCameraFunction(CameraInfo::CameraInfoFunct funct);
+
+    void showImageSettingsDialog();
 
 public slots:
     /**
@@ -36,6 +39,7 @@ public slots:
     virtual void setPresetID(int id) = 0;
     virtual void requestInformation() = 0;
     virtual void requestImageSettings() = 0;
+    virtual void setImageSettings(CameraImageSettings settings) = 0;
 
 signals:
     /**
@@ -58,8 +62,13 @@ signals:
     ///
     void cameraError(CameraInfo);
 
+private slots:
+    void camImageSettingsChanged();
+
 protected:
-    CameraInfo m_cameraInfo;
+    CameraInfo              m_cameraInfo;
+
+    CamImageSettingsDialog* m_imgSettingsDialog;
 
 };
 
