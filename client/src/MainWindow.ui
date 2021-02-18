@@ -29,6 +29,9 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QScrollArea" name="scrollArea">
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContents</enum>
+      </property>
       <property name="widgetResizable">
        <bool>true</bool>
       </property>

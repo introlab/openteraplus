@@ -33,6 +33,7 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
 
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
+        m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
      }
 }

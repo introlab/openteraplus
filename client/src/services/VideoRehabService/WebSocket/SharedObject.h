@@ -37,7 +37,6 @@ public:
     void getCameraSettings(const QString &uuid);
     void removeVideoSource(const QString &name);
 
-    void setLocalMirror(const bool &mirror);
     void setExtraParams(const QString &params);
 
     void sendCurrentVideoSource();
@@ -78,6 +77,7 @@ public slots:
     Q_INVOKABLE void imageClicked(QString uuid, int x, int y, int w, int h);
 
     Q_INVOKABLE void cameraChanged(QString name, int index);
+    Q_INVOKABLE void setLocalMirror(const bool &mirror);
 
     Q_INVOKABLE void dataForwardReceived(QString json);
 
