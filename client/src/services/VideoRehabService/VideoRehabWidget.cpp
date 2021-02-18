@@ -116,8 +116,8 @@ void VideoRehabWidget::webEngineURLChanged(QUrl url)
 void VideoRehabWidget::webPageLoaded(bool ok)
 {
     if (!ok){
-        LOG_ERROR(tr("Impossible de charger la page de prévisualisation de la caméra"), "VideoRehabSetupWidget::webPageLoaded");
-        return;
+        LOG_ERROR(tr("Impossible de charger la page"), "VideoRehabWidget::webPageLoaded");
+        //return;
     }
     setLoading(false);
 }

@@ -184,6 +184,13 @@ void SessionLobbyDialog::configureWidget()
             setSetupWidget(m_setupWdg);
             handled = true;
         }
+        //DL - Lazy programmer reusing VideoRehabService widget!
+        if (service_key == "RobotTeleOperationService")
+        {
+            m_setupWdg = new VideoRehabSetupWidget(m_comManager, this);
+            setSetupWidget(m_setupWdg);
+            handled = true;
+        }
 
         if (!handled){
             ui->wdgSessionConfig->hide();

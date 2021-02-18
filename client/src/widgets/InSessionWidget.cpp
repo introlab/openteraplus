@@ -179,7 +179,7 @@ void InSessionWidget::removeSessionInviteesRequested(QStringList user_uuids, QSt
     // Devices
     if (!device_uuids.isEmpty()){
         QJsonArray devices;
-        for(QString device_uuid:device_uuids){
+        for(const QString &device_uuid:device_uuids){
             devices.append(QJsonValue(device_uuid));
         }
         item_obj.insert("session_devices", devices);
@@ -188,7 +188,7 @@ void InSessionWidget::removeSessionInviteesRequested(QStringList user_uuids, QSt
     // Participants
     if (!participant_uuids.isEmpty()){
         QJsonArray participants;
-        for(QString part_uuid:participant_uuids){
+        for(const QString &part_uuid:participant_uuids){
             participants.append(QJsonValue(part_uuid));
         }
         item_obj.insert("session_participants", participants);
@@ -196,7 +196,7 @@ void InSessionWidget::removeSessionInviteesRequested(QStringList user_uuids, QSt
 
     if (!user_uuids.isEmpty()){
         QJsonArray users;
-        for(QString user_uuid:user_uuids){
+        for(const QString &user_uuid:user_uuids){
             users.append(QJsonValue(user_uuid));
         }
         item_obj.insert("session_users", users);
@@ -240,7 +240,7 @@ void InSessionWidget::on_btnInSessionInfos_toggled(bool checked)
 
 void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
 {
-    for(TeraData session:sessions){
+    for(const TeraData &session:sessions){
         if (session.getId() == m_session->getId()){
             // This is an update to the session information we have
             delete m_session;
@@ -255,7 +255,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
            if (session.hasFieldName("session_participants")){
                 item_list = session.getFieldValue("session_participants").toList();
 
-                for(QVariant session_part:item_list){
+                for(const QVariant &session_part:qAsConst(item_list)){
                     QVariantMap part_info = session_part.toMap();
                     ui->wdgInvitees->addRequiredParticipant(part_info["id_participant"].toInt());
                 }
@@ -264,7 +264,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
             if (session.hasFieldName("session_users")){
                 item_list = session.getFieldValue("session_users").toList();
 
-                for(QVariant session_user:item_list){
+                for(const QVariant &session_user:qAsConst(item_list)){
                     QVariantMap user_info = session_user.toMap();
                     ui->wdgInvitees->addRequiredUser(user_info["id_user"].toInt());
                 }
@@ -273,7 +273,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
             if (session.hasFieldName("session_devices")){
                 item_list = session.getFieldValue("session_devices").toList();
 
-                for(QVariant session_device:item_list){
+                for(const QVariant &session_device:qAsConst(item_list)){
                     QVariantMap device_info = session_device.toMap();
                     ui->wdgInvitees->addRequiredDevice(device_info["id_device"].toInt());
                 }
@@ -453,6 +453,16 @@ void InSessionWidget::initUI()
         QString service_key = m_sessionType.getFieldValue("session_type_service_key").toString();
         bool handled = false;
         if (service_key == "VideoRehabService"){
+            // Main widget = QWebEngine
+            m_serviceWidget = new VideoRehabWidget(m_comManager, this);
+            setMainWidget(m_serviceWidget);
+            m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
+            setToolsWidget(m_serviceToolsWidget);
+            handled = true;
+        }
+
+        //DL - Lazy programmer reusing VideoRehabService widget!
+        if (service_key == "RobotTeleOperationService") {
             // Main widget = QWebEngine
             m_serviceWidget = new VideoRehabWidget(m_comManager, this);
             setMainWidget(m_serviceWidget);
