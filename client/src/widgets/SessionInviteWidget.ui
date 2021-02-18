@@ -14,7 +14,7 @@
    <string>Invitations à la séance</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources/TeraClient.qrc">
+   <iconset>
     <normaloff>:/icons/ESTRAD.ico</normaloff>:/icons/ESTRAD.ico</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -33,7 +33,7 @@
       <string>Ajouter des invités à la séance</string>
      </property>
      <property name="icon">
-      <iconset resource="../resources/TeraClient.qrc">
+      <iconset resource="../../resources/TeraClient.qrc">
        <normaloff>:/controls/branch_closed.png</normaloff>:/controls/branch_closed.png</iconset>
      </property>
      <property name="iconSize">
@@ -95,7 +95,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="../resources/TeraClient.qrc">
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
           </property>
           <property name="iconSize">
@@ -133,7 +133,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="../resources/TeraClient.qrc">
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/icons/software_user.png</normaloff>:/icons/software_user.png</iconset>
           </property>
           <property name="iconSize">
@@ -168,7 +168,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="../resources/TeraClient.qrc">
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
           </property>
           <property name="iconSize">
@@ -203,7 +203,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="../resources/TeraClient.qrc">
+           <iconset resource="../../resources/TeraClient.qrc">
             <normaloff>:/status/status_ok.png</normaloff>:/status/status_ok.png</iconset>
           </property>
           <property name="iconSize">
@@ -273,7 +273,7 @@
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../resources/TeraClient.qrc">:/icons/search.png</pixmap>
+            <pixmap resource="../../resources/TeraClient.qrc">:/icons/search.png</pixmap>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
@@ -339,7 +339,7 @@
          <string>Inviter</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/icons/new.png</normaloff>:/icons/new.png</iconset>
         </property>
         <property name="iconSize">
@@ -417,7 +417,7 @@
           <string>Participants</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources/TeraClient.qrc">
+          <iconset resource="../../resources/TeraClient.qrc">
            <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
          </property>
         </item>
@@ -426,7 +426,7 @@
           <string>Utilisateurs</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources/TeraClient.qrc">
+          <iconset resource="../../resources/TeraClient.qrc">
            <normaloff>:/icons/software_user.png</normaloff>:/icons/software_user.png</iconset>
          </property>
         </item>
@@ -435,7 +435,7 @@
           <string>Appareils</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources/TeraClient.qrc">
+          <iconset resource="../../resources/TeraClient.qrc">
            <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
          </property>
         </item>
@@ -459,7 +459,7 @@
          <string>Retirer de la séance</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
         </property>
         <property name="iconSize">
@@ -476,7 +476,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>

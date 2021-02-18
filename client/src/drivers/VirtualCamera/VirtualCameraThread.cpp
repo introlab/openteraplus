@@ -10,8 +10,10 @@ VirtualCameraThread::VirtualCameraThread(QString camera_src)
 VirtualCameraThread::~VirtualCameraThread()
 {
     qDebug() << "~VirtualCameraThread";
-    if (m_virtualCam)
+    if (m_virtualCam){
         delete m_virtualCam;
+        m_virtualCam = nullptr;
+    }
 }
 
 void VirtualCameraThread::run()
@@ -29,6 +31,8 @@ void VirtualCameraThread::run()
 
     exec();
 
-    delete m_virtualCam;
-    m_virtualCam = nullptr;
+    if (m_virtualCam){
+        delete m_virtualCam;
+        m_virtualCam = nullptr;
+    }
 }
