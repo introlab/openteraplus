@@ -83,7 +83,7 @@
          <string>Gestion</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
         </property>
         <property name="iconSize">
@@ -134,7 +134,7 @@
          <string>Quitter</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/icons/leave.png</normaloff>:/icons/leave.png</iconset>
         </property>
         <property name="iconSize">
@@ -163,7 +163,7 @@
          <string>Terminer</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/icons/stop.png</normaloff>:/icons/stop.png</iconset>
         </property>
         <property name="iconSize">
@@ -212,7 +212,7 @@
       </property>
       <widget class="QWidget" name="tabParticipants">
        <attribute name="icon">
-        <iconset resource="../resources/TeraClient.qrc">
+        <iconset resource="../../resources/TeraClient.qrc">
          <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
        </attribute>
        <attribute name="title">
@@ -238,7 +238,7 @@
       </widget>
       <widget class="QWidget" name="tabSettings">
        <attribute name="icon">
-        <iconset resource="../resources/TeraClient.qrc">
+        <iconset resource="../../resources/TeraClient.qrc">
          <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
        </attribute>
        <attribute name="title">
@@ -347,12 +347,12 @@
   <customwidget>
    <class>SessionInviteWidget</class>
    <extends>QWidget</extends>
-   <header>SessionInviteWidget.h</header>
+   <header>widgets/SessionInviteWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>

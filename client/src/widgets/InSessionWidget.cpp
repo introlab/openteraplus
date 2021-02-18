@@ -1,5 +1,7 @@
 #include "InSessionWidget.h"
+#include "widgets/SessionInviteWidget.h"
 #include "ui_InSessionWidget.h"
+
 
 InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_type, const int id_session, const int id_project, JoinSessionEvent* initial_event, QWidget *parent) :
     QWidget(parent),
