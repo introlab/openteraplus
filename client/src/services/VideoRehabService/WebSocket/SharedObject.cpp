@@ -4,6 +4,7 @@ SharedObject::SharedObject(QObject *parent) : QObject(parent)
 {
     m_cameraIndex = -1;
     m_ptzCameraDriver = nullptr;
+    m_camPTZName = "";
 }
 
 SharedObject::~SharedObject()
@@ -13,7 +14,7 @@ SharedObject::~SharedObject()
     }
 }
 
-void SharedObject::startPTZCameraDriver(const int &camera_src, const QString &hostname, const int port, const QString &user, const QString &password)
+void SharedObject::startPTZCameraDriver(const int &camera_src, const QString &camera_name, const QString &hostname, const int port, const QString &user, const QString &password)
 {
     if (camera_src == 0){ // TODO - Better handle camera types
         // Vivotek
@@ -26,6 +27,7 @@ void SharedObject::startPTZCameraDriver(const int &camera_src, const QString &ho
         //bool canPtz = m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_PAN_TILT_ABS) || m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_PAN_TILT_REL) || m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_POINT_N_CLICK);
         bool hasPresets = m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_PRESET_POS);
         bool hasSettings = m_ptzCameraDriver->hasCameraFunction(CameraInfo::CIF_IMAGE_SETTINGS);
+        m_camPTZName = camera_name;
         setPTZCapabilities(canZoom, hasPresets, hasSettings);
     }
 
@@ -272,6 +274,7 @@ QString SharedObject::serializePtzCapabilities()
     //Create JSON Object for contact
     QJsonObject myObject //  &zoom, const bool &presets, const bool &settings
     {
+        {"camera", m_camPTZName},
         {"zoom", m_camCanZoom},
         {"presets", m_camHasPresets},
         {"settings", m_camHasSettings}
@@ -368,7 +371,7 @@ void SharedObject::sendExtraParams(){
 
 void SharedObject::sendPTZCapabilities()
 {
-    emit newPTZCapabilities(m_userUUID, m_camCanZoom, m_camHasPresets, m_camHasSettings);
+    emit newPTZCapabilities(m_camPTZName, m_camCanZoom, m_camHasPresets, m_camHasSettings);
 }
 
 bool SharedObject::isPageReady()

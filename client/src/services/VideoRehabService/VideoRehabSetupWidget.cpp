@@ -174,6 +174,7 @@ void VideoRehabSetupWidget::startPTZCamera()
             SharedObject* shared = m_webPage->getSharedObject();
             if (shared){
                 shared->startPTZCameraDriver(camera_src,
+                                             "OpenTeraCam",
                                              ui->widgetSetup->getFieldValue("camera_ptz_ip").toString(),
                                              ui->widgetSetup->getFieldValue("camera_ptz_port").toInt(),
                                              ui->widgetSetup->getFieldValue("camera_ptz_username").toString(),

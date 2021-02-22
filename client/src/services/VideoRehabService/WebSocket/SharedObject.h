@@ -22,7 +22,7 @@ public:
     SharedObject(QObject *parent = nullptr);
     ~SharedObject();
 
-    void startPTZCameraDriver(const int& camera_src, const QString &hostname, const int port, const QString &user, const QString &password);
+    void startPTZCameraDriver(const int& camera_src, const QString &camera_name, const QString &hostname, const int port, const QString &user, const QString &password);
     void stopPTZCameraDriver();
     ICameraDriver* getPTZCameraDriver() const;
 
@@ -144,6 +144,7 @@ protected:
     bool    m_camCanZoom;
     bool    m_camHasPresets;
     bool    m_camHasSettings;
+    QString m_camPTZName;
 
     bool    m_pageIsReady;
 

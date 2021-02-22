@@ -91,6 +91,10 @@ bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
         if (!m_webPage->url().toString().contains(session_url)){
             // Append source to the URL to connect QWebChannel
             session_url += "&source=openteraplus";
+
+            // Append language to set the page to correct language
+            session_url += "&lang=" + m_comManager->getCurrentPreferences().getLanguage();
+
             m_webPage->setUrl(session_url);
             return true;  // Accepts the request
         }
@@ -200,6 +204,7 @@ void VideoRehabWidget::processSessionConfig()
                         SharedObject* shared = m_webPage->getSharedObject();
                         if (shared){
                             shared->startPTZCameraDriver(camera_src,
+                                                         "OpenTeraCam", // Hard coded for now, but should be associated with a specific camera name
                                                          session_params["camera_ptz_ip"].toString(),
                                                          session_params["camera_ptz_port"].toInt(),
                                                          session_params["camera_ptz_username"].toString(),
