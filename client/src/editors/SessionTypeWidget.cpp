@@ -21,6 +21,7 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
 
     // Query form definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION_TYPE));
+    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION_TYPE_CONFIG));
 
     ui->wdgSessionType->setComManager(m_comManager);
     setData(data);
@@ -62,6 +63,7 @@ void SessionTypeWidget::saveData(bool signal){
 
 void SessionTypeWidget::updateControlsState(){
     ui->tabProjects->setEnabled(!dataIsNew());
+    ui->tabConfig->setEnabled(!dataIsNew());
 
     if (dataIsNew() && ui->tabNav->count()>1){
 
@@ -97,6 +99,7 @@ void SessionTypeWidget::updateControlsState(){
 void SessionTypeWidget::updateFieldsValue(){
     if (m_data){
         ui->wdgSessionType->fillFormFromData(m_data->toJson());
+        ui->wdgSessionTypeConfig->fillFormFromData(m_data->getFieldValue("session_type_config").toString());
         ui->lblTitle->setText(m_data->getName());
     }
 }
@@ -173,6 +176,12 @@ void SessionTypeWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_SESSION_TYPE){
         ui->wdgSessionType->buildUiFromStructure(data);
+        ui->wdgSessionType->hideField("session_type_config");
+        return;
+    }
+
+    if (form_type == WEB_FORMS_QUERY_SESSION_TYPE_CONFIG){
+        ui->wdgSessionTypeConfig->buildUiFromStructure(data);
         return;
     }
 }
@@ -319,4 +328,13 @@ void SessionTypeWidget::on_tabNav_currentChanged(int index)
             queryDataRequest(WEB_PROJECTINFO_PATH, args);
         }
     }
+
+}
+
+void SessionTypeWidget::on_btnUpdateConfig_clicked()
+{
+    QJsonObject session_type_config = ui->wdgSessionTypeConfig->getFormDataJson(true).object()["session_type_config"].toObject();
+    QString config_str = QString::fromUtf8(QJsonDocument(session_type_config).toJson(QJsonDocument::Compact));
+    ui->wdgSessionType->setFieldValue("session_type_config", config_str);
+    saveData();
 }

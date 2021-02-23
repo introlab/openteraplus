@@ -49,6 +49,7 @@ private slots:
 
     void on_lstProjects_itemChanged(QListWidgetItem *item);
     void on_tabNav_currentChanged(int index);
+    void on_btnUpdateConfig_clicked();
 };
 
 #endif // SESSIONTYPEWIDGET_H
