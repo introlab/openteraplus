@@ -29,6 +29,7 @@ public:
     QJsonDocument getSessionConfig();
 
     int getIdSession() const;
+    int getIdSessionType() const;
 
 private slots:
     void on_btnCancel_clicked();

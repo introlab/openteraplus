@@ -22,7 +22,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
     setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
     // Set version number
-    ui->lblVersion->setText(QString(OPENTERAPLUS_VERSION));
+    setWindowTitle("OpenTeraPlus - Version " + QString(OPENTERAPLUS_VERSION));
 
     // Setup loading icon animation
     m_animatedIcon = new QMovie("://status/loading.gif");

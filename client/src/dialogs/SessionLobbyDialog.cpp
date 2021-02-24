@@ -87,6 +87,11 @@ int SessionLobbyDialog::getIdSession() const
     return m_idSession;
 }
 
+int SessionLobbyDialog::getIdSessionType() const
+{
+    return m_sessionType.getId();
+}
+
 void SessionLobbyDialog::setSetupWidget(QWidget *wdg)
 {
 

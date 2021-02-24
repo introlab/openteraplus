@@ -978,7 +978,7 @@ void ParticipantWidget::sessionLobbyStartSessionRequested()
 {
 
     // Delete setup widget
-    int id_session_type = ui->cmbSessionType->currentData().toInt();
+    int id_session_type = m_sessionLobby->getIdSessionType(); //ui->cmbSessionType->currentData().toInt();
     // Start session
     m_comManager->startSession(*m_ids_session_types[id_session_type],
                                m_sessionLobby->getIdSession(),

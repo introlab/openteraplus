@@ -109,6 +109,20 @@ void VideoRehabWidget::reload()
     m_webEngine->reload();
 }
 
+void VideoRehabWidget::startRecording()
+{
+    if (m_webPage){
+        m_webPage->getSharedObject()->startRecording();
+    }
+}
+
+void VideoRehabWidget::stopRecording()
+{
+    if (m_webPage){
+        m_webPage->getSharedObject()->stopRecording();
+    }
+}
+
 void VideoRehabWidget::on_txtURL_returnPressed()
 {
     m_webEngine->setUrl(ui->txtURL->text());

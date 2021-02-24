@@ -33,6 +33,9 @@ public:
 
     void reload();
 
+    void startRecording();
+    void stopRecording();
+
 private slots:
     void on_txtURL_returnPressed();
     void webEngineURLChanged(QUrl url);

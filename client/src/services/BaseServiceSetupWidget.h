@@ -16,7 +16,7 @@ public:
 signals:
 
 protected:
-    ComManager*             m_comManager;;
+    ComManager*             m_comManager;
 
 };
 

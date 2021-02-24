@@ -74,7 +74,8 @@ public:
 
     static signal_ptr getSignalFunctionForDataType(const TeraDataTypes& data_type);
 
-    QJsonDocument getCurrentSessionConfig();
+    QJsonDocument   getCurrentSessionConfig();
+    TeraData*       getCurrentSessionType();
 
 protected:
     bool handleLoginReply(const QString& reply_data);

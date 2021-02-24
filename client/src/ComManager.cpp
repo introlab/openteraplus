@@ -558,6 +558,11 @@ QJsonDocument ComManager::getCurrentSessionConfig()
     return m_currentSessionConfig;
 }
 
+TeraData *ComManager::getCurrentSessionType()
+{
+    return m_currentSessionType;
+}
+
 bool ComManager::handleLoginReply(const QString &reply_data)
 {
     QJsonParseError json_error;

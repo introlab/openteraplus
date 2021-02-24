@@ -578,16 +578,6 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QLabel" name="lblVersion">
-     <property name="text">
-      <string>0.0</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <tabstops>

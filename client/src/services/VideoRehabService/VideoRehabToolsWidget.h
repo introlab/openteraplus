@@ -21,8 +21,17 @@ public:
 private slots:
     void on_btnReconnect_clicked();
 
+    void on_btnRecord_clicked();
+
 private:
+    void setupTools();
+
     Ui::VideoRehabToolsWidget *ui;
+
+    bool m_isRecording;
+    bool m_recordWarningShown;
+
+
 };
 
 #endif // VIDEOREHABTOOLSWIDGET_H

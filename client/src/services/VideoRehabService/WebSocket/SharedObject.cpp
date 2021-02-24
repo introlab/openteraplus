@@ -379,6 +379,16 @@ bool SharedObject::isPageReady()
     return m_pageIsReady;
 }
 
+void SharedObject::startRecording()
+{
+    emit startRecordingRequested();
+}
+
+void SharedObject::stopRecording()
+{
+    emit stopRecordingRequested();
+}
+
 bool SharedObject::getLocalMirror(){
     return m_localMirror;
     //emit setLocalMirrorSignal(m_localMirror);

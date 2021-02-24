@@ -133,5 +133,7 @@
         <file>icons/random.png</file>
         <file>logos/LogoOpenTeraPlus.png</file>
         <file>icons/OpenTeraPlus.ico</file>
+        <file>icons/record.png</file>
+        <file>icons/record_stop.png</file>
     </qresource>
 </RCC>

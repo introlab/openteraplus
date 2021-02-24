@@ -49,6 +49,9 @@ public:
 
     bool isPageReady();
 
+    void startRecording();
+    void stopRecording();
+
 
 public slots:
 
@@ -115,6 +118,9 @@ signals:
     void videoErrorOccured(QString context, QString error);
     void audioErrorOccured(QString context, QString error);
     void generalErrorOccured(QString context, QString error);
+
+    void startRecordingRequested();
+    void stopRecordingRequested();
 
 private:
     ICameraDriver* m_ptzCameraDriver;
