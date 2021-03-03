@@ -18,8 +18,31 @@ VideoRehabToolsWidget::~VideoRehabToolsWidget()
     delete ui;
 }
 
+bool VideoRehabToolsWidget::sessionCanBeEnded()
+{
+    if (m_isRecording){
+        GlobalMessageBox msg_box;
+        if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement sera perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) != GlobalMessageBox::Yes){
+            return false;
+        }
+    }
+    return true;
+}
+
+void VideoRehabToolsWidget::setReadyState(bool ready_state)
+{
+    if (ui->frameRecord->isVisible())
+        ui->frameRecord->setEnabled(ready_state);
+}
+
 void VideoRehabToolsWidget::on_btnReconnect_clicked()
 {
+    if (m_isRecording){
+        GlobalMessageBox msg_box;
+        if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement sera perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) != GlobalMessageBox::Yes){
+            return;
+        }
+    }
     dynamic_cast<VideoRehabWidget*>(m_baseWidget)->reload();
 
 }
@@ -37,6 +60,7 @@ void VideoRehabToolsWidget::setupTools()
                 if (session_type_config_json.object().contains("session_recordable")){
                     bool enable_recording = session_type_config_json.object()["session_recordable"].toBool();
                     ui->frameRecord->setVisible(enable_recording);
+                    ui->frameRecord->setEnabled(false); // Disabled by default until widget is ready
                 }
             }
         }

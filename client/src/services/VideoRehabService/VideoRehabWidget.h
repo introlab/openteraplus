@@ -10,6 +10,8 @@
 
 #include "VideoRehabWebPage.h"
 
+#include "Utils.h"
+
 #include "VirtualCameraThread.h"
 
 #include "JoinSessionEvent.pb.h"
@@ -39,6 +41,8 @@ public:
 private slots:
     void on_txtURL_returnPressed();
     void webEngineURLChanged(QUrl url);
+    void webEngineDownloadRequested(QWebEngineDownloadItem* item);
+    void webEngineDownloadCompleted();
 
     void webPageLoaded(bool ok);
     void webPageReady();
@@ -47,6 +51,8 @@ private slots:
     void webPageGeneralError(QString context, QString error);
 
     void virtualCameraDisconnected();
+
+    void on_btnRefresh_clicked();
 
 private:
     void connectSignals();

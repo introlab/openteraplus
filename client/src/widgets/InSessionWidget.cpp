@@ -217,6 +217,12 @@ void InSessionWidget::sessionTimer()
 
 void InSessionWidget::on_btnEndSession_clicked()
 {
+    if (m_serviceToolsWidget){
+        if (!m_serviceToolsWidget->sessionCanBeEnded()){
+            return;
+        }
+    }
+
     GlobalMessageBox msg_box;
     if (msg_box.showYesNo(tr("Terminer la séance?"), tr("Mettre fin à la séance?")) == QMessageBox::Yes){
         int id_service = 0;
@@ -457,7 +463,7 @@ void InSessionWidget::initUI()
             m_serviceWidget = new VideoRehabWidget(m_comManager, this);
             setMainWidget(m_serviceWidget);
             m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
-            setToolsWidget(m_serviceToolsWidget);
+            setToolsWidget(m_serviceToolsWidget);           
             handled = true;
         }
 
@@ -474,6 +480,9 @@ void InSessionWidget::initUI()
         if (!handled){
             GlobalMessageBox msg_box;
             msg_box.showWarning(tr("Service non-supporté"), tr("Le service \"") + service_key + tr("\" n'est pas gérée par cette version du logiciel.\n\nVeuillez vérifier si une mise à jour existe ou contribuez au développement du logiciel!"));
+        }else{
+            // Connect signals between tools and main widget
+            connect(m_serviceWidget, &BaseServiceWidget::widgetIsReady, m_serviceToolsWidget, &BaseServiceToolsWidget::setReadyState);
         }
 
         break;
@@ -505,6 +514,10 @@ void InSessionWidget::updateUI()
         bool user_is_creator = m_session->getFieldValue("id_creator_user").toInt() == m_comManager->getCurrentUser().getId();
         ui->btnEndSession->setVisible(user_is_creator);
         ui->btnLeaveSession->setVisible(!user_is_creator);
+
+        if (m_serviceWidget){
+            m_serviceWidget->setSession(m_session);
+        }
     }
 }
 

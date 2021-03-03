@@ -18,6 +18,11 @@ public:
     explicit VideoRehabToolsWidget(ComManager* comMan, BaseServiceWidget *baseWidget, QWidget *parent = nullptr);
     ~VideoRehabToolsWidget();
 
+    bool sessionCanBeEnded() override;
+
+public slots:
+    void setReadyState(bool ready_state) override;
+
 private slots:
     void on_btnReconnect_clicked();
 

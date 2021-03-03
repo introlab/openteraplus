@@ -394,6 +394,7 @@ void TeraForm::resetFormValues()
     for (QString field:m_initialValues.keys()){
         if (m_widgets.contains(field)){
             setWidgetValue(m_widgets[field], m_initialValues[field]);
+            checkConditions(m_widgets[field]);
         } else{
            LOG_WARNING("No widget for field: " + field, "TeraForm::resetFormValues");
         }

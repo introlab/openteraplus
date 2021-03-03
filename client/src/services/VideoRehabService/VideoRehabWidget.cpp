@@ -1,5 +1,9 @@
+#include <QStandardPaths>
+
 #include "VideoRehabWidget.h"
 #include "ui_VideoRehabWidget.h"
+
+#include "GlobalMessageBox.h"
 
 VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
     BaseServiceWidget(comMan, parent),
@@ -11,6 +15,8 @@ VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
 
     initUI();
     connectSignals();
+
+    emit widgetIsReady(false); // We wait until webpage is fully loaded...
 
 
 }
@@ -71,6 +77,16 @@ void VideoRehabWidget::initUI()
     QWebEngineProfile::defaultProfile()->setPersistentCookiesPolicy(QWebEngineProfile::NoPersistentCookies);
     QWebEngineProfile::defaultProfile()->setHttpCacheType(QWebEngineProfile::NoCache);
 
+    // Set download path
+    QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    QString download_path = ""; // TODO: Other default download path?
+    if (!documents_path.empty())
+        download_path = documents_path.first();
+    download_path += "/OpenTeraPlus/downloads/";
+    QWebEngineProfile::defaultProfile()->setDownloadPath(download_path);
+
+    connect(QWebEngineProfile::defaultProfile(), &QWebEngineProfile::downloadRequested, this, &VideoRehabWidget::webEngineDownloadRequested);
+
 
     // Create layout for widget if missing
     if (!ui->wdgWebEngine->layout()){
@@ -106,7 +122,10 @@ bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
 
 void VideoRehabWidget::reload()
 {
+    ui->frameError->hide();
+    ui->wdgWebEngine->show();
     m_webEngine->reload();
+    emit widgetIsReady(false);
 }
 
 void VideoRehabWidget::startRecording()
@@ -133,6 +152,66 @@ void VideoRehabWidget::webEngineURLChanged(QUrl url)
     ui->txtURL->setText(url.toString());
 }
 
+void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
+{
+    qDebug() << "WebEngine: about to download " << item->suggestedFileName();
+
+    // Rework filename
+    QString file_name = item->suggestedFileName();
+    QDir target_dir(item->downloadDirectory());
+    QString part_name;
+
+    if (m_session){
+        file_name = "";
+        QStringList file_parts = item->downloadFileName().split(".");
+        if (m_session->hasFieldName("session_participants")){
+            QVariantList item_list;
+            item_list = m_session->getFieldValue("session_participants").toList();
+            if (!item_list.isEmpty()){
+                QVariantMap part_info = item_list.first().toMap();
+                part_name = Utils::removeAccents(part_info["participant_name"].toString());
+                file_name = part_name + "_";
+            }
+        }
+        file_name += Utils::removeAccents(m_session->getName());
+
+        // Append file number
+        //file_name = Utils::removeAccents(file_name);
+        //file_name = file_name.replace(" ", "_").replace(".","_");
+        int file_num = target_dir.entryList(QStringList() << ("*" + part_name + "*." + file_parts.last()),
+                                            QDir::Files).count() + 1;
+        file_name += "_" + QString::number(file_num) + "." + file_parts.last();
+        item->setDownloadFileName(file_name);
+    }
+
+    connect(item, &QWebEngineDownloadItem::finished, this, &VideoRehabWidget::webEngineDownloadCompleted);
+    item->accept();
+
+}
+
+void VideoRehabWidget::webEngineDownloadCompleted()
+{
+    QWebEngineDownloadItem* item = dynamic_cast<QWebEngineDownloadItem*>(sender());
+    if (item){
+        GlobalMessageBox msg_box;
+        msg_box.setTextFormat(Qt::RichText);
+        QString full_dir_path = item->downloadDirectory();
+        QString file_name = item->downloadFileName();
+        QString full_file_path;
+    #ifdef Q_OS_WINDOWS
+        full_dir_path = full_dir_path.replace("/","\\");
+        full_file_path = full_dir_path + "\\" + file_name;
+    #else
+        full_file_path = full_dir_path + "/" + file_name;
+    #endif
+
+        msg_box.showInfo(tr("Fichier disponible"), tr("Le fichier") + "\n <a href=\"file:///" + full_file_path + "\" style=\"color: cyan;\">" + file_name + "</a>\n" +
+                         tr("est disponible dans le répertoire") + "\n <a href=\"file:///" + full_dir_path + "\" style=\"color: cyan;\">" + item->downloadDirectory() + "</a>");
+
+    }
+
+}
+
 void VideoRehabWidget::webPageLoaded(bool ok)
 {
     if (!ok){
@@ -140,6 +219,7 @@ void VideoRehabWidget::webPageLoaded(bool ok)
         //return;
     }
     setLoading(false);
+    emit widgetIsReady(true);
 }
 
 void VideoRehabWidget::webPageReady()
@@ -164,7 +244,7 @@ void VideoRehabWidget::webPageGeneralError(QString context, QString error)
 
 void VideoRehabWidget::virtualCameraDisconnected()
 {
-    showError(tr("Erreur de caméra"), "VideoRehabSetupWidget::virtualCameraDisconnected", tr("Impossible de se connecter à la source vidéo."));
+    //showError(tr("Erreur de caméra"), "VideoRehabSetupWidget::virtualCameraDisconnected", tr("Impossible de se connecter à la source vidéo."));
     stopVirtualCamera();
 }
 
@@ -284,4 +364,9 @@ void VideoRehabWidget::stopVirtualCamera()
         m_virtualCamThread->deleteLater();
         m_virtualCamThread = nullptr;
     }
+}
+
+void VideoRehabWidget::on_btnRefresh_clicked()
+{
+    reload();
 }

@@ -7,3 +7,14 @@ BaseServiceToolsWidget::BaseServiceToolsWidget(ComManager *comMan, BaseServiceWi
 {
 
 }
+
+bool BaseServiceToolsWidget::sessionCanBeEnded()
+{
+    // By default, all sessions can be ended
+    return true;
+}
+
+void BaseServiceToolsWidget::setReadyState(bool ready_state)
+{
+    // Nothing here by default!
+}

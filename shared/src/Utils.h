@@ -33,6 +33,7 @@ public:
 
     static void inStringUnicodeConverter(QString* str);
 
+    static QString removeAccents(QString s);
 signals:
 
 };
