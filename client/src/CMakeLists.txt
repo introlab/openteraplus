@@ -72,6 +72,8 @@ set(headers
     widgets/HistoryCalendarWidget.h
     widgets/ProjectNavigator.h
     widgets/NotificationWindow.h
+    widgets/TableDateWidgetItem.h
+    widgets/TableNumberWidgetItem.h
 )
 
 set(srcs
@@ -137,6 +139,8 @@ set(srcs
     widgets/SessionInviteWidget.cpp
     widgets/OnlineManagerWidget.cpp
     widgets/ClickableLabel.cpp
+    widgets/TableDateWidgetItem.cpp
+    widgets/TableNumberWidgetItem.cpp
 )
 
 SET(uis

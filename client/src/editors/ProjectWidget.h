@@ -9,6 +9,9 @@
 #include "GlobalMessageBox.h"
 #include "dialogs/BaseDialog.h"
 
+#include "widgets/TableDateWidgetItem.h"
+#include "widgets/TableNumberWidgetItem.h"
+
 namespace Ui {
 class ProjectWidget;
 }
@@ -66,6 +69,7 @@ private:
     BaseDialog*                   m_diag_editor;
 
     void connectSignals();
+    void initUI();
 
     void updateUserProjectAccess(const TeraData* access);
     void updateUserGroupProjectAccess(const TeraData* access);

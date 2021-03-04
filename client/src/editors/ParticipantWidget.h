@@ -21,6 +21,8 @@
 
 #include "dialogs/EmailInviteDialog.h"
 
+#include "widgets/TableDateWidgetItem.h"
+
 namespace Ui {
 class ParticipantWidget;
 }

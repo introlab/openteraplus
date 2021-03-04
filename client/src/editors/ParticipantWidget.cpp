@@ -223,7 +223,7 @@ void ParticipantWidget::updateSession(TeraData *session)
     int id_session = session->getId();
 
     QTableWidgetItem* name_item;
-    QTableWidgetItem* date_item;
+    TableDateWidgetItem* date_item;
     QTableWidgetItem* type_item;
     QTableWidgetItem* duration_item;
     QTableWidgetItem* user_item;
@@ -234,7 +234,7 @@ void ParticipantWidget::updateSession(TeraData *session)
     if (m_listSessions_items.contains(id_session)){
         // Already there, get items
        name_item = m_listSessions_items[id_session];
-       date_item = ui->tableSessions->item(name_item->row(), 1);
+       date_item = dynamic_cast<TableDateWidgetItem*>(ui->tableSessions->item(name_item->row(), 1));
        type_item = ui->tableSessions->item(name_item->row(), 2);
        status_item = ui->tableSessions->item(name_item->row(), 3);
        duration_item = ui->tableSessions->item(name_item->row(), 4);
@@ -253,7 +253,7 @@ void ParticipantWidget::updateSession(TeraData *session)
         int current_row = ui->tableSessions->rowCount()-1;
         name_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSION)),"");
         ui->tableSessions->setItem(current_row, 0, name_item);
-        date_item = new QTableWidgetItem("");
+        date_item = new TableDateWidgetItem("");
         ui->tableSessions->setItem(current_row, 1, date_item);
         type_item = new QTableWidgetItem("");
         ui->tableSessions->setItem(current_row, 2, type_item);

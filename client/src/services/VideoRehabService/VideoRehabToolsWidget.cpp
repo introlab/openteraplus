@@ -22,9 +22,10 @@ bool VideoRehabToolsWidget::sessionCanBeEnded()
 {
     if (m_isRecording){
         GlobalMessageBox msg_box;
-        if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement sera perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) != GlobalMessageBox::Yes){
+        if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement pourrait être perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) != GlobalMessageBox::Yes){
             return false;
         }
+        on_btnRecord_clicked();
     }
     return true;
 }
@@ -39,9 +40,10 @@ void VideoRehabToolsWidget::on_btnReconnect_clicked()
 {
     if (m_isRecording){
         GlobalMessageBox msg_box;
-        if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement sera perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) != GlobalMessageBox::Yes){
+        if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement pourrait être perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) != GlobalMessageBox::Yes){
             return;
         }
+        on_btnRecord_clicked();
     }
     dynamic_cast<VideoRehabWidget*>(m_baseWidget)->reload();
 

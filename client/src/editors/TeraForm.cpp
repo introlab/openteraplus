@@ -337,8 +337,8 @@ TeraData* TeraForm::getFormDataObject(const TeraDataTypes data_type)
 QColor TeraForm::getGradientColor(const int &lower_thresh, const int &middle_thresh, const int &higher_thresh, const int &value)
 {
     QColor lower_color = QColor(Qt::green).toHsv();
-    QColor middle_color = QColor(232, 97, 0).toHsv(); // orange
-    QColor higger_color = QColor(Qt::red).toHsv();
+    QColor middle_color = QColor(213, 197, 0); //QColor(232, 97, 0).toHsv(); // orange
+    QColor higger_color = QColor(123, 100, 6); //QColor(Qt::red).toHsv();
 
     QColor grad_color;
     qreal hue;
