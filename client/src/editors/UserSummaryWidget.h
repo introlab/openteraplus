@@ -2,6 +2,7 @@
 #define USERSUMMARYWIDGET_H
 
 #include <QWidget>
+#include <QStyledItemDelegate>
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"

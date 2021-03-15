@@ -15,7 +15,7 @@
 #include "VideoRehabWebPage.h"
 #include "VideoRehabVirtualCamSetupDialog.h"
 #include "VideoRehabPTZDialog.h"
-#include "ComManager.h"
+#include "managers/ComManager.h"
 #include "Utils.h"
 
 #include "VirtualCameraThread.h"

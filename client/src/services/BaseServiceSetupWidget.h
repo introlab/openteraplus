@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QWidget>
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 class BaseServiceSetupWidget : public QWidget
 {

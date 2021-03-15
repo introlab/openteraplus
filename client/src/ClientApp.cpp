@@ -37,8 +37,14 @@ ClientApp::ClientApp(int &argc, char **argv)
     // Connect signals
     connectSignals();
 
-    // Show login dialog
-    showLogin();
+    //if (!m_config.isKitMode()){
+        // Show login dialog
+        showLogin();
+    /*}else{
+        // Show main participant UI
+        showKitMainWindow();
+    }*/
+
 }
 
 ClientApp::~ClientApp()
@@ -145,6 +151,11 @@ void ClientApp::showMainWindow()
 
     if (m_comMan->getCurrentUser().hasNameField())
         processQueuedEvents();
+}
+
+void ClientApp::showKitMainWindow()
+{
+
 }
 
 void ClientApp::setupLogger()

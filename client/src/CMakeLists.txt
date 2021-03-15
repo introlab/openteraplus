@@ -12,16 +12,19 @@ add_subdirectory(drivers)
 
 set(headers
     ClientApp.h
-    ConfigManagerClient.h
-    dialogs/LoginDialog.h
-    ComManager.h
-    WebSocketManager.h
-    MainWindow.h
     Message.h
     GlobalMessageBox.h
     DownloadedFile.h
     GlobalEvent.h
     GlobalEventLogger.h
+    # Main Windows
+    main/MainWindow.h
+    # Managers
+    managers/ConfigManagerClient.h
+    managers/ComManager.h
+    managers/WebSocketManager.h
+    # Dialogs
+    dialogs/LoginDialog.h
     dialogs/StartSessionDialog.h
     dialogs/SessionLobbyDialog.h
     dialogs/JoinSessionDialog.h
@@ -33,6 +36,7 @@ set(headers
     dialogs/DownloadProgressDialog.h
     dialogs/BaseDialog.h
     dialogs/DeviceAssignDialog.h
+    # Editors
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -50,8 +54,10 @@ set(headers
     editors/UserGroupWidget.h
     editors/ServiceWidget.h
     editors/ServiceConfigWidget.h
+    # Wizards
     wizards/UserWizard.h
     wizards/BaseWizard.h
+    # Services
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
     services/BaseServiceSetupWidget.h
@@ -64,6 +70,7 @@ set(headers
     services/VideoRehabService/WebSocket/SharedObject.h
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
     services/VideoRehabService/WebSocket/WebSocketTransport.h
+    # Widgets
     widgets/InSessionWidget.h
     widgets/SessionInviteWidget.h
     widgets/OnlineManagerWidget.h
@@ -79,15 +86,18 @@ set(headers
 set(srcs
     main.cpp
     ClientApp.cpp
-    ConfigManagerClient.cpp
-    ComManager.cpp
-    WebSocketManager.cpp
-    MainWindow.cpp
     Message.cpp
     GlobalMessageBox.cpp
     DownloadedFile.cpp
     GlobalEvent.cpp
     GlobalEventLogger.cpp
+    # Main Windows
+    main/MainWindow.cpp
+    # Managers
+    managers/ConfigManagerClient.cpp
+    managers/ComManager.cpp
+    managers/WebSocketManager.cpp
+    # Dialogs
     dialogs/LoginDialog.cpp
     dialogs/DeviceAssignDialog.cpp
     dialogs/DownloadProgressDialog.cpp
@@ -100,6 +110,7 @@ set(srcs
     dialogs/AboutDialogPage.cpp
     dialogs/GeneratePasswordDialog.cpp
     dialogs/PasswordStrengthDialog.cpp
+    # Editors
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
@@ -117,8 +128,10 @@ set(srcs
     editors/UserGroupWidget.cpp
     editors/ServiceWidget.cpp
     editors/ServiceConfigWidget.cpp
+    # Wizards
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
+    # Services
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
     services/BaseServiceSetupWidget.cpp
@@ -131,6 +144,7 @@ set(srcs
     services/VideoRehabService/WebSocket/SharedObject.cpp
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
+    # Widgets
     widgets/ProjectNavigator.cpp
     widgets/NotificationWindow.cpp
     widgets/ConfigWidget.cpp
@@ -144,8 +158,10 @@ set(srcs
 )
 
 SET(uis
+    # Main Windows
+    main/MainWindow.ui
+    # Dialogs
     dialogs/LoginDialog.ui
-    MainWindow.ui
     dialogs/DeviceAssignDialog.ui
     dialogs/DownloadProgressDialog.ui
     dialogs/BaseDialog.ui
@@ -156,6 +172,7 @@ SET(uis
     dialogs/AboutDialog.ui
     dialogs/GeneratePasswordDialog.ui
     dialogs/PasswordStrengthDialog.ui
+    # Editors
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
     editors/TeraForm.ui
@@ -172,11 +189,13 @@ SET(uis
     editors/UserGroupWidget.ui
     editors/ServiceWidget.ui
     editors/ServiceConfigWidget.ui
+    # Services
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
     services/VideoRehabService/VideoRehabToolsWidget.ui
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
     services/VideoRehabService/VideoRehabPTZDialog.ui
+    # Widgets
     widgets/ProjectNavigator.ui
     widgets/notification.ui
     widgets/ConfigWidget.ui

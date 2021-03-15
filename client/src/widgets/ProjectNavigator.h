@@ -8,7 +8,7 @@
 
 #include <QTreeWidgetItem>
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 namespace Ui {
 class ProjectNavigator;

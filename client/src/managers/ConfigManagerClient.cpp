@@ -61,3 +61,13 @@ bool ConfigManagerClient::showServers()
     }
     return rval;
 }
+
+bool ConfigManagerClient::isKitMode()
+{
+    bool rval = false;
+    if (!m_config.isNull()){
+        QHash<QString, QVariant> settings = m_config["Settings"].toObject().toVariantHash();
+        rval = settings["kitMode"].toBool();
+    }
+    return rval;
+}

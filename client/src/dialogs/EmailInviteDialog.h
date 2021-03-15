@@ -7,7 +7,7 @@
 #include <QDesktopServices>
 #include "GlobalMessageBox.h"
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 namespace Ui {
 class EmailInviteDialog;

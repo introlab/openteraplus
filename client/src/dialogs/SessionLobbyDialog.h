@@ -2,7 +2,7 @@
 #define SESSIONLOBBYDIALOG_H
 
 #include <QDialog>
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 #include "services/BaseServiceSetupWidget.h"
 #include "services/VideoRehabService/VideoRehabSetupWidget.h"

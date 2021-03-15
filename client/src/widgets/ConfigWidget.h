@@ -6,7 +6,7 @@
 #include <QListWidgetItem>
 #include <QHBoxLayout>
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 #include "TeraData.h"
 
 #include "GlobalMessageBox.h"

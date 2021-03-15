@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QSound>
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 // Protobuf
 #include "JoinSessionEvent.pb.h"

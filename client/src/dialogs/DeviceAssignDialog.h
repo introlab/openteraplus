@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 namespace Ui {
 class DeviceAssignDialog;

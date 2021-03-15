@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QListWidgetItem>
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 namespace Ui {
 class OnlineManagerWidget;

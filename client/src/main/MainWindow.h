@@ -13,7 +13,7 @@
 #include "dialogs/DownloadProgressDialog.h"
 #include "widgets/NotificationWindow.h"
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 #include "Message.h"
 #include "GlobalEventLogger.h"
 #include "GlobalEvent.h"

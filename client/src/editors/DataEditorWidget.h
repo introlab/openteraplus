@@ -9,7 +9,7 @@
 
 #include "data/TeraData.h"
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 class DataEditorWidget : public QWidget
 {

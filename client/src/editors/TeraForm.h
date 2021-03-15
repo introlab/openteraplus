@@ -28,7 +28,7 @@
 #include <QtMultimedia/QAudioDeviceInfo>
 
 #include "TeraData.h"
-#include "ComManager.h"
+#include "managers/ComManager.h"
 #include "Utils.h"
 
 namespace Ui {

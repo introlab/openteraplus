@@ -2,7 +2,7 @@
 #define INSESSIONWIDGET_H
 
 #include <QWidget>
-#include "ComManager.h"
+#include "managers/ComManager.h"
 #include "TeraData.h"
 #include "GlobalMessageBox.h"
 #include "dialogs/StartSessionDialog.h"

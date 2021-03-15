@@ -17,6 +17,8 @@ public:
     bool            getLogToFile();
 
     bool            showServers();
+
+    bool            isKitMode();
 protected:
     //QHash<QString, QVariant>    m_servers;
 };

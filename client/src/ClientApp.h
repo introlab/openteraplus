@@ -9,12 +9,12 @@
 #include <QTranslator>
 #include <QStandardPaths>
 
-#include "MainWindow.h"
+#include "main/MainWindow.h"
 #include "dialogs/LoginDialog.h"
 #include "GlobalMessageBox.h"
 
-#include "ComManager.h"
-#include "ConfigManagerClient.h"
+#include "managers/ComManager.h"
+#include "managers/ConfigManagerClient.h"
 
 class ClientApp : public QApplication
 {
@@ -30,6 +30,7 @@ protected:
     void connectSignals();
     void showLogin();
     void showMainWindow();
+    void showKitMainWindow();
     void setupLogger();
 
     void processQueuedEvents();

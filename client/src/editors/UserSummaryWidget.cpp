@@ -78,6 +78,8 @@ void UserSummaryWidget::updateFieldsValue()
 void UserSummaryWidget::initUI()
 {
     ui->btnEditUser->hide(); // For now
+
+    ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate());
 }
 
 bool UserSummaryWidget::validateData()

@@ -2,7 +2,7 @@
 #define BASESERVICEWIDGET_H
 
 #include <QWidget>
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 class BaseServiceWidget : public QWidget
 {
