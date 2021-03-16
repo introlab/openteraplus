@@ -19,6 +19,7 @@ set(headers
     GlobalEventLogger.h
     # Main Windows
     main/MainWindow.h
+    main/MainKitWindow.h
     # Managers
     managers/ConfigManagerClient.h
     managers/ComManager.h
@@ -81,6 +82,8 @@ set(headers
     widgets/NotificationWindow.h
     widgets/TableDateWidgetItem.h
     widgets/TableNumberWidgetItem.h
+    # Kits
+    kit/KitConfigDialog.h
 )
 
 set(srcs
@@ -93,6 +96,7 @@ set(srcs
     GlobalEventLogger.cpp
     # Main Windows
     main/MainWindow.cpp
+    main/MainKitWindow.cpp
     # Managers
     managers/ConfigManagerClient.cpp
     managers/ComManager.cpp
@@ -155,11 +159,14 @@ set(srcs
     widgets/ClickableLabel.cpp
     widgets/TableDateWidgetItem.cpp
     widgets/TableNumberWidgetItem.cpp
+    # Kits
+    kit/KitConfigDialog.cpp
 )
 
 SET(uis
     # Main Windows
     main/MainWindow.ui
+    main/MainKitWindow.ui
     # Dialogs
     dialogs/LoginDialog.ui
     dialogs/DeviceAssignDialog.ui
@@ -202,6 +209,8 @@ SET(uis
     widgets/InSessionWidget.ui
     widgets/SessionInviteWidget.ui
     widgets/OnlineManagerWidget.ui
+    # Kits
+    kit/KitConfigDialog.ui
 )
 
 SET(qrcs

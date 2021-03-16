@@ -163,3 +163,15 @@ QString Utils::removeAccents(QString s) {
     return output;
 }
 
+bool Utils::isNewerVersion(QString version)
+{
+    QStringList versions = version.split(".");
+    if (versions.count() < 3){
+        return false;
+    }
+
+    return versions.at(0).toInt() > QString(OPENTERAPLUS_VERSION_MAJOR).toInt() ||
+            versions.at(1).toInt() > QString(OPENTERAPLUS_VERSION_MINOR).toInt() ||
+            versions.at(2).toInt() > QString(OPENTERAPLUS_VERSION_PATCH).toInt();
+}
+

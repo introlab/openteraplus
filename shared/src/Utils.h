@@ -34,6 +34,8 @@ public:
     static void inStringUnicodeConverter(QString* str);
 
     static QString removeAccents(QString s);
+
+    static bool isNewerVersion(QString version);
 signals:
 
 };

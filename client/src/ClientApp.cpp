@@ -13,6 +13,7 @@ ClientApp::ClientApp(int &argc, char **argv)
     m_comMan = nullptr;
     m_loginDiag = nullptr;
     m_mainWindow = nullptr;
+    m_mainKitWindow = nullptr;
 
     m_translator = new QTranslator();
 
@@ -37,13 +38,13 @@ ClientApp::ClientApp(int &argc, char **argv)
     // Connect signals
     connectSignals();
 
-    //if (!m_config.isKitMode()){
+    if (!m_config.isKitMode()){
         // Show login dialog
         showLogin();
-    /*}else{
+    }else{
         // Show main participant UI
-        showKitMainWindow();
-    }*/
+        showMainKitWindow();
+    }
 
 }
 
@@ -110,7 +111,8 @@ void ClientApp::showLogin()
 {
     if (m_loginDiag == nullptr){
         m_loginDiag = new LoginDialog();
-        connect(m_loginDiag, &LoginDialog::loginRequest, this, &ClientApp::loginRequested);
+        connect(m_loginDiag, &LoginDialog::loginRequest,    this, &ClientApp::loginRequested);
+        connect(m_loginDiag, &LoginDialog::quitRequest,     this, &ClientApp::loginQuitRequested);
 
         // Set server names
         m_loginDiag->setServerNames(m_config.getServerNames());
@@ -153,8 +155,12 @@ void ClientApp::showMainWindow()
         processQueuedEvents();
 }
 
-void ClientApp::showKitMainWindow()
+void ClientApp::showMainKitWindow()
 {
+    if (m_mainKitWindow != nullptr){
+        m_mainKitWindow->deleteLater();
+    }
+    m_mainKitWindow = new MainKitWindow(&m_config);
 
 }
 
@@ -276,6 +282,11 @@ void ClientApp::on_loginResult(bool logged)
     }
 }
 
+void ClientApp::loginQuitRequested()
+{
+    QApplication::quit();
+}
+
 void ClientApp::on_serverDisconnected()
 {
     LOG_DEBUG("Disconnected from server.", "ClientApp::on_serverDisconnected");
@@ -325,14 +336,11 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
 void ClientApp::on_newVersionAvailable(QString version, QString download_url)
 {
     // Check to be sure that the new version is an updated version and not a previous one...
-    QStringList versions = version.split(".");
-    if (versions.count() < 3){
+    if (version.split(".").count() < 3){
         LOG_WARNING(tr("Le format de la version est inconnu: ") + version, "ClientApp::on_newVersionAvailable");
     }
 
-    if (versions.at(0).toInt() > QString(OPENTERAPLUS_VERSION_MAJOR).toInt() ||
-            versions.at(1).toInt() > QString(OPENTERAPLUS_VERSION_MINOR).toInt() ||
-            versions.at(2).toInt() > QString(OPENTERAPLUS_VERSION_PATCH).toInt())
+    if (Utils::isNewerVersion(version))
     {
 
         GlobalMessageBox msg;

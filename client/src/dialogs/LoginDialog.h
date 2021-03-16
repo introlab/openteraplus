@@ -30,6 +30,7 @@ private slots:
 
 signals:
     void loginRequest(QString username, QString password, QString server_name);
+    void quitRequest();
 
 private:
     Ui::LoginDialog *ui;

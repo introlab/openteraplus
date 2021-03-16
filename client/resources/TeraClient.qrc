@@ -135,5 +135,9 @@
         <file>icons/OpenTeraPlus.ico</file>
         <file>icons/record.png</file>
         <file>icons/record_stop.png</file>
+        <file>controls/green_button.png</file>
+        <file>controls/grey_button.png</file>
+        <file>controls/red_button.png</file>
+        <file>controls/yellow_button.png</file>
     </qresource>
 </RCC>

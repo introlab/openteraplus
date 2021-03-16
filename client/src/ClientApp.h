@@ -10,6 +10,8 @@
 #include <QStandardPaths>
 
 #include "main/MainWindow.h"
+#include "main/MainKitWindow.h"
+
 #include "dialogs/LoginDialog.h"
 #include "GlobalMessageBox.h"
 
@@ -30,7 +32,7 @@ protected:
     void connectSignals();
     void showLogin();
     void showMainWindow();
-    void showKitMainWindow();
+    void showMainKitWindow();
     void setupLogger();
 
     void processQueuedEvents();
@@ -40,6 +42,7 @@ protected:
     ConfigManagerClient m_config;
     LoginDialog*        m_loginDiag;
     MainWindow*         m_mainWindow;
+    MainKitWindow*      m_mainKitWindow;
 
     QList<TeraEvent>  m_eventQueue; // Queue to stack missed events when just connected, but no MainWindow yet.
 
@@ -52,6 +55,7 @@ private slots:
     void loginRequested(QString username, QString password, QString server_name);
     void logoutRequested();
     void on_loginResult(bool logged);
+    void loginQuitRequested();
 
     void on_serverDisconnected();
     void on_serverError(QAbstractSocket::SocketError error, QString error_str);

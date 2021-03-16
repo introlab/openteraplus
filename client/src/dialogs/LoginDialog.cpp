@@ -97,7 +97,7 @@ void LoginDialog::setStatusMessage(QString message, bool error)
 
 void LoginDialog::on_btnQuit_clicked()
 {
-    QApplication::quit();
+    emit quitRequest();
 }
 
 void LoginDialog::on_btnConnect_clicked()
