@@ -53,7 +53,7 @@ bool ConfigManager::saveConfig()
         return false;
     }
 
-    qDebug() << m_config.toJson(QJsonDocument::Indented);
+    //qDebug() << m_config.toJson(QJsonDocument::Indented);
     file.write(m_config.toJson(QJsonDocument::Indented));
 
     file.close();

@@ -23,6 +23,7 @@ set(headers
     # Managers
     managers/ConfigManagerClient.h
     managers/ComManager.h
+    managers/ParticipantComManager.h
     managers/WebSocketManager.h
     # Dialogs
     dialogs/LoginDialog.h
@@ -102,6 +103,7 @@ set(srcs
     managers/ConfigManagerClient.cpp
     managers/ComManager.cpp
     managers/WebSocketManager.cpp
+    managers/ParticipantComManager.cpp
     # Dialogs
     dialogs/LoginDialog.cpp
     dialogs/DeviceAssignDialog.cpp

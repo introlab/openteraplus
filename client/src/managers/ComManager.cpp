@@ -675,7 +675,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     QList<TeraData> items;
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
     if (data_list.isArray()){
-        for (QJsonValue data:data_list.array()){
+        for (const QJsonValue &data:data_list.array()){
             TeraData item_data(items_type, data);
 
             // Check if the currently connected user was updated and not requesting a list (limited information)

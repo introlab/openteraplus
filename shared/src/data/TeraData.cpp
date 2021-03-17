@@ -354,7 +354,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_PROJECTINFO_PATH)             return TERADATA_PROJECT;
     if (path==WEB_SITEACCESS_PATH)              return TERADATA_SITEACCESS;
     if (path==WEB_DEVICEINFO_PATH)              return TERADATA_DEVICE;
-    if (path==WEB_PARTICIPANTINFO_PATH)         return TERADATA_PARTICIPANT;
+    if (path==WEB_PARTICIPANTINFO_PATH || path==WEB_PARTICIPANT_PARTICIPANTINFO_PATH)         return TERADATA_PARTICIPANT;
     if (path==WEB_PROJECTACCESS_PATH)           return TERADATA_PROJECTACCESS;
     if (path==WEB_GROUPINFO_PATH)               return TERADATA_GROUP;
     if (path==WEB_SESSIONINFO_PATH)             return TERADATA_SESSION;

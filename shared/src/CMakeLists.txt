@@ -24,6 +24,7 @@ set(sharedlib_headers
     data/TeraPreferences.h
     data/TeraSettings.h
     WebAPI.h
+    ParticipantWebAPI.h
 )
 
 set(sharedlib_srcs

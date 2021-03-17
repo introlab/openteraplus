@@ -3,8 +3,10 @@
 
 #include <QMainWindow>
 #include <QStandardPaths>
+#include <QTextDocumentFragment>
 
 #include "managers/ComManager.h"
+#include "managers/ParticipantComManager.h"
 #include "managers/ConfigManagerClient.h"
 
 #include "dialogs/LoginDialog.h"
@@ -35,12 +37,17 @@ public:
 private slots:
     void userLoginRequested(QString username, QString password, QString server_name);
     void userLoginCancelled();
-    void on_loginResult(bool logged);
+    void on_userLoginResult(bool logged);
 
-    void on_serverDisconnected();
+    void on_userServerDisconnected();
     void on_serverError(QAbstractSocket::SocketError error, QString error_str);
-    void on_networkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation, int status_code);
+    void on_userNetworkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation, int status_code);
     void on_newVersionAvailable(QString version, QString download_url);
+
+    void on_participantLoginResult(bool logged);
+    void on_participantNetworkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation, int status_code);
+    void on_participantServerDisconnected();
+    void on_currentParticipantUpdated();
 
     void on_btnExit_clicked();
     void on_btnReboot_clicked();
@@ -51,14 +58,19 @@ private slots:
 private:
     void setWindowOnTop(bool top);
     void initUi();
+    void initParticipantCom(const QString& token);
+    void connectParticipantCom(const QString& token);
+
     void loadConfig();
 
     void showLogin();
     void showConfigDialog();
+    void showError(QString error);
 
 
     Ui::MainKitWindow*      ui;
     ComManager*             m_comManager;
+    ParticipantComManager*  m_partComManager;
     LoginDialog*            m_loginDiag;
     ConfigManagerClient*    m_config;
     KitConfigDialog*        m_configDiag;
