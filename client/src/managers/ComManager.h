@@ -37,7 +37,7 @@ class ComManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit ComManager(QUrl serverUrl, QObject *parent = nullptr);
+    explicit ComManager(QUrl serverUrl, bool connectWebsocket = true, QObject *parent = nullptr);
     ~ComManager();
 
     void connectToServer(QString username, QString password);
@@ -101,6 +101,7 @@ protected:
 
     bool                    m_loggingInProgress;
     bool                    m_settedCredentials;
+    bool                    m_enableWebsocket;
 
     QString                 m_username;
     QString                 m_password;

@@ -16,6 +16,7 @@ set(sharedlib_headers
     Logger.h
     ConfigManager.h
     Utils.h
+    SimpleCrypt.h
     data/TeraData.h
     data/TeraSessionStatus.h
     data/TeraSessionEvent.h
@@ -29,6 +30,7 @@ set(sharedlib_srcs
     Logger.cpp
     ConfigManager.cpp
     Utils.cpp
+    SimpleCrypt.cpp
     data/TeraData.cpp
     data/TeraSessionStatus.cpp
     data/TeraSessionEvent.cpp

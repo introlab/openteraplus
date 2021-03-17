@@ -13,9 +13,16 @@ MainKitWindow::MainKitWindow(ConfigManagerClient *config, QWidget *parent) :
     m_configDiag = nullptr;
 
     // Load config file
+    loadConfig();
 
     // Initialize main UI
     initUi();
+
+    // Always on top
+    setWindowOnTop(true);
+
+    // Full screen mode
+    showFullScreen();
 
 }
 
@@ -34,6 +41,7 @@ MainKitWindow::~MainKitWindow()
     if (m_configDiag){
         m_configDiag->deleteLater();
     }
+
 }
 
 void MainKitWindow::userLoginRequested(QString username, QString password, QString server_name)
@@ -45,7 +53,7 @@ void MainKitWindow::userLoginRequested(QString username, QString password, QStri
     if (m_comManager){
         m_comManager->deleteLater();
     }
-    m_comManager = new ComManager(server);
+    m_comManager = new ComManager(server, false);
 
     // Connect signals
     connect(m_comManager, &ComManager::socketError,         this, &MainKitWindow::on_serverError);
@@ -162,19 +170,52 @@ void MainKitWindow::initUi()
     ui->btnReboot->hide(); // Reboot is not yet implemented on OS others than Windows.
 #endif
 
-    // Always on top
-    setWindowOnTop(true);
+    if (m_kitConfig.getParticipantToken().isEmpty()){
+        // No token - display no associated participant
+        ui->lblParticipant->setText(tr("Aucun participant associé"));
+        ui->lblParticipant->setStyleSheet("color:red;");
+    }else{
+        //TODO: Query participant informations
+        ui->lblParticipant->setStyleSheet("color:yellow;");
+    }
 
-    // Full screen mode
-    showFullScreen();
+
+}
+
+void MainKitWindow::loadConfig()
+{
+    QStringList documents_paths = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    QString configFile = documents_paths.first() + "/OpenTeraPlus/config/OpenTeraPlusKit.json";
+    qDebug() << "Loading kit config file: " << configFile;
+
+    m_kitConfig.setFilename(configFile);
+
+    // Check if config file exists and, if not, creates default
+    if (!QFile::exists(configFile)){
+        qDebug() << "MainKitWindow : No Config File - Creating new one.";
+        // Create folder if not exists
+        QFileInfo config_file_info(configFile);
+        QDir config_folder;
+        config_folder.mkpath(config_file_info.path());
+
+        m_kitConfig.initConfig();
+        m_kitConfig.saveConfig();
+    }
+
+
+    if (!m_kitConfig.loadConfig()){
+        if (!m_kitConfig.hasParseError()){ // Missing file
+            qDebug() << "Can't load file: " << configFile;
+        }else{
+            qDebug() << "Parse error: " << m_kitConfig.getLastParseError().errorString() << " at character " << m_kitConfig.getLastParseError().offset;
+        }
+    }
 }
 
 void MainKitWindow::showLogin()
 {
-    setWindowOnTop(false);
-    showMaximized();
     if (m_loginDiag == nullptr){
-        m_loginDiag = new LoginDialog();
+        m_loginDiag = new LoginDialog(this);
         connect(m_loginDiag, &LoginDialog::loginRequest, this, &MainKitWindow::userLoginRequested);
         connect(m_loginDiag, &LoginDialog::quitRequest, this, &MainKitWindow::userLoginCancelled);
 
@@ -199,7 +240,7 @@ void MainKitWindow::showConfigDialog()
         m_loginDiag = nullptr;
     }
 
-    m_configDiag = new KitConfigDialog(m_comManager, this);
+    m_configDiag = new KitConfigDialog(m_comManager, &m_kitConfig, this);
     connect(m_configDiag, &KitConfigDialog::finished, this, &MainKitWindow::closeConfigDialog);
 
     m_configDiag->showMaximized();
@@ -230,28 +271,33 @@ void MainKitWindow::on_btnExit_clicked()
 
 void MainKitWindow::on_btnReboot_clicked()
 {
+
+    GlobalMessageBox msg(this);
+
+    if (msg.showYesNo(tr("Redémarrage") + "?", tr("Souhaitez-vous vraiment redémarrer le système?")) == GlobalMessageBox::Yes){
 #ifdef Q_OS_WIN
 
-    // Setting reboot privileges for this process
-    HANDLE           hToken;
-    TOKEN_PRIVILEGES tkp   ;
+        // Setting reboot privileges for this process
+        HANDLE           hToken;
+        TOKEN_PRIVILEGES tkp   ;
 
-    OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES|TOKEN_QUERY, &hToken);
-    LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
+        OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES|TOKEN_QUERY, &hToken);
+        LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
 
-    tkp.PrivilegeCount = 1;                                 // Set 1 privilege
-    tkp.Privileges[0].Attributes= SE_PRIVILEGE_ENABLED;
+        tkp.PrivilegeCount = 1;                                 // Set 1 privilege
+        tkp.Privileges[0].Attributes= SE_PRIVILEGE_ENABLED;
 
-    // Get the shutdown privilege for this process
-    AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
+        // Get the shutdown privilege for this process
+        AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
 
-    if ( !ExitWindowsEx(EWX_REBOOT|EWX_FORCE,SHTDN_REASON_MAJOR_SOFTWARE))
-    {
-      // Failed, call GetLastError() to know why
-    }
+        if ( !ExitWindowsEx(EWX_REBOOT|EWX_FORCE,SHTDN_REASON_MAJOR_SOFTWARE))
+        {
+          // Failed, call GetLastError() to know why
+        }
 #else
     qDebug() << "SYSTEM REBOOT UNSUPPORTED ON THIS OS.";
 #endif
+    }
 
     // TODO: support other OS
 }

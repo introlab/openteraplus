@@ -2,6 +2,7 @@
 #define MAINKITWINDOW_H
 
 #include <QMainWindow>
+#include <QStandardPaths>
 
 #include "managers/ComManager.h"
 #include "managers/ConfigManagerClient.h"
@@ -9,6 +10,7 @@
 #include "dialogs/LoginDialog.h"
 
 #include "kit/KitConfigDialog.h"
+#include "kit/KitConfigManager.h"
 
 #include "Utils.h"
 
@@ -49,6 +51,7 @@ private slots:
 private:
     void setWindowOnTop(bool top);
     void initUi();
+    void loadConfig();
 
     void showLogin();
     void showConfigDialog();
@@ -59,6 +62,7 @@ private:
     LoginDialog*            m_loginDiag;
     ConfigManagerClient*    m_config;
     KitConfigDialog*        m_configDiag;
+    KitConfigManager        m_kitConfig;
 };
 
 #endif // MAINKITWINDOW_H

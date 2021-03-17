@@ -1,12 +1,13 @@
 #include "KitConfigDialog.h"
 #include "ui_KitConfigDialog.h"
 
-KitConfigDialog::KitConfigDialog(ComManager *comMan, QWidget *parent) :
+KitConfigDialog::KitConfigDialog(ComManager *comMan, KitConfigManager *kitConfig, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::KitConfigDialog)
 {
     ui->setupUi(this);
     m_comManager = comMan;
+    m_kitConfig = kitConfig;
     m_loading = true;
 
     initUi();
@@ -138,7 +139,16 @@ void KitConfigDialog::processParticipantsReply(QList<TeraData> participants, QUr
 
         ui->lstParticipants->setEnabled(true);
     }else{
-        // We queried a specific participant
+        // We queried a specific participant, to associate it to that kit
+        if (participants.count() == 1){
+            if (participants.first().hasFieldName("participant_token")){
+                m_kitConfig->setParticipantToken(participants.first().getFieldValue("participant_token").toString());
+                m_kitConfig->saveConfig();
+                ui->btnSetParticipant->setEnabled(false);
+                GlobalMessageBox msg(this);
+                msg.showInfo(tr("Participant associé"), tr("Le participant") + " " + participants.first().getName() + " " + tr("a été associé à ce kit") + ".");
+            }
+        }
 
     }
     m_loading = false;
@@ -152,6 +162,8 @@ void KitConfigDialog::initUi()
     ui->cmbSites->setItemDelegate(new QStyledItemDelegate());
     ui->cmbProjects->setItemDelegate(new QStyledItemDelegate());
     ui->cmbGroups->setItemDelegate(new QStyledItemDelegate());
+
+    ui->btnUnsetParticipant->setEnabled(!m_kitConfig->getParticipantToken().isEmpty());
 }
 
 void KitConfigDialog::connectSignals()
@@ -308,4 +320,13 @@ void KitConfigDialog::on_btnSetParticipant_clicked()
     int id_participant = ui->lstParticipants->currentItem()->data(Qt::UserRole).toInt();
 
     queryParticipant(id_participant);
+}
+
+void KitConfigDialog::on_btnUnsetParticipant_clicked()
+{
+    m_kitConfig->setParticipantToken("");
+    m_kitConfig->saveConfig();
+    ui->btnUnsetParticipant->setEnabled(false);
+    GlobalMessageBox msg(this);
+    msg.showInfo(tr("Participant désassocié"), tr("Ce kit n'est maintenant plus associé à aucun participant"));
 }

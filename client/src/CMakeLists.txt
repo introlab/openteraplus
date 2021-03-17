@@ -84,6 +84,7 @@ set(headers
     widgets/TableNumberWidgetItem.h
     # Kits
     kit/KitConfigDialog.h
+    kit/KitConfigManager.h
 )
 
 set(srcs
@@ -161,6 +162,7 @@ set(srcs
     widgets/TableNumberWidgetItem.cpp
     # Kits
     kit/KitConfigDialog.cpp
+    kit/KitConfigManager.cpp
 )
 
 SET(uis

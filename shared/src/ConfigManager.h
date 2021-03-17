@@ -22,11 +22,14 @@ public:
     void            setFilename(QString filename);
     QString         getFilename();
 
-    bool            loadConfig();
-    //bool saveConfig();
+    virtual bool    loadConfig();
+    virtual bool    saveConfig();
 
-    QJsonParseError getLastError();
+    QJsonParseError getLastParseError();
     bool            hasParseError();
+
+    virtual void    initConfig();
+    void            initConfig(QStringList sections);
 
 protected:
     QString         m_filename;

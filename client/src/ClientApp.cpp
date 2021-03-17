@@ -97,7 +97,7 @@ void ClientApp::loadConfig()
         if (!m_config.hasParseError()){ // Missing file
             qDebug() << "Can't load file: " << configFile;
         }else{
-            qDebug() << "Parse error: " << m_config.getLastError().errorString() << " at character " << m_config.getLastError().offset;
+            qDebug() << "Parse error: " << m_config.getLastParseError().errorString() << " at character " << m_config.getLastParseError().offset;
         }
     }
 }

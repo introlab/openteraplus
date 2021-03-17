@@ -6,6 +6,9 @@
 #include <QListWidgetItem>
 
 #include "managers/ComManager.h"
+#include "KitConfigManager.h"
+
+#include "GlobalMessageBox.h"
 
 namespace Ui {
 class KitConfigDialog;
@@ -16,7 +19,7 @@ class KitConfigDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit KitConfigDialog(ComManager* comMan, QWidget *parent = nullptr);
+    explicit KitConfigDialog(ComManager* comMan, KitConfigManager* kitConfig, QWidget *parent = nullptr);
     ~KitConfigDialog();
 
 private slots:
@@ -40,6 +43,8 @@ private slots:
 
     void on_btnSetParticipant_clicked();
 
+    void on_btnUnsetParticipant_clicked();
+
 private:
     void initUi();
     void connectSignals();
@@ -55,8 +60,9 @@ private:
 
     Ui::KitConfigDialog *ui;
 
-    ComManager* m_comManager;
-    bool        m_loading;
+    ComManager*         m_comManager;
+    KitConfigManager*   m_kitConfig;
+    bool                m_loading;
 };
 
 #endif // KITCONFIGDIALOG_H

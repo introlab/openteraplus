@@ -3,23 +3,25 @@
 #include <QLocale>
 #include "Utils.h"
 
-ComManager::ComManager(QUrl serverUrl, QObject *parent) :
+ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
     QObject(parent),
     m_currentUser(TERADATA_USER),
     m_currentSessionType(nullptr)
 {
+    m_enableWebsocket = connectWebsocket;
 
     // Initialize communication objects
     m_netManager = new QNetworkAccessManager(this);
     m_netManager->setCookieJar(&m_cookieJar);
 
-    m_webSocketMan = new WebSocketManager();
-
     // Setup signals and slots
-    // Websocket manager
-    connect(m_webSocketMan, &WebSocketManager::serverDisconnected, this, &ComManager::serverDisconnected); // Pass-thru signal
-    connect(m_webSocketMan, &WebSocketManager::websocketError, this, &ComManager::socketError); // Pass-thru signal
-    connect(m_webSocketMan, &WebSocketManager::loginResult, this, &ComManager::onWebSocketLoginResult);
+    if (m_enableWebsocket){
+        m_webSocketMan = new WebSocketManager();
+        // Websocket manager
+        connect(m_webSocketMan, &WebSocketManager::serverDisconnected, this, &ComManager::serverDisconnected); // Pass-thru signal
+        connect(m_webSocketMan, &WebSocketManager::websocketError, this, &ComManager::socketError); // Pass-thru signal
+        connect(m_webSocketMan, &WebSocketManager::loginResult, this, &ComManager::onWebSocketLoginResult);
+    }
 
     // Network manager
     connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &ComManager::onNetworkAuthenticationRequired);
@@ -34,8 +36,10 @@ ComManager::ComManager(QUrl serverUrl, QObject *parent) :
 
 ComManager::~ComManager()
 {
-    m_webSocketMan->disconnectWebSocket();
-    m_webSocketMan->deleteLater();
+    if (m_enableWebsocket){
+        m_webSocketMan->disconnectWebSocket();
+        m_webSocketMan->deleteLater();
+    }
     if (m_currentSessionType)
         delete m_currentSessionType;
 }
@@ -55,7 +59,9 @@ void ComManager::connectToServer(QString username, QString password)
 void ComManager::disconnectFromServer()
 {
     doQuery(QString(WEB_LOGOUT_PATH));
-    m_webSocketMan->disconnectWebSocket();
+    if (m_enableWebsocket){
+        m_webSocketMan->disconnectWebSocket();
+    }
 
     clearCurrentUser();
     m_settedCredentials = false;
@@ -574,8 +580,12 @@ bool ComManager::handleLoginReply(const QString &reply_data)
 
     // Connect websocket
     QString user_uuid = login_info["user_uuid"].toString();
-    QString web_socket_url = login_info["websocket_url"].toString();
-    m_webSocketMan->connectWebSocket(web_socket_url, user_uuid);
+    if (m_enableWebsocket){
+        QString web_socket_url = login_info["websocket_url"].toString();
+        m_webSocketMan->connectWebSocket(web_socket_url, user_uuid);
+    }else{
+        onWebSocketLoginResult(true); // Simulate successful login with websocket
+    }
 
     // Query connected user information
 
@@ -1003,7 +1013,7 @@ void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError>
     Q_UNUSED(errors)
     LOG_WARNING("Ignoring SSL errors, this is unsafe", "ComManager::onNetworkSslErrors");
     reply->ignoreSslErrors();
-    for(QSslError error : errors){
+    for(const QSslError &error : errors){
         LOG_WARNING("Ignored: " + error.errorString(), "ComManager::onNetworkSslErrors");
     }
 }
