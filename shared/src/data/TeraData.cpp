@@ -485,6 +485,23 @@ QString TeraData::getIconStateFilename() const
     }
 }
 
+QString TeraData::getServiceParticipantUrl(const TeraData &service, const QUrl& server_url, const QString &participant_token)
+{
+    if (service.getDataType() != TERADATA_SERVICE){
+        LOG_ERROR("Tried to generate a participant service url with a non-service object", "TeraData::getServiceParticipantUrl");
+        return QString();
+    }
+    QString participant_endpoint;
+    if (service.hasFieldName("service_endpoint_participant"))
+        participant_endpoint = service.getFieldValue("service_endpoint_participant").toString();
+    QString service_url = "https://" + server_url.host() + ":" + QString::number(server_url.port()) +
+            service.getFieldValue("service_clientendpoint").toString() +
+            participant_endpoint + "?token=" +
+            participant_token;
+
+    return service_url;
+}
+
 /*
 bool TeraData::hasMetaProperty(const QString &fieldName) const
 {

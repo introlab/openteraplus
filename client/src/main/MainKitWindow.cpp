@@ -224,6 +224,8 @@ void MainKitWindow::initUi()
         ui->lblParticipant->setStyleSheet("color:yellow;");
     }
 
+    ui->btnOnOff->setEnabled(!m_kitConfig.getParticipantToken().isEmpty());
+
 
 }
 
@@ -356,6 +358,7 @@ void MainKitWindow::closeConfigDialog()
 
     // Refresh UI
     initUi();
+    connectParticipantCom(m_kitConfig.getParticipantToken());
 }
 
 void MainKitWindow::on_btnExit_clicked()

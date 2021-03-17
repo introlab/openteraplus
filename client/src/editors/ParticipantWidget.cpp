@@ -441,7 +441,7 @@ void ParticipantWidget::refreshWebAccessUrl()
     if (index >= m_services.count() || index <0 || dataIsNew())
         return;
 
-    TeraData* current_service = &m_services[index];
+    /*TeraData* current_service = &m_services[index];
     QUrl server_url = m_comManager->getServerUrl();
     QString participant_endpoint = "";
     if (current_service->hasFieldName("service_endpoint_participant"))
@@ -450,7 +450,10 @@ void ParticipantWidget::refreshWebAccessUrl()
     //QString service_url = "https://" + current_service->getFieldValue("service_hostname").toString() + ":" + QString::number(server_url.port()) +
             current_service->getFieldValue("service_clientendpoint").toString() +
             participant_endpoint + "?token=" +
-            m_data->getFieldValue("participant_token").toString();
+            m_data->getFieldValue("participant_token").toString();*/
+    QString service_url = TeraData::getServiceParticipantUrl(m_services[index],
+                                                             m_comManager->getServerUrl(),
+                                                             m_data->getFieldValue("participant_token").toString());
 
     ui->txtWeb->setText(service_url);
 }

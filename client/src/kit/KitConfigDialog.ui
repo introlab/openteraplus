@@ -120,16 +120,41 @@ QLabel#lblStatus{
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="lblSite">
+         <item row="0" column="5">
+          <widget class="QComboBox" name="cmbProjects">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="6">
+          <widget class="QLabel" name="icoGroup">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="minimumSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
            <property name="text">
-            <string>Site</string>
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../../resources/TeraClient.qrc">:/icons/group.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -171,6 +196,13 @@ QLabel#lblStatus{
            </property>
           </widget>
          </item>
+         <item row="0" column="8">
+          <widget class="QComboBox" name="cmbGroups">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="4">
           <widget class="QLabel" name="lblProject">
            <property name="sizePolicy">
@@ -184,48 +216,16 @@ QLabel#lblStatus{
            </property>
           </widget>
          </item>
-         <item row="0" column="8">
-          <widget class="QComboBox" name="cmbGroups">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="5">
-          <widget class="QComboBox" name="cmbProjects">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="6">
-          <widget class="QLabel" name="icoGroup">
+         <item row="0" column="1">
+          <widget class="QLabel" name="lblSite">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="minimumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
            <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../resources/TeraClient.qrc">:/icons/group.png</pixmap>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
+            <string>Site</string>
            </property>
           </widget>
          </item>
@@ -273,6 +273,61 @@ QLabel#lblStatus{
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="1">
+          <widget class="QLabel" name="lblService">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Service</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QComboBox" name="cmbServices">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="icoService">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>32</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../../resources/TeraClient.qrc">:/icons/service.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">

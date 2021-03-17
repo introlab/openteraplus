@@ -142,7 +142,11 @@ void KitConfigDialog::processParticipantsReply(QList<TeraData> participants, QUr
         // We queried a specific participant, to associate it to that kit
         if (participants.count() == 1){
             if (participants.first().hasFieldName("participant_token")){
-                m_kitConfig->setParticipantToken(participants.first().getFieldValue("participant_token").toString());
+                QString participant_token = participants.first().getFieldValue("participant_token").toString();
+                m_kitConfig->setParticipantToken(participant_token);
+                QString service_url = TeraData::getServiceParticipantUrl(m_services[ui->cmbServices->currentData().toInt()],
+                        m_comManager->getServerUrl(), participant_token);
+                m_kitConfig->setParticipantServiceUrl(service_url);
                 m_kitConfig->saveConfig();
                 ui->btnSetParticipant->setEnabled(false);
                 GlobalMessageBox msg(this);
@@ -155,6 +159,33 @@ void KitConfigDialog::processParticipantsReply(QList<TeraData> participants, QUr
 
 }
 
+void KitConfigDialog::processServicesReply(QList<TeraData> services)
+{
+    setStatusMessage("");
+
+    // Clear combo box
+    ui->cmbServices->clear();
+    m_services.clear();
+
+    int default_index = -1;
+    // Fill combo box
+    foreach(TeraData service, services){
+        ui->cmbServices->addItem(service.getName(), service.getId());
+        m_services.insert(service.getId(), service);
+
+        // Set videorehab service as default
+        if (service.getFieldValue("service_key") == "VideoRehabService"){
+            default_index = ui->cmbServices->count() - 1;
+        }
+    }
+
+    if (default_index>=0)
+        ui->cmbServices->setCurrentIndex(default_index);
+
+    ui->cmbServices->setEnabled(true);
+    m_loading = false;
+}
+
 void KitConfigDialog::initUi()
 {
     ui->lblStatus->hide();
@@ -162,6 +193,7 @@ void KitConfigDialog::initUi()
     ui->cmbSites->setItemDelegate(new QStyledItemDelegate());
     ui->cmbProjects->setItemDelegate(new QStyledItemDelegate());
     ui->cmbGroups->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbServices->setItemDelegate(new QStyledItemDelegate());
 
     ui->btnUnsetParticipant->setEnabled(!m_kitConfig->getParticipantToken().isEmpty());
 }
@@ -175,6 +207,7 @@ void KitConfigDialog::connectSignals()
     connect(m_comManager, &ComManager::projectsReceived,        this, &KitConfigDialog::processProjectsReply);
     connect(m_comManager, &ComManager::groupsReceived,          this, &KitConfigDialog::processGroupsReply);
     connect(m_comManager, &ComManager::participantsReceived,    this, &KitConfigDialog::processParticipantsReply);
+    connect(m_comManager, &ComManager::servicesReceived,        this, &KitConfigDialog::processServicesReply);
 
 }
 
@@ -219,6 +252,17 @@ void KitConfigDialog::queryGroups(int id_project)
     query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id_project));
     query.addQueryItem(WEB_QUERY_LIST, "true");
     m_comManager->doQuery(WEB_GROUPINFO_PATH, query);
+}
+
+void KitConfigDialog::queryServices(int id_project)
+{
+    m_loading = true;
+    setStatusMessage(tr("Chargement des services en cours..."));
+
+    QUrlQuery query;
+    query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id_project));
+    query.addQueryItem(WEB_QUERY_LIST, "true");
+    m_comManager->doQuery(WEB_SERVICEINFO_PATH, query);
 }
 
 void KitConfigDialog::queryParticipantsForProject(int id_project)
@@ -269,6 +313,8 @@ void KitConfigDialog::on_cmbSites_currentIndexChanged(int index)
         ui->cmbGroups->setEnabled(false);
         ui->cmbGroups->clear();
         ui->lstParticipants->clear();
+        ui->cmbServices->clear();
+        ui->cmbServices->setEnabled(false);
         queryProjects(id_site);
     }
 }
@@ -283,8 +329,11 @@ void KitConfigDialog::on_cmbProjects_currentIndexChanged(int index)
     if (id_project>0){
         ui->cmbGroups->setEnabled(false);
         ui->cmbGroups->clear();
+        ui->cmbServices->clear();
+        ui->cmbServices->setEnabled(false);
         ui->lstParticipants->clear();
         queryGroups(id_project);
+        queryServices(id_project);
     }
 }
 
@@ -309,7 +358,10 @@ void KitConfigDialog::on_lstParticipants_currentItemChanged(QListWidgetItem *cur
 {
     Q_UNUSED(previous)
 
-    ui->btnSetParticipant->setEnabled(current);
+    if (ui->cmbServices->currentIndex()>=0)
+        ui->btnSetParticipant->setEnabled(current);
+    else
+        ui->btnSetParticipant->setEnabled(false);
 }
 
 void KitConfigDialog::on_btnSetParticipant_clicked()
@@ -329,4 +381,12 @@ void KitConfigDialog::on_btnUnsetParticipant_clicked()
     ui->btnUnsetParticipant->setEnabled(false);
     GlobalMessageBox msg(this);
     msg.showInfo(tr("Participant désassocié"), tr("Ce kit n'est maintenant plus associé à aucun participant"));
+}
+
+void KitConfigDialog::on_cmbServices_currentIndexChanged(int index)
+{
+    if (ui->lstParticipants->currentItem() && index>=0)
+        ui->btnSetParticipant->setEnabled(true);
+    else
+        ui->btnSetParticipant->setEnabled(false);
 }

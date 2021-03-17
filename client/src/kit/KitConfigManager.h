@@ -20,6 +20,9 @@ public:
     QVariantHash        getKitConfig();
     void                setKitConfig(QVariantHash config_values);
 
+    QString             getParticipantServiceUrl();
+    void                setParticipantServiceUrl(const QString& service_url);
+
 };
 
 #endif // KITCONFIGMANAGER_H

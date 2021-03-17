@@ -31,7 +31,7 @@ QToolButton#btnExit{
 QPushButton#btnOnOff{
 	border-image:url(&quot;:/controls/green_button.png&quot;) 0 0 0 0 stretch stretch;
 	background-color: transparent;
-	color: green;
+	color: white;
 }
 QPushButton#btnOnOff:checked{
 	border-image:url(&quot;:/controls/red_button.png&quot;) 0 0 0 0 stretch stretch;
@@ -308,7 +308,7 @@ QToolButton:hover{
           </size>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="checked">
           <bool>false</bool>

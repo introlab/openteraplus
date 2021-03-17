@@ -223,8 +223,6 @@ bool ParticipantComManager::handleLoginReply(const QString &reply_data)
     if (json_error.error!= QJsonParseError::NoError)
         return false;
 
-    qDebug() << login_info.toJson();
-
     QString participant_uuid = login_info["participant_uuid"].toString();
     m_currentParticipant.setFieldValue("participant_uuid", participant_uuid);
     m_currentParticipant.setFieldValue("participant_name", login_info["participant_name"].toString());
