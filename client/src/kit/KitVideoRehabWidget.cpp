@@ -17,6 +17,9 @@ KitVideoRehabWidget::KitVideoRehabWidget(KitConfigManager *kitConfig, QWidget *p
     initUi();
     connectSignals();
 
+    // Set config to shared object
+    processKitDevice();
+
     // Redirect web engine to correct url
     loadConfiguredUrl();
 }
@@ -66,7 +69,8 @@ void KitVideoRehabWidget::initUi()
     //m_webPage->getSharedObject()->setContactInformation(m_comManager->getCurrentUser().getName(),
     //                                                    m_comManager->getCurrentUser().getUuid());
 
-    // Build shared object from session config
+    // Build shared object from kit config
+
     //processSessionConfig();
 
     //Set page to view
@@ -167,6 +171,49 @@ void KitVideoRehabWidget::loadConfiguredUrl()
 
     // Set url
     m_webEngine->setUrl(base_url);
+}
+
+void KitVideoRehabWidget::processKitDevice()
+{
+    if (m_webPage){
+        QJsonObject     kit_config = m_kitConfig->getKitConfig();
+        SharedObject*   shared = m_webPage->getSharedObject();
+        QVariantHash    session_params = kit_config.toVariantHash();
+
+        if (session_params.contains("camera")) shared->setCurrentCameraName(session_params["camera"].toString());
+        if (session_params.contains("audio")) shared->setCurrentAudioSrcName(session_params["audio"].toString());
+        if (session_params.contains("mirror")) shared->setLocalMirror(session_params["mirror"].toBool());
+        if (session_params.contains("extra_params")) shared->setExtraParams(session_params["extra_params"].toString());
+        if (session_params.contains("camera2")) shared->setSecondVideoName(session_params["camera2"].toString());
+        if (session_params.contains("audio2")) shared->setSecondAudioSrcName(session_params["audio2"].toString());
+        if (session_params.contains("camera_ptz")){
+            // Start PTZ camera driver
+            int camera_src = session_params["camera_ptz_type"].toInt();
+            if (camera_src == 0){ // TODO: Better manage camera sources
+                // Vivotek
+                if (m_webPage){
+                    SharedObject* shared = m_webPage->getSharedObject();
+                    if (shared){
+                        shared->startPTZCameraDriver(camera_src,
+                                                     "OpenTeraCam", // Hard coded for now, but should be associated with a specific camera name
+                                                     session_params["camera_ptz_ip"].toString(),
+                                                     session_params["camera_ptz_port"].toInt(),
+                                                     session_params["camera_ptz_username"].toString(),
+                                                     session_params["camera_ptz_password"].toString());
+                       // Connect signal
+                       // connect(shared->getPTZCameraDriver(), &ICameraDriver::cameraError, this, &VideoRehabSetupWidget::ptzCameraError);
+                    }
+                }
+            }
+        }
+
+        if (session_params.contains("teracam_src")){
+            if (!session_params["teracam_src"].toString().isEmpty()){
+                // Start virtual camera driver
+                startVirtualCamera(session_params["teracam_src"].toString());
+           }
+        }
+    }
 }
 /*
 void VideoRehabWidget::processSessionConfig()

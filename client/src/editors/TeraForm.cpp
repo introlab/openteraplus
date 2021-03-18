@@ -98,7 +98,7 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
     for (QString field:m_widgets.keys()){
         if (!m_initialValues.contains(field)){
             QVariant value;
-            getWidgetValues(m_widgets[field],nullptr, &value);
+            getWidgetValues(m_widgets[field], nullptr, &value);
             m_initialValues.insert(field, value);
         }
     }

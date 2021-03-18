@@ -17,8 +17,9 @@ public:
     QString         getParticipantToken();
     void            setParticipantToken(QString token);
 
-    QVariantHash    getKitConfig();
+    QJsonObject     getKitConfig();
     void            setKitConfig(QVariantHash config_values);
+    void            setKitConfig(QString kit_device_config);
 
     QString         getParticipantServiceUrl();
     void            setParticipantServiceUrl(const QString& service_url);

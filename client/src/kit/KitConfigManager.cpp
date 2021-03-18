@@ -20,7 +20,7 @@ QString KitConfigManager::getParticipantToken()
 {
     QString rval = "";
     if (!m_config.isNull()){
-        QHash<QString, QVariant> settings = m_config["Participant"].toObject().toVariantHash();
+        QVariantHash settings = m_config["Participant"].toObject().toVariantHash();
         rval = settings["participant_token"].toString();
     }
     return rval;
@@ -37,11 +37,13 @@ void KitConfigManager::setParticipantToken(QString token)
     }
 }
 
-QVariantHash KitConfigManager::getKitConfig()
+QJsonObject KitConfigManager::getKitConfig()
 {
-    QVariantHash rval;
+    QJsonObject rval;
     if (!m_config.isNull()){
-        rval = m_config["KitConfig"].toObject().toVariantHash();
+        QVariantHash settings = m_config["KitConfig"].toObject().toVariantHash();
+        rval = QJsonObject::fromVariantHash(settings["config"].toHash());
+
     }
     return rval;
 }
@@ -51,7 +53,18 @@ void KitConfigManager::setKitConfig(QVariantHash config_values)
     if (!m_config.isNull()){
         QJsonObject config = m_config.object();
         QJsonObject kit_config = config["KitConfig"].toObject();
-        kit_config = QJsonObject::fromVariantHash(config_values);
+        kit_config.insert("config", QJsonObject::fromVariantHash(config_values));
+        config["KitConfig"] = kit_config;
+        m_config.setObject(config);
+    }
+}
+
+void KitConfigManager::setKitConfig(QString kit_device_config)
+{
+    if (!m_config.isNull()){
+        QJsonObject config = m_config.object();
+        QJsonObject kit_config = config["KitConfig"].toObject();
+        kit_config.insert("config", kit_device_config);
         config["KitConfig"] = kit_config;
         m_config.setObject(config);
     }

@@ -50,6 +50,7 @@ private:
     void refreshWebpageSettings();
 
     void loadConfiguredUrl();
+    void processKitDevice();
 
     void setLoading(const bool& loading);
     void showError(const QString& title, const QString& context, const QString& error);

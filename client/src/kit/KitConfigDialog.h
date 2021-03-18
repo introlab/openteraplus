@@ -33,6 +33,9 @@ private slots:
     void processGroupsReply(QList<TeraData> groups);
     void processParticipantsReply(QList<TeraData> participants,  QUrlQuery reply_query);
     void processServicesReply(QList<TeraData> services);
+    void processFormsReply(QString form_type, QString data);
+
+    void configFormDirty(bool dirty);
 
     void on_cmbSites_currentIndexChanged(int index);
     void on_cmbProjects_currentIndexChanged(int index);
@@ -40,8 +43,8 @@ private slots:
     void on_lstParticipants_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_btnSetParticipant_clicked();
     void on_btnUnsetParticipant_clicked();
-
     void on_cmbServices_currentIndexChanged(int index);
+    void on_btnSaveConfig_clicked();
 
 private:
     void initUi();
@@ -56,6 +59,7 @@ private:
     void queryParticipantsForProject(int id_project);
     void queryParticipantsForGroup(int id_group);
     void queryParticipant(int id_participant);
+    void queryDeviceConfigForm();
 
     Ui::KitConfigDialog *ui;
 

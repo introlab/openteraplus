@@ -14,7 +14,9 @@ KitConfigDialog::KitConfigDialog(ComManager *comMan, KitConfigManager *kitConfig
 
     connectSignals();
 
+    // Query data
     querySites();
+    queryDeviceConfigForm();
 }
 
 KitConfigDialog::~KitConfigDialog()
@@ -188,6 +190,20 @@ void KitConfigDialog::processServicesReply(QList<TeraData> services)
     m_loading = false;
 }
 
+void KitConfigDialog::processFormsReply(QString form_type, QString data)
+{
+    if (form_type.contains(WEB_FORMS_QUERY_SERVICE_CONFIG)){
+       ui->wdgDeviceConfig->buildUiFromStructure(data);
+       ui->wdgDeviceConfig->fillFormFromData(m_kitConfig->getKitConfig());
+       ui->wdgDeviceConfig->setEnabled(true);
+    }
+}
+
+void KitConfigDialog::configFormDirty(bool dirty)
+{
+    ui->btnSaveConfig->setEnabled(dirty);
+}
+
 void KitConfigDialog::initUi()
 {
     ui->lblStatus->hide();
@@ -198,6 +214,8 @@ void KitConfigDialog::initUi()
     ui->cmbServices->setItemDelegate(new QStyledItemDelegate());
 
     ui->btnUnsetParticipant->setEnabled(!m_kitConfig->getParticipantToken().isEmpty());
+
+    ui->tabSections->setCurrentIndex(0);
 }
 
 void KitConfigDialog::connectSignals()
@@ -210,6 +228,9 @@ void KitConfigDialog::connectSignals()
     connect(m_comManager, &ComManager::groupsReceived,          this, &KitConfigDialog::processGroupsReply);
     connect(m_comManager, &ComManager::participantsReceived,    this, &KitConfigDialog::processParticipantsReply);
     connect(m_comManager, &ComManager::servicesReceived,        this, &KitConfigDialog::processServicesReply);
+    connect(m_comManager, &ComManager::formReceived,            this, &KitConfigDialog::processFormsReply);
+
+    connect(ui->wdgDeviceConfig, &TeraForm::formIsNowDirty,     this, &KitConfigDialog::configFormDirty);
 
 }
 
@@ -302,6 +323,13 @@ void KitConfigDialog::queryParticipant(int id_participant)
     m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
 }
 
+void KitConfigDialog::queryDeviceConfigForm()
+{
+    QUrlQuery query(WEB_FORMS_QUERY_SERVICE_CONFIG);
+    query.addQueryItem(WEB_QUERY_KEY, "VideoRehabService");
+    m_comManager->doQuery(WEB_FORMS_PATH, query);
+}
+
 void KitConfigDialog::on_cmbSites_currentIndexChanged(int index)
 {
     if (index<0 || m_loading)
@@ -391,4 +419,17 @@ void KitConfigDialog::on_cmbServices_currentIndexChanged(int index)
         ui->btnSetParticipant->setEnabled(true);
     else
         ui->btnSetParticipant->setEnabled(false);
+}
+
+void KitConfigDialog::on_btnSaveConfig_clicked()
+{
+    //QString config = ui->wdgDeviceConfig->getFormData(true);
+    QJsonDocument config = ui->wdgDeviceConfig->getFormDataJson(true);
+    m_kitConfig->setKitConfig(config["service_config_config"].toObject().toVariantHash());
+    m_kitConfig->saveConfig();
+
+    ui->btnSaveConfig->setEnabled(false);
+    GlobalMessageBox msg;
+    msg.showInfo(tr("Sauvegarde complétée"), tr("La configuration du kit a été sauvegardée") + ".");
+
 }
