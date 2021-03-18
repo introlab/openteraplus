@@ -13,6 +13,7 @@
 
 #include "kit/KitConfigDialog.h"
 #include "kit/KitConfigManager.h"
+#include "kit/KitInSessionDialog.h"
 
 #include "Utils.h"
 
@@ -54,6 +55,9 @@ private slots:
     void on_btnConfig_clicked();
 
     void closeConfigDialog();
+    void inSessionDialog_closed();
+
+    void on_btnOnOff_clicked();
 
 private:
     void setWindowOnTop(bool top);
@@ -65,6 +69,7 @@ private:
 
     void showLogin();
     void showConfigDialog();
+    void showInSessionDialog();
     void showError(QString error);
 
 
@@ -75,6 +80,7 @@ private:
     ConfigManagerClient*    m_config;
     KitConfigDialog*        m_configDiag;
     KitConfigManager        m_kitConfig;
+    KitInSessionDialog*     m_sessionDiag;
 };
 
 #endif // MAINKITWINDOW_H

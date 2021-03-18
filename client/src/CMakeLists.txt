@@ -86,6 +86,8 @@ set(headers
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
+    kit/KitInSessionDialog.h
+    kit/KitVideoRehabWidget.h
 )
 
 set(srcs
@@ -165,6 +167,8 @@ set(srcs
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
+    kit/KitInSessionDialog.cpp
+    kit/KitVideoRehabWidget.cpp
 )
 
 SET(uis
@@ -215,6 +219,8 @@ SET(uis
     widgets/OnlineManagerWidget.ui
     # Kits
     kit/KitConfigDialog.ui
+    kit/KitInSessionDialog.ui
+    kit/KitVideoRehabWidget.ui
 )
 
 SET(qrcs

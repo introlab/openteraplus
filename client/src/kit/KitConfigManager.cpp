@@ -78,4 +78,25 @@ void KitConfigManager::setParticipantServiceUrl(const QString &service_url)
     }
 }
 
+QString KitConfigManager::getServiceKey()
+{
+    QString rval = "";
+    if (!m_config.isNull()){
+        QHash<QString, QVariant> settings = m_config["Participant"].toObject().toVariantHash();
+        rval = settings["service_key"].toString();
+    }
+    return rval;
+}
+
+void KitConfigManager::setServiceKey(const QString &service_key)
+{
+    if (!m_config.isNull()){
+        QJsonObject config = m_config.object();
+        QJsonObject participant = config["Participant"].toObject();
+        participant.insert("service_key", service_key);
+        config["Participant"] = participant;
+        m_config.setObject(config);
+    }
+}
+
 

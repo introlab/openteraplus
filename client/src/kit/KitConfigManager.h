@@ -12,16 +12,19 @@ public:
     explicit KitConfigManager(QObject *parent = nullptr);
     KitConfigManager(QString filename, QObject* parent = nullptr);
 
-    void                initConfig() override;
+    void            initConfig() override;
 
-    QString             getParticipantToken();
-    void                setParticipantToken(QString token);
+    QString         getParticipantToken();
+    void            setParticipantToken(QString token);
 
-    QVariantHash        getKitConfig();
-    void                setKitConfig(QVariantHash config_values);
+    QVariantHash    getKitConfig();
+    void            setKitConfig(QVariantHash config_values);
 
-    QString             getParticipantServiceUrl();
-    void                setParticipantServiceUrl(const QString& service_url);
+    QString         getParticipantServiceUrl();
+    void            setParticipantServiceUrl(const QString& service_url);
+
+    QString         getServiceKey();
+    void            setServiceKey(const QString& service_key);
 
 };
 

@@ -12,6 +12,7 @@ MainKitWindow::MainKitWindow(ConfigManagerClient *config, QWidget *parent) :
     m_comManager = nullptr;
     m_configDiag = nullptr;
     m_partComManager = nullptr;
+    m_sessionDiag = nullptr;
 
     // Load config file
     loadConfig();
@@ -335,6 +336,20 @@ void MainKitWindow::showConfigDialog()
     m_configDiag->showMaximized();
 }
 
+void MainKitWindow::showInSessionDialog()
+{
+    if (m_sessionDiag){
+        m_sessionDiag->deleteLater();
+    }
+
+    m_sessionDiag = new KitInSessionDialog(&m_kitConfig, this);
+
+    connect(m_sessionDiag, &KitInSessionDialog::finished, this, &MainKitWindow::inSessionDialog_closed);
+
+    m_sessionDiag->showMaximized();
+    m_sessionDiag->showFullScreen();
+}
+
 void MainKitWindow::showError(QString error)
 {
     QString filtered_msg = QTextDocumentFragment::fromHtml(error).toPlainText();
@@ -359,6 +374,14 @@ void MainKitWindow::closeConfigDialog()
     // Refresh UI
     initUi();
     connectParticipantCom(m_kitConfig.getParticipantToken());
+}
+
+void MainKitWindow::inSessionDialog_closed()
+{
+    if (m_sessionDiag){
+        m_sessionDiag->deleteLater();
+        m_sessionDiag = nullptr;
+    }
 }
 
 void MainKitWindow::on_btnExit_clicked()
@@ -403,4 +426,9 @@ void MainKitWindow::on_btnConfig_clicked()
 {
     if (!m_configDiag)
         showLogin();
+}
+
+void MainKitWindow::on_btnOnOff_clicked()
+{
+    showInSessionDialog();
 }

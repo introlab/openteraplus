@@ -168,7 +168,7 @@ void OnlineManagerWidget::updateOnlineDevice(const TeraData *online_device)
         device_item = m_onlineDevices[uuid];
     }else{
         if (online_device->isOnline()/* || online_device.isBusy()*/){ // Not online and not busy = don't need to add!
-            device_item = new QListWidgetItem(QIcon(online_device->getIconStateFilename()), online_device->getName() + " " + uuid);
+            device_item = new QListWidgetItem(QIcon(online_device->getIconStateFilename()), online_device->getName()/* + " " + uuid*/);
             device_item->setToolTip(uuid);
             ui->lstOnlineDevices->addItem(device_item);
             m_onlineDevices[uuid] = device_item;

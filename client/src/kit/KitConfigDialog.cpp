@@ -147,6 +147,8 @@ void KitConfigDialog::processParticipantsReply(QList<TeraData> participants, QUr
                 QString service_url = TeraData::getServiceParticipantUrl(m_services[ui->cmbServices->currentData().toInt()],
                         m_comManager->getServerUrl(), participant_token);
                 m_kitConfig->setParticipantServiceUrl(service_url);
+                QString service_key = m_services[ui->cmbServices->currentData().toInt()].getFieldValue("service_key").toString();
+                m_kitConfig->setServiceKey(service_key);
                 m_kitConfig->saveConfig();
                 ui->btnSetParticipant->setEnabled(false);
                 GlobalMessageBox msg(this);
