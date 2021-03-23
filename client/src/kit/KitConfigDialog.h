@@ -8,6 +8,9 @@
 #include "managers/ComManager.h"
 #include "KitConfigManager.h"
 
+#include "services/VideoRehabService/VideoRehabVirtualCamSetupDialog.h"
+#include "services/VideoRehabService/VideoRehabPTZDialog.h"
+
 #include "GlobalMessageBox.h"
 
 namespace Ui {
@@ -36,6 +39,7 @@ private slots:
     void processFormsReply(QString form_type, QString data);
 
     void configFormDirty(bool dirty);
+    void configFormValueChanged(QWidget *wdg, QVariant value);
 
     void on_cmbSites_currentIndexChanged(int index);
     void on_cmbProjects_currentIndexChanged(int index);
@@ -52,6 +56,8 @@ private:
 
     void setStatusMessage(QString msg, bool error = false);
 
+    void showPTZDialog();
+
     void querySites();
     void queryProjects(int id_site);
     void queryGroups(int id_project);
@@ -67,6 +73,8 @@ private:
     KitConfigManager*       m_kitConfig;
     bool                    m_loading;
     QHash<int, TeraData>    m_services;
+
+    bool                    m_valueJustChanged;
 };
 
 #endif // KITCONFIGDIALOG_H

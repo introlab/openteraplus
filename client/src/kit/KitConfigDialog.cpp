@@ -9,6 +9,7 @@ KitConfigDialog::KitConfigDialog(ComManager *comMan, KitConfigManager *kitConfig
     m_comManager = comMan;
     m_kitConfig = kitConfig;
     m_loading = true;
+    m_valueJustChanged = false;
 
     initUi();
 
@@ -204,6 +205,34 @@ void KitConfigDialog::configFormDirty(bool dirty)
     ui->btnSaveConfig->setEnabled(dirty);
 }
 
+void KitConfigDialog::configFormValueChanged(QWidget *wdg, QVariant value)
+{
+
+    if (m_valueJustChanged){
+        m_valueJustChanged = false;
+        return;
+    }
+
+    // OpenTeraCam camera source
+    if (wdg == ui->wdgDeviceConfig->getWidgetForField("teracam_src")){
+        QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->wdgDeviceConfig->getWidgetForField("teracam_src"));
+        VideoRehabVirtualCamSetupDialog dlg(ui->wdgDeviceConfig->getFieldValue("teracam_src").toString());
+        dlg.setCursorPosition(wdg_editor->cursorPosition());
+        m_valueJustChanged = true;
+        if (dlg.exec() == QDialog::Accepted){
+            ui->wdgDeviceConfig->setFieldValue("teracam_src", dlg.getCurrentSource());
+        }else{
+            wdg_editor->undo();
+        }
+    }
+
+    // PTZ changes
+    if (wdg == ui->wdgDeviceConfig->getWidgetForField(("camera_ptz"))){
+        if (value.toBool())
+            showPTZDialog();
+    }
+}
+
 void KitConfigDialog::initUi()
 {
     ui->lblStatus->hide();
@@ -220,17 +249,18 @@ void KitConfigDialog::initUi()
 
 void KitConfigDialog::connectSignals()
 {
-    connect(m_comManager, &ComManager::waitingForReply,         this, &KitConfigDialog::comManagerWaitingForReply);
-    connect(m_comManager, &ComManager::networkError,            this, &KitConfigDialog::comManagerNetworkError);
+    connect(m_comManager, &ComManager::waitingForReply,             this, &KitConfigDialog::comManagerWaitingForReply);
+    connect(m_comManager, &ComManager::networkError,                this, &KitConfigDialog::comManagerNetworkError);
 
-    connect(m_comManager, &ComManager::sitesReceived,           this, &KitConfigDialog::processSitesReply);
-    connect(m_comManager, &ComManager::projectsReceived,        this, &KitConfigDialog::processProjectsReply);
-    connect(m_comManager, &ComManager::groupsReceived,          this, &KitConfigDialog::processGroupsReply);
-    connect(m_comManager, &ComManager::participantsReceived,    this, &KitConfigDialog::processParticipantsReply);
-    connect(m_comManager, &ComManager::servicesReceived,        this, &KitConfigDialog::processServicesReply);
-    connect(m_comManager, &ComManager::formReceived,            this, &KitConfigDialog::processFormsReply);
+    connect(m_comManager, &ComManager::sitesReceived,               this, &KitConfigDialog::processSitesReply);
+    connect(m_comManager, &ComManager::projectsReceived,            this, &KitConfigDialog::processProjectsReply);
+    connect(m_comManager, &ComManager::groupsReceived,              this, &KitConfigDialog::processGroupsReply);
+    connect(m_comManager, &ComManager::participantsReceived,        this, &KitConfigDialog::processParticipantsReply);
+    connect(m_comManager, &ComManager::servicesReceived,            this, &KitConfigDialog::processServicesReply);
+    connect(m_comManager, &ComManager::formReceived,                this, &KitConfigDialog::processFormsReply);
 
-    connect(ui->wdgDeviceConfig, &TeraForm::formIsNowDirty,     this, &KitConfigDialog::configFormDirty);
+    connect(ui->wdgDeviceConfig, &TeraForm::formIsNowDirty,         this, &KitConfigDialog::configFormDirty);
+    connect(ui->wdgDeviceConfig, &TeraForm::widgetValueHasChanged,  this, &KitConfigDialog::configFormValueChanged);
 
 }
 
@@ -245,6 +275,29 @@ void KitConfigDialog::setStatusMessage(QString msg, bool error)
     }
 
     ui->lblStatus->setVisible(!msg.isEmpty());
+}
+
+void KitConfigDialog::showPTZDialog()
+{
+    ui->wdgDeviceConfig->setFieldsEnabled(QStringList() << "camera_ptz_type" << "camera_ptz_ip" << "camera_ptz_port" << "camera_ptz_username" << "camera_ptz_password", false);
+
+    VideoRehabPTZDialog dlg;
+    dlg.setCurrentValues(ui->wdgDeviceConfig->getFieldValue("camera_ptz_type").toInt(),
+                         ui->wdgDeviceConfig->getFieldValue("camera_ptz_ip").toString(),
+                         ui->wdgDeviceConfig->getFieldValue("camera_ptz_port").toInt(),
+                         ui->wdgDeviceConfig->getFieldValue("camera_ptz_username").toString(),
+                         ui->wdgDeviceConfig->getFieldValue("camera_ptz_password").toString()
+                         );
+    //dlg.setCursorPosition(wdg_editor->cursorPosition());
+    if (dlg.exec() == QDialog::Accepted){
+        ui->wdgDeviceConfig->setFieldValue("camera_ptz_type", dlg.getCurrentSrcIndex());
+        ui->wdgDeviceConfig->setFieldValue("camera_ptz_ip", dlg.getCurrentUrl());
+        ui->wdgDeviceConfig->setFieldValue("camera_ptz_port", dlg.getCurrentPort());
+        ui->wdgDeviceConfig->setFieldValue("camera_ptz_username", dlg.getCurrentUsername());
+        ui->wdgDeviceConfig->setFieldValue("camera_ptz_password", dlg.getCurrentPassword());
+    }else{
+        ui->wdgDeviceConfig->setFieldValue("camera_ptz", false);
+    }
 }
 
 void KitConfigDialog::querySites()
