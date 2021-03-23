@@ -131,10 +131,17 @@ void SharedObject::zoomMaxClicked(QString uuid)
 
 void SharedObject::camSettingsClicked(QString uuid)
 {
-    //qDebug() << "SharedObject -> Cam Settings! UUID = " << uuid;
-    if (m_ptzCameraDriver)
-        m_ptzCameraDriver->showImageSettingsDialog();
-    emit camSettings(uuid);
+    qDebug() << "SharedObject -> Cam Settings! UUID = " << uuid << m_userUUID;
+    if (m_ptzCameraDriver){
+        if (uuid == m_userUUID){
+            // Local settings
+            m_ptzCameraDriver->showImageSettingsDialog();
+        }else{
+            // Send current settings value
+            sendCameraSettings(uuid, *m_ptzCameraDriver->getCameraImageSettings());
+        }
+    }
+    //emit camSettings(uuid);
 }
 
 void SharedObject::gotoPresetClicked(QString uuid, int preset)
@@ -307,7 +314,7 @@ void SharedObject::sendSecondSources(){
 
     emit newSecondSources(QString(doc.toJson(QJsonDocument::Compact)));
 }
-/*
+
 void SharedObject::sendCameraSettings(const QString &uuid, CameraImageSettings &settings, const QString &owner){
     //Create JSON Object for contact
     QJsonObject myObject = settings.toJSON();
@@ -324,7 +331,7 @@ void SharedObject::sendCameraSettings(const QString &uuid, CameraImageSettings &
     qDebug() << "js: Sending : " << QString(doc.toJson(QJsonDocument::Compact));
 
     emit newDataForward(QString(doc.toJson(QJsonDocument::Compact)));
-}*/
+}
 
 void SharedObject::dataForwardReceived(QString json){
     QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
@@ -338,17 +345,18 @@ void SharedObject::dataForwardReceived(QString json){
 
     if (!obj.isEmpty()){
         QString msg_type = obj.value("msgtype").toString();
-        /*if (msg_type == "setCamSettings"){
+        if (msg_type == "setCamSettings"){
+
             qDebug() << "Shared Object - Request to set cam settings";
             CameraImageSettings settings;
-
             settings.fromJSON(obj);
 
-            if (obj.value("owner_uuid").toString() == obj.value("uuid").toString())
-                emit setCamSettings(obj.value("uuid").toString(), settings); // Local settings
-            else
-                emit setCamSettings(obj.value("owner_uuid").toString(), settings); // Remote settings
-        }*/
+            if (obj.value("owner_uuid").toString() == m_userUUID && m_ptzCameraDriver)
+                m_ptzCameraDriver->setImageSettings(settings);
+            else{
+                // TODO: Display cam settings dialog detached from ptzDriver
+            }
+        }
 
     }
 }

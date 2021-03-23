@@ -33,7 +33,7 @@ public:
     void setSecondAudioSrcName(const QString &name);
     void setSecondVideoName(const QString &name);
     void setPTZCapabilities(const bool &zoom, const bool &presets, const bool &settings);
-    //void sendCameraSettings(const QString &uuid, CameraImageSettings &settings, const QString &owner="");
+    void sendCameraSettings(const QString &uuid, CameraImageSettings &settings, const QString &owner="");
     void getCameraSettings(const QString &uuid);
     void removeVideoSource(const QString &name);
 
@@ -109,7 +109,7 @@ signals:
     void move(QString uuid, int x, int y, int w, int h);
 
     void camSettings(QString uuid);                                     // Request to get camSettings for that UUID
-    //void setCamSettings(QString uuid, CameraImageSettings& settings);   // Request to set camSettings (if local uuid) or to send camSettings (if remote uuid)
+    void setCamSettings(QString uuid, CameraImageSettings& settings);   // Request to set camSettings (if local uuid) or to send camSettings (if remote uuid)
 
     void setLocalMirrorSignal(bool mirror);
 

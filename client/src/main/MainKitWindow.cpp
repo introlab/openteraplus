@@ -342,7 +342,7 @@ void MainKitWindow::showInSessionDialog()
         m_sessionDiag->deleteLater();
     }
 
-    m_sessionDiag = new KitInSessionDialog(&m_kitConfig, this);
+    m_sessionDiag = new KitInSessionDialog(&m_kitConfig, m_partComManager, this);
 
     connect(m_sessionDiag, &KitInSessionDialog::finished, this, &MainKitWindow::inSessionDialog_closed);
 

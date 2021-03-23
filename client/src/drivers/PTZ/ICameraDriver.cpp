@@ -11,6 +11,11 @@ ICameraDriver::~ICameraDriver(){
         m_imgSettingsDialog->deleteLater();
 }
 
+CameraImageSettings *ICameraDriver::getCameraImageSettings()
+{
+    return m_cameraInfo.imageSettings();
+}
+
 
 QList<CameraInfo::CameraInfoFunct> ICameraDriver::getCameraFunctions()
 {

@@ -81,6 +81,7 @@ private:
     KitConfigDialog*        m_configDiag;
     KitConfigManager        m_kitConfig;
     KitInSessionDialog*     m_sessionDiag;
+
 };
 
 #endif // MAINKITWINDOW_H

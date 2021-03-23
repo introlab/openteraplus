@@ -5,10 +5,11 @@
 
 #include "GlobalMessageBox.h"
 
-KitVideoRehabWidget::KitVideoRehabWidget(KitConfigManager *kitConfig, QWidget *parent) :
+KitVideoRehabWidget::KitVideoRehabWidget(KitConfigManager *kitConfig, ParticipantComManager *partCom, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::KitVideoRehabWidget),
-    m_kitConfig(kitConfig)
+    m_kitConfig(kitConfig),
+    m_partComManager(partCom)
 {
     ui->setupUi(this);
 
@@ -66,8 +67,8 @@ void KitVideoRehabWidget::initUi()
     connect(m_webPage->getSharedObject(), &SharedObject::generalErrorOccured, this, &KitVideoRehabWidget::webPageGeneralError);
 
     // Set current user informations
-    //m_webPage->getSharedObject()->setContactInformation(m_comManager->getCurrentUser().getName(),
-    //                                                    m_comManager->getCurrentUser().getUuid());
+    m_webPage->getSharedObject()->setContactInformation(m_partComManager->getCurrentParticipant().getName(),
+                                                        m_partComManager->getCurrentParticipant().getUuid());
 
     // Build shared object from kit config
 

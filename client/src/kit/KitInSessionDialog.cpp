@@ -1,10 +1,11 @@
 #include "KitInSessionDialog.h"
 #include "ui_KitInSessionDialog.h"
 
-KitInSessionDialog::KitInSessionDialog(KitConfigManager *kitConfig, QWidget *parent) :
+KitInSessionDialog::KitInSessionDialog(KitConfigManager *kitConfig, ParticipantComManager *partCom, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::KitInSessionDialog),
-    m_kitConfig(kitConfig)
+    m_kitConfig(kitConfig),
+    m_partComManager(partCom)
 {
     ui->setupUi(this);
     m_serviceWidget = nullptr;
@@ -29,7 +30,7 @@ void KitInSessionDialog::initUi()
     QString service_key = m_kitConfig->getServiceKey();
 
     if (service_key == "VideoRehabService"){
-        m_serviceWidget = new KitVideoRehabWidget(m_kitConfig, this);
+        m_serviceWidget = new KitVideoRehabWidget(m_kitConfig, m_partComManager, this);
         setMainWidget(m_serviceWidget);
     }else{
         GlobalMessageBox msg_box;

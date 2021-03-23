@@ -16,6 +16,8 @@ public:
     virtual void getCameraInfo(CameraRequest infoRequested) = 0;
     virtual void setCameraInfo(CameraInfo info) = 0;
 
+    CameraImageSettings* getCameraImageSettings();
+
     QList<CameraInfo::CameraInfoFunct> getCameraFunctions();
     bool hasCameraFunction(CameraInfo::CameraInfoFunct funct);
 

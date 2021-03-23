@@ -1,8 +1,6 @@
 find_package(Qt5Core REQUIRED)
 message(STATUS "Entering package directory.")
 
-
-
 include(InstallRequiredSystemLibraries)
 get_target_property(_qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
 
@@ -25,6 +23,13 @@ if (APPLE)
 endif(APPLE)
 
 if (WIN32)
+    # Create files for installation
+    add_custom_target(windows_deploy_qt
+        # Collect and copy required dependencies
+        COMMAND ${qt5_install_prefix}/bin/windeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/OpenTeraPlus.exe" --release --dir "${CMAKE_INSTALL_PREFIX}/qtdeploy"
+        COMMENT "Running windeployqt ..."
+    )
+
     set(CPACK_PACKAGE_NAME "OpenTeraPlus")
     set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus_${CPACK_PACKAGE_VERSION}_setup)
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenTeraPlus - Installateur")
@@ -55,14 +60,12 @@ if (WIN32)
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} special_configuration)
         set(CPACK_COMPONENT_SPECIAL_CONFIGURATION_DISPLAY_NAME "Fichier de configuration")
         install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json DESTINATION bin/config COMPONENT special_configuration)
-
     endif()
 
-    # Create files for installation
-    add_custom_target(windows_deploy_qt
-        # Collect and copy required dependencies
-        COMMAND ${qt5_install_prefix}/bin/windeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/OpenTeraPlus.exe" --release --dir "${CMAKE_INSTALL_PREFIX}/qtdeploy"
-    )
+    # Virtual camera driver
+    # list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\bin\\\\installDriver.exe'")
+    # list(APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\bin\\\\uninstallDriver.exe'")
+
 
     # add SSL librariesOpenSSL\Win_x64\bin
     # file(GLOB OPENSSL_LIBRARIES "${qt5_install_prefix}/../../Tools/OpenSSL/Win_x64/bin/*.dll")
@@ -82,7 +85,7 @@ if (WIN32)
     SET(CPACK_NSIS_MODIFY_PATH OFF)
     SET(CPACK_NSIS_EXECUTABLES_DIRECTORY .)
     SET(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-    SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "bin\\\\OpenTeraPlus")
+    SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "bin\\\\OpenTeraPlus.exe")
 
     SET(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/introlab/openteraplus")
     SET(CPACK_NSIS_CONTACT "simon.briere@usherbrooke.ca")

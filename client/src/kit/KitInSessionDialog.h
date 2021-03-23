@@ -8,6 +8,8 @@
 #include "KitConfigManager.h"
 #include "KitVideoRehabWidget.h"
 
+#include "managers/ParticipantComManager.h"
+
 namespace Ui {
 class KitInSessionDialog;
 }
@@ -17,7 +19,7 @@ class KitInSessionDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit KitInSessionDialog(KitConfigManager *kitConfig, QWidget *parent = nullptr);
+    explicit KitInSessionDialog(KitConfigManager *kitConfig, ParticipantComManager* partCom, QWidget *parent = nullptr);
     ~KitInSessionDialog();
 
 private slots:
@@ -32,6 +34,8 @@ private:
 
     KitConfigManager*       m_kitConfig;
     KitVideoRehabWidget*    m_serviceWidget;
+
+    ParticipantComManager*  m_partComManager;
 };
 
 #endif // KITINSESSIONDIALOG_H

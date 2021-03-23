@@ -8,6 +8,7 @@
 #include <QWebEngineSettings>
 
 #include "services/VideoRehabService/VideoRehabWebPage.h"
+#include "managers/ParticipantComManager.h"
 
 #include "KitConfigManager.h"
 
@@ -27,7 +28,7 @@ class KitVideoRehabWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit KitVideoRehabWidget(KitConfigManager* kitConfig, QWidget *parent = nullptr);
+    explicit KitVideoRehabWidget(KitConfigManager* kitConfig, ParticipantComManager* partCom, QWidget *parent = nullptr);
     ~KitVideoRehabWidget();
 
     void initUi();
@@ -65,6 +66,7 @@ private:
     QMovie*                 m_loadingIcon;
     VirtualCameraThread*    m_virtualCamThread;
     KitConfigManager*       m_kitConfig;
+    ParticipantComManager*  m_partComManager;
 };
 
 #endif // KITVIDEOREHABWIDGET_H

@@ -93,7 +93,7 @@ endif()
 #Will output in the right directory
 FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin/AvKysPlugins)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin/AvKysPlugins)
-SET (AVKYS_LIBRARY_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/bin/AvKysPlugins)
+SET (AVKYS_LIBRARY_INSTALL_PATH bin/AvKysPlugins)
 
 add_subdirectory(MultiSrc)
 
