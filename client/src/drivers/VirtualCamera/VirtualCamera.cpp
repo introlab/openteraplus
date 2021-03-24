@@ -19,8 +19,14 @@ VirtualCamera::VirtualCamera(QObject *parent)
     //Tell the library where to look for plugins
     //TODO Hardcoded for now...
     QStringList searchPaths;
-    //searchPaths << QDir::currentPath() + "/AvKysPlugins";
+    searchPaths << QDir::currentPath() + "/AvKysPlugins";
     searchPaths << AVKYS_PLUGIN_DIRECTORY;
+    /*QDir dir;
+    if (!dir.exists(AVKYS_PLUGIN_DIRECTORY)){
+        qDebug() << "Setting AVKYS plugin directory to: " +  QDir::currentPath() + "/AvKysPlugins";
+        searchPaths <<  QDir::currentPath() + "/AvKysPlugins";
+    }*/
+
     AkElement::setSearchPaths(searchPaths);
 
 
