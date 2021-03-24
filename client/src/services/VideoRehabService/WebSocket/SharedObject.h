@@ -12,6 +12,7 @@
 
 #include "drivers/PTZ/ICameraDriver.h"
 #include "drivers/PTZ/Vivotek8111.h"
+#include "drivers/PTZ/CamImageSettingsDialog.h"
 
 //#include "camsettings.h"
 
@@ -122,6 +123,9 @@ signals:
     void startRecordingRequested();
     void stopRecordingRequested();
 
+private slots:
+    void camImageSettingsChanged();
+
 private:
     ICameraDriver* m_ptzCameraDriver;
 
@@ -153,6 +157,8 @@ protected:
     QString m_camPTZName;
 
     bool    m_pageIsReady;
+
+    CamImageSettingsDialog* m_imgSettingsDialog;
 
 };
 

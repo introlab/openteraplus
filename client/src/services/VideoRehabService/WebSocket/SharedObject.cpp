@@ -355,10 +355,25 @@ void SharedObject::dataForwardReceived(QString json){
                 m_ptzCameraDriver->setImageSettings(settings);
             else{
                 // TODO: Display cam settings dialog detached from ptzDriver
+                if (m_imgSettingsDialog)
+                    m_imgSettingsDialog->deleteLater();
+
+                m_imgSettingsDialog = new CamImageSettingsDialog();
+                m_imgSettingsDialog->setFromCameraInfo(settings);
+                m_imgSettingsDialog->setTargetUUID(obj.value("owner_uuid").toString());
+
+                connect(m_imgSettingsDialog, &CamImageSettingsDialog::settingsChanged, this, &SharedObject::camImageSettingsChanged);
+                m_imgSettingsDialog->setModal(true);
+                m_imgSettingsDialog->show();
             }
         }
 
     }
+}
+
+void SharedObject::camImageSettingsChanged(){
+    CameraImageSettings settings =  m_imgSettingsDialog->getCurrentImageSettings();
+    sendCameraSettings(m_imgSettingsDialog->getTargetUUID(), settings, m_imgSettingsDialog->getTargetUUID());
 }
 
 void SharedObject::setLocalMirror(const bool &mirror){
