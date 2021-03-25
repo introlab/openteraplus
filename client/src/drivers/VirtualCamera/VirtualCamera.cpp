@@ -1,6 +1,7 @@
 #include "VirtualCamera.h"
 #include <QDir>
 #include <QDebug>
+#include <QCoreApplication>
 
 VirtualCamera::VirtualCamera(QObject *parent)
     : QObject(parent)
@@ -19,7 +20,8 @@ VirtualCamera::VirtualCamera(QObject *parent)
     //Tell the library where to look for plugins
     //TODO Hardcoded for now...
     QStringList searchPaths;
-    searchPaths << QDir::currentPath() + "/AvKysPlugins";
+    //searchPaths << QDir::currentPath() + "/AvKysPlugins";
+    searchPaths << QCoreApplication::applicationDirPath() + "/AvKysPlugins";
     searchPaths << AVKYS_PLUGIN_DIRECTORY;
     /*QDir dir;
     if (!dir.exists(AVKYS_PLUGIN_DIRECTORY)){
