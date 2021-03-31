@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QStyledItemDelegate>
 #include <QListWidgetItem>
+#include <QFileDialog>
+#include <QStandardPaths>
 
 #include "managers/ComManager.h"
 #include "KitConfigManager.h"
@@ -50,9 +52,17 @@ private slots:
     void on_cmbServices_currentIndexChanged(int index);
     void on_btnSaveConfig_clicked();
 
+    void on_chkTechSup_stateChanged(int arg1);
+
+    void on_btnTechSup_clicked();
+
+    void on_txtTechSup_textChanged(const QString &arg1);
+
 private:
     void initUi();
     void connectSignals();
+
+    void updateSaveButtonState();
 
     void setStatusMessage(QString msg, bool error = false);
 

@@ -13,6 +13,7 @@ MainKitWindow::MainKitWindow(ConfigManagerClient *config, QWidget *parent) :
     m_configDiag = nullptr;
     m_partComManager = nullptr;
     m_sessionDiag = nullptr;
+    m_techSupProcess = nullptr;
 
     // Load config file
     loadConfig();
@@ -227,6 +228,9 @@ void MainKitWindow::initUi()
 
     ui->btnOnOff->setEnabled(!m_kitConfig.getParticipantToken().isEmpty());
 
+    ui->frameTechSup->setVisible(!m_kitConfig.getTechSupportClient().isEmpty());
+    ui->lblTechSup->hide();
+
 
 }
 
@@ -431,4 +435,29 @@ void MainKitWindow::on_btnConfig_clicked()
 void MainKitWindow::on_btnOnOff_clicked()
 {
     showInSessionDialog();
+}
+
+void MainKitWindow::on_btnTechSupport_clicked()
+{
+    if (ui->btnTechSupport->isChecked()){
+        ui->btnTechSupport->setText(tr("Arrêter support"));
+        ui->lblTechSup->show();
+        // Start process
+        if (m_techSupProcess)
+            m_techSupProcess->deleteLater();
+        m_techSupProcess = new QProcess(this);
+        m_techSupProcess->setProgram(m_kitConfig.getTechSupportClient());
+        m_techSupProcess->start();
+
+    }else{
+        ui->btnTechSupport->setText(tr("Support technique"));
+        ui->lblTechSup->hide();
+        if (m_techSupProcess){
+            m_techSupProcess->terminate();
+            m_techSupProcess->waitForFinished(10000);
+            m_techSupProcess->deleteLater();
+            m_techSupProcess = nullptr;
+        }
+    }
+
 }

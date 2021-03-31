@@ -71,6 +71,7 @@ private:
 
     void updateCalendars(QDate left_date);
     QDate getMinimumSessionDate();
+    QDate getMaximumSessionDate();
 
 private slots:
     void processFormsReply(QString form_type, QString data);

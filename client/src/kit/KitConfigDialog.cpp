@@ -202,7 +202,8 @@ void KitConfigDialog::processFormsReply(QString form_type, QString data)
 
 void KitConfigDialog::configFormDirty(bool dirty)
 {
-    ui->btnSaveConfig->setEnabled(dirty);
+    Q_UNUSED(dirty)
+    updateSaveButtonState();
 }
 
 void KitConfigDialog::configFormValueChanged(QWidget *wdg, QVariant value)
@@ -236,6 +237,7 @@ void KitConfigDialog::configFormValueChanged(QWidget *wdg, QVariant value)
 void KitConfigDialog::initUi()
 {
     ui->lblStatus->hide();
+    ui->frameTechSup->hide();
 
     ui->cmbSites->setItemDelegate(new QStyledItemDelegate());
     ui->cmbProjects->setItemDelegate(new QStyledItemDelegate());
@@ -243,6 +245,10 @@ void KitConfigDialog::initUi()
     ui->cmbServices->setItemDelegate(new QStyledItemDelegate());
 
     ui->btnUnsetParticipant->setEnabled(!m_kitConfig->getParticipantToken().isEmpty());
+    ui->chkTechSup->setChecked(!m_kitConfig->getTechSupportClient().isEmpty());
+    ui->chkTechSup->setProperty("initial_value", ui->btnTechSup->isChecked());
+    ui->txtTechSup->setText(m_kitConfig->getTechSupportClient());
+    ui->txtTechSup->setProperty("initial_value", ui->txtTechSup->text());
 
     ui->tabSections->setCurrentIndex(0);
 }
@@ -262,6 +268,13 @@ void KitConfigDialog::connectSignals()
     connect(ui->wdgDeviceConfig, &TeraForm::formIsNowDirty,         this, &KitConfigDialog::configFormDirty);
     connect(ui->wdgDeviceConfig, &TeraForm::widgetValueHasChanged,  this, &KitConfigDialog::configFormValueChanged);
 
+}
+
+void KitConfigDialog::updateSaveButtonState()
+{
+    ui->btnSaveConfig->setEnabled(ui->wdgDeviceConfig->isDirty() ||
+                                  ui->chkTechSup->isChecked() != ui->chkTechSup->property("initial_value").toBool() ||
+                                  ui->txtTechSup->text() != ui->txtTechSup->property("initial_value").toString());
 }
 
 void KitConfigDialog::setStatusMessage(QString msg, bool error)
@@ -479,10 +492,45 @@ void KitConfigDialog::on_btnSaveConfig_clicked()
     //QString config = ui->wdgDeviceConfig->getFormData(true);
     QJsonDocument config = ui->wdgDeviceConfig->getFormDataJson(true);
     m_kitConfig->setKitConfig(config["service_config_config"].toObject().toVariantHash());
+    QString tech_sup_client;
+    if (ui->chkTechSup->isChecked() && !ui->txtTechSup->text().isEmpty()){
+        tech_sup_client = ui->txtTechSup->text();
+    }
+    m_kitConfig->setTechSupportClient(tech_sup_client);
     m_kitConfig->saveConfig();
+
+    ui->chkTechSup->setProperty("initial_value", ui->chkTechSup->isChecked());
+    ui->txtTechSup->setProperty("initial_value", ui->txtTechSup->text());
 
     ui->btnSaveConfig->setEnabled(false);
     GlobalMessageBox msg;
     msg.showInfo(tr("Sauvegarde complétée"), tr("La configuration du kit a été sauvegardée") + ".");
 
+}
+
+void KitConfigDialog::on_chkTechSup_stateChanged(int arg1)
+{
+    Q_UNUSED(arg1)
+
+    ui->frameTechSup->setVisible(ui->chkTechSup->isChecked());
+    updateSaveButtonState();
+}
+
+void KitConfigDialog::on_btnTechSup_clicked()
+{
+    QStringList base_paths = QStandardPaths::standardLocations(QStandardPaths::RuntimeLocation);
+    QString base_path = base_paths.first();
+    QString filename = QFileDialog::getOpenFileName(this, tr("Sélectionnez le logiciel à lancer lors du support technique"), base_path);
+
+    if (!filename.isEmpty()){
+        ui->txtTechSup->setText(filename);
+    }
+
+}
+
+void KitConfigDialog::on_txtTechSup_textChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1)
+
+    updateSaveButtonState();
 }

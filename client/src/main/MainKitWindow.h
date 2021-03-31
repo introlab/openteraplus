@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStandardPaths>
 #include <QTextDocumentFragment>
+#include <QProcess>
 
 #include "managers/ComManager.h"
 #include "managers/ParticipantComManager.h"
@@ -59,6 +60,8 @@ private slots:
 
     void on_btnOnOff_clicked();
 
+    void on_btnTechSupport_clicked();
+
 private:
     void setWindowOnTop(bool top);
     void initUi();
@@ -81,6 +84,7 @@ private:
     KitConfigDialog*        m_configDiag;
     KitConfigManager        m_kitConfig;
     KitInSessionDialog*     m_sessionDiag;
+    QProcess*               m_techSupProcess;
 
 };
 

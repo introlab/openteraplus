@@ -488,10 +488,11 @@ void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
 
     // Update calendar view
     currentTypeFiltersChanged(nullptr);
-    updateCalendars(getMinimumSessionDate());
+    updateCalendars(getMaximumSessionDate().addMonths(-2));
+    //updateCalendars(getMinimumSessionDate());
     ui->calMonth1->setData(m_ids_sessions.values());
     ui->calMonth2->setData(m_ids_sessions.values());
-    ui->calMonth2->setData(m_ids_sessions.values());
+    ui->calMonth3->setData(m_ids_sessions.values());
 }
 
 void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
@@ -605,7 +606,7 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
             // Update calendars
             ui->calMonth1->setData(m_ids_sessions.values());
             ui->calMonth2->setData(m_ids_sessions.values());
-            ui->calMonth2->setData(m_ids_sessions.values());
+            ui->calMonth3->setData(m_ids_sessions.values());
         }
     }
 
@@ -919,7 +920,7 @@ void ParticipantWidget::updateCalendars(QDate left_date){
     // Check if we must enable the previous month button
     QDate min_date = getMinimumSessionDate();
 
-    if (ui->calMonth1->yearShown()==min_date.year() && ui->calMonth1->monthShown()==min_date.month())
+    if (ui->calMonth1->yearShown()<=min_date.year() && ui->calMonth1->monthShown()<=min_date.month())
         ui->btnPrevCal->setEnabled(false);
     else
         ui->btnPrevCal->setEnabled(true);
@@ -937,6 +938,20 @@ QDate ParticipantWidget::getMinimumSessionDate()
 
     return min_date;
 }
+
+QDate ParticipantWidget::getMaximumSessionDate()
+{
+    QDate max_date = QDate::currentDate();
+    for (TeraData* session:m_ids_sessions.values()){
+        QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
+        if (session_date > max_date)
+            max_date = session_date;
+    }
+
+    return max_date;
+}
+
+
 
 void ParticipantWidget::displayNextMonth(){
     QDate new_date;

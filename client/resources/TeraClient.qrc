@@ -139,5 +139,7 @@
         <file>controls/grey_button.png</file>
         <file>controls/red_button.png</file>
         <file>controls/yellow_button.png</file>
+        <file>controls/blue_button.png</file>
+        <file>controls/blue_button_pressed.png</file>
     </qresource>
 </RCC>

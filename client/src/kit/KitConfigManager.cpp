@@ -13,7 +13,7 @@ KitConfigManager::KitConfigManager(QString filename, QObject *parent) : ConfigMa
 
 void KitConfigManager::initConfig()
 {
-    ConfigManager::initConfig(QStringList() << "Participant" << "KitConfig");
+    ConfigManager::initConfig(QStringList() << "Participant" << "KitConfig" << "TechSupport");
 }
 
 QString KitConfigManager::getParticipantToken()
@@ -108,6 +108,27 @@ void KitConfigManager::setServiceKey(const QString &service_key)
         QJsonObject participant = config["Participant"].toObject();
         participant.insert("service_key", service_key);
         config["Participant"] = participant;
+        m_config.setObject(config);
+    }
+}
+
+QString KitConfigManager::getTechSupportClient()
+{
+    QString rval = "";
+    if (!m_config.isNull()){
+        QHash<QString, QVariant> settings = m_config["TechSupport"].toObject().toVariantHash();
+        rval = settings["client_path"].toString();
+    }
+    return rval;
+}
+
+void KitConfigManager::setTechSupportClient(const QString &client)
+{
+    if (!m_config.isNull()){
+        QJsonObject config = m_config.object();
+        QJsonObject tech_sup = config["TechSupport"].toObject();
+        tech_sup.insert("client_path", client);
+        config["TechSupport"] = tech_sup;
         m_config.setObject(config);
     }
 }

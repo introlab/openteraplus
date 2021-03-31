@@ -27,6 +27,9 @@ public:
     QString         getServiceKey();
     void            setServiceKey(const QString& service_key);
 
+    QString         getTechSupportClient();
+    void            setTechSupportClient(const QString& client);
+
 };
 
 #endif // KITCONFIGMANAGER_H
