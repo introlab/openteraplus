@@ -447,13 +447,15 @@ void MainKitWindow::on_btnTechSupport_clicked()
             m_techSupProcess->deleteLater();
         m_techSupProcess = new QProcess(this);
         m_techSupProcess->setProgram(m_kitConfig.getTechSupportClient());
+        QFileInfo fi(m_kitConfig.getTechSupportClient());
+        m_techSupProcess->setWorkingDirectory(fi.canonicalPath());
         m_techSupProcess->start();
 
     }else{
         ui->btnTechSupport->setText(tr("Support technique"));
         ui->lblTechSup->hide();
         if (m_techSupProcess){
-            m_techSupProcess->terminate();
+            m_techSupProcess->kill();
             m_techSupProcess->waitForFinished(10000);
             m_techSupProcess->deleteLater();
             m_techSupProcess = nullptr;
