@@ -64,6 +64,8 @@ private:
     int getParticipantProjectId(QTreeWidgetItem *part_item);
     int getParticipantGroupId(QTreeWidgetItem *part_item);
 
+    bool isParticipantFiltered(const QString &part_uuid);
+
     void updateAvailableActions(QTreeWidgetItem *current_item);
     TeraDataTypes getItemType(QTreeWidgetItem* item);
 
@@ -98,6 +100,10 @@ private slots:
      void btnEditSite_clicked();
 
      void on_btnFilterActive_toggled(bool checked);
+
+     void on_btnSearch_toggled(bool checked);
+
+     void on_txtNavSearch_textChanged(const QString &search_text);
 
 signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);

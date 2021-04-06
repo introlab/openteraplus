@@ -38,6 +38,9 @@ void ProjectNavigator::setComManager(ComManager *comMan)
 
 void ProjectNavigator::initUi()
 {
+    // Hide search frame
+    ui->frameSearch->hide();
+
     // Initialize new items menu
     m_newItemMenu = new QMenu();
     QAction* new_action = addNewItemAction(TERADATA_PROJECT, tr("Projet"));
@@ -467,7 +470,7 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     m_participants[participant->getUuid()] = *participant;
 
     // Apply filter, if needed
-    item->setHidden(!participant->isEnabled()  && ui->btnFilterActive->isChecked());
+    item->setHidden(isParticipantFiltered(participant->getUuid()));
 
 }
 
@@ -494,6 +497,28 @@ int ProjectNavigator::getParticipantGroupId(QTreeWidgetItem *part_item)
             return m_groups_items.key(current_item);
     }
     return -1;
+}
+
+bool ProjectNavigator::isParticipantFiltered(const QString &part_uuid)
+{
+    // No participant with that uuid!
+    if (!m_participants.contains(part_uuid))
+        return true;
+
+    bool filtered = false;
+
+    // Check for "active only" button
+    if (ui->btnFilterActive->isChecked()){
+        bool active = m_participants[part_uuid].isEnabled();
+        filtered = !active;
+    }
+
+    // Check for text filtering
+    if (ui->btnSearch->isChecked() && !filtered){
+        filtered = !m_participants[part_uuid].getName().contains(ui->txtNavSearch->text(), Qt::CaseInsensitive);
+    }
+
+    return filtered;
 }
 
 void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
@@ -830,13 +855,32 @@ void ProjectNavigator::btnEditSite_clicked()
 
 void ProjectNavigator::on_btnFilterActive_toggled(bool checked)
 {
+    Q_UNUSED(checked)
     for (int i=0; i<m_participants.count(); i++){
-        bool active = m_participants.values().at(i).isEnabled();
-        bool hide = !active && checked;
+        bool filtered = isParticipantFiltered(m_participants.values().at(i).getUuid());
         QTreeWidgetItem* item = m_participants_items[m_participants.values().at(i).getId()];
         if (item){
-            item->setHidden(hide);
+            item->setHidden(filtered);
         }
     }
 
+}
+
+void ProjectNavigator::on_btnSearch_toggled(bool checked)
+{
+    ui->frameSearch->setVisible(checked);
+    if (!checked)
+        ui->txtNavSearch->clear();
+}
+
+void ProjectNavigator::on_txtNavSearch_textChanged(const QString &search_text)
+{
+    Q_UNUSED(search_text)
+
+    // Apply filters
+    foreach(QString part_uuid, m_participants.keys()){
+        QTreeWidgetItem* item = m_participants_items[m_participants[part_uuid].getId()];
+        if (item)
+            item->setHidden(isParticipantFiltered(part_uuid));
+    }
 }

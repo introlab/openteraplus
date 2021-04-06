@@ -561,7 +561,7 @@ QPushButton#btnEditUser::hover, QPushButton#btnConfig::hover{
     color:black;
 }
 
-QToolButton#btnVideo:!checked, QToolButton#btnLog:!checked, QToolButton#btnFilterActive:!checked{
+QToolButton#btnVideo:!checked, QToolButton#btnLog:!checked, QToolButton#btnFilterActive:!checked, QToolButton#btnSearch:!checked{
     color:white;
     background-color: transparent;
     border: 1px solid rgb(120,120,120);
@@ -574,14 +574,14 @@ QToolButton#btnLog:!checked, QToolButton#btnInSessionInfos:!checked{
     border: 0px;
 }
 
-QToolButton#btnVideo:checked, QToolButton#btnLog:checked, QToolButton#btnInSessionInfos:checked{
+QToolButton#btnVideo:checked, QToolButton#btnLog:checked, QToolButton#btnInSessionInfos:checked, QToolButton#btnSearch:checked, QToolButton#btnFilterActive:checked{
     color:black;
     background-color: gray;
     /*border: 2px solid white;*/
     border: 0px;
 }
 
-QLineEdit#txtPartSearch{
+QLineEdit#txtPartSearch, QLineEdit#txtNavSearch{
     color: white;
     background-color: rgba(0,0,0,15%);
 }
