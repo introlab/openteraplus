@@ -322,7 +322,8 @@ void OnlineManagerWidget::processOnlineUsers(QList<TeraData> users)
            createOnlineUser(online_user.getUuid(), online_user.getName());
         }
         TeraData* user_data = &m_onlineUsersData[online_user.getUuid()];
-        user_data->setOnline(true);
+        user_data->setOnline(online_user.isOnline());
+        user_data->setBusy(online_user.isBusy());
         updateOnlineUser(user_data);
     }
     updateCounts();
@@ -335,7 +336,8 @@ void OnlineManagerWidget::processOnlineParticipants(QList<TeraData> participants
            createOnlineParticipant(online_participant.getUuid(), online_participant.getName());
         }
         TeraData* part_data = &m_onlineParticipantsData[online_participant.getUuid()];
-        part_data->setOnline(true);
+        part_data->setOnline(online_participant.isOnline());
+        part_data->setBusy(online_participant.isBusy());
         updateOnlineParticipant(part_data);
     }
     updateCounts();
@@ -348,7 +350,8 @@ void OnlineManagerWidget::processOnlineDevices(QList<TeraData> devices)
            createOnlineDevice(online_device.getUuid(), online_device.getName());
         }
         TeraData* device_data = &m_onlineDevicesData[online_device.getUuid()];
-        device_data->setOnline(true);
+        device_data->setOnline(online_device.isOnline());
+        device_data->setBusy(online_device.isBusy());
         updateOnlineDevice(device_data);
     }
     updateCounts();

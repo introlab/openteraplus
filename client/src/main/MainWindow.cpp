@@ -363,7 +363,8 @@ void MainWindow::addGlobalEvent(GlobalEvent event)
     // Create new table items and add to event table
     QTableWidgetItem* icon_item = new QTableWidgetItem(event_icon, "");
     QTableWidgetItem* time_item = new QTableWidgetItem(QTime::currentTime().toString("hh:mm:ss"));
-    QTableWidgetItem* desc_item = new QTableWidgetItem(event.getEventText());
+    QTableWidgetItem* desc_item = new QTableWidgetItem(QTextDocumentFragment::fromHtml(event.getEventText()).toPlainText());
+    desc_item->setData(Qt::UserRole, event.getEventText());
     //ui->tableHistory->insertRow(0);
     ui->tableHistory->insertRow(ui->tableHistory->rowCount());
     int current_row = ui->tableHistory->rowCount()-1; //0
@@ -919,7 +920,7 @@ void MainWindow::on_tableHistory_itemDoubleClicked(QTableWidgetItem *item)
     GlobalMessageBox msg_box;
     int row = item->row();
     QString date_str = ui->tableHistory->item(row,1)->text();
-    QString event_str = ui->tableHistory->item(row,2)->text();
+    QString event_str = ui->tableHistory->item(row,2)->data(Qt::UserRole).toString();
     QIcon icon = ui->tableHistory->item(row,0)->icon();
 
     msg_box.showInfo(tr("Détails"), date_str + " - " + event_str, &icon);
