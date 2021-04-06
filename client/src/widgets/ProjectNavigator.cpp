@@ -466,6 +466,9 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     }*/
     m_participants[participant->getUuid()] = *participant;
 
+    // Apply filter, if needed
+    item->setHidden(!participant->isEnabled()  && ui->btnFilterActive->isChecked());
+
 }
 
 int ProjectNavigator::getParticipantProjectId(QTreeWidgetItem *part_item)
@@ -823,4 +826,17 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
 void ProjectNavigator::btnEditSite_clicked()
 {
     emit dataDisplayRequest(TERADATA_SITE, m_currentSiteId);
+}
+
+void ProjectNavigator::on_btnFilterActive_toggled(bool checked)
+{
+    for (int i=0; i<m_participants.count(); i++){
+        bool active = m_participants.values().at(i).isEnabled();
+        bool hide = !active && checked;
+        QTreeWidgetItem* item = m_participants_items[m_participants.values().at(i).getId()];
+        if (item){
+            item->setHidden(hide);
+        }
+    }
+
 }

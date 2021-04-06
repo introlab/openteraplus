@@ -97,6 +97,8 @@ private slots:
      void navItemExpanded(QTreeWidgetItem* item);
      void btnEditSite_clicked();
 
+     void on_btnFilterActive_toggled(bool checked);
+
 signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);
      void dataDeleteRequest(TeraDataTypes data_type, int data_id);

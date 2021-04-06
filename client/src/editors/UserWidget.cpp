@@ -320,7 +320,7 @@ bool UserWidget::validateUserGroups()
                 break;
             }
         }
-        if (!at_least_one_selected){
+        if (!at_least_one_selected && !ui->wdgUser->getFieldValue("user_superadmin").toBool()){
             // Warning: that user not having any user group meaning that it will be not available to the current user
             GlobalMessageBox msgbox;
             msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
@@ -429,11 +429,13 @@ void UserWidget::processFormsReply(QString form_type, QString data)
             }
 
             // Disable super admin field if not super admin itself!
-            QWidget* item = ui->wdgUser->getWidgetForField("user_superadmin");
+            /*QWidget* item = ui->wdgUser->getWidgetForField("user_superadmin");
             if (item){
                 item->setVisible(m_comManager->isCurrentUserSuperAdmin());
 
-            }
+            }*/
+            if (!m_comManager->isCurrentUserSuperAdmin())
+                ui->wdgUser->hideField("user_superadmin");
         }
 
         return;
