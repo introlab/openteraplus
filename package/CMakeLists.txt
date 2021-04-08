@@ -17,7 +17,7 @@ if (APPLE)
 
     set(CPACK_GENERATOR "DragNDrop")
     set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus-${CPACK_PACKAGE_VERSION})
-    set(CPACK_DMG_FORMAT UDRO)
+    set(CPACK_DMG_FORMAT UDZO)
 
     include(CPack REQUIRED)
 
