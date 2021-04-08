@@ -62,7 +62,7 @@ endif(MSVC)
 
 
 # Install target
-install(TARGETS opentera_shared DESTINATION bin)
+install(TARGETS opentera_shared DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 set(OPENTERA_SHARED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/data CACHE INTERNAL "doc string")
 set(OPENTERA_SHARED_LIBS "opentera_shared" CACHE INTERNAL "doc string")

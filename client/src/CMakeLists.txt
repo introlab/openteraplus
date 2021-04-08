@@ -306,11 +306,10 @@ target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_L
 target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
 target_link_libraries(OpenTeraPlus ${PTZ_DRIVERS_LIBS})
 
-if (WIN32)
-    set_target_properties(OpenTeraPlus PROPERTIES
-            INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
-            INSTALL_RPATH_USE_LINK_PATH TRUE)
-endif()
+
+set_target_properties(OpenTeraPlus PROPERTIES
+        INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/OpenTeraPlus.app/Contents/bin
+        INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # Automatic generation of ts files on target
 # Remove if you don't want to generate translations every time.

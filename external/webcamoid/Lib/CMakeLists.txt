@@ -49,5 +49,5 @@ qt5_use_modules(AvKys Core Concurrent Gui Qml)
 set(AVKYS_LIBS AvKys CACHE INTERNAL "doc string")
 set(AVKYS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src CACHE INTERNAL "doc string")
 
-install(TARGETS AvKys DESTINATION bin)
+install(TARGETS AvKys DESTINATION ${CMAKE_INSTALL_BINDIR})
 
