@@ -6,8 +6,11 @@ set(AVKYS_LIB_DIR "lib")
 set(AVKYS_COMMONS_TARGET "AvKysPlugins")
 add_definitions(-DQT_INSTALL_QML="./" -DLIBDIR="${AVKYS_LIB_DIR}" -DCOMMONS_TARGET="${AVKYS_COMMONS_TARGET}")
 
+
+
 SET (EXECUTABLE_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin)
 SET (LIBRARY_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin)
+
 
 set(AVKYS_LIBS AvKys CACHE INTERNAL "doc string")
 set(AVKYS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src/qml CACHE INTERNAL "doc string")
@@ -16,4 +19,7 @@ set(AVKYS_PLUGIN_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/${AVKYS_COMMONS_TARGET} CAC
 
 add_subdirectory(Lib)
 add_subdirectory(Plugins)
-add_subdirectory(Driver)
+
+if (WIN32)
+    add_subdirectory(Driver)
+endif(WIN32)

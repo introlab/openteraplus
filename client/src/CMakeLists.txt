@@ -285,11 +285,11 @@ include_directories(
 SET(icon openteraico.rc)
 
 # Will be used in Info.plist.in
-set(MACOSX_BUNDLE_INFO_STRING "OpenTeRa+")
+set(MACOSX_BUNDLE_INFO_STRING "OpenTeraPlus")
 set(MACOSX_BUNDLE_ICON_FILE "OpenTeraPlus.icns")
-set(MACOSX_BUNDLE_GUI_IDENTIFIER "OpenTeRa+")
+set(MACOSX_BUNDLE_GUI_IDENTIFIER "OpenTeraPlus")
 set(MACOSX_BUNDLE_LONG_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
-set(MACOSX_BUNDLE_BUNDLE_NAME "OpenTeRa")
+set(MACOSX_BUNDLE_BUNDLE_NAME "OpenTeraPlus")
 set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
 set(MACOSX_BUNDLE_BUNDLE_VERSION "${CPACK_PACKAGE_VERSION}")
 set(MACOSX_BUNDLE_COPYRIGHT "IntRolab/CDRV UdeS")
@@ -306,9 +306,11 @@ target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_L
 target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
 target_link_libraries(OpenTeraPlus ${PTZ_DRIVERS_LIBS})
 
-set_target_properties(OpenTeraPlus PROPERTIES
-        INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
-        INSTALL_RPATH_USE_LINK_PATH TRUE)
+if (WIN32)
+    set_target_properties(OpenTeraPlus PROPERTIES
+            INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
+            INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif()
 
 # Automatic generation of ts files on target
 # Remove if you don't want to generate translations every time.
@@ -320,12 +322,18 @@ set_target_properties(OpenTeraPlus PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_C
 #This will copy icon to Resources directory
 set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
-# Install target
-install(TARGETS OpenTeraPlus DESTINATION bin)
+if (APPLE)
+    # Mac bundles...
+    # Install targets
+    install(TARGETS OpenTeraPlus DESTINATION .)
+    # install(TARGETS opentera_messages DESTINATION .)
 
-# Doesn't seem to be installed otherwise??
-install(TARGETS opentera_messages DESTINATION bin)
-
+else(APPLE)
+    # Every other systems
+    # Install target to bin
+    install(TARGETS OpenTeraPlus DESTINATION bin)
+    install(TARGETS opentera_messages DESTINATION bin)
+endif(APPLE)
 
 
 
