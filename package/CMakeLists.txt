@@ -31,6 +31,11 @@ if (APPLE)
     # Deploy before packaging
     add_custom_target(mac-package DEPENDS mac_deploy_qt)
 
+    # Put special configuration file in config/TeraClientConfig.json if desired
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
+        set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS/config")
+    endif()
+
 endif(APPLE)
 
 if (WIN32)
