@@ -286,6 +286,22 @@ void ProjectNavigator::connectSignals()
     connect(ui->btnRefresh, &QToolButton::clicked, this, &ProjectNavigator::refreshRequested);
 }
 
+void ProjectNavigator::clearData(bool clear_state)
+{
+    // Clear all data
+    m_projects_items.clear();
+    m_groups_items.clear();
+    m_participants_items.clear();
+    m_participants.clear();
+    if (clear_state){
+        m_currentProjectId = -1;
+        m_currentGroupId = -1;
+        m_currentParticipantId = -1;
+        m_currentParticipantUuid.clear();
+    }
+    ui->treeNavigator->clear();
+}
+
 void ProjectNavigator::updateSite(const TeraData *site)
 {
     int index = ui->cmbSites->findData(site->getId());
@@ -339,10 +355,11 @@ void ProjectNavigator::updateProject(const TeraData *project)
     item->setText(0, project->getName());
     item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
 
-    /*if (m_currentProjectId != id_project && m_currentProjectId >0 && !m_selectionHold){
-        // Ensure correct project is selected
+    if (m_currentProjectId == id_project && m_currentProjectId >0 && !m_selectionHold){
+        // Load details
         ui->treeNavigator->setCurrentItem(item);
-    }*/
+       item->setExpanded(true);
+    }
 
     //updateAvailableActions(nullptr);
 }
@@ -406,6 +423,7 @@ void ProjectNavigator::updateGroup(const TeraData *group)
 
    if (m_currentGroupId == id_group && m_currentGroupId >0 && !item->isExpanded()){
         // Load groups details
+       ui->treeNavigator->setCurrentItem(item);
        item->setExpanded(true);
     }
 }
@@ -716,9 +734,17 @@ void ProjectNavigator::deleteItemRequested()
 
 void ProjectNavigator::refreshRequested()
 {
-    if (ui->treeNavigator->currentItem()){
+    /*if (ui->treeNavigator->currentItem()){
         currentNavItemChanged(ui->treeNavigator->currentItem(), nullptr);
-    }
+    }*/
+    // Clear all data
+    clearData(false);
+
+    // Query projects for that site
+    QUrlQuery query;
+    query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_currentSiteId));
+    query.addQueryItem(WEB_QUERY_LIST, "true");
+    m_comManager->doQuery(WEB_PROJECTINFO_PATH, query);
 
     emit refreshButtonClicked();
 }
@@ -812,15 +838,7 @@ void ProjectNavigator::currentSiteChanged()
     emit dataDisplayRequest(TERADATA_SITE, m_currentSiteId);
 
     // Clear all data
-    m_projects_items.clear();
-    m_groups_items.clear();
-    m_participants_items.clear();
-    m_participants.clear();
-    m_currentProjectId = -1;
-    m_currentGroupId = -1;
-    m_currentParticipantId = -1;
-    m_currentParticipantUuid.clear();
-    ui->treeNavigator->clear();
+    clearData(true);
 
     // Update UI according to actions availables
     updateAvailableActions(nullptr);

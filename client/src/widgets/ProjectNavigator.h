@@ -76,6 +76,8 @@ private:
 
     void connectSignals();
 
+    void clearData(bool clear_state);
+
     // Ui items
     QList<QAction*> m_newItemActions;
     QMenu*          m_newItemMenu;
