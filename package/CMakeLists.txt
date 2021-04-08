@@ -14,11 +14,21 @@ execute_process(
 message(STATUS "Testing package ${_qt5_qmake_location} ${qt5_install_prefix}")
 
 if (APPLE)
-    add_custom_target(package
+
+    set(CPACK_GENERATOR "DragNDrop")
+    set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus-${CPACK_PACKAGE_VERSION})
+    set(CPACK_DMG_FORMAT UDRO)
+
+    include(CPack REQUIRED)
+
+    add_custom_target(mac_deploy_qt
         COMMAND ${qt5_install_prefix}/bin/macdeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/../.." -always-overwrite
         COMMENT "Running macdeplotqt ..."
         DEPENDS OpenTeraPlus
     )
+
+    # Deploy before packaging
+    add_custom_target(mac-package DEPENDS mac_deploy_qt)
 
 endif(APPLE)
 
@@ -52,7 +62,7 @@ if (WIN32)
     set(CPACK_COMPONENT_LIBPROTOBUF_REQUIRED ON)
 
     set(CPACK_COMPONENT_OPENSSL_DISPLAY_NAME "OpenSSL")
-    set(CPACK_COMPONENT_OPENSSL_REQUIRED ON)    
+    set(CPACK_COMPONENT_OPENSSL_REQUIRED ON)
 
     # Put special configuration file in config/TeraClientConfig.txt if desired
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
