@@ -49,6 +49,7 @@ private:
     int                         m_currentProjectId;
     int                         m_currentGroupId;
     QString                     m_currentParticipantUuid;
+    int                         m_currentParticipantId;
 
     bool                        m_selectionHold;
 

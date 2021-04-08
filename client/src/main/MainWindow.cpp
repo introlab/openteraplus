@@ -194,6 +194,7 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
     if (m_data_editor){
         ui->wdgMainTop->layout()->addWidget(m_data_editor);
         connect(m_data_editor, &DataEditorWidget::dataWasDeleted, this, &MainWindow::dataEditorCancelled);
+        connect(m_data_editor, &DataEditorWidget::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
     }else{
         LOG_ERROR("Unhandled data editor: " + TeraData::getPathForDataType(data_type), "MainWindow::showDataEditor");
     }

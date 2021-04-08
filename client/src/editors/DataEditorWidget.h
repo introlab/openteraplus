@@ -100,6 +100,7 @@ signals:
     void closeRequest();
 
     void dataWasDeleted();
+    void dataDisplayRequest(TeraDataTypes data_type, int data_id);
 
 public slots:
 

@@ -740,3 +740,16 @@ void ProjectWidget::userGroupsEditor_finished()
     m_tableUserGroups_items.clear();
     queryUserGroupsProjectAccess();
 }
+
+void ProjectWidget::on_tableSummary_itemDoubleClicked(QTableWidgetItem *item)
+{
+    QTableWidgetItem* base_item = ui->tableSummary->item(item->row(), 0);
+
+    int id_participant = m_tableParticipants_items.key(base_item, -1);
+
+    if (id_participant>=0){
+        emit dataDisplayRequest(TERADATA_PARTICIPANT, id_participant);
+    }
+
+
+}

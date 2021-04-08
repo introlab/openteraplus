@@ -54,6 +54,8 @@ private slots:
     void on_btnUserGroups_clicked();
     void userGroupsEditor_finished();
 
+    void on_tableSummary_itemDoubleClicked(QTableWidgetItem *item);
+
 private:
     Ui::ProjectWidget *ui;
 

@@ -16,6 +16,7 @@ ProjectNavigator::ProjectNavigator(QWidget *parent) :
     m_currentSiteId = -1;
     m_currentProjectId = -1;
     m_currentGroupId = -1;
+    m_currentParticipantId = -1;
     m_currentParticipantUuid.clear();
     m_selectionHold = false;
 }
@@ -102,27 +103,30 @@ QString ProjectNavigator::getCurrentGroupName() const
 void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
 {
     if (data_type == TERADATA_PROJECT){
+
         if (m_projects_items.contains(id)){
             ui->treeNavigator->setCurrentItem(m_projects_items[id]);
-        }else{
+        }//else{
             // New item that was just added... save id for later!
             m_currentProjectId = id;
-        }
+        //}
         return;
     }
     if (data_type == TERADATA_GROUP){
         if (m_groups_items.contains(id)){
             ui->treeNavigator->setCurrentItem(m_groups_items[id]);
-        }else{
+        }//else{
             // New item that was just added... save id for later!
             m_currentGroupId = id;
-        }
+        //}
         return;
     }
     if (data_type == TERADATA_PARTICIPANT){
         if (m_participants_items.contains(id)){
             ui->treeNavigator->setCurrentItem(m_participants_items[id]);
             m_currentParticipantUuid = getParticipantUuid(id);
+        }else{
+            m_currentParticipantId = id;
         }
         return;
     }
@@ -467,6 +471,8 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
                 // In a group currently displayed
                 group_item->addChild(item);
                 m_participants_items[id_participant] = item;
+                if (!group_item->isExpanded())
+                    group_item->setExpanded(true);
             }else{
                 // No group displayed, set current variables and expand the group project
                 m_currentGroupId = id_group;
@@ -523,6 +529,10 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     // Apply filter, if needed
     bool filtered = isParticipantFiltered(participant->getUuid());
     item->setHidden(filtered);
+    if (m_currentParticipantId == id_participant){
+        m_currentParticipantUuid = participant->getUuid();
+        m_currentParticipantId = -1;
+    }
     if (m_currentParticipantUuid == participant->getUuid() && !m_currentParticipantUuid.isEmpty() && !filtered){
          // Select current participant
         ui->treeNavigator->setCurrentItem(item);
@@ -808,6 +818,7 @@ void ProjectNavigator::currentSiteChanged()
     m_participants.clear();
     m_currentProjectId = -1;
     m_currentGroupId = -1;
+    m_currentParticipantId = -1;
     m_currentParticipantUuid.clear();
     ui->treeNavigator->clear();
 
