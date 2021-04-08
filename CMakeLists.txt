@@ -56,4 +56,9 @@ add_subdirectory(tests)
 add_subdirectory(package)
 
 # Readme and other files
-add_custom_target(readme SOURCES README.md)
+add_custom_target(readme SOURCES README.md LICENSE.TXT)
+
+# Install LICENSE / README
+install(FILES README.md DESTINATION .)
+install(FILES LICENSE.TXT DESTINATION .)
+
