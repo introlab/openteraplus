@@ -316,6 +316,8 @@ endif()
 # Remove if you don't want to generate translations every time.
 # add_dependencies(TeraClient translations)
 
+add_custom_target(plist_mac SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
+
 # Set a custom plist file for the app bundle
 set_target_properties(OpenTeraPlus PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
 
