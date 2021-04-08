@@ -19,6 +19,7 @@ ProjectNavigator::ProjectNavigator(QWidget *parent) :
     m_currentParticipantId = -1;
     m_currentParticipantUuid.clear();
     m_selectionHold = false;
+    m_siteJustChanged = false;
 }
 
 ProjectNavigator::~ProjectNavigator()
@@ -766,6 +767,14 @@ void ProjectNavigator::processProjectsReply(QList<TeraData> projects)
     for (int i=0; i<projects.count(); i++){
         updateProject(&projects.at(i));
     }
+
+    if (m_siteJustChanged){
+        m_siteJustChanged = false;
+        if (m_projects_items.count() == 1){
+            // Select the first project since the only one in the list
+            navItemClicked(m_projects_items.first());
+        }
+    }
 }
 
 void ProjectNavigator::processGroupsReply(QList<TeraData> groups)
@@ -832,6 +841,7 @@ void ProjectNavigator::processCurrentUserUpdated()
 void ProjectNavigator::currentSiteChanged()
 {
     m_currentSiteId = ui->cmbSites->currentData().toInt();
+    m_siteJustChanged = true;
     //qDebug() << "Current Site Changed";
 
     // Display site

@@ -52,6 +52,7 @@ private:
     int                         m_currentParticipantId;
 
     bool                        m_selectionHold;
+    bool                        m_siteJustChanged;
 
     QMap<int, QTreeWidgetItem*> m_projects_items;
     QMap<int, QTreeWidgetItem*> m_groups_items;
