@@ -88,7 +88,7 @@ void ClientApp::loadConfig()
             // Copy from QRC
             QFile::copy("://defaults/OpenTeraPlus.json", configFile);
         }
-        QFile::setPermissions(configFile, QFile::WriteUser);
+        QFile::setPermissions(configFile, QFile::ReadUser | QFile::WriteUser);
     }
 
     m_config.setFilename(configFile);
