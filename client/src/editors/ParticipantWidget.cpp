@@ -180,7 +180,8 @@ void ParticipantWidget::updateFieldsValue()
             ui->frameNewSession->setVisible(canStartNewSession());
         }
 
-        ui->wdgParticipant->fillFormFromData(m_data->toJson());
+        if (ui->wdgParticipant->formHasStructure())
+            ui->wdgParticipant->fillFormFromData(m_data->toJson());
         on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
 
     }

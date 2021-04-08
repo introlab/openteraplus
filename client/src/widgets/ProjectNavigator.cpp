@@ -16,6 +16,7 @@ ProjectNavigator::ProjectNavigator(QWidget *parent) :
     m_currentSiteId = -1;
     m_currentProjectId = -1;
     m_currentGroupId = -1;
+    m_currentParticipantUuid.clear();
     m_selectionHold = false;
 }
 
@@ -109,40 +110,76 @@ void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
         }
         return;
     }
+    if (data_type == TERADATA_GROUP){
+        if (m_groups_items.contains(id)){
+            ui->treeNavigator->setCurrentItem(m_groups_items[id]);
+        }else{
+            // New item that was just added... save id for later!
+            m_currentGroupId = id;
+        }
+        return;
+    }
+    if (data_type == TERADATA_PARTICIPANT){
+        if (m_participants_items.contains(id)){
+            ui->treeNavigator->setCurrentItem(m_participants_items[id]);
+            m_currentParticipantUuid = getParticipantUuid(id);
+        }
+        return;
+    }
 
-    // TODO Other item types?!?
+
 }
 
 bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QString &name)
 {
     if (data_type == TERADATA_GROUP){
-        for(int i=0; i<m_groups_items.values().count(); i++){
-            if (m_groups_items.values().at(i)->text(0) == name){
-                ui->treeNavigator->setCurrentItem(m_groups_items.values().at(i));
-                currentNavItemChanged(m_groups_items.values().at(i), nullptr);
+        for(int i=0; i<m_groups_items.count(); i++){
+            if (m_groups_items.values()[i]->text(0) == name){
+                ui->treeNavigator->setCurrentItem(m_groups_items.values()[i]);
+                currentNavItemChanged(m_groups_items.values()[i], nullptr);
                 return true;
             }
         }
     }
 
     if (data_type == TERADATA_PROJECT){
-        for(int i=0; i<m_projects_items.values().count(); i++){
-            if (m_projects_items.values().at(i)->text(0) == name){
-                ui->treeNavigator->setCurrentItem(m_projects_items.values().at(i));
-                currentNavItemChanged(m_projects_items.values().at(i), nullptr);
+        for(int i=0; i<m_projects_items.count(); i++){
+            if (m_projects_items.values()[i]->text(0) == name){
+                QTreeWidgetItem* item = m_projects_items.values()[i];
+                ui->treeNavigator->setCurrentItem(item);
+                currentNavItemChanged(item, nullptr);
                 return true;
             }
         }
     }
 
     if (data_type == TERADATA_PARTICIPANT){
-        for(int i=0; i<m_participants_items.values().count(); i++){
-            if (m_participants_items.values().at(i)->text(0) == name){
-                ui->treeNavigator->setCurrentItem(m_participants_items.values().at(i));
-                currentNavItemChanged(m_participants_items.values().at(i), nullptr);
+        for(int i=0; i<m_participants_items.count(); i++){
+            if (m_participants_items.values()[i]->text(0) == name){
+                ui->treeNavigator->setCurrentItem(m_participants_items.values()[i]);
+                currentNavItemChanged(m_participants_items.values()[i], nullptr);
                 return true;
             }
         }
+    }
+
+    return false;
+}
+
+bool ProjectNavigator::selectItemByUuid(const TeraDataTypes &data_type, const QString &uuid)
+{
+    if (data_type == TERADATA_PARTICIPANT){
+        if (m_participants.contains(uuid)){
+            QTreeWidgetItem* item = m_participants_items[m_participants[uuid].getId()];
+            if (item){
+                ui->treeNavigator->setCurrentItem(item);
+                currentNavItemChanged(item, nullptr);
+                return true;
+            }
+        }
+        // Set current participant Uuid to select it now or when we have it
+        m_currentParticipantUuid = uuid;
+
     }
 
     return false;
@@ -363,10 +400,10 @@ void ProjectNavigator::updateGroup(const TeraData *group)
     item->setText(0, group->getName());
     item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_GROUP)));
 
-   /* if (m_currentGroupId != id_group && m_currentGroupId >0 && !m_selectionHold){
-        // Ensure correct project is selected
-        ui->treeNavigator->setCurrentItem(item);
-    }*/
+   if (m_currentGroupId == id_group && m_currentGroupId >0 && !item->isExpanded()){
+        // Load groups details
+       item->setExpanded(true);
+    }
 }
 
 void ProjectNavigator::updateParticipant(const TeraData *participant)
@@ -431,7 +468,16 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
                 group_item->addChild(item);
                 m_participants_items[id_participant] = item;
             }else{
-                // No group displayed, don't add to the list!
+                // No group displayed, set current variables and expand the group project
+                m_currentGroupId = id_group;
+                m_currentProjectId = participant->getFieldValue("id_project").toInt();
+                QTreeWidgetItem* project_item = m_projects_items[m_currentProjectId];
+                if (project_item){
+                    if (!project_item->isExpanded()){
+                        project_item->setExpanded(true);
+                    }
+                }
+
                 delete item;
                 return;
             }
@@ -439,14 +485,19 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
             // Participant has no group - attach it to its project
             QTreeWidgetItem* project_item = m_projects_items[id_project];
             if (project_item){
-                if (project_item->isExpanded()){
-                    project_item->addChild(item);
+                if (!project_item->isExpanded()){
+                    project_item->setExpanded(true);
+                    /*project_item->addChild(item);
                     m_participants_items[id_participant] = item;
                 }else{
-                    // No project expanded, don't add to the list!
+                    // No project expanded, add to the list, but also query for other participants in that project
                     delete item;
-                    return;
+                    return;*/
                 }
+                project_item->addChild(item);
+                m_participants_items[id_participant] = item;
+                /*if (m_currentParticipantUuid == participant->getUuid())
+                    ui->treeNavigator->setCurrentItem(item);*/
             }else{
                 // No project displayed, don't add to the list!
                 delete item;
@@ -470,7 +521,12 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     m_participants[participant->getUuid()] = *participant;
 
     // Apply filter, if needed
-    item->setHidden(isParticipantFiltered(participant->getUuid()));
+    bool filtered = isParticipantFiltered(participant->getUuid());
+    item->setHidden(filtered);
+    if (m_currentParticipantUuid == participant->getUuid() && !m_currentParticipantUuid.isEmpty() && !filtered){
+         // Select current participant
+        ui->treeNavigator->setCurrentItem(item);
+     }
 
 }
 
@@ -583,6 +639,15 @@ TeraDataTypes ProjectNavigator::getItemType(QTreeWidgetItem *item)
     }
 
     return TERADATA_NONE;
+}
+
+QString ProjectNavigator::getParticipantUuid(int participant_id)
+{
+    foreach(TeraData part, m_participants){
+        if (part.getId() == participant_id)
+            return part.getUuid();
+    }
+    return QString();
 }
 
 QAction *ProjectNavigator::addNewItemAction(const TeraDataTypes &data_type, const QString &label)
@@ -743,6 +808,7 @@ void ProjectNavigator::currentSiteChanged()
     m_participants.clear();
     m_currentProjectId = -1;
     m_currentGroupId = -1;
+    m_currentParticipantUuid.clear();
     ui->treeNavigator->clear();
 
     // Update UI according to actions availables
@@ -798,6 +864,7 @@ void ProjectNavigator::currentNavItemChanged(QTreeWidgetItem *current, QTreeWidg
         m_currentGroupId = getParticipantGroupId(current);
         m_currentProjectId = getParticipantProjectId(current);
         int id = m_participants_items.key(current);
+        m_currentParticipantUuid = getParticipantUuid(id);
         emit dataDisplayRequest(TERADATA_PARTICIPANT, id);
     }
 
@@ -857,8 +924,8 @@ void ProjectNavigator::on_btnFilterActive_toggled(bool checked)
 {
     Q_UNUSED(checked)
     for (int i=0; i<m_participants.count(); i++){
-        bool filtered = isParticipantFiltered(m_participants.values().at(i).getUuid());
-        QTreeWidgetItem* item = m_participants_items[m_participants.values().at(i).getId()];
+        bool filtered = isParticipantFiltered(m_participants.values()[i].getUuid());
+        QTreeWidgetItem* item = m_participants_items[m_participants.values()[i].getId()];
         if (item){
             item->setHidden(filtered);
         }

@@ -35,6 +35,7 @@ public:
 
     void selectItem(const TeraDataTypes& data_type, const int& id);
     bool selectItemByName(const TeraDataTypes& data_type, const QString& name);
+    bool selectItemByUuid(const TeraDataTypes& data_type, const QString& uuid);
     void removeItem(const TeraDataTypes& data_type, const int& id);
 
     void setOnHold(const bool& hold);
@@ -47,6 +48,7 @@ private:
     int                         m_currentSiteId;
     int                         m_currentProjectId;
     int                         m_currentGroupId;
+    QString                     m_currentParticipantUuid;
 
     bool                        m_selectionHold;
 
@@ -68,6 +70,8 @@ private:
 
     void updateAvailableActions(QTreeWidgetItem *current_item);
     TeraDataTypes getItemType(QTreeWidgetItem* item);
+
+    QString getParticipantUuid(int participant_id);
 
     void connectSignals();
 

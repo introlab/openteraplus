@@ -444,6 +444,10 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
         showDataEditor(data_type, new_data);
         return;
+    }else{
+        // Try to select in project navigator
+        if (data_type == TERADATA_PROJECT || data_type == TERADATA_PARTICIPANT || data_type == TERADATA_GROUP)
+            ui->projNavigator->selectItem(data_type, data_id);
     }
 
     // Set flag to wait for that specific data type
@@ -463,6 +467,10 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
 void MainWindow::dataDisplayRequestedByUuid(TeraDataTypes data_type, QString data_uuid)
 {
+    // Try to select in project navigator
+    if (data_type == TERADATA_PROJECT || data_type == TERADATA_PARTICIPANT || data_type == TERADATA_GROUP)
+        ui->projNavigator->selectItemByUuid(data_type, data_uuid);
+
     // Request to display a specific item by uuid.
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_UUID, data_uuid);
@@ -476,6 +484,7 @@ void MainWindow::dataDisplayRequestedByUuid(TeraDataTypes data_type, QString dat
     if (m_waiting_for_data_type != TERADATA_NONE)
         LOG_WARNING("Request for new data for editor, but still waiting on previous one!", "MainWindow::dataDisplayRequested");
     m_waiting_for_data_type = data_type;
+
 }
 
 void MainWindow::dataDeleteRequested(TeraDataTypes data_type, int data_id)
