@@ -14,27 +14,50 @@ execute_process(
 message(STATUS "Testing package ${_qt5_qmake_location} ${qt5_install_prefix}")
 
 if (APPLE)
+    cmake_policy(SET CMP0087 NEW) # Enable generator expressions in INSTALL(CODE
 
     set(CPACK_GENERATOR "DragNDrop")
     set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus-${CPACK_PACKAGE_VERSION})
     set(CPACK_DMG_BACKGROUND_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/../client/resources/logos/LogoOpenTeraPlus.png)
     set(CPACK_DMG_FORMAT UDZO)
+    set(CPACK_MONOLITHIC_INSTALL 1)
 
-    include(CPack REQUIRED)
-
-    add_custom_target(mac_deploy_qt
-        COMMAND ${qt5_install_prefix}/bin/macdeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/../.." -always-overwrite
-        COMMENT "Running macdeplotqt ..."
-        DEPENDS OpenTeraPlus
-    )
-
-    # Deploy before packaging
-    add_custom_target(mac-package DEPENDS mac_deploy_qt)
+#    add_custom_target(mac_deploy_qt
+#        COMMAND ${qt5_install_prefix}/bin/macdeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/../.." -always-overwrite -codesign=""
+#        COMMENT "Running macdeployqt ..."
+#        DEPENDS OpenTeraPlus
+#    )
 
     # Put special configuration file in config/TeraClientConfig.json if desired
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
         set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS/config")
     endif()
+    set(MACSIGNID "")
+    # set(MACSIGNID "")
+    set(MACQTDEPLOY_COMMAND "${qt5_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:OpenTeraPlus>/../.. -always-overwrite -verbose=1")
+
+    message(STATUS "********** ${MACQTDEPLOY_COMMAND}")
+
+    if (TARGET install)
+        set(APPSIGNPATH ${CMAKE_INSTALL_PREFIX})
+    else()
+        set(APPSIGNPATH ${CMAKE_BINARY_DIR}/_CPack_Packages/Darwin/${CPACK_GENERATOR}/${CPACK_PACKAGE_FILE_NAME})
+    endif()
+
+
+    install(CODE "
+        execute_process(COMMAND ${MACQTDEPLOY_COMMAND} COMMAND_ECHO STDOUT)
+        message(STATUS \"&&&&&&&&&&&&& MACDEPLOYQT ${MACQTDEPLOY_COMMAND}\")
+        execute_process(COMMAND codesign --remove-signature ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+        execute_process(COMMAND codesign -s ${MACSIGNID} --deep -v ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+        execute_process(COMMAND codesign -v -v ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+        ")
+    # execute_process(COMMAND codesign -s ${MACSIGNID} --deep -v ${CMAKE_INSTALL_PREFIX}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+    include(CPack REQUIRED)
+
+    # Deploy before packaging
+    # add_custom_target(mac-package DEPENDS mac_deploy_qt)
+
 endif(APPLE)
 
 if (WIN32)

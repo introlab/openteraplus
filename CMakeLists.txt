@@ -59,12 +59,11 @@ add_subdirectory(client)
 # Tests
 add_subdirectory(tests)
 
-# Package
-add_subdirectory(package)
-
 # Readme and other files
 add_custom_target(readme SOURCES README.md LICENSE.TXT)
 
 # Install LICENSE / README
 install(FILES README.md LICENSE.TXT DESTINATION .)
 
+# Package
+add_subdirectory(package)
