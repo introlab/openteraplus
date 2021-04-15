@@ -28,15 +28,11 @@ if (APPLE)
 #        DEPENDS OpenTeraPlus
 #    )
 
-    # Put special configuration file in config/TeraClientConfig.json if desired
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
-        set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS/config")
-    endif()
     set(MACSIGNID "")
     # set(MACSIGNID "")
     set(MACQTDEPLOY_COMMAND "${qt5_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:OpenTeraPlus>/../.. -always-overwrite -verbose=1")
 
-    message(STATUS "********** ${MACQTDEPLOY_COMMAND}")
+    # message(STATUS "********** ${MACQTDEPLOY_COMMAND}")
 
     if (TARGET install)
         set(APPSIGNPATH ${CMAKE_INSTALL_PREFIX})
@@ -54,6 +50,13 @@ if (APPLE)
         ")
     # execute_process(COMMAND codesign -s ${MACSIGNID} --deep -v ${CMAKE_INSTALL_PREFIX}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
     include(CPack REQUIRED)
+
+    # Put special configuration file in config/TeraClientConfig.json if desired
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
+        message(STATUS "Using specific configuration file for packaging.")
+        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json DESTINATION "OpenTeraPlus.app/Contents/MacOS/config")
+        set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS/config")
+    endif()
 
     # Deploy before packaging
     # add_custom_target(mac-package DEPENDS mac_deploy_qt)
