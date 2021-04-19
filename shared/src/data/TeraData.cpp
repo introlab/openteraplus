@@ -354,7 +354,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_PROJECTINFO_PATH)             return TERADATA_PROJECT;
     if (path==WEB_SITEACCESS_PATH)              return TERADATA_SITEACCESS;
     if (path==WEB_DEVICEINFO_PATH)              return TERADATA_DEVICE;
-    if (path==WEB_PARTICIPANTINFO_PATH)         return TERADATA_PARTICIPANT;
+    if (path==WEB_PARTICIPANTINFO_PATH || path==WEB_PARTICIPANT_PARTICIPANTINFO_PATH)         return TERADATA_PARTICIPANT;
     if (path==WEB_PROJECTACCESS_PATH)           return TERADATA_PROJECTACCESS;
     if (path==WEB_GROUPINFO_PATH)               return TERADATA_GROUP;
     if (path==WEB_SESSIONINFO_PATH)             return TERADATA_SESSION;
@@ -483,6 +483,23 @@ QString TeraData::getIconStateFilename() const
     default:
         return "://icons/error.png";
     }
+}
+
+QString TeraData::getServiceParticipantUrl(const TeraData &service, const QUrl& server_url, const QString &participant_token)
+{
+    if (service.getDataType() != TERADATA_SERVICE){
+        LOG_ERROR("Tried to generate a participant service url with a non-service object", "TeraData::getServiceParticipantUrl");
+        return QString();
+    }
+    QString participant_endpoint;
+    if (service.hasFieldName("service_endpoint_participant"))
+        participant_endpoint = service.getFieldValue("service_endpoint_participant").toString();
+    QString service_url = "https://" + server_url.host() + ":" + QString::number(server_url.port()) +
+            service.getFieldValue("service_clientendpoint").toString() +
+            participant_endpoint + "?token=" +
+            participant_token;
+
+    return service_url;
 }
 
 /*

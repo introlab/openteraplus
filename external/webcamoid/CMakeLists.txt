@@ -1,0 +1,25 @@
+#libAvKys taken from webcamoid (18 octobre 2017)
+#GPL
+
+#TODO UPDATE THOSE VARIABLES
+set(AVKYS_LIB_DIR "lib")
+set(AVKYS_COMMONS_TARGET "AvKysPlugins")
+add_definitions(-DQT_INSTALL_QML="./" -DLIBDIR="${AVKYS_LIB_DIR}" -DCOMMONS_TARGET="${AVKYS_COMMONS_TARGET}")
+
+
+
+SET (EXECUTABLE_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin)
+SET (LIBRARY_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin)
+
+
+set(AVKYS_LIBS AvKys CACHE INTERNAL "doc string")
+set(AVKYS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src/qml CACHE INTERNAL "doc string")
+#TODO DO BETTER?
+set(AVKYS_PLUGIN_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/${AVKYS_COMMONS_TARGET} CACHE INTERNAL "doc string")
+
+add_subdirectory(Lib)
+add_subdirectory(Plugins)
+
+if (WIN32)
+    add_subdirectory(Driver)
+endif(WIN32)

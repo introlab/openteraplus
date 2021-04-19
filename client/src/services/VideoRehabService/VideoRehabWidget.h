@@ -10,7 +10,12 @@
 
 #include "VideoRehabWebPage.h"
 
+#include "Utils.h"
+
+#include "VirtualCameraThread.h"
+
 #include "JoinSessionEvent.pb.h"
+
 
 namespace Ui {
 class VideoRehabWidget;
@@ -30,15 +35,24 @@ public:
 
     void reload();
 
+    void startRecording();
+    void stopRecording();
+
 private slots:
     void on_txtURL_returnPressed();
     void webEngineURLChanged(QUrl url);
+    void webEngineDownloadRequested(QWebEngineDownloadItem* item);
+    void webEngineDownloadCompleted();
 
     void webPageLoaded(bool ok);
     void webPageReady();
     void webPageVideoError(QString context, QString error);
     void webPageAudioError(QString context, QString error);
     void webPageGeneralError(QString context, QString error);
+
+    void virtualCameraDisconnected();
+
+    void on_btnRefresh_clicked();
 
 private:
     void connectSignals();
@@ -49,11 +63,15 @@ private:
     void setLoading(const bool& loading);
     void showError(const QString& title, const QString& context, const QString& error);
 
+    void startVirtualCamera(const QString& src);
+    void stopVirtualCamera();
+
     // UI items
     Ui::VideoRehabWidget*   ui;
     QWebEngineView*         m_webEngine;
     VideoRehabWebPage*      m_webPage;
-    QMovie*         m_loadingIcon;
+    QMovie*                 m_loadingIcon;
+    VirtualCameraThread*    m_virtualCamThread;
 };
 
 #endif // VIDEOREHABWIDGET_H

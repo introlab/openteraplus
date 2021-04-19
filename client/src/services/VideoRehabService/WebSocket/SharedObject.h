@@ -10,6 +10,10 @@
 #include <QJsonValue>
 #include <QWebChannel>
 
+#include "drivers/PTZ/ICameraDriver.h"
+#include "drivers/PTZ/Vivotek8111.h"
+#include "drivers/PTZ/CamImageSettingsDialog.h"
+
 //#include "camsettings.h"
 
 class SharedObject : public QObject
@@ -17,6 +21,11 @@ class SharedObject : public QObject
     Q_OBJECT
 public:
     SharedObject(QObject *parent = nullptr);
+    ~SharedObject();
+
+    void startPTZCameraDriver(const int& camera_src, const QString &camera_name, const QString &hostname, const int port, const QString &user, const QString &password);
+    void stopPTZCameraDriver();
+    ICameraDriver* getPTZCameraDriver() const;
 
     void setContactInformation(const QString &name, const QString &uuid);
     void setCurrentCameraName(const QString &name);
@@ -25,10 +34,10 @@ public:
     void setSecondAudioSrcName(const QString &name);
     void setSecondVideoName(const QString &name);
     void setPTZCapabilities(const bool &zoom, const bool &presets, const bool &settings);
-    //void sendCameraSettings(const QString &uuid, CameraImageSettings &settings, const QString &owner="");
+    void sendCameraSettings(const QString &uuid, CameraImageSettings &settings, const QString &owner="");
     void getCameraSettings(const QString &uuid);
+    void removeVideoSource(const QString &name);
 
-    void setLocalMirror(const bool &mirror);
     void setExtraParams(const QString &params);
 
     void sendCurrentVideoSource();
@@ -40,6 +49,9 @@ public:
     void sendContactInformation();
 
     bool isPageReady();
+
+    void startRecording();
+    void stopRecording();
 
 
 public slots:
@@ -69,6 +81,7 @@ public slots:
     Q_INVOKABLE void imageClicked(QString uuid, int x, int y, int w, int h);
 
     Q_INVOKABLE void cameraChanged(QString name, int index);
+    Q_INVOKABLE void setLocalMirror(const bool &mirror);
 
     Q_INVOKABLE void dataForwardReceived(QString json);
 
@@ -84,6 +97,7 @@ signals:
     void newRemoteStream();
     void newExtraParams(QString);
     void newPTZCapabilities(QString, bool, bool, bool);
+    void videoSourceRemoved(QString);
 
     void zoomIn(QString uuid);
     void zoomOut(QString uuid);
@@ -96,7 +110,7 @@ signals:
     void move(QString uuid, int x, int y, int w, int h);
 
     void camSettings(QString uuid);                                     // Request to get camSettings for that UUID
-    //void setCamSettings(QString uuid, CameraImageSettings& settings);   // Request to set camSettings (if local uuid) or to send camSettings (if remote uuid)
+    void setCamSettings(QString uuid, CameraImageSettings& settings);   // Request to set camSettings (if local uuid) or to send camSettings (if remote uuid)
 
     void setLocalMirrorSignal(bool mirror);
 
@@ -105,6 +119,15 @@ signals:
     void videoErrorOccured(QString context, QString error);
     void audioErrorOccured(QString context, QString error);
     void generalErrorOccured(QString context, QString error);
+
+    void startRecordingRequested();
+    void stopRecordingRequested();
+
+private slots:
+    void camImageSettingsChanged();
+
+private:
+    ICameraDriver* m_ptzCameraDriver;
 
 protected:
 
@@ -131,8 +154,11 @@ protected:
     bool    m_camCanZoom;
     bool    m_camHasPresets;
     bool    m_camHasSettings;
+    QString m_camPTZName;
 
     bool    m_pageIsReady;
+
+    CamImageSettingsDialog* m_imgSettingsDialog;
 
 };
 

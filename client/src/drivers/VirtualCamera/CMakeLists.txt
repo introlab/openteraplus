@@ -5,10 +5,14 @@ find_package(Qt5Concurrent REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
 set(VirtualCamera_headers
-    VirtualCamera.h)
+    VirtualCamera.h
+    VirtualCameraThread.h
+)
 
 set(VirtualCamera_srcs
-    VirtualCamera.cpp)
+    VirtualCamera.cpp
+    VirtualCameraThread.cpp
+)
 
 SET(VirtualCamera_qrcs
 
@@ -37,8 +41,8 @@ set(VIRTUAL_CAMERA_LIBS VirtualCameraDriver CACHE INTERNAL "doc string")
 set(VIRTUAL_CAMERA_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "doc string")
 
 # Install
-install(TARGETS VirtualCameraDriver
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+#install(TARGETS VirtualCameraDriver
+#    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 

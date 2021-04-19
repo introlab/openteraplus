@@ -293,7 +293,7 @@ void CameraInfo::clearCameraInfo()
     m_deviceConnectionInfo = "Unkown";
     m_deviceStatus = CIS_DISCONNECTED;
     m_deviceError = CIE_NO_ERROR;
-    m_deviceFunct = CIF_NONE;
+    m_deviceFunct.clear();
     m_unit = CIU_UNKNOWN;
     m_pan = 0.0;
     m_tilt = 0.0;
@@ -316,7 +316,7 @@ QString CameraInfo::deviceConnectionInfo() const
     return m_deviceConnectionInfo;
 }
 
-CameraInfo::CameraInfoFunct CameraInfo::deviceFunct() const
+QList<CameraInfo::CameraInfoFunct> CameraInfo::deviceFunct() const
 {
     return m_deviceFunct;
 }
@@ -397,9 +397,9 @@ void CameraInfo::setDeviceConnection(const QString deviceConnectionInfo)
     m_deviceConnectionInfo = deviceConnectionInfo;
 }
 
-void CameraInfo::setDeviceFunct(CameraInfo::CameraInfoFunct flag)
+void CameraInfo::setDeviceFunct(const QList<CameraInfoFunct> functs)
 {
-    m_deviceFunct = flag;
+    m_deviceFunct = functs;
 }
 
 void CameraInfo::setDeviceStatus(CameraInfo::CameraInfoStatus flag)
@@ -461,7 +461,7 @@ void CameraInfo::setPresetID(int id)
 {
     m_presetID = id;
 }
-
+/*
 bool CameraInfo::fromXml(QString xmlStr)
 {
     QDomDocument doc;
@@ -499,9 +499,9 @@ bool CameraInfo::fromXml(QDomElement &e)
             m_deviceError = CIE_NO_ERROR;
 
         if(e.hasAttribute("deviceFunct"))
-            m_deviceFunct = (CameraInfoFunct)e.attributeNode("deviceFunct").value().toInt();
+            m_deviceFunct.append((CameraInfoFunct)e.attributeNode("deviceFunct").value().toInt());
         else
-            m_deviceFunct = CIF_NONE;
+            m_deviceFunct.clear();
 
         if(e.hasAttribute("unit"))
             m_unit = (CameraInfoUnit)e.attributeNode("unit").value().toInt();
@@ -609,7 +609,7 @@ QString CameraInfo::toXmlStr()
     tmpDoc.appendChild(tmpElt);
 
     return tmpDoc.toString();
-}
+}*/
 
 ////////////////////////////////////////////////////////
 CameraImageSettings::CameraImageSettings(){

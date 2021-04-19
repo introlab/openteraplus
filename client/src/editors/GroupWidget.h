@@ -8,6 +8,9 @@
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
 
+#include "widgets/TableDateWidgetItem.h"
+#include "widgets/TableNumberWidgetItem.h"
+
 namespace Ui {
 class GroupWidget;
 }

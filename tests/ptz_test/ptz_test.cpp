@@ -38,7 +38,7 @@ void PTZTestMainWindow::on_pushButton_RTSP_Start_clicked()
     QString rtsp = m_ui.lineEdit_RTSP_URL->text();
 
     //TODO Hard coded device for now
-    m_virtualCamera.init(rtsp, "/akvcam/video0");
+    m_virtualCamera.init(rtsp/*, "/akvcam/video0"*/);
     m_virtualCamera.start();
 }
 
@@ -127,7 +127,7 @@ void PTZTestMainWindow::on_comboBox_Camera_activated(int index)
  void PTZTestMainWindow::cameraConnected(CameraInfo info)
  {
     qDebug() << " void PTZTestMainWindow::cameraConnected(CameraInfo)";
-    qDebug() << info.toXmlStr();
+    //qDebug() << info.toXmlStr();
  }
 
  MyVideoItem::MyVideoItem(QGraphicsItem *item)

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QWizard>
-#include "ComManager.h"
+#include "managers/ComManager.h"
 #include "TeraData.h"
 #include "TeraForm.h"
 

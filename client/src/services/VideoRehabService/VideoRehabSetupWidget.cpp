@@ -11,6 +11,9 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
 
     setLoading(true); // Disable until page is fully loaded
 
+    m_valueJustChanged = false;
+    m_virtualCamThread = nullptr;
+
     initUI();
     connectSignals();
 
@@ -18,6 +21,7 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
     QUrlQuery args(WEB_FORMS_QUERY_SERVICE_CONFIG);
     args.addQueryItem(WEB_QUERY_KEY, "VideoRehabService");
     m_comManager->doQuery(WEB_FORMS_PATH, args);
+
 }
 
 VideoRehabSetupWidget::~VideoRehabSetupWidget()
@@ -26,6 +30,12 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
 
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
+
+    if (m_virtualCamThread){
+        m_virtualCamThread->quit();
+        m_virtualCamThread->wait();
+        m_virtualCamThread->deleteLater();
+     }
 }
 
 QJsonDocument VideoRehabSetupWidget::getSetupConfig()
@@ -67,6 +77,9 @@ void VideoRehabSetupWidget::initUI()
 
     // Wait for service configuration before setting url
     //m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
+
+    // Hide PTZ fields in setup widget
+    //ui->widgetSetup->hideFields(QStringList() << "camera_ptz_type" << "camera_ptz_ip" << "camera_ptz_port" << "camera_ptz_username" << "camera_ptz_password");
 }
 
 
@@ -75,7 +88,7 @@ void VideoRehabSetupWidget::connectSignals()
     connect(m_comManager, &ComManager::servicesConfigReceived, this, &VideoRehabSetupWidget::processServiceConfigsReply);
     connect(m_comManager, &ComManager::formReceived, this, &VideoRehabSetupWidget::processFormsReply);
 
-    connect(ui->widgetSetup, &TeraForm::widgetValueHasChanged, this, &VideoRehabSetupWidget::refreshWebpageSettings);
+    connect(ui->widgetSetup, &TeraForm::widgetValueHasChanged, this, &VideoRehabSetupWidget::setupFormValueChanged);
     connect(ui->widgetSetup, &TeraForm::formIsNowDirty, this, &VideoRehabSetupWidget::setupFormDirtyChanged);
 
 }
@@ -93,7 +106,7 @@ void VideoRehabSetupWidget::setLoading(const bool &loading)
 
 }
 
-void VideoRehabSetupWidget::showError(const QString &title, const QString &context, const QString &error)
+void VideoRehabSetupWidget::showError(const QString &title, const QString &context, const QString &error, bool hide_retry)
 {
     ui->lblTitle->setText(title);
 #ifdef QT_DEBUG
@@ -102,7 +115,90 @@ void VideoRehabSetupWidget::showError(const QString &title, const QString &conte
     ui->lblError->setText(error);
 #endif
     ui->lblLoading->hide();
+    ui->btnRefresh->setVisible(!hide_retry);
     ui->frameError->show();
+}
+
+void VideoRehabSetupWidget::startVirtualCamera(const QString &src)
+{
+    if (m_virtualCamThread){
+        stopVirtualCamera();
+    }
+    ui->frameError->hide();
+    m_virtualCamThread = new VirtualCameraThread(src);
+    connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &VideoRehabSetupWidget::virtualCameraDisconnected);
+    m_virtualCamThread->start();
+}
+
+void VideoRehabSetupWidget::stopVirtualCamera()
+{
+    if (m_virtualCamThread){
+        m_virtualCamThread->quit();
+        m_virtualCamThread->wait();
+        m_virtualCamThread->deleteLater();
+        m_virtualCamThread = nullptr;
+    }
+}
+
+void VideoRehabSetupWidget::showPTZDialog()
+{
+    ui->widgetSetup->setFieldsEnabled(QStringList() << "camera_ptz_type" << "camera_ptz_ip" << "camera_ptz_port" << "camera_ptz_username" << "camera_ptz_password", false);
+
+    VideoRehabPTZDialog dlg;
+    dlg.setCurrentValues(ui->widgetSetup->getFieldValue("camera_ptz_type").toInt(),
+                         ui->widgetSetup->getFieldValue("camera_ptz_ip").toString(),
+                         ui->widgetSetup->getFieldValue("camera_ptz_port").toInt(),
+                         ui->widgetSetup->getFieldValue("camera_ptz_username").toString(),
+                         ui->widgetSetup->getFieldValue("camera_ptz_password").toString()
+                         );
+    //dlg.setCursorPosition(wdg_editor->cursorPosition());
+    if (dlg.exec() == QDialog::Accepted){
+        ui->widgetSetup->setFieldValue("camera_ptz_type", dlg.getCurrentSrcIndex());
+        ui->widgetSetup->setFieldValue("camera_ptz_ip", dlg.getCurrentUrl());
+        ui->widgetSetup->setFieldValue("camera_ptz_port", dlg.getCurrentPort());
+        ui->widgetSetup->setFieldValue("camera_ptz_username", dlg.getCurrentUsername());
+        ui->widgetSetup->setFieldValue("camera_ptz_password", dlg.getCurrentPassword());
+        //startVirtualCamera(dlg.getCurrentSource());
+    }else{
+        ui->widgetSetup->setFieldValue("camera_ptz", false);
+    }
+}
+
+void VideoRehabSetupWidget::startPTZCamera()
+{
+    int camera_src = ui->widgetSetup->getFieldValue("camera_ptz_type").toInt();
+
+    if (camera_src == 0){ // TODO: Better manage camera sources
+        // Vivotek
+        if (m_webPage){
+            SharedObject* shared = m_webPage->getSharedObject();
+            if (shared){
+                shared->startPTZCameraDriver(camera_src,
+                                             "OpenTeraCam",
+                                             ui->widgetSetup->getFieldValue("camera_ptz_ip").toString(),
+                                             ui->widgetSetup->getFieldValue("camera_ptz_port").toInt(),
+                                             ui->widgetSetup->getFieldValue("camera_ptz_username").toString(),
+                                             ui->widgetSetup->getFieldValue("camera_ptz_password").toString());
+                // Connect signal
+                connect(shared->getPTZCameraDriver(), &ICameraDriver::cameraError, this, &VideoRehabSetupWidget::ptzCameraError);
+            }
+        }
+
+        return;
+    }
+
+    showError(tr("Caméra PTZ"), "VideoRehabSetupWidget::startPTZCamera", tr("Type de caméra PTZ non-supporté"), true);
+
+}
+
+void VideoRehabSetupWidget::stopPTZCamera()
+{
+    if (m_webPage){
+        SharedObject* shared = m_webPage->getSharedObject();
+        if (shared){
+            shared->stopPTZCameraDriver();
+        }
+    }
 }
 
 void VideoRehabSetupWidget::refreshWebpageSettings()
@@ -115,16 +211,23 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
     bool ptz = ui->widgetSetup->getFieldValue("camera_ptz").toBool();
     m_webPage->getSharedObject()->setPTZCapabilities(ptz, ptz, ptz);
     m_webPage->getSharedObject()->sendPTZCapabilities();
+    if (ptz)
+        startPTZCamera();
 
     // Update video source
     QString video_src = ui->widgetSetup->getFieldValue("camera").toString();
-    qDebug() << "Setting Video Src to " << video_src;
+    //qDebug() << "Setting Video Src to " << video_src;
     m_webPage->getSharedObject()->setCurrentCameraName(video_src);
     m_webPage->getSharedObject()->sendCurrentVideoSource();
+    if (video_src.contains("OpenTeraCam")){
+        if (!m_virtualCamThread){
+            startVirtualCamera(ui->widgetSetup->getFieldValue("teracam_src").toString());
+        }
+    }
 
     // Update audio source
     QString audio_src = ui->widgetSetup->getFieldValue("audio").toString();
-    qDebug() << "Setting Audio Src to " << audio_src;
+    //qDebug() << "Setting Audio Src to " << audio_src;
     m_webPage->getSharedObject()->setCurrentAudioSrcName(audio_src);
     m_webPage->getSharedObject()->sendCurrentAudioSource();
 
@@ -230,6 +333,7 @@ void VideoRehabSetupWidget::processFormsReply(QString form_type, QString data)
 void VideoRehabSetupWidget::on_btnRefresh_clicked()
 {
     if (m_webEngine){
+        ui->frameError->hide();
         setLoading(true);
         m_webEngine->reload();
     }
@@ -268,4 +372,82 @@ void VideoRehabSetupWidget::on_btnSaveConfig_clicked()
 void VideoRehabSetupWidget::setupFormDirtyChanged(bool dirty)
 {
     ui->btnSaveConfig->setEnabled(dirty);
+}
+
+void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
+{
+    if (m_valueJustChanged){
+        m_valueJustChanged = false;
+        return;
+    }
+
+    // OpenTeraCam camera source
+    if (wdg == ui->widgetSetup->getWidgetForField("teracam_src")){
+        QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->widgetSetup->getWidgetForField("teracam_src"));
+        VideoRehabVirtualCamSetupDialog dlg(ui->widgetSetup->getFieldValue("teracam_src").toString());
+        dlg.setCursorPosition(wdg_editor->cursorPosition());
+        m_valueJustChanged = true;
+        if (dlg.exec() == QDialog::Accepted){
+            ui->widgetSetup->setFieldValue("teracam_src", dlg.getCurrentSource());
+            startVirtualCamera(dlg.getCurrentSource());
+        }else{
+            wdg_editor->undo();
+        }
+    }
+
+    // Video source
+    if (wdg == ui->widgetSetup->getWidgetForField("camera")){
+        if (value.toString().contains("OpenTeraCam")){
+            QString src = ui->widgetSetup->getFieldValue("teracam_src").toString();
+            if (!src.isEmpty()){
+                startVirtualCamera(src);
+            }
+        }else{
+            if (m_virtualCamThread)
+                stopVirtualCamera();
+        }
+    }
+
+    // PTZ changes
+    if (wdg == ui->widgetSetup->getWidgetForField(("camera_ptz")) /*||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_type") ||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_ip") ||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_port") ||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_username") ||
+            wdg == ui->widgetSetup->getWidgetForField("camera_ptz_password")*/){
+        if (value.toBool())
+            showPTZDialog();
+    }
+
+    refreshWebpageSettings();
+}
+
+void VideoRehabSetupWidget::virtualCameraDisconnected()
+{
+    showError(tr("Erreur de caméra"), "VideoRehabSetupWidget::virtualCameraDisconnected", tr("Impossible de se connecter à la source vidéo."), true);
+    stopVirtualCamera();
+
+}
+
+void VideoRehabSetupWidget::ptzCameraError(CameraInfo infos)
+{
+    QString error_msg;
+
+    switch(infos.deviceError()){
+    case CameraInfo::CIE_NO_CONNECTION:
+        error_msg = tr("Caméra PTZ: Impossible de se connecter.");
+        break;
+    case CameraInfo::CIE_PROTOCOL_ERROR:
+        error_msg = tr("Caméra PTZ: Erreur de communication.");
+        break;
+    case CameraInfo::CIE_INVALID_LOGIN:
+        error_msg = tr("Caméra PTZ: Authentification refusée.");
+        break;
+    case CameraInfo::CIE_NO_ERROR:
+        // Shouldn't get here, but managed in case
+        return;
+        break;
+
+    }
+    showError(tr("Caméra PTZ"), "VideoRehabSetupWidget::ptzCameraError", error_msg);
 }

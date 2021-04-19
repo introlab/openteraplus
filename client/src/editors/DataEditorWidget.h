@@ -9,7 +9,7 @@
 
 #include "data/TeraData.h"
 
-#include "ComManager.h"
+#include "managers/ComManager.h"
 
 class DataEditorWidget : public QWidget
 {
@@ -100,6 +100,7 @@ signals:
     void closeRequest();
 
     void dataWasDeleted();
+    void dataDisplayRequest(TeraDataTypes data_type, int data_id);
 
 public slots:
 

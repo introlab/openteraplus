@@ -12,35 +12,33 @@ add_subdirectory(drivers)
 
 set(headers
     ClientApp.h
-    ConfigManagerClient.h
-    LoginDialog.h
-    ComManager.h
-    WebSocketManager.h
-    MainWindow.h
-    ProjectNavigator.h
-    NotificationWindow.h
     Message.h
     GlobalMessageBox.h
-    ConfigWidget.h
-    HistoryCalendarWidget.h
-    DeviceAssignDialog.h
     DownloadedFile.h
-    DownloadProgressDialog.h
-    BaseDialog.h
     GlobalEvent.h
     GlobalEventLogger.h
-    InSessionWidget.h
-    StartSessionDialog.h
-    SessionLobbyDialog.h
-    SessionInviteWidget.h
-    OnlineManagerWidget.h
-    JoinSessionDialog.h
-    EmailInviteDialog.h
-    ClickableLabel.h
-    AboutDialog.h
-    AboutDialogPage.h
-    GeneratePasswordDialog.h
-    PasswordStrengthDialog.h
+    # Main Windows
+    main/MainWindow.h
+    main/MainKitWindow.h
+    # Managers
+    managers/ConfigManagerClient.h
+    managers/ComManager.h
+    managers/ParticipantComManager.h
+    managers/WebSocketManager.h
+    # Dialogs
+    dialogs/LoginDialog.h
+    dialogs/StartSessionDialog.h
+    dialogs/SessionLobbyDialog.h
+    dialogs/JoinSessionDialog.h
+    dialogs/EmailInviteDialog.h
+    dialogs/AboutDialog.h
+    dialogs/AboutDialogPage.h
+    dialogs/GeneratePasswordDialog.h
+    dialogs/PasswordStrengthDialog.h
+    dialogs/DownloadProgressDialog.h
+    dialogs/BaseDialog.h
+    dialogs/DeviceAssignDialog.h
+    # Editors
     editors/DataEditorWidget.h
     editors/UserWidget.h
     editors/UserSummaryWidget.h
@@ -58,8 +56,10 @@ set(headers
     editors/UserGroupWidget.h
     editors/ServiceWidget.h
     editors/ServiceConfigWidget.h
+    # Wizards
     wizards/UserWizard.h
     wizards/BaseWizard.h
+    # Services
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
     services/BaseServiceSetupWidget.h
@@ -67,43 +67,59 @@ set(headers
     services/VideoRehabService/VideoRehabWebPage.h
     services/VideoRehabService/VideoRehabSetupWidget.h
     services/VideoRehabService/VideoRehabToolsWidget.h
+    services/VideoRehabService/VideoRehabVirtualCamSetupDialog.h
+    services/VideoRehabService/VideoRehabPTZDialog.h
     services/VideoRehabService/WebSocket/SharedObject.h
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
     services/VideoRehabService/WebSocket/WebSocketTransport.h
+    # Widgets
+    widgets/InSessionWidget.h
+    widgets/SessionInviteWidget.h
+    widgets/OnlineManagerWidget.h
+    widgets/ClickableLabel.h
+    widgets/ConfigWidget.h
+    widgets/HistoryCalendarWidget.h
+    widgets/ProjectNavigator.h
+    widgets/NotificationWindow.h
+    widgets/TableDateWidgetItem.h
+    widgets/TableNumberWidgetItem.h
+    # Kits
+    kit/KitConfigDialog.h
+    kit/KitConfigManager.h
+    kit/KitInSessionDialog.h
+    kit/KitVideoRehabWidget.h
 )
 
 set(srcs
     main.cpp
     ClientApp.cpp
-    ConfigManagerClient.cpp
-    LoginDialog.cpp
-    ComManager.cpp
-    WebSocketManager.cpp
-    MainWindow.cpp
-    ProjectNavigator.cpp
-    NotificationWindow.cpp
     Message.cpp
     GlobalMessageBox.cpp
-    ConfigWidget.cpp
-    HistoryCalendarWidget.cpp
-    DeviceAssignDialog.cpp
     DownloadedFile.cpp
-    DownloadProgressDialog.cpp
-    BaseDialog.cpp
     GlobalEvent.cpp
     GlobalEventLogger.cpp
-    InSessionWidget.cpp
-    StartSessionDialog.cpp
-    SessionLobbyDialog.cpp
-    SessionInviteWidget.cpp
-    OnlineManagerWidget.cpp
-    JoinSessionDialog.cpp
-    EmailInviteDialog.cpp
-    ClickableLabel.cpp
-    AboutDialog.cpp
-    AboutDialogPage.cpp
-    GeneratePasswordDialog.cpp
-    PasswordStrengthDialog.cpp
+    # Main Windows
+    main/MainWindow.cpp
+    main/MainKitWindow.cpp
+    # Managers
+    managers/ConfigManagerClient.cpp
+    managers/ComManager.cpp
+    managers/WebSocketManager.cpp
+    managers/ParticipantComManager.cpp
+    # Dialogs
+    dialogs/LoginDialog.cpp
+    dialogs/DeviceAssignDialog.cpp
+    dialogs/DownloadProgressDialog.cpp
+    dialogs/BaseDialog.cpp
+    dialogs/StartSessionDialog.cpp
+    dialogs/SessionLobbyDialog.cpp
+    dialogs/JoinSessionDialog.cpp
+    dialogs/EmailInviteDialog.cpp
+    dialogs/AboutDialog.cpp
+    dialogs/AboutDialogPage.cpp
+    dialogs/GeneratePasswordDialog.cpp
+    dialogs/PasswordStrengthDialog.cpp
+    # Editors
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
     editors/UserSummaryWidget.cpp
@@ -121,8 +137,10 @@ set(srcs
     editors/UserGroupWidget.cpp
     editors/ServiceWidget.cpp
     editors/ServiceConfigWidget.cpp
+    # Wizards
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
+    # Services
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
     services/BaseServiceSetupWidget.cpp
@@ -130,30 +148,46 @@ set(srcs
     services/VideoRehabService/VideoRehabWebPage.cpp
     services/VideoRehabService/VideoRehabSetupWidget.cpp
     services/VideoRehabService/VideoRehabToolsWidget.cpp
+    services/VideoRehabService/VideoRehabVirtualCamSetupDialog.cpp
+    services/VideoRehabService/VideoRehabPTZDialog.cpp
     services/VideoRehabService/WebSocket/SharedObject.cpp
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
+    # Widgets
+    widgets/ProjectNavigator.cpp
+    widgets/NotificationWindow.cpp
+    widgets/ConfigWidget.cpp
+    widgets/HistoryCalendarWidget.cpp
+    widgets/InSessionWidget.cpp
+    widgets/SessionInviteWidget.cpp
+    widgets/OnlineManagerWidget.cpp
+    widgets/ClickableLabel.cpp
+    widgets/TableDateWidgetItem.cpp
+    widgets/TableNumberWidgetItem.cpp
+    # Kits
+    kit/KitConfigDialog.cpp
+    kit/KitConfigManager.cpp
+    kit/KitInSessionDialog.cpp
+    kit/KitVideoRehabWidget.cpp
 )
 
 SET(uis
-    LoginDialog.ui
-    MainWindow.ui
-    ProjectNavigator.ui
-    notification.ui
-    ConfigWidget.ui
-    DeviceAssignDialog.ui
-    DownloadProgressDialog.ui
-    BaseDialog.ui
-    InSessionWidget.ui
-    StartSessionDialog.ui
-    SessionLobbyDialog.ui
-    SessionInviteWidget.ui
-    OnlineManagerWidget.ui
-    JoinSessionDialog.ui
-    EmailInviteDialog.ui
-    AboutDialog.ui
-    GeneratePasswordDialog.ui
-    PasswordStrengthDialog.ui
+    # Main Windows
+    main/MainWindow.ui
+    main/MainKitWindow.ui
+    # Dialogs
+    dialogs/LoginDialog.ui
+    dialogs/DeviceAssignDialog.ui
+    dialogs/DownloadProgressDialog.ui
+    dialogs/BaseDialog.ui
+    dialogs/StartSessionDialog.ui
+    dialogs/SessionLobbyDialog.ui
+    dialogs/JoinSessionDialog.ui
+    dialogs/EmailInviteDialog.ui
+    dialogs/AboutDialog.ui
+    dialogs/GeneratePasswordDialog.ui
+    dialogs/PasswordStrengthDialog.ui
+    # Editors
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
     editors/TeraForm.ui
@@ -170,9 +204,23 @@ SET(uis
     editors/UserGroupWidget.ui
     editors/ServiceWidget.ui
     editors/ServiceConfigWidget.ui
+    # Services
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
     services/VideoRehabService/VideoRehabToolsWidget.ui
+    services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
+    services/VideoRehabService/VideoRehabPTZDialog.ui
+    # Widgets
+    widgets/ProjectNavigator.ui
+    widgets/notification.ui
+    widgets/ConfigWidget.ui
+    widgets/InSessionWidget.ui
+    widgets/SessionInviteWidget.ui
+    widgets/OnlineManagerWidget.ui
+    # Kits
+    kit/KitConfigDialog.ui
+    kit/KitInSessionDialog.ui
+    kit/KitVideoRehabWidget.ui
 )
 
 SET(qrcs
@@ -229,6 +277,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     # DL Temporary test for virtual cameras
     ${VIRTUAL_CAMERA_INCLUDES}
+    ${PTZ_DRIVERS_INCLUDES}
     ${AVKYS_INCLUDES}
     )
 
@@ -236,11 +285,11 @@ include_directories(
 SET(icon openteraico.rc)
 
 # Will be used in Info.plist.in
-set(MACOSX_BUNDLE_INFO_STRING "OpenTeRa+")
+set(MACOSX_BUNDLE_INFO_STRING "OpenTeraPlus")
 set(MACOSX_BUNDLE_ICON_FILE "OpenTeraPlus.icns")
-set(MACOSX_BUNDLE_GUI_IDENTIFIER "OpenTeRa+")
+set(MACOSX_BUNDLE_GUI_IDENTIFIER "OpenTeraPlus")
 set(MACOSX_BUNDLE_LONG_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
-set(MACOSX_BUNDLE_BUNDLE_NAME "OpenTeRa")
+set(MACOSX_BUNDLE_BUNDLE_NAME "OpenTeraPlus")
 set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
 set(MACOSX_BUNDLE_BUNDLE_VERSION "${CPACK_PACKAGE_VERSION}")
 set(MACOSX_BUNDLE_COPYRIGHT "IntRolab/CDRV UdeS")
@@ -254,17 +303,19 @@ add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc
 
 # Linking with Qt libraries and others
 target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt5::Core Qt5::Network Qt5::Multimedia Qt5::WebSockets Qt5::WebEngine Qt5::WebEngineWidgets)
-
-# DL - Temporary for tests
 target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
+target_link_libraries(OpenTeraPlus ${PTZ_DRIVERS_LIBS})
+
 
 set_target_properties(OpenTeraPlus PROPERTIES
-        INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
+        INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/OpenTeraPlus.app/Contents/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # Automatic generation of ts files on target
 # Remove if you don't want to generate translations every time.
 # add_dependencies(TeraClient translations)
+
+add_custom_target(plist_mac SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
 
 # Set a custom plist file for the app bundle
 set_target_properties(OpenTeraPlus PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
@@ -272,12 +323,18 @@ set_target_properties(OpenTeraPlus PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_C
 #This will copy icon to Resources directory
 set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
-# Install target
-install(TARGETS OpenTeraPlus DESTINATION bin)
+if (APPLE)
+    # Mac bundles...
+    # Install targets
+    install(TARGETS OpenTeraPlus DESTINATION .)
+    # install(TARGETS opentera_messages DESTINATION .)
 
-# Doesn't seem to be installed otherwise??
-install(TARGETS opentera_messages DESTINATION bin)
-
+else(APPLE)
+    # Every other systems
+    # Install target to bin
+    install(TARGETS OpenTeraPlus DESTINATION bin)
+    install(TARGETS opentera_messages DESTINATION bin)
+endif(APPLE)
 
 
 

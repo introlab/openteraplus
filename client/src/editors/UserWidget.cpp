@@ -8,8 +8,8 @@
 
 #include <QtMultimedia/QAudioDeviceInfo>
 
-#include "GeneratePasswordDialog.h"
-#include "PasswordStrengthDialog.h"
+#include "dialogs/GeneratePasswordDialog.h"
+#include "dialogs/PasswordStrengthDialog.h"
 
 
 UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
@@ -112,7 +112,8 @@ void UserWidget::saveData(bool signal){
 
 
 void UserWidget::updateControlsState(){
-    ui->tableRoles->setEnabled(!isWaitingOrLoading());
+    ui->tableProjectsRoles->setEnabled(!isWaitingOrLoading());
+    ui->tableSitesRoles->setEnabled(!isWaitingOrLoading());
     ui->frameGroups->setEnabled(!isWaitingOrLoading());
 
     // Buttons update
@@ -287,27 +288,25 @@ void UserWidget::updateUserGroup(const TeraData *group)
 void UserWidget::updateSiteAccess(const TeraData *site_access)
 {
     // We assume the table is cleared beforehand and that item isn't already present.
-    ui->tableRoles->insertRow(0);
-    int current_row = 0; // Sites access are always added at the beginning
+    ui->tableSitesRoles->setRowCount(ui->tableSitesRoles->rowCount()+1);
+    int current_row = ui->tableSitesRoles->rowCount()-1;
     QTableWidgetItem* item = new QTableWidgetItem(site_access->getFieldValue("site_name").toString());
-    ui->tableRoles->setItem(current_row,0,item);
-    item = new QTableWidgetItem(""); // Site access has an empty project name
-    ui->tableRoles->setItem(current_row,1,item);
+    ui->tableSitesRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(getRoleName(site_access->getFieldValue("site_access_role").toString()));
-    ui->tableRoles->setItem(current_row,2,item);
+    ui->tableSitesRoles->setItem(current_row,1,item);
 }
 
 void UserWidget::updateProjectAccess(const TeraData *project_access)
 {
     // We assume the table is cleared beforehand and that item isn't already present.
-    ui->tableRoles->setRowCount(ui->tableRoles->rowCount()+1);
-    int current_row = ui->tableRoles->rowCount()-1;
+    ui->tableProjectsRoles->setRowCount(ui->tableProjectsRoles->rowCount()+1);
+    int current_row = ui->tableProjectsRoles->rowCount()-1;
     QTableWidgetItem* item = new QTableWidgetItem(project_access->getFieldValue("site_name").toString());
-    ui->tableRoles->setItem(current_row,0,item);
+    ui->tableProjectsRoles->setItem(current_row,1,item);
     item = new QTableWidgetItem(project_access->getFieldValue("project_name").toString());
-    ui->tableRoles->setItem(current_row,1,item);
+    ui->tableProjectsRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(getRoleName(project_access->getFieldValue("project_access_role").toString()));
-    ui->tableRoles->setItem(current_row,2,item);
+    ui->tableProjectsRoles->setItem(current_row,2,item);
 }
 
 bool UserWidget::validateUserGroups()
@@ -320,7 +319,7 @@ bool UserWidget::validateUserGroups()
                 break;
             }
         }
-        if (!at_least_one_selected){
+        if (!at_least_one_selected && !ui->wdgUser->getFieldValue("user_superadmin").toBool()){
             // Warning: that user not having any user group meaning that it will be not available to the current user
             GlobalMessageBox msgbox;
             msgbox.showError(tr("Attention"), tr("Aucun groupe utilisateur n'a été spécifié.\nVous devez spécifier au moins un groupe utilisateur"));
@@ -429,11 +428,13 @@ void UserWidget::processFormsReply(QString form_type, QString data)
             }
 
             // Disable super admin field if not super admin itself!
-            QWidget* item = ui->wdgUser->getWidgetForField("user_superadmin");
+            /*QWidget* item = ui->wdgUser->getWidgetForField("user_superadmin");
             if (item){
                 item->setVisible(m_comManager->isCurrentUserSuperAdmin());
 
-            }
+            }*/
+            if (!m_comManager->isCurrentUserSuperAdmin())
+                ui->wdgUser->hideField("user_superadmin");
         }
 
         return;
@@ -488,9 +489,12 @@ void UserWidget::on_tabMain_currentChanged(int index)
     }
     if (current_tab == ui->tabRoles){
         // Roles
-        ui->tableRoles->clearContents(); // Resets all elements in the table
-        ui->tableRoles->setRowCount(0);
-        ui->tableRoles->sortItems(-1);
+        ui->tableProjectsRoles->clearContents(); // Resets all elements in the tables
+        ui->tableProjectsRoles->setRowCount(0);
+        ui->tableProjectsRoles->sortItems(-1);
+        ui->tableSitesRoles->clearContents();
+        ui->tableSitesRoles->setRowCount(0);
+        ui->tableSitesRoles->sortItems(-1);
 
         // Query sites and projects roles
         if (!m_data->isNew()){
@@ -593,11 +597,15 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
         if (!current_pass.isEmpty() && !m_passwordJustGenerated){
             // Show password dialog
             PasswordStrengthDialog dlg(current_pass);
+            //QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->wdgUser->getWidgetForField("user_password"));
+            //dlg.setCursorPosition(wdg_editor->cursorPosition());
+
             if (dlg.exec() == QDialog::Accepted){
                 m_passwordJustGenerated = true;
                 ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
             }else{
                 ui->wdgUser->setFieldValue("user_password", "");
+                //wdg_editor->undo();
             }
 
         }else{

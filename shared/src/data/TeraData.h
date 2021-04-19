@@ -7,8 +7,10 @@
 #include <QJsonObject>
 
 #include <QMetaProperty>
+#include <QUrl>
 
 #include "WebAPI.h"
+#include "ParticipantWebAPI.h"
 
 enum TeraDataTypes {
     TERADATA_NONE,
@@ -106,6 +108,8 @@ public:
 
     static QString getIconFilenameForDataType(const TeraDataTypes& data_type);
     QString getIconStateFilename() const;
+
+    static QString getServiceParticipantUrl(const TeraData &service, const QUrl &server_url, const QString &participant_token);
 
 protected:
 

@@ -9,7 +9,7 @@
 #include "editors/DataListWidget.h"
 #include "editors/SessionWidget.h"
 
-#include "GeneratePasswordDialog.h"
+#include "dialogs/GeneratePasswordDialog.h"
 
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -180,7 +180,8 @@ void ParticipantWidget::updateFieldsValue()
             ui->frameNewSession->setVisible(canStartNewSession());
         }
 
-        ui->wdgParticipant->fillFormFromData(m_data->toJson());
+        if (ui->wdgParticipant->formHasStructure())
+            ui->wdgParticipant->fillFormFromData(m_data->toJson());
         on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
 
     }
@@ -223,7 +224,7 @@ void ParticipantWidget::updateSession(TeraData *session)
     int id_session = session->getId();
 
     QTableWidgetItem* name_item;
-    QTableWidgetItem* date_item;
+    TableDateWidgetItem* date_item;
     QTableWidgetItem* type_item;
     QTableWidgetItem* duration_item;
     QTableWidgetItem* user_item;
@@ -234,7 +235,7 @@ void ParticipantWidget::updateSession(TeraData *session)
     if (m_listSessions_items.contains(id_session)){
         // Already there, get items
        name_item = m_listSessions_items[id_session];
-       date_item = ui->tableSessions->item(name_item->row(), 1);
+       date_item = dynamic_cast<TableDateWidgetItem*>(ui->tableSessions->item(name_item->row(), 1));
        type_item = ui->tableSessions->item(name_item->row(), 2);
        status_item = ui->tableSessions->item(name_item->row(), 3);
        duration_item = ui->tableSessions->item(name_item->row(), 4);
@@ -253,7 +254,7 @@ void ParticipantWidget::updateSession(TeraData *session)
         int current_row = ui->tableSessions->rowCount()-1;
         name_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSION)),"");
         ui->tableSessions->setItem(current_row, 0, name_item);
-        date_item = new QTableWidgetItem("");
+        date_item = new TableDateWidgetItem("");
         ui->tableSessions->setItem(current_row, 1, date_item);
         type_item = new QTableWidgetItem("");
         ui->tableSessions->setItem(current_row, 2, type_item);
@@ -441,7 +442,7 @@ void ParticipantWidget::refreshWebAccessUrl()
     if (index >= m_services.count() || index <0 || dataIsNew())
         return;
 
-    TeraData* current_service = &m_services[index];
+    /*TeraData* current_service = &m_services[index];
     QUrl server_url = m_comManager->getServerUrl();
     QString participant_endpoint = "";
     if (current_service->hasFieldName("service_endpoint_participant"))
@@ -450,7 +451,10 @@ void ParticipantWidget::refreshWebAccessUrl()
     //QString service_url = "https://" + current_service->getFieldValue("service_hostname").toString() + ":" + QString::number(server_url.port()) +
             current_service->getFieldValue("service_clientendpoint").toString() +
             participant_endpoint + "?token=" +
-            m_data->getFieldValue("participant_token").toString();
+            m_data->getFieldValue("participant_token").toString();*/
+    QString service_url = TeraData::getServiceParticipantUrl(m_services[index],
+                                                             m_comManager->getServerUrl(),
+                                                             m_data->getFieldValue("participant_token").toString());
 
     ui->txtWeb->setText(service_url);
 }
@@ -485,10 +489,11 @@ void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
 
     // Update calendar view
     currentTypeFiltersChanged(nullptr);
-    updateCalendars(getMinimumSessionDate());
+    updateCalendars(getMaximumSessionDate().addMonths(-2));
+    //updateCalendars(getMinimumSessionDate());
     ui->calMonth1->setData(m_ids_sessions.values());
     ui->calMonth2->setData(m_ids_sessions.values());
-    ui->calMonth2->setData(m_ids_sessions.values());
+    ui->calMonth3->setData(m_ids_sessions.values());
 }
 
 void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
@@ -602,7 +607,7 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
             // Update calendars
             ui->calMonth1->setData(m_ids_sessions.values());
             ui->calMonth2->setData(m_ids_sessions.values());
-            ui->calMonth2->setData(m_ids_sessions.values());
+            ui->calMonth3->setData(m_ids_sessions.values());
         }
     }
 
@@ -916,7 +921,7 @@ void ParticipantWidget::updateCalendars(QDate left_date){
     // Check if we must enable the previous month button
     QDate min_date = getMinimumSessionDate();
 
-    if (ui->calMonth1->yearShown()==min_date.year() && ui->calMonth1->monthShown()==min_date.month())
+    if (ui->calMonth1->yearShown()<=min_date.year() && ui->calMonth1->monthShown()<=min_date.month())
         ui->btnPrevCal->setEnabled(false);
     else
         ui->btnPrevCal->setEnabled(true);
@@ -934,6 +939,20 @@ QDate ParticipantWidget::getMinimumSessionDate()
 
     return min_date;
 }
+
+QDate ParticipantWidget::getMaximumSessionDate()
+{
+    QDate max_date = QDate::currentDate();
+    for (TeraData* session:m_ids_sessions.values()){
+        QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
+        if (session_date > max_date)
+            max_date = session_date;
+    }
+
+    return max_date;
+}
+
+
 
 void ParticipantWidget::displayNextMonth(){
     QDate new_date;
@@ -978,7 +997,7 @@ void ParticipantWidget::sessionLobbyStartSessionRequested()
 {
 
     // Delete setup widget
-    int id_session_type = ui->cmbSessionType->currentData().toInt();
+    int id_session_type = m_sessionLobby->getIdSessionType(); //ui->cmbSessionType->currentData().toInt();
     // Start session
     m_comManager->startSession(*m_ids_session_types[id_session_type],
                                m_sessionLobby->getIdSession(),

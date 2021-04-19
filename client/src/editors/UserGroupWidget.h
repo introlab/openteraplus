@@ -7,7 +7,7 @@
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
-#include "BaseDialog.h"
+#include "dialogs/BaseDialog.h"
 
 namespace Ui {
 class UserGroupWidget;

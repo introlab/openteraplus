@@ -27,10 +27,12 @@
                         position: absolute;
                         width: 20px;
                         height: 100%;
-			background-color: rgba(0,0,0,0.5);
+                        background-color: rgba(0,0,0,0);
 			float: left;
                         bottom: 0px;
                         z-index: 1;
+                        left: 0px;
+                        padding-left: 10px;
 		}
 		
 		.overlay-right {
@@ -73,15 +75,16 @@
 			left: 50%;
 			top: 0px;
 			height: 10%;
-			max-height: 48px;
+                        max-height: 32px;
 			z-index: 2;
 			//padding: 5px;
 			transform: translate(-50%, 0%);
 			margin: auto;
-			background-color: rgba(0,0,0,0.5);
-			height: 48px;
+                        background-color: rgba(0,0,0,0.1);
+                        height: 32px;
 			width: 100%;
 			text-align: center;
+                        padding-top: 10px;
 			
 		}
 		

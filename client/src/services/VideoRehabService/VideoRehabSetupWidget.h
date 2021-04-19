@@ -13,8 +13,15 @@
 #include "services/BaseServiceSetupWidget.h"
 
 #include "VideoRehabWebPage.h"
-#include "ComManager.h"
+#include "VideoRehabVirtualCamSetupDialog.h"
+#include "VideoRehabPTZDialog.h"
+#include "managers/ComManager.h"
 #include "Utils.h"
+
+#include "VirtualCameraThread.h"
+
+#include "drivers/PTZ/ICameraDriver.h"
+#include "drivers/PTZ/Vivotek8111.h"
 
 
 namespace Ui {
@@ -37,7 +44,11 @@ private:
     QWebEngineView*         m_webEngine;
     VideoRehabWebPage*      m_webPage;
 
+    VirtualCameraThread*    m_virtualCamThread;
+
     int                     m_id_service_config;
+
+    bool                    m_valueJustChanged;
 
     void initUI();
     void connectSignals();
@@ -46,7 +57,14 @@ private:
     void selectAudioSrcByName(const QString& name);*/
 
     void setLoading(const bool& loading);
-    void showError(const QString& title, const QString& context, const QString& error);
+    void showError(const QString& title, const QString& context, const QString& error, bool hide_retry = false);
+
+    void startVirtualCamera(const QString& src);
+    void stopVirtualCamera();
+
+    void showPTZDialog();
+    void startPTZCamera();
+    void stopPTZCamera();
 
 
 private slots:
@@ -66,6 +84,11 @@ private slots:
     void on_btnSaveConfig_clicked();
 
     void setupFormDirtyChanged(bool dirty);
+    void setupFormValueChanged(QWidget* wdg, QVariant value);
+
+    void virtualCameraDisconnected();
+
+    void ptzCameraError(CameraInfo infos);
 };
 
 #endif // VIDEOREHABSETUPWIDGET_H

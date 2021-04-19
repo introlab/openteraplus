@@ -2,14 +2,15 @@
 #define USERSUMMARYWIDGET_H
 
 #include <QWidget>
+#include <QStyledItemDelegate>
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
-#include "BaseDialog.h"
+#include "dialogs/BaseDialog.h"
 #include "TeraSessionStatus.h"
 #include "Utils.h"
 #include "ServiceConfigWidget.h"
-#include "SessionLobbyDialog.h"
+#include "dialogs/SessionLobbyDialog.h"
 
 namespace Ui {
 class UserSummaryWidget;

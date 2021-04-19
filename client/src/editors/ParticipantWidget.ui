@@ -369,7 +369,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <x>0</x>
             <y>0</y>
             <width>978</width>
-            <height>97</height>
+            <height>99</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -829,7 +829,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <x>0</x>
             <y>0</y>
             <width>978</width>
-            <height>200</height>
+            <height>159</height>
            </rect>
           </property>
           <attribute name="label">
@@ -1873,7 +1873,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
   <customwidget>
    <class>HistoryCalendarWidget</class>
    <extends>QCalendarWidget</extends>
-   <header>HistoryCalendarWidget.h</header>
+   <header>widgets/HistoryCalendarWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

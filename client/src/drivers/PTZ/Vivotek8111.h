@@ -46,6 +46,7 @@ public:
 public slots:
     ///QTimer slot
     void connectionTimeout(void);
+    void requestTimeout(void);
 
     ///QNetworkAccessManager Slot
     void cameraDataRdy(QNetworkReply* netReply);
@@ -58,8 +59,12 @@ public slots:
     void closeNetworkAccessManager();
     void setPointNClick(QPoint coordinates, QSize screenSize);
     void setRelZoom(double value);
+    void zoomIn();
+    void zoomOut();
+    void zoomMax();
+    void zoomMin();
     void setPresetID(int id);
-    void configPresetID(int id);
+    void gotoPresetID(int id);
     void requestInformation();
     void requestImageSettings();
     void setImageSettings(CameraImageSettings settings);
@@ -71,6 +76,7 @@ private:
     QVariant m_lastStatusCode;
     bool m_firstTime;
     QTimer m_connectionTimer;
+    QTimer m_requestTimer;
     QNetworkAccessManager *m_CameraManager;
     bool m_forwardResolution;
 
@@ -79,6 +85,8 @@ private:
     quint16 m_port;
     QString m_user;
     QString m_password;
+
+    void doPost(const QNetworkRequest& request, const QUrlQuery& args);
 
 };
 

@@ -28,7 +28,7 @@
 #include <QtMultimedia/QAudioDeviceInfo>
 
 #include "TeraData.h"
-#include "ComManager.h"
+#include "managers/ComManager.h"
 #include "Utils.h"
 
 namespace Ui {
@@ -68,6 +68,7 @@ public:
     void setFieldRequired(const QString& field, const bool& required);
 
     void setFieldEnabled(const QString& field, const bool& enabled);
+    void setFieldsEnabled(const QStringList& fields, const bool& enabled);
 
     bool isDirty();
 

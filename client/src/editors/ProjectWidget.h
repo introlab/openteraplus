@@ -7,7 +7,10 @@
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
-#include "BaseDialog.h"
+#include "dialogs/BaseDialog.h"
+
+#include "widgets/TableDateWidgetItem.h"
+#include "widgets/TableNumberWidgetItem.h"
 
 namespace Ui {
 class ProjectWidget;
@@ -51,6 +54,8 @@ private slots:
     void on_btnUserGroups_clicked();
     void userGroupsEditor_finished();
 
+    void on_tableSummary_itemDoubleClicked(QTableWidgetItem *item);
+
 private:
     Ui::ProjectWidget *ui;
 
@@ -66,6 +71,7 @@ private:
     BaseDialog*                   m_diag_editor;
 
     void connectSignals();
+    void initUI();
 
     void updateUserProjectAccess(const TeraData* access);
     void updateUserGroupProjectAccess(const TeraData* access);

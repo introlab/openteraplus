@@ -10,7 +10,7 @@
 #include "TeraSessionStatus.h"
 #include "TeraSessionEvent.h"
 #include "DownloadedFile.h"
-#include "BaseDialog.h"
+#include "dialogs/BaseDialog.h"
 
 namespace Ui {
 class SessionWidget;

@@ -16,6 +16,7 @@ set(sharedlib_headers
     Logger.h
     ConfigManager.h
     Utils.h
+    SimpleCrypt.h
     data/TeraData.h
     data/TeraSessionStatus.h
     data/TeraSessionEvent.h
@@ -23,12 +24,14 @@ set(sharedlib_headers
     data/TeraPreferences.h
     data/TeraSettings.h
     WebAPI.h
+    ParticipantWebAPI.h
 )
 
 set(sharedlib_srcs
     Logger.cpp
     ConfigManager.cpp
     Utils.cpp
+    SimpleCrypt.cpp
     data/TeraData.cpp
     data/TeraSessionStatus.cpp
     data/TeraSessionEvent.cpp
@@ -59,7 +62,7 @@ endif(MSVC)
 
 
 # Install target
-install(TARGETS opentera_shared DESTINATION bin)
+install(TARGETS opentera_shared DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 set(OPENTERA_SHARED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/data CACHE INTERNAL "doc string")
 set(OPENTERA_SHARED_LIBS "opentera_shared" CACHE INTERNAL "doc string")

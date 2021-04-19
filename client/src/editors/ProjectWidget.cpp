@@ -23,15 +23,15 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
     // Connect signals and slots
     connectSignals();
 
+    initUI();
+
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PROJECT));
 
     ui->wdgProject->setComManager(m_comManager);
     setData(data);
 
-    // Default display
-    ui->tabNav->setCurrentIndex(0);
-    ui->tabProjectInfos->setCurrentIndex(0);
+
 }
 
 ProjectWidget::~ProjectWidget()
@@ -86,6 +86,14 @@ void ProjectWidget::connectSignals()
 
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &ProjectWidget::btnUpdateAccess_clicked);
     //connect(ui->btnDevices, &QPushButton::clicked, this, &ProjectWidget::btnDevices_clicked);
+
+}
+
+void ProjectWidget::initUI()
+{
+    // Default display
+    ui->tabNav->setCurrentIndex(0);
+    ui->tabProjectInfos->setCurrentIndex(0);
 
 }
 
@@ -439,19 +447,19 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
             item->setTextAlignment(Qt::AlignCenter);
             ui->tableSummary->setItem(current_row, 1, item);
 
-            item = new QTableWidgetItem(part_info["participant_sessions_count"].toString());
+            item = new TableNumberWidgetItem(part_info["participant_sessions_count"].toString());
             item->setTextAlignment(Qt::AlignCenter);
             ui->tableSummary->setItem(current_row, 2, item);
 
-            item = new QTableWidgetItem(part_info["participant_first_session"].toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
+            item = new TableDateWidgetItem(part_info["participant_first_session"].toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
             item->setTextAlignment(Qt::AlignCenter);
             ui->tableSummary->setItem(current_row, 3, item);
 
             QDateTime last_session_datetime = part_info["participant_last_session"].toDateTime().toLocalTime();
-            item = new QTableWidgetItem(last_session_datetime.toString("dd-MM-yyyy hh:mm:ss"));
+            item = new TableDateWidgetItem(last_session_datetime.toString("dd-MM-yyyy hh:mm:ss"));
             if (part_info["participant_enabled"].toBool() == true && last_session_datetime.isValid()){
                 // Set background color
-                QColor back_color = TeraForm::getGradientColor(0, 5, 10, static_cast<int>(last_session_datetime.daysTo(QDateTime::currentDateTime())));
+                QColor back_color = TeraForm::getGradientColor(0, 7, 14, static_cast<int>(last_session_datetime.daysTo(QDateTime::currentDateTime())));
                 back_color.setAlphaF(0.5);
                 item->setBackground(back_color);
             }
@@ -465,7 +473,7 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
                 if (last_connect_datetime.isValid())
                     last_connect = last_connect_datetime.toString("dd-MM-yyyy hh:mm:ss");
             }
-            item = new QTableWidgetItem(last_connect);
+            item = new TableDateWidgetItem(last_connect);
             item->setTextAlignment(Qt::AlignCenter);
 
             if (part_info["participant_enabled"].toBool() == true && last_connect_datetime.isValid()){
@@ -731,4 +739,17 @@ void ProjectWidget::userGroupsEditor_finished()
     ui->tableUserGroups->setRowCount(0);
     m_tableUserGroups_items.clear();
     queryUserGroupsProjectAccess();
+}
+
+void ProjectWidget::on_tableSummary_itemDoubleClicked(QTableWidgetItem *item)
+{
+    QTableWidgetItem* base_item = ui->tableSummary->item(item->row(), 0);
+
+    int id_participant = m_tableParticipants_items.key(base_item, -1);
+
+    if (id_participant>=0){
+        emit dataDisplayRequest(TERADATA_PARTICIPANT, id_participant);
+    }
+
+
 }

@@ -1,5 +1,7 @@
 #include "ConfigManager.h"
 
+#include <QDebug>
+
 ConfigManager::ConfigManager(QObject *parent) : QObject(parent)
 {
 
@@ -41,7 +43,25 @@ bool ConfigManager::loadConfig()
 
 }
 
-QJsonParseError ConfigManager::getLastError()
+bool ConfigManager::saveConfig()
+{
+    if (m_filename.isEmpty())
+        return false;
+
+    QFile file(m_filename);
+    if (!file.open(QIODevice::WriteOnly)){
+        return false;
+    }
+
+    //qDebug() << m_config.toJson(QJsonDocument::Indented);
+    file.write(m_config.toJson(QJsonDocument::Indented));
+
+    file.close();
+
+    return true;
+}
+
+QJsonParseError ConfigManager::getLastParseError()
 {
     return m_lastJsonError;
 }
@@ -49,6 +69,25 @@ QJsonParseError ConfigManager::getLastError()
 bool ConfigManager::hasParseError()
 {
     return (m_lastJsonError.error != QJsonParseError::NoError);
+}
+
+void ConfigManager::initConfig()
+{
+    m_config = QJsonDocument();
+    m_config.setObject(QJsonObject());
+}
+
+void ConfigManager::initConfig(QStringList sections)
+{
+    m_config = QJsonDocument();
+    QJsonObject main_obj;
+
+    foreach (QString section, sections){
+        main_obj.insert(section, QJsonValue(QJsonObject()));
+
+    }
+    m_config.setObject(main_obj);
+
 }
 
 

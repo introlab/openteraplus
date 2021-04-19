@@ -1,8 +1,6 @@
 find_package(Qt5Core REQUIRED)
 message(STATUS "Entering package directory.")
 
-
-
 include(InstallRequiredSystemLibraries)
 get_target_property(_qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
 
@@ -16,15 +14,63 @@ execute_process(
 message(STATUS "Testing package ${_qt5_qmake_location} ${qt5_install_prefix}")
 
 if (APPLE)
-    add_custom_target(package
-        COMMAND ${qt5_install_prefix}/bin/macdeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/../.." -always-overwrite
-        COMMENT "Running macdeplotqt ..."
-        DEPENDS OpenTeraPlus
-    )
+    cmake_policy(SET CMP0087 NEW) # Enable generator expressions in INSTALL(CODE
+
+    set(CPACK_GENERATOR "DragNDrop")
+    set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus-${CPACK_PACKAGE_VERSION})
+    set(CPACK_DMG_BACKGROUND_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/../client/resources/logos/LogoOpenTeraPlus.png)
+    set(CPACK_DMG_FORMAT UDZO)
+    set(CPACK_MONOLITHIC_INSTALL 1)
+
+#    add_custom_target(mac_deploy_qt
+#        COMMAND ${qt5_install_prefix}/bin/macdeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/../.." -always-overwrite -codesign=""
+#        COMMENT "Running macdeployqt ..."
+#        DEPENDS OpenTeraPlus
+#    )
+
+    set(MACSIGNID "")
+    # set(MACSIGNID "")
+    set(MACQTDEPLOY_COMMAND "${qt5_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:OpenTeraPlus>/../.. -always-overwrite -verbose=1")
+
+    # message(STATUS "********** ${MACQTDEPLOY_COMMAND}")
+
+    if (TARGET install)
+        set(APPSIGNPATH ${CMAKE_INSTALL_PREFIX})
+    else()
+        set(APPSIGNPATH ${CMAKE_BINARY_DIR}/_CPack_Packages/Darwin/${CPACK_GENERATOR}/${CPACK_PACKAGE_FILE_NAME})
+    endif()
+
+
+    install(CODE "
+        execute_process(COMMAND ${MACQTDEPLOY_COMMAND} COMMAND_ECHO STDOUT)
+        message(STATUS \"&&&&&&&&&&&&& MACDEPLOYQT ${MACQTDEPLOY_COMMAND}\")
+        execute_process(COMMAND codesign --remove-signature ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+        execute_process(COMMAND codesign -s ${MACSIGNID} --deep -v ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+        execute_process(COMMAND codesign -v -v ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+        ")
+    # execute_process(COMMAND codesign -s ${MACSIGNID} --deep -v ${CMAKE_INSTALL_PREFIX}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+    include(CPack REQUIRED)
+
+    # Put special configuration file in config/TeraClientConfig.json if desired
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
+        message(STATUS "Using specific configuration file for packaging.")
+        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json DESTINATION "OpenTeraPlus.app/Contents/MacOS/config")
+        set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json PROPERTIES MACOSX_PACKAGE_LOCATION "MacOS/config")
+    endif()
+
+    # Deploy before packaging
+    # add_custom_target(mac-package DEPENDS mac_deploy_qt)
 
 endif(APPLE)
 
 if (WIN32)
+    # Create files for installation
+    add_custom_target(windows_deploy_qt
+        # Collect and copy required dependencies
+        COMMAND ${qt5_install_prefix}/bin/windeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/OpenTeraPlus.exe" --release --dir "${CMAKE_INSTALL_PREFIX}/qtdeploy"
+        COMMENT "Running windeployqt ..."
+    )
+
     set(CPACK_PACKAGE_NAME "OpenTeraPlus")
     set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus_${CPACK_PACKAGE_VERSION}_setup)
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenTeraPlus - Installateur")
@@ -47,7 +93,7 @@ if (WIN32)
     set(CPACK_COMPONENT_LIBPROTOBUF_REQUIRED ON)
 
     set(CPACK_COMPONENT_OPENSSL_DISPLAY_NAME "OpenSSL")
-    set(CPACK_COMPONENT_OPENSSL_REQUIRED ON)    
+    set(CPACK_COMPONENT_OPENSSL_REQUIRED ON)
 
     # Put special configuration file in config/TeraClientConfig.txt if desired
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json")
@@ -55,14 +101,12 @@ if (WIN32)
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} special_configuration)
         set(CPACK_COMPONENT_SPECIAL_CONFIGURATION_DISPLAY_NAME "Fichier de configuration")
         install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config/OpenTeraPlus.json DESTINATION bin/config COMPONENT special_configuration)
-
     endif()
 
-    # Create files for installation
-    add_custom_target(windows_deploy_qt
-        # Collect and copy required dependencies
-        COMMAND ${qt5_install_prefix}/bin/windeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/OpenTeraPlus.exe" --release --dir "${CMAKE_INSTALL_PREFIX}/qtdeploy"
-    )
+    # Virtual camera driver
+    # list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\bin\\\\installDriver.exe'")
+    # list(APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "ExecWait 'cmd /c $INSTDIR\\\\bin\\\\uninstallDriver.exe'")
+
 
     # add SSL librariesOpenSSL\Win_x64\bin
     # file(GLOB OPENSSL_LIBRARIES "${qt5_install_prefix}/../../Tools/OpenSSL/Win_x64/bin/*.dll")
@@ -82,7 +126,7 @@ if (WIN32)
     SET(CPACK_NSIS_MODIFY_PATH OFF)
     SET(CPACK_NSIS_EXECUTABLES_DIRECTORY .)
     SET(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-    SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "bin\\\\OpenTeraPlus")
+    SET(CPACK_NSIS_MUI_FINISHPAGE_RUN "bin\\\\OpenTeraPlus.exe")
 
     SET(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/introlab/openteraplus")
     SET(CPACK_NSIS_CONTACT "simon.briere@usherbrooke.ca")

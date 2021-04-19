@@ -17,17 +17,36 @@ public:
 
     virtual ~VirtualCamera();
 
-    bool init(const QString &source, const QString &device);
+    bool init(const QString &source/*, const QString &device*/);
+
+public slots:
     bool start();
     bool stop();
 
-signals:
 
+
+signals:
+    void virtualCamError(const QString &message);
+    void virtualCamDisconnected();
+    void virtualCamConnected();
 
 private:
     AkElementPtr m_multiSrcPtr;
     AkElementPtr m_virtualCameraPtr;
     AkElementPtr m_desktopCapturePtr;
+
+    int m_retryCounts;
+    bool m_running;
+
+    void printSignals(QObject* obj);
+
+private slots:
+
+    void virtualCamStreamConnected();
+
+    void virtualCamStateChanged(AkElement::ElementState state);
+    void virtualCamReconnecting();
+
 };
 
 #endif // VIRTUALCAMERA_H

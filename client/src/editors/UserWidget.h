@@ -29,9 +29,9 @@ public:
     explicit UserWidget(ComManager* comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
     ~UserWidget();
 
-    void setData(const TeraData* data);
+    void setData(const TeraData* data) override;
 
-    void saveData(bool signal=true);
+    void saveData(bool signal=true) override;
 
     void connectSignals();
 
@@ -47,10 +47,10 @@ private:
     bool m_currentUserPasswordChanged;
     bool m_passwordJustGenerated;
 
-    void updateControlsState();
-    void updateFieldsValue();
+    void updateControlsState() override;
+    void updateFieldsValue() override;
 
-    bool validateData();
+    bool validateData() override;
 
     void refreshUsersUserGroups();
 
