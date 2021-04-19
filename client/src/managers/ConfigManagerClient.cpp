@@ -18,12 +18,7 @@ QStringList ConfigManagerClient::getServerNames()
     if (!m_config.isNull()){
         QMap<QString, QVariant> servers = m_config["Servers"].toObject().toVariantMap();
         foreach (QString name, servers.keys()){
-            QVariantMap infos = servers[name].toMap();
-            int pref = infos["pref"].toInt()-1;
-            if (pref < server_names.count())
-                server_names.insert(pref, name);
-            else
-                server_names.append(name);
+            server_names.append(name);
         }
     }
 
