@@ -916,6 +916,8 @@ void ComManager::updateCurrentUser(const TeraData &user_data)
         // Update fields that we received with the new values
         //qDebug() << "Updating user...";
         m_currentUser.updateFrom(user_data);
+
+        // Update credentials
         emit currentUserUpdated();
     }
 }
@@ -954,7 +956,9 @@ QString ComManager::filterReplyString(const QString &data_str)
 void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
     Q_UNUSED(reply)
-    if (!m_settedCredentials){
+    // If we are logging in, credentials were already sent, and if we get here, it's because they were
+    // rejected
+    if (!m_settedCredentials && !m_loggingInProgress){
         LOG_DEBUG("Sending authentication request...", "ComManager::onNetworkAuthenticationRequired");
         authenticator->setUser(m_username);
         authenticator->setPassword(m_password);

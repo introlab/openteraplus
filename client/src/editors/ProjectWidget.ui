@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>753</width>
-    <height>771</height>
+    <height>783</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -296,7 +296,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <x>0</x>
             <y>0</y>
             <width>713</width>
-            <height>522</height>
+            <height>529</height>
            </rect>
           </property>
           <attribute name="label">
@@ -981,6 +981,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
  </widget>
  <customwidgets>
   <customwidget>
+   <class>TeraForm</class>
+   <extends>QWidget</extends>
+   <header>TeraForm.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>widgets/ClickableLabel.h</header>
@@ -989,14 +995,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
     <slot>clicked()</slot>
    </slots>
   </customwidget>
-  <customwidget>
-   <class>TeraForm</class>
-   <extends>QWidget</extends>
-   <header>TeraForm.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../resources/TeraClient.qrc"/>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
