@@ -29,7 +29,7 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PROJECT));
 
     ui->wdgProject->setComManager(m_comManager);
-    setData(data);
+    ProjectWidget::setData(data);
 
 
 }
@@ -423,7 +423,7 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
-        for(QVariant part:parts_list){
+        for(const QVariant &part:qAsConst(parts_list)){
             QVariantMap part_info = part.toMap();
             int part_id = part_info["id_participant"].toInt();
 
@@ -513,8 +513,10 @@ void ProjectWidget::btnUpdateAccess_clicked()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for (int i=0; i<m_tableUserGroups_items.count(); i++){
-        int user_group_id = m_tableUserGroups_items.keys().at(i);
+    QMap<int, QTableWidgetItem*>::iterator i;
+    //for (int i=0; i<m_tableUserGroups_items.count(); i++){
+    for (i=m_tableUserGroups_items.begin(); i!=m_tableUserGroups_items.end(); i++){
+        int user_group_id = i.key();
         int row = m_tableUserGroups_items[user_group_id]->row();
         QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableUserGroups->cellWidget(row,1));
         if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
@@ -664,10 +666,13 @@ void ProjectWidget::on_btnUpdateServices_clicked()
 
     for (int i=0; i<ui->lstServices->count(); i++){
         QListWidgetItem* item = ui->lstServices->item(i);
-        if (m_listServicesProjects_items.values().contains(item)){
+        int service_id = m_listServicesProjects_items.key(item, 0);
+        //if (m_listServicesProjects_items.values().contains(item)){
+        if (service_id >0){
             if (item->checkState() == Qt::Unchecked){
                 // Service was unselected
-                todel_ids.append(m_listServicesProjects_items.key(item));
+                //todel_ids.append(m_listServicesProjects_items.key(item));
+                todel_ids.append(service_id);
             }
         }else{
             if (item->checkState() == Qt::Checked){

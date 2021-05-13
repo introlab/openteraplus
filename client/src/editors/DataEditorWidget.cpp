@@ -13,8 +13,8 @@ DataEditorWidget::DataEditorWidget(ComManager *comMan, const TeraData *data, QWi
     m_cancelButton = nullptr;
     m_mainForm = nullptr;
 
-    setData(data);
-    setLoading();
+    DataEditorWidget::setData(data);
+    DataEditorWidget::setLoading();
 
     // Set ComManager pointer
     m_comManager = comMan;

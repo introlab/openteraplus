@@ -10,6 +10,7 @@
 #include "editors/SessionWidget.h"
 
 #include "dialogs/GeneratePasswordDialog.h"
+#include "dialogs/PasswordStrengthDialog.h"
 
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -149,6 +150,7 @@ void ParticipantWidget::updateControlsState()
 
 void ParticipantWidget::updateFieldsValue()
 {
+
     if (m_data){
         if (!dataIsNew()){
             ui->lblTitle->setText(m_data->getName());
@@ -1149,8 +1151,6 @@ void ParticipantWidget::on_btnRandomPass_clicked()
     if (dlg.exec() == QDialog::Accepted){
         QString password = dlg.getPassword();
         ui->txtPassword->setText(password);
-        ui->txtPasswordConfirm->setText(password);
-        on_txtPassword_textEdited(password);
     }
 }
 
@@ -1163,13 +1163,6 @@ void ParticipantWidget::on_btnSaveLogin_clicked()
     if (ui->txtUsername->text().isEmpty()){
         all_ok = false;
         err_msg.append(tr("Code utilisateur manquant<br/>"));
-    }
-
-    if (!ui->txtPassword->text().isEmpty() || !ui->txtPasswordConfirm->text().isEmpty()){
-        if (ui->txtPassword->text() != ui->txtPasswordConfirm->text()){
-            all_ok = false;
-            err_msg.append(tr("Les mots de passe ne correspondent pas."));
-        }
     }
 
     if (ui->txtPassword->text().isEmpty()){
@@ -1190,7 +1183,6 @@ void ParticipantWidget::on_btnSaveLogin_clicked()
     saveData();
     ui->wdgParticipant->resetFormValues(); // Ensure data is always sent when using this button
     ui->txtPassword->clear();
-    ui->txtPasswordConfirm->clear();
 
 }
 
@@ -1205,26 +1197,30 @@ void ParticipantWidget::on_txtUsername_textEdited(const QString &current)
 
 void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
 {
-    QString confirm_pass = ui->txtPasswordConfirm->text();
+    if (current.isEmpty())
+        return;
+
+    // Show password validator
+    PasswordStrengthDialog dlg(current);
+    //QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->wdgUser->getWidgetForField("user_password"));
+    //dlg.setCursorPosition(wdg_editor->cursorPosition());
+
+    if (dlg.exec() == QDialog::Accepted){
+        //m_passwordJustGenerated = true;
+        ui->txtPassword->setText(dlg.getCurrentPassword());
+    }else{
+        ui->txtPassword->setText("");
+        //wdg_editor->undo();
+    }
+
+    /*QString confirm_pass = ui->txtPasswordConfirm->text();
     if (current != confirm_pass || ui->txtPassword->text().isEmpty()){
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
         ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
     }else{
         ui->txtPassword->setStyleSheet("");
         ui->txtPasswordConfirm->setStyleSheet("");
-    }
-}
-
-void ParticipantWidget::on_txtPasswordConfirm_textEdited(const QString &current)
-{
-    QString pass = ui->txtPassword->text();
-    if (current != pass || ui->txtPassword->text().isEmpty()){
-        ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
-        ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
-    }else{
-        ui->txtPasswordConfirm->setStyleSheet("");
-        ui->txtPassword->setStyleSheet("");
-    }
+    }*/
 }
 
 void ParticipantWidget::on_tabInfos_currentChanged(int index)
