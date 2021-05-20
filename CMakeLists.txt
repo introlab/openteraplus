@@ -31,9 +31,9 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME openteraplus)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/deploy)
 
 if (APPLE)
-    set(CMAKE_INSTALL_BINDIR OpenTeraPlus.app/Contents/bin)
-    set(CMAKE_INSTALL_LIBDIR OpenTeraPlus.app/Contents/lib)
-    set (CMAKE_INSTALL_INCLUDEDIR OpenTeraPlus.app/Contents/include)
+    set(CMAKE_INSTALL_BINDIR OpenTeraPlus.app/Contents/MacOS)
+    set(CMAKE_INSTALL_LIBDIR OpenTeraPlus.app/Contents/Frameworks)
+    set(CMAKE_INSTALL_INCLUDEDIR OpenTeraPlus.app/Contents/Helpers)
 endif(APPLE)
 
 
