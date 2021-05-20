@@ -38,6 +38,5 @@
         <string>Camera access</string>
         <key>NSMicrophoneUsageDescription</key>
         <string>Microphone access</string>
-
 </dict>
 </plist>
