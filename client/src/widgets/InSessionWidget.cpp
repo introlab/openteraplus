@@ -214,6 +214,16 @@ void InSessionWidget::sessionTimer()
     ui->lblTimer->setText(m_sessionDuration.toString("hh:mm:ss"));
 }
 
+void InSessionWidget::setReadyState(bool state)
+{
+    ui->btnEndSession->setEnabled(state);
+    ui->btnLeaveSession->setEnabled(state);
+    ui->btnInSessionInfos->setEnabled(state);
+
+    if (m_serviceToolsWidget)
+        m_serviceToolsWidget->setReadyState(state);
+}
+
 
 void InSessionWidget::on_btnEndSession_clicked()
 {
@@ -482,7 +492,7 @@ void InSessionWidget::initUI()
             msg_box.showWarning(tr("Service non-supporté"), tr("Le service \"") + service_key + tr("\" n'est pas gérée par cette version du logiciel.\n\nVeuillez vérifier si une mise à jour existe ou contribuez au développement du logiciel!"));
         }else{
             // Connect signals between tools and main widget
-            connect(m_serviceWidget, &BaseServiceWidget::widgetIsReady, m_serviceToolsWidget, &BaseServiceToolsWidget::setReadyState);
+            connect(m_serviceWidget, &BaseServiceWidget::widgetIsReady, this, &InSessionWidget::setReadyState);
         }
 
         break;

@@ -32,6 +32,7 @@ bool VideoRehabToolsWidget::sessionCanBeEnded()
 
 void VideoRehabToolsWidget::setReadyState(bool ready_state)
 {
+    setEnabled(ready_state);
     if (ui->frameRecord->isVisible())
         ui->frameRecord->setEnabled(ready_state);
 }

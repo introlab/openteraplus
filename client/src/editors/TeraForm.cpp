@@ -419,7 +419,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
         layout = static_cast<QFormLayout*>(page->layout());
     }
 
-    for (QVariant item:structure){
+    for (const QVariant &item:structure){
         if (item.canConvert(QMetaType::QVariantHash)){
             QVariantHash item_data = item.toHash();
             QString item_id = item_data["id"].toString();
@@ -523,6 +523,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
 
             }else{
                 LOG_WARNING("Unknown item type: " + item_type, "TeraForm::buildFormFromStructure");
+                item_label->deleteLater();
             }
         }
     }

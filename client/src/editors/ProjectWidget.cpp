@@ -111,6 +111,13 @@ void ProjectWidget::updateUserProjectAccess(const TeraData *access)
         int current_row = ui->tableUsers->rowCount()-1;
         QTableWidgetItem* item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_USER)),
                                                       access->getFieldValue("user_name").toString());
+        if (access->hasFieldName("user_enabled")){
+            if (access->getFieldValue("user_enabled").toBool()){
+                item->setForeground(Qt::green);
+            }else{
+                item->setForeground(Qt::red);
+            }
+        }
         ui->tableUsers->setItem(current_row, 0, item);
         item = new QTableWidgetItem(DataEditorWidget::getRoleName(project_role));
         ui->tableUsers->setItem(current_row, 1, item);
