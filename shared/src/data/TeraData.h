@@ -135,5 +135,6 @@ public slots:
     void setDataType(TeraDataTypes data_type);
 
 };
+Q_DECLARE_METATYPE(TeraData)
 
 #endif // TERADATA_H

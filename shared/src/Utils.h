@@ -6,8 +6,11 @@
 #include <QSysInfo>
 #include <QSettings>
 #include <QUuid>
-#include <QAudioDeviceInfo>
-#include <QCameraInfo>
+
+#ifndef WEBASSEMBLY_COMPILATION
+    #include <QAudioDeviceInfo>
+    #include <QCameraInfo>
+#endif
 
 class Utils : public QObject
 {

@@ -79,9 +79,13 @@ QString Utils::getMachineUniqueId()
     return machine_id;
 }
 
+
+
 QStringList Utils::getAudioDeviceNames()
 {
     QStringList names;
+#ifndef WEBASSEMBLY_COMPILATION
+
     QList<QAudioDeviceInfo> audio_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
     foreach(QAudioDeviceInfo input, audio_devices){
 #ifdef Q_OS_LINUX
@@ -118,18 +122,24 @@ QStringList Utils::getAudioDeviceNames()
         names.append(input.deviceName());
 #endif
     }
+
+#endif
     return names;
 }
 
 QStringList Utils::getVideoDeviceNames()
 {
     QStringList names;
+
+#ifndef WEBASSEMBLY_COMPILATION
     QList<QCameraInfo> video_devices = QCameraInfo::availableCameras();
     for (const QCameraInfo &camera:qAsConst(video_devices)){
         names.append(camera.description());
     }
+#endif
     return names;
 }
+
 
 void Utils::inStringUnicodeConverter(QString *str)
 {

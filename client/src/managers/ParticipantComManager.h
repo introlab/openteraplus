@@ -7,7 +7,7 @@
 #include <QNetworkRequest>
 #include <QAuthenticator>
 #include <QNetworkProxy>
-#include <QSslPreSharedKeyAuthenticator>
+//#include <QSslPreSharedKeyAuthenticator>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
 
@@ -97,7 +97,9 @@ signals:
     void dataReceived(TeraDataTypes data_type, QList<TeraData> generic_list, QUrlQuery reply_query);
 
     // Specific data signals
+#if 0
     void participantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
+#endif
 
     void queryResultsOK(QString path, QUrlQuery url_query);
     void postResultsOK(QString path);
@@ -115,9 +117,12 @@ protected:
 
 private slots:
     // Network
+#ifndef WEBASSEMBLY_COMPILATION
     void onNetworkEncrypted(QNetworkReply *reply);
-    void onNetworkFinished(QNetworkReply *reply);
     void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+#endif
+
+    void onNetworkFinished(QNetworkReply *reply);
 
     void onWebSocketLoginResult(bool logged_in);
 

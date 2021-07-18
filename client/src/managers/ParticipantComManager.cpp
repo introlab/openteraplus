@@ -23,10 +23,11 @@ ParticipantComManager::ParticipantComManager(QUrl serverUrl, bool connectWebsock
     }
 
     // Network manager
+#ifndef WEBASSEMBLY_COMPILATION
     connect(m_netManager, &QNetworkAccessManager::encrypted, this, &ParticipantComManager::onNetworkEncrypted);
-    connect(m_netManager, &QNetworkAccessManager::finished, this, &ParticipantComManager::onNetworkFinished);
     connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ParticipantComManager::onNetworkSslErrors);
-
+#endif
+    connect(m_netManager, &QNetworkAccessManager::finished, this, &ParticipantComManager::onNetworkFinished);
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
 
@@ -206,8 +207,10 @@ ParticipantComManager::signal_ptr ParticipantComManager::getSignalFunctionForDat
     case TERADATA_NONE:
         LOG_ERROR("Unknown object - no signal associated.", "ParticipantComManager::getSignalFunctionForDataType");
         return nullptr;
+#if 0
     case TERADATA_PARTICIPANT:
         return &ParticipantComManager::participantsReceived;
+#endif
     default:
         LOG_WARNING("Signal for object " + TeraData::getDataTypeName(data_type) + " unspecified.", "ParticipantComManager::getSignalFunctionForDataType");
         return nullptr;
@@ -280,9 +283,11 @@ bool ParticipantComManager::handleDataReply(const QString& reply_path, const QSt
     case TERADATA_NONE:
         LOG_ERROR("Unknown object - don't know what to do with it.", "ParticipantComManager::handleDataReply");
         break;
+#if 0
     case TERADATA_PARTICIPANT:
         emit participantsReceived(items, reply_query);
         break;
+#endif
     default:
 //        emit getSignalFunctionForDataType(items_type);
         break;
@@ -321,12 +326,13 @@ QString ParticipantComManager::filterReplyString(const QString &data_str)
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////
+#ifndef WEBASSEMBLY_COMPILATION
 void ParticipantComManager::onNetworkEncrypted(QNetworkReply *reply)
 {
     Q_UNUSED(reply)
     //qDebug() << "ComManager::onNetworkEncrypted";
 }
+#endif
 
 void ParticipantComManager::onNetworkFinished(QNetworkReply *reply)
 {
@@ -361,6 +367,7 @@ void ParticipantComManager::onNetworkFinished(QNetworkReply *reply)
     reply->deleteLater();
 }
 
+#ifndef WEBASSEMBLY_COMPILATION
 void ParticipantComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
 {
     Q_UNUSED(reply)
@@ -371,6 +378,7 @@ void ParticipantComManager::onNetworkSslErrors(QNetworkReply *reply, const QList
         LOG_WARNING("Ignored: " + error.errorString(), "ParticipantComManager::onNetworkSslErrors");
     }
 }
+#endif
 
 void ParticipantComManager::onWebSocketLoginResult(bool logged_in)
 {

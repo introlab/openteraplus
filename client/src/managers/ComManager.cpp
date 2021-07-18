@@ -25,10 +25,12 @@ ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
 
     // Network manager
     connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &ComManager::onNetworkAuthenticationRequired);
-    connect(m_netManager, &QNetworkAccessManager::encrypted, this, &ComManager::onNetworkEncrypted);
-    connect(m_netManager, &QNetworkAccessManager::finished, this, &ComManager::onNetworkFinished);
-    connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ComManager::onNetworkSslErrors);
 
+    connect(m_netManager, &QNetworkAccessManager::finished, this, &ComManager::onNetworkFinished);
+#ifndef WEBASSEMBLY_COMPILATION
+    connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ComManager::onNetworkSslErrors);
+    connect(m_netManager, &QNetworkAccessManager::encrypted, this, &ComManager::onNetworkEncrypted);
+#endif
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
 
@@ -515,6 +517,7 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
     case TERADATA_NONE:
         LOG_ERROR("Unknown object - no signal associated.", "ComManager::getSignalFunctionForDataType");
         return nullptr;
+#if 0
     case TERADATA_USER:
         return &ComManager::usersReceived;
     case TERADATA_USERGROUP:
@@ -553,6 +556,7 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::sessionTypesProjectsReceived;
     case TERADATA_SERVICE_CONFIG:
         return &ComManager::servicesConfigReceived;
+#endif
     default:
         LOG_WARNING("Signal for object " + TeraData::getDataTypeName(data_type) + " unspecified.", "ComManager::getSignalFunctionForDataType");
         return nullptr;
@@ -708,6 +712,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_NONE:
         LOG_ERROR("Unknown object - don't know what to do with it.", "ComManager::handleDataReply");
         break;
+ #if 0
     case TERADATA_USER:
         emit usersReceived(items, reply_query);
         break;
@@ -795,6 +800,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_ONLINE_USER:
         emit onlineUsersReceived(items, reply_query);
         break;
+#endif
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/
 
@@ -969,11 +975,13 @@ void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenti
     }
 }
 
+#ifndef WEBASSEMBLY_COMPILATION
 void ComManager::onNetworkEncrypted(QNetworkReply *reply)
 {
     Q_UNUSED(reply)
     //qDebug() << "ComManager::onNetworkEncrypted";
 }
+#endif
 
 void ComManager::onNetworkFinished(QNetworkReply *reply)
 {
@@ -1011,6 +1019,7 @@ void ComManager::onNetworkFinished(QNetworkReply *reply)
     reply->deleteLater();
 }
 
+#ifndef WEBASSEMBLY_COMPILATION
 void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
 {
     Q_UNUSED(reply)
@@ -1021,6 +1030,7 @@ void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError>
         LOG_WARNING("Ignored: " + error.errorString(), "ComManager::onNetworkSslErrors");
     }
 }
+#endif
 
 void ComManager::onWebSocketLoginResult(bool logged_in)
 {

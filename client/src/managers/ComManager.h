@@ -7,7 +7,7 @@
 #include <QNetworkRequest>
 #include <QAuthenticator>
 #include <QNetworkProxy>
-#include <QSslPreSharedKeyAuthenticator>
+//#include <QSslPreSharedKeyAuthenticator>
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
 
@@ -38,7 +38,7 @@ class ComManager : public QObject
     Q_OBJECT
 public:
     explicit ComManager(QUrl serverUrl, bool connectWebsocket = true, QObject *parent = nullptr);
-    ~ComManager();
+    virtual ~ComManager() override;
 
     void connectToServer(QString username, QString password);
     void disconnectFromServer();
@@ -128,6 +128,7 @@ signals:
     void dataReceived(TeraDataTypes data_type, QList<TeraData> generic_list, QUrlQuery reply_query);
 
     // Specific data signals
+#if 0
     void usersReceived(QList<TeraData> user_list, QUrlQuery reply_query);
     void sitesReceived(QList<TeraData> site_list, QUrlQuery reply_query);
     void sessionTypesReceived(QList<TeraData> st_list, QUrlQuery reply_query);
@@ -157,6 +158,7 @@ signals:
     void onlineUsersReceived(QList<TeraData> users_list, QUrlQuery reply_query);
     void onlineParticipantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
     void onlineDevicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
+#endif
 
     //void queryResultsReceived(QString object, QUrlQuery url_query, QString data);
     //void postResultsReceived(QString path, QString data);
@@ -192,10 +194,13 @@ protected:
 private slots:
     // Network
     void onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
-    void onNetworkEncrypted(QNetworkReply *reply);
-    void onNetworkFinished(QNetworkReply *reply);
-    void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 
+    void onNetworkFinished(QNetworkReply *reply);
+
+#ifndef WEBASSEMBLY_COMPILATION
+    void onNetworkEncrypted(QNetworkReply *reply);
+    void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+#endif
     void onWebSocketLoginResult(bool logged_in);
 
 };
