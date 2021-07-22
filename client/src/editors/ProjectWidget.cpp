@@ -733,7 +733,7 @@ void ProjectWidget::on_btnUserGroups_clicked()
     m_diag_editor->setCentralWidget(list_widget);
 
     m_diag_editor->setWindowTitle(tr("Groupes Utilisateurs"));
-    m_diag_editor->setFixedSize(size().width(), size().height());
+    m_diag_editor->setMinimumSize(size().width(), 2*size().height()/3);
 
     connect(m_diag_editor, &BaseDialog::finished, this, &ProjectWidget::userGroupsEditor_finished);
     m_diag_editor->open();
