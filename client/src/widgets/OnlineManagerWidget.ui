@@ -65,7 +65,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/icons/patient_online.png</pixmap>
+         <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient_online.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -146,7 +146,7 @@
          <string>Participants en ligne</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/controls/branch_closed.png</normaloff>
           <activeon>:/controls/branch_opened.png</activeon>:/controls/branch_closed.png</iconset>
         </property>
@@ -249,7 +249,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/icons/software_user_online.png</pixmap>
+         <pixmap resource="../../resources/TeraClient.qrc">:/icons/software_user_online.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -330,7 +330,7 @@
          <string>Utilisateurs en ligne</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/controls/branch_closed.png</normaloff>
           <activeon>:/controls/branch_opened.png</activeon>:/controls/branch_closed.png</iconset>
         </property>
@@ -442,7 +442,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../resources/TeraClient.qrc">:/icons/device_online.png</pixmap>
+         <pixmap resource="../../resources/TeraClient.qrc">:/icons/device_online.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -523,7 +523,7 @@
          <string>Appareils en ligne</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/controls/branch_closed.png</normaloff>
           <activeon>:/controls/branch_opened.png</activeon>:/controls/branch_closed.png</iconset>
         </property>
@@ -578,7 +578,8 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>
