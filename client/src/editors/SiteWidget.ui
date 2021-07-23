@@ -172,7 +172,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -327,15 +327,15 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <property name="verticalSpacing">
                <number>10</number>
               </property>
-              <item row="3" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
-               <widget class="QLabel" name="lblGroups">
+              <item row="3" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
+               <widget class="QLabel" name="lblDevices">
                 <property name="text">
-                 <string>XXXX Groupes</string>
+                 <string>XXX Appareils</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-               <widget class="ClickableLabel" name="icoProjects">
+              <item row="0" column="0" alignment="Qt::AlignHCenter">
+               <widget class="ClickableLabel" name="icoUsers">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -358,22 +358,46 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/project.png</pixmap>
+                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/software_user.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="1" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
-               <widget class="QLabel" name="lblDevices">
+              <item row="4" column="2" alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="icoSessions">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>64</width>
+                  <height>64</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>64</width>
+                  <height>64</height>
+                 </size>
+                </property>
                 <property name="text">
-                 <string>XXX Appareils</string>
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/session.png</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1" alignment="Qt::AlignHCenter|Qt::AlignTop">
-               <widget class="QLabel" name="lblProjects">
+              <item row="5" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
+               <widget class="QLabel" name="lblSessions">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                   <horstretch>0</horstretch>
@@ -381,7 +405,23 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>XXXX Projets</string>
+                 <string>XXXX Séances</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
+               <widget class="QLabel" name="lblUsers">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>XXXX Utilisateurs</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -419,117 +459,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 </property>
                </widget>
               </item>
-              <item row="2" column="1" alignment="Qt::AlignHCenter">
-               <widget class="QLabel" name="icoParticipant">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>64</width>
-                  <height>64</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>64</width>
-                  <height>64</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0" alignment="Qt::AlignHCenter">
-               <widget class="ClickableLabel" name="icoUsers">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>64</width>
-                  <height>64</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>64</width>
-                  <height>64</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/software_user.png</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
-               <widget class="QLabel" name="lblUsers">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>XXXX Utilisateurs</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
-               <widget class="QLabel" name="lblSessions">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>XXXX Séances</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1" alignment="Qt::AlignHCenter|Qt::AlignTop">
-               <widget class="QLabel" name="lblParticipant">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>XXXX Participants</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0" alignment="Qt::AlignHCenter">
+              <item row="4" column="0" alignment="Qt::AlignHCenter">
                <widget class="QLabel" name="icoGroups">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -560,8 +490,15 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 </property>
                </widget>
               </item>
-              <item row="2" column="2" alignment="Qt::AlignHCenter">
-               <widget class="QLabel" name="icoSessions">
+              <item row="5" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
+               <widget class="QLabel" name="lblGroups">
+                <property name="text">
+                 <string>XXXX Groupes</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1" alignment="Qt::AlignHCenter">
+               <widget class="ClickableLabel" name="icoProjects">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -584,10 +521,73 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/session.png</pixmap>
+                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/project.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLabel" name="lblProjects">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>XXXX Projets</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1" alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="icoParticipant">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>64</width>
+                  <height>64</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>64</width>
+                  <height>64</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1" alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="lblParticipant">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>XXXX Participants</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -924,6 +924,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../resources/TeraClient.qrc"/>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>

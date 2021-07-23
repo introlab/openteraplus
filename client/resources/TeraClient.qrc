@@ -14,7 +14,6 @@
         <file>controls/branch_left.png</file>
         <file>controls/branch_opened.png</file>
         <file>controls/branch_up.png</file>
-        <file>icons/connect.png</file>
         <file>icons/copy.png</file>
         <file>icons/data.png</file>
         <file>icons/data_sensor.png</file>
@@ -31,27 +30,14 @@
         <file>icons/new.png</file>
         <file>icons/options.png</file>
         <file>icons/patient.png</file>
-        <file>icons/patient_add.png</file>
-        <file>icons/patient_filter_red.png</file>
         <file>icons/patient_installed.png</file>
-        <file>icons/patient_installed_v1.png</file>
-        <file>icons/patient_installed_warning.png</file>
-        <file>icons/patient_offline.png</file>
-        <file>icons/patient_offline_v2.png</file>
         <file>icons/patient_online.png</file>
         <file>icons/patient_online_busy.png</file>
-        <file>icons/patient_online_busy_warning.png</file>
-        <file>icons/patient_online_v1.png</file>
-        <file>icons/patient_online_warning.png</file>
-        <file>icons/photo.png</file>
-        <file>icons/photo_add.png</file>
         <file>icons/refresh.png</file>
         <file>icons/save.png</file>
         <file>icons/search.png</file>
         <file>icons/sensors.png</file>
         <file>icons/session.png</file>
-        <file>icons/session_add.png</file>
-        <file>icons/session_disconnect.png</file>
         <file>icons/session_offline.png</file>
         <file>icons/session_offline_warning.png</file>
         <file>icons/session_online.png</file>
@@ -67,8 +53,6 @@
         <file>icons/unlock.png</file>
         <file>icons/user_info.png</file>
         <file>icons/usergroup.png</file>
-        <file>icons/video.png</file>
-        <file>icons/video_add.png</file>
         <file>icons/warning.png</file>
         <file>TeRA_Background.png</file>
         <file>icons/error.png</file>
@@ -77,11 +61,9 @@
         <file>icons/device.png</file>
         <file>icons/project.png</file>
         <file>icons/device_installed.png</file>
-        <file>icons/device_offline.png</file>
         <file>icons/device_online.png</file>
         <file>stylesheet.qss</file>
         <file>icons/info.png</file>
-        <file>icons/camera.png</file>
         <file>icons/navtree.png</file>
         <file>icons/history.png</file>
         <file>icons/config.png</file>
@@ -103,7 +85,6 @@
         <file>icons/service.png</file>
         <file>icons/stop.png</file>
         <file>status/session_loading.gif</file>
-        <file>icons/software_user_offline.png</file>
         <file>icons/software_user_online.png</file>
         <file>controls/radio-off.png</file>
         <file>controls/radio-on.png</file>

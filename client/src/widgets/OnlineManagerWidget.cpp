@@ -10,8 +10,14 @@ OnlineManagerWidget::OnlineManagerWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::OnlineManagerWidget)
 {
+
     m_comManager = nullptr;
+    m_baseDevices = nullptr;
+    m_baseUsers = nullptr;
+    m_baseParticipants = nullptr;
     ui->setupUi(this);
+
+
 }
 
 OnlineManagerWidget::~OnlineManagerWidget()
@@ -21,6 +27,8 @@ OnlineManagerWidget::~OnlineManagerWidget()
 
 void OnlineManagerWidget::setComManager(ComManager *comMan)
 {
+    initUi();
+
     if (m_comManager)
         m_comManager->deleteLater();
 
@@ -28,7 +36,6 @@ void OnlineManagerWidget::setComManager(ComManager *comMan)
 
     connectSignals();
 
-    initUi();
 
 }
 
@@ -42,9 +49,32 @@ void OnlineManagerWidget::setCurrentSite(const QString &site_name, const int &si
 
 void OnlineManagerWidget::initUi()
 {
-    ui->lstOnlineDevices->hide();
-    ui->lstOnlineUsers->hide();
-    ui->btnShowOnlineParticipants->setChecked(true); // Expand participants by default
+    ui->treeOnline->clear();
+
+    m_baseParticipants = new QTreeWidgetItem();
+    m_baseParticipants->setText(0, tr("Participants"));
+    m_baseParticipants->setIcon(0, QIcon("://icons/patient.png"));
+    m_baseParticipants->setForeground(0, Qt::cyan);
+    ui->treeOnline->addTopLevelItem(m_baseParticipants);
+
+    m_baseUsers = new QTreeWidgetItem();
+    m_baseUsers->setText(0, tr("Utilisateurs"));
+    m_baseUsers->setIcon(0, QIcon("://icons/software_user.png"));
+    m_baseUsers->setForeground(0, Qt::cyan);
+    ui->treeOnline->addTopLevelItem(m_baseUsers);
+
+    m_baseDevices = new QTreeWidgetItem();
+    m_baseDevices->setText(0, tr("Appareils"));
+    m_baseDevices->setIcon(0, QIcon("://icons/device.png"));
+    m_baseDevices->setForeground(0, Qt::cyan);
+    ui->treeOnline->addTopLevelItem(m_baseDevices);
+
+    ui->treeOnline->expandAll();
+
+    // Update filtering state
+    on_btnFilterParticipants_clicked();
+    on_btnFilterUsers_clicked();
+    on_btnFilterDevices_clicked();
 }
 
 void OnlineManagerWidget::connectSignals()
@@ -60,10 +90,11 @@ void OnlineManagerWidget::connectSignals()
 
 void OnlineManagerWidget::refreshOnlines()
 {
-    // Clear participant list since site was changed
-    ui->lstOnlineUsers->clear();
-    ui->lstOnlineDevices->clear();
-    ui->lstOnlineParticipants->clear();
+    // Clear online list
+    qDeleteAll(m_onlineDevices);
+    qDeleteAll(m_onlineUsers);
+    qDeleteAll(m_onlineParticipants);
+
     m_onlineUsers.clear();
     m_onlineDevices.clear();
     m_onlineParticipants.clear();
@@ -80,11 +111,11 @@ void OnlineManagerWidget::refreshOnlines()
 
 void OnlineManagerWidget::updateCounts()
 {
-    ui->lblDevicesNum->setText(QString::number(ui->lstOnlineDevices->count()));
-    ui->lblParticipantsNum->setText(QString::number(ui->lstOnlineParticipants->count()));
-    ui->lblUsersNum->setText(QString::number(ui->lstOnlineUsers->count()));
+    ui->lblDevicesNum->setText(QString::number(m_onlineDevices.count()));
+    ui->lblParticipantsNum->setText(QString::number(m_onlineParticipants.count()));
+    ui->lblUsersNum->setText(QString::number(m_onlineUsers.count()));
 
-    emit totalCountUpdated(ui->lstOnlineDevices->count() + ui->lstOnlineParticipants->count() + ui->lstOnlineUsers->count());
+    emit totalCountUpdated(m_onlineDevices.count() + m_onlineParticipants.count() + m_onlineUsers.count());
 }
 
 void OnlineManagerWidget::updateOnlineUser(const TeraData* online_user)
@@ -92,15 +123,18 @@ void OnlineManagerWidget::updateOnlineUser(const TeraData* online_user)
 
     QString uuid = online_user->getUuid();
 
-    QListWidgetItem* user_item = nullptr;
+    QTreeWidgetItem* user_item = nullptr;
 
     if (m_onlineUsers.contains(uuid)){
         user_item = m_onlineUsers[uuid];
     }else{
         if (online_user->isOnline()/* || online_user.isBusy()*/){ // Not online and not busy = don't need to add!
-            user_item = new QListWidgetItem(QIcon(online_user->getIconStateFilename()), online_user->getName());
-            user_item->setToolTip(uuid);
-            ui->lstOnlineUsers->addItem(user_item);
+            user_item = new QTreeWidgetItem(m_baseUsers);
+            user_item->setIcon(0, QIcon(online_user->getIconStateFilename()));
+            user_item->setText(0, online_user->getName());
+#ifdef QT_DEBUG
+            user_item->setToolTip(0, uuid);
+#endif
             m_onlineUsers[uuid] = user_item;
         }
     }
@@ -115,10 +149,11 @@ void OnlineManagerWidget::updateOnlineUser(const TeraData* online_user)
             // Update name / icon if needed
             /*if (!online_user->getName().isEmpty())
                 user_item->setText(online_user->getName());*/
-            user_item->setIcon(QIcon(online_user->getIconStateFilename()));
+            user_item->setIcon(0, QIcon(online_user->getIconStateFilename()));
 
             // Resort items
-            ui->lstOnlineUsers->sortItems();
+            //ui->lstOnline->sortItems();
+            m_baseUsers->sortChildren(0, Qt::AscendingOrder);
         }
     }
 }
@@ -127,15 +162,18 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData *online_partici
 {
     QString uuid = online_participant->getUuid();
 
-    QListWidgetItem* participant_item = nullptr;
+    QTreeWidgetItem* participant_item = nullptr;
 
     if (m_onlineParticipants.contains(uuid)){
         participant_item = m_onlineParticipants[uuid];
     }else{
         if (online_participant->isOnline()/* || online_participant.isBusy()*/){ // Not online and not busy = don't need to add!
-            participant_item = new QListWidgetItem(QIcon(online_participant->getIconStateFilename()), online_participant->getName());
-            participant_item->setToolTip(uuid);
-            ui->lstOnlineParticipants->addItem(participant_item);
+            participant_item = new QTreeWidgetItem(m_baseParticipants);
+            participant_item->setIcon(0, QIcon(online_participant->getIconStateFilename()));
+            participant_item->setText(0, online_participant->getName());
+#ifdef QT_DEBUG
+            participant_item->setToolTip(0, uuid);
+#endif
             m_onlineParticipants[uuid] = participant_item;
         }
     }
@@ -150,10 +188,11 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData *online_partici
             // Update name / icon if needed
             /*if (!online_participant->getName().isEmpty())
                 participant_item->setText(online_participant->getName());*/
-            participant_item->setIcon(QIcon(online_participant->getIconStateFilename()));
+            participant_item->setIcon(0, QIcon(online_participant->getIconStateFilename()));
 
             // Resort items
-            ui->lstOnlineParticipants->sortItems();
+           // ui->lstOnline->sortItems();
+            m_baseParticipants->sortChildren(0, Qt::AscendingOrder);
         }
     }
 }
@@ -162,15 +201,19 @@ void OnlineManagerWidget::updateOnlineDevice(const TeraData *online_device)
 {
     QString uuid = online_device->getUuid();
 
-    QListWidgetItem* device_item = nullptr;
+    QTreeWidgetItem* device_item = nullptr;
 
     if (m_onlineDevices.contains(uuid)){
         device_item = m_onlineDevices[uuid];
     }else{
         if (online_device->isOnline()/* || online_device.isBusy()*/){ // Not online and not busy = don't need to add!
-            device_item = new QListWidgetItem(QIcon(online_device->getIconStateFilename()), online_device->getName()/* + " " + uuid*/);
-            device_item->setToolTip(uuid);
-            ui->lstOnlineDevices->addItem(device_item);
+            device_item = new QTreeWidgetItem(m_baseDevices);
+            device_item->setIcon(0,QIcon(online_device->getIconStateFilename()));
+            device_item->setText(0, online_device->getName());
+#ifdef QT_DEBUG
+            device_item->setToolTip(0, uuid);
+#endif
+            //ui->lstOnline->addItem(device_item);
             m_onlineDevices[uuid] = device_item;
         }
     }
@@ -185,10 +228,11 @@ void OnlineManagerWidget::updateOnlineDevice(const TeraData *online_device)
             // Update name / icon if needed
             /*if (!online_device->getName().isEmpty())
                 device_item->setText(online_device->getName());*/
-            device_item->setIcon(QIcon(online_device->getIconStateFilename()));
+            device_item->setIcon(0, QIcon(online_device->getIconStateFilename()));
 
             // Resort items
-            ui->lstOnlineDevices->sortItems();
+           // ui->lstOnline->sortItems();
+            m_baseDevices->sortChildren(0, Qt::AscendingOrder);
         }
     }
 }
@@ -357,57 +401,48 @@ void OnlineManagerWidget::processOnlineDevices(QList<TeraData> devices)
     updateCounts();
 }
 
-void OnlineManagerWidget::on_btnShowOnlineParticipants_clicked()
+void OnlineManagerWidget::on_treeOnline_itemClicked(QTreeWidgetItem *item, int column)
 {
-    ui->lstOnlineParticipants->setVisible(ui->btnShowOnlineParticipants->isChecked());
-    ui->btnShowOnlineDevices->setChecked(false);
-    ui->lstOnlineDevices->hide();
-    ui->btnShowOnlineUsers->setChecked(false);
-    ui->lstOnlineUsers->hide();
+    if (!item || item == m_baseDevices || item == m_baseParticipants || item == m_baseUsers)
+        return;
+
+    item->setSelected(false);
+    QString uuid;
+
+    uuid = m_onlineDevices.key(item, QString());
+    if (!uuid.isEmpty()){
+        emit dataDisplayRequest(TERADATA_DEVICE, uuid);
+        return;
+    }
+
+    uuid = m_onlineUsers.key(item, QString());
+    if (!uuid.isEmpty()){
+        emit dataDisplayRequest(TERADATA_USER, uuid);
+        return;
+    }
+
+    uuid = m_onlineParticipants.key(item, QString());
+    if (!uuid.isEmpty()){
+        emit dataDisplayRequest(TERADATA_PARTICIPANT, uuid);
+        return;
+    }
 }
 
-void OnlineManagerWidget::on_btnShowOnlineUsers_clicked()
+
+void OnlineManagerWidget::on_btnFilterParticipants_clicked()
 {
-    ui->lstOnlineUsers->setVisible(ui->btnShowOnlineUsers->isChecked());
-    ui->btnShowOnlineDevices->setChecked(false);
-    ui->lstOnlineDevices->hide();
-    ui->btnShowOnlineParticipants->setChecked(false);
-    ui->lstOnlineParticipants->hide();
+    m_baseParticipants->setHidden(!ui->btnFilterParticipants->isChecked());
 }
 
-void OnlineManagerWidget::on_btnShowOnlineDevices_clicked()
+
+void OnlineManagerWidget::on_btnFilterUsers_clicked()
 {
-    ui->lstOnlineDevices->setVisible(ui->btnShowOnlineDevices->isChecked());
-    ui->btnShowOnlineParticipants->setChecked(false);
-    ui->lstOnlineParticipants->hide();
-    ui->btnShowOnlineUsers->setChecked(false);
-    ui->lstOnlineUsers->hide();
+    m_baseUsers->setHidden(!ui->btnFilterUsers->isChecked());
 }
 
-void OnlineManagerWidget::on_lstOnlineParticipants_itemClicked(QListWidgetItem *item)
+
+void OnlineManagerWidget::on_btnFilterDevices_clicked()
 {
-    ui->lstOnlineDevices->clearSelection();
-    ui->lstOnlineUsers->clearSelection();
-
-    QString uuid = m_onlineParticipants.key(item);
-    emit dataDisplayRequest(TERADATA_PARTICIPANT, uuid);
-
+    m_baseDevices->setHidden(!ui->btnFilterDevices->isChecked());
 }
 
-void OnlineManagerWidget::on_lstOnlineUsers_itemClicked(QListWidgetItem *item)
-{
-    ui->lstOnlineDevices->clearSelection();
-    ui->lstOnlineParticipants->clearSelection();
-
-    QString uuid = m_onlineUsers.key(item);
-    emit dataDisplayRequest(TERADATA_USER, uuid);
-}
-
-void OnlineManagerWidget::on_lstOnlineDevices_itemClicked(QListWidgetItem *item)
-{
-    ui->lstOnlineParticipants->clearSelection();
-    ui->lstOnlineUsers->clearSelection();
-
-    QString uuid = m_onlineDevices.key(item);
-    emit dataDisplayRequest(TERADATA_DEVICE, uuid);
-}

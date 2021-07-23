@@ -467,7 +467,7 @@ QString TeraData::getIconStateFilename() const
             return "://icons/device_online.png";
         if (isEnabled())
             return "://icons/device_installed.png";
-        return "://icons/device_offline.png";
+        return "://icons/device.png";
 
     case TERADATA_PARTICIPANT:
     case TERADATA_ONLINE_PARTICIPANT:
