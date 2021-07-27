@@ -4,6 +4,7 @@ SharedObject::SharedObject(QObject *parent) : QObject(parent)
 {
     m_cameraIndex = -1;
     m_ptzCameraDriver = nullptr;
+    m_imgSettingsDialog = nullptr;
     m_camPTZName = "";
 }
 

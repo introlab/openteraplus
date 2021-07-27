@@ -2,7 +2,7 @@
 #define ONLINEMANAGERWIDGET_H
 
 #include <QWidget>
-#include <QListWidgetItem>
+#include <QTreeWidgetItem>
 
 #include "managers/ComManager.h"
 
@@ -28,10 +28,15 @@ private:
     QString                     m_siteName;
     int                         m_siteId;
 
+    // Base tree items
+    QTreeWidgetItem*            m_baseUsers;
+    QTreeWidgetItem*            m_baseParticipants;
+    QTreeWidgetItem*            m_baseDevices;
+
     // Data management
-    QHash<QString, QListWidgetItem*> m_onlineUsers;        // User UUID mapping of online users
-    QHash<QString, QListWidgetItem*> m_onlineParticipants; // Participant UUID mapping of online participants
-    QHash<QString, QListWidgetItem*> m_onlineDevices;      // Participant UUID mapping of online participants
+    QHash<QString, QTreeWidgetItem*> m_onlineUsers;        // User UUID mapping of online users
+    QHash<QString, QTreeWidgetItem*> m_onlineParticipants; // Participant UUID mapping of online participants
+    QHash<QString, QTreeWidgetItem*> m_onlineDevices;      // Participant UUID mapping of online participants
 
     QHash<QString, TeraData>        m_onlineUsersData;     // UUID mapping to data of online users
     QHash<QString, TeraData>        m_onlineParticipantsData;     // UUID mapping to data of online users
@@ -59,12 +64,13 @@ private slots:
     void processOnlineParticipants(QList<TeraData> participants);
     void processOnlineDevices(QList<TeraData> devices);
 
-    void on_btnShowOnlineParticipants_clicked();
-    void on_btnShowOnlineUsers_clicked();
-    void on_btnShowOnlineDevices_clicked();
-    void on_lstOnlineParticipants_itemClicked(QListWidgetItem *item);
-    void on_lstOnlineUsers_itemClicked(QListWidgetItem *item);
-    void on_lstOnlineDevices_itemClicked(QListWidgetItem *item);
+    void on_treeOnline_itemClicked(QTreeWidgetItem *item, int column);
+
+    void on_btnFilterParticipants_clicked();
+
+    void on_btnFilterUsers_clicked();
+
+    void on_btnFilterDevices_clicked();
 
 signals:
     void dataDisplayRequest(TeraDataTypes data_type, QString data_uuid);

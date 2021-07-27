@@ -880,7 +880,8 @@ void MainWindow::on_btnEditUser_clicked()
     ui->projNavigator->setOnHold(true);
 
     m_diag_editor = new BaseDialog(this);
-    m_diag_editor->setMinimumHeight(600);
+    //m_diag_editor->setMinimumHeight(600);
+    m_diag_editor->setMinimumSize(this->width()/2, 2*this->height()/3);
     UserWidget* user_editor = new UserWidget(m_comManager, &(m_comManager->getCurrentUser()), nullptr);
 
     m_diag_editor->setCentralWidget(user_editor);

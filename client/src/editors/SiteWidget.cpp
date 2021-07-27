@@ -399,7 +399,7 @@ void SiteWidget::btnProjects_clicked()
     m_diag_editor->setCentralWidget(list_widget);
 
     m_diag_editor->setWindowTitle(tr("Projets"));
-    m_diag_editor->setFixedSize(size().width(), size().height());
+    m_diag_editor->setMinimumSize(size().width(), 2*size().height()/3);
 
     m_diag_editor->open();
 }
@@ -530,7 +530,7 @@ void SiteWidget::on_btnUserGroups_clicked()
     m_diag_editor->setCentralWidget(list_widget);
 
     m_diag_editor->setWindowTitle(tr("Groupes Utilisateurs"));
-    m_diag_editor->setFixedSize(size().width(), size().height());
+    m_diag_editor->setMinimumSize(size().width(), 2*size().height()/3);
 
     connect(m_diag_editor, &BaseDialog::finished, this, &SiteWidget::userGroupsEditor_finished);
     m_diag_editor->open();

@@ -39,6 +39,7 @@ public:
     static QString removeAccents(QString s);
 
     static bool isNewerVersion(QString version);
+
 signals:
 
 };

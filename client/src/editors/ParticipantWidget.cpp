@@ -875,7 +875,7 @@ void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
         m_diag_editor->setCentralWidget(ses_widget);
 
         m_diag_editor->setWindowTitle(tr("Séance"));
-        m_diag_editor->setMinimumSize(this->width(), this->height());
+        m_diag_editor->setMinimumSize(2*this->width()/3, 2*this->height()/3);
 
         connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
 

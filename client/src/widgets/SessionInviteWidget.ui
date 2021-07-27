@@ -127,7 +127,7 @@
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="toolTip">
-           <string>Utilisateurs</string>
+           <string>Filtrer Utilisateurs</string>
           </property>
           <property name="text">
            <string>...</string>
@@ -162,7 +162,7 @@
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="toolTip">
-           <string>Appareils</string>
+           <string>Filtrer Appareils</string>
           </property>
           <property name="text">
            <string>...</string>
@@ -476,6 +476,7 @@
   </layout>
  </widget>
  <resources>
+  <include location="../../resources/TeraClient.qrc"/>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
