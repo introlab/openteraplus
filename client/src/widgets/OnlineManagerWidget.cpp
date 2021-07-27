@@ -1,5 +1,6 @@
 #include "OnlineManagerWidget.h"
 #include "ui_OnlineManagerWidget.h"
+#include "TeraSettings.h"
 
 // Must be reset each time a site is changed.
 // 1. Query online * using APIs
@@ -36,6 +37,25 @@ void OnlineManagerWidget::setComManager(ComManager *comMan)
 
     connectSignals();
 
+    // Update filter buttons state
+    bool filter = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERDEVICES).toBool();
+    ui->btnFilterDevices->setChecked(filter);
+    filter = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERUSERS).toBool();
+    ui->btnFilterUsers->setChecked(filter);
+    filter = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERPARTICIPANTS).toBool();
+    ui->btnFilterParticipants->setChecked(filter);
+
+    // If all off, select at least users and participants
+    if (!ui->btnFilterDevices->isChecked() && !ui->btnFilterParticipants->isChecked() && !ui->btnFilterUsers->isChecked()){
+        ui->btnFilterParticipants->setChecked(true);
+        ui->btnFilterUsers->setChecked(true);
+    }
+
+    // Update filtering state
+    on_btnFilterParticipants_clicked();
+    on_btnFilterUsers_clicked();
+    on_btnFilterDevices_clicked();
+
 
 }
 
@@ -71,10 +91,6 @@ void OnlineManagerWidget::initUi()
 
     ui->treeOnline->expandAll();
 
-    // Update filtering state
-    on_btnFilterParticipants_clicked();
-    on_btnFilterUsers_clicked();
-    on_btnFilterDevices_clicked();
 }
 
 void OnlineManagerWidget::connectSignals()
@@ -432,17 +448,26 @@ void OnlineManagerWidget::on_treeOnline_itemClicked(QTreeWidgetItem *item, int c
 void OnlineManagerWidget::on_btnFilterParticipants_clicked()
 {
     m_baseParticipants->setHidden(!ui->btnFilterParticipants->isChecked());
+    // Save new setting
+    if (m_comManager)
+        TeraSettings::setUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERPARTICIPANTS, ui->btnFilterParticipants->isChecked());
 }
 
 
 void OnlineManagerWidget::on_btnFilterUsers_clicked()
 {
     m_baseUsers->setHidden(!ui->btnFilterUsers->isChecked());
+    // Save new setting
+    if (m_comManager)
+        TeraSettings::setUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERUSERS, ui->btnFilterUsers->isChecked());
 }
 
 
 void OnlineManagerWidget::on_btnFilterDevices_clicked()
 {
     m_baseDevices->setHidden(!ui->btnFilterDevices->isChecked());
+    // Save new setting
+    if (m_comManager)
+        TeraSettings::setUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERDEVICES, ui->btnFilterDevices->isChecked());
 }
 

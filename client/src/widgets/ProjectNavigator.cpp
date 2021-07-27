@@ -2,6 +2,7 @@
 #include "GlobalMessageBox.h"
 #include "ui_ProjectNavigator.h"
 #include <QStyledItemDelegate>
+#include "TeraSettings.h"
 
 
 ProjectNavigator::ProjectNavigator(QWidget *parent) :
@@ -20,6 +21,7 @@ ProjectNavigator::ProjectNavigator(QWidget *parent) :
     m_currentParticipantUuid.clear();
     m_selectionHold = false;
     m_siteJustChanged = false;
+    m_sitesLoaded = false;
 }
 
 ProjectNavigator::~ProjectNavigator()
@@ -56,6 +58,10 @@ void ProjectNavigator::initUi()
     new_action = addNewItemAction(TERADATA_PARTICIPANT, tr("Participant"));
     new_action->setDisabled(true);
     ui->btnNewItem->setMenu(m_newItemMenu);
+
+    // Load setting for filter inactive
+    bool filter = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_FILTERINACTIVE).toBool();
+    ui->btnFilterActive->setChecked(filter);
 
     // Request sites
     m_comManager->doQuery(WEB_SITEINFO_PATH, QUrlQuery(WEB_QUERY_LIST));
@@ -132,25 +138,35 @@ void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
         return;
     }
 
+    if (data_type == TERADATA_SITE){
+        for(int i=0; i<ui->cmbSites->count(); i++){
+            if (ui->cmbSites->itemData(i).toInt() == id){
+                ui->cmbSites->setCurrentIndex(i);
+                m_currentSiteId = id;
+                return;
+            }
+        }
+        return;
+    }
+
 
 }
 
 bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QString &name)
 {
     if (data_type == TERADATA_GROUP){
-        for(int i=0; i<m_groups_items.count(); i++){
-            if (m_groups_items.values()[i]->text(0) == name){
-                ui->treeNavigator->setCurrentItem(m_groups_items.values()[i]);
-                currentNavItemChanged(m_groups_items.values()[i], nullptr);
+        foreach(QTreeWidgetItem* item, m_groups_items){
+            if (item->text(0) == name){
+                ui->treeNavigator->setCurrentItem(item);
+                currentNavItemChanged(item, nullptr);
                 return true;
             }
         }
     }
 
     if (data_type == TERADATA_PROJECT){
-        for(int i=0; i<m_projects_items.count(); i++){
-            if (m_projects_items.values()[i]->text(0) == name){
-                QTreeWidgetItem* item = m_projects_items.values()[i];
+        foreach(QTreeWidgetItem* item, m_projects_items){
+            if (item->text(0) == name){
                 ui->treeNavigator->setCurrentItem(item);
                 currentNavItemChanged(item, nullptr);
                 return true;
@@ -159,11 +175,11 @@ bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QS
     }
 
     if (data_type == TERADATA_PARTICIPANT){
-        for(int i=0; i<m_participants_items.count(); i++){
-            if (m_participants_items.values()[i]->text(0) == name){
-                ui->treeNavigator->setCurrentItem(m_participants_items.values()[i]);
-                currentNavItemChanged(m_participants_items.values()[i], nullptr);
-                return true;
+        foreach(QTreeWidgetItem* item, m_participants_items){
+            if (item->text(0) == name){
+                 ui->treeNavigator->setCurrentItem(item);
+                 currentNavItemChanged(item, nullptr);
+                 return true;
             }
         }
     }
@@ -277,8 +293,8 @@ void ProjectNavigator::connectSignals()
 
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &ProjectNavigator::ws_participantEvent);
 
-    void (QComboBox::* comboIndexChangedSignal)(int) = &QComboBox::currentIndexChanged;
-    connect(ui->cmbSites, comboIndexChangedSignal, this, &ProjectNavigator::currentSiteChanged);
+    //void (QComboBox::* comboIndexChangedSignal)(int) = &QComboBox::currentIndexChanged;
+    //connect(ui->cmbSites, comboIndexChangedSignal, this, &ProjectNavigator::currentSiteChanged);
     connect(ui->btnEditSite, &QPushButton::clicked, this, &ProjectNavigator::btnEditSite_clicked);
     //connect(ui->treeNavigator, &QTreeWidget::currentItemChanged, this, &ProjectNavigator::currentNavItemChanged);
     connect(ui->treeNavigator, &QTreeWidget::itemExpanded, this, &ProjectNavigator::navItemExpanded);
@@ -565,8 +581,10 @@ int ProjectNavigator::getParticipantProjectId(QTreeWidgetItem *part_item)
 
     while (current_item->parent()){
         current_item = current_item->parent();
-        if (m_projects_items.values().contains(current_item))
-            return m_projects_items.key(current_item);
+        //if (m_projects_items.values().contains(current_item))
+        int current_key = m_projects_items.key(current_item, -1);
+        if (current_key>=0)
+            return current_key;
     }
     return -1;
 
@@ -578,8 +596,11 @@ int ProjectNavigator::getParticipantGroupId(QTreeWidgetItem *part_item)
 
     while (current_item->parent()){
         current_item = current_item->parent();
-        if (m_groups_items.values().contains(current_item))
-            return m_groups_items.key(current_item);
+        //if (m_groups_items.values().contains(current_item))
+        int current_key = m_groups_items.key(current_item, -1);
+        if (current_key>=0)
+            //return m_groups_items.key(current_item);
+            return current_key;
     }
     return -1;
 }
@@ -655,15 +676,18 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
 
 TeraDataTypes ProjectNavigator::getItemType(QTreeWidgetItem *item)
 {
-    if (m_projects_items.values().contains(item)){
+    //if (m_projects_items.values().contains(item)){
+    if (std::find(m_projects_items.cbegin(), m_projects_items.cend(), item) != m_projects_items.cend()){
         return TERADATA_PROJECT;
     }
 
-    if (m_groups_items.values().contains(item)){
+    //if (m_groups_items.values().contains(item)){
+    if (std::find(m_groups_items.cbegin(), m_groups_items.cend(), item) != m_groups_items.cend()){
         return TERADATA_GROUP;
     }
 
-    if (m_participants_items.values().contains(item)){
+    //if (m_participants_items.values().contains(item)){
+    if (std::find(m_participants_items.cbegin(), m_participants_items.cend(), item) != m_participants_items.cend()){
         return TERADATA_PARTICIPANT;
     }
 
@@ -756,10 +780,27 @@ void ProjectNavigator::processSitesReply(QList<TeraData> sites)
         updateSite(&sites.at(i));
     }
 
+
     if (ui->cmbSites->count()==1){
         // Select the only site in the list
         ui->cmbSites->setCurrentIndex(0);
+    }else{
+        if (m_comManager){
+            if (m_sitesLoaded == false){ // Only select the last site on first connection
+                int lastSiteId = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_LASTSITEID).toInt();
+                if (getCurrentSiteId() != lastSiteId){
+                    selectItem(TERADATA_SITE, lastSiteId);
+                    //m_siteJustChanged = true;
+                }
+            }
+        }
     }
+    if (!m_sitesLoaded){
+        m_sitesLoaded = true;
+        currentSiteChanged(false);
+    }
+
+
 }
 
 void ProjectNavigator::processProjectsReply(QList<TeraData> projects)
@@ -838,14 +879,25 @@ void ProjectNavigator::processCurrentUserUpdated()
     updateAvailableActions(ui->treeNavigator->currentItem());
 }
 
-void ProjectNavigator::currentSiteChanged()
+void ProjectNavigator::currentSiteChanged(bool requestDisplay)
 {
+
+    if (!m_sitesLoaded)
+        return;
+
     m_currentSiteId = ui->cmbSites->currentData().toInt();
+
+    // Save last site in settings
+    if (m_comManager){
+        TeraSettings::setUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_LASTSITEID, m_currentSiteId);
+    }
+
     m_siteJustChanged = true;
-    //qDebug() << "Current Site Changed";
+    qDebug() << "Current Site Changed " << m_currentSiteId;
 
     // Display site
-    emit dataDisplayRequest(TERADATA_SITE, m_currentSiteId);
+    if (requestDisplay)
+        emit dataDisplayRequest(TERADATA_SITE, m_currentSiteId);
 
     // Clear all data
     clearData(true);
@@ -921,7 +973,7 @@ void ProjectNavigator::navItemClicked(QTreeWidgetItem *item)
 void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
 {
     // PROJECT
-    if (m_projects_items.values().contains(item)){
+    if (std::find(m_projects_items.cbegin(), m_projects_items.cend(), item) != m_projects_items.cend()){
         // Project: load groups for that project
         int id = m_projects_items.key(item);
 
@@ -940,7 +992,7 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
     }
 
     // PARTICIPANT GROUP
-    if (m_groups_items.values().contains(item)){
+    if (std::find(m_groups_items.cbegin(), m_groups_items.cend(), item) != m_groups_items.cend()){
         // We have a participants group
         int id = m_groups_items.key(item);
 
@@ -961,14 +1013,16 @@ void ProjectNavigator::btnEditSite_clicked()
 
 void ProjectNavigator::on_btnFilterActive_toggled(bool checked)
 {
-    Q_UNUSED(checked)
-    for (int i=0; i<m_participants.count(); i++){
-        bool filtered = isParticipantFiltered(m_participants.values()[i].getUuid());
-        QTreeWidgetItem* item = m_participants_items[m_participants.values()[i].getId()];
+    foreach(TeraData value, m_participants){
+        bool filtered = isParticipantFiltered(value.getUuid());
+        QTreeWidgetItem* item = m_participants_items[value.getId()];
         if (item){
             item->setHidden(filtered);
         }
     }
+
+    // Save new setting
+    TeraSettings::setUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_FILTERINACTIVE, checked);
 
 }
 
@@ -990,3 +1044,10 @@ void ProjectNavigator::on_txtNavSearch_textChanged(const QString &search_text)
             item->setHidden(isParticipantFiltered(part_uuid));
     }
 }
+
+void ProjectNavigator::on_cmbSites_currentIndexChanged(int index)
+{
+    Q_UNUSED(index)
+    currentSiteChanged();
+}
+
