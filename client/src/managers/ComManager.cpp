@@ -393,7 +393,7 @@ void ComManager::leaveSession(const int &id_session, bool signal_server)
     }
     emit sessionStopped(id_session);
 }
-
+#ifndef WEBASSEMBLY_COMPILATION
 void ComManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)
 {
     QJsonDocument document;
@@ -414,6 +414,7 @@ void ComManager::sendJoinSessionReply(const QString &session_uuid, const JoinSes
 
     doPost(WEB_SESSIONMANAGER_PATH, document.toJson());
 }
+#endif
 
 TeraData &ComManager::getCurrentUser()
 {
@@ -517,7 +518,7 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
     case TERADATA_NONE:
         LOG_ERROR("Unknown object - no signal associated.", "ComManager::getSignalFunctionForDataType");
         return nullptr;
-#if 0
+#ifndef WEBASSEMBLY_COMPILATION
     case TERADATA_USER:
         return &ComManager::usersReceived;
     case TERADATA_USERGROUP:
@@ -712,7 +713,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_NONE:
         LOG_ERROR("Unknown object - don't know what to do with it.", "ComManager::handleDataReply");
         break;
- #if 0
+#ifndef WEBASSEMBLY_COMPILATION
     case TERADATA_USER:
         emit usersReceived(items, reply_query);
         break;

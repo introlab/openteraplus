@@ -1,9 +1,16 @@
 #ifndef CORE_TOOL_H_
 #define CORE_TOOL_H_
-#if defined(SHAREDLIB_LIBRARY)
-    #define SHAREDLIB_EXPORT Q_DECL_EXPORT
+
+#ifndef WEBASSEMBLY_COMPILATION
+    #if defined(SHAREDLIB_LIBRARY)
+        #define SHAREDLIB_EXPORT Q_DECL_EXPORT
+    #else
+        #define SHAREDLIB_EXPORT Q_DECL_IMPORT
+    #endif
 #else
-    #define SHAREDLIB_EXPORT Q_DECL_IMPORT
+    #define SHAREDLIB_EXPORT
 #endif
+
+
 #endif
 

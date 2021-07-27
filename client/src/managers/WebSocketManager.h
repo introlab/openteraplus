@@ -8,6 +8,7 @@
 #include "Logger.h"
 
 // Protobuf includes
+#ifndef WEBASSEMBLY_COMPILATION
 #include "UserRegisterToEvent.pb.h"
 #include "UserEvent.pb.h"
 #include "DeviceEvent.pb.h"
@@ -20,11 +21,12 @@
 #include "TeraMessage.pb.h"
 #include "TeraModuleMessage.pb.h"
 #include "DatabaseEvent.pb.h"
-
 #include "google/protobuf/any.h"
 #include "google/protobuf/util/json_util.h"
 
 using namespace opentera::protobuf;
+
+#endif
 
 class WebSocketManager : public QObject
 {
@@ -57,7 +59,7 @@ signals:
     void serverDisconnected();
     void websocketError(QAbstractSocket::SocketError, QString);
     void loginResult(bool logged_in);
-
+#ifndef WEBASSEMBLY_COMPILATION
     void userEventReceived(UserEvent event);
     void participantEventReceived(ParticipantEvent event);
     void deviceEventReceived(DeviceEvent event);
@@ -66,9 +68,8 @@ signals:
     void stopSessionEventReceived(StopSessionEvent event);
     void databaseEventReceived(DatabaseEvent event);
     void joinSessionReplyEventReceived(JoinSessionReplyEvent event);
-
     void genericEventReceived(TeraEvent event);
-
+#endif
 
 private slots:
     void onSocketConnected();

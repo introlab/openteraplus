@@ -54,8 +54,10 @@ public:
     void joinSession(const TeraData& session_type, const int &id_session);
     void stopSession(const TeraData& session, const int &id_service = 0);
     void leaveSession(const int &id_session, bool signal_server = true);
-    void sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg = QString());
 
+#ifndef WEBASSEMBLY_COMPILATION
+    void sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg = QString());
+#endif
     TeraData &getCurrentUser();
     TeraPreferences &getCurrentPreferences();
     QString getCurrentUserSiteRole(const int &site_id);

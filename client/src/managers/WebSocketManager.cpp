@@ -2,8 +2,11 @@
 
 WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent)
 {
+
+#ifndef WEBASSEMBLY_COMPILATION
     // Check protobuf version
     GOOGLE_PROTOBUF_VERIFY_VERSION;
+#endif
 
     // Initialize communication objects
     m_webSocket = new QWebSocket(QString(), QWebSocketProtocol::VersionLatest, parent);
@@ -155,6 +158,7 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
 {
     LOG_DEBUG(message, "WebSocketManager::onSocketTextMessageReceived");
 
+#ifndef WEBASSEMBLY_COMPILATION
     // Handle received message depending on type
     TeraMessage tera_msg;
     if (google::protobuf::util::JsonStringToMessage(message.toStdString(), &tera_msg).ok()){
@@ -254,6 +258,7 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
             LOG_WARNING("Got unhandled message on websocket", "WebSocketManager::onSocketTextMessageReceived");
         }
     }
+#endif
 
 }
 
