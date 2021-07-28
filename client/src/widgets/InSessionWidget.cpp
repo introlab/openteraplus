@@ -448,7 +448,7 @@ void InSessionWidget::initUI()
 
     ui->wdgInvitees->setConfirmOnRemove(true);
     ui->wdgInvitees->setComManager(m_comManager);
-    ui->wdgInvitees->showAvailableInvitees(true);
+    //ui->wdgInvitees->showAvailableInvitees(true);
 
     ui->btnInSessionInfos->setChecked(true);
     //ui->tabInfos->hide();
