@@ -1,6 +1,6 @@
-QT       += core gui network widgets websockets
+QT       += core
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += gui network widgets websockets
 
 CONFIG += c++11
 
@@ -12,7 +12,7 @@ DEFINES += OPENTERAPLUS_VERSION_MAJOR=\\\"1\\\"
 DEFINES += OPENTERAPLUS_VERSION_MINOR=\\\"0\\\"
 DEFINES += OPENTERAPLUS_VERSION_PATCH=\\\"3\\\"
 DEFINES += OPENTERAPLUS_VERSION=\\\"1.0.3\\\"
-DEFINES += OPENTERAPLUS_CLIENT_NAME=\\\"OPENTERAPLUS\\\"
+DEFINES += OPENTERAPLUS_CLIENT_NAME=\\\"OpenTeraPlus\\\"
 
 
 SOURCES += \

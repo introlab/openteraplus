@@ -64,9 +64,8 @@ Logger::~Logger()
 	if (m_file.isOpen())
 	{
 		logINFO("Log file closed","Logger");
+        m_file.close();
 	}
-
-	m_file.close();
 }
 
 void Logger::setRedirectionActivation(bool state)
@@ -91,8 +90,12 @@ void Logger::logDEBUG(const QString &message, const QString &sender)
 	QMutexLocker locker(&m_mutex);
     if(DEBUG_PRIORITY >= m_active_priority)
 	{
-		QTextStream out(&m_file);
-		out << currentDateTimeString() << " [DEBUG] "<< " {"<<sender<<"} -- "<<message << "\n";
+        if (m_file.isOpen())
+        {
+            QTextStream out(&m_file);
+            out << currentDateTimeString() << " [DEBUG] "<< " {"<<sender<<"} -- "<<message << "\n";
+        }
+
         fprintf(stderr,"{%s}:DEBUG [%s]: %s \n",QCoreApplication::applicationName().toStdString().c_str(), sender.toStdString().c_str(), message.toStdString().c_str());
 		emit newLogEntry(DEBUG_PRIORITY,message,sender);
     }
@@ -103,8 +106,11 @@ void Logger::logSTATISTIC(const QString &message, const QString &sender)
     QMutexLocker locker(&m_mutex);
     if(STATISTIC_PRIORITY >= m_active_priority)
     {
-        QTextStream out(&m_file);
-        out << currentDateTimeString() << " [STATISTIC] "<< " {"<<sender<<"} -- "<<message << "\n";
+        if (m_file.isOpen())
+        {
+            QTextStream out(&m_file);
+            out << currentDateTimeString() << " [STATISTIC] "<< " {"<<sender<<"} -- "<<message << "\n";
+        }
         fprintf(stderr,"{%s}:STATISTIC [%s]: %s \n",QCoreApplication::applicationName().toStdString().c_str(), sender.toStdString().c_str(), message.toStdString().c_str());
         emit newLogEntry(STATISTIC_PRIORITY,message,sender);
     }
@@ -115,8 +121,11 @@ void Logger::logINFO(const QString &message, const QString &sender)
 	QMutexLocker locker(&m_mutex);
     if(INFO_PRIORITY >= m_active_priority)
 	{
-		QTextStream out(&m_file);
-		out << currentDateTimeString() << " [INFO] "<< " {"<<sender<<"} -- "<<message << "\n";
+        if (m_file.isOpen())
+        {
+            QTextStream out(&m_file);
+            out << currentDateTimeString() << " [INFO] "<< " {"<<sender<<"} -- "<<message << "\n";
+        }
         fprintf(stderr,"{%s}:INFO [%s]: %s \n",QCoreApplication::applicationName().toStdString().c_str(), sender.toStdString().c_str(), message.toStdString().c_str());
 		emit newLogEntry(INFO_PRIORITY,message,sender);
 	}
@@ -127,8 +136,11 @@ void Logger::logWARNING(const QString &message, const QString &sender)
 	QMutexLocker locker(&m_mutex);
     if(WARNING_PRIORITY >= m_active_priority)
 	{
-		QTextStream out(&m_file);
-		out << currentDateTimeString() << " [WARNING] "<< " {"<<sender<<"} -- "<<message << "\n";
+        if (m_file.isOpen())
+        {
+            QTextStream out(&m_file);
+            out << currentDateTimeString() << " [WARNING] "<< " {"<<sender<<"} -- "<<message << "\n";
+        }
         fprintf(stderr,"{%s}:WARNING [%s]: %s \n",QCoreApplication::applicationName().toStdString().c_str(), sender.toStdString().c_str(), message.toStdString().c_str());
 		emit newLogEntry(WARNING_PRIORITY,message,sender);
 	}
@@ -139,8 +151,11 @@ void Logger::logCRITICAL(const QString &message, const QString &sender)
 	QMutexLocker locker(&m_mutex);
     if(CRITICAL_PRIORITY >= m_active_priority)
 	{
-		QTextStream out(&m_file);
-		out << currentDateTimeString() << " [CRITICAL] "<< " {"<<sender<<"} -- "<<message << "\n";
+        if(m_file.isOpen())
+        {
+            QTextStream out(&m_file);
+            out << currentDateTimeString() << " [CRITICAL] "<< " {"<<sender<<"} -- "<<message << "\n";
+        }
         fprintf(stderr,"{%s}:CRITICAL [%s]: %s \n",QCoreApplication::applicationName().toStdString().c_str(), sender.toStdString().c_str(), message.toStdString().c_str());
 		emit newLogEntry(CRITICAL_PRIORITY,message,sender);
 	}
@@ -151,8 +166,11 @@ void Logger::logERROR(const QString &message, const QString &sender)
 	QMutexLocker locker(&m_mutex);
     if(ERROR_PRIORITY >= m_active_priority)
 	{
-		QTextStream out(&m_file);
-		out << currentDateTimeString() << " [ERROR] "<< " {"<<sender<<"} -- "<<message << "\n";
+        if (m_file.isOpen())
+        {
+            QTextStream out(&m_file);
+            out << currentDateTimeString() << " [ERROR] "<< " {"<<sender<<"} -- "<<message << "\n";
+        }
         fprintf(stderr,"{%s}:ERROR [%s]: %s \n",QCoreApplication::applicationName().toStdString().c_str(), sender.toStdString().c_str(), message.toStdString().c_str());
 		emit newLogEntry(ERROR_PRIORITY,message,sender);
 	}
