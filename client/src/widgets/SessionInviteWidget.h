@@ -37,6 +37,7 @@ public:
     void removeDeviceFromSession(const QString& device_uuid);
 
     void selectDefaultFilter();
+    void showAvailableInvitees(const bool &show);
 
     void setAvailableParticipants(const QList<TeraData> &participants);
     void setAvailableUsers(const QList<TeraData> &users);

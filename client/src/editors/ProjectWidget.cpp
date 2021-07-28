@@ -491,6 +491,8 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
             }
             ui->tableSummary->setItem(current_row, 5, item);
         }
+        ui->tableSummary->resizeColumnsToContents();
+        ui->tableSummary->sortByColumn(4, Qt::DescendingOrder); // Sort by last session date
     }
 }
 

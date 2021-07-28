@@ -893,7 +893,7 @@ void ProjectNavigator::currentSiteChanged(bool requestDisplay)
     }
 
     m_siteJustChanged = true;
-    qDebug() << "Current Site Changed " << m_currentSiteId;
+    //qDebug() << "Current Site Changed " << m_currentSiteId;
 
     // Display site
     if (requestDisplay)

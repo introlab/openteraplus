@@ -358,8 +358,11 @@ void SessionInviteWidget::setConfirmOnRemove(const bool &confirm)
 QList<TeraData> SessionInviteWidget::getParticipantsInSession()
 {
     QList<TeraData> rval;
-    foreach(int id, m_participantsInSession.keys()){
+    /*foreach(int id, m_participantsInSession.keys()){
         rval.append(m_participants[id]);
+    }*/
+    foreach(QTreeWidgetItem* item, m_participantsInSession){
+        rval.append(m_participants[m_participantsInSession.key(item)]);
     }
     return rval;
 }
@@ -367,18 +370,24 @@ QList<TeraData> SessionInviteWidget::getParticipantsInSession()
 QList<TeraData> SessionInviteWidget::getUsersInSession()
 {
     QList<TeraData> rval;
-    foreach(int id, m_usersInSession.keys()){
+    /*foreach(int id, m_usersInSession.keys()){
         rval.append(m_users[id]);
-    }
+    }*/
+    foreach(QTreeWidgetItem* item, m_usersInSession){
+            rval.append(m_users[m_usersInSession.key(item)]);
+        }
     return rval;
 }
 
 QList<TeraData> SessionInviteWidget::getDevicesInSession()
 {
     QList<TeraData> rval;
-    foreach(int id, m_devicesInSession.keys()){
+    /*foreach(int id, m_devicesInSession.keys()){
         rval.append(m_devices[id]);
-    }
+    }*/
+    foreach(QTreeWidgetItem* item, m_devicesInSession){
+            rval.append(m_devices[m_devicesInSession.key(item)]);
+        }
     return rval;
 }
 
@@ -457,6 +466,12 @@ void SessionInviteWidget::selectDefaultFilter()
     else if(!m_devices.isEmpty())
         ui->btnDevices->setChecked(true);
     updateFilters();
+}
+
+void SessionInviteWidget::showAvailableInvitees(const bool &show)
+{
+    ui->btnManageInvitees->setChecked(show);
+    on_btnManageInvitees_clicked();
 }
 
 void SessionInviteWidget::ws_userEvent(UserEvent event)
@@ -590,26 +605,26 @@ void SessionInviteWidget::connectSignals()
 void SessionInviteWidget::updateItem(const TeraData &item)
 {
     // Get pointers to correct structures depending on item type
-    QHash<int, TeraData>*           item_data;
+    //QHash<int, TeraData>*           item_data;
     QHash<int, QListWidgetItem*>*   item_availables;
     QHash<int, QTreeWidgetItem*>*   item_invitees;
     QTreeWidgetItem*                base_tree_item;
     QList<int>*                     item_required;
 
     if (item.getDataType() == TERADATA_PARTICIPANT){
-        item_data = &m_participants;
+        //item_data = &m_participants;
         item_availables = &m_participantsItems;
         item_invitees = &m_participantsInSession;
         item_required = &m_requiredParticipants;
         base_tree_item = ui->treeInvitees->topLevelItem(0);
     }else if(item.getDataType() == TERADATA_USER){
-        item_data = &m_users;
+        //item_data = &m_users;
         item_availables = &m_usersItems;
         item_invitees = &m_usersInSession;
         item_required = &m_requiredUsers;
         base_tree_item = ui->treeInvitees->topLevelItem(1);
     }else if(item.getDataType() == TERADATA_DEVICE){
-        item_data = &m_devices;
+        //item_data = &m_devices;
         item_availables = &m_devicesItems;
         item_invitees = &m_devicesInSession;
         item_required = &m_requiredDevices;
@@ -720,12 +735,17 @@ TeraData *SessionInviteWidget::getUserFromUuid(const QString &uuid)
 {
     TeraData* data = nullptr;
 
-    for (int i=0; i<m_users.values().count(); i++){
+    foreach(TeraData user, m_users){
+        if (user.getUuid() == uuid){
+            data = &m_users[m_users.key(user)];
+        }
+    }
+    /*for (int i=0; i<m_users.values().count(); i++){
         if (m_users.values().at(i).getUuid() == uuid){
             data = &m_users[m_users.keys().at(i)];
             break;
         }
-    }
+    }*/
 
     return data;
 }
@@ -734,12 +754,17 @@ TeraData *SessionInviteWidget::getParticipantFromUuid(const QString &uuid)
 {
     TeraData* data = nullptr;
 
-    for (int i=0; i<m_participants.values().count(); i++){
+    foreach(TeraData part, m_participants){
+        if (part.getUuid() == uuid){
+            data = &m_participants[m_participants.key(part)];
+        }
+    }
+    /*for (int i=0; i<m_participants.values().count(); i++){
         if (m_participants.values().at(i).getUuid() == uuid){
             data = &m_participants[m_participants.keys().at(i)];
             break;
         }
-    }
+    }*/
 
     return data;
 }
@@ -748,12 +773,17 @@ TeraData *SessionInviteWidget::getDeviceFromUuid(const QString &uuid)
 {
     TeraData* data = nullptr;
 
-    for (int i=0; i<m_devices.values().count(); i++){
+    foreach(TeraData device, m_devices){
+        if (device.getUuid() == uuid){
+            data = &m_devices[m_devices.key(device)];
+        }
+    }
+    /*for (int i=0; i<m_devices.values().count(); i++){
         if (m_devices.values().at(i).getUuid() == uuid){
             data = &m_devices[m_devices.keys().at(i)];
             break;
         }
-    }
+    }*/
 
     return data;
 }
@@ -882,7 +912,8 @@ void SessionInviteWidget::on_btnRemove_clicked()
         delete item;
 
         // Update item to add it back to invitable list
-        updateItem(*item_data);
+        if (item_data)
+            updateItem(*item_data);
     }
 
     // Emit signals

@@ -134,7 +134,7 @@ void InSessionWidget::newSessionInviteesRequested(QStringList user_uuids, QStrin
     // Devices
     if (!device_uuids.isEmpty()){
         QJsonArray devices;
-        for(QString device_uuid:device_uuids){
+        for(const QString &device_uuid:device_uuids){
             devices.append(QJsonValue(device_uuid));
         }
         item_obj.insert("session_devices", devices);
@@ -143,7 +143,7 @@ void InSessionWidget::newSessionInviteesRequested(QStringList user_uuids, QStrin
     // Participants
     if (!participant_uuids.isEmpty()){
         QJsonArray participants;
-        for(QString part_uuid:participant_uuids){
+        for(const QString &part_uuid:participant_uuids){
             participants.append(QJsonValue(part_uuid));
         }
         item_obj.insert("session_participants", participants);
@@ -151,7 +151,7 @@ void InSessionWidget::newSessionInviteesRequested(QStringList user_uuids, QStrin
 
     if (!user_uuids.isEmpty()){
         QJsonArray users;
-        for(QString user_uuid:user_uuids){
+        for(const QString &user_uuid:user_uuids){
             users.append(QJsonValue(user_uuid));
         }
         item_obj.insert("session_users", users);
@@ -448,6 +448,7 @@ void InSessionWidget::initUI()
 
     ui->wdgInvitees->setConfirmOnRemove(true);
     ui->wdgInvitees->setComManager(m_comManager);
+    ui->wdgInvitees->showAvailableInvitees(true);
 
     ui->btnInSessionInfos->setChecked(true);
     //ui->tabInfos->hide();
