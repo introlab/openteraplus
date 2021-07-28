@@ -26,8 +26,8 @@ ClientApp::ClientApp(int &argc, char **argv)
     QString stylesheet = QLatin1String(file.readAll());
     setStyleSheet(stylesheet);
 
-    setApplicationName(QString("OpenTeraPlus v") + QString(OPENTERAPLUS_VERSION));
-    qDebug() << "Starting App " << applicationName();
+    //setApplicationName(QString("OpenTeraPlus v") + QString(OPENTERAPLUS_VERSION));
+    qDebug() << "Starting App " << applicationName() + " v" +  QString(OPENTERAPLUS_VERSION);
 
     // Load config
     loadConfig();

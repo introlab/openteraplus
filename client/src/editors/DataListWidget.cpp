@@ -105,7 +105,7 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
     // If we have extra fields to display, append them
     QString extra_field = "";
     if (!m_extraDisplayFields.isEmpty() && !m_extraInfos.contains(data->getId())){
-        for (QString field:m_extraDisplayFields){
+        for (QString field:qAsConst(m_extraDisplayFields)){
             QStringList subfields = field.split(".");
             QString subfield;
             if (subfields.count() > 1){
@@ -120,7 +120,7 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
                 if (field_value.canConvert(QMetaType::QVariantList)){
                     QVariantList field_values = field_value.toList();
                     QString merged_list;
-                    for (QVariant field_value:field_values){
+                    for (QVariant field_value:qAsConst(field_values)){
                         if (!merged_list.isEmpty())
                             merged_list += ", ";
                         // Search for subfield?
@@ -159,10 +159,10 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
         }
     }
 
-    /*QString color_field = TeraData::getDataTypeName(m_dataType) + "_color";
+    QString color_field = TeraData::getDataTypeName(m_dataType) + "_color";
     if (data->hasFieldName(color_field)){
         item->setForeground(QColor(data->getFieldValue(color_field).toString()));
-    }*/
+    }
 
     if (select_item){
         ui->lstData->setCurrentItem(item);

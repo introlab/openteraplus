@@ -692,12 +692,8 @@ QWidget#wdgParticipantsNum{
     border-radius: 10px;
 }
 
-QListWidget#lstOnlineParticipants, QListWidget#lstOnlineUsers, QListWidget#lstOnlineDevices{
-    background-color: rgba(255,255,255,20%);
-    selection-background-color: rgba(0,0,0,20%);
+QTreeWidget#treeOnline{
+    background-color: rgba(255,255,255,10%);
+    selection-background-color: rgba(0,0,0,0%);
     /*selection-color: black;*/
-}
-
-QFrame#frameOnlineParticipants, QFrame#frameOnlineUsers, QFrame#frameOnlineDevices{
-    background-color: transparent;
 }

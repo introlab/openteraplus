@@ -53,6 +53,7 @@ private:
 
     bool                        m_selectionHold;
     bool                        m_siteJustChanged;
+    bool                        m_sitesLoaded;
 
     QMap<int, QTreeWidgetItem*> m_projects_items;
     QMap<int, QTreeWidgetItem*> m_groups_items;
@@ -101,7 +102,7 @@ private slots:
 
      void processCurrentUserUpdated();
 
-     void currentSiteChanged();
+     void currentSiteChanged(bool requestDisplay=true);
      void currentNavItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
      void navItemClicked(QTreeWidgetItem* item);
      void navItemExpanded(QTreeWidgetItem* item);
@@ -112,6 +113,8 @@ private slots:
      void on_btnSearch_toggled(bool checked);
 
      void on_txtNavSearch_textChanged(const QString &search_text);
+
+     void on_cmbSites_currentIndexChanged(int index);
 
 signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);

@@ -24,9 +24,9 @@ public:
     explicit ProjectWidget(ComManager* comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
     ~ProjectWidget();
 
-    void saveData(bool signal=true);
+    void saveData(bool signal=true) override;
 
-    void setData(const TeraData* data);
+    void setData(const TeraData* data) override;
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -79,9 +79,9 @@ private:
     void updateDevice(const TeraData* device);
     void updateServiceProject(const TeraData* sp);
 
-    void updateControlsState();
-    void updateFieldsValue();
-    bool validateData();
+    void updateControlsState() override;
+    void updateFieldsValue() override;
+    bool validateData() override;
 
     bool isSiteAdmin();
 

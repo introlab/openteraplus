@@ -191,7 +191,7 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
-        for(QVariant part:parts_list){
+        for(const QVariant &part:qAsConst(parts_list)){
             QVariantMap part_info = part.toMap();
             int part_id = part_info["id_participant"].toInt();
 
@@ -252,6 +252,8 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
             }
             ui->tableSummary->setItem(current_row, 5, item);
         }
+        ui->tableSummary->resizeColumnsToContents();
+        ui->tableSummary->sortByColumn(4, Qt::DescendingOrder); // Sort by last session date
     }
 
 }

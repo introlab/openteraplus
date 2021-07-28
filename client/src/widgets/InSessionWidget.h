@@ -35,6 +35,7 @@ public:
 
 private slots:
     void on_btnEndSession_clicked();
+    void on_btnLeaveSession_clicked();
     void on_btnInSessionInfos_toggled(bool checked);
 
     void processSessionsReply(QList<TeraData> sessions);
@@ -58,7 +59,7 @@ private slots:
 
     void sessionTimer();
 
-    void on_btnLeaveSession_clicked();
+    void setReadyState(bool state);
 
 private:
     void connectSignals();

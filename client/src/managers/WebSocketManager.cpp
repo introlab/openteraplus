@@ -153,7 +153,7 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
 
     // Handle received message depending on type
     TeraMessage tera_msg;
-    if (google::protobuf::util::JsonStringToMessage(message.toStdString(), &tera_msg) == google::protobuf::util::Status::OK){
+    if (google::protobuf::util::JsonStringToMessage(message.toStdString(), &tera_msg).ok()){
         // TeraMessage
         if (tera_msg.message().Is<TeraEvent>()){
             TeraEvent tera_event;

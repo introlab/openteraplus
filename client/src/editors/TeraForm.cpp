@@ -15,10 +15,10 @@ TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
     m_highlightConditionals = true;
 
     // TODO: Find out why the global stylesheet isn't correctly used by TeraForm
-    QFile file(":/stylesheet.qss");
+    /*QFile file(":/stylesheet.qss");
     file.open(QFile::ReadOnly);
     QString stylesheet = QLatin1String(file.readAll());
-    setStyleSheet(stylesheet);
+    setStyleSheet(stylesheet);*/
 
     // Automatically sets comManager
     /*DataEditorWidget* parent_editor = dynamic_cast<DataEditorWidget*>(parent);
@@ -419,7 +419,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
         layout = static_cast<QFormLayout*>(page->layout());
     }
 
-    for (QVariant item:structure){
+    for (const QVariant &item:structure){
         if (item.canConvert(QMetaType::QVariantHash)){
             QVariantHash item_data = item.toHash();
             QString item_id = item_data["id"].toString();
@@ -523,6 +523,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
 
             }else{
                 LOG_WARNING("Unknown item type: " + item_type, "TeraForm::buildFormFromStructure");
+                item_label->deleteLater();
             }
         }
     }
@@ -726,9 +727,8 @@ QWidget *TeraForm::createColorWidget(const QVariantHash &structure)
 
     item_btn->setFlat(true);
     item_btn->setProperty("color", "#FFFFFF");
-    item_btn->setStyleSheet("background-color: #FFFFFF");
+    item_btn->setStyleSheet("background-color: #FFFFFF;min-width: 32px;");
     item_btn->setCursor(Qt::PointingHandCursor);
-    item_btn->setMaximumWidth(100);
 
     // Connect signal
     connect(item_btn, &QPushButton::clicked, this, &TeraForm::colorWidgetClicked);
@@ -1076,7 +1076,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     if (QPushButton* btn = dynamic_cast<QPushButton*>(widget)){
         if (value.toString().startsWith("#")){
             btn->setProperty("color", value.toString());
-            btn->setStyleSheet(QString("background-color: " + value.toString() + ";"));
+            btn->setStyleSheet(QString("background-color: " + value.toString() + ";min-width: 32px;"));
             return;
         }
 
@@ -1185,7 +1185,8 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
     }
 
     if (rval){
-        widget->setStyleSheet("");
+        if (!dynamic_cast<QPushButton*>(widget)) // Ignore push button in validation
+            widget->setStyleSheet("");
     }else{
         widget->setStyleSheet("background-color: #ffaaaa;");
     }

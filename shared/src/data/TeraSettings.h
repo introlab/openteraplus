@@ -3,6 +3,12 @@
 
 #include <QSettings>
 
+#define SETTINGS_UI_FILTERINACTIVE              "ui_filterInactives"
+#define SETTINGS_UI_ONLINEFILTERPARTICIPANTS    "ui_filterOnlineParticipants"
+#define SETTINGS_UI_ONLINEFILTERUSERS           "ui_filterOnlineUsers"
+#define SETTINGS_UI_ONLINEFILTERDEVICES         "ui_filterOnlineDevices"
+#define SETTINGS_LASTSITEID                     "lastSiteId"
+
 class TeraSettings
 {
 public:

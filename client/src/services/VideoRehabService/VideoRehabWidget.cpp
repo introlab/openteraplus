@@ -74,8 +74,8 @@ void VideoRehabWidget::initUI()
     //Set page to view
     m_webEngine->setPage(m_webPage);
 
-    QWebEngineProfile::defaultProfile()->setPersistentCookiesPolicy(QWebEngineProfile::NoPersistentCookies);
-    QWebEngineProfile::defaultProfile()->setHttpCacheType(QWebEngineProfile::NoCache);
+    QWebEngineProfile::defaultProfile()->setPersistentCookiesPolicy(/*QWebEngineProfile::AllowPersistentCookies*/QWebEngineProfile::NoPersistentCookies);
+    QWebEngineProfile::defaultProfile()->setHttpCacheType(/*QWebEngineProfile::DiskHttpCache*/QWebEngineProfile::NoCache);
 
     // Set download path
     QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
@@ -154,7 +154,8 @@ void VideoRehabWidget::webEngineURLChanged(QUrl url)
 
 void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
 {
-    qDebug() << "WebEngine: about to download " << item->suggestedFileName();
+    //qDebug() << "WebEngine: about to download " << item->suggestedFileName();
+    emit widgetIsReady(false);
 
     // Rework filename
     QString file_name = item->suggestedFileName();
@@ -191,8 +192,14 @@ void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
 
 void VideoRehabWidget::webEngineDownloadCompleted()
 {
+
+    // Enable buttons
+    emit widgetIsReady(true);
+
     QWebEngineDownloadItem* item = dynamic_cast<QWebEngineDownloadItem*>(sender());
     if (item){
+        if (item->receivedBytes() == 0)
+            return;
         GlobalMessageBox msg_box;
         msg_box.setTextFormat(Qt::RichText);
         QString full_dir_path = item->downloadDirectory();

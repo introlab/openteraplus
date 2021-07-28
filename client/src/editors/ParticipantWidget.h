@@ -115,7 +115,6 @@ private slots:
     void on_btnSaveLogin_clicked();
     void on_txtUsername_textEdited(const QString &current);
     void on_txtPassword_textEdited(const QString &current);
-    void on_txtPasswordConfirm_textEdited(const QString &current);
     void on_tabInfos_currentChanged(int index);
     void on_btnNewSession_clicked();
     void on_btnCheckSessionTypes_clicked();

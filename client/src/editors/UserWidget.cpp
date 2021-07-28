@@ -103,7 +103,9 @@ void UserWidget::saveData(bool signal){
         new_data->setName(new_data->getFieldValue("user_firstname").toString() + " " + new_data->getFieldValue("user_lastname").toString());
         *m_data = *new_data;
         delete new_data;
-        emit dataWasChanged();
+        if (!m_currentUserPasswordChanged)
+            // If current password was changed, we will process it in the user replies
+            emit dataWasChanged();
     }
 
     /*if (parent())
@@ -338,6 +340,7 @@ void UserWidget::processUsersReply(QList<TeraData> users)
                 m_comManager->setCredentials(m_data->getFieldValue("user_username").toString(),
                                              ui->wdgUser->getFieldValue("user_password").toString());
                 m_currentUserPasswordChanged = false;
+                emit dataWasChanged();
             }
             // We found "ourself" in the list - update data.
             //*m_data = users.at(i);

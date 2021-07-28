@@ -41,7 +41,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
          <x>0</x>
          <y>0</y>
          <width>1069</width>
-         <height>749</height>
+         <height>750</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -474,7 +474,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
          </property>
          <property name="icon">
           <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/user_info.png</normaloff>:/icons/user_info.png</iconset>
+           <normaloff>:/icons/software_user.png</normaloff>:/icons/software_user.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -559,7 +559,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
          <enum>QTabWidget::West</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <property name="iconSize">
          <size>
@@ -826,7 +826,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
      <x>0</x>
      <y>0</y>
      <width>1689</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
@@ -855,6 +855,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../resources/TeraClient.qrc"/>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>

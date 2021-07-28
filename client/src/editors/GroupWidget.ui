@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>750</width>
-    <height>505</height>
+    <height>630</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -299,7 +299,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <x>0</x>
             <y>0</y>
             <width>710</width>
-            <height>98</height>
+            <height>376</height>
            </rect>
           </property>
           <attribute name="label">
@@ -314,7 +314,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <property name="verticalSpacing">
               <number>15</number>
              </property>
-             <item row="0" column="1" alignment="Qt::AlignHCenter">
+             <item row="1" column="1" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="icoSessions">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -345,7 +345,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </widget>
              </item>
-             <item row="1" column="1" alignment="Qt::AlignHCenter">
+             <item row="2" column="1" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="lblSessions">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -361,7 +361,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </widget>
              </item>
-             <item row="1" column="0" alignment="Qt::AlignHCenter">
+             <item row="2" column="0" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="lblParticipant">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -377,7 +377,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
+             <item row="1" column="2">
               <spacer name="horizontalSpacer_2">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -390,7 +390,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </property>
               </spacer>
              </item>
-             <item row="0" column="0" alignment="Qt::AlignHCenter">
+             <item row="1" column="0" alignment="Qt::AlignHCenter">
               <widget class="QLabel" name="icoParticipant">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -423,90 +423,90 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </item>
             </layout>
            </item>
+           <item>
+            <widget class="QTableWidget" name="tableSummary">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>150</height>
+              </size>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+             <attribute name="horizontalHeaderDefaultSectionSize">
+              <number>125</number>
+             </attribute>
+             <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>Participant</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>État</string>
+              </property>
+              <property name="textAlignment">
+               <set>AlignCenter</set>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Séances</string>
+              </property>
+              <property name="textAlignment">
+               <set>AlignCenter</set>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Première séance</string>
+              </property>
+              <property name="textAlignment">
+               <set>AlignCenter</set>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Dernière séance</string>
+              </property>
+              <property name="textAlignment">
+               <set>AlignCenter</set>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Dernière connexion</string>
+              </property>
+              <property name="textAlignment">
+               <set>AlignCenter</set>
+              </property>
+             </column>
+            </widget>
+           </item>
           </layout>
          </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTableWidget" name="tableSummary">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>150</height>
-          </size>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-         <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>125</number>
-         </attribute>
-         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>Participant</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>État</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignCenter</set>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Séances</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignCenter</set>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Première séance</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignCenter</set>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Dernière séance</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignCenter</set>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Dernière connexion</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignCenter</set>
-          </property>
-         </column>
         </widget>
        </item>
       </layout>
@@ -524,6 +524,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../resources/TeraClient.qrc"/>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
