@@ -582,7 +582,13 @@ bool ComManager::handleLoginReply(const QString &reply_data)
     QString user_uuid = login_info["user_uuid"].toString();
     if (m_enableWebsocket){
         QString web_socket_url = login_info["websocket_url"].toString();
-        m_webSocketMan->connectWebSocket(web_socket_url, user_uuid);
+        if (!web_socket_url.isEmpty())
+            m_webSocketMan->connectWebSocket(web_socket_url, user_uuid);
+        else{
+            clearCurrentUser();
+            emit loginResult(false, tr("L'utilisateur est déjà connecté."));
+            return true;
+        }
     }else{
         onWebSocketLoginResult(true); // Simulate successful login with websocket
     }
@@ -616,7 +622,7 @@ bool ComManager::handleLoginSequence(const QString &reply_path, const QString &r
         return handleVersionsReply(data_list);
     }
 
-    QList<TeraData> items;
+    //QList<TeraData> items;
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
 
     if (items_type != TERADATA_USER && items_type != TERADATA_USERPREFERENCE)
@@ -645,7 +651,7 @@ bool ComManager::handleLoginSequence(const QString &reply_path, const QString &r
         //qDebug() << "Still logging in...";
         if (m_currentPreferences.isSet()){
             //qDebug() << "All set!";
-            emit loginResult(true);
+            emit loginResult(true, "");
             m_loggingInProgress = false;
         }
     }
@@ -965,7 +971,7 @@ void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenti
         m_settedCredentials = true; // We setted the credentials in authentificator
     }else{
         LOG_DEBUG("Authentication error", "ComManager::onNetworkAuthenticationRequired");
-        emit loginResult(false);
+        emit loginResult(false, tr("Utilisateur ou mot de passe invalide."));
     }
 }
 
@@ -1026,7 +1032,7 @@ void ComManager::onWebSocketLoginResult(bool logged_in)
 {
     if (!logged_in){
         clearCurrentUser();
-        emit loginResult(logged_in);
+        emit loginResult(false, tr("La communication avec le serveur n'a pu être établie."));
         return;
     }
 

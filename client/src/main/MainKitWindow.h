@@ -39,7 +39,7 @@ public:
 private slots:
     void userLoginRequested(QString username, QString password, QString server_name);
     void userLoginCancelled();
-    void on_userLoginResult(bool logged);
+    void on_userLoginResult(bool logged, QString log_msg);
 
     void on_userServerDisconnected();
     void on_serverError(QAbstractSocket::SocketError error, QString error_str);

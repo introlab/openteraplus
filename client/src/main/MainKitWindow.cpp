@@ -72,11 +72,11 @@ void MainKitWindow::userLoginRequested(QString username, QString password, QStri
     m_comManager->connectToServer(username, password);
 }
 
-void MainKitWindow::on_userLoginResult(bool logged)
+void MainKitWindow::on_userLoginResult(bool logged, QString log_msg)
 {
     if (m_loginDiag){
         if (!logged){
-            m_loginDiag->setStatusMessage(tr("Utilisateur ou mot de passe invalide."),true);
+            m_loginDiag->setStatusMessage(log_msg,true);
         }else{
             m_loginDiag->setStatusMessage(tr("Bienvenue!"));
             showConfigDialog();

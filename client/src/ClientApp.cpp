@@ -265,11 +265,11 @@ void ClientApp::logoutRequested()
     showLogin();
 }
 
-void ClientApp::on_loginResult(bool logged)
+void ClientApp::on_loginResult(bool logged, QString log_msg)
 {
     if (m_loginDiag){
         if (!logged){
-            m_loginDiag->setStatusMessage(tr("Utilisateur ou mot de passe invalide."),true);
+            m_loginDiag->setStatusMessage(log_msg,true);
         }else{
             m_loginDiag->setStatusMessage(tr("Bienvenue!"));
             showMainWindow();

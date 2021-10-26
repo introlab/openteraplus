@@ -117,7 +117,7 @@ signals:
     void socketError(QAbstractSocket::SocketError, QString);
     void waitingForReply(bool waiting);
 
-    void loginResult(bool logged_in);
+    void loginResult(bool logged_in, QString login_msg);
 
     void currentUserUpdated();
     void preferencesUpdated();
