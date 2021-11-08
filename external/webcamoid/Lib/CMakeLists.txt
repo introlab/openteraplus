@@ -1,7 +1,9 @@
 MESSAGE ( STATUS "Buiding AkCommons...")
 
 find_package(Qt5Core REQUIRED)
-
+find_package(Qt5Concurrent REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Qml REQUIRED)
 
 
 add_definitions(-DQT_DEPRECATED_WARNINGS -DAKCOMMONS_LIBRARY)
@@ -44,7 +46,8 @@ QT5_WRAP_CPP(libavkys_moc_srcs ${libavkys_headers})
 
 
 add_library(AvKys SHARED ${libavkys_srcs} ${libavkys_headers} ${libavkys_moc_srcs})
-qt5_use_modules(AvKys Core Concurrent Gui Qml)
+# qt5_use_modules(AvKys Core Concurrent Gui Qml)
+target_link_libraries(AvKys Qt5::Core Qt5::Concurrent Qt5::Gui Qt5::Qml)
 
 set(AVKYS_LIBS AvKys CACHE INTERNAL "doc string")
 set(AVKYS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src CACHE INTERNAL "doc string")

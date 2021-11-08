@@ -52,7 +52,9 @@ void ComManager::connectToServer(QString username, QString password)
 
     m_loggingInProgress = true;     // Indicate that a login request was sent, but not processed
 
-    doQuery(QString(WEB_LOGIN_PATH));
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_WITH_WEBSOCKET, "1");
+    doQuery(QString(WEB_LOGIN_PATH), args);
 
 }
 

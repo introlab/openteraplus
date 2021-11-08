@@ -4,6 +4,9 @@ message(STATUS "Building ${PLUGIN_NAME} Plugin.")
 add_definitions(-DUNICODE)
 
 find_package(Qt5Core REQUIRED)
+find_package(Qt5Concurrent REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Qml REQUIRED)
 
 include_directories(
     ${AVKYS_PLUGIN_INCLUDES}
@@ -36,8 +39,9 @@ QT5_WRAP_CPP(plugin_moc_srcs ${plugin_headers})
 QT5_ADD_RESOURCES(plugin_qrc_srcs ${plugin_qrc})
 
 add_library(${PLUGIN_NAME} SHARED ${plugin_srcs} ${plugin_headers} ${plugin_moc_srcs} ${plugin_qrc_srcs})
-qt5_use_modules(${PLUGIN_NAME} Core Concurrent Gui Qml)
+# qt5_use_modules(${PLUGIN_NAME} Core Concurrent Gui Qml)
 target_link_libraries(${PLUGIN_NAME} ${AVKYS_PLUGIN_LIBRARIES})
+target_link_libraries(${PLUGIN_NAME} Qt5::Core Qt5::Concurrent Qt5::Gui Qt5::Qml)
 install(TARGETS ${PLUGIN_NAME} DESTINATION ${AVKYS_LIBRARY_INSTALL_PATH})
 
 #submodule(s)

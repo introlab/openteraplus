@@ -272,6 +272,7 @@ void WebSocketManager::onTimerConnectTimeout()
 
 void WebSocketManager::onTimerKeepAliveTimeout()
 {
+    // qDebug() << "Ping";
     if (m_webSocket){
         m_webSocket->ping();
     }
