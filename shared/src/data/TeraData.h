@@ -64,6 +64,8 @@ public:
     virtual bool        fromJson(const QJsonValue& value);
     virtual QJsonObject toJson(const QString specific_fieldName = QString());
 
+    virtual bool        fromMap(const QVariantMap& map);
+
     int getId() const;
     QString getIdFieldName() const;
     void setId(const int& id);

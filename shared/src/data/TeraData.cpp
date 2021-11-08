@@ -577,3 +577,13 @@ QJsonObject TeraData::toJson(const QString specific_fieldName)
 
     return object;
 }
+
+bool TeraData::fromMap(const QVariantMap &map)
+{
+    foreach(QVariant value, map){
+        QString key = map.key(value);
+        setFieldValue(key, value);
+    }
+
+    return true;
+}

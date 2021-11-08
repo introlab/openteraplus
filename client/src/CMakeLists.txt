@@ -231,11 +231,11 @@ SET(qrcs
 #Generate .h files from the .ui files
 QT5_WRAP_UI(moc_uis ${uis})
 
+#This will generate moc_* for Qt
+QT5_WRAP_CPP(moc_srcs ${headers})
+
 # generate rules for building source files from the resources
 QT5_ADD_RESOURCES(client_qrc ${qrcs})
-
-#This will generate moc_* for Qt
-qt5_wrap_cpp(moc_srcs ${headers})
 
 set(translation_files_srcs
     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts

@@ -124,6 +124,7 @@ private slots:
     void on_btnEmailWeb_clicked();
     void on_cmbSessionType_currentIndexChanged(int index);
     void on_btnFilterSessionsTypes_clicked();
+    void on_btnAddSession_clicked();
 };
 
 #endif // PARTICIPANTWIDGET_H

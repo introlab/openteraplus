@@ -21,7 +21,7 @@ class SessionWidget : public DataEditorWidget
     Q_OBJECT
 
 public:
-    explicit SessionWidget(ComManager* comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
+    explicit SessionWidget(ComManager* comMan, const TeraData* data, QWidget *parent = nullptr);
     ~SessionWidget();
 
     void saveData(bool signal=true);

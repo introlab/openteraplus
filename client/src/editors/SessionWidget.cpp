@@ -42,6 +42,8 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     ui->tabNav->setCurrentIndex(0);
     ui->tabSessionInfos->setCurrentIndex(0);
 
+    ui->wdgSessionInvitees->setComManager(m_comManager);
+    ui->wdgSessionInvitees->setEditable(false);
 }
 
 SessionWidget::~SessionWidget()
@@ -140,12 +142,17 @@ void SessionWidget::updateSessionParticipants()
 
     if (m_data->hasFieldName("session_participants")){
         QVariantList session_parts_list = m_data->getFieldValue("session_participants").toList();
-
-        for(QVariant session_part:session_parts_list){
+        QList<TeraData> participants;
+        for(const QVariant &session_part:qAsConst(session_parts_list)){
             QVariantMap part_info = session_part.toMap();
+            TeraData part(TERADATA_PARTICIPANT);
+            part.fromMap(part_info);
+            participants.append(part);
+            /*
             int id_participant = part_info["id_participant"].toInt();
             QString participant_name = part_info["participant_name"].toString();
             QListWidgetItem* item = nullptr;
+
             for(int i=0; i<ui->lstParticipants->count(); i++){
                 int part_id = ui->lstParticipants->item(i)->data(Qt::UserRole).toInt();
                 if (part_id == id_participant){
@@ -162,10 +169,11 @@ void SessionWidget::updateSessionParticipants()
             }
 
             // Update participant name
-            item->setText(participant_name);
+            item->setText(participant_name);*/
 
 
         }
+        ui->wdgSessionInvitees->addParticipantsToSession(participants);
     }
 }
 
@@ -177,9 +185,13 @@ void SessionWidget::updateSessionUsers()
     if (m_data->hasFieldName("session_users")){
         QVariantList session_users_list = m_data->getFieldValue("session_users").toList();
 
-        for(QVariant session_user:session_users_list){
+        QList<TeraData> users;
+        for(const QVariant &session_user:qAsConst(session_users_list)){
             QVariantMap user_info = session_user.toMap();
-            int id_user = user_info["id_user"].toInt();
+            TeraData user(TERADATA_USER);
+            user.fromMap(user_info);
+            users.append(user);
+            /*int id_user = user_info["id_user"].toInt();
             QString user_name = user_info["user_name"].toString();
             QListWidgetItem* item = nullptr;
             for(int i=0; i<ui->lstUsers->count(); i++){
@@ -198,10 +210,9 @@ void SessionWidget::updateSessionUsers()
             }
 
             // Update name
-            item->setText(user_name);
-
-
+            item->setText(user_name);*/
         }
+        ui->wdgSessionInvitees->addUsersToSession(users);
     }
 }
 
@@ -213,9 +224,13 @@ void SessionWidget::updateSessionDevices()
     if (m_data->hasFieldName("session_devices")){
         QVariantList session_devices_list = m_data->getFieldValue("session_devices").toList();
 
-        for(QVariant session_device:session_devices_list){
+        QList<TeraData> devices;
+        for(const QVariant &session_device:qAsConst(session_devices_list)){
             QVariantMap device_info = session_device.toMap();
-            int id_device = device_info["id_device"].toInt();
+            TeraData device(TERADATA_DEVICE);
+            device.fromMap(device_info);
+            devices.append(device);
+            /*int id_device = device_info["id_device"].toInt();
             QString device_name = device_info["device_name"].toString();
             QListWidgetItem* item = nullptr;
             for(int i=0; i<ui->lstDevices->count(); i++){
@@ -234,8 +249,9 @@ void SessionWidget::updateSessionDevices()
             }
 
             // Update name
-            item->setText(device_name);
+            item->setText(device_name);*/
         }
+        ui->wdgSessionInvitees->addDevicesToSession(devices);
     }
 }
 /*

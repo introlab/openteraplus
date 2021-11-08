@@ -477,7 +477,6 @@
  </widget>
  <resources>
   <include location="../../resources/TeraClient.qrc"/>
-  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>

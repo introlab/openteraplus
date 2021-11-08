@@ -875,7 +875,7 @@ void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
         m_diag_editor->setCentralWidget(ses_widget);
 
         m_diag_editor->setWindowTitle(tr("Séance"));
-        m_diag_editor->setMinimumSize(2*this->width()/3, 2*this->height()/3);
+        m_diag_editor->setMinimumSize(2*this->width()/3, 5*this->height()/6);
 
         connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
 
@@ -1380,3 +1380,30 @@ void ParticipantWidget::on_btnFilterSessionsTypes_clicked()
 {
     ui->frameFilterSessionTypes->setVisible(ui->btnFilterSessionsTypes->isChecked());
 }
+
+void ParticipantWidget::on_btnAddSession_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+    m_diag_editor = new BaseDialog(this);
+
+    TeraData* new_session = new TeraData(TERADATA_SESSION);
+    new_session->setFieldValue("session_name", tr("Nouvelle séance"));
+    new_session->setFieldValue("session_start_datetime", QDateTime::currentDateTime());
+    new_session->setFieldValue("session_status", TeraSessionStatus::STATUS_NOTSTARTED);
+    new_session->setFieldValue("id_project", m_data->getFieldValue("id_project"));
+    new_session->setFieldValue("id_creator_user", m_comManager->getCurrentUser().getId());
+
+    SessionWidget* ses_widget = new SessionWidget(m_comManager, new_session);
+    m_diag_editor->setCentralWidget(ses_widget);
+
+    m_diag_editor->setWindowTitle(tr("Séance"));
+    m_diag_editor->setMinimumSize(2*this->width()/3, 2*this->height()/3);
+
+    connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
+
+    m_diag_editor->open();
+
+}
+

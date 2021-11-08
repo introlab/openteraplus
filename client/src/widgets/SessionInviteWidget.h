@@ -53,6 +53,8 @@ public:
 
     void setConfirmOnRemove(const bool &confirm);
 
+    void setEditable(const bool &editable);
+
     QList<TeraData> getParticipantsInSession();
     QList<TeraData> getUsersInSession();
     QList<TeraData> getDevicesInSession();
@@ -87,6 +89,7 @@ private:
 
     bool m_searching;
     bool m_confirmRemove;
+    bool m_editable;
 
     QHash<int, TeraData>    m_users; // id, data
     QHash<int, TeraData>    m_participants;

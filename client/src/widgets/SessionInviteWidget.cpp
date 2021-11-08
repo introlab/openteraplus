@@ -11,6 +11,7 @@ SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
 
     m_searching = false;
     m_confirmRemove = false;
+    m_editable = true;
     m_comManager = nullptr;
     m_currentSessionUuid.clear();
 
@@ -353,6 +354,14 @@ void SessionInviteWidget::addRequiredDevice(const int &required_id)
 void SessionInviteWidget::setConfirmOnRemove(const bool &confirm)
 {
     m_confirmRemove = confirm;
+}
+
+void SessionInviteWidget::setEditable(const bool &editable)
+{
+    m_editable = editable;
+
+    ui->btnManageInvitees->setVisible(m_editable);
+    ui->btnRemove->setVisible(m_editable);
 }
 
 QList<TeraData> SessionInviteWidget::getParticipantsInSession()
@@ -878,6 +887,9 @@ void SessionInviteWidget::on_treeInvitees_itemDoubleClicked(QTreeWidgetItem *ite
 
 void SessionInviteWidget::on_btnRemove_clicked()
 {
+    if (!m_editable)
+        return;
+
     if (m_confirmRemove){
         GlobalMessageBox msg;
         if (msg.showYesNo(tr("Confirmation"), tr("Êtes-vous sûrs de vouloir retirer les invités sélectionnés de la séance?")) != QMessageBox::Yes){
