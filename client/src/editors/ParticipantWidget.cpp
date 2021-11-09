@@ -1392,7 +1392,12 @@ void ParticipantWidget::on_btnAddSession_clicked()
 
     TeraData* new_session = new TeraData(TERADATA_SESSION);
     new_session->setFieldValue("session_name", tr("Nouvelle séance"));
-    new_session->setFieldValue("session_start_datetime", QDateTime::currentDateTime());
+    QDateTime session_datetime = QDateTime::currentDateTime();
+    QTime session_time = QTime::currentTime();
+    int minutes = (session_time.minute() / 15) * 15;
+    session_time.setHMS(session_datetime.time().addSecs(3600).hour(), minutes, 0);
+    session_datetime.setTime(session_time);
+    new_session->setFieldValue("session_start_datetime", session_datetime);
     new_session->setFieldValue("session_status", TeraSessionStatus::STATUS_NOTSTARTED);
     new_session->setFieldValue("id_project", m_data->getFieldValue("id_project"));
     new_session->setFieldValue("id_creator_user", m_comManager->getCurrentUser().getId());
