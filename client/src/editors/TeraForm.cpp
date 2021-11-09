@@ -741,7 +741,7 @@ QWidget *TeraForm::createDateTimeWidget(const QVariantHash &structure)
     Q_UNUSED(structure)
     QDateTimeEdit* item_dt = new QDateTimeEdit();
     item_dt->setDisplayFormat("dd MMMM yyyy - hh:mm");
-    item_dt->setCalendarPopup(true);
+    //item_dt->setCalendarPopup(true);
 
     // Hide by default if read only
     if (structure.contains("readonly")){

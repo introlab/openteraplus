@@ -255,14 +255,18 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         </layout>
        </item>
        <item>
-        <widget class="TeraForm" name="wdgSession" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="layoutEditor">
+         <item>
+          <widget class="TeraForm" name="wdgSession" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QFrame" name="frameButtons">

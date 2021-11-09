@@ -144,8 +144,8 @@ void ParticipantWidget::updateControlsState()
                 ui->tabInfos->removeTab(1);
             }
         }
-
     }
+    //ui->frameSessionsControls->setHidden(dataIsNew());
 }
 
 void ParticipantWidget::updateFieldsValue()
@@ -871,11 +871,13 @@ void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
     int id_session = m_listSessions_items.key(ui->tableSessions->item(session_item->row(),0));
     TeraData* ses_data = m_ids_sessions[id_session];
     if (ses_data){
+        ses_data->setFieldValue("id_project", m_data->getFieldValue("id_project"));
         SessionWidget* ses_widget = new SessionWidget(m_comManager, ses_data, nullptr);
         m_diag_editor->setCentralWidget(ses_widget);
 
         m_diag_editor->setWindowTitle(tr("Séance"));
-        m_diag_editor->setMinimumSize(2*this->width()/3, 5*this->height()/6);
+        //m_diag_editor->setMinimumSize(2*this->width()/3, 5*this->height()/6);
+        m_diag_editor->setMinimumSize(this->width(), this->height());
 
         connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
 
@@ -1394,14 +1396,17 @@ void ParticipantWidget::on_btnAddSession_clicked()
     new_session->setFieldValue("session_status", TeraSessionStatus::STATUS_NOTSTARTED);
     new_session->setFieldValue("id_project", m_data->getFieldValue("id_project"));
     new_session->setFieldValue("id_creator_user", m_comManager->getCurrentUser().getId());
+    new_session->setFieldValue("participant_uuid", m_data->getUuid());
 
     SessionWidget* ses_widget = new SessionWidget(m_comManager, new_session);
     m_diag_editor->setCentralWidget(ses_widget);
 
     m_diag_editor->setWindowTitle(tr("Séance"));
-    m_diag_editor->setMinimumSize(2*this->width()/3, 2*this->height()/3);
+    m_diag_editor->setMinimumSize(this->width(), this->height());
 
     connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
+    connect(ses_widget, &SessionWidget::dataWasChanged, m_diag_editor, &QDialog::accept);
+    connect(ses_widget, &SessionWidget::dataWasDeleted, m_diag_editor, &QDialog::accept);
 
     m_diag_editor->open();
 

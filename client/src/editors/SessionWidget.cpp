@@ -5,7 +5,7 @@
 #include <QStandardPaths>
 
 SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
-    DataEditorWidget(comMan, data, parent),
+    DataEditorWidget(comMan, nullptr, parent),
     ui(new Ui::SessionWidget)
 {
 
@@ -14,8 +14,12 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
     ui->wdgSession->setHighlightConditions(false); // Hide conditional questions indicator
+    ui->wdgSession->setComManager(m_comManager);
+    ui->tabNav->setCurrentIndex(0);
+    ui->tabSessionInfos->setCurrentIndex(0);
 
-    setLimited(false);
+    ui->wdgSessionInvitees->setComManager(m_comManager);
+    ui->wdgSessionInvitees->showOnlineFilter(false);
 
     // Use base class to manage editing
     setEditorControls(ui->wdgSession, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
@@ -23,27 +27,31 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     // Connect signals and slots
     connectSignals();
 
-    setData(data);
-
     // Query form definition
+    m_idProject = -1;
     QUrlQuery args(WEB_FORMS_QUERY_SESSION);
-    if (m_data->hasFieldName("id_project")){
-        args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
-        m_data->removeFieldName("id_project");
+    if (data->hasFieldName("id_project")){
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, data->getFieldValue("id_project").toString());
+        m_idProject = data->getFieldValue("id_project").toInt();
     }else{
-        if (!dataIsNew()){
-            args.addQueryItem(WEB_QUERY_ID, QString::number(m_data->getId()));
+        if (!data->isNew()){
+            args.addQueryItem(WEB_QUERY_ID, QString::number(data->getId()));
         }
     }
 
+    if (data->hasFieldName("participant_uuid")){
+        m_baseParticipantUuid = data->getFieldValue("participant_uuid").toString();
+    }
+
+    setData(data);
+    m_data->removeFieldName("id_project"); // Remove field if present, as not useful otherwise and will cause issues when saving data
+    m_data->removeFieldName("participant_uuid");
+
+    setLimited(false);
+
     queryDataRequest(WEB_FORMS_PATH, args);
 
-    ui->wdgSession->setComManager(m_comManager);
-    ui->tabNav->setCurrentIndex(0);
-    ui->tabSessionInfos->setCurrentIndex(0);
 
-    ui->wdgSessionInvitees->setComManager(m_comManager);
-    ui->wdgSessionInvitees->setEditable(false);
 }
 
 SessionWidget::~SessionWidget()
@@ -73,6 +81,42 @@ void SessionWidget::saveData(bool signal){
     if (session_data["id_creator_user"].toInt() == 0){
         session_data.remove("id_creator_user");
     }
+    session_data.remove("session_creator_device");
+    session_data.remove("session_creator_participant");
+    session_data.remove("session_creator_user");
+    session_data.remove("session_creator_service");
+    session_data.remove("session_has_device_data");
+
+    if (ui->wdgSessionInvitees->isEditable()){
+        // Append session invitees to the post request
+        if (ui->wdgSessionInvitees->getDevicesInSessionCount() > 0){
+            QJsonArray data_list;
+            QList<int> ids = ui->wdgSessionInvitees->getDevicesIdsInSession();
+            for(const int &data_id:qAsConst(ids)){
+                data_list.append(QJsonValue(data_id));
+            }
+            session_data.insert("session_devices_ids", data_list);
+        }
+
+        if (ui->wdgSessionInvitees->getParticipantsInSessionCount() > 0){
+            QJsonArray data_list;
+            QList<int> ids = ui->wdgSessionInvitees->getParticipantsIdsInSession();
+            for(const int &data_id:qAsConst(ids)){
+                data_list.append(QJsonValue(data_id));
+            }
+            session_data.insert("session_participants_ids", data_list);
+        }
+
+        if (ui->wdgSessionInvitees->getUsersInSessionCount() > 0){
+            QJsonArray data_list;
+            QList<int> ids = ui->wdgSessionInvitees->getUsersIdsInSession();
+            for(const int &data_id:qAsConst(ids)){
+                data_list.append(QJsonValue(data_id));
+            }
+            session_data.insert("session_users_ids", data_list);
+        }
+    }
+
     base_obj.insert("session", session_data);
     group_data.setObject(base_obj);
 
@@ -106,10 +150,40 @@ void SessionWidget::setData(const TeraData *data)
 
 void SessionWidget::updateControlsState()
 {
+    ui->grpSummary->setVisible(!dataIsNew());
     if (dataIsNew()){
-        ui->grpSummary->setVisible(!dataIsNew());
-        if (ui->tabNav->count() > 1){
-            ui->tabNav->removeTab(1);
+        if (ui->tabNav->count()>1){
+            // Move invitee list to first tab
+            ui->tabInvitees->layout()->removeWidget(ui->wdgSessionInvitees);
+            ui->tabDashboard->layout()->removeWidget(ui->frameButtons);
+
+            /*QLabel* lblInvitees = new QLabel(tr("Invités"));
+            QFont labelFont;
+            labelFont.setBold(true);
+            labelFont.setPointSize(10);
+            lblInvitees->setFont(labelFont);
+
+            ui->tabDashboard->layout()->addWidget(lblInvitees);*/
+            ui->layoutEditor->addWidget(ui->wdgSessionInvitees);
+            ui->tabDashboard->layout()->addWidget(ui->frameButtons);
+
+            while (ui->tabNav->count() > 1)
+                ui->tabNav->removeTab(1);
+
+            queryAvailableInvitees();
+        }
+        ui->wdgSession->hideField("session_duration");
+        ui->wdgSessionInvitees->setEditable(true);
+        //ui->wdgSessionInvitees->showAvailableInvitees(true, true);
+        ui->wdgSessionInvitees->autoSelectFilters();
+        ui->lblStatus->hide();
+
+    }else{
+        TeraSessionStatus::SessionStatus status = static_cast<TeraSessionStatus::SessionStatus>(m_data->getFieldValue("session_status").toInt());
+        if (status == TeraSessionStatus::STATUS_NOTSTARTED){
+            ui->wdgSessionInvitees->setEditable(true);
+        }else{
+            ui->wdgSessionInvitees->setEditable(false);
         }
     }
 
@@ -127,6 +201,13 @@ void SessionWidget::updateFieldsValue(){
 }
 
 bool SessionWidget::validateData(){
+    // Check if we have a least one invitee in the session
+    if (ui->wdgSessionInvitees->getInviteesCount() == 0){
+        GlobalMessageBox msgbox;
+        msgbox.showError(tr("Invités manquants"), tr("Au moins un invité doit être dans la séance"));
+        return false;
+    }
+
     bool valid = false;
 
     valid = ui->wdgSession->validateFormData();
@@ -342,6 +423,26 @@ void SessionWidget::updateEvent(TeraData *event)
     ui->tableEvents->item(base_item->row(), 3)->setText(event->getFieldValue("session_event_text").toString());
 }
 
+void SessionWidget::queryAvailableInvitees()
+{
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_LIST, "1");
+    args.addQueryItem(WEB_QUERY_ENABLED, "1");
+    if (m_idProject >= 0){
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
+    }
+
+    // Query participants
+    queryDataRequest(WEB_PARTICIPANTINFO_PATH, args);
+
+    // Query users
+    queryDataRequest(WEB_USERINFO_PATH, args);
+
+    // Query devices
+    queryDataRequest(WEB_DEVICEINFO_PATH, args);
+
+}
+
 void SessionWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type.startsWith(WEB_FORMS_QUERY_SESSION)){
@@ -388,6 +489,36 @@ void SessionWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
     ui->lblTests->setText(stats.getFieldValue("tests_total_count").toString() + tr(" Évaluations"));
 }
 
+void SessionWidget::processParticipantsReply(QList<TeraData> participants)
+{
+    if (!ui->wdgSessionInvitees->hasAvailableParticipants()){
+        ui->wdgSessionInvitees->setAvailableParticipants(participants);
+        if (dataIsNew()){
+            // Add current participant to session
+            ui->wdgSessionInvitees->addParticipantToSession(m_baseParticipantUuid);
+            ui->wdgSessionInvitees->addRequiredParticipant(m_baseParticipantUuid);
+        }
+    }
+}
+
+void SessionWidget::processDevicesReply(QList<TeraData> devices)
+{
+    if (!ui->wdgSessionInvitees->hasAvailableDevices()){
+        ui->wdgSessionInvitees->setAvailableDevices(devices);
+    }
+}
+
+void SessionWidget::processUsersReply(QList<TeraData> users)
+{
+    if (!ui->wdgSessionInvitees->hasAvailableUsers()){
+        ui->wdgSessionInvitees->setAvailableUsers(users);
+        if (dataIsNew()){
+            // Add current user to session
+            ui->wdgSessionInvitees->addUserToSession(m_comManager->getCurrentUser().getUuid());
+        }
+    }
+}
+
 void SessionWidget::postResultReply(QString path)
 {
     Q_UNUSED(path)
@@ -420,6 +551,57 @@ void SessionWidget::onDownloadCompleted(DownloadedFile *file)
     }
 }
 
+void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids)
+{
+    // Post session update with new lists
+    QJsonDocument document;
+    QJsonObject base_obj;
+
+    QJsonObject item_obj;
+    item_obj.insert("id_session", m_data->getId());
+
+
+    QJsonArray data_list;
+    if (ui->wdgSessionInvitees->getDevicesInSessionCount() > 0){
+
+        QList<int> ids = ui->wdgSessionInvitees->getDevicesIdsInSession();
+        for(const int &data_id:qAsConst(ids)){
+            data_list.append(QJsonValue(data_id));
+        }
+    }
+    item_obj.insert("session_devices_ids", data_list);
+
+    while(data_list.count()) {
+         data_list.pop_back();
+    }
+
+    if (ui->wdgSessionInvitees->getParticipantsInSessionCount() > 0){
+
+        QList<int> ids = ui->wdgSessionInvitees->getParticipantsIdsInSession();
+        for(const int &data_id:qAsConst(ids)){
+            data_list.append(QJsonValue(data_id));
+        }
+    }
+    item_obj.insert("session_participants_ids", data_list);
+
+    while(data_list.count()) {
+         data_list.pop_back();
+    }
+    if (ui->wdgSessionInvitees->getUsersInSessionCount() > 0){
+        QList<int> ids = ui->wdgSessionInvitees->getUsersIdsInSession();
+        for(const int &data_id:qAsConst(ids)){
+            data_list.append(QJsonValue(data_id));
+        }
+    }
+    item_obj.insert("session_users_ids", data_list);
+
+    base_obj.insert("session", item_obj);
+    document.setObject(base_obj);
+
+    postDataRequest(WEB_SESSIONINFO_PATH, document.toJson());
+
+}
+
 void SessionWidget::currentSelectedDataChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
 {
     Q_UNUSED(previous)
@@ -434,6 +616,9 @@ void SessionWidget::connectSignals()
     //connect(m_comManager, &ComManager::deviceDatasReceived, this, &SessionWidget::processDeviceDatasReply);
     connect(m_comManager, &ComManager::sessionEventsReceived, this, &SessionWidget::processSessionEventsReply);
     connect(m_comManager, &ComManager::statsReceived, this, &SessionWidget::processStatsReply);
+    connect(m_comManager, &ComManager::usersReceived, this, &SessionWidget::processUsersReply);
+    connect(m_comManager, &ComManager::participantsReceived, this, &SessionWidget::processParticipantsReply);
+    connect(m_comManager, &ComManager::devicesReceived, this, &SessionWidget::processDevicesReply);
 
     connect(m_comManager, &ComManager::downloadCompleted, this, &SessionWidget::onDownloadCompleted);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &SessionWidget::deleteDataReply);
@@ -441,6 +626,9 @@ void SessionWidget::connectSignals()
     connect(ui->btnDelData, &QPushButton::clicked, this, &SessionWidget::btnDeleteData_clicked);
     connect(ui->btnDownloadAll, &QPushButton::clicked, this, &SessionWidget::btnDownloadAll_clicked);
     connect(ui->tableData, &QTableWidget::currentItemChanged, this, &SessionWidget::currentSelectedDataChanged);
+
+    connect(ui->wdgSessionInvitees, &SessionInviteWidget::newInvitees, this, &SessionWidget::sessionInviteesChanged);
+    connect(ui->wdgSessionInvitees, &SessionInviteWidget::removedInvitees, this, &SessionWidget::sessionInviteesChanged);
 }
 
 void SessionWidget::btnDownload_clicked()
@@ -504,6 +692,12 @@ void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
     QWidget* current_tab = ui->tabSessionInfos->widget(index);
 
     if (current_tab == ui->tabInvitees){
+        if (ui->wdgSessionInvitees->isEditable()){
+            if (!ui->wdgSessionInvitees->hasAvailableDevices() || !ui->wdgSessionInvitees->hasAvailableParticipants() || !ui->wdgSessionInvitees->hasAvailableUsers()){
+                queryAvailableInvitees();
+                ui->wdgSessionInvitees->selectFilterParticipant();
+            }
+        }
         // Participants
         updateSessionParticipants();
         updateSessionUsers();
@@ -526,7 +720,7 @@ void SessionWidget::on_tabSessionInfos_tabBarClicked(int index)
 
     if (current_tab == ui->tabEvents){
         // Session events
-        if (m_listSessionEvents.isEmpty()){
+        if (m_listSessionEvents.isEmpty() && !dataIsNew()){
             query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
             queryDataRequest(WEB_SESSIONEVENT_PATH, query);
         }

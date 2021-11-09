@@ -188,7 +188,8 @@ QVariant TeraData::getFieldValue(const QString &fieldName) const
         //return property(fieldName.toStdString().c_str());
         return m_fieldsValue[fieldName];
 
-    LOG_WARNING("Field " + fieldName + " not found in " + metaObject()->className(), "TeraData::getFieldValue");
+    if (fieldName != getIdFieldName())
+        LOG_WARNING("Field " + fieldName + " not found in " + metaObject()->className(), "TeraData::getFieldValue");
     return QVariant();
 }
 

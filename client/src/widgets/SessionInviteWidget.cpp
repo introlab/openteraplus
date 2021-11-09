@@ -22,7 +22,8 @@ SessionInviteWidget::SessionInviteWidget(QWidget *parent) :
 
 SessionInviteWidget::~SessionInviteWidget()
 {
-    delete ui;
+    if (ui)
+        delete ui;
 }
 
 void SessionInviteWidget::setComManager(ComManager *comMan)
@@ -320,6 +321,17 @@ void SessionInviteWidget::addRequiredUser(const int &required_id)
     }
 }
 
+void SessionInviteWidget::addRequiredUser(const QString &required_uuid)
+{
+    // Find id for UUID
+    foreach(TeraData data, m_users){
+        if (data.getUuid() == required_uuid){
+            addRequiredUser(data.getId());
+            return;
+        }
+    }
+}
+
 void SessionInviteWidget::addRequiredParticipant(const int &required_id)
 {
     if (!m_requiredParticipants.contains(required_id))
@@ -334,6 +346,17 @@ void SessionInviteWidget::addRequiredParticipant(const int &required_id)
         updateItem(m_participants[required_id]);
     }
 
+}
+
+void SessionInviteWidget::addRequiredParticipant(const QString &required_uuid)
+{
+    // Find id for UUID
+    foreach(TeraData data, m_participants){
+        if (data.getUuid() == required_uuid){
+            addRequiredParticipant(data.getId());
+            return;
+        }
+    }
 }
 
 void SessionInviteWidget::addRequiredDevice(const int &required_id)
@@ -362,6 +385,11 @@ void SessionInviteWidget::setEditable(const bool &editable)
 
     ui->btnManageInvitees->setVisible(m_editable);
     ui->btnRemove->setVisible(m_editable);
+}
+
+bool SessionInviteWidget::isEditable() const
+{
+    return m_editable;
 }
 
 QList<TeraData> SessionInviteWidget::getParticipantsInSession()
@@ -400,6 +428,51 @@ QList<TeraData> SessionInviteWidget::getDevicesInSession()
     return rval;
 }
 
+QStringList SessionInviteWidget::getParticipantsUuidsInSession()
+{
+    QStringList uuids;
+
+    foreach(TeraData part, getParticipantsInSession()){
+        uuids.append(part.getUuid());
+    }
+    return uuids;
+}
+
+QStringList SessionInviteWidget::getUsersUuidsInSession()
+{
+    QStringList uuids;
+
+    foreach(TeraData part, getUsersInSession()){
+        uuids.append(part.getUuid());
+    }
+    return uuids;
+}
+
+QStringList SessionInviteWidget::getDevicesUuidsInSession()
+{
+    QStringList uuids;
+
+    foreach(TeraData part, getDevicesInSession()){
+        uuids.append(part.getUuid());
+    }
+    return uuids;
+}
+
+QList<int> SessionInviteWidget::getParticipantsIdsInSession()
+{
+    return m_participantsInSession.keys();
+}
+
+QList<int> SessionInviteWidget::getUsersIdsInSession()
+{
+    return m_usersInSession.keys();
+}
+
+QList<int> SessionInviteWidget::getDevicesIdsInSession()
+{
+    return m_devicesInSession.keys();
+}
+
 void SessionInviteWidget::on_btnManageInvitees_clicked()
 {
     ui->frameSelector->setVisible(ui->btnManageInvitees->isChecked());
@@ -418,21 +491,21 @@ void SessionInviteWidget::updateFilters()
         QListWidgetItem* item = ui->lstInvitables->item(i);
         TeraData* item_data = nullptr;
         bool hidden = false;
-        if (m_usersItems.values().contains(item)){
+        if (m_usersItems.key(item) > 0){
             if (!ui->btnUsers->isChecked())
                 hidden = true;
             else{
                 item_data = &m_users[m_usersItems.key(item)];
             }
         }
-        if (m_devicesItems.values().contains(item)){
+        if (m_devicesItems.key(item) > 0){
             if (!ui->btnDevices->isChecked())
                 hidden = true;
             else{
                 item_data = &m_devices[m_devicesItems.key(item)];
             }
         }
-        if (m_participantsItems.values().contains(item)){
+        if (m_participantsItems.key(item) > 0){
             if (!ui->btnParticipants->isChecked())
                 hidden = true;
             else{
@@ -474,13 +547,36 @@ void SessionInviteWidget::selectDefaultFilter()
         ui->btnUsers->setChecked(true);
     else if(!m_devices.isEmpty())
         ui->btnDevices->setChecked(true);
+
     updateFilters();
 }
 
-void SessionInviteWidget::showAvailableInvitees(const bool &show)
+void SessionInviteWidget::autoSelectFilters()
+{
+    ui->btnParticipants->setChecked(!m_participants.isEmpty());
+    ui->btnUsers->setChecked(!m_users.isEmpty());
+    ui->btnDevices->setChecked(!m_devices.isEmpty());
+
+    updateFilters();
+}
+
+void SessionInviteWidget::selectFilterParticipant()
+{
+    ui->btnParticipants->setChecked(true);
+    updateFilters();
+}
+
+void SessionInviteWidget::showAvailableInvitees(const bool &show, const bool &hide_button)
 {
     ui->btnManageInvitees->setChecked(show);
     on_btnManageInvitees_clicked();
+
+    ui->btnManageInvitees->setHidden(hide_button);
+}
+
+void SessionInviteWidget::showOnlineFilter(const bool &show)
+{
+    ui->btnOnline->setVisible(show);
 }
 
 void SessionInviteWidget::ws_userEvent(UserEvent event)
@@ -740,6 +836,21 @@ quint8 SessionInviteWidget::getInviteesCount()
     return m_usersInSession.count() + m_participantsInSession.count() + m_devicesInSession.count();
 }
 
+quint8 SessionInviteWidget::getParticipantsInSessionCount()
+{
+    return m_participantsInSession.count();
+}
+
+quint8 SessionInviteWidget::getUsersInSessionCount()
+{
+    return m_usersInSession.count();
+}
+
+quint8 SessionInviteWidget::getDevicesInSessionCount()
+{
+    return m_devicesInSession.count();
+}
+
 TeraData *SessionInviteWidget::getUserFromUuid(const QString &uuid)
 {
     TeraData* data = nullptr;
@@ -829,25 +940,26 @@ void SessionInviteWidget::on_btnInvite_clicked()
 
     foreach(QListWidgetItem* item, ui->lstInvitables->selectedItems()){
         TeraData* item_data = nullptr;
-        if (m_usersItems.values().contains(item)){
+        if (m_usersItems.key(item) > 0){
             item_data = &(m_users[m_usersItems.key(item)]);
             m_usersInSession[item_data->getId()] = nullptr;
 
             invited_users.append(item_data->getUuid());
         }
-        if (m_devicesItems.values().contains(item)){
+        if (m_devicesItems.key(item) > 0){
             item_data = &(m_devices[m_devicesItems.key(item)]);
             m_devicesInSession[item_data->getId()] = nullptr;
 
             invited_devices.append(item_data->getUuid());
         }
-        if (m_participantsItems.values().contains(item)){
+        if (m_participantsItems.key(item) > 0){
             item_data = &(m_participants[m_participantsItems.key(item)]);
             m_participantsInSession[item_data->getId()] = nullptr;
 
             invited_participants.append(item_data->getUuid());
         }
-        updateItem(*item_data);
+        if (item_data)
+            updateItem(*item_data);
     }
 
     // Signals
@@ -903,17 +1015,17 @@ void SessionInviteWidget::on_btnRemove_clicked()
     QStringList removed_participants;
     foreach(QTreeWidgetItem* item, ui->treeInvitees->selectedItems()){
         TeraData* item_data = nullptr;
-        if (m_usersInSession.values().contains(item)){
+        if (m_usersInSession.key(item) > 0){
             item_data = &(m_users[m_usersInSession.key(item)]);
             m_usersInSession.remove(item_data->getId());
             removed_users.append(item_data->getUuid());
         }
-        if (m_devicesInSession.values().contains(item)){
+        if (m_devicesInSession.key(item) > 0){
             item_data = &(m_devices[m_devicesInSession.key(item)]);
             m_devicesInSession.remove(item_data->getId());
             removed_devices.append(item_data->getUuid());
         }
-        if (m_participantsInSession.values().contains(item)){
+        if (m_participantsInSession.key(item) > 0){
             item_data = &(m_participants[m_participantsInSession.key(item)]);
             m_participantsInSession.remove(item_data->getId());
             removed_participants.append(item_data->getUuid());

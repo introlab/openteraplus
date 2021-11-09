@@ -43,35 +43,38 @@ void SessionLobbyDialog::addDevicesToSession(const QList<TeraData> &devices, con
 
 QStringList SessionLobbyDialog::getSessionParticipantsUuids()
 {
-    QStringList uuids;
+    /*QStringList uuids;
     QList<TeraData> participants = ui->wdgSessionInvite->getParticipantsInSession();
 
     foreach(TeraData part, participants){
         uuids.append(part.getUuid());
     }
-    return uuids;
+    return uuids;*/
+    return ui->wdgSessionInvite->getParticipantsUuidsInSession();
 }
 
 QStringList SessionLobbyDialog::getSessionUsersUuids()
 {
-    QStringList uuids;
+    /*QStringList uuids;
     QList<TeraData> users = ui->wdgSessionInvite->getUsersInSession();
 
     foreach(TeraData user, users){
         uuids.append(user.getUuid());
     }
-    return uuids;
+    return uuids;*/
+    return ui->wdgSessionInvite->getUsersUuidsInSession();
 }
 
 QStringList SessionLobbyDialog::getSessionDevicesUuids()
 {
-    QStringList uuids;
+    /*QStringList uuids;
     QList<TeraData> devices = ui->wdgSessionInvite->getDevicesInSession();
 
     foreach(TeraData device, devices){
         uuids.append(device.getUuid());
     }
-    return uuids;
+    return uuids;*/
+    return ui->wdgSessionInvite->getDevicesUuidsInSession();
 }
 
 QJsonDocument SessionLobbyDialog::getSessionConfig()

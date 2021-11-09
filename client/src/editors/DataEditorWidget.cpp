@@ -45,7 +45,7 @@ void DataEditorWidget::setData(const TeraData* data)
     if (data != nullptr){
         m_data = new TeraData(*data);
         // Start editing if new data
-        if (m_data->isNew()){
+        if (dataIsNew()){
             editToggleClicked();
         }
     }
@@ -61,7 +61,7 @@ void DataEditorWidget::setLimited(bool limited){
             m_cancelButton->hide();
     }
 
-    if (m_editToggle){
+    if (m_editToggle && !dataIsNew()){
         m_editToggle->setVisible(!limited);
     }
     updateControlsState();

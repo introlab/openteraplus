@@ -267,6 +267,14 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
 
     // Do the correct request to server, depending on the type of the session we want to start
     switch(session_type_category){
+    case TeraSessionCategory::SESSION_TYPE_UNKNOWN:
+        break;
+    case TeraSessionCategory::SESSION_TYPE_DATACOLLECT:
+        break;
+    case TeraSessionCategory::SESSION_TYPE_FILETRANSFER:
+        break;
+    case TeraSessionCategory::SESSION_TYPE_PROTOCOL:
+        break;
     case TeraSessionCategory::SESSION_TYPE_SERVICE:
        {
         QJsonDocument document;
@@ -282,7 +290,7 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
         // Devices
         if (!devices_list.isEmpty()){
             QJsonArray devices;
-            for(QString device_uuid:devices_list){
+            for(const QString &device_uuid:devices_list){
                 devices.append(QJsonValue(device_uuid));
             }
             item_obj.insert("session_devices", devices);
@@ -291,7 +299,7 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
         // Participants
         if (!participants_list.isEmpty()){
             QJsonArray participants;
-            for(QString part_uuid:participants_list){
+            for(const QString &part_uuid:participants_list){
                 participants.append(QJsonValue(part_uuid));
             }
             item_obj.insert("session_participants", participants);
@@ -304,7 +312,7 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
 
         if (!current_users_list.isEmpty()){
             QJsonArray users;
-            for(QString user_uuid:current_users_list){
+            for(const QString &user_uuid:current_users_list){
                 users.append(QJsonValue(user_uuid));
             }
             item_obj.insert("session_users", users);
