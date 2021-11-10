@@ -200,6 +200,14 @@ void SessionLobbyDialog::configureWidget()
             handled = true;
         }
 
+        //SB - Even more lazy programmer reusing VideoRehabService widget!
+        if (service_key == "DanceService")
+        {
+            m_setupWdg = new VideoRehabSetupWidget(m_comManager, this);
+            setSetupWidget(m_setupWdg);
+            handled = true;
+        }
+
         if (!handled){
             ui->wdgSessionConfig->hide();
         }
