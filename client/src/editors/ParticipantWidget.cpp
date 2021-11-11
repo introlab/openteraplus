@@ -1268,29 +1268,31 @@ void ParticipantWidget::on_btnNewSession_clicked()
     int id_session = 0;
 
     // Check if we have a recent session (started in the last hour) of the same type we might want to continue
-    foreach(TeraData* session, m_ids_sessions.values()){
-        int session_status = session->getFieldValue("session_status").toInt();
-        if (session_status == TeraSessionStatus::STATUS_INPROGRESS || session_status == TeraSessionStatus::STATUS_NOTSTARTED){
-            QDateTime session_start_time = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
+    foreach(TeraData* session, m_ids_sessions){
+        if (id_session_type == session->getFieldValue("id_session_type").toInt()){
+            int session_status = session->getFieldValue("session_status").toInt();
+            if (session_status == TeraSessionStatus::STATUS_INPROGRESS || session_status == TeraSessionStatus::STATUS_NOTSTARTED){
+                QDateTime session_start_time = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
 
-            if (session_start_time.date() == QDate::currentDate()){
-                // Adds duration to have 1h since it was ended
-                session_start_time = session_start_time.addSecs(session->getFieldValue("session_duration").toInt());
-                // Allow for +/- 1h around the time of the session, in case of planned session
-                if(qAbs(session_start_time.secsTo(QDateTime::currentDateTime())) <= 3600){
-                    GlobalMessageBox msg;
-                    QString status_msg = tr("existe déjà.");
-                    if (session_status == TeraSessionStatus::STATUS_INPROGRESS){
-                        status_msg = tr("a été réalisée récemment et n'a pas été terminée.");
+                if (session_start_time.date() == QDate::currentDate()){
+                    // Adds duration to have 1h since it was ended
+                    session_start_time = session_start_time.addSecs(session->getFieldValue("session_duration").toInt());
+                    // Allow for +/- 1h30 around the time of the session, in case of planned session
+                    if(qAbs(session_start_time.secsTo(QDateTime::currentDateTime())) <= 5400){
+                        GlobalMessageBox msg;
+                        QString status_msg = tr("existe déjà.");
+                        if (session_status == TeraSessionStatus::STATUS_INPROGRESS){
+                            status_msg = tr("a été réalisée récemment et n'a pas été terminée.");
+                        }
+                        if (session_status == TeraSessionStatus::STATUS_NOTSTARTED){
+                            status_msg = tr("a été planifiée.");
+                        }
+                        if (msg.showYesNo(tr("Reprendre une séance?"), tr("Un séance de ce type, ") + session->getFieldValue("session_name").toString() + ", "
+                                      + status_msg + tr("\n\nSouhaitez-vous continuer cette séance?")) == QMessageBox::Yes){
+                            id_session = session->getId();
+                        }
+                        break;
                     }
-                    if (session_status == TeraSessionStatus::STATUS_NOTSTARTED){
-                        status_msg = tr("a été planifiée.");
-                    }
-                    if (msg.showYesNo(tr("Reprendre une séance?"), tr("Un séance de ce type, ") + session->getFieldValue("session_name").toString() + ", "
-                                  + status_msg + tr("\n\nSouhaitez-vous continuer cette séance?")) == QMessageBox::Yes){
-                        id_session = session->getId();
-                    }
-                    break;
                 }
             }
         }
