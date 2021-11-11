@@ -83,6 +83,7 @@ set(headers
     widgets/NotificationWindow.h
     widgets/TableDateWidgetItem.h
     widgets/TableNumberWidgetItem.h
+    widgets/DashboardWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -164,6 +165,7 @@ set(srcs
     widgets/ClickableLabel.cpp
     widgets/TableDateWidgetItem.cpp
     widgets/TableNumberWidgetItem.cpp
+    widgets/DashboardWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -217,6 +219,7 @@ SET(uis
     widgets/InSessionWidget.ui
     widgets/SessionInviteWidget.ui
     widgets/OnlineManagerWidget.ui
+    widgets/DashboardWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui

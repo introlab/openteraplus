@@ -23,6 +23,7 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_comManager = com_manager;
     m_diag_editor = nullptr;
     m_data_editor = nullptr;
+    m_dashboard = nullptr;
     m_inSessionWidget = nullptr;
     m_download_dialog = nullptr;
     m_joinSession_dialog = nullptr;
@@ -41,6 +42,8 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     // Update user in case we already have it
     updateCurrentUser();
 
+    // Show dashboard
+    showDashboard(true);
 }
 
 MainWindow::~MainWindow()
@@ -144,8 +147,11 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
     if (data_type == TERADATA_NONE || data == nullptr){
         m_currentDataType = data_type;
         m_currentDataId = -1;
+        showDashboard(true);
         return;
     }
+
+    showDashboard(false);
 
     // Save values to display them again if needed
     m_currentDataType = data_type;
@@ -199,6 +205,20 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
         LOG_ERROR("Unhandled data editor: " + TeraData::getPathForDataType(data_type), "MainWindow::showDataEditor");
     }
 
+
+}
+
+void MainWindow::showDashboard(const bool &show)
+{
+    if (m_dashboard){
+        m_dashboard->deleteLater();
+        m_dashboard = nullptr;
+    }
+
+    if (show){
+        m_dashboard = new DashboardWidget(m_comManager);
+        ui->wdgMainTop->layout()->addWidget(m_dashboard);
+    }
 
 }
 

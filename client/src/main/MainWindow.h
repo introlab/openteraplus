@@ -10,6 +10,7 @@
 #include "editors/UserWidget.h"
 #include "dialogs/BaseDialog.h"
 #include "widgets/ConfigWidget.h"
+#include "widgets/DashboardWidget.h"
 
 #include "dialogs/DownloadProgressDialog.h"
 #include "widgets/NotificationWindow.h"
@@ -110,6 +111,7 @@ private:
     void connectSignals();
     void initUi();
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
+    void showDashboard(const bool &show);
     void setInSession(bool in_session, const TeraData *session_type, const int& id_session, int id_project=0);
 
     // Messages and notifications
@@ -127,6 +129,7 @@ private:
     ComManager*             m_comManager;
     BaseDialog*             m_diag_editor;
     DataEditorWidget*       m_data_editor;
+    DashboardWidget*        m_dashboard;
     InSessionWidget*        m_inSessionWidget;
     DownloadProgressDialog* m_download_dialog;
     JoinSessionDialog*      m_joinSession_dialog;
