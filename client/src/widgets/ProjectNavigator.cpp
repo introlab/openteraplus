@@ -813,7 +813,7 @@ void ProjectNavigator::processProjectsReply(QList<TeraData> projects)
         m_siteJustChanged = false;
         if (m_projects_items.count() == 1){
             // Select the first project since the only one in the list
-            navItemClicked(m_projects_items.first());
+            //navItemClicked(m_projects_items.first());
         }
     }
 }
@@ -1038,7 +1038,9 @@ void ProjectNavigator::on_txtNavSearch_textChanged(const QString &search_text)
     Q_UNUSED(search_text)
 
     // Apply filters
-    foreach(QString part_uuid, m_participants.keys()){
+    //foreach(QString part_uuid, m_participants.keys()){
+    foreach(TeraData data, m_participants){
+        QString part_uuid = m_participants.key(data);
         QTreeWidgetItem* item = m_participants_items[m_participants[part_uuid].getId()];
         if (item)
             item->setHidden(isParticipantFiltered(part_uuid));
@@ -1048,6 +1050,13 @@ void ProjectNavigator::on_txtNavSearch_textChanged(const QString &search_text)
 void ProjectNavigator::on_cmbSites_currentIndexChanged(int index)
 {
     Q_UNUSED(index)
-    currentSiteChanged();
+    currentSiteChanged(false); // Set to true to request site info display
+}
+
+
+void ProjectNavigator::on_toolButton_clicked()
+{
+    // Query to display dashboard (default view)
+    emit dataDisplayRequest(TERADATA_NONE, 0);
 }
 

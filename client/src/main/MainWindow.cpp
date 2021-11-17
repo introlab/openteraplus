@@ -43,7 +43,7 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     updateCurrentUser();
 
     // Show dashboard
-    showDashboard(true);
+    //showDashboard(true);
 }
 
 MainWindow::~MainWindow()
@@ -210,14 +210,25 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
 
 void MainWindow::showDashboard(const bool &show)
 {
-    if (m_dashboard){
-        m_dashboard->deleteLater();
-        m_dashboard = nullptr;
-    }
+    if (!show){
+        if (m_dashboard){
+            m_dashboard->deleteLater();
+            m_dashboard = nullptr;
+        }
+    }else{
+        // Remove any pending editor
+        if (m_data_editor){
+            m_data_editor->disconnectSignals();
+            m_data_editor->deleteLater();
+            m_data_editor = nullptr;
+        }
 
-    if (show){
-        m_dashboard = new DashboardWidget(m_comManager);
-        ui->wdgMainTop->layout()->addWidget(m_dashboard);
+        if (!m_dashboard){
+            m_dashboard = new DashboardWidget(m_comManager, ui->projNavigator->getCurrentSiteId());
+            ui->wdgMainTop->layout()->addWidget(m_dashboard);
+        }else{
+            m_dashboard->setCurrentSiteId(ui->projNavigator->getCurrentSiteId());
+        }
     }
 
 }
@@ -229,6 +240,11 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
         ui->wdgMainTop->layout()->removeWidget(m_data_editor);
         m_data_editor->deleteLater();
         m_data_editor = nullptr;
+    }
+
+    if (m_dashboard){
+        m_dashboard->deleteLater();
+        m_dashboard = nullptr;
     }
     if (m_inSessionWidget){
         m_inSessionWidget->disconnectSignals();
@@ -362,6 +378,11 @@ void MainWindow::notificationCompleted(NotificationWindow *notify)
 void MainWindow::currentSiteChanged(QString site_name, int site_id)
 {
     ui->onlineManager->setCurrentSite(site_name, site_id);
+    if (m_dashboard)
+        m_dashboard->setCurrentSiteId(site_id);
+    else{
+        showDashboard(true);
+    }
 }
 
 void MainWindow::dataRefreshRequested()

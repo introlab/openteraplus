@@ -475,7 +475,7 @@ void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
     for(TeraData session:sessions){
         QVariantList session_parts_list = session.getFieldValue("session_participants").toList();
 
-        for(QVariant session_part:session_parts_list){
+        for(const QVariant &session_part:qAsConst(session_parts_list)){
             QVariantMap part_info = session_part.toMap();
 
             // Is that session for the current participant?
@@ -841,7 +841,8 @@ void ParticipantWidget::currentCalendarDateChanged(QDate current_date)
 
     // Select all the sessions in the list that fits with that date
     QTableWidgetItem* first_item = nullptr;
-    foreach(TeraData* session, m_ids_sessions.values()){
+    //foreach(TeraData* session, m_ids_sessions){
+    for(TeraData* session: qAsConst(m_ids_sessions)){
         if (session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date() == current_date){
             QTableWidgetItem* session_item = m_listSessions_items.value(session->getId());
             if (session_item){
@@ -1000,7 +1001,6 @@ void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &
 void ParticipantWidget::sessionLobbyStartSessionRequested()
 {
 
-    // Delete setup widget
     int id_session_type = m_sessionLobby->getIdSessionType(); //ui->cmbSessionType->currentData().toInt();
     // Start session
     m_comManager->startSession(*m_ids_session_types[id_session_type],

@@ -701,3 +701,15 @@ QTreeWidget#treeOnline{
     selection-background-color: rgba(0,0,0,0%);
     /*selection-color: black;*/
 }
+
+/* Customizations for DashboardWidget */
+QFrame#frameAttention, QFrame#frameRecent, QFrame#frameUpcomingSessions{
+    background-color: rgba(100,100,100, 50%);
+}
+
+QLabel#lblNoUpcomingSessions{
+    font-weight: bold;
+    font-size: 12px;
+    color: orange;
+    background-color: black;
+}

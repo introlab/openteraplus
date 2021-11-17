@@ -57,8 +57,6 @@
 #define WEB_FORMS_QUERY_SERVICE             "type=service"
 #define WEB_FORMS_QUERY_SERVICE_CONFIG      "type=service_config"
 
-#define WEB_QUERY_UUID              "uuid"
-#define WEB_QUERY_APPTAG            "app_tag"
 #define WEB_QUERY_ID_USER           "id_user"
 #define WEB_QUERY_ID                "id"
 #define WEB_QUERY_ID_SITE           "id_site"
@@ -74,14 +72,23 @@
 #define WEB_QUERY_ID_SERVICE        "id_service"
 #define WEB_QUERY_ID_SPECIFIC       "id_specific"
 #define WEB_QUERY_ID_SERVICE_CONFIG "id_service_config"
+
+#define WEB_QUERY_UUID              "uuid"
+#define WEB_QUERY_APPTAG            "app_tag"
 #define WEB_QUERY_SERVICE_KEY       "service_key"
 #define WEB_QUERY_SESSION_UUID      "session_uuid"
 #define WEB_QUERY_KEY               "key"
-
+#define WEB_QUERY_STATUS            "status"
+#define WEB_QUERY_LIMIT             "limit"
+#define WEB_QUERY_OFFSET            "offset"
+#define WEB_QUERY_SELF              "self"
+#define WEB_QUERY_BY_USERS          "by_users"
+#define WEB_QUERY_NO_GROUP          "no_group"
 #define WEB_QUERY_LIST              "list"
 #define WEB_QUERY_AVAILABLE         "available"
 #define WEB_QUERY_DOWNLOAD          "download"
 #define WEB_QUERY_ENABLED           "enabled"
+
 #define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
 #define WEB_QUERY_WITH_SITES        "with_sites"
 #define WEB_QUERY_WITH_PROJECTS     "with_projects"
@@ -92,8 +99,7 @@
 #define WEB_QUERY_WITH_CONFIG       "with_config"
 #define WEB_QUERY_WITH_STATUS       "with_status"
 #define WEB_QUERY_WITH_WEBSOCKET    "with_websocket"
-#define WEB_QUERY_SELF              "self"
-#define WEB_QUERY_BY_USERS          "by_users"
-#define WEB_QUERY_NO_GROUP          "no_group"
+
+
 
 #endif // WEBAPI_H

@@ -54,6 +54,29 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QToolButton" name="btnEditSite">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>Voir le site</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources/TeraClient.qrc">
+          <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QComboBox" name="cmbSites">
         <property name="minimumSize">
          <size>
@@ -70,16 +93,19 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="btnEditSite">
+       <widget class="QToolButton" name="toolButton">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
+        <property name="toolTip">
+         <string>Tableau de bord</string>
+        </property>
         <property name="text">
-         <string>...</string>
+         <string/>
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
-          <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
+          <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
         </property>
         <property name="iconSize">
          <size>
