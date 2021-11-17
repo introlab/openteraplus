@@ -12,6 +12,8 @@
 #include "dialogs/SessionLobbyDialog.h"
 #include "GlobalMessageBox.h"
 
+#include "TeraForm.h"
+
 namespace Ui {
 class DashboardWidget;
 }
@@ -24,7 +26,7 @@ public:
     explicit DashboardWidget(ComManager* comMan, int id_site, QWidget *parent = nullptr);
     ~DashboardWidget();
 
-    void setCurrentSiteId(const int &id_site);
+    void setCurrentSiteId(const int &id_site, const bool &refresh_data=true);
 
 private slots:
     void on_btnUpcomingSessions_clicked();
@@ -34,13 +36,16 @@ private slots:
     void on_icoRecentParticipants_clicked();
     void on_icoAttention_clicked();
 
-    void processSessionsReply(QList<TeraData> sessions);
+    void processSessionsReply(const QList<TeraData> sessions);
     void processSessionTypesReply(const QList<TeraData> session_types);
+    void processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_query);
 
     void sessionLobbyStartSessionCancelled();
     void sessionLobbyStartSessionRequested();
 
     void on_tableUpcomingSessions_itemDoubleClicked(QTableWidgetItem *item);
+
+    void on_tableRecentParticipants_itemDoubleClicked(QTableWidgetItem *item);
 
 signals:
     void dataDisplayRequest(TeraDataTypes data_type, int data_id);
@@ -56,6 +61,8 @@ private:
     QHash<QTableWidgetItem*, int>   m_listSessions_items;
     QHash<int, TeraData*>           m_sessions;
     QHash<int, TeraData*>           m_session_types;
+
+    QHash<QTableWidgetItem*, int>   m_listParticipants_items;
 
     void connectSignals();
 

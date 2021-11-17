@@ -10,13 +10,14 @@ DashboardWidget::DashboardWidget(ComManager *comMan, int id_site, QWidget *paren
 
     m_sessionLobby = nullptr;
     ui->tableUpcomingSessions->hide();
+    ui->tableRecentParticipants->hide();
 
     connectSignals();
 
-    setCurrentSiteId(id_site);
-
     // Query available sessions types for the current user
     m_comManager->doQuery(WEB_SESSIONTYPE_PATH);
+
+    setCurrentSiteId(id_site, false);
 
 }
 
@@ -27,11 +28,12 @@ DashboardWidget::~DashboardWidget()
     delete ui;
 }
 
-void DashboardWidget::setCurrentSiteId(const int &id_site)
+void DashboardWidget::setCurrentSiteId(const int &id_site, const bool &refresh_data)
 {
     if (id_site != m_siteId){
         m_siteId = id_site;
-        refreshData();
+        if (refresh_data)
+            refreshData();
     }
 }
 
@@ -88,7 +90,7 @@ void DashboardWidget::on_icoAttention_clicked()
     on_btnAttention_clicked();
 }
 
-void DashboardWidget::processSessionsReply(QList<TeraData> sessions)
+void DashboardWidget::processSessionsReply(const QList<TeraData> sessions)
 {
     ui->tableUpcomingSessions->clearContents();
     ui->tableUpcomingSessions->setRowCount(0);
@@ -208,6 +210,8 @@ void DashboardWidget::processSessionsReply(QList<TeraData> sessions)
 
     }
 
+    ui->tableUpcomingSessions->resizeColumnToContents(0);
+
     //ui->tableUpcomingSessions->resizeColumnsToContents();
 
     ui->lblNoUpcomingSessions->setVisible(m_sessions.isEmpty());
@@ -238,6 +242,86 @@ void DashboardWidget::processSessionTypesReply(const QList<TeraData> session_typ
             m_session_types[id_session_type] = ses_type;
         }
     }
+
+    // Refresh data
+    refreshData();
+}
+
+void DashboardWidget::processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_query)
+{
+    if (!reply_query.hasQueryItem(WEB_QUERY_ID_SITE))
+        return;
+
+    if (reply_query.queryItemValue(WEB_QUERY_ID_SITE).toInt() != m_siteId)
+        return;
+
+    ui->tableRecentParticipants->clearContents();
+    ui->tableRecentParticipants->setRowCount(0);
+    m_listParticipants_items.clear();
+
+    QTableWidgetItem* name_item;
+    TableDateWidgetItem* date_item;
+    QTableWidgetItem* project_item;
+
+    for(const TeraData &participant: participants){
+        int id_participant = participant.getId();
+        if (std::find(m_listParticipants_items.cbegin(), m_listParticipants_items.cend(), id_participant) != m_listParticipants_items.cend()){
+            // Already there, get items
+           name_item = m_listParticipants_items.key(id_participant);
+           date_item = dynamic_cast<TableDateWidgetItem*>(ui->tableRecentParticipants->item(name_item->row(), 2));
+           project_item = ui->tableRecentParticipants->item(name_item->row(), 1);
+        }else{
+            ui->tableRecentParticipants->setRowCount(ui->tableRecentParticipants->rowCount()+1);
+            int current_row = ui->tableRecentParticipants->rowCount()-1;
+            name_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)),"");
+            //name_item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            ui->tableRecentParticipants->setItem(current_row, 0, name_item);
+            date_item = new TableDateWidgetItem("");
+            date_item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            ui->tableRecentParticipants->setItem(current_row, 2, date_item);
+            project_item = new QTableWidgetItem("");
+            project_item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            ui->tableRecentParticipants->setItem(current_row, 1, project_item);
+
+            m_listParticipants_items[name_item] = id_participant;
+        }
+
+        // Update values
+        name_item->setText(participant.getName());
+
+        if (participant.hasFieldName("participant_project")){
+            QVariantHash project_info = participant.getFieldValue("participant_project").toHash();
+            if (project_info.contains("project_name")){
+                project_item->setText(project_info["project_name"].toString());
+            }
+        }
+
+        if (participant.hasFieldName("participant_lastsession")){
+            date_item->setDate(participant.getFieldValue("participant_lastsession"));
+            if (!participant.getFieldValue("participant_lastsession").toString().isEmpty()){
+                // Set background color
+                QColor back_color = TeraForm::getGradientColor(0, 7, 14, static_cast<int>(participant.getFieldValue("participant_lastsession")
+                                                                                          .toDateTime().toLocalTime().daysTo(QDateTime::currentDateTime())));
+                back_color.setAlphaF(0.5);
+                date_item->setBackground(back_color);
+            }
+        }
+
+    }
+    ui->lblNoRecentParticipants->setVisible(m_listParticipants_items.isEmpty());
+    ui->tableRecentParticipants->setVisible(!m_listParticipants_items.isEmpty());
+
+    if (m_listParticipants_items.isEmpty()){
+        ui->frameRecent->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum));
+    }else{
+        ui->frameRecent->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
+    }
+    ui->btnRecentParticipants->setChecked(!m_sessions.isEmpty());
+    on_btnRecentParticipants_clicked();
+
+    ui->btnRecentParticipants->setText(tr("Participants récents") + " (" + QString::number(m_listParticipants_items.count()) + ")");
+
+
 }
 
 void DashboardWidget::sessionLobbyStartSessionCancelled()
@@ -267,6 +351,7 @@ void DashboardWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::sessionsReceived, this, &DashboardWidget::processSessionsReply);
     connect(m_comManager, &ComManager::sessionTypesReceived, this, &DashboardWidget::processSessionTypesReply);
+    connect(m_comManager, &ComManager::participantsReceived, this, &DashboardWidget::processParticipantsReply);
 
 }
 
@@ -275,9 +360,18 @@ void DashboardWidget::refreshData()
     // Refresh upcoming sessions
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_comManager->getCurrentUser().getId()));
-    args.addQueryItem(WEB_QUERY_LIMIT, QString::number(10));
+    args.addQueryItem(WEB_QUERY_LIMIT, QString::number(20));
     args.addQueryItem(WEB_QUERY_STATUS, QString::number(TeraSessionStatus::STATUS_NOTSTARTED));
     m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+
+    // Refresh recent participants list
+    args.clear();
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_siteId));
+    args.addQueryItem(WEB_QUERY_LIMIT, QString::number(10));
+    args.addQueryItem(WEB_QUERY_ORDERBY_RECENTS, "1");
+    args.addQueryItem(WEB_QUERY_FULL, "1");
+    args.addQueryItem(WEB_QUERY_ENABLED,"1");
+    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, args);
 
     updateUiSpacing();
 }
@@ -380,6 +474,18 @@ void DashboardWidget::on_tableUpcomingSessions_itemDoubleClicked(QTableWidgetIte
     if (m_listSessions_items.contains(base_item)){
         int id_session = m_listSessions_items.value(base_item);
         showSessionLobby(m_sessions[id_session]->getFieldValue("id_session_type").toInt(), id_session);
+    }
+}
+
+
+void DashboardWidget::on_tableRecentParticipants_itemDoubleClicked(QTableWidgetItem *item)
+{
+    int current_row = item->row();
+    QTableWidgetItem* base_item = ui->tableRecentParticipants->item(current_row, 0);
+
+    if (m_listParticipants_items.contains(base_item)){
+        int id_participant = m_listParticipants_items.value(base_item);
+        emit dataDisplayRequest(TERADATA_PARTICIPANT, id_participant);
     }
 }
 

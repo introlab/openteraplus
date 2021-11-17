@@ -12,6 +12,8 @@ public:
   using QTableWidgetItem::QTableWidgetItem; // Use base class constructors
 
   bool operator<(const QTableWidgetItem &other) const override;
+
+  void setDate(const QVariant &date_var);
 };
 
 #endif // TABLEDATEWIDGETITEM_H

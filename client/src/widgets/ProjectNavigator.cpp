@@ -774,7 +774,7 @@ void ProjectNavigator::refreshRequested()
     emit refreshButtonClicked();
 }
 
-void ProjectNavigator::processSitesReply(QList<TeraData> sites)
+void ProjectNavigator::processSitesReply(const QList<TeraData> sites)
 {
     for (int i=0; i<sites.count(); i++){
         updateSite(&sites.at(i));
@@ -803,7 +803,7 @@ void ProjectNavigator::processSitesReply(QList<TeraData> sites)
 
 }
 
-void ProjectNavigator::processProjectsReply(QList<TeraData> projects)
+void ProjectNavigator::processProjectsReply(const QList<TeraData> projects)
 {
     for (int i=0; i<projects.count(); i++){
         updateProject(&projects.at(i));
@@ -818,15 +818,18 @@ void ProjectNavigator::processProjectsReply(QList<TeraData> projects)
     }
 }
 
-void ProjectNavigator::processGroupsReply(QList<TeraData> groups)
+void ProjectNavigator::processGroupsReply(const QList<TeraData> groups)
 {
     for (int i=0; i<groups.count(); i++){
         updateGroup(&groups.at(i));
     }
 }
 
-void ProjectNavigator::processParticipantsReply(QList<TeraData> participants)
+void ProjectNavigator::processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_args)
 {
+    if (reply_args.hasQueryItem(WEB_QUERY_ID_SITE))
+        return;
+
     for (int i=0; i<participants.count(); i++){
         updateParticipant(&participants.at(i));
     }

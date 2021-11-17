@@ -707,7 +707,7 @@ QFrame#frameAttention, QFrame#frameRecent, QFrame#frameUpcomingSessions{
     background-color: rgba(100,100,100, 50%);
 }
 
-QLabel#lblNoUpcomingSessions{
+QLabel#lblNoUpcomingSessions, QLabel#lblNoRecentParticipants{
     font-weight: bold;
     font-size: 12px;
     color: orange;

@@ -92,10 +92,10 @@ private slots:
      void deleteItemRequested();
      void refreshRequested();
 
-     void processSitesReply(QList<TeraData> sites);
-     void processProjectsReply(QList<TeraData> projects);
-     void processGroupsReply(QList<TeraData> groups);
-     void processParticipantsReply(QList<TeraData> participants);
+     void processSitesReply(const QList<TeraData> sites);
+     void processProjectsReply(const QList<TeraData> projects);
+     void processGroupsReply(const QList<TeraData> groups);
+     void processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_args);
      void ws_participantEvent(ParticipantEvent event);
 
      void processItemDeletedReply(QString path, int id);

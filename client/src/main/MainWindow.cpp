@@ -225,6 +225,7 @@ void MainWindow::showDashboard(const bool &show)
 
         if (!m_dashboard){
             m_dashboard = new DashboardWidget(m_comManager, ui->projNavigator->getCurrentSiteId());
+            connect(m_dashboard, &DashboardWidget::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
             ui->wdgMainTop->layout()->addWidget(m_dashboard);
         }else{
             m_dashboard->setCurrentSiteId(ui->projNavigator->getCurrentSiteId());

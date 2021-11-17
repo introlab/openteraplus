@@ -88,6 +88,7 @@
 #define WEB_QUERY_AVAILABLE         "available"
 #define WEB_QUERY_DOWNLOAD          "download"
 #define WEB_QUERY_ENABLED           "enabled"
+#define WEB_QUERY_FULL              "full"
 
 #define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
 #define WEB_QUERY_WITH_SITES        "with_sites"
@@ -99,6 +100,8 @@
 #define WEB_QUERY_WITH_CONFIG       "with_config"
 #define WEB_QUERY_WITH_STATUS       "with_status"
 #define WEB_QUERY_WITH_WEBSOCKET    "with_websocket"
+
+#define WEB_QUERY_ORDERBY_RECENTS   "orderby_recents"
 
 
 

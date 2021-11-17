@@ -324,8 +324,9 @@ void ParticipantWidget::updateSession(TeraData *session)
 
     // Update values
     name_item->setText(session->getName());
-    QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
-    date_item->setText(session_date.toString("dd-MM-yyyy hh:mm:ss"));
+    /*QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
+    date_item->setText(session_date.toString("dd-MM-yyyy hh:mm:ss"));*/
+    date_item->setDate(session->getFieldValue("session_start_datetime"));
     int session_type = session->getFieldValue("id_session_type").toInt();
     if (m_ids_session_types.contains(session_type)){
         type_item->setText(m_ids_session_types[session_type]->getFieldValue("session_type_name").toString());
@@ -502,7 +503,7 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
 {
     ui->cmbSessionType->clear();
 
-    for (TeraData st:session_types){
+    for (const TeraData &st:session_types){
         if (!m_ids_session_types.contains(st.getId())){
             m_ids_session_types[st.getId()] = new TeraData(st);
             // Add to session list
@@ -615,7 +616,7 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
 
     if (path == WEB_DEVICEPARTICIPANTINFO_PATH){
         // A participant device association was deleted
-        for (QListWidgetItem* item: m_listDevices_items.values()){
+        for (QListWidgetItem* item: qAsConst(m_listDevices_items)){
             // Check for id_device_participant, which is stored in "data" of the item
             if (item->data(Qt::UserRole).toInt() == id){
                 // We found it - remove it and request update
@@ -720,7 +721,8 @@ void ParticipantWidget::btnAddDevice_clicked()
 
         if (diag->result() == DeviceAssignDialog::DEVICEASSIGN_DEASSIGN){
             // Delete all associated participants
-            for (int id:diag->getDeviceParticipantsIds()){
+            QList<int> ids = diag->getDeviceParticipantsIds();
+            for (int id:qAsConst(ids)){
                 deleteDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, id);
             }
         }
@@ -729,7 +731,7 @@ void ParticipantWidget::btnAddDevice_clicked()
     // Add device to participant
     QJsonDocument document;
     QJsonObject base_obj;
-    QJsonArray devices;
+   // QJsonArray devices;
 
     QJsonObject item_obj;
     item_obj.insert("id_device", id_device);
@@ -767,7 +769,7 @@ void ParticipantWidget::btnDownloadSession_clicked()
         QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
                                                               QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
         if (!save_path.isEmpty()){
-            int id_session = button->property("id_session").toInt();
+            //int id_session = button->property("id_session").toInt();
             /*QUrlQuery args;
             args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
             args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
@@ -782,7 +784,7 @@ void ParticipantWidget::btnDowloadAll_clicked()
     QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
                                                           QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
     if (!save_path.isEmpty()){
-        int id_participant = m_data->getId();
+        //int id_participant = m_data->getId();
         /*QUrlQuery args;
         args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
         args.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(id_participant));
@@ -936,7 +938,7 @@ void ParticipantWidget::updateCalendars(QDate left_date){
 QDate ParticipantWidget::getMinimumSessionDate()
 {
     QDate min_date = QDate::currentDate();
-    for (TeraData* session:m_ids_sessions.values()){
+    for (TeraData* session:qAsConst(m_ids_sessions)){
         QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date < min_date)
             min_date = session_date;
@@ -948,7 +950,7 @@ QDate ParticipantWidget::getMinimumSessionDate()
 QDate ParticipantWidget::getMaximumSessionDate()
 {
     QDate max_date = QDate::currentDate();
-    for (TeraData* session:m_ids_sessions.values()){
+    for (TeraData* session:qAsConst(m_ids_sessions)){
         QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date > max_date)
             max_date = session_date;
