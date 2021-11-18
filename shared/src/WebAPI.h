@@ -100,6 +100,7 @@
 #define WEB_QUERY_WITH_CONFIG       "with_config"
 #define WEB_QUERY_WITH_STATUS       "with_status"
 #define WEB_QUERY_WITH_WEBSOCKET    "with_websocket"
+#define WEB_QUERY_WITH_WARNINGS     "with_warnings"
 
 #define WEB_QUERY_ORDERBY_RECENTS   "orderby_recents"
 

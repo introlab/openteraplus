@@ -9,8 +9,10 @@ DashboardWidget::DashboardWidget(ComManager *comMan, int id_site, QWidget *paren
     ui->setupUi(this);
 
     m_sessionLobby = nullptr;
+    m_cleanupDiag = nullptr;
     ui->tableUpcomingSessions->hide();
     ui->tableRecentParticipants->hide();
+    ui->treeWarnings->hide();
 
     connectSignals();
 
@@ -25,6 +27,12 @@ DashboardWidget::~DashboardWidget()
 {
     qDeleteAll(m_sessions);
     qDeleteAll(m_session_types);
+
+    if (m_cleanupDiag)
+        m_cleanupDiag->deleteLater();
+    if (m_sessionLobby)
+        m_sessionLobby->deleteLater();
+
     delete ui;
 }
 
@@ -32,9 +40,9 @@ void DashboardWidget::setCurrentSiteId(const int &id_site, const bool &refresh_d
 {
     if (id_site != m_siteId){
         m_siteId = id_site;
-        if (refresh_data)
-            refreshData();
     }
+    if (refresh_data)
+        refreshData();
 }
 
 void DashboardWidget::on_btnUpcomingSessions_clicked()
@@ -316,11 +324,163 @@ void DashboardWidget::processParticipantsReply(const QList<TeraData> participant
     }else{
         ui->frameRecent->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
     }
-    ui->btnRecentParticipants->setChecked(!m_sessions.isEmpty());
+    ui->btnRecentParticipants->setChecked(!m_listParticipants_items.isEmpty());
     on_btnRecentParticipants_clicked();
 
     ui->btnRecentParticipants->setText(tr("Participants récents") + " (" + QString::number(m_listParticipants_items.count()) + ")");
 
+
+}
+
+void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery reply_query)
+{
+    if (!reply_query.hasQueryItem(WEB_QUERY_ID_SITE))
+        return;
+
+    if (reply_query.queryItemValue(WEB_QUERY_ID_SITE).toInt() != m_siteId)
+        return;
+
+    ui->treeWarnings->clear();
+    int warnings = 0;
+    int total_warnings = 0;
+    if (stats.hasFieldName("warning_participants_count")){
+        warnings = stats.getFieldValue("warning_participants_count").toInt();
+        if (warnings > 0){
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            item->setText(1, QString::number(warnings) + " " + tr("participant(s) sans séance depuis au moins 6 mois"));
+            item->setIcon(1, QIcon("://status/warning.png"));
+            item->setForeground(1, Qt::yellow);
+            ui->treeWarnings->addTopLevelItem(item);
+            QToolButton* manage_btn = createManageWarningButton();
+            manage_btn->setProperty("data", stats.getFieldValue("warning_participants"));
+            manage_btn->setProperty("data_type", TERADATA_PARTICIPANT);
+            ui->treeWarnings->setItemWidget(item, 0, manage_btn);
+
+            // Participants details
+            QVariantList participants = stats.getFieldValue("warning_participants").toList();
+            for (const QVariant &part: qAsConst(participants)){
+                QVariantHash part_data = part.toHash();
+                QString data_str;
+                data_str = part_data["participant_name"].toString();
+                if (part_data.contains("project_name"))
+                    data_str += " (" + part_data["project_name"].toString() + ")";
+
+                if (part_data.contains("months"))
+                    data_str += " - " + part_data["months"].toString() + " " + tr("mois");
+                QTreeWidgetItem* part_item = new QTreeWidgetItem(item);
+                part_item->setText(1, data_str);
+                part_item->setIcon(1, QIcon("://icons/patient_installed.png"));
+            }
+        }
+    }
+    total_warnings += warnings;
+
+    if (stats.hasFieldName("warning_nosession_participants_count")){
+        warnings = stats.getFieldValue("warning_nosession_participants_count").toInt();
+        if (warnings > 0){
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            item->setText(1, QString::number(warnings) + " " + tr("participant(s) sans aucune séance réalisée"));
+            item->setIcon(1, QIcon("://status/warning.png"));
+            item->setForeground(1, Qt::yellow);
+            ui->treeWarnings->addTopLevelItem(item);
+            QToolButton* manage_btn = createManageWarningButton();
+            manage_btn->setProperty("data", stats.getFieldValue("warning_nosession_participants"));
+            manage_btn->setProperty("data_type", TERADATA_PARTICIPANT);
+            ui->treeWarnings->setItemWidget(item, 0, manage_btn);
+
+            // Participants details
+            QVariantList participants = stats.getFieldValue("warning_nosession_participants").toList();
+            for (const QVariant &part: qAsConst(participants)){
+                QVariantHash part_data = part.toHash();
+                QString data_str;
+                data_str = part_data["participant_name"].toString();
+                if (part_data.contains("project_name"))
+                    data_str += " (" + part_data["project_name"].toString() + ")";
+
+                if (part_data.contains("months"))
+                    data_str += " - " + tr("Créé depuis") + " " + part_data["months"].toString() + " " + tr("mois");
+                QTreeWidgetItem* part_item = new QTreeWidgetItem(item);
+                part_item->setText(1, data_str);
+                part_item->setIcon(1, QIcon("://icons/patient.png"));
+            }
+        }
+    }
+    total_warnings += warnings;
+
+    if (m_comManager->getCurrentUserSiteRole(m_siteId) == "admin"){
+        if (stats.hasFieldName("warning_users_count")){
+            warnings = stats.getFieldValue("warning_users_count").toInt();
+            if (warnings > 0){
+                QTreeWidgetItem* item = new QTreeWidgetItem();
+                item->setIcon(1, QIcon("://status/warning.png"));
+                item->setForeground(1, Qt::yellow);
+                item->setText(1, QString::number(warnings) + " " + tr("utilisateur(s) non-connecté(s) depuis au moins 6 mois"));
+                ui->treeWarnings->addTopLevelItem(item);
+                QToolButton* manage_btn = createManageWarningButton();
+                manage_btn->setProperty("data", stats.getFieldValue("warning_users"));
+                manage_btn->setProperty("data_type", TERADATA_USER);
+                ui->treeWarnings->setItemWidget(item, 0, manage_btn);
+
+                // Users details
+                QVariantList users = stats.getFieldValue("warning_users").toList();
+                for (const QVariant &user: qAsConst(users)){
+                    QVariantHash user_data = user.toHash();
+                    QString data_str;
+                    data_str = user_data["user_fullname"].toString();
+                    if (user_data.contains("months"))
+                        data_str += " - " + user_data["months"].toString() + " " + tr("mois");
+                    QTreeWidgetItem* part_item = new QTreeWidgetItem(item);
+                    part_item->setText(1, data_str);
+                    part_item->setIcon(1, QIcon("://icons/software_user_offline_busy.png"));
+                }
+            }
+        }
+        total_warnings += warnings;
+
+        if (stats.hasFieldName("warning_neverlogged_users_count")){
+            warnings = stats.getFieldValue("warning_neverlogged_users_count").toInt();
+            if (warnings > 0){
+                QTreeWidgetItem* item = new QTreeWidgetItem();
+                item->setIcon(1, QIcon("://status/warning.png"));
+                item->setForeground(1, Qt::yellow);
+                item->setText(1, QString::number(warnings) + " " + tr("utilisateur(s) jamais connecté(s)"));
+                ui->treeWarnings->addTopLevelItem(item);
+                QToolButton* manage_btn = createManageWarningButton();
+                manage_btn->setProperty("data", stats.getFieldValue("warning_neverlogged_users"));
+                manage_btn->setProperty("data_type", TERADATA_USER);
+                ui->treeWarnings->setItemWidget(item, 0, manage_btn);
+
+                // Users details
+                QVariantList users = stats.getFieldValue("warning_neverlogged_users").toList();
+                for (const QVariant &user: qAsConst(users)){
+                    QVariantHash user_data = user.toHash();
+                    QString data_str;
+                    data_str = user_data["user_fullname"].toString();
+                    if (user_data.contains("months"))
+                        data_str += " - " + tr("Créé depuis") + " " + user_data["months"].toString() + " " + tr("mois");
+                    QTreeWidgetItem* part_item = new QTreeWidgetItem(item);
+                    part_item->setText(1, data_str);
+                    part_item->setIcon(1, QIcon("://icons/software_user.png"));
+                }
+            }
+        }
+        total_warnings += warnings;
+    }
+
+    //ui->treeWarnings->resizeColumnToContents(0);
+
+    ui->lblAttention->setVisible(ui->treeWarnings->topLevelItemCount() == 0);
+    ui->treeWarnings->setVisible(ui->treeWarnings->topLevelItemCount() > 0);
+
+    if (ui->treeWarnings->topLevelItemCount() == 0){
+        ui->frameAttention->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum));
+    }else{
+        ui->frameAttention->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
+    }
+    ui->btnAttention->setChecked(ui->treeWarnings->topLevelItemCount() > 0);
+    on_btnAttention_clicked();
+
+    ui->btnAttention->setText(tr("Attention requise") + " (" + QString::number(total_warnings) + ")");
 
 }
 
@@ -347,11 +507,22 @@ void DashboardWidget::sessionLobbyStartSessionRequested()
     m_sessionLobby = nullptr;
 }
 
+void DashboardWidget::cleanupDialogCompleted()
+{
+    if (m_cleanupDiag){
+        //if (m_cleanupDiag->result() == QDialog::Accepted)
+        refreshData();
+        m_cleanupDiag->deleteLater();
+        m_cleanupDiag = nullptr;
+    }
+}
+
 void DashboardWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::sessionsReceived, this, &DashboardWidget::processSessionsReply);
     connect(m_comManager, &ComManager::sessionTypesReceived, this, &DashboardWidget::processSessionTypesReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &DashboardWidget::processParticipantsReply);
+    connect(m_comManager, &ComManager::statsReceived, this, &DashboardWidget::processStatsReply);
 
 }
 
@@ -372,6 +543,12 @@ void DashboardWidget::refreshData()
     args.addQueryItem(WEB_QUERY_FULL, "1");
     args.addQueryItem(WEB_QUERY_ENABLED,"1");
     m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, args);
+
+    // Refresh warnings
+    args.clear();
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_siteId));
+    args.addQueryItem(WEB_QUERY_WITH_WARNINGS, "1");
+    m_comManager->doQuery(WEB_STATS_PATH, args);
 
     updateUiSpacing();
 }
@@ -465,6 +642,19 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     m_sessionLobby->exec();
 }
 
+QToolButton *DashboardWidget::createManageWarningButton()
+{
+    QToolButton* manage_btn = new QToolButton();
+    manage_btn->setIcon(QIcon("://icons/config.png"));
+    manage_btn->setToolTip(tr("Gérer"));
+    manage_btn->setCursor(Qt::PointingHandCursor);
+    manage_btn->setStyleSheet("QToolButton::hover{background-color:transparent;}");
+
+    connect(manage_btn, &QToolButton::clicked, this, &DashboardWidget::btnManageWarning_clicked);
+
+    return manage_btn;
+}
+
 
 void DashboardWidget::on_tableUpcomingSessions_itemDoubleClicked(QTableWidgetItem *item)
 {
@@ -486,6 +676,28 @@ void DashboardWidget::on_tableRecentParticipants_itemDoubleClicked(QTableWidgetI
     if (m_listParticipants_items.contains(base_item)){
         int id_participant = m_listParticipants_items.value(base_item);
         emit dataDisplayRequest(TERADATA_PARTICIPANT, id_participant);
+    }
+}
+
+void DashboardWidget::btnManageWarning_clicked()
+{
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    if (action_btn){
+        QVariantList data = action_btn->property("data").toList();
+        TeraDataTypes data_type = static_cast<TeraDataTypes>(action_btn->property("data_type").toInt());
+
+        if (m_cleanupDiag){
+            m_cleanupDiag->deleteLater();
+        }
+
+        m_cleanupDiag = new CleanUpDialog(m_comManager, data, data_type);
+        m_cleanupDiag->setMinimumWidth(2*width()/3);
+        m_cleanupDiag->setMinimumHeight(2*height()/3);
+        connect(m_cleanupDiag, &CleanUpDialog::accepted, this, &DashboardWidget::cleanupDialogCompleted);
+        connect(m_cleanupDiag, &CleanUpDialog::rejected, this, &DashboardWidget::cleanupDialogCompleted);
+
+        m_cleanupDiag->exec();
     }
 }
 

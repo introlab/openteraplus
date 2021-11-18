@@ -46,9 +46,9 @@ text-align:left;
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-522</y>
         <width>704</width>
-        <height>763</height>
+        <height>942</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -155,7 +155,7 @@ text-align:left;
           <item>
            <widget class="QLabel" name="lblNoUpcomingSessions">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -349,7 +349,7 @@ text-align:left;
           <item>
            <widget class="QLabel" name="lblNoRecentParticipants">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -504,42 +504,66 @@ text-align:left;
            <number>30</number>
           </property>
           <item>
-           <widget class="QLabel" name="lblParticipantsInactive">
-            <property name="font">
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
+           <widget class="QLabel" name="lblAttention">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
             </property>
             <property name="text">
-             <string>Participants qui n'ont pas eu de séance depuis 4 mois</string>
+             <string>Tout va bien! :-)</string>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::NoTextInteraction</set>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lblOldData">
-            <property name="font">
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
+           <widget class="QTreeWidget" name="treeWarnings">
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
             </property>
-            <property name="text">
-             <string>Données datant de plus de 6 mois</string>
+            <property name="showDropIndicator" stdset="0">
+             <bool>false</bool>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="lblUsersInactive">
-            <property name="font">
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::NoSelection</enum>
             </property>
-            <property name="text">
-             <string>Utilisateurs qui ne se sont pas connectés depuis 3 mois</string>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
             </property>
+            <property name="indentation">
+             <number>20</number>
+            </property>
+            <property name="headerHidden">
+             <bool>true</bool>
+            </property>
+            <attribute name="headerDefaultSectionSize">
+             <number>35</number>
+            </attribute>
+            <attribute name="headerStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Action</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Avertissement</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>

@@ -38,6 +38,7 @@ set(headers
     dialogs/DownloadProgressDialog.h
     dialogs/BaseDialog.h
     dialogs/DeviceAssignDialog.h
+    dialogs/CleanUpDialog.h
     # Editors
     editors/DataEditorWidget.h
     editors/UserWidget.h
@@ -120,6 +121,7 @@ set(srcs
     dialogs/AboutDialogPage.cpp
     dialogs/GeneratePasswordDialog.cpp
     dialogs/PasswordStrengthDialog.cpp
+    dialogs/CleanUpDialog.cpp
     # Editors
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
@@ -189,6 +191,7 @@ SET(uis
     dialogs/AboutDialog.ui
     dialogs/GeneratePasswordDialog.ui
     dialogs/PasswordStrengthDialog.ui
+    dialogs/CleanUpDialog.ui
     # Editors
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui

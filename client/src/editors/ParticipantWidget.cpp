@@ -1051,7 +1051,7 @@ void ParticipantWidget::on_chkEnabled_stateChanged(int checkState)
 
             TeraData* part_info = ui->wdgParticipant->getFormDataObject(TERADATA_PARTICIPANT);
             data_obj.insert("id_participant", QJsonValue::fromVariant(part_info->getId()));
-            data_obj.insert("id_project", QJsonValue::fromVariant(part_info->getFieldValue("id_project")));
+            //data_obj.insert("id_project", QJsonValue::fromVariant(part_info->getFieldValue("id_project")));
             data_obj.insert("participant_enabled", QJsonValue::fromVariant(current_state));
 
             base_obj.insert(TeraData::getDataTypeName(TERADATA_PARTICIPANT), data_obj);

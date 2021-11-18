@@ -4,14 +4,17 @@
 #include <QWidget>
 #include <QHash>
 #include <QTableWidgetItem>
+#include <QTreeWidgetItem>
+#include <QToolButton>
 
 #include "managers/ComManager.h"
 
 #include "widgets/TableDateWidgetItem.h"
 
 #include "dialogs/SessionLobbyDialog.h"
-#include "GlobalMessageBox.h"
+#include "dialogs/CleanUpDialog.h"
 
+#include "GlobalMessageBox.h"
 #include "TeraForm.h"
 
 namespace Ui {
@@ -39,13 +42,16 @@ private slots:
     void processSessionsReply(const QList<TeraData> sessions);
     void processSessionTypesReply(const QList<TeraData> session_types);
     void processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_query);
+    void processStatsReply(const TeraData stats, const QUrlQuery reply_query);
 
     void sessionLobbyStartSessionCancelled();
     void sessionLobbyStartSessionRequested();
+    void cleanupDialogCompleted();
 
     void on_tableUpcomingSessions_itemDoubleClicked(QTableWidgetItem *item);
-
     void on_tableRecentParticipants_itemDoubleClicked(QTableWidgetItem *item);
+
+    void btnManageWarning_clicked();
 
 signals:
     void dataDisplayRequest(TeraDataTypes data_type, int data_id);
@@ -57,6 +63,7 @@ private:
     ComManager*                     m_comManager;
     int                             m_siteId;
     SessionLobbyDialog*             m_sessionLobby;
+    CleanUpDialog*                  m_cleanupDiag;
 
     QHash<QTableWidgetItem*, int>   m_listSessions_items;
     QHash<int, TeraData*>           m_sessions;
@@ -71,6 +78,8 @@ private:
     void updateUiSpacing();
 
     void showSessionLobby(const int &id_session_type, const int &id_session);
+
+    QToolButton *createManageWarningButton();
 
 };
 
