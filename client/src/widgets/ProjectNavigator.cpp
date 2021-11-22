@@ -299,6 +299,7 @@ void ProjectNavigator::connectSignals()
     //connect(ui->treeNavigator, &QTreeWidget::currentItemChanged, this, &ProjectNavigator::currentNavItemChanged);
     connect(ui->treeNavigator, &QTreeWidget::itemExpanded, this, &ProjectNavigator::navItemExpanded);
     connect(ui->treeNavigator, &QTreeWidget::itemClicked, this, &ProjectNavigator::navItemClicked);
+    connect(ui->treeNavigator, &ProjectNavigatorTree::moveRequest, this, &ProjectNavigator::moveItemRequested);
     connect(ui->btnDeleteItem, &QPushButton::clicked, this, &ProjectNavigator::deleteItemRequested);
     connect(ui->btnRefresh, &QToolButton::clicked, this, &ProjectNavigator::refreshRequested);
 }
@@ -402,7 +403,8 @@ void ProjectNavigator::updateGroup(const TeraData *group)
                     // It has - change group if available
                     if (m_projects_items.contains(id_project)){
                         m_groups_items[id_group]->parent()->removeChild(m_groups_items[id_group]);
-                        m_projects_items[id_project]->addChild(m_groups_items[id_group]);
+                        //m_projects_items[id_project]->addChild(m_groups_items[id_group]);
+                        m_projects_items[id_project]->insertChild(0, m_groups_items[id_group]);
                     }else{
                         // Changed site also! Remove it completely from display
                         delete m_groups_items[id_group];
@@ -874,6 +876,49 @@ void ProjectNavigator::processItemDeletedReply(QString path, int id)
         removeItem(TERADATA_SITE, id);
     }else{
         refreshRequested();
+    }
+}
+
+void ProjectNavigator::moveItemRequested(QTreeWidgetItem *src, QTreeWidgetItem *target)
+{
+    TeraDataTypes src_type = getItemType(src);
+    TeraDataTypes target_type = getItemType(target);
+    QJsonDocument document;
+    QJsonObject data_obj;
+    QJsonObject base_obj;
+
+    bool proceed = false;
+
+    if (src_type == TERADATA_GROUP){
+        if (target_type == TERADATA_PROJECT){
+            // Change group to another project
+            data_obj.insert("id_" + TeraData::getDataTypeName(src_type), m_groups_items.key(src));
+            data_obj.insert("id_" + TeraData::getDataTypeName(target_type), m_projects_items.key(target));
+
+            base_obj.insert("group", data_obj);
+            document.setObject(base_obj);
+        }
+        proceed = true;
+    }
+
+    if (src_type == TERADATA_PARTICIPANT){
+        data_obj.insert("id_" + TeraData::getDataTypeName(src_type), m_participants_items.key(src));
+        if (target_type == TERADATA_GROUP){
+            data_obj.insert("id_" + TeraData::getDataTypeName(target_type), m_groups_items.key(target));
+            proceed = true;
+        }
+        if (target_type == TERADATA_PROJECT){
+            data_obj.insert("id_" + TeraData::getDataTypeName(target_type), m_projects_items.key(target));
+            // Clear participant group
+            data_obj.insert("id_participant_group", 0);
+            proceed = true;
+        }
+        base_obj.insert("participant", data_obj);
+        document.setObject(base_obj);
+    }
+
+    if (proceed){
+        m_comManager->doPost(TeraData::getPathForDataType(src_type), document.toJson());
     }
 }
 

@@ -81,6 +81,7 @@ set(headers
     widgets/ConfigWidget.h
     widgets/HistoryCalendarWidget.h
     widgets/ProjectNavigator.h
+    widgets/ProjectNavigatorTree.h
     widgets/NotificationWindow.h
     widgets/TableDateWidgetItem.h
     widgets/TableNumberWidgetItem.h
@@ -158,6 +159,7 @@ set(srcs
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
     # Widgets
     widgets/ProjectNavigator.cpp
+    widgets/ProjectNavigatorTree.cpp
     widgets/NotificationWindow.cpp
     widgets/ConfigWidget.cpp
     widgets/HistoryCalendarWidget.cpp

@@ -119,12 +119,18 @@
     </widget>
    </item>
    <item>
-    <widget class="QTreeWidget" name="treeNavigator">
+    <widget class="ProjectNavigatorTree" name="treeNavigator">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
      <property name="showDropIndicator" stdset="0">
-      <bool>false</bool>
+      <bool>true</bool>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragDrop</enum>
      </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
@@ -468,6 +474,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ProjectNavigatorTree</class>
+   <extends>QTreeWidget</extends>
+   <header>ProjectNavigatorTree.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>

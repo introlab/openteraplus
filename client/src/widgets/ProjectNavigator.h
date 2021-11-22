@@ -17,6 +17,7 @@ class ProjectNavigator;
 class ProjectNavigator : public QWidget
 {
     Q_OBJECT
+    friend class ProjectNavigatorTree;
 
 public:
     explicit ProjectNavigator(QWidget *parent = nullptr);
@@ -99,6 +100,7 @@ private slots:
      void ws_participantEvent(ParticipantEvent event);
 
      void processItemDeletedReply(QString path, int id);
+     void moveItemRequested(QTreeWidgetItem* src, QTreeWidgetItem* target);
 
      void processCurrentUserUpdated();
 
@@ -109,13 +111,9 @@ private slots:
      void btnEditSite_clicked();
 
      void on_btnFilterActive_toggled(bool checked);
-
      void on_btnSearch_toggled(bool checked);
-
      void on_txtNavSearch_textChanged(const QString &search_text);
-
      void on_cmbSites_currentIndexChanged(int index);
-
      void on_toolButton_clicked();
 
 signals:
