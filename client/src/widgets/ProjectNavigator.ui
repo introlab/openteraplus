@@ -478,7 +478,7 @@
   <customwidget>
    <class>ProjectNavigatorTree</class>
    <extends>QTreeWidget</extends>
-   <header>ProjectNavigatorTree.h</header>
+   <header>widgets/ProjectNavigatorTree.h</header>
   </customwidget>
  </customwidgets>
  <resources>
