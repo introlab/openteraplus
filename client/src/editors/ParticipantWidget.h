@@ -51,6 +51,7 @@ private:
     QMap<int, QListWidgetItem*>     m_listDevices_items;        // int  = device_id
 
     QList<TeraData>                 m_services;
+    QMap<int, QWidget*>          m_services_tabs;
 
     BaseDialog*                     m_diag_editor;
     SessionLobbyDialog*             m_sessionLobby;
@@ -66,6 +67,9 @@ private:
     void updateSession(TeraData *session);
     void updateDeviceProject(TeraData* device_project);
     void updateDeviceParticipant(TeraData* device_participant);
+
+    void updateServiceTabs();
+    void addServiceTab(const TeraData& service);
 
     void refreshWebAccessUrl();
 
@@ -84,7 +88,7 @@ private slots:
     void processServicesReply(QList<TeraData> services);
     void deleteDataReply(QString path, int id);
     void onDownloadCompleted(DownloadedFile* file);
-    void ws_participantEvent(ParticipantEvent event);
+    void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
 
     void btnDeleteSession_clicked();
     void btnAddDevice_clicked();

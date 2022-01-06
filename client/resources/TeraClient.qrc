@@ -1,126 +1,128 @@
 <RCC>
     <qresource prefix="/">
-        <file>logos/Estrad.png</file>
-        <file>logos/IntRoLab.png</file>
-        <file>logos/logo_CDRV.png</file>
-        <file>status/calling.gif</file>
-        <file>status/connecting.gif</file>
-        <file>status/loading.gif</file>
-        <file>status/status_incomplete.png</file>
-        <file>status/status_notok.png</file>
-        <file>status/status_ok.png</file>
-        <file>status/warning.png</file>
+        <file>TeRA_Background.png</file>
+        <file>controls/blue_button.png</file>
+        <file>controls/blue_button_pressed.png</file>
         <file>controls/branch_closed.png</file>
         <file>controls/branch_left.png</file>
         <file>controls/branch_opened.png</file>
         <file>controls/branch_up.png</file>
+        <file>controls/check2_off.png</file>
+        <file>controls/check2_off_disabled.png</file>
+        <file>controls/check2_on.png</file>
+        <file>controls/check2_on_disabled.png</file>
+        <file>controls/check_off.png</file>
+        <file>controls/check_off_disabled.png</file>
+        <file>controls/check_on.png</file>
+        <file>controls/check_on_disabled.png</file>
+        <file>controls/green_button.png</file>
+        <file>controls/grey_button.png</file>
+        <file>controls/radio-off.png</file>
+        <file>controls/radio-on.png</file>
+        <file>controls/red_button.png</file>
+        <file>controls/yellow_button.png</file>
+        <file>defaults/OpenTeraPlus.json</file>
+        <file>icons/OpenTeraPlus.ico</file>
+        <file>icons/config.png</file>
         <file>icons/copy.png</file>
+        <file>icons/dashboard.png</file>
         <file>icons/data.png</file>
         <file>icons/data_sensor.png</file>
+        <file>icons/data_video.png</file>
         <file>icons/delete.png</file>
         <file>icons/delete_old.png</file>
+        <file>icons/details.png</file>
+        <file>icons/device.png</file>
+        <file>icons/device_installed.png</file>
+        <file>icons/device_installed_busy.png</file>
+        <file>icons/device_online.png</file>
+        <file>icons/device_online_busy.png</file>
+        <file>icons/download.png</file>
         <file>icons/edit.png</file>
+        <file>icons/email.png</file>
+        <file>icons/error.png</file>
+        <file>icons/error2.png</file>
         <file>icons/filter.png</file>
         <file>icons/group.png</file>
         <file>icons/group_add.png</file>
         <file>icons/group_delete.png</file>
+        <file>icons/history.png</file>
+        <file>icons/info.png</file>
+        <file>icons/join.png</file>
         <file>icons/kit.png</file>
+        <file>icons/leave.png</file>
         <file>icons/lock.png</file>
         <file>icons/log.png</file>
+        <file>icons/navtree.png</file>
         <file>icons/new.png</file>
+        <file>icons/ok.png</file>
+        <file>icons/ok2.png</file>
         <file>icons/options.png</file>
+        <file>icons/password.png</file>
         <file>icons/patient.png</file>
         <file>icons/patient_installed.png</file>
+        <file>icons/patient_installed_busy.png</file>
         <file>icons/patient_online.png</file>
         <file>icons/patient_online_busy.png</file>
+        <file>icons/play.png</file>
+        <file>icons/project.png</file>
+        <file>icons/random.png</file>
+        <file>icons/record.png</file>
+        <file>icons/record_stop.png</file>
         <file>icons/refresh.png</file>
         <file>icons/save.png</file>
         <file>icons/search.png</file>
         <file>icons/sensors.png</file>
+        <file>icons/server.png</file>
+        <file>icons/service.png</file>
         <file>icons/session.png</file>
         <file>icons/session_offline.png</file>
         <file>icons/session_offline_warning.png</file>
         <file>icons/session_online.png</file>
         <file>icons/session_online_warning.png</file>
         <file>icons/session_pause.png</file>
+        <file>icons/session_type.png</file>
         <file>icons/session_warning.png</file>
+        <file>icons/site.png</file>
+        <file>icons/smile.png</file>
         <file>icons/software_user.png</file>
+        <file>icons/software_user_offline_busy.png</file>
+        <file>icons/software_user_online.png</file>
+        <file>icons/software_user_online_busy.png</file>
+        <file>icons/stop.png</file>
         <file>icons/test.png</file>
         <file>icons/test_add.png</file>
         <file>icons/test_lock.png</file>
         <file>icons/test_unlock.png</file>
         <file>icons/undo.png</file>
         <file>icons/unlock.png</file>
+        <file>icons/upload.png</file>
         <file>icons/user_info.png</file>
         <file>icons/usergroup.png</file>
-        <file>icons/warning.png</file>
-        <file>TeRA_Background.png</file>
-        <file>icons/error.png</file>
-        <file>icons/ok.png</file>
-        <file>icons/site.png</file>
-        <file>icons/device.png</file>
-        <file>icons/project.png</file>
-        <file>icons/device_installed.png</file>
-        <file>icons/device_online.png</file>
-        <file>stylesheet.qss</file>
-        <file>icons/info.png</file>
-        <file>icons/navtree.png</file>
-        <file>icons/history.png</file>
-        <file>icons/config.png</file>
-        <file>icons/dashboard.png</file>
-        <file>icons/details.png</file>
-        <file>icons/password.png</file>
-        <file>icons/server.png</file>
-        <file>icons/email.png</file>
-        <file>controls/check_off.png</file>
-        <file>controls/check_on.png</file>
-        <file>controls/check2_off_disabled.png</file>
-        <file>controls/check2_off.png</file>
-        <file>controls/check2_on_disabled.png</file>
-        <file>controls/check2_on.png</file>
-        <file>controls/check_on_disabled.png</file>
-        <file>controls/check_off_disabled.png</file>
-        <file>icons/download.png</file>
-        <file>icons/session_type.png</file>
-        <file>icons/service.png</file>
-        <file>icons/stop.png</file>
-        <file>status/session_loading.gif</file>
-        <file>icons/software_user_online.png</file>
-        <file>controls/radio-off.png</file>
-        <file>controls/radio-on.png</file>
-        <file>translations/openteraplus_en.qm</file>
-        <file>translations/openteraplus_fr.qm</file>
-        <file>icons/play.png</file>
         <file>icons/view_off.png</file>
         <file>icons/view_on.png</file>
-        <file>status/status_unknown.png</file>
-        <file>status/status_online.png</file>
-        <file>status/status_offline.png</file>
+        <file>icons/warning.png</file>
+        <file>logos/Estrad.png</file>
+        <file>logos/IntRoLab.png</file>
+        <file>logos/LogoOpenTeraPlus.png</file>
+        <file>logos/logo_CDRV.png</file>
+        <file>sounds/notify_invite.wav</file>
         <file>sounds/notify_offline.wav</file>
         <file>sounds/notify_online.wav</file>
+        <file>status/calling.gif</file>
+        <file>status/connecting.gif</file>
+        <file>status/loading.gif</file>
+        <file>status/session_loading.gif</file>
         <file>status/status_busy.png</file>
-        <file>icons/software_user_offline_busy.png</file>
-        <file>icons/software_user_online_busy.png</file>
-        <file>icons/device_installed_busy.png</file>
-        <file>icons/device_online_busy.png</file>
-        <file>icons/patient_installed_busy.png</file>
-        <file>icons/ok2.png</file>
-        <file>icons/join.png</file>
-        <file>icons/leave.png</file>
-        <file>icons/error2.png</file>
-        <file>icons/smile.png</file>
-        <file>defaults/OpenTeraPlus.json</file>
-        <file>sounds/notify_invite.wav</file>
-        <file>icons/random.png</file>
-        <file>logos/LogoOpenTeraPlus.png</file>
-        <file>icons/OpenTeraPlus.ico</file>
-        <file>icons/record.png</file>
-        <file>icons/record_stop.png</file>
-        <file>controls/green_button.png</file>
-        <file>controls/grey_button.png</file>
-        <file>controls/red_button.png</file>
-        <file>controls/yellow_button.png</file>
-        <file>controls/blue_button.png</file>
-        <file>controls/blue_button_pressed.png</file>
+        <file>status/status_incomplete.png</file>
+        <file>status/status_notok.png</file>
+        <file>status/status_offline.png</file>
+        <file>status/status_ok.png</file>
+        <file>status/status_online.png</file>
+        <file>status/status_unknown.png</file>
+        <file>status/warning.png</file>
+        <file>stylesheet.qss</file>
+        <file>translations/openteraplus_en.qm</file>
+        <file>translations/openteraplus_fr.qm</file>
     </qresource>
 </RCC>

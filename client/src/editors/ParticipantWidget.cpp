@@ -12,6 +12,8 @@
 #include "dialogs/GeneratePasswordDialog.h"
 #include "dialogs/PasswordStrengthDialog.h"
 
+#include "services/DanceService/DanceConfigWidget.h"
+
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::ParticipantWidget)
@@ -439,6 +441,44 @@ void ParticipantWidget::updateDeviceParticipant(TeraData *device_participant)
     item->setText(device_participant->getFieldValue("device_name").toString());
 }
 
+void ParticipantWidget::updateServiceTabs()
+{
+    QList<int> ids_service;
+
+    for(const TeraData &service: qAsConst(m_services)){
+        ids_service.append(service.getId());
+
+        // Create specific tabs for services
+        addServiceTab(service);
+    }
+
+    // Remove tabs not anymore present
+    for(QWidget* tab: qAsConst(m_services_tabs)){
+        if (!ids_service.contains(m_services_tabs.key(tab))){
+            ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
+            tab->deleteLater();
+            m_services_tabs.remove(m_services_tabs.key(tab));
+        }
+    }
+}
+
+void ParticipantWidget::addServiceTab(const TeraData &service)
+{
+    int id_service = service.getId();
+    if (m_services_tabs.contains(id_service)) // Already there
+        return;
+
+    QString service_key = service.getFieldValue("service_key").toString();
+
+    // Dance Service
+    if (service_key == "DanceService"){
+        DanceConfigWidget* wdg = new DanceConfigWidget();
+        ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service.getName());
+        m_services_tabs.insert(id_service, wdg);
+
+    }
+}
+
 void ParticipantWidget::refreshWebAccessUrl()
 {
     int index = ui->cmbServices->currentIndex();
@@ -592,6 +632,9 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services)
     int default_index = ui->cmbServices->findData("VideoRehabService");
     if (default_index>=0)
         ui->cmbServices->setCurrentIndex(default_index);
+
+    // Add specific services configuration tabs
+    updateServiceTabs();
 }
 
 void ParticipantWidget::deleteDataReply(QString path, int id)
@@ -647,7 +690,7 @@ void ParticipantWidget::onDownloadCompleted(DownloadedFile *file)
 
 }
 
-void ParticipantWidget::ws_participantEvent(ParticipantEvent event)
+void ParticipantWidget::ws_participantEvent(opentera::protobuf::ParticipantEvent event)
 {
     if (!m_data)
         return;

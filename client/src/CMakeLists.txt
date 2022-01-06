@@ -39,6 +39,7 @@ set(headers
     dialogs/BaseDialog.h
     dialogs/DeviceAssignDialog.h
     dialogs/CleanUpDialog.h
+    dialogs/FileUploaderDialog.h
     # Editors
     editors/DataEditorWidget.h
     editors/UserWidget.h
@@ -73,6 +74,7 @@ set(headers
     services/VideoRehabService/WebSocket/SharedObject.h
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
     services/VideoRehabService/WebSocket/WebSocketTransport.h
+    services/DanceService/DanceConfigWidget.h
     # Widgets
     widgets/InSessionWidget.h
     widgets/SessionInviteWidget.h
@@ -123,6 +125,7 @@ set(srcs
     dialogs/GeneratePasswordDialog.cpp
     dialogs/PasswordStrengthDialog.cpp
     dialogs/CleanUpDialog.cpp
+    dialogs/FileUploaderDialog.cpp
     # Editors
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
@@ -157,6 +160,7 @@ set(srcs
     services/VideoRehabService/WebSocket/SharedObject.cpp
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
+    services/DanceService/DanceConfigWidget.cpp
     # Widgets
     widgets/ProjectNavigator.cpp
     widgets/ProjectNavigatorTree.cpp
@@ -194,6 +198,7 @@ SET(uis
     dialogs/GeneratePasswordDialog.ui
     dialogs/PasswordStrengthDialog.ui
     dialogs/CleanUpDialog.ui
+    dialogs/FileUploaderDialog.ui
     # Editors
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
@@ -217,6 +222,7 @@ SET(uis
     services/VideoRehabService/VideoRehabToolsWidget.ui
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
     services/VideoRehabService/VideoRehabPTZDialog.ui
+    services/DanceService/DanceConfigWidget.ui
     # Widgets
     widgets/ProjectNavigator.ui
     widgets/notification.ui

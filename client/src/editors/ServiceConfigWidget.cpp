@@ -39,8 +39,8 @@ ServiceConfigWidget::ServiceConfigWidget(ComManager *comMan, const QString id_fi
     // Query services
     QUrlQuery args;
     //args.addQueryItem(id_field_name, QString::number(id_field_value));
-    args.addQueryItem(WEB_QUERY_WITH_CONFIG, "1"); // Get list of all services with a config
-    args.addQueryItem(WEB_QUERY_LIST, "1"); // List only, not all infos
+    args.addQueryItem(WEB_QUERY_WITH_CONFIG,    "1"); // Get list of all services with a config
+    args.addQueryItem(WEB_QUERY_LIST,           "1"); // List only, not all infos
     /*if (!m_specificId.isEmpty()){
         args.addQueryItem(WEB_QUERY_ID_SPECIFIC, m_specificId);
     }*/

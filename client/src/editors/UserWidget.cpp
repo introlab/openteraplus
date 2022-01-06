@@ -184,10 +184,9 @@ bool UserWidget::validateData(){
 
 void UserWidget::refreshUsersUserGroups()
 {
-    for (int i=0; i<m_listUserGroups_items.count(); i++){
-        QListWidgetItem* item = m_listUserGroups_items.values().at(i);
-        // Check item if the group is in the users groups list
-        if (m_listUserUserGroups_items.values().contains(item)){
+    for(QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+        if (std::find(m_listUserUserGroups_items.cbegin(), m_listUserUserGroups_items.cend(), item) != m_listUserUserGroups_items.cend()){
+        //if (m_listUserUserGroups_items.contains(item)){
             item->setCheckState(Qt::Checked);
         }else{
             item->setCheckState(Qt::Unchecked);
@@ -212,9 +211,8 @@ void UserWidget::refreshUsersUserGroups()
 QJsonArray UserWidget::getSelectedGroupsAsJsonArray()
 {
     QJsonArray user_groups;
-    for (int i=0; i<m_listUserGroups_items.count(); i++){
-        int user_group_id = m_listUserGroups_items.keys().at(i);
-        QListWidgetItem* item = m_listUserGroups_items.values().at(i);
+    for(QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+        int user_group_id = m_listUserGroups_items.key(item);
         if (item->checkState() == Qt::Checked){
             QJsonObject data_obj;
             data_obj.insert("id_user_group", user_group_id);
@@ -315,8 +313,9 @@ bool UserWidget::validateUserGroups()
 {
     //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
-        for (int i=0; i<m_listUserGroups_items.count(); i++){
-            if (m_listUserGroups_items.values().at(i)->checkState() == Qt::Checked){
+        //for (int i=0; i<m_listUserGroups_items.count(); i++){
+        for (QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+            if (item->checkState() == Qt::Checked){
                 at_least_one_selected = true;
                 break;
             }
@@ -559,15 +558,16 @@ void UserWidget::on_btnUpdateGroups_clicked()
     QJsonArray groups;
     QList<int> user_user_group_to_delete;
 
-    for (int i=0; i<m_listUserGroups_items.count(); i++){
+    //for (int i=0; i<m_listUserGroups_items.count(); i++){
+    for (QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
         // Build json list of user and groups
-        if (m_listUserGroups_items.values().at(i)->checkState()==Qt::Checked){
+        if (item->checkState()==Qt::Checked){
             QJsonObject item_obj;
             item_obj.insert("id_user", m_data->getId());
-            item_obj.insert("id_user_group", m_listUserGroups_items.keys().at(i));
+            item_obj.insert("id_user_group", m_listUserGroups_items.key(item));
             groups.append(item_obj);
         }else{
-            int id_user_user_group = m_listUserUserGroups_items.key(m_listUserGroups_items.values().at(i),-1);
+            int id_user_user_group = m_listUserUserGroups_items.key(item,-1);
             if (id_user_user_group>=0){
                 user_user_group_to_delete.append(id_user_user_group);
             }

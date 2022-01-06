@@ -227,7 +227,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
         <string>Déassocier puis ajouter</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/TeraClient.qrc">
+        <iconset resource="../../resources/TeraClient.qrc">
          <normaloff>:/icons/new.png</normaloff>:/icons/new.png</iconset>
        </property>
       </widget>
@@ -247,7 +247,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
         <string>Ajouter sans désassocier</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/TeraClient.qrc">
+        <iconset resource="../../resources/TeraClient.qrc">
          <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
        </property>
       </widget>
@@ -280,7 +280,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
         <string>Annuler</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/TeraClient.qrc">
+        <iconset resource="../../resources/TeraClient.qrc">
          <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
        </property>
       </widget>
@@ -290,7 +290,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
   </layout>
  </widget>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>

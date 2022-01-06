@@ -190,7 +190,6 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
       <widget class="QLabel" name="lblTitle">
        <property name="font">
         <font>
-         <weight>50</weight>
          <bold>false</bold>
         </font>
        </property>
@@ -369,7 +368,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <x>0</x>
             <y>0</y>
             <width>978</width>
-            <height>99</height>
+            <height>102</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -871,7 +870,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <x>0</x>
             <y>0</y>
             <width>978</width>
-            <height>159</height>
+            <height>169</height>
            </rect>
           </property>
           <attribute name="label">
@@ -928,7 +927,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                 <x>0</x>
                 <y>0</y>
                 <width>976</width>
-                <height>157</height>
+                <height>167</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1427,32 +1426,20 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <property name="text">
              <string>Date</string>
             </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
-            </property>
            </column>
            <column>
             <property name="text">
              <string>Type</string>
-            </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
             </property>
            </column>
            <column>
             <property name="text">
              <string>État</string>
             </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
-            </property>
            </column>
            <column>
             <property name="text">
              <string>Durée</string>
-            </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
             </property>
            </column>
            <column>
@@ -1618,7 +1605,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tabParticipant">
           <attribute name="icon">

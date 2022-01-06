@@ -223,7 +223,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
         <string>Annuler</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources/TeraClient.qrc">
+        <iconset resource="../../resources/TeraClient.qrc">
          <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
        </property>
       </widget>
@@ -233,7 +233,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
   </layout>
  </widget>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>
