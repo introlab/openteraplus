@@ -44,7 +44,7 @@ public:
     void disconnectFromServer();
 
     bool processNetworkReply(QNetworkReply* reply);
-    void doQuery(const QString &path, const QUrlQuery &query_args = QUrlQuery());
+    void doQuery(const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool use_token_auth = false);
     void doPost(const QString &path, const QString &post_data);
     void doDelete(const QString &path, const int& id);
     void doUpdateCurrentUser();
@@ -54,12 +54,13 @@ public:
     void joinSession(const TeraData& session_type, const int &id_session);
     void stopSession(const TeraData& session, const int &id_service = 0);
     void leaveSession(const int &id_session, bool signal_server = true);
-    void sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg = QString());
+    void sendJoinSessionReply(const QString &session_uuid, const opentera::protobuf::JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg = QString());
 
     TeraData &getCurrentUser();
     TeraPreferences &getCurrentPreferences();
     QString getCurrentUserSiteRole(const int &site_id);
     QString getCurrentUserProjectRole(const int &project_id);
+    QString getCurrentUserToken();
     bool isCurrentUserProjectAdmin(const int& project_id);
     bool isCurrentUserSiteAdmin(const int& site_id);
     bool isCurrentUserSuperAdmin();
@@ -84,11 +85,13 @@ protected:
     bool handleSessionManagerReply(const QString& reply_data, const QUrlQuery& reply_query);
     bool handleFormReply(const QUrlQuery& reply_query, const QString& reply_data);
     bool handleVersionsReply(const QJsonDocument &version_data);
+    bool handleTokenRefreshReply(const QJsonDocument &refresh_data);
 
     void updateCurrentUser(const TeraData& user_data);
     void updateCurrentPrefs(const TeraData& user_prefs);
 
     void clearCurrentUser();
+    void refreshUserToken();
 
     QString filterReplyString(const QString& data_str);
 
@@ -96,6 +99,7 @@ protected:
     QNetworkAccessManager*  m_netManager;
     QNetworkCookieJar       m_cookieJar;
     WebSocketManager*       m_webSocketMan;
+    QTimer                  m_tokenRefreshTimer;
 
     QMap<QNetworkReply*, DownloadedFile*>   m_currentDownloads;
 
@@ -186,7 +190,7 @@ public slots:
 
 protected:
     void setRequestLanguage(QNetworkRequest &request);
-    void setRequestCredentials(QNetworkRequest &request);
+    void setRequestCredentials(QNetworkRequest &request, bool user_token_auth = false);
     void setRequestVersions(QNetworkRequest &request);
 
 private slots:

@@ -32,6 +32,11 @@ ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
 
+    // Initialize token refresher timer @ each 29 minutes
+    m_tokenRefreshTimer.setInterval(1000*60*29);
+    m_tokenRefreshTimer.setSingleShot(false);
+    connect(&m_tokenRefreshTimer, &QTimer::timeout, this, &ComManager::refreshUserToken);
+
 }
 
 ComManager::~ComManager()
@@ -144,7 +149,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
     return handled;
 }
 
-void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
+void ComManager::doQuery(const QString &path, const QUrlQuery &query_args, const bool use_token_auth)
 {
     QUrl query = m_serverUrl;
 
@@ -154,7 +159,7 @@ void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
     }
     QNetworkRequest request(query);
 
-    setRequestCredentials(request);
+    setRequestCredentials(request, use_token_auth);
     setRequestLanguage(request);
     setRequestVersions(request);
 
@@ -402,7 +407,7 @@ void ComManager::leaveSession(const int &id_session, bool signal_server)
     emit sessionStopped(id_session);
 }
 
-void ComManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)
+void ComManager::sendJoinSessionReply(const QString &session_uuid, const opentera::protobuf::JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)
 {
     QJsonDocument document;
     QJsonObject base_obj;
@@ -475,6 +480,11 @@ QString ComManager::getCurrentUserProjectRole(const int &project_id)
     }
 
     return rval;
+}
+
+QString ComManager::getCurrentUserToken()
+{
+    return m_currentUser.getFieldValue("user_token").toString();
 }
 
 bool ComManager::isCurrentUserProjectAdmin(const int &project_id)
@@ -603,10 +613,10 @@ bool ComManager::handleLoginReply(const QString &reply_data)
         onWebSocketLoginResult(true); // Simulate successful login with websocket
     }
 
-    // Query connected user information
-
+    // Set current user values
     m_currentUser.setFieldValue("user_uuid", user_uuid);
-    //doUpdateCurrentUser();
+    m_currentUser.setFieldValue("user_token", login_info["user_token"].toString());
+    m_tokenRefreshTimer.start();
 
     // Query versions informations
     doQuery(WEB_VERSIONSINFO_PATH);
@@ -685,6 +695,11 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     // Versions information reply
     if (reply_path == WEB_VERSIONSINFO_PATH){
         return handleVersionsReply(data_list);
+    }
+
+    // Refresh token information reply
+    if (reply_path == WEB_REFRESH_TOKEN_PATH){
+        return handleTokenRefreshReply(data_list);
     }
 
     // Browse each items received
@@ -925,6 +940,14 @@ bool ComManager::handleVersionsReply(const QJsonDocument &version_data)
     return true;
 }
 
+bool ComManager::handleTokenRefreshReply(const QJsonDocument &refresh_data)
+{
+    if (!refresh_data.object().contains("refresh_token"))
+        return false;
+    m_currentUser.setFieldValue("user_token", refresh_data["refresh_token"].toString());
+    return true;
+}
+
 void ComManager::updateCurrentUser(const TeraData &user_data)
 {
     //qDebug() << "ComManager::updateCurrentUser";
@@ -954,7 +977,14 @@ void ComManager::updateCurrentPrefs(const TeraData &user_prefs)
 void ComManager::clearCurrentUser()
 {
     m_currentPreferences.clear();
+    m_tokenRefreshTimer.stop();
     m_currentUser = TeraData(TERADATA_USER);
+}
+
+void ComManager::refreshUserToken()
+{
+    //qDebug() << "Refreshing user token...";
+    doQuery(WEB_REFRESH_TOKEN_PATH, QUrlQuery(), true);
 }
 
 QString ComManager::filterReplyString(const QString &data_str)
@@ -1057,16 +1087,21 @@ void ComManager::setRequestLanguage(QNetworkRequest &request) {
     request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
 }
 
-void ComManager::setRequestCredentials(QNetworkRequest &request)
+void ComManager::setRequestCredentials(QNetworkRequest &request, bool user_token_auth)
 {
     //Needed?
     request.setAttribute(QNetworkRequest::AuthenticationReuseAttribute, false);
 
     // Pack in credentials
-    QString concatenatedCredentials = m_username + ":" + m_password;
-    QByteArray data = concatenatedCredentials.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + data;
-    request.setRawHeader( "Authorization", headerData.toLocal8Bit() );
+    if (!user_token_auth){
+        QString concatenatedCredentials = m_username + ":" + m_password;
+        QByteArray data = concatenatedCredentials.toLocal8Bit().toBase64();
+        QString headerData = "Basic " + data;
+        request.setRawHeader( "Authorization", headerData.toLocal8Bit());
+    }else{
+        QString headerData = "OpenTera " + getCurrentUserToken();
+        request.setRawHeader("Authorization", headerData.toLocal8Bit());
+    }
 
 }
 
