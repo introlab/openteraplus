@@ -2,6 +2,8 @@
 #define DANCECONFIGWIDGET_H
 
 #include <QWidget>
+#include "managers/ComManager.h"
+#include "DanceComManager.h"
 
 namespace Ui {
 class DanceConfigWidget;
@@ -12,7 +14,7 @@ class DanceConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DanceConfigWidget(QWidget *parent = nullptr);
+    explicit DanceConfigWidget(ComManager* comManager, int projectId, QWidget *parent = nullptr);
     ~DanceConfigWidget();
 
 private slots:
@@ -20,6 +22,11 @@ private slots:
 
 private:
     Ui::DanceConfigWidget *ui;
+
+    ComManager* m_comManager;
+    int         m_idProject;
+
+    DanceComManager* m_danceComManager;
 };
 
 #endif // DANCECONFIGWIDGET_H

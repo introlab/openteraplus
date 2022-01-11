@@ -314,7 +314,7 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
                 error_str = tr("La connexion a été refusée par le serveur.");
             break;
             case QNetworkReply::AuthenticationRequiredError:
-                //on_loginResult(false);
+                //error_str = tr("Impossible de négocier l'authentification avec le serveur");
                 return;
             break;
             case QNetworkReply::TimeoutError:

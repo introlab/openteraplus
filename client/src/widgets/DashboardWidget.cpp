@@ -17,7 +17,7 @@ DashboardWidget::DashboardWidget(ComManager *comMan, int id_site, QWidget *paren
     connectSignals();
 
     // Query available sessions types for the current user
-    m_comManager->doQuery(WEB_SESSIONTYPE_PATH);
+    m_comManager->doGet(WEB_SESSIONTYPE_PATH);
 
     setCurrentSiteId(id_site, false);
 
@@ -533,7 +533,7 @@ void DashboardWidget::refreshData()
     args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_comManager->getCurrentUser().getId()));
     args.addQueryItem(WEB_QUERY_LIMIT, QString::number(20));
     args.addQueryItem(WEB_QUERY_STATUS, QString::number(TeraSessionStatus::STATUS_NOTSTARTED));
-    m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+    m_comManager->doGet(WEB_SESSIONINFO_PATH, args);
 
     // Refresh recent participants list
     args.clear();
@@ -542,13 +542,13 @@ void DashboardWidget::refreshData()
     args.addQueryItem(WEB_QUERY_ORDERBY_RECENTS, "1");
     args.addQueryItem(WEB_QUERY_FULL, "1");
     args.addQueryItem(WEB_QUERY_ENABLED,"1");
-    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, args);
+    m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, args);
 
     // Refresh warnings
     args.clear();
     args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_siteId));
     args.addQueryItem(WEB_QUERY_WITH_WARNINGS, "1");
-    m_comManager->doQuery(WEB_STATS_PATH, args);
+    m_comManager->doGet(WEB_STATS_PATH, args);
 
     updateUiSpacing();
 }

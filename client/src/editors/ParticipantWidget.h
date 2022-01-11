@@ -51,7 +51,7 @@ private:
     QMap<int, QListWidgetItem*>     m_listDevices_items;        // int  = device_id
 
     QList<TeraData>                 m_services;
-    QMap<int, QWidget*>          m_services_tabs;
+    QMap<int, QWidget*>             m_services_tabs;
 
     BaseDialog*                     m_diag_editor;
     SessionLobbyDialog*             m_sessionLobby;

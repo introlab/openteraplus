@@ -25,6 +25,7 @@ set(headers
     managers/ComManager.h
     managers/ParticipantComManager.h
     managers/WebSocketManager.h
+    managers/BaseComManager.h
     # Dialogs
     dialogs/LoginDialog.h
     dialogs/StartSessionDialog.h
@@ -75,6 +76,8 @@ set(headers
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
     services/VideoRehabService/WebSocket/WebSocketTransport.h
     services/DanceService/DanceConfigWidget.h
+    services/DanceService/DanceWebAPI.h
+    services/DanceService/DanceComManager.h
     # Widgets
     widgets/InSessionWidget.h
     widgets/SessionInviteWidget.h
@@ -111,6 +114,7 @@ set(srcs
     managers/ComManager.cpp
     managers/WebSocketManager.cpp
     managers/ParticipantComManager.cpp
+    managers/BaseComManager.cpp
     # Dialogs
     dialogs/LoginDialog.cpp
     dialogs/DeviceAssignDialog.cpp
@@ -161,6 +165,7 @@ set(srcs
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
     services/DanceService/DanceConfigWidget.cpp
+    services/DanceService/DanceComManager.cpp
     # Widgets
     widgets/ProjectNavigator.cpp
     widgets/ProjectNavigatorTree.cpp

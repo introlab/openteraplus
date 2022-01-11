@@ -19,7 +19,7 @@ JoinSessionDialog::JoinSessionDialog(ComManager *comMan, opentera::protobuf::Joi
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_SESSION_UUID, QString::fromStdString(event.session_uuid()));
     //args.addQueryItem(WEB_QUERY_LIST, "1");
-    m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+    m_comManager->doGet(WEB_SESSIONINFO_PATH, args);
 
     initUi();
 }
@@ -104,7 +104,7 @@ void JoinSessionDialog::processSessionsReply(QList<TeraData> sessions)
             // Query session type
             QUrlQuery args;
             args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, m_session.getFieldValue("id_session_type").toString());
-            m_comManager->doQuery(WEB_SESSIONTYPE_PATH, args);
+            m_comManager->doGet(WEB_SESSIONTYPE_PATH, args);
             return;
         }
     }

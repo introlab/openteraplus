@@ -21,7 +21,7 @@ QWizardPage *BaseWizard::createTeraFormPage(TeraDataTypes form_type)
     TeraForm *form = new TeraForm();
 
     // Load form informations from server
-    m_comManager->doQuery(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
+    m_comManager->doGet(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
 
     // Synchronisouly wait for server reply
     QEventLoop wait_loop;

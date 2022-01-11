@@ -14,7 +14,7 @@ DeviceAssignDialog::DeviceAssignDialog(ComManager *comMan, int device_id, QWidge
     // Query participants for device
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_id_device));
-    m_comManager->doQuery(WEB_DEVICEPARTICIPANTINFO_PATH, args);
+    m_comManager->doGet(WEB_DEVICEPARTICIPANTINFO_PATH, args);
 }
 
 DeviceAssignDialog::~DeviceAssignDialog()

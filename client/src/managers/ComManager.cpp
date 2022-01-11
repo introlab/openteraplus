@@ -4,15 +4,11 @@
 #include "Utils.h"
 
 ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
-    QObject(parent),
+    BaseComManager(serverUrl, parent),
     m_currentUser(TERADATA_USER),
     m_currentSessionType(nullptr)
 {
     m_enableWebsocket = connectWebsocket;
-
-    // Initialize communication objects
-    m_netManager = new QNetworkAccessManager(this);
-    m_netManager->setCookieJar(&m_cookieJar);
 
     // Setup signals and slots
     if (m_enableWebsocket){
@@ -24,13 +20,7 @@ ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
     }
 
     // Network manager
-    connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &ComManager::onNetworkAuthenticationRequired);
-    connect(m_netManager, &QNetworkAccessManager::encrypted, this, &ComManager::onNetworkEncrypted);
-    connect(m_netManager, &QNetworkAccessManager::finished, this, &ComManager::onNetworkFinished);
-    connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ComManager::onNetworkSslErrors);
-
-    // Create correct server url
-    m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
+    connect(this, &ComManager::networkAuthFailed, this, &ComManager::onNetworkAuthenticationFailed);
 
     // Initialize token refresher timer @ each 29 minutes
     m_tokenRefreshTimer.setInterval(1000*60*29);
@@ -59,19 +49,19 @@ void ComManager::connectToServer(QString username, QString password)
 
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_WITH_WEBSOCKET, "1");
-    doQuery(QString(WEB_LOGIN_PATH), args);
+    doGet(QString(WEB_LOGIN_PATH), args);
 
 }
 
 void ComManager::disconnectFromServer()
 {
-    doQuery(QString(WEB_LOGOUT_PATH));
+    doGet(QString(WEB_LOGOUT_PATH));
     if (m_enableWebsocket){
         m_webSocketMan->disconnectWebSocket();
     }
 
     clearCurrentUser();
-    m_settedCredentials = false;
+
 }
 
 bool ComManager::processNetworkReply(QNetworkReply *reply)
@@ -149,83 +139,17 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
     return handled;
 }
 
-void ComManager::doQuery(const QString &path, const QUrlQuery &query_args, const bool use_token_auth)
-{
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    if (!query_args.isEmpty()){
-        query.setQuery(query_args);
-    }
-    QNetworkRequest request(query);
-
-    setRequestCredentials(request, use_token_auth);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    m_netManager->get(request);
-    emit waitingForReply(true);
-    emit querying(path);
-
-    if (!query_args.isEmpty())
-        LOG_DEBUG("GET: " + path + " with " + query_args.toString(), "ComManager::doQuery");
-    else
-        LOG_DEBUG("GET: " + path, "ComManager::doQuery");
-}
-
-void ComManager::doPost(const QString &path, const QString &post_data)
-{
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    QNetworkRequest request(query);
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    request.setRawHeader("Content-Type", "application/json");
-
-    m_netManager->post(request, post_data.toUtf8());
-    emit waitingForReply(true);
-    emit posting(path, post_data);
-
-#ifndef QT_NO_DEBUG
-    LOG_DEBUG("POST: " + path + ", with " + post_data, "ComManager::doPost");
-#else
-    // Strip data from logging in release, since this might contains passwords!
-    LOG_DEBUG("POST: " + path, "ComManager::doPost");
-#endif
-}
-
-void ComManager::doDelete(const QString &path, const int &id)
-{
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    query.setQuery("id=" + QString::number(id));
-    QNetworkRequest request(query);
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    m_netManager->deleteResource(request);
-    emit waitingForReply(true);
-    emit deleting(path);
-
-    LOG_DEBUG("DELETE: " + path + ", with id=" + QString::number(id), "ComManager::doDelete");
-}
-
 void ComManager::doUpdateCurrentUser()
 {
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_SELF, "");
     args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1");
-    doQuery(QString(WEB_USERINFO_PATH), args);
+    doGet(QString(WEB_USERINFO_PATH), args);
 
     // Update preferences
     args.clear();
     args.addQueryItem(WEB_QUERY_APPTAG, APPLICATION_TAG);
-    doQuery(WEB_USERPREFSINFO_PATH, args);
+    doGet(WEB_USERPREFSINFO_PATH, args);
 }
 
 void ComManager::doDownload(const QString &save_path, const QString &path, const QUrlQuery &query_args)
@@ -238,7 +162,7 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
     }
 
     QNetworkRequest request(query);
-    setRequestCredentials(request);
+    setRequestCredentials(request, false);
     setRequestLanguage(request);
     setRequestVersions(request);
 
@@ -482,11 +406,6 @@ QString ComManager::getCurrentUserProjectRole(const int &project_id)
     return rval;
 }
 
-QString ComManager::getCurrentUserToken()
-{
-    return m_currentUser.getFieldValue("user_token").toString();
-}
-
 bool ComManager::isCurrentUserProjectAdmin(const int &project_id)
 {
     return getCurrentUserProjectRole(project_id) == "admin";
@@ -509,19 +428,6 @@ bool ComManager::isCurrentUserSuperAdmin()
 bool ComManager::hasPendingDownloads()
 {
     return !m_currentDownloads.isEmpty();
-}
-
-void ComManager::setCredentials(const QString &username, const QString &password)
-{
-    m_username = username;
-    m_password = password;
-
-    m_settedCredentials = false;  // Credentials were changed, must update on next request
-}
-
-QUrl ComManager::getServerUrl() const
-{
-    return m_serverUrl;
 }
 
 WebSocketManager *ComManager::getWebSocketManager()
@@ -615,11 +521,11 @@ bool ComManager::handleLoginReply(const QString &reply_data)
 
     // Set current user values
     m_currentUser.setFieldValue("user_uuid", user_uuid);
-    m_currentUser.setFieldValue("user_token", login_info["user_token"].toString());
+    setCredentials(login_info["user_token"].toString());
     m_tokenRefreshTimer.start();
 
     // Query versions informations
-    doQuery(WEB_VERSIONSINFO_PATH);
+    doGet(WEB_VERSIONSINFO_PATH);
 
     return true;
 }
@@ -944,7 +850,7 @@ bool ComManager::handleTokenRefreshReply(const QJsonDocument &refresh_data)
 {
     if (!refresh_data.object().contains("refresh_token"))
         return false;
-    m_currentUser.setFieldValue("user_token", refresh_data["refresh_token"].toString());
+    setCredentials(refresh_data["refresh_token"].toString());
     return true;
 }
 
@@ -979,12 +885,13 @@ void ComManager::clearCurrentUser()
     m_currentPreferences.clear();
     m_tokenRefreshTimer.stop();
     m_currentUser = TeraData(TERADATA_USER);
+    clearCredentials();
 }
 
 void ComManager::refreshUserToken()
 {
     //qDebug() << "Refreshing user token...";
-    doQuery(WEB_REFRESH_TOKEN_PATH, QUrlQuery(), true);
+    doGet(WEB_REFRESH_TOKEN_PATH, QUrlQuery(), true);
 }
 
 QString ComManager::filterReplyString(const QString &data_str)
@@ -996,78 +903,14 @@ QString ComManager::filterReplyString(const QString &data_str)
     return filtered_str;
 }
 
+void ComManager::onNetworkAuthenticationFailed()
+{
+    emit loginResult(false, tr("Utilisateur ou mot de passe invalide."));
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////
-void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
-{
-    Q_UNUSED(reply)
-    // If we are logging in, credentials were already sent, and if we get here, it's because they were
-    // rejected
-    if (!m_settedCredentials && !m_loggingInProgress){
-        LOG_DEBUG("Sending authentication request...", "ComManager::onNetworkAuthenticationRequired");
-        authenticator->setUser(m_username);
-        authenticator->setPassword(m_password);
-        m_settedCredentials = true; // We setted the credentials in authentificator
-    }else{
-        LOG_DEBUG("Authentication error", "ComManager::onNetworkAuthenticationRequired");
-        emit loginResult(false, tr("Utilisateur ou mot de passe invalide."));
-    }
-}
-
-void ComManager::onNetworkEncrypted(QNetworkReply *reply)
-{
-    Q_UNUSED(reply)
-    //qDebug() << "ComManager::onNetworkEncrypted";
-}
-
-void ComManager::onNetworkFinished(QNetworkReply *reply)
-{
-    emit waitingForReply(false);
-
-    if (reply->error() == QNetworkReply::NoError)
-    {
-        if (!processNetworkReply(reply)){
-            LOG_WARNING("Unhandled reply - " + reply->url().path(), "ComManager::onNetworkFinished");
-        }
-    }
-    else {
-        QByteArray reply_data = reply->readAll();
-
-        QString reply_msg = QString::fromUtf8(reply_data).replace("\"", "");
-
-        // Convert in-string unicode characters
-        Utils::inStringUnicodeConverter(&reply_msg);
-
-        if (reply_msg.isEmpty() || reply_msg.startsWith("\"\"") || reply_msg == "\n"){
-            //reply_msg = tr("Erreur non-détaillée.");
-            reply_msg = reply->errorString();
-        }
-
-        int status_code = -1;
-        if (reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).isValid())
-            status_code = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).toInt();
-        //qDebug() << "ComManager::onNetworkFinished - Reply error: " << reply->error() << ", Reply message: " << reply_msg;
-        LOG_ERROR("ComManager::onNetworkFinished - Reply error: " + reply->errorString() + ", Reply message: " + reply_msg, "ComManager::onNetworkFinished");
-        /*if (reply_msg.isEmpty())
-            reply_msg = reply->errorString();*/
-        emit networkError(reply->error(), reply_msg, reply->operation(), status_code);
-    }
-
-    reply->deleteLater();
-}
-
-void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
-{
-    Q_UNUSED(reply)
-    Q_UNUSED(errors)
-    LOG_WARNING("Ignoring SSL errors, this is unsafe", "ComManager::onNetworkSslErrors");
-    reply->ignoreSslErrors();
-    for(const QSslError &error : errors){
-        LOG_WARNING("Ignored: " + error.errorString(), "ComManager::onNetworkSslErrors");
-    }
-}
-
 void ComManager::onWebSocketLoginResult(bool logged_in)
 {
     if (!logged_in){
@@ -1079,34 +922,3 @@ void ComManager::onWebSocketLoginResult(bool logged_in)
     doUpdateCurrentUser();
 }
 
-
-void ComManager::setRequestLanguage(QNetworkRequest &request) {
-    //Locale will be initialized with default locale
-    QString localeString = QLocale().bcp47Name();
-    //qDebug() << "localeString : " << localeString;
-    request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
-}
-
-void ComManager::setRequestCredentials(QNetworkRequest &request, bool user_token_auth)
-{
-    //Needed?
-    request.setAttribute(QNetworkRequest::AuthenticationReuseAttribute, false);
-
-    // Pack in credentials
-    if (!user_token_auth){
-        QString concatenatedCredentials = m_username + ":" + m_password;
-        QByteArray data = concatenatedCredentials.toLocal8Bit().toBase64();
-        QString headerData = "Basic " + data;
-        request.setRawHeader( "Authorization", headerData.toLocal8Bit());
-    }else{
-        QString headerData = "OpenTera " + getCurrentUserToken();
-        request.setRawHeader("Authorization", headerData.toLocal8Bit());
-    }
-
-}
-
-void ComManager::setRequestVersions(QNetworkRequest &request)
-{
-    request.setRawHeader("X-Client-Name", QByteArray(OPENTERAPLUS_CLIENT_NAME));
-    request.setRawHeader("X-Client-Version", QByteArray(OPENTERAPLUS_VERSION));
-}

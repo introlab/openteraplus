@@ -32,8 +32,10 @@
 #include "DownloadedFile.h"
 #include "WebSocketManager.h"
 
+#include "BaseComManager.h"
 
-class ComManager : public QObject
+
+class ComManager : public BaseComManager
 {
     Q_OBJECT
 public:
@@ -44,9 +46,7 @@ public:
     void disconnectFromServer();
 
     bool processNetworkReply(QNetworkReply* reply);
-    void doQuery(const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool use_token_auth = false);
-    void doPost(const QString &path, const QString &post_data);
-    void doDelete(const QString &path, const int& id);
+
     void doUpdateCurrentUser();
     void doDownload(const QString& save_path, const QString &path, const QUrlQuery &query_args = QUrlQuery());
 
@@ -60,16 +60,13 @@ public:
     TeraPreferences &getCurrentPreferences();
     QString getCurrentUserSiteRole(const int &site_id);
     QString getCurrentUserProjectRole(const int &project_id);
-    QString getCurrentUserToken();
+
     bool isCurrentUserProjectAdmin(const int& project_id);
     bool isCurrentUserSiteAdmin(const int& site_id);
     bool isCurrentUserSuperAdmin();
     typedef void (ComManager::* signal_ptr)(QList<TeraData>, QUrlQuery);
 
     bool hasPendingDownloads();
-
-    void setCredentials(const QString &username, const QString &password);
-    QUrl getServerUrl() const;
 
     WebSocketManager* getWebSocketManager();
 
@@ -95,20 +92,12 @@ protected:
 
     QString filterReplyString(const QString& data_str);
 
-    QUrl                    m_serverUrl;
-    QNetworkAccessManager*  m_netManager;
-    QNetworkCookieJar       m_cookieJar;
     WebSocketManager*       m_webSocketMan;
     QTimer                  m_tokenRefreshTimer;
 
     QMap<QNetworkReply*, DownloadedFile*>   m_currentDownloads;
 
-    bool                    m_loggingInProgress;
-    bool                    m_settedCredentials;
     bool                    m_enableWebsocket;
-
-    QString                 m_username;
-    QString                 m_password;
 
     TeraData                m_currentUser;
     TeraPreferences         m_currentPreferences;
@@ -117,9 +106,7 @@ protected:
 
 signals:
     void serverDisconnected();
-    void networkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
     void socketError(QAbstractSocket::SocketError, QString);
-    void waitingForReply(bool waiting);
 
     void loginResult(bool logged_in, QString login_msg);
 
@@ -162,14 +149,6 @@ signals:
     void onlineParticipantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
     void onlineDevicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
 
-    //void queryResultsReceived(QString object, QUrlQuery url_query, QString data);
-    //void postResultsReceived(QString path, QString data);
-    void queryResultsOK(QString path, QUrlQuery url_query);
-    void postResultsOK(QString path);
-    void deleteResultsOK(QString path, int id);
-    void posting(QString path, QString data);
-    void querying(QString path);
-    void deleting(QString path);
 
     // File transfer
     void downloadCompleted(DownloadedFile* file);
@@ -183,22 +162,12 @@ signals:
     void sessionError(QString error);
 
     // Version management
-    void newVersionAvailable(QString version, QString download_url);
-
-
-public slots:
-
-protected:
-    void setRequestLanguage(QNetworkRequest &request);
-    void setRequestCredentials(QNetworkRequest &request, bool user_token_auth = false);
-    void setRequestVersions(QNetworkRequest &request);
+    void newVersionAvailable(QString version, QString download_url);   
 
 private slots:
     // Network
-    void onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
-    void onNetworkEncrypted(QNetworkReply *reply);
-    void onNetworkFinished(QNetworkReply *reply);
-    void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+    void onNetworkAuthenticationFailed();
+
 
     void onWebSocketLoginResult(bool logged_in);
 

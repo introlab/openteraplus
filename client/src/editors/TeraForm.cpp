@@ -850,7 +850,7 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
                                             m_widgetsHookRequests.insert(item, TeraData::getDataTypeFromPath(target_hook.first()));
                                             QUrlQuery args;
                                             args.addQueryItem(target_hook.last().replace("=",""), sender_index.toString());
-                                            m_comManager->doQuery(target_hook.first(), args);
+                                            m_comManager->doGet(target_hook.first(), args);
                                         }
                                     }
                                 }else{

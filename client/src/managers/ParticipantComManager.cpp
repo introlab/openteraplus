@@ -4,14 +4,10 @@
 #include "Utils.h"
 
 ParticipantComManager::ParticipantComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
-    QObject(parent),
+    BaseComManager(serverUrl, parent),
     m_currentParticipant(TERADATA_PARTICIPANT)
 {
     m_enableWebsocket = connectWebsocket;
-
-    // Initialize communication objects
-    m_netManager = new QNetworkAccessManager(this);
-    m_netManager->setCookieJar(&m_cookieJar);
 
     // Setup signals and slots
     if (m_enableWebsocket){
@@ -21,14 +17,6 @@ ParticipantComManager::ParticipantComManager(QUrl serverUrl, bool connectWebsock
         connect(m_webSocketMan, &WebSocketManager::websocketError, this, &ParticipantComManager::socketError); // Pass-thru signal
         connect(m_webSocketMan, &WebSocketManager::loginResult, this, &ParticipantComManager::onWebSocketLoginResult);
     }
-
-    // Network manager
-    connect(m_netManager, &QNetworkAccessManager::encrypted, this, &ParticipantComManager::onNetworkEncrypted);
-    connect(m_netManager, &QNetworkAccessManager::finished, this, &ParticipantComManager::onNetworkFinished);
-    connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ParticipantComManager::onNetworkSslErrors);
-
-    // Create correct server url
-    m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
 
 }
 
@@ -46,13 +34,13 @@ void ParticipantComManager::connectToServer(QString token)
 
     setCredentials(token);
 
-    doQuery(QString(WEB_PARTICIPANT_LOGIN_PATH));
+    doGet(QString(WEB_PARTICIPANT_LOGIN_PATH));
 
 }
 
 void ParticipantComManager::disconnectFromServer()
 {
-    doQuery(QString(WEB_PARTICIPANT_LOGOUT_PATH));
+    doGet(QString(WEB_PARTICIPANT_LOGOUT_PATH));
     if (m_enableWebsocket){
         m_webSocketMan->disconnectWebSocket();
     }
@@ -108,70 +96,22 @@ bool ParticipantComManager::processNetworkReply(QNetworkReply *reply)
     return handled;
 }
 
-void ParticipantComManager::doQuery(const QString &path, const QUrlQuery &query_args)
+void ParticipantComManager::doGet(const QString &path, const QUrlQuery &query_args, const bool &use_token)
 {
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    if (!query_args.isEmpty()){
-        query.setQuery(query_args);
-    }
-    QNetworkRequest request(query);
-
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    m_netManager->get(request);
-    emit waitingForReply(true);
-    emit querying(path);
-
-    if (!query_args.isEmpty())
-        LOG_DEBUG("GET: " + path + " with " + query_args.toString(), "ParticipantComManager::doQuery");
-    else
-        LOG_DEBUG("GET: " + path, "ParticipantComManager::doQuery");
+    Q_UNUSED(use_token)
+    BaseComManager::doGet(path, query_args, true); // Always use token!
 }
 
-void ParticipantComManager::doPost(const QString &path, const QString &post_data)
+void ParticipantComManager::doPost(const QString &path, const QString &post_data, const bool &use_token)
 {
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    QNetworkRequest request(query);
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    request.setRawHeader("Content-Type", "application/json");
-
-    m_netManager->post(request, post_data.toUtf8());
-    emit waitingForReply(true);
-    emit posting(path, post_data);
-
-#ifndef QT_NO_DEBUG
-    LOG_DEBUG("POST: " + path + ", with " + post_data, "ParticipantComManager::doPost");
-#else
-    // Strip data from logging in release, since this might contains passwords!
-    LOG_DEBUG("POST: " + path, "ComManager::doPost");
-#endif
+    Q_UNUSED(use_token)
+    BaseComManager::doPost(path, post_data, true); // Always use token!
 }
 
-void ParticipantComManager::doDelete(const QString &path, const int &id)
+void ParticipantComManager::doDelete(const QString &path, const int &id, const bool &use_token)
 {
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    query.setQuery("id=" + QString::number(id));
-    QNetworkRequest request(query);
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    m_netManager->deleteResource(request);
-    emit waitingForReply(true);
-    emit deleting(path);
-
-    LOG_DEBUG("DELETE: " + path + ", with id=" + QString::number(id), "ParticipantComManager::doDelete");
+    Q_UNUSED(use_token)
+    BaseComManager::doDelete(path, id, true); // Always use token!
 }
 
 void ParticipantComManager::doUpdateCurrentParticipant()
@@ -183,16 +123,6 @@ void ParticipantComManager::doUpdateCurrentParticipant()
 TeraData &ParticipantComManager::getCurrentParticipant()
 {
     return m_currentParticipant;
-}
-
-void ParticipantComManager::setCredentials(const QString &token)
-{
-    m_token = token;
-}
-
-QUrl ParticipantComManager::getServerUrl() const
-{
-    return m_serverUrl;
 }
 
 WebSocketManager *ParticipantComManager::getWebSocketManager()
@@ -307,7 +237,7 @@ void ParticipantComManager::updateCurrentParticipant(const TeraData &part_data)
 void ParticipantComManager::clearCurrentParticipant()
 {
     m_currentParticipant = TeraData(TERADATA_PARTICIPANT);
-    m_token = "";
+    clearCredentials();
 }
 
 QString ParticipantComManager::filterReplyString(const QString &data_str)
@@ -322,56 +252,6 @@ QString ParticipantComManager::filterReplyString(const QString &data_str)
 
 
 /////////////////////////////////////////////////////////////////////////////////////
-void ParticipantComManager::onNetworkEncrypted(QNetworkReply *reply)
-{
-    Q_UNUSED(reply)
-    //qDebug() << "ComManager::onNetworkEncrypted";
-}
-
-void ParticipantComManager::onNetworkFinished(QNetworkReply *reply)
-{
-    emit waitingForReply(false);
-
-    if (reply->error() == QNetworkReply::NoError)
-    {
-        if (!processNetworkReply(reply)){
-            LOG_WARNING("Unhandled reply - " + reply->url().path(), "ParticipantComManager::onNetworkFinished");
-        }
-    }
-    else {
-        QByteArray reply_data = reply->readAll();
-
-        QString reply_msg = QString::fromUtf8(reply_data).replace("\"", "");
-
-        // Convert in-string unicode characters
-        Utils::inStringUnicodeConverter(&reply_msg);
-
-        if (reply_msg.isEmpty() || reply_msg.startsWith("\"\"") || reply_msg == "\n"){
-            //reply_msg = tr("Erreur non-détaillée.");
-            reply_msg = reply->errorString();
-        }
-
-        int status_code = -1;
-        if (reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).isValid())
-            status_code = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).toInt();
-        LOG_ERROR("ParticipantComManager::onNetworkFinished - Reply error: " + reply->errorString() + ", Reply message: " + reply_msg, "ParticipantComManager::onNetworkFinished");
-        emit networkError(reply->error(), reply_msg, reply->operation(), status_code);
-    }
-
-    reply->deleteLater();
-}
-
-void ParticipantComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
-{
-    Q_UNUSED(reply)
-    Q_UNUSED(errors)
-    LOG_WARNING("Ignoring SSL errors, this is unsafe", "ParticipantComManager::onNetworkSslErrors");
-    reply->ignoreSslErrors();
-    for(const QSslError &error : errors){
-        LOG_WARNING("Ignored: " + error.errorString(), "ParticipantComManager::onNetworkSslErrors");
-    }
-}
-
 void ParticipantComManager::onWebSocketLoginResult(bool logged_in)
 {
     if (!logged_in){
@@ -381,30 +261,4 @@ void ParticipantComManager::onWebSocketLoginResult(bool logged_in)
     emit loginResult(logged_in);
 
     //doUpdateCurrentParticipant();
-}
-
-
-void ParticipantComManager::setRequestLanguage(QNetworkRequest &request) {
-    //Locale will be initialized with default locale
-    QString localeString = QLocale().bcp47Name();
-    //qDebug() << "localeString : " << localeString;
-    request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
-}
-
-void ParticipantComManager::setRequestCredentials(QNetworkRequest &request)
-{
-    //Needed?
-    request.setAttribute(QNetworkRequest::AuthenticationReuseAttribute, false);
-
-
-    // Pack in credentials
-    QString headerData = "OpenTera " + m_token;
-    request.setRawHeader( "Authorization", headerData.toLocal8Bit() );
-
-}
-
-void ParticipantComManager::setRequestVersions(QNetworkRequest &request)
-{
-    request.setRawHeader("X-Client-Name", QByteArray(OPENTERAPLUS_CLIENT_NAME));
-    request.setRawHeader("X-Client-Version", QByteArray(OPENTERAPLUS_VERSION));
 }

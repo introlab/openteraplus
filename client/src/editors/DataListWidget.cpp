@@ -292,7 +292,7 @@ void DataListWidget::queryDataList()
     if (!query_path.isEmpty()){
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_LIST, "true");
-        m_comManager->doQuery(query_path, args);
+        m_comManager->doGet(query_path, args);
     }
 }
 
@@ -304,7 +304,7 @@ void DataListWidget::queryDataList(QUrlQuery args)
     if (!m_queryPath.isEmpty()){
         if (args.isEmpty()) // "list" parameter must be appended manually if we provide an args list
             args.addQueryItem(WEB_QUERY_LIST, "true");
-        m_comManager->doQuery(m_queryPath, args);
+        m_comManager->doGet(m_queryPath, args);
     }
 }
 
@@ -512,7 +512,7 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
     // Query full data for that data item
     QUrlQuery args;
     args.addQueryItem(current_data->getIdFieldName(), QString::number(current_data->getId()));
-    m_comManager->doQuery(TeraData::getPathForDataType(current_data->getDataType()), args);
+    m_comManager->doGet(TeraData::getPathForDataType(current_data->getDataType()), args);
 }
 
 void DataListWidget::newDataRequested()

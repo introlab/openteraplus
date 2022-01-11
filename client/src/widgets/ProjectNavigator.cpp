@@ -64,7 +64,7 @@ void ProjectNavigator::initUi()
     ui->btnFilterActive->setChecked(filter);
 
     // Request sites
-    m_comManager->doQuery(WEB_SITEINFO_PATH, QUrlQuery(WEB_QUERY_LIST));
+    m_comManager->doGet(WEB_SITEINFO_PATH, QUrlQuery(WEB_QUERY_LIST));
 
 }
 
@@ -771,7 +771,7 @@ void ProjectNavigator::refreshRequested()
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_currentSiteId));
     query.addQueryItem(WEB_QUERY_LIST, "true");
-    m_comManager->doQuery(WEB_PROJECTINFO_PATH, query);
+    m_comManager->doGet(WEB_PROJECTINFO_PATH, query);
 
     emit refreshButtonClicked();
 }
@@ -957,7 +957,7 @@ void ProjectNavigator::currentSiteChanged(bool requestDisplay)
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_currentSiteId));
     query.addQueryItem(WEB_QUERY_LIST, "true");
-    m_comManager->doQuery(WEB_PROJECTINFO_PATH, query);
+    m_comManager->doGet(WEB_PROJECTINFO_PATH, query);
 
     // Emit signal
     emit currentSiteWasChanged(ui->cmbSites->currentText(), m_currentSiteId);
@@ -1028,14 +1028,14 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
         query.addQueryItem(WEB_QUERY_LIST, "true");
-        m_comManager->doQuery(WEB_GROUPINFO_PATH, query);
+        m_comManager->doGet(WEB_GROUPINFO_PATH, query);
 
         // Also loads participant not in a group
         query.clear();
         query.addQueryItem(WEB_QUERY_NO_GROUP,"true");
         query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
         //query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
-        m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
+        m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
 
     }
 
@@ -1049,7 +1049,7 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         query.addQueryItem(WEB_QUERY_ID_GROUP, QString::number(id));
         query.addQueryItem(WEB_QUERY_LIST, "true");
         //query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
-        m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
+        m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
 
     }
 }

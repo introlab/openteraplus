@@ -62,7 +62,7 @@ void InSessionWidget::setSessionId(int session_id)
 
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(session_id));
-    m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+    m_comManager->doGet(WEB_SESSIONINFO_PATH, args);
 }
 
 void InSessionWidget::setPendingEvent(JoinSessionEvent *event)
@@ -583,9 +583,9 @@ void InSessionWidget::queryLists()
     args.addQueryItem(WEB_QUERY_ENABLED, "1");
     args.addQueryItem(WEB_QUERY_LIST, "1");
     // args.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
-    m_comManager->doQuery(WEB_USERINFO_PATH, args);
-    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, args);
-    m_comManager->doQuery(WEB_DEVICEINFO_PATH, args);
+    m_comManager->doGet(WEB_USERINFO_PATH, args);
+    m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, args);
+    m_comManager->doGet(WEB_DEVICEINFO_PATH, args);
 
 
 }

@@ -504,7 +504,7 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
     }*/
-    m_comManager->doQuery(TeraData::getPathForDataType(data_type), query);
+    m_comManager->doGet(TeraData::getPathForDataType(data_type), query);
 
 }
 
@@ -521,7 +521,7 @@ void MainWindow::dataDisplayRequestedByUuid(TeraDataTypes data_type, QString dat
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
     }
-    m_comManager->doQuery(TeraData::getPathForDataType(data_type), query);
+    m_comManager->doGet(TeraData::getPathForDataType(data_type), query);
 
     // Set flag to wait for that specific data type
     if (m_waiting_for_data_type != TERADATA_NONE)

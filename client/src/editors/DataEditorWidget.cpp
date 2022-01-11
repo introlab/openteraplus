@@ -160,7 +160,7 @@ void DataEditorWidget::queryDataRequest(const QString &path, const QUrlQuery &qu
 {
     QString query_name = getQueryDataName(path, query_args);
     m_requests.append(query_name);
-    m_comManager->doQuery(path, query_args);
+    m_comManager->doGet(path, query_args);
     setWaiting();
 }
 

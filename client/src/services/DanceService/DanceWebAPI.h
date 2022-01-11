@@ -1,0 +1,4 @@
+#ifndef DANCEWEBAPI_H
+#define DANCEWEBAPI_H
+
+#endif // DANCEWEBAPI_H
