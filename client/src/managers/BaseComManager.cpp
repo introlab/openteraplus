@@ -220,3 +220,12 @@ QString BaseComManager::getCurrentToken()
 QUrl BaseComManager::getServerUrl() const{
     return m_serverUrl;
 }
+
+QString BaseComManager::filterReplyString(const QString &data_str)
+{
+    QString filtered_str = data_str;
+    if (data_str.isEmpty() || data_str == "\n" || data_str == "null\n")
+        filtered_str = "[]"; // Replace empty string with empty list!
+
+    return filtered_str;
+}

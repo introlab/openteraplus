@@ -90,8 +90,6 @@ protected:
     void clearCurrentUser();
     void refreshUserToken();
 
-    QString filterReplyString(const QString& data_str);
-
     WebSocketManager*       m_webSocketMan;
     QTimer                  m_tokenRefreshTimer;
 
@@ -111,6 +109,7 @@ signals:
     void loginResult(bool logged_in, QString login_msg);
 
     void currentUserUpdated();
+    void userTokenUpdated();
     void preferencesUpdated();
 
     void formReceived(QString form_type, QString data);
@@ -149,7 +148,6 @@ signals:
     void onlineParticipantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
     void onlineDevicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
 
-
     // File transfer
     void downloadCompleted(DownloadedFile* file);
     void downloadProgress(DownloadedFile* file);
@@ -167,7 +165,6 @@ signals:
 private slots:
     // Network
     void onNetworkAuthenticationFailed();
-
 
     void onWebSocketLoginResult(bool logged_in);
 

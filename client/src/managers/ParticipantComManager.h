@@ -65,8 +65,6 @@ protected:
 
     void clearCurrentParticipant();
 
-    QString filterReplyString(const QString& data_str);
-
     QUrl                    m_serverUrl;
     QNetworkAccessManager*  m_netManager;
     QNetworkCookieJar       m_cookieJar;

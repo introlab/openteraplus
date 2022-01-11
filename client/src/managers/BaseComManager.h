@@ -48,6 +48,8 @@ protected:
     void setRequestCredentials(QNetworkRequest &request, const bool &use_token);
     void setRequestVersions(QNetworkRequest &request);
 
+    QString filterReplyString(const QString &data_str);
+
 
 protected slots:
     virtual void onNetworkFinished(QNetworkReply *reply);

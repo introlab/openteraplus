@@ -851,6 +851,7 @@ bool ComManager::handleTokenRefreshReply(const QJsonDocument &refresh_data)
     if (!refresh_data.object().contains("refresh_token"))
         return false;
     setCredentials(refresh_data["refresh_token"].toString());
+    emit userTokenUpdated();
     return true;
 }
 
@@ -894,14 +895,7 @@ void ComManager::refreshUserToken()
     doGet(WEB_REFRESH_TOKEN_PATH, QUrlQuery(), true);
 }
 
-QString ComManager::filterReplyString(const QString &data_str)
-{
-    QString filtered_str = data_str;
-    if (data_str.isEmpty() || data_str == "\n" || data_str == "null\n")
-        filtered_str = "[]"; // Replace empty string with empty list!
 
-    return filtered_str;
-}
 
 void ComManager::onNetworkAuthenticationFailed()
 {

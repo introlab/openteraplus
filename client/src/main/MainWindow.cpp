@@ -327,7 +327,7 @@ void MainWindow::showNextMessage()
     m_currentMessage = m_messages.takeFirst();
 
     QString background_color = "rgba(128,128,128,50%)";
-    QString icon_path = "";
+    // QString icon_path = "";
 
     switch(m_currentMessage.getMessageType()){
     case Message::MESSAGE_OK:
@@ -900,7 +900,7 @@ void MainWindow::addNotification(const NotificationWindow::NotificationType noti
 
 bool MainWindow::hasWaitingMessage()
 {
-    for (Message msg:m_messages){
+    for (Message msg:qAsConst(m_messages)){
         if (msg.getMessageType()==Message::MESSAGE_WORKING)
             return true;
     }
