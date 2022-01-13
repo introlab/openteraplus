@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QLineEdit>
 
 namespace Ui {
 class FileUploaderDialog;
@@ -18,20 +19,19 @@ public:
     ~FileUploaderDialog();
 
 private slots:
-    void on_btnBrowse_clicked();
-
+    void on_btnAddFile_clicked();
     void on_btnUpload_clicked();
-
     void on_btnCancel_clicked();
 
-    void on_txtFileLabel_textChanged(const QString &arg1);
+    void on_tableFiles_itemSelectionChanged();
 
-    void on_txtFilePath_textChanged(const QString &arg1);
+    void on_btnRemove_clicked();
 
 private:
     Ui::FileUploaderDialog *ui;
+    QString current_base_path;
 
-    void updateUploadButtonState();
+    void addFileToTable(const QString& file_path, const QString &label);
 };
 
 #endif // FILEUPLOADERDIALOG_H

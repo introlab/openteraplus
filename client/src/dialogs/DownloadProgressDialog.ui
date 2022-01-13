@@ -160,7 +160,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
       </font>
      </property>
      <property name="text">
-      <string>Téléchargements en cours</string>
+      <string>Transferts en cours</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

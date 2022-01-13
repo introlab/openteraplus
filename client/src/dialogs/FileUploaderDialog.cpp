@@ -6,6 +6,12 @@ FileUploaderDialog::FileUploaderDialog(QWidget *parent) :
     ui(new Ui::FileUploaderDialog)
 {
     ui->setupUi(this);
+
+    // Set default path to documents
+    QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+
+    if (!documents_path.isEmpty())
+        current_base_path = documents_path.first();
 }
 
 FileUploaderDialog::~FileUploaderDialog()
@@ -13,18 +19,21 @@ FileUploaderDialog::~FileUploaderDialog()
     delete ui;
 }
 
-void FileUploaderDialog::on_btnBrowse_clicked()
+void FileUploaderDialog::on_btnAddFile_clicked()
 {
     QFileDialog dlg;
-    QStringList movie_paths = QStandardPaths::standardLocations(QStandardPaths::MoviesLocation);
-    QString base_path;
 
-    if (!movie_paths.isEmpty())
-        base_path = movie_paths.first();
+    QStringList files_to_upload = dlg.getOpenFileNames(this, tr("Choisir le(s) fichier(s) à envoyer"), current_base_path, tr("Vidéos (*.mp4 *.webm)"));
 
-    QString file_to_upload = dlg.getOpenFileName(this, tr("Choisir le fichier à envoyer"), base_path, tr("Vidéos (*.mp4 *.webm)"));
-
-    ui->txtFilePath->setText(file_to_upload);
+    for (const QString &file:qAsConst(files_to_upload)){
+        QFileInfo file_info(file);
+        QString default_label = file_info.fileName().split(".").first();
+        if (file == files_to_upload.first()){
+            // Update current path
+            current_base_path = file_info.path();
+        }
+        addFileToTable(file, default_label);
+    }
 
 }
 
@@ -40,27 +49,39 @@ void FileUploaderDialog::on_btnCancel_clicked()
     reject();
 }
 
-void FileUploaderDialog::updateUploadButtonState()
+void FileUploaderDialog::addFileToTable(const QString &file_path, const QString &label)
 {
-    bool file_exists = false;
-
-    if (!ui->txtFilePath->text().isEmpty()){
-        file_exists = QFile::exists(ui->txtFilePath->text());
+    // Check if file is already in the table - if so, skips!
+    if (!ui->tableFiles->findItems(file_path, Qt::MatchExactly).isEmpty()){
+        return;
     }
 
-    ui->btnUpload->setEnabled(!ui->txtFilePath->text().isEmpty() && file_exists &&
-                              !ui->txtFileLabel->text().isEmpty());
+    // Add file
+    ui->tableFiles->setRowCount(ui->tableFiles->rowCount()+1);
+    int current_row = ui->tableFiles->rowCount()-1;
+    QTableWidgetItem* item = new QTableWidgetItem(QIcon("://icons/data_video.png"), file_path);
+    ui->tableFiles->setItem(current_row, 0, item);
+
+    // Create label for it
+    QLineEdit* item_label = new QLineEdit(label);
+    ui->tableFiles->setCellWidget(current_row, 1, item_label);
+
+    ui->btnUpload->setEnabled(ui->tableFiles->rowCount()>0);
+
+}
+
+void FileUploaderDialog::on_tableFiles_itemSelectionChanged()
+{
+    ui->btnRemove->setEnabled(!ui->tableFiles->selectedItems().isEmpty());
 }
 
 
-void FileUploaderDialog::on_txtFileLabel_textChanged(const QString &arg1)
+void FileUploaderDialog::on_btnRemove_clicked()
 {
-    updateUploadButtonState();
-}
+    for(const QTableWidgetItem* item:ui->tableFiles->selectedItems()){
+        ui->tableFiles->removeRow(item->row());
+    }
 
-
-void FileUploaderDialog::on_txtFilePath_textChanged(const QString &arg1)
-{
-    updateUploadButtonState();
+    ui->btnUpload->setEnabled(ui->tableFiles->rowCount()>0);
 }
 
