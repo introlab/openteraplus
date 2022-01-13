@@ -541,7 +541,7 @@ void SessionWidget::deleteDataReply(QString path, int id)
     }*/
 }
 
-void SessionWidget::onDownloadCompleted(DownloadedFile *file)
+void SessionWidget::onDownloadCompleted(DownloadingFile *file)
 {
     if (!m_comManager->hasPendingDownloads()){
         setEnabled(true);

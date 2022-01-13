@@ -1,75 +1,50 @@
-#include "DownloadedFile.h"
+#include "DownloadingFile.h"
 #include <QDebug>
 
-DownloadedFile::DownloadedFile(QObject *parent) : QObject(parent)
+DownloadingFile::DownloadingFile(QObject *parent) : TransferringFile(parent)
 {
-    m_reply = nullptr;
-    m_filename = "";
-    m_savepath = "";
-}
-
-DownloadedFile::DownloadedFile(QNetworkReply *reply, const QString &save_path, QObject *parent)
-    : QObject(parent)
-{
-    setNetworkReply(reply);
-    m_savepath = save_path;
-    m_filename = "";
 
 }
 
-DownloadedFile::DownloadedFile(const DownloadedFile &copy, QObject *parent) : QObject(parent)
+DownloadingFile::DownloadingFile(const QString &save_path, const QString &file_name, QObject *parent)
+    : TransferringFile(save_path, file_name, parent)
+{
+
+
+}
+
+DownloadingFile::DownloadingFile(const DownloadingFile &copy, QObject *parent) : TransferringFile(copy, parent)
 {
     *this = copy;
 }
 
-DownloadedFile &DownloadedFile::operator =(const DownloadedFile &other)
+DownloadingFile &DownloadingFile::operator =(const DownloadingFile &other)
 {
-    //m_file = other.m_file;
-    m_filename = other.m_filename;
-    setNetworkReply(other.m_reply);
-    m_savepath = other.m_savepath;
     m_totalBytes = other.m_totalBytes;
     m_currentBytes = other.m_currentBytes;
 
     return *this;
 }
 
-void DownloadedFile::setNetworkReply(QNetworkReply *reply)
+void DownloadingFile::setNetworkReply(QNetworkReply *reply)
 {
-    m_reply = reply;
-    connect(m_reply, &QNetworkReply::readyRead, this, &DownloadedFile::onDownloadDataReceived);
-    connect(m_reply, &QNetworkReply::downloadProgress, this, &DownloadedFile::onDownloadProgress);
-    connect(m_reply, &QNetworkReply::finished, this, &DownloadedFile::onDownloadCompleted);
+    TransferringFile::setNetworkReply(reply);
+    connect(m_reply, &QNetworkReply::readyRead, this, &DownloadingFile::onDownloadDataReceived);
+    connect(m_reply, &QNetworkReply::downloadProgress, this, &DownloadingFile::onDownloadProgress);
+
 }
 
-QString DownloadedFile::getFullFilename()
+void DownloadingFile::abortTransfer()
 {
-    return m_savepath + "/" + m_filename;
+   TransferringFile::abortTransfer();
+   // Transfer aborted - remove the downloaded file so far
+   QDir dir;
+   if (dir.exists(getFullFilename()))
+       dir.remove(getFullFilename());
+
 }
 
-qint64 DownloadedFile::totalBytes()
-{
-    return m_totalBytes;
-}
-
-qint64 DownloadedFile::currentBytes()
-{
-    return m_currentBytes;
-}
-
-void DownloadedFile::abortDownload()
-{
-    qDebug() << "Aborting download...";
-    m_reply->abort();
-    if (m_file.isOpen()){
-        m_file.close();
-        QDir dir;
-        if (dir.exists(getFullFilename()))
-            dir.remove(getFullFilename());
-    }
-}
-
-void DownloadedFile::onDownloadDataReceived()
+void DownloadingFile::onDownloadDataReceived()
 {
     // Check if we have a file open for writing
     if (!m_file.isOpen()){
@@ -80,10 +55,10 @@ void DownloadedFile::onDownloadDataReceived()
             if (header_info_parts.first() != "attachment"){
                 m_lastError = tr("Impossible de télécharger un objet qui n'est pas de type 'attachment'.");
                 qDebug() << m_lastError;
-                abortDownload();
+                abortTransfer();
                 return;
             }
-            for (QString info: header_info_parts){
+            for (const QString &info: qAsConst(header_info_parts)){
                 if (info.trimmed().startsWith("filename=")){
                     QStringList file_parts = info.split("=");
                     if (file_parts.count() == 2)
@@ -94,13 +69,13 @@ void DownloadedFile::onDownloadDataReceived()
             if (m_filename.isEmpty()){
                 m_lastError = tr("Impossible de déterminer le nom du fichier à télécharger.");
                 qDebug() << m_lastError;
-                abortDownload();
+                abortTransfer();
                 return;
             }
         }else{
             m_lastError = tr("Mauvaise en-tête pour le téléchargement du fichier.");
             qDebug() << m_lastError;
-            abortDownload();
+            abortTransfer();
             return;
         }
 
@@ -109,7 +84,7 @@ void DownloadedFile::onDownloadDataReceived()
         if (!m_file.open(QIODevice::WriteOnly)){
             m_lastError = tr("Impossible d'ouvrir le fichier '") + getFullFilename() + "': " + m_file.errorString();
             qDebug() << m_lastError;
-            abortDownload();
+            abortTransfer();
             return;
         }
         qDebug() << "Saving to: " << getFullFilename();
@@ -119,7 +94,7 @@ void DownloadedFile::onDownloadDataReceived()
 
 }
 
-void DownloadedFile::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+void DownloadingFile::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
     m_totalBytes = bytesTotal;
     m_currentBytes = bytesReceived;
@@ -127,9 +102,3 @@ void DownloadedFile::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     emit downloadProgress(this);
 }
 
-void DownloadedFile::onDownloadCompleted()
-{
-    m_file.close();
-    qDebug() << "Download completed.";
-    emit downloadComplete(this);
-}

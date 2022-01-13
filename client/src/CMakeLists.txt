@@ -6,17 +6,19 @@ find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Network REQUIRED)
 find_package(Qt5LinguistTools REQUIRED)
 
-# Driverss first
+# Drivers first
 add_subdirectory(drivers)
 
 
 set(headers
     ClientApp.h
-    Message.h
     GlobalMessageBox.h
-    DownloadedFile.h
-    GlobalEvent.h
-    GlobalEventLogger.h
+    # Data structures
+    data/DownloadingFile.h
+    data/GlobalEvent.h
+    data/GlobalEventLogger.h
+    data/Message.h
+    data/TransferringFile.h
     # Main Windows
     main/MainWindow.h
     main/MainKitWindow.h
@@ -101,11 +103,13 @@ set(headers
 set(srcs
     main.cpp
     ClientApp.cpp
-    Message.cpp
     GlobalMessageBox.cpp
-    DownloadedFile.cpp
-    GlobalEvent.cpp
-    GlobalEventLogger.cpp
+    # Data structures
+    data/DownloadingFile.cpp
+    data/GlobalEvent.cpp
+    data/GlobalEventLogger.cpp
+    data/Message.cpp
+    data/TransferringFile.cpp
     # Main Windows
     main/MainWindow.cpp
     main/MainKitWindow.cpp

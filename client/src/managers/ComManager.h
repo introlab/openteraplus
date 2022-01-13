@@ -29,7 +29,7 @@
 #include "TeraPreferences.h"
 #include "TeraSessionStatus.h"
 #include "TeraSessionCategory.h"
-#include "DownloadedFile.h"
+#include "data/DownloadingFile.h"
 #include "WebSocketManager.h"
 
 #include "BaseComManager.h"
@@ -93,7 +93,7 @@ protected:
     WebSocketManager*       m_webSocketMan;
     QTimer                  m_tokenRefreshTimer;
 
-    QMap<QNetworkReply*, DownloadedFile*>   m_currentDownloads;
+    QMap<QNetworkReply*, DownloadingFile*>   m_currentDownloads;
 
     bool                    m_enableWebsocket;
 
@@ -149,8 +149,8 @@ signals:
     void onlineDevicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
 
     // File transfer
-    void downloadCompleted(DownloadedFile* file);
-    void downloadProgress(DownloadedFile* file);
+    void downloadCompleted(DownloadingFile* file);
+    void downloadProgress(DownloadingFile* file);
 
     // Generic session
     void sessionStarted(TeraData session_type, int id_session);

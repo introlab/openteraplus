@@ -16,7 +16,7 @@ DownloadProgressDialog::~DownloadProgressDialog()
     delete ui;
 }
 
-void DownloadProgressDialog::updateDownloadedFile(DownloadedFile *file)
+void DownloadProgressDialog::updateDownloadingFile(DownloadingFile *file)
 {
     QTableWidgetItem* item;
     QProgressBar* progress;
@@ -45,9 +45,9 @@ void DownloadProgressDialog::updateDownloadedFile(DownloadedFile *file)
 
 }
 
-bool DownloadProgressDialog::downloadFileCompleted(DownloadedFile *file)
+bool DownloadProgressDialog::downloadFileCompleted(DownloadingFile *file)
 {
-    updateDownloadedFile(file);
+    updateDownloadingFile(file);
 
     // Remove file from list
     m_files.remove(file);

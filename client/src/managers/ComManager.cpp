@@ -168,10 +168,11 @@ void ComManager::doDownload(const QString &save_path, const QString &path, const
 
     QNetworkReply* reply = m_netManager->get(request);
     if (reply){
-        DownloadedFile* file_to_download = new DownloadedFile(reply, save_path);
+        DownloadingFile* file_to_download = new DownloadingFile(save_path);
+        file_to_download->setNetworkReply(reply);
         m_currentDownloads[reply] = file_to_download;
 
-        connect(file_to_download, &DownloadedFile::downloadProgress, this, &ComManager::downloadProgress);
+        connect(file_to_download, &DownloadingFile::downloadProgress, this, &ComManager::downloadProgress);
     }
 
     emit waitingForReply(true);

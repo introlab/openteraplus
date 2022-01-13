@@ -676,7 +676,7 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
     }
 }
 
-void ParticipantWidget::onDownloadCompleted(DownloadedFile *file)
+void ParticipantWidget::onDownloadCompleted(DownloadingFile *file)
 {
     if (!m_comManager->hasPendingDownloads()){
         setEnabled(true);

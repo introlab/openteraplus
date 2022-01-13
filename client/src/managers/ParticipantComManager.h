@@ -29,7 +29,7 @@
 #include "TeraPreferences.h"
 #include "TeraSessionStatus.h"
 #include "TeraSessionCategory.h"
-#include "DownloadedFile.h"
+#include "data/DownloadingFile.h"
 #include "WebSocketManager.h"
 #include "BaseComManager.h"
 

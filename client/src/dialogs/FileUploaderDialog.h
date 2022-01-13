@@ -18,6 +18,9 @@ public:
     explicit FileUploaderDialog(QWidget *parent = nullptr);
     ~FileUploaderDialog();
 
+    QStringList getFiles();
+    QStringList getLabels();
+
 private slots:
     void on_btnAddFile_clicked();
     void on_btnUpload_clicked();

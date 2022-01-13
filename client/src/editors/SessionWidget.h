@@ -9,7 +9,7 @@
 
 #include "TeraSessionStatus.h"
 #include "TeraSessionEvent.h"
-#include "DownloadedFile.h"
+#include "data/DownloadingFile.h"
 #include "dialogs/BaseDialog.h"
 
 namespace Ui {
@@ -65,7 +65,7 @@ private slots:
     void postResultReply(QString path);
     void deleteDataReply(QString path, int id);
 
-    void onDownloadCompleted(DownloadedFile* file);
+    void onDownloadCompleted(DownloadingFile* file);
 
     void sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
 

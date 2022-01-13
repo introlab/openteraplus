@@ -16,10 +16,10 @@
 #include "widgets/NotificationWindow.h"
 
 #include "managers/ComManager.h"
-#include "Message.h"
-#include "GlobalEventLogger.h"
-#include "GlobalEvent.h"
-#include "DownloadedFile.h"
+#include "data/Message.h"
+#include "data/GlobalEventLogger.h"
+#include "data/GlobalEvent.h"
+#include "data/DownloadingFile.h"
 #include "TeraSessionCategory.h"
 #include "widgets/InSessionWidget.h"
 #include "dialogs/JoinSessionDialog.h"
@@ -49,9 +49,9 @@ signals:
     void logout_request();
 
 public slots:
-    void ws_userEvent(UserEvent event);
-    void ws_participantEvent(ParticipantEvent event);
-    void ws_joinSessionEvent(JoinSessionEvent event);
+    void ws_userEvent(opentera::protobuf::UserEvent event);
+    void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
+    void ws_joinSessionEvent(opentera::protobuf::JoinSessionEvent event);
 
 private slots:
     void updateCurrentUser();
@@ -67,8 +67,8 @@ private slots:
     void com_posting(QString path, QString data);
     void com_querying(QString path);
     void com_deleting(QString path);
-    void com_downloadProgress(DownloadedFile* file);
-    void com_downloadCompleted(DownloadedFile* file);
+    void com_downloadProgress(DownloadingFile* file);
+    void com_downloadCompleted(DownloadingFile* file);
 
     void com_preferencesUpdated();
 

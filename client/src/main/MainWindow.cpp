@@ -686,17 +686,17 @@ void MainWindow::com_deleting(QString path)
     }
 }
 
-void MainWindow::com_downloadProgress(DownloadedFile *file)
+void MainWindow::com_downloadProgress(DownloadingFile *file)
 {
     if (!m_download_dialog){
         // New download request - create dialog and add file
         m_download_dialog = new DownloadProgressDialog(this);
         m_download_dialog->show();
     }
-    m_download_dialog->updateDownloadedFile(file);
+    m_download_dialog->updateDownloadingFile(file);
 }
 
-void MainWindow::com_downloadCompleted(DownloadedFile *file)
+void MainWindow::com_downloadCompleted(DownloadingFile *file)
 {
     if (m_download_dialog){
         if (m_download_dialog->downloadFileCompleted(file)){

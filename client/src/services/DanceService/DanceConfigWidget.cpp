@@ -86,6 +86,8 @@ void DanceConfigWidget::fileUploaderFinished(int result)
 {
     if (result == QDialog::Accepted){
         // Do the upload process!
+        QStringList files = m_uploadDialog->getFiles();
+        QStringList labels = m_uploadDialog->getLabels();
     }
 
     m_uploadDialog->deleteLater();
@@ -95,6 +97,7 @@ void DanceConfigWidget::fileUploaderFinished(int result)
 void DanceConfigWidget::connectSignals()
 {
     connect(m_danceComManager, &DanceComManager::videosReceived, this, &DanceConfigWidget::processVideosReply);
+    connect(m_danceComManager, &DanceComManager::networkError, this, &DanceConfigWidget::handleNetworkError);
 }
 
 

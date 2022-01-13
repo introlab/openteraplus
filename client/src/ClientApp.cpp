@@ -4,8 +4,8 @@
 #include <QDir>
 
 
-#include "GlobalEventLogger.h"
-#include "GlobalEvent.h"
+#include "data/GlobalEventLogger.h"
+#include "data/GlobalEvent.h"
 
 ClientApp::ClientApp(int &argc, char **argv)
  :   QApplication(argc, argv)

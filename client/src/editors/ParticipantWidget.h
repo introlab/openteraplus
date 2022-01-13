@@ -87,7 +87,7 @@ private slots:
     void processParticipantsReply(QList<TeraData> participants);
     void processServicesReply(QList<TeraData> services);
     void deleteDataReply(QString path, int id);
-    void onDownloadCompleted(DownloadedFile* file);
+    void onDownloadCompleted(DownloadingFile* file);
     void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
 
     void btnDeleteSession_clicked();

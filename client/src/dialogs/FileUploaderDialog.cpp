@@ -19,6 +19,27 @@ FileUploaderDialog::~FileUploaderDialog()
     delete ui;
 }
 
+QStringList FileUploaderDialog::getFiles()
+{
+    QStringList files;
+    for(int i=0; i<ui->tableFiles->rowCount(); i++){
+        files.append(ui->tableFiles->item(i,0)->text());
+    }
+    return files;
+}
+
+QStringList FileUploaderDialog::getLabels()
+{
+    QStringList labels;
+    for (int i=0; i<ui->tableFiles->rowCount(); i++){
+        QLineEdit* editor = dynamic_cast<QLineEdit*>(ui->tableFiles->cellWidget(i,1));
+        if (editor){
+            labels.append(editor->text());
+        }
+    }
+    return labels;
+}
+
 void FileUploaderDialog::on_btnAddFile_clicked()
 {
     QFileDialog dlg;

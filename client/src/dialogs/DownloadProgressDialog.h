@@ -4,7 +4,7 @@
 #include <QDialog>
 
 #include <QTableWidgetItem>
-#include "DownloadedFile.h"
+#include "data/DownloadingFile.h"
 
 namespace Ui {
 class DownloadProgressDialog;
@@ -18,13 +18,13 @@ public:
     explicit DownloadProgressDialog(QWidget *parent = nullptr);
     ~DownloadProgressDialog();
 
-    void updateDownloadedFile(DownloadedFile* file);
-    bool downloadFileCompleted(DownloadedFile* file);
+    void updateDownloadingFile(DownloadingFile* file);
+    bool downloadFileCompleted(DownloadingFile* file);
 
 private:
     Ui::DownloadProgressDialog *ui;
 
-    QMap<DownloadedFile*, QTableWidgetItem*> m_files;
+    QMap<DownloadingFile*, QTableWidgetItem*> m_files;
 };
 
 #endif // DOWNLOADPROGRESSWIDGET_H
