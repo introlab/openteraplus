@@ -443,6 +443,9 @@ void ParticipantWidget::updateDeviceParticipant(TeraData *device_participant)
 
 void ParticipantWidget::updateServiceTabs()
 {
+    if (dataIsNew())
+        return;
+
     QList<int> ids_service;
 
     for(const TeraData &service: qAsConst(m_services)){
