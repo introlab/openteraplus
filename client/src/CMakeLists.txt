@@ -19,6 +19,7 @@ set(headers
     data/GlobalEventLogger.h
     data/Message.h
     data/TransferringFile.h
+    data/UploadingFile.h
     # Main Windows
     main/MainWindow.h
     main/MainKitWindow.h
@@ -38,7 +39,7 @@ set(headers
     dialogs/AboutDialogPage.h
     dialogs/GeneratePasswordDialog.h
     dialogs/PasswordStrengthDialog.h
-    dialogs/DownloadProgressDialog.h
+    dialogs/TransferProgressDialog.h
     dialogs/BaseDialog.h
     dialogs/DeviceAssignDialog.h
     dialogs/CleanUpDialog.h
@@ -110,6 +111,7 @@ set(srcs
     data/GlobalEventLogger.cpp
     data/Message.cpp
     data/TransferringFile.cpp
+    data/UploadingFile.cpp
     # Main Windows
     main/MainWindow.cpp
     main/MainKitWindow.cpp
@@ -122,7 +124,7 @@ set(srcs
     # Dialogs
     dialogs/LoginDialog.cpp
     dialogs/DeviceAssignDialog.cpp
-    dialogs/DownloadProgressDialog.cpp
+    dialogs/TransferProgressDialog.cpp
     dialogs/BaseDialog.cpp
     dialogs/StartSessionDialog.cpp
     dialogs/SessionLobbyDialog.cpp
@@ -197,7 +199,7 @@ SET(uis
     # Dialogs
     dialogs/LoginDialog.ui
     dialogs/DeviceAssignDialog.ui
-    dialogs/DownloadProgressDialog.ui
+    dialogs/TransferProgressDialog.ui
     dialogs/BaseDialog.ui
     dialogs/StartSessionDialog.ui
     dialogs/SessionLobbyDialog.ui

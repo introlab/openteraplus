@@ -31,6 +31,10 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
     ui->wdgProject->setComManager(m_comManager);
     ProjectWidget::setData(data);
 
+    if (!dataIsNew()){
+        queryServicesProject();
+    }
+
 
 }
 
@@ -260,6 +264,15 @@ void ProjectWidget::updateServiceProject(const TeraData *sp)
 
 }
 
+void ProjectWidget::queryServicesProject()
+{
+    // Query services for this project
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_SERVICES, "1");
+    queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
+}
+
 void ProjectWidget::updateControlsState()
 {   
     if (dataIsNew()){
@@ -387,8 +400,28 @@ void ProjectWidget::processDevicesReply(QList<TeraData> devices)
 
 void ProjectWidget::processServiceProjectsReply(QList<TeraData> services_projects)
 {
+    QList<int> ids_service;
+
     foreach(TeraData service_project, services_projects){
         updateServiceProject(&service_project);
+
+        // Add specific services configuration tabs
+        if (!dataIsNew()){ // Don't add anything if a new project
+            ids_service.append(service_project.getFieldValue("id_service").toInt());
+            addServiceTab(service_project);
+        }
+
+    }
+
+    // Remove service tabs not present anymore
+    if (!dataIsNew()){
+        for(QWidget* tab: qAsConst(m_services_tabs)){
+            if (!ids_service.contains(m_services_tabs.key(tab))){
+                ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
+                tab->deleteLater();
+                m_services_tabs.remove(m_services_tabs.key(tab));
+            }
+        }
     }
 
     /*bool services_empty = m_services.isEmpty();
@@ -612,11 +645,8 @@ void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
     if (current_tab == ui->tabServices){
         // Services
        if (m_listServicesProjects_items.isEmpty()){
-            // Query services for this project
-            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_WITH_SERVICES, "1");
-            queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
-        }
+           queryServicesProject();
+       }
     }
 
 
@@ -766,4 +796,23 @@ void ProjectWidget::on_tableSummary_itemDoubleClicked(QTableWidgetItem *item)
     }
 
 
+}
+
+void ProjectWidget::addServiceTab(const TeraData &service_project)
+{
+    int id_service = service_project.getFieldValue("id_service").toInt();
+    if (m_services_tabs.contains(id_service)) // Already there
+        return;
+
+    if (service_project.getFieldValue("id_project").toInt() != m_data->getId())
+        return; // Service not enabled for that project
+
+    QString service_key = service_project.getFieldValue("service_key").toString();
+
+    // Dance Service
+    if (service_key == "DanceService"){
+        DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getId());
+        ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_project.getFieldValue("service_name").toString());
+        m_services_tabs.insert(id_service, wdg);
+    }
 }

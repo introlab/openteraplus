@@ -12,7 +12,7 @@
 #include "widgets/ConfigWidget.h"
 #include "widgets/DashboardWidget.h"
 
-#include "dialogs/DownloadProgressDialog.h"
+#include "dialogs/TransferProgressDialog.h"
 #include "widgets/NotificationWindow.h"
 
 #include "managers/ComManager.h"
@@ -131,7 +131,7 @@ private:
     DataEditorWidget*       m_data_editor;
     DashboardWidget*        m_dashboard;
     InSessionWidget*        m_inSessionWidget;
-    DownloadProgressDialog* m_download_dialog;
+    TransferProgressDialog* m_download_dialog;
     JoinSessionDialog*      m_joinSession_dialog;
     TeraDataTypes           m_waiting_for_data_type;
     TeraDataTypes           m_currentDataType;

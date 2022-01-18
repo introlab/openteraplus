@@ -85,7 +85,7 @@ bool DanceComManager::handleDataReply(const QString &reply_path, const QString &
     }
 
     // Check to emit correct signals for specific data types
-    if (reply_path.endsWith(DANCE_VIDEO_PATH)){
+    if (reply_path.endsWith(DANCE_LIBRARY_PATH) || reply_path.endsWith(DANCE_LIBRARY_VIDEOS_PATH)){
         emit videosReceived(items, reply_query);
     }
 

@@ -1,4 +1,4 @@
-#ifndef TRANSFERRINGFILE_H
+﻿#ifndef TRANSFERRINGFILE_H
 #define TRANSFERRINGFILE_H
 
 #include <QObject>
@@ -15,7 +15,11 @@ public:
 
     TransferringFile &operator = (const TransferringFile& other);
 
+    QString getFileName();
+    QString getFilePath();
     QString getFullFilename();
+
+    QFile* getFile();
 
     qint64 totalBytes();
     qint64 currentBytes();
@@ -23,6 +27,8 @@ public:
     QString getLastError();
 
     virtual void setNetworkReply(QNetworkReply* reply);
+    QNetworkReply* getNetworkReply();
+
     virtual void abortTransfer();
 
 protected:
@@ -36,11 +42,17 @@ protected:
 
     QString         m_lastError;
 
+private:
+    bool            m_aborting;
+
 signals:
     void transferComplete(TransferringFile* transferred_file);
+    void transferProgress(TransferringFile* transferred_file);
+    void transferAborted(TransferringFile* transferred_file);
 
-private slots:
+protected slots:
     void onTransferCompleted();
+    void onTransferProgress(qint64 bytesReceived, qint64 bytesTotal);
 };
 
 #endif // TRANSFERRINGFILE_H

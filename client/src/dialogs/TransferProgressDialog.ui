@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DownloadProgressDialog</class>
- <widget class="QDialog" name="DownloadProgressDialog">
+ <class>TransferProgressDialog</class>
+ <widget class="QDialog" name="TransferProgressDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Téléchargements</string>
+   <string>Transferts</string>
   </property>
   <property name="styleSheet">
    <string notr="true">/*
@@ -168,7 +168,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
     </widget>
    </item>
    <item>
-    <widget class="QTableWidget" name="tableDownloads">
+    <widget class="QTableWidget" name="tableTransfers">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>

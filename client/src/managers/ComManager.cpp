@@ -95,7 +95,6 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
             if (handled) emit queryResultsOK(reply_path, reply_query);
         }
 
-
         /*if (reply_path == WEB_DEVICEDATAINFO_PATH && reply_query.hasQueryItem(WEB_QUERY_DOWNLOAD)){
             //qDebug() << "Download complete.";
             handled = true;
@@ -150,34 +149,6 @@ void ComManager::doUpdateCurrentUser()
     args.clear();
     args.addQueryItem(WEB_QUERY_APPTAG, APPLICATION_TAG);
     doGet(WEB_USERPREFSINFO_PATH, args);
-}
-
-void ComManager::doDownload(const QString &save_path, const QString &path, const QUrlQuery &query_args)
-{
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    if (!query_args.isEmpty()){
-        query.setQuery(query_args);
-    }
-
-    QNetworkRequest request(query);
-    setRequestCredentials(request, false);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    QNetworkReply* reply = m_netManager->get(request);
-    if (reply){
-        DownloadingFile* file_to_download = new DownloadingFile(save_path);
-        file_to_download->setNetworkReply(reply);
-        m_currentDownloads[reply] = file_to_download;
-
-        connect(file_to_download, &DownloadingFile::downloadProgress, this, &ComManager::downloadProgress);
-    }
-
-    emit waitingForReply(true);
-
-    LOG_DEBUG("DOWNLOADING: " + path + ", with " + query_args.toString() + ", to " + save_path, "ComManager::doQuery");
 }
 
 void ComManager::startSession(const TeraData &session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list, const QJsonDocument &session_config)
@@ -424,11 +395,6 @@ bool ComManager::isCurrentUserSuperAdmin()
         rval = m_currentUser.getFieldValue("user_superadmin").toBool();
     }
     return rval;
-}
-
-bool ComManager::hasPendingDownloads()
-{
-    return !m_currentDownloads.isEmpty();
 }
 
 WebSocketManager *ComManager::getWebSocketManager()

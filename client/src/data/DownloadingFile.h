@@ -25,11 +25,10 @@ private:
 
 
 signals:
-    void downloadProgress(DownloadingFile* downloaded_file);
+
 
 private slots:
     void onDownloadDataReceived();
-    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 
 };
 

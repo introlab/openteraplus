@@ -12,6 +12,9 @@
 #include "widgets/TableDateWidgetItem.h"
 #include "widgets/TableNumberWidgetItem.h"
 
+// Service specific config widgets
+#include "services/DanceService/DanceConfigWidget.h"
+
 namespace Ui {
 class ProjectWidget;
 }
@@ -43,17 +46,11 @@ private slots:
     void btnUpdateAccess_clicked();
 
     void on_tabProjectInfos_currentChanged(int index);
-
     void on_btnUpdateServices_clicked();
-
-
     void on_icoUsers_clicked();
-
     void on_icoSessions_clicked();
-
     void on_btnUserGroups_clicked();
     void userGroupsEditor_finished();
-
     void on_tableSummary_itemDoubleClicked(QTableWidgetItem *item);
 
 private:
@@ -68,6 +65,8 @@ private:
     QMap<int, QListWidgetItem*>   m_listServicesProjects_items;
     QMap<int, QListWidgetItem*>   m_listServices_items;
 
+    QMap<int, QWidget*>           m_services_tabs;
+
     BaseDialog*                   m_diag_editor;
 
     void connectSignals();
@@ -78,6 +77,10 @@ private:
     void updateGroup(const TeraData* group);
     void updateDevice(const TeraData* device);
     void updateServiceProject(const TeraData* sp);
+
+    void queryServicesProject();
+
+    void addServiceTab(const TeraData& service_project);
 
     void updateControlsState() override;
     void updateFieldsValue() override;

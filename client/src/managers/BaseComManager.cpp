@@ -5,6 +5,9 @@ BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
       m_serverUrl(serverUrl)
 {
 
+    m_settedCredentials = false;
+    m_loggingInProgress = false;
+
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
 
@@ -23,6 +26,9 @@ BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
 BaseComManager::~BaseComManager()
 {
     m_netManager->deleteLater();
+    qDeleteAll(m_currentDownloads);
+    qDeleteAll(m_currentUploads);
+
 }
 
 void BaseComManager::doGet(const QString &path, const QUrlQuery &query_args, const bool &use_token)
@@ -91,12 +97,106 @@ void BaseComManager::doDelete(const QString &path, const int &id, const bool &us
     LOG_DEBUG("DELETE: " + path + ", with id=" + QString::number(id), QString(this->metaObject()->className()) + "::doDelete");
 }
 
+void BaseComManager::doDownload(const QString &save_path, const QString &path, const QUrlQuery &query_args, const bool &use_token)
+{
+    QUrl query = m_serverUrl;
+
+    query.setPath(path);
+    if (!query_args.isEmpty()){
+        query.setQuery(query_args);
+    }
+
+    QNetworkRequest request(query);
+    setRequestCredentials(request, use_token);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
+    QNetworkReply* reply = m_netManager->get(request);
+    if (reply){
+        DownloadingFile* file_to_download = new DownloadingFile(save_path);
+        file_to_download->setNetworkReply(reply);
+        m_currentDownloads[reply] = file_to_download;
+
+        connect(file_to_download, &DownloadingFile::transferProgress, this, &BaseComManager::onTransferProgress);
+        connect(file_to_download, &DownloadingFile::transferComplete, this, &BaseComManager::onTransferCompleted);
+        connect(file_to_download, &DownloadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
+    }
+
+    emit waitingForReply(true);
+
+    LOG_DEBUG("DOWNLOADING: " + path + ", with " + query_args.toString() + ", to " + save_path, "ComManager::doQuery");
+}
+
+void BaseComManager::doUpload(const QString &path, const QString &file_name, const QVariantMap extra_headers, const QString &label, const bool &use_token)
+{
+    QUrl query = m_serverUrl;
+    query.setPath(path);
+
+    // Prepare request
+    QNetworkRequest request(query);
+    setRequestCredentials(request, use_token);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
+
+    // Create file to upload
+    UploadingFile* file_to_upload = new UploadingFile(file_name);
+    QFile* file = file_to_upload->getFile();
+    if (!file) // Invalid file
+        return;
+
+    // Set filename info and label if required
+    if (!label.isEmpty())
+        request.setRawHeader("X-Label", label.toLatin1());
+
+    request.setRawHeader("X-Filename", file_to_upload->getFileName().toLatin1());
+    request.setHeader(QNetworkRequest::ContentLengthHeader, file_to_upload->totalBytes());
+
+    // Create extra headers
+    for(const QVariant &header_value:extra_headers){
+        request.setRawHeader(extra_headers.key(header_value).toUtf8(), header_value.toString().toUtf8());
+    }
+
+
+    // Do the post request
+    file->open(QIODevice::ReadOnly); // Open the file
+    QNetworkReply* reply = m_netManager->post(request, file);
+    if (reply){
+        file_to_upload->setNetworkReply(reply);
+        m_currentUploads[reply] = file_to_upload;
+        connect(file_to_upload, &UploadingFile::transferProgress, this, &BaseComManager::onTransferProgress);
+        connect(file_to_upload, &UploadingFile::transferComplete, this, &BaseComManager::onTransferCompleted);
+        connect(file_to_upload, &UploadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
+
+    }else{
+        file_to_upload->deleteLater();
+    }
+
+
+}
+
+bool BaseComManager::hasPendingDownloads()
+{
+    return !m_currentDownloads.isEmpty();
+}
+
+bool BaseComManager::hasPendingUploads()
+{
+    return !m_currentUploads.isEmpty();
+}
+
+bool BaseComManager::hasPendingFileTransfers()
+{
+    return !m_currentDownloads.isEmpty() || !m_currentUploads.isEmpty();
+}
+
 
 void BaseComManager::onNetworkFinished(QNetworkReply *reply){
     emit waitingForReply(false);
 
     if (reply->error() == QNetworkReply::NoError)
     {
+        // Process network reply
         if (!processNetworkReply(reply)){
             LOG_WARNING("Unhandled reply - " + reply->url().path(), QString(this->metaObject()->className()) + "::onNetworkFinished");
         }
@@ -137,6 +237,7 @@ void BaseComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslEr
     for(const QSslError &error : errors){
         LOG_WARNING("Ignored: " + error.errorString(), QString(this->metaObject()->className()) + "::onNetworkSslErrors");
     }
+
 }
 
 void BaseComManager::onNetworkEncrypted(QNetworkReply *reply){
@@ -158,6 +259,59 @@ void BaseComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuth
         LOG_DEBUG("Authentication error", QString(this->metaObject()->className()) + "::onNetworkAuthenticationRequired");
         emit networkAuthFailed();
     }
+}
+
+void BaseComManager::onTransferProgress(TransferringFile *file)
+{
+    if (dynamic_cast<DownloadingFile*>(file)){
+        emit downloadProgress(dynamic_cast<DownloadingFile*>(file));
+    }
+
+    if (dynamic_cast<UploadingFile*>(file)){
+        emit uploadProgress(dynamic_cast<UploadingFile*>(file));
+    }
+
+    emit transferProgress(file);
+
+}
+
+void BaseComManager::onTransferCompleted(TransferringFile *file)
+{
+    QNetworkReply* reply = file->getNetworkReply();
+
+    // Process file transfers
+    if (m_currentDownloads.contains(reply)){
+        DownloadingFile* file = m_currentDownloads.take(reply);
+        emit downloadCompleted(file);
+        file->deleteLater();
+    }
+
+    if (m_currentUploads.contains(reply)){
+        UploadingFile* file = m_currentUploads.take(reply);
+        //qDebug() << "Upload completed.";
+        emit uploadCompleted(file);
+        file->deleteLater();
+    }
+
+    emit transferCompleted(file);
+}
+
+void BaseComManager::onTransferAborted(TransferringFile *file)
+{
+    QNetworkReply* reply = file->getNetworkReply();
+
+    // Process file transfers
+    if (m_currentDownloads.contains(reply)){
+        DownloadingFile* file = m_currentDownloads.take(reply);
+        file->deleteLater();
+    }
+
+    if (m_currentUploads.contains(reply)){
+        UploadingFile* file = m_currentUploads.take(reply);
+        file->deleteLater();
+    }
+
+    emit transferAborted(file);
 }
 
 void BaseComManager::setRequestLanguage(QNetworkRequest &request) {

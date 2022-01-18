@@ -475,7 +475,7 @@ void ParticipantWidget::addServiceTab(const TeraData &service)
 
     // Dance Service
     if (service_key == "DanceService"){
-        DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt());
+        DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getId());
         ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service.getName());
         m_services_tabs.insert(id_service, wdg);
 

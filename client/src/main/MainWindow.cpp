@@ -690,16 +690,16 @@ void MainWindow::com_downloadProgress(DownloadingFile *file)
 {
     if (!m_download_dialog){
         // New download request - create dialog and add file
-        m_download_dialog = new DownloadProgressDialog(this);
+        m_download_dialog = new TransferProgressDialog(this);
         m_download_dialog->show();
     }
-    m_download_dialog->updateDownloadingFile(file);
+    m_download_dialog->updateTransferringFile(file);
 }
 
 void MainWindow::com_downloadCompleted(DownloadingFile *file)
 {
     if (m_download_dialog){
-        if (m_download_dialog->downloadFileCompleted(file)){
+        if (m_download_dialog->transferFileCompleted(file)){
             // If we are here, no more downloads are pending. Close download dialog.
             m_download_dialog->close();
             m_download_dialog->deleteLater();

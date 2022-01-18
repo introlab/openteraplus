@@ -44,11 +44,12 @@ void FileUploaderDialog::on_btnAddFile_clicked()
 {
     QFileDialog dlg;
 
-    QStringList files_to_upload = dlg.getOpenFileNames(this, tr("Choisir le(s) fichier(s) à envoyer"), current_base_path, tr("Vidéos (*.mp4 *.webm)"));
+    QStringList files_to_upload = dlg.getOpenFileNames(this, tr("Choisir le(s) fichier(s) à envoyer"), current_base_path, tr("Vidéos (*.mp4 *.webm *.mkv *.avi)"));
 
     for (const QString &file:qAsConst(files_to_upload)){
         QFileInfo file_info(file);
-        QString default_label = file_info.fileName().split(".").first();
+        QString filename = file_info.fileName();
+        QString default_label = filename.left(filename.length() - filename.split(".").last().length() - 1);
         if (file == files_to_upload.first()){
             // Update current path
             current_base_path = file_info.path();
@@ -80,7 +81,7 @@ void FileUploaderDialog::addFileToTable(const QString &file_path, const QString 
     // Add file
     ui->tableFiles->setRowCount(ui->tableFiles->rowCount()+1);
     int current_row = ui->tableFiles->rowCount()-1;
-    QTableWidgetItem* item = new QTableWidgetItem(QIcon("://icons/data_video.png"), file_path);
+    QTableWidgetItem* item = new QTableWidgetItem(QIcon("://icons/data.png"), file_path);
     ui->tableFiles->setItem(current_row, 0, item);
 
     // Create label for it
@@ -99,8 +100,9 @@ void FileUploaderDialog::on_tableFiles_itemSelectionChanged()
 
 void FileUploaderDialog::on_btnRemove_clicked()
 {
-    for(const QTableWidgetItem* item:ui->tableFiles->selectedItems()){
-        ui->tableFiles->removeRow(item->row());
+    for(int i=0; i<ui->tableFiles->selectedItems().count(); i++){
+        int row = ui->tableFiles->selectedItems().at(i)->row();
+        ui->tableFiles->removeRow(row);
     }
 
     ui->btnUpload->setEnabled(ui->tableFiles->rowCount()>0);

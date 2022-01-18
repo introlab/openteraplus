@@ -48,7 +48,6 @@ public:
     bool processNetworkReply(QNetworkReply* reply);
 
     void doUpdateCurrentUser();
-    void doDownload(const QString& save_path, const QString &path, const QUrlQuery &query_args = QUrlQuery());
 
     void startSession(const TeraData& session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list, const QJsonDocument &session_config);
     void joinSession(const TeraData& session_type, const int &id_session);
@@ -65,8 +64,6 @@ public:
     bool isCurrentUserSiteAdmin(const int& site_id);
     bool isCurrentUserSuperAdmin();
     typedef void (ComManager::* signal_ptr)(QList<TeraData>, QUrlQuery);
-
-    bool hasPendingDownloads();
 
     WebSocketManager* getWebSocketManager();
 
@@ -92,8 +89,6 @@ protected:
 
     WebSocketManager*       m_webSocketMan;
     QTimer                  m_tokenRefreshTimer;
-
-    QMap<QNetworkReply*, DownloadingFile*>   m_currentDownloads;
 
     bool                    m_enableWebsocket;
 
@@ -147,10 +142,6 @@ signals:
     void onlineUsersReceived(QList<TeraData> users_list, QUrlQuery reply_query);
     void onlineParticipantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
     void onlineDevicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
-
-    // File transfer
-    void downloadCompleted(DownloadingFile* file);
-    void downloadProgress(DownloadingFile* file);
 
     // Generic session
     void sessionStarted(TeraData session_type, int id_session);

@@ -20,8 +20,7 @@ DownloadingFile::DownloadingFile(const DownloadingFile &copy, QObject *parent) :
 
 DownloadingFile &DownloadingFile::operator =(const DownloadingFile &other)
 {
-    m_totalBytes = other.m_totalBytes;
-    m_currentBytes = other.m_currentBytes;
+    TransferringFile::operator=(other);
 
     return *this;
 }
@@ -30,7 +29,7 @@ void DownloadingFile::setNetworkReply(QNetworkReply *reply)
 {
     TransferringFile::setNetworkReply(reply);
     connect(m_reply, &QNetworkReply::readyRead, this, &DownloadingFile::onDownloadDataReceived);
-    connect(m_reply, &QNetworkReply::downloadProgress, this, &DownloadingFile::onDownloadProgress);
+    connect(m_reply, &QNetworkReply::downloadProgress, this, &DownloadingFile::onTransferProgress);
 
 }
 
@@ -94,11 +93,4 @@ void DownloadingFile::onDownloadDataReceived()
 
 }
 
-void DownloadingFile::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
-{
-    m_totalBytes = bytesTotal;
-    m_currentBytes = bytesReceived;
-    //qDebug() << "Received " << bytesReceived << " bytes on " << bytesTotal << " bytes for file " << m_reply->header(QNetworkRequest::ContentDispositionHeader).toString();
-    emit downloadProgress(this);
-}
 
