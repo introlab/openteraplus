@@ -21,6 +21,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
     m_diag_editor = nullptr;
     m_sessionLobby = nullptr;
+    m_totalSessions = 0;
 
     ui->setupUi(this);
 
@@ -29,6 +30,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
     setLimited(false);
+    setSessionsLoading(false);
 
     // Use base class to manage editing
     setEditorControls(ui->wdgParticipant, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
@@ -39,7 +41,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     // Connect signals and slots
     connectSignals();
 
-    setData(data);
+    ParticipantWidget::setData(data);
 
     // Query form definition
     QUrlQuery args(WEB_FORMS_QUERY_PARTICIPANT);
@@ -52,19 +54,14 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     queryDataRequest(WEB_FORMS_PATH, args);
     ui->wdgParticipant->setComManager(m_comManager);
 
-    // Query sessions types
-    args.clear();
-    args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
-    queryDataRequest(WEB_SESSIONTYPE_PATH, args);
-
-    // Query services
-    args.clear();
-    args.addQueryItem(WEB_QUERY_LIST, "1");
-    args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
-    queryDataRequest(WEB_SERVICEINFO_PATH, args);
-
-    // Set default calendar view for new participants
-    if (m_data->isNew()){
+    if (!dataIsNew()){
+        // Query services if not a new participant
+        args.clear();
+        args.addQueryItem(WEB_QUERY_LIST, "1");
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+        queryDataRequest(WEB_SERVICEINFO_PATH, args);
+    }else{
+        // Set default calendar view for new participants
         updateCalendars(QDate::currentDate());
     }
 
@@ -100,6 +97,18 @@ void ParticipantWidget::saveData(bool signal)
     }
 }
 
+void ParticipantWidget::setData(const TeraData *data)
+{
+    DataEditorWidget::setData(data);
+
+    if (!dataIsNew()){
+        // Query stats
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
+        queryDataRequest(WEB_STATS_PATH, args);
+    }
+}
+
 void ParticipantWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &ParticipantWidget::processFormsReply);
@@ -109,6 +118,7 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &ParticipantWidget::processDeviceParticipantsReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &ParticipantWidget::processParticipantsReply);
     connect(m_comManager, &ComManager::servicesReceived, this, &ParticipantWidget::processServicesReply);
+    connect(m_comManager, &ComManager::statsReceived, this, &ParticipantWidget::processStatsReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
     connect(m_comManager, &ComManager::downloadCompleted, this, &ParticipantWidget::onDownloadCompleted);
 
@@ -132,11 +142,44 @@ void ParticipantWidget::connectSignals()
     connect(ui->lstDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentDeviceChanged);
 }
 
+void ParticipantWidget::setSessionsLoading(const bool &loading)
+{
+    ui->progSessionsLoad->setVisible(loading);
+    ui->frameCalendar->setVisible(!loading);
+    ui->tableSessions->setVisible(!loading);
+    ui->frameSessionsControls->setVisible(!loading);
+}
+
+void ParticipantWidget::querySessions()
+{
+    int sessions_left = m_totalSessions - ui->tableSessions->rowCount();
+    int sessions_count = ui->tableSessions->rowCount();
+    setSessionsLoading(sessions_left != 0);
+
+    if (sessions_left>0){
+        ui->progSessionsLoad->setValue(sessions_count);
+        QUrlQuery query;
+        query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
+        query.addQueryItem(WEB_QUERY_OFFSET, QString::number(sessions_count));
+        query.addQueryItem(WEB_QUERY_LIMIT, "20"); // Max 20 sessions per query
+        //queryDataRequest(WEB_SESSIONINFO_PATH, query);
+        m_comManager->doGet(WEB_SESSIONINFO_PATH, query);
+    }else{
+        // Update calendar view
+        currentTypeFiltersChanged(nullptr);
+        updateCalendars(getMaximumSessionDate().addMonths(-2));
+        //updateCalendars(getMinimumSessionDate());
+        ui->calMonth1->setData(m_ids_sessions.values());
+        ui->calMonth2->setData(m_ids_sessions.values());
+        ui->calMonth3->setData(m_ids_sessions.values());
+    }
+
+}
+
 void ParticipantWidget::updateControlsState()
 {
     if (dataIsNew()){
         // Clean up the widget
-
         if (ui->tabNav->count() > 1){
             ui->tabNav->setCurrentWidget(ui->tabDetails);
             ui->tabNav->removeTab(0);
@@ -146,8 +189,8 @@ void ParticipantWidget::updateControlsState()
                 ui->tabInfos->removeTab(1);
             }
         }
+        ui->frameNewSession->hide();
     }
-    //ui->frameSessionsControls->setHidden(dataIsNew());
 }
 
 void ParticipantWidget::updateFieldsValue()
@@ -194,7 +237,7 @@ void ParticipantWidget::updateFieldsValue()
 void ParticipantWidget::initUI()
 {
     ui->btnDownloadAll->hide();
-    ui->frameLogin->hide();
+    ui->frameParticipantLogin->hide();
     ui->frameActive->hide();
     ui->frameWeb->hide();
     ui->txtWeb->hide();
@@ -533,13 +576,9 @@ void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
         }
     }
 
-    // Update calendar view
-    currentTypeFiltersChanged(nullptr);
-    updateCalendars(getMaximumSessionDate().addMonths(-2));
-    //updateCalendars(getMinimumSessionDate());
-    ui->calMonth1->setData(m_ids_sessions.values());
-    ui->calMonth2->setData(m_ids_sessions.values());
-    ui->calMonth3->setData(m_ids_sessions.values());
+    // Query next sessions if needed
+    querySessions();
+
 }
 
 void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
@@ -580,10 +619,8 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
     ui->calMonth3->setSessionTypes(m_ids_session_types.values());
 
     // Query sessions for that participant
-    if (!m_data->isNew() && m_listSessions_items.isEmpty()){
-        QUrlQuery query;
-        query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
-        queryDataRequest(WEB_SESSIONINFO_PATH, query);
+    if (!m_data->isNew() && m_listSessions_items.count() != m_totalSessions){
+        querySessions();
     }
 }
 
@@ -638,6 +675,26 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services)
 
     // Add specific services configuration tabs
     updateServiceTabs();
+}
+
+void ParticipantWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
+{
+    // Check if stats are for us
+    if (!reply_query.hasQueryItem("id_participant"))
+        return;
+
+    if (reply_query.queryItemValue("id_participant").toInt() != m_data->getId())
+        return;
+
+    // Fill stats information
+    m_totalSessions = stats.getFieldValue("sessions_total_count").toInt();
+    ui->progSessionsLoad->setMaximum(m_totalSessions);
+    ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
+
+    // Query sessions types
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+    queryDataRequest(WEB_SESSIONTYPE_PATH, args);
 }
 
 void ParticipantWidget::deleteDataReply(QString path, int id)
@@ -1173,7 +1230,7 @@ void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
         }
     }
 
-    ui->frameLogin->setVisible(checkState == Qt::Checked);
+    ui->frameParticipantLogin->setVisible(checkState == Qt::Checked);
     on_cmbSessionType_currentIndexChanged(ui->cmbSessionType->currentIndex());
 }
 
@@ -1369,6 +1426,14 @@ void ParticipantWidget::on_btnUnchekSessionTypes_clicked()
 void ParticipantWidget::on_btnViewLink_clicked()
 {
     ui->txtWeb->setVisible(ui->btnViewLink->isChecked());
+    if (ui->btnViewLink->isChecked()){
+        QLayoutItem* spacer = ui->frameWeb->layout()->takeAt(ui->frameWeb->layout()->count()-1);
+        if (spacer)
+            delete spacer;
+        ui->txtWeb->setCursorPosition(0);
+    }else{
+        ui->frameWeb->layout()->addItem(new QSpacerItem(40,20,QSizePolicy::Expanding));
+    }
 }
 
 void ParticipantWidget::on_cmbServices_currentIndexChanged(int index)

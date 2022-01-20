@@ -72,6 +72,7 @@ private:
 
     bool isParticipantFiltered(const QString &part_uuid);
 
+    void setCurrentItem(QTreeWidgetItem* item);
     void updateAvailableActions(QTreeWidgetItem *current_item);
     TeraDataTypes getItemType(QTreeWidgetItem* item);
 

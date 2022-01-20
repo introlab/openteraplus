@@ -112,7 +112,7 @@ void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
     if (data_type == TERADATA_PROJECT){
 
         if (m_projects_items.contains(id)){
-            ui->treeNavigator->setCurrentItem(m_projects_items[id]);
+            setCurrentItem(m_projects_items[id]);
         }//else{
             // New item that was just added... save id for later!
             m_currentProjectId = id;
@@ -121,7 +121,7 @@ void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
     }
     if (data_type == TERADATA_GROUP){
         if (m_groups_items.contains(id)){
-            ui->treeNavigator->setCurrentItem(m_groups_items[id]);
+            setCurrentItem(m_groups_items[id]);
         }//else{
             // New item that was just added... save id for later!
             m_currentGroupId = id;
@@ -130,7 +130,7 @@ void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
     }
     if (data_type == TERADATA_PARTICIPANT){
         if (m_participants_items.contains(id)){
-            ui->treeNavigator->setCurrentItem(m_participants_items[id]);
+            setCurrentItem(m_participants_items[id]);
             m_currentParticipantUuid = getParticipantUuid(id);
         }else{
             m_currentParticipantId = id;
@@ -375,8 +375,8 @@ void ProjectNavigator::updateProject(const TeraData *project)
 
     if (m_currentProjectId == id_project && m_currentProjectId >0 && !m_selectionHold){
         // Load details
-        ui->treeNavigator->setCurrentItem(item);
-       item->setExpanded(true);
+        setCurrentItem(item);
+        item->setExpanded(true);
     }
 
     //updateAvailableActions(nullptr);
@@ -442,7 +442,7 @@ void ProjectNavigator::updateGroup(const TeraData *group)
 
    if (m_currentGroupId == id_group && m_currentGroupId >0 && !item->isExpanded()){
         // Load groups details
-       ui->treeNavigator->setCurrentItem(item);
+       setCurrentItem(item);
        item->setExpanded(true);
     }
 }
@@ -572,7 +572,7 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     }
     if (m_currentParticipantUuid == participant->getUuid() && !m_currentParticipantUuid.isEmpty() && !filtered){
          // Select current participant
-        ui->treeNavigator->setCurrentItem(item);
+        setCurrentItem(item);
      }
 
 }
@@ -627,6 +627,12 @@ bool ProjectNavigator::isParticipantFiltered(const QString &part_uuid)
     }
 
     return filtered;
+}
+
+void ProjectNavigator::setCurrentItem(QTreeWidgetItem *item)
+{
+    ui->treeNavigator->setCurrentItem(item);
+    updateAvailableActions(item);
 }
 
 void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)

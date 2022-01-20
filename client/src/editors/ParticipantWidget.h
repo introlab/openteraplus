@@ -8,6 +8,7 @@
 #include <QFrame>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QSpacerItem>
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
@@ -35,7 +36,8 @@ public:
     explicit ParticipantWidget(ComManager* comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
     ~ParticipantWidget();
 
-    void saveData(bool signal=true);
+    void saveData(bool signal=true) override;
+    void setData(const TeraData* data) override;
 
     void connectSignals();
 
@@ -56,13 +58,18 @@ private:
     BaseDialog*                     m_diag_editor;
     SessionLobbyDialog*             m_sessionLobby;
 
-    void updateControlsState();
-    void updateFieldsValue();
+    int                             m_totalSessions;
+
+    void setSessionsLoading(const bool& loading);
+    void querySessions();
+
+    void updateControlsState() override;
+    void updateFieldsValue() override;
     void initUI();
 
     bool canStartNewSession();
 
-    bool validateData();
+    bool validateData() override;
 
     void updateSession(TeraData *session);
     void updateDeviceProject(TeraData* device_project);
@@ -86,6 +93,8 @@ private slots:
     void processDeviceParticipantsReply(QList<TeraData> device_participants);
     void processParticipantsReply(QList<TeraData> participants);
     void processServicesReply(QList<TeraData> services);
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
+
     void deleteDataReply(QString path, int id);
     void onDownloadCompleted(DownloadingFile* file);
     void ws_participantEvent(opentera::protobuf::ParticipantEvent event);

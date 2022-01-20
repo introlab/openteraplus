@@ -36,6 +36,12 @@ if (APPLE)
     set(CMAKE_INSTALL_INCLUDEDIR OpenTeraPlus.app/Contents/Helpers)
 endif(APPLE)
 
+if (UNIX AND NOT APPLE)
+    # Fix QWebEngine linking issues on Linux (https://bugreports.qt.io/browse/QTBUG-80964)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold")
+endif(UNIX)
+
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 11)
