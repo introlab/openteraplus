@@ -35,6 +35,7 @@ signals:
     void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
 
     void videosReceived(QList<QJsonObject> videos, QUrlQuery reply_query);
+    void playlistReceived(QList<QJsonObject> playlist, QUrlQuery reply_query);
 
 };
 

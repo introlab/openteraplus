@@ -22,6 +22,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     m_diag_editor = nullptr;
     m_sessionLobby = nullptr;
     m_totalSessions = 0;
+    m_currentSessions = 0;
 
     ui->setupUi(this);
 
@@ -152,16 +153,15 @@ void ParticipantWidget::setSessionsLoading(const bool &loading)
 
 void ParticipantWidget::querySessions()
 {
-    int sessions_left = m_totalSessions - ui->tableSessions->rowCount();
-    int sessions_count = ui->tableSessions->rowCount();
+    int sessions_left = m_totalSessions - m_currentSessions;
     setSessionsLoading(sessions_left != 0);
 
     if (sessions_left>0){
-        ui->progSessionsLoad->setValue(sessions_count);
+        ui->progSessionsLoad->setValue(m_currentSessions);
         QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
-        query.addQueryItem(WEB_QUERY_OFFSET, QString::number(sessions_count));
-        query.addQueryItem(WEB_QUERY_LIMIT, "20"); // Max 20 sessions per query
+        query.addQueryItem(WEB_QUERY_OFFSET, QString::number(m_currentSessions));
+        query.addQueryItem(WEB_QUERY_LIMIT, "50"); // Limit number of sessions per query
         //queryDataRequest(WEB_SESSIONINFO_PATH, query);
         m_comManager->doGet(WEB_SESSIONINFO_PATH, query);
     }else{
@@ -172,6 +172,8 @@ void ParticipantWidget::querySessions()
         ui->calMonth1->setData(m_ids_sessions.values());
         ui->calMonth2->setData(m_ids_sessions.values());
         ui->calMonth3->setData(m_ids_sessions.values());
+
+        ui->tableSessions->resizeColumnsToContents();
     }
 
 }
@@ -420,8 +422,6 @@ void ParticipantWidget::updateSession(TeraData *session)
             btnResume->hide();
         }
     }
-
-    ui->tableSessions->resizeColumnsToContents();
 }
 
 void ParticipantWidget::updateDeviceProject(TeraData *device_project)
@@ -518,7 +518,7 @@ void ParticipantWidget::addServiceTab(const TeraData &service)
 
     // Dance Service
     if (service_key == "DanceService"){
-        DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getId());
+        DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getUuid());
         ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service.getName());
         m_services_tabs.insert(id_service, wdg);
 
@@ -569,6 +569,7 @@ void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
             if (part_info["id_participant"].toInt() == m_data->getId()){
                 // Add session in table or update it
                 updateSession(&session);
+                m_currentSessions++;
             }else{
                 // Session is not for us - ignore it.
                 continue;

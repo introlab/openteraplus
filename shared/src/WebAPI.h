@@ -74,6 +74,8 @@
 #define WEB_QUERY_ID_SPECIFIC       "id_specific"
 #define WEB_QUERY_ID_SERVICE_CONFIG "id_service_config"
 
+#define WEB_QUERY_UUID_PARTICIPANT  "participant_uuid"
+
 #define WEB_QUERY_UUID              "uuid"
 #define WEB_QUERY_APPTAG            "app_tag"
 #define WEB_QUERY_SERVICE_KEY       "service_key"

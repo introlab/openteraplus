@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTextDocumentFragment>
 #include <QInputDialog>
+#include <QListWidgetItem>
 
 #include "managers/ComManager.h"
 #include "dialogs/FileUploaderDialog.h"
@@ -23,7 +24,7 @@ class DanceConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DanceConfigWidget(ComManager* comManager, int projectId, int participantId = -1, QWidget *parent = nullptr);
+    explicit DanceConfigWidget(ComManager* comManager, int projectId, QString participantUuid = QString(), QWidget *parent = nullptr);
     ~DanceConfigWidget();
 
 private:
@@ -33,14 +34,21 @@ private:
 
     ComManager* m_comManager;
     int         m_idProject;
-    int         m_idParticipant;
+    QString     m_uuidParticipant;
+
+    QList<int>  m_playlistIds;
 
     DanceComManager* m_danceComManager;
 
     void connectSignals();
+    void updateVideoInLibrary(const QJsonObject &video);
+    void updateVideoInPlaylist(const QJsonObject &video);
+
+    void checkDirty();
 
 private slots:
     void processVideosReply(QList<QJsonObject> videos);
+    void processPlaylistReply(QList<QJsonObject> playlists);
     void handleNetworkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
 
     void fileUploaderFinished(int result);
@@ -56,6 +64,15 @@ private slots:
     void on_lstVideos_itemSelectionChanged();
     void on_btnDelete_clicked();
     void on_btnRename_clicked();
+    void on_lstAvailVideos_itemDoubleClicked(QListWidgetItem *item);
+    void on_lstAvailVideos_itemSelectionChanged();
+    void on_btnMoveUp_clicked();
+    void on_btnAddVideo_clicked();
+    void on_btnDelVideo_clicked();
+    void on_btnMoveDown_clicked();
+    void on_lstPlaylist_itemSelectionChanged();
+    void on_lstPlaylist_itemDoubleClicked(QListWidgetItem *item);
+    void on_btnSave_clicked();
 };
 
 #endif // DANCECONFIGWIDGET_H

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1018</width>
-    <height>680</height>
+    <height>771</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -698,7 +698,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                 <property name="spacing">
                  <number>6</number>
                 </property>
-                <item>
+                <item alignment="Qt::AlignLeft">
                  <widget class="QCheckBox" name="chkLogin">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -911,7 +911,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <x>0</x>
             <y>0</y>
             <width>978</width>
-            <height>335</height>
+            <height>410</height>
            </rect>
           </property>
           <attribute name="label">
@@ -968,7 +968,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                 <x>0</x>
                 <y>0</y>
                 <width>976</width>
-                <height>432</height>
+                <height>448</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">

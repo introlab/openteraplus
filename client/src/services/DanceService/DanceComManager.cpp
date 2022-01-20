@@ -89,6 +89,10 @@ bool DanceComManager::handleDataReply(const QString &reply_path, const QString &
         emit videosReceived(items, reply_query);
     }
 
+    if (reply_path.endsWith(DANCE_PLAYLIST_PATH)){
+        emit playlistReceived(items, reply_query);
+    }
+
     // Always emit generic signal
     emit dataReceived(items, reply_query);
 

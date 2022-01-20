@@ -59,6 +59,7 @@ private:
     SessionLobbyDialog*             m_sessionLobby;
 
     int                             m_totalSessions;
+    int                             m_currentSessions;
 
     void setSessionsLoading(const bool& loading);
     void querySessions();
