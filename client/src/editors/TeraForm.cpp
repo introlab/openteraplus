@@ -57,7 +57,7 @@ void TeraForm::buildUiFromStructure(const QString &structure)
     if (struct_object.contains("sections")){
         QVariantList struct_data =struct_object["sections"].toArray().toVariantList();
         int page_index = 0;
-        for (QVariant section:struct_data){
+        for (const QVariant &section:qAsConst(struct_data)){
             if (section.canConvert(QMetaType::QVariantHash)){
                 QVariantHash section_data = section.toHash();
                 //if (page_index>0){
@@ -95,10 +95,11 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
     resetFormValues();
 
     // Set initial values for missing fields
-    for (QString field:m_widgets.keys()){
+    for (QWidget* widget:qAsConst(m_widgets)){
+        QString field = m_widgets.key(widget);
         if (!m_initialValues.contains(field)){
             QVariant value;
-            getWidgetValues(m_widgets[field], nullptr, &value);
+            getWidgetValues(widget, nullptr, &value);
             m_initialValues.insert(field, value);
         }
     }
@@ -130,7 +131,7 @@ void TeraForm::fillFormFromData(const QString &structure)
 bool TeraForm::validateFormData(bool include_hidden)
 {
     bool rval = true;
-    for (QWidget* item:m_widgets.values()){
+    for (QWidget* item:qAsConst(m_widgets)){
        rval &= validateWidget(item, include_hidden);
     }
     return rval;
@@ -139,7 +140,7 @@ bool TeraForm::validateFormData(bool include_hidden)
 QStringList TeraForm::getInvalidFormDataLabels(bool include_hidden)
 {
     QStringList rval;
-    for (QWidget* item:m_widgets.values()){
+    for (QWidget* item:qAsConst(m_widgets)){
         if (!validateWidget(item, include_hidden)){
             rval.append(item->property("label").toString());
         }
@@ -187,7 +188,8 @@ bool TeraForm::getFieldDirty(const QString &field)
 
 bool TeraForm::getFieldDirty(QWidget *widget)
 {
-    if (m_widgets.values().contains(widget)){
+    //if (m_widgets.values().contains(widget)){
+    if (std::find(m_widgets.cbegin(), m_widgets.cend(), widget) != m_widgets.cend()){
         QString widget_id = m_widgets.key(widget);
         if (dynamic_cast<QLabel*>(widget)){
             return false; // QLabel are never dirty
@@ -264,7 +266,7 @@ void TeraForm::setFieldEnabled(const QString &field, const bool &enabled)
 
 void TeraForm::setFieldsEnabled(const QStringList &fields, const bool &enabled)
 {
-    for(QString field:fields){
+    for(const QString &field:fields){
         setFieldEnabled(field, enabled);
     }
 }
@@ -272,7 +274,7 @@ void TeraForm::setFieldsEnabled(const QStringList &fields, const bool &enabled)
 bool TeraForm::isDirty()
 {
     bool dirty = false;
-    foreach(QWidget* wdg, m_widgets.values()){
+    for(QWidget* wdg: qAsConst(m_widgets)){
         if (getFieldDirty(wdg)){
             dirty = true;
             break;
@@ -295,9 +297,10 @@ QJsonDocument TeraForm::getFormDataJson(bool include_unmodified_data)
     QJsonObject data_obj;
     QJsonObject base_obj;
 
-    for(QString field:m_widgets.keys()){
+    for(QWidget* wdg:qAsConst(m_widgets)){
+        QString field = m_widgets.key(wdg);
         QVariant value, id;
-        getWidgetValues(m_widgets[field], &id, &value);
+        getWidgetValues(wdg, &id, &value);
         if (!id.isNull())
             value = id;
         // Include only modified fields or ids
@@ -323,9 +326,10 @@ QJsonDocument TeraForm::getFormDataJson(bool include_unmodified_data)
 TeraData* TeraForm::getFormDataObject(const TeraDataTypes data_type)
 {
     TeraData* rval = new TeraData(data_type);
-    for(QString field:m_widgets.keys()){
+    for(QWidget* wdg:qAsConst(m_widgets)){
+        QString field = m_widgets.key(wdg);
         QVariant value, id;
-        if (getWidgetValues(m_widgets[field], &id, &value)){
+        if (getWidgetValues(wdg, &id, &value)){
             if (!id.isNull())
                 value = id;
             rval->setFieldValue(field, value);
@@ -391,7 +395,8 @@ bool TeraForm::formHasStructure()
 
 void TeraForm::resetFormValues()
 {
-    for (QString field:m_initialValues.keys()){
+    QStringList keys = m_initialValues.keys();
+    for (const QString& field:qAsConst(keys)){
         if (m_widgets.contains(field)){
             setWidgetValue(m_widgets[field], m_initialValues[field]);
             checkConditions(m_widgets[field]);
@@ -438,43 +443,43 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             if (item_type == "videoinputs"){
                 item_widget = createVideoInputsWidget(item_data);
             }
-            if (item_type == "audioinputs"){
+            else if (item_type == "audioinputs"){
                 item_widget = createAudioInputsWidget(item_data);
             }
-            if (item_type == "array"){
+            else if (item_type == "array"){
                 item_widget = createArrayWidget(item_data);
             }
-            if (item_type == "text"){
+            else if (item_type == "text"){
                 item_widget = createTextWidget(item_data, false);
             }
-            if (item_type == "password"){
+            else if (item_type == "password"){
                 item_widget = createTextWidget(item_data, true);
             }
-            if (item_type == "boolean"){
+            else if (item_type == "boolean"){
                 item_widget = createBooleanWidget(item_data);
             }
-            if (item_type == "numeric"){
+            else if (item_type == "numeric"){
                 item_widget = createNumericWidget(item_data);
             }
-            if (item_type == "hidden"){
+            else if (item_type == "hidden"){
                 item_widget = createLabelWidget(item_data);
             }
-            if (item_type == "checklist"){
+            else if (item_type == "checklist"){
                 item_widget = createListWidget(item_data);
             }
-            if (item_type == "longtext"){
+            else if (item_type == "longtext"){
                 item_widget = createLongTextWidget(item_data);
             }
-            if (item_type == "label"){
+            else if (item_type == "label"){
                 item_widget = createLabelWidget(item_data);
             }
-            if (item_type == "color"){
+            else if (item_type == "color"){
                 item_widget = createColorWidget(item_data);
             }
-            if (item_type == "datetime"){
+            else if (item_type == "datetime"){
                 item_widget = createDateTimeWidget(item_data);
             }
-            if (item_type == "duration"){
+            else if (item_type == "duration"){
                 item_widget = createDurationWidget(item_data);
             }
 
@@ -543,7 +548,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
 
 void TeraForm::setDefaultValues()
 {
-    for (QWidget* item:m_widgets.values()){
+    for (QWidget* item:qAsConst(m_widgets)){
         if (QComboBox* combo = dynamic_cast<QComboBox*>(item)){
             combo->setCurrentIndex(0);
         }
@@ -566,7 +571,7 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
         //item_combo->addItem(camera.description(), camera.deviceName());
         item_combo->addItem(camera.description(), camera.description());
     }*/
-    for (QString camera:m_videoInputs){
+    for (const QString &camera:qAsConst(m_videoInputs)){
         item_combo->addItem(camera, camera);
     }
 
@@ -591,7 +596,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
     /*for (QAudioDeviceInfo input:m_audioInputs){
         item_combo->addItem(input.deviceName(), input.deviceName());
     }*/
-    for (QString input:m_audioInputs){
+    for (const QString &input:qAsConst(m_audioInputs)){
         item_combo->addItem(input, input);
     }
 
@@ -611,7 +616,8 @@ QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
 
     if (structure.contains("values")){
         if (structure["values"].canConvert(QMetaType::QVariantList)){
-            for (QVariant value:structure["values"].toList()){
+            QVariantList list = structure["values"].toList();
+            for (const QVariant &value:qAsConst(list)){
                 if (value.canConvert(QMetaType::QVariantHash)){
                     QVariantHash item_data = value.toHash();
                     item_combo->addItem(item_data["value"].toString(), item_data["id"].toString());
@@ -775,7 +781,7 @@ void TeraForm::loadVideoInputs()
 
 void TeraForm::checkConditions(QWidget *item_triggering)
 {
-    for (QWidget* item:m_widgets.values()){
+    for (QWidget* item:qAsConst(m_widgets)){
         if (!item)
             continue;
         if (item == item_triggering)
@@ -1149,7 +1155,7 @@ void TeraForm::updateWidgetChoices(QWidget *widget, const QList<TeraData> values
         combo->clear();
         combo->addItem("", "");
 
-        for (TeraData value:values){
+        for (const TeraData &value:values){
             combo->addItem(value.getName(), value.getId());
         }
 
@@ -1160,7 +1166,8 @@ void TeraForm::updateWidgetChoices(QWidget *widget, const QList<TeraData> values
 
         return;
     }
-    LOG_WARNING("Unhandled widget: "+ QString(widget->metaObject()->className()), "TeraForm::updateWidgetValues");
+    if (widget)
+        LOG_WARNING("Unhandled widget: "+ QString(widget->metaObject()->className()), "TeraForm::updateWidgetValues");
 }
 
 bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
@@ -1188,7 +1195,11 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
         if (!dynamic_cast<QPushButton*>(widget)) // Ignore push button in validation
             widget->setStyleSheet("");
     }else{
-        widget->setStyleSheet("background-color: #ffaaaa;");
+        if (!dynamic_cast<QComboBox*>(widget)){
+           widget->setStyleSheet("background-color: #ffaaaa;");
+        }else{
+           widget->setStyleSheet("background-color: #ffaaaa; color:black;");
+        }
     }
     return rval;
 }
@@ -1245,7 +1256,8 @@ void TeraForm::hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas)
         return;
 
     // Check if we have a widget waiting for a reply from a query
-    if (m_widgetsHookRequests.values().contains(data_type)){
+    //if (m_widgetsHookRequests.values().contains(data_type)){
+    if (std::find(m_widgetsHookRequests.cbegin(), m_widgetsHookRequests.cend(), data_type) != m_widgetsHookRequests.cend()){
         QWidget* target_widget = m_widgetsHookRequests.key(data_type);
         // Update widget values
         updateWidgetChoices(target_widget, datas);

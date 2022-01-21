@@ -5,6 +5,7 @@
 #include <QTextDocumentFragment>
 #include <QInputDialog>
 #include <QListWidgetItem>
+#include <QStyledItemDelegate>
 
 #include "managers/ComManager.h"
 #include "dialogs/FileUploaderDialog.h"
@@ -44,11 +45,19 @@ private:
     void updateVideoInLibrary(const QJsonObject &video);
     void updateVideoInPlaylist(const QJsonObject &video);
 
+    void queryVideoLibrary();
+    void queryPlaylist();
+
+    void moveVideoItemToAvailable(QTableWidgetItem* item);
+    void moveVideoItemToPlaylist(QListWidgetItem* item);
+
     void checkDirty();
 
 private slots:
     void processVideosReply(QList<QJsonObject> videos);
     void processPlaylistReply(QList<QJsonObject> playlists);
+    void processSessionTypesReply(QList<TeraData> session_types);
+
     void handleNetworkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
 
     void fileUploaderFinished(int result);
@@ -71,8 +80,9 @@ private slots:
     void on_btnDelVideo_clicked();
     void on_btnMoveDown_clicked();
     void on_lstPlaylist_itemSelectionChanged();
-    void on_lstPlaylist_itemDoubleClicked(QListWidgetItem *item);
+    void on_lstPlaylist_itemDoubleClicked(QTableWidgetItem *item);
     void on_btnSave_clicked();
+    void on_cmbSessionTypes_currentIndexChanged(int index);
 };
 
 #endif // DANCECONFIGWIDGET_H

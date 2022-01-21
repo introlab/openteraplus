@@ -9,24 +9,30 @@ DanceConfigWidget::DanceConfigWidget(ComManager *comManager, int projectId, QStr
     m_uuidParticipant(participantUuid)
 {
     ui->setupUi(this);
+    ui->cmbSessionTypes->setItemDelegate(new QStyledItemDelegate());
 
     m_danceComManager = new DanceComManager(comManager);
     m_uploadDialog = nullptr;
     m_transferDialog = nullptr;
 
-    // Hide the playlist tab if no participant specified
-    if (m_uuidParticipant.isEmpty()){
-        ui->tabMain->removeTab(ui->tabMain->indexOf(ui->tabPlaylist));
-    }
-
     ui->tabMain->setCurrentIndex(0);
+    ui->lblWarning->hide();
 
     connectSignals();
 
-    // Refresh videos in library
-    QUrlQuery query;
-    query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
-    m_danceComManager->doGet(DANCE_LIBRARY_PATH, query);
+    // Setup widget according to setted values
+    if (m_uuidParticipant.isEmpty()){
+        // Hide the playlist tab if no participant specified
+        ui->tabMain->removeTab(ui->tabMain->indexOf(ui->tabPlaylist));
+        // Refresh videos in library
+        queryVideoLibrary();
+    }else{
+        // Query session types
+        QUrlQuery query;
+        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
+        m_comManager->doGet(WEB_SESSIONTYPE_PATH, query);
+    }
+
 }
 
 DanceConfigWidget::~DanceConfigWidget()
@@ -66,18 +72,83 @@ void DanceConfigWidget::processVideosReply(QList<QJsonObject> videos)
         updateVideoInPlaylist(video);
     }
 
-    if (m_playlistIds.isEmpty() && !m_uuidParticipant.isEmpty()){
+    if (m_playlistIds.isEmpty() && !m_uuidParticipant.isEmpty() && ui->cmbSessionTypes->count()>0 && ui->cmbSessionTypes->currentIndex()!=-1){
         // Query playlist for that participant
-        QUrlQuery query;
-        query.addQueryItem(WEB_QUERY_UUID_PARTICIPANT, m_uuidParticipant);
-        m_danceComManager->doGet(DANCE_PLAYLIST_PATH, query);
+        queryPlaylist();
     }
 }
 
 void DanceConfigWidget::processPlaylistReply(QList<QJsonObject> playlists)
 {
+    // Check if for us!
+    if (playlists.count()>0){
+        if (playlists.first()["id_session_type"].toInt() != ui->cmbSessionTypes->currentData().toInt() ||
+                playlists.first()["playlist_participant_uuid"].toString() != m_uuidParticipant){
+            return;
+        }
+    }
+
+    // Move all items from current playlist to available videos
+    for (int i=ui->lstPlaylist->rowCount()-1; i>=0; i--){
+        moveVideoItemToAvailable(ui->lstPlaylist->item(i,0));
+    }
+
+    // Reset playlist and controls
+    m_playlistIds.clear();
+    checkDirty();
+
     for (const QJsonObject &playlist:qAsConst(playlists)){
-        // TODO
+        int id_video = playlist["id_video"].toInt();
+        m_playlistIds.append(id_video);
+        // Find video in available list
+        for (int i=0; i<ui->lstAvailVideos->count(); i++){
+            if (ui->lstAvailVideos->item(i)->data(Qt::UserRole).toInt() == id_video){
+                moveVideoItemToPlaylist(ui->lstAvailVideos->item(i));
+                break;
+            }
+        }
+    }
+}
+
+void DanceConfigWidget::processSessionTypesReply(QList<TeraData> session_types)
+{
+    int initial_count = ui->cmbSessionTypes->count();
+
+    for (const TeraData &st:session_types){
+        if (st.hasFieldName("session_type_service_key")){
+            if (st.getFieldValue("session_type_service_key").toString() == "DanceService"){
+                int id_session_type = st.getId();
+                int index = ui->cmbSessionTypes->findData(id_session_type);
+                if (index == -1){
+                    // Not already present
+                    ui->cmbSessionTypes->addItem(st.getName(), id_session_type);
+                }else{
+                    // Update name
+                    ui->cmbSessionTypes->setItemText(index, st.getName());
+                }
+            }
+        }
+    }
+
+    // Manage selected item
+    if (ui->cmbSessionTypes->count() == 0){
+        // No session type! Hide everything and display warning
+        ui->lblWarning->show();
+        ui->framePlaylistManager->hide();
+        ui->frameSessionType->hide();
+        return;
+    }else{
+        // Only one element? If so, hides the combobox
+        ui->frameSessionType->setVisible(ui->cmbSessionTypes->count()>1);
+        if (ui->cmbSessionTypes->currentIndex() == -1){
+            // Select first item
+            ui->cmbSessionTypes->setCurrentIndex(0);
+        }
+    }
+
+    // Query videos if none and if session types were changed
+    if (ui->lstVideos->count() == 0 && initial_count != ui->cmbSessionTypes->count()){
+        queryVideoLibrary();
     }
 }
 
@@ -188,6 +259,8 @@ void DanceConfigWidget::connectSignals()
     connect(m_danceComManager, &DanceComManager::videosReceived, this, &DanceConfigWidget::processVideosReply);
     connect(m_danceComManager, &DanceComManager::playlistReceived, this, &DanceConfigWidget::processPlaylistReply);
 
+    connect(m_comManager, &ComManager::sessionTypesReceived, this, &DanceConfigWidget::processSessionTypesReply);
+
     connect(m_danceComManager, &DanceComManager::networkError, this, &DanceConfigWidget::handleNetworkError);
     connect(m_danceComManager, &DanceComManager::uploadProgress, this, &DanceConfigWidget::danceComUploadProgress);
     connect(m_danceComManager, &DanceComManager::uploadCompleted, this, &DanceConfigWidget::danceComUploadCompleted);
@@ -263,26 +336,66 @@ void DanceConfigWidget::updateVideoInPlaylist(const QJsonObject &video)
     }
 }
 
+void DanceConfigWidget::queryVideoLibrary()
+{
+    QUrlQuery query;
+    query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
+    m_danceComManager->doGet(DANCE_LIBRARY_PATH, query);
+}
+
+void DanceConfigWidget::queryPlaylist()
+{
+    QUrlQuery query;
+    query.addQueryItem(WEB_QUERY_UUID_PARTICIPANT, m_uuidParticipant);
+    query.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, ui->cmbSessionTypes->currentData().toString());
+    m_danceComManager->doGet(DANCE_PLAYLIST_PATH, query);
+}
+
+void DanceConfigWidget::moveVideoItemToAvailable(QTableWidgetItem *item)
+{
+    int current_row = item->row();
+    QTableWidgetItem* table_item = ui->lstPlaylist->takeItem(current_row, 0);
+    ui->lstPlaylist->removeRow(current_row);
+    QListWidgetItem* list_item = new QListWidgetItem(QIcon("://icons/data_video.png"), table_item->text());
+    list_item->setData(Qt::UserRole, table_item->data(Qt::UserRole));
+    delete table_item;
+
+    ui->lstAvailVideos->addItem(list_item);
+}
+
+void DanceConfigWidget::moveVideoItemToPlaylist(QListWidgetItem *item)
+{
+    QTableWidgetItem* table_item = new QTableWidgetItem(QIcon("://icons/data_video.png"), item->text());
+    table_item->setData(Qt::UserRole, item->data(Qt::UserRole));
+    delete item;
+
+    ui->lstPlaylist->setRowCount(ui->lstPlaylist->rowCount()+1);
+    ui->lstPlaylist->setItem(ui->lstPlaylist->rowCount()-1, 0, table_item);
+}
+
 void DanceConfigWidget::checkDirty()
 {
-    bool dirty = false;
-    for (int i=0; i<ui->lstPlaylist->rowCount(); i++){
-        int video_id = ui->lstPlaylist->item(i,0)->data(Qt::UserRole).toInt();
+    bool dirty = ui->lstPlaylist->rowCount() != m_playlistIds.count();
 
-        if (!m_playlistIds.contains(video_id)){
-            dirty = true;
-            break;
-        }
+    if (!dirty){ // Yet... count is good, check elements to be sure
+        for (int i=0; i<ui->lstPlaylist->rowCount(); i++){
+            int video_id = ui->lstPlaylist->item(i,0)->data(Qt::UserRole).toInt();
 
-        if (m_playlistIds.count() > i){
-            if (m_playlistIds.at(i) != video_id){
+            if (!m_playlistIds.contains(video_id)){
                 dirty = true;
                 break;
+            }
+
+            if (m_playlistIds.count() > i){
+                if (m_playlistIds.at(i) != video_id){
+                    dirty = true;
+                    break;
+                }
             }
         }
     }
 
-    ui->btnSave->setEnabled(dirty);
+    ui->framePlaylistControls->setEnabled(dirty);
 }
 
 void DanceConfigWidget::on_tabMain_currentChanged(int index)
@@ -381,13 +494,8 @@ void DanceConfigWidget::on_btnAddVideo_clicked()
     if (!ui->lstAvailVideos->currentItem())
         return;
 
-    QListWidgetItem* item = ui->lstAvailVideos->takeItem(ui->lstAvailVideos->currentRow());
-    QTableWidgetItem* table_item = new QTableWidgetItem(QIcon("://icons/data_video.png"), item->text());
-    table_item->setData(Qt::UserRole, item->data(Qt::UserRole));
-    delete item;
+    moveVideoItemToPlaylist(ui->lstAvailVideos->currentItem());
 
-    ui->lstPlaylist->setRowCount(ui->lstPlaylist->rowCount()+1);
-    ui->lstPlaylist->setItem(ui->lstPlaylist->rowCount()-1, 0, table_item);
     ui->lstPlaylist->clearSelection();
     ui->lstAvailVideos->clearSelection();
     ui->btnAddVideo->setEnabled(false);
@@ -401,14 +509,8 @@ void DanceConfigWidget::on_btnDelVideo_clicked()
     if (!ui->lstPlaylist->currentItem())
         return;
 
-    int current_row = ui->lstPlaylist->currentRow();
-    QTableWidgetItem* table_item = ui->lstPlaylist->takeItem(current_row, 0);
-    ui->lstPlaylist->removeRow(current_row);
-    QListWidgetItem* item = new QListWidgetItem(QIcon("://icons/data_video.png"), table_item->text());
-    item->setData(Qt::UserRole, table_item->data(Qt::UserRole));
-    delete table_item;
+    moveVideoItemToAvailable(ui->lstPlaylist->currentItem());
 
-    ui->lstAvailVideos->addItem(item);
     ui->lstPlaylist->clearSelection();
     ui->btnDelVideo->setEnabled(false);
     ui->btnMoveDown->setEnabled(false);
@@ -452,7 +554,7 @@ void DanceConfigWidget::on_lstPlaylist_itemSelectionChanged()
 }
 
 
-void DanceConfigWidget::on_lstPlaylist_itemDoubleClicked(QListWidgetItem *item)
+void DanceConfigWidget::on_lstPlaylist_itemDoubleClicked(QTableWidgetItem *item)
 {
     on_btnDelVideo_clicked();
 }
@@ -460,6 +562,33 @@ void DanceConfigWidget::on_lstPlaylist_itemDoubleClicked(QListWidgetItem *item)
 
 void DanceConfigWidget::on_btnSave_clicked()
 {
+    // Send current playlist
+    // Create and do post query
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray videos;
 
+    int id_session_type = ui->cmbSessionTypes->currentData().toInt();
+    for (int i=0; i<ui->lstPlaylist->rowCount(); i++){
+        QJsonObject data_obj;
+        data_obj["id_video"] = ui->lstPlaylist->item(i,0)->data(Qt::UserRole).toInt();
+        data_obj["id_session_type"] = id_session_type;
+        data_obj["playlist_participant_uuid"] = m_uuidParticipant;
+        data_obj["playlist_order"] = i;
+
+        videos.append(data_obj);
+    }
+
+    base_obj.insert("playlist", videos);
+    document.setObject(base_obj);
+
+    m_danceComManager->doPost(DANCE_PLAYLIST_PATH, document.toJson());
+}
+
+
+void DanceConfigWidget::on_cmbSessionTypes_currentIndexChanged(int index)
+{
+    // Requery playlist for current session
+    queryPlaylist();
 }
 
