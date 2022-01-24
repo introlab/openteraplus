@@ -89,11 +89,13 @@ void DanceConfigWidget::processPlaylistReply(QList<QJsonObject> playlists)
     }
 
     // Move all items from current playlist to available videos
-    for (int i=ui->lstPlaylist->rowCount()-1; i>=0; i--){
+    /*for (int i=ui->lstPlaylist->rowCount()-1; i>=0; i--){
         moveVideoItemToAvailable(ui->lstPlaylist->item(i,0));
-    }
+    }*/
 
     // Reset playlist and controls
+    ui->lstPlaylist->clearContents();
+    ui->lstPlaylist->setRowCount(0);
     m_playlistIds.clear();
     checkDirty();
 
@@ -103,7 +105,8 @@ void DanceConfigWidget::processPlaylistReply(QList<QJsonObject> playlists)
         // Find video in available list
         for (int i=0; i<ui->lstAvailVideos->count(); i++){
             if (ui->lstAvailVideos->item(i)->data(Qt::UserRole).toInt() == id_video){
-                moveVideoItemToPlaylist(ui->lstAvailVideos->item(i));
+                //moveVideoItemToPlaylist(ui->lstAvailVideos->item(i));
+                copyVideoItemToPlaylist(ui->lstAvailVideos->item(i));
                 break;
             }
         }
@@ -244,10 +247,9 @@ void DanceConfigWidget::danceComDeleteOK(QString path, int id)
                 break;
             }
         }
-        for (int i=0; i<ui->lstPlaylist->rowCount(); i++){
+        for (int i=ui->lstPlaylist->rowCount()-1; i>=0; i--){
             if (ui->lstPlaylist->item(i,0)->data(Qt::UserRole).toInt() == id){
                 ui->lstPlaylist->removeRow(i);
-                break;
             }
         }
         m_playlistIds.removeAll(id);
@@ -325,13 +327,8 @@ void DanceConfigWidget::updateVideoInPlaylist(const QJsonObject &video)
         for(int i=0; i<ui->lstPlaylist->rowCount(); i++){
             if (ui->lstPlaylist->item(i,0)->data(Qt::UserRole).toInt() == id_video){
                 playlist_item = ui->lstPlaylist->item(i,0);
-                break;
+                playlist_item->setText(video_name);
             }
-        }
-
-        if (playlist_item){
-            // Only update if there
-            playlist_item->setText(video_name);
         }
     }
 }
@@ -368,6 +365,15 @@ void DanceConfigWidget::moveVideoItemToPlaylist(QListWidgetItem *item)
     QTableWidgetItem* table_item = new QTableWidgetItem(QIcon("://icons/data_video.png"), item->text());
     table_item->setData(Qt::UserRole, item->data(Qt::UserRole));
     delete item;
+
+    ui->lstPlaylist->setRowCount(ui->lstPlaylist->rowCount()+1);
+    ui->lstPlaylist->setItem(ui->lstPlaylist->rowCount()-1, 0, table_item);
+}
+
+void DanceConfigWidget::copyVideoItemToPlaylist(QListWidgetItem *item)
+{
+    QTableWidgetItem* table_item = new QTableWidgetItem(QIcon("://icons/data_video.png"), item->text());
+    table_item->setData(Qt::UserRole, item->data(Qt::UserRole));
 
     ui->lstPlaylist->setRowCount(ui->lstPlaylist->rowCount()+1);
     ui->lstPlaylist->setItem(ui->lstPlaylist->rowCount()-1, 0, table_item);
@@ -494,7 +500,8 @@ void DanceConfigWidget::on_btnAddVideo_clicked()
     if (!ui->lstAvailVideos->currentItem())
         return;
 
-    moveVideoItemToPlaylist(ui->lstAvailVideos->currentItem());
+    //moveVideoItemToPlaylist(ui->lstAvailVideos->currentItem());
+    copyVideoItemToPlaylist(ui->lstAvailVideos->currentItem());
 
     ui->lstPlaylist->clearSelection();
     ui->lstAvailVideos->clearSelection();
@@ -509,7 +516,11 @@ void DanceConfigWidget::on_btnDelVideo_clicked()
     if (!ui->lstPlaylist->currentItem())
         return;
 
-    moveVideoItemToAvailable(ui->lstPlaylist->currentItem());
+    //moveVideoItemToAvailable(ui->lstPlaylist->currentItem());
+    int current_row = ui->lstPlaylist->currentRow();
+
+    ui->lstPlaylist->takeItem(current_row, 0);
+    ui->lstPlaylist->removeRow(current_row);
 
     ui->lstPlaylist->clearSelection();
     ui->btnDelVideo->setEnabled(false);
@@ -590,5 +601,25 @@ void DanceConfigWidget::on_cmbSessionTypes_currentIndexChanged(int index)
 {
     // Requery playlist for current session
     queryPlaylist();
+}
+
+
+void DanceConfigWidget::on_btnCancel_clicked()
+{
+    // Reset videos in the playlist
+    ui->lstPlaylist->clearContents();
+    ui->lstPlaylist->setRowCount(0);
+
+    for (const int& id:qAsConst(m_playlistIds)){
+        // Find video in available
+        for(int i=0; i<ui->lstAvailVideos->count(); i++){
+            if (ui->lstAvailVideos->item(i)->data(Qt::UserRole).toInt() == id){
+                copyVideoItemToPlaylist(ui->lstAvailVideos->item(i));
+                break;
+            }
+        }
+    }
+
+    checkDirty();
 }
 

@@ -50,6 +50,7 @@ private:
 
     void moveVideoItemToAvailable(QTableWidgetItem* item);
     void moveVideoItemToPlaylist(QListWidgetItem* item);
+    void copyVideoItemToPlaylist(QListWidgetItem* item);
 
     void checkDirty();
 
@@ -83,6 +84,7 @@ private slots:
     void on_lstPlaylist_itemDoubleClicked(QTableWidgetItem *item);
     void on_btnSave_clicked();
     void on_cmbSessionTypes_currentIndexChanged(int index);
+    void on_btnCancel_clicked();
 };
 
 #endif // DANCECONFIGWIDGET_H

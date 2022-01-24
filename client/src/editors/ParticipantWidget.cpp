@@ -370,6 +370,8 @@ void ParticipantWidget::updateSession(TeraData *session)
         ui->tableSessions->setCellWidget(current_row, 6, action_frame);
 
         m_listSessions_items[id_session] = name_item;
+
+        m_currentSessions++;
     }
     m_ids_sessions[id_session] = new TeraData(*session);
 
@@ -573,7 +575,6 @@ void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
             if (part_info["id_participant"].toInt() == m_data->getId()){
                 // Add session in table or update it
                 updateSession(&session);
-                m_currentSessions++;
             }else{
                 // Session is not for us - ignore it.
                 continue;
@@ -724,6 +725,12 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
             ui->calMonth1->setData(m_ids_sessions.values());
             ui->calMonth2->setData(m_ids_sessions.values());
             ui->calMonth3->setData(m_ids_sessions.values());
+
+            m_currentSessions--;
+            m_totalSessions--;
+
+            ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
+
         }
     }
 
