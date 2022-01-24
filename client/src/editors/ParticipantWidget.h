@@ -60,6 +60,7 @@ private:
 
     int                             m_totalSessions;
     int                             m_currentSessions;
+    bool                            m_sessionsLoading;
 
     void setSessionsLoading(const bool& loading);
     void querySessions();

@@ -14,6 +14,8 @@
 
 #include "services/DanceService/DanceConfigWidget.h"
 
+#define QUERY_SESSION_LIMIT_PER_QUERY 50
+
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::ParticipantWidget)
@@ -23,6 +25,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     m_sessionLobby = nullptr;
     m_totalSessions = 0;
     m_currentSessions = 0;
+    m_sessionsLoading = false;
 
     ui->setupUi(this);
 
@@ -149,19 +152,20 @@ void ParticipantWidget::setSessionsLoading(const bool &loading)
     ui->frameCalendar->setVisible(!loading);
     ui->tableSessions->setVisible(!loading);
     ui->frameSessionsControls->setVisible(!loading);
+    m_sessionsLoading = loading;
 }
 
 void ParticipantWidget::querySessions()
 {
     int sessions_left = m_totalSessions - m_currentSessions;
-    setSessionsLoading(sessions_left != 0);
+    setSessionsLoading(sessions_left > 0);
 
     if (sessions_left>0){
         ui->progSessionsLoad->setValue(m_currentSessions);
         QUrlQuery query;
         query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
         query.addQueryItem(WEB_QUERY_OFFSET, QString::number(m_currentSessions));
-        query.addQueryItem(WEB_QUERY_LIMIT, "50"); // Limit number of sessions per query
+        query.addQueryItem(WEB_QUERY_LIMIT, QString::number(QUERY_SESSION_LIMIT_PER_QUERY)); // Limit number of sessions per query
         //queryDataRequest(WEB_SESSIONINFO_PATH, query);
         m_comManager->doGet(WEB_SESSIONINFO_PATH, query);
     }else{
@@ -584,7 +588,7 @@ void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
 
 void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
 {
-    ui->cmbSessionType->clear();
+    // ui->cmbSessionType->clear();
 
     for (const TeraData &st:session_types){
         if (!m_ids_session_types.contains(st.getId())){
@@ -595,14 +599,6 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
             s->setCheckState(Qt::Checked);
             s->setForeground(QColor(st.getFieldValue("session_type_color").toString()));
             s->setFont(QFont("Arial",10));
-           /* QPixmap* pxmap = new QPixmap(8,16);
-            pxmap->fill(Qt::transparent);
-            QPainter* paint = new QPainter(pxmap);
-            paint->setBrush(QColor(st.getFieldValue("session_type_color").toString()));
-            paint->setPen(Qt::transparent);
-            paint->drawRect(0,0,8,16);
-            QIcon* icon = new QIcon(*pxmap);
-            s->setIcon(*icon);*/
             ui->lstFilters->addItem(s);
 
             // New session ComboBox
@@ -611,7 +607,20 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
                 ses_type_name += " (en ligne)";
             ui->cmbSessionType->addItem(ses_type_name, st.getId());
         }else{
+            // Existing, must update values
             *m_ids_session_types[st.getId()] = st;
+            for (int i=0; i<ui->lstFilters->count(); i++){
+                QListWidgetItem* item = ui->lstFilters->item(i);
+                if (item->data(Qt::UserRole).toInt() == st.getId()){
+                    item->setText(st.getName());
+                }
+            }
+
+            for (int i=0; i<ui->cmbSessionType->count(); i++){
+                if (ui->cmbSessionType->itemData(i).toInt() == st.getId()){
+                    ui->cmbSessionType->setItemText(i, st.getName());
+                }
+            }
         }
     }
 
@@ -620,7 +629,7 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
     ui->calMonth3->setSessionTypes(m_ids_session_types.values());
 
     // Query sessions for that participant
-    if (!m_data->isNew() && m_listSessions_items.count() != m_totalSessions){
+    if (!m_data->isNew() && m_currentSessions == 0 && !m_sessionsLoading){
         querySessions();
     }
 }
