@@ -177,7 +177,7 @@ void DanceConfigWidget::handleNetworkError(QNetworkReply::NetworkError error, QS
         error_str = tr("Erreur ") + QString::number(error) + ": " + error_msg;
 
     GlobalMessageBox msg;
-    msg.showError(tr("Une erreur est survenue..."), error_msg);
+    msg.showError(tr("Télédanse - Erreur"), error_msg);
 
 }
 
@@ -342,6 +342,9 @@ void DanceConfigWidget::queryVideoLibrary()
 
 void DanceConfigWidget::queryPlaylist()
 {
+    if (m_uuidParticipant.isEmpty())
+        return;
+
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_UUID_PARTICIPANT, m_uuidParticipant);
     query.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, ui->cmbSessionTypes->currentData().toString());
