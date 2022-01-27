@@ -70,7 +70,6 @@ private slots:
     void sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
 
     void currentSelectedDataChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
-    void on_tabSessionInfos_tabBarClicked(int index);
     void on_icoUsers_clicked();
     void on_icoParticipant_clicked();
     void on_icoDevices_clicked();
@@ -78,6 +77,7 @@ private slots:
     void on_icoAssets_clicked();
     void on_icoTests_clicked();
 
+    void on_tabNav_currentChanged(int index);
 };
 
 #endif // SESSIONWIDGET_H
