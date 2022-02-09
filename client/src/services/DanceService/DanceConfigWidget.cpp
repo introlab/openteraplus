@@ -288,7 +288,7 @@ void DanceConfigWidget::updateVideoInLibrary(const QJsonObject &video)
 
         if (!item){
             item = new QListWidgetItem();
-            item->setIcon(QIcon("://icons/data_video.png"));
+            item->setIcon(QIcon("://icons/assets/video.png"));
             item->setData(Qt::UserRole, id_video);
         }
         item->setText(video_name);
@@ -315,7 +315,7 @@ void DanceConfigWidget::updateVideoInPlaylist(const QJsonObject &video)
 
         if (!item){
             item = new QListWidgetItem();
-            item->setIcon(QIcon("://icons/data_video.png"));
+            item->setIcon(QIcon("://icons/assets/video.png"));
             item->setData(Qt::UserRole, id_video);
         }
         item->setText(video_name);
@@ -356,7 +356,7 @@ void DanceConfigWidget::moveVideoItemToAvailable(QTableWidgetItem *item)
     int current_row = item->row();
     QTableWidgetItem* table_item = ui->lstPlaylist->takeItem(current_row, 0);
     ui->lstPlaylist->removeRow(current_row);
-    QListWidgetItem* list_item = new QListWidgetItem(QIcon("://icons/data_video.png"), table_item->text());
+    QListWidgetItem* list_item = new QListWidgetItem(QIcon("://icons/assets/video.png"), table_item->text());
     list_item->setData(Qt::UserRole, table_item->data(Qt::UserRole));
     delete table_item;
 
@@ -365,7 +365,7 @@ void DanceConfigWidget::moveVideoItemToAvailable(QTableWidgetItem *item)
 
 void DanceConfigWidget::moveVideoItemToPlaylist(QListWidgetItem *item)
 {
-    QTableWidgetItem* table_item = new QTableWidgetItem(QIcon("://icons/data_video.png"), item->text());
+    QTableWidgetItem* table_item = new QTableWidgetItem(QIcon("://icons/assets/video.png"), item->text());
     table_item->setData(Qt::UserRole, item->data(Qt::UserRole));
     delete item;
 
@@ -375,7 +375,7 @@ void DanceConfigWidget::moveVideoItemToPlaylist(QListWidgetItem *item)
 
 void DanceConfigWidget::copyVideoItemToPlaylist(QListWidgetItem *item)
 {
-    QTableWidgetItem* table_item = new QTableWidgetItem(QIcon("://icons/data_video.png"), item->text());
+    QTableWidgetItem* table_item = new QTableWidgetItem(QIcon("://icons/assets/video.png"), item->text());
     table_item->setData(Qt::UserRole, item->data(Qt::UserRole));
 
     ui->lstPlaylist->setRowCount(ui->lstPlaylist->rowCount()+1);
@@ -602,8 +602,9 @@ void DanceConfigWidget::on_btnSave_clicked()
 
 void DanceConfigWidget::on_cmbSessionTypes_currentIndexChanged(int index)
 {
-    // Requery playlist for current session
-    queryPlaylist();
+    if (ui->lstVideos->count() > 0)
+        // Requery playlist for current session
+        queryPlaylist();
 }
 
 

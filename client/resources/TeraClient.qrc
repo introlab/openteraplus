@@ -28,7 +28,6 @@
         <file>icons/dashboard.png</file>
         <file>icons/data.png</file>
         <file>icons/data_sensor.png</file>
-        <file>icons/data_video.png</file>
         <file>icons/delete.png</file>
         <file>icons/delete_old.png</file>
         <file>icons/details.png</file>
@@ -124,5 +123,21 @@
         <file>stylesheet.qss</file>
         <file>translations/openteraplus_en.qm</file>
         <file>translations/openteraplus_fr.qm</file>
+        <file>icons/assets/audio.png</file>
+        <file>icons/assets/binary.png</file>
+        <file>icons/assets/database.png</file>
+        <file>icons/assets/document.png</file>
+        <file>icons/assets/encrypted.png</file>
+        <file>icons/assets/generic.png</file>
+        <file>icons/assets/graph.png</file>
+        <file>icons/assets/icon_source.txt</file>
+        <file>icons/assets/json.png</file>
+        <file>icons/assets/pdf.png</file>
+        <file>icons/assets/sensor.png</file>
+        <file>icons/assets/unknown.png</file>
+        <file>icons/assets/video.png</file>
+        <file>icons/assets/web.png</file>
+        <file>icons/assets/zip.png</file>
+        <file>icons/assets/list.png</file>
     </qresource>
 </RCC>
