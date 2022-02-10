@@ -142,6 +142,7 @@ signals:
     void onlineUsersReceived(QList<TeraData> users_list, QUrlQuery reply_query);
     void onlineParticipantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
     void onlineDevicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
+    void assetsReceived(QList<TeraData> assets_list, QUrlQuery reply_query);
 
     // Generic session
     void sessionStarted(TeraData session_type, int id_session);

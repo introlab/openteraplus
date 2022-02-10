@@ -348,7 +348,7 @@ void ParticipantWidget::updateSession(TeraData *session)
 
         // Download data
         btnDownload = new QToolButton();
-        btnDownload->setIcon(QIcon(":/icons/download.png"));
+        btnDownload->setIcon(QIcon(":/icons/data.png"));
         btnDownload->setProperty("id_session", session->getId());
         btnDownload->setCursor(Qt::PointingHandCursor);
         btnDownload->setMaximumWidth(32);
@@ -413,10 +413,15 @@ void ParticipantWidget::updateSession(TeraData *session)
 
     // Download data
     if (btnDownload){
-        /*btnDownload->setVisible(session->getFieldValue("session_has_device_data").toBool());
-        if (session->getFieldValue("session_has_device_data").toBool())
-            ui->btnDownloadAll->show();*/
-        btnDownload->hide();
+        if (session->hasFieldName("session_assets_count")){
+            bool has_assets = session->getFieldValue("session_assets_count").toInt()>0;
+            btnDownload->setVisible(has_assets);
+            if (has_assets && !ui->btnDownloadAll->isVisible()){
+                ui->btnDownloadAll->show();
+            }
+        }else{
+            btnDownload->hide();
+        }
     }
 
     // Resume session
@@ -883,6 +888,7 @@ void ParticipantWidget::btnDelDevice_clicked()
 
 void ParticipantWidget::btnDownloadSession_clicked()
 {
+    return; // For now...
     QToolButton* button = dynamic_cast<QToolButton*>(sender());
     if (button){
         // Query folder to save file
@@ -901,6 +907,9 @@ void ParticipantWidget::btnDownloadSession_clicked()
 
 void ParticipantWidget::btnDowloadAll_clicked()
 {
+
+    return; // For now...
+
     QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
                                                           QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
     if (!save_path.isEmpty()){

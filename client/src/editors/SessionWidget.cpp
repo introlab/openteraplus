@@ -12,12 +12,15 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
+    // Init UI
     ui->wdgSession->setHighlightConditions(false); // Hide conditional questions indicator
     ui->wdgSession->setComManager(m_comManager);
     ui->tabNav->setCurrentIndex(0);
 
     ui->wdgSessionInvitees->setComManager(m_comManager);
     ui->wdgSessionInvitees->showOnlineFilter(false);
+
+    ui->tabAssets->setComManager(m_comManager);
 
     // Use base class to manage editing
     setEditorControls(ui->wdgSession, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
@@ -614,13 +617,6 @@ void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList p
 
 }
 
-void SessionWidget::currentSelectedDataChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
-{
-    Q_UNUSED(previous)
-
-    ui->btnDelData->setEnabled(current);
-}
-
 void SessionWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &SessionWidget::processFormsReply);
@@ -635,65 +631,8 @@ void SessionWidget::connectSignals()
     connect(m_comManager, &ComManager::downloadCompleted, this, &SessionWidget::onDownloadCompleted);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &SessionWidget::deleteDataReply);
 
-    connect(ui->btnDelData, &QPushButton::clicked, this, &SessionWidget::btnDeleteData_clicked);
-    connect(ui->btnDownloadAll, &QPushButton::clicked, this, &SessionWidget::btnDownloadAll_clicked);
-    connect(ui->tableData, &QTableWidget::currentItemChanged, this, &SessionWidget::currentSelectedDataChanged);
-
     connect(ui->wdgSessionInvitees, &SessionInviteWidget::newInvitees, this, &SessionWidget::sessionInviteesChanged);
     connect(ui->wdgSessionInvitees, &SessionInviteWidget::removedInvitees, this, &SessionWidget::sessionInviteesChanged);
-}
-
-void SessionWidget::btnDownload_clicked()
-{
-    QPushButton* button = dynamic_cast<QPushButton*>(QObject::sender());
-
-    if (button){
-        // Query folder to save file
-        QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
-                                                              QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-        if (!save_path.isEmpty()){
-            /*int id_device_data = button->property("id_device_data").toInt();
-            QUrlQuery args;
-            args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
-            args.addQueryItem(WEB_QUERY_ID_DEVICE_DATA, QString::number(id_device_data));
-            downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-            setEnabled(false);*/
-        }
-    }
-}
-
-void SessionWidget::btnDeleteData_clicked()
-{
-    QTableWidgetItem* item_todel = ui->tableData->currentItem();
-
-    if (!item_todel)
-        return;
-
-    QString data_name = ui->tableData->item(item_todel->row(), 2)->text();
-    QString device_name = ui->tableData->item(item_todel->row(), 0)->text();
-
-    GlobalMessageBox diag;
-    QMessageBox::StandardButton answer = diag.showYesNo(tr("Supression?"),
-                                                        tr("Êtes-vous sûrs de vouloir supprimer les données """) + data_name + """ de l'appareil '" + device_name + "'?");
-    if (answer == QMessageBox::Yes){
-        // We must delete!
-        /*int id_device_data = m_listDeviceDatas.key(ui->tableData->item(item_todel->row(), 0));
-        m_comManager->doDelete(WEB_DEVICEDATAINFO_PATH, id_device_data);*/
-    }
-}
-
-void SessionWidget::btnDownloadAll_clicked()
-{
-    // Query folder to save file
-    QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
-                                                          QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-    if (!save_path.isEmpty()){
-        /*QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
-        args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
-        downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-        setEnabled(false);*/
-    }
 }
 
 void SessionWidget::on_icoUsers_clicked()
@@ -752,6 +691,9 @@ void SessionWidget::on_tabNav_currentChanged(int index)
 
     if (current_tab == ui->tabAssets){
         // Data
+        if (ui->tabAssets->isEmpty()){
+            ui->tabAssets->displayAssetsForSession(m_data->getId());
+        }
         /*if (m_listDeviceDatas.isEmpty()){
             // Query session device data
             query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));

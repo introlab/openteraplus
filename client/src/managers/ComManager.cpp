@@ -700,6 +700,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_ONLINE_USER:
         emit onlineUsersReceived(items, reply_query);
         break;
+    case TERADATA_ASSET:
+        emit assetsReceived(items, reply_query);
+        break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/
 

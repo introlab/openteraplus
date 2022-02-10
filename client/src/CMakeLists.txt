@@ -29,6 +29,7 @@ set(headers
     managers/ParticipantComManager.h
     managers/WebSocketManager.h
     managers/BaseComManager.h
+    managers/AssetComManager.h
     # Dialogs
     dialogs/LoginDialog.h
     dialogs/StartSessionDialog.h
@@ -94,6 +95,7 @@ set(headers
     widgets/TableDateWidgetItem.h
     widgets/TableNumberWidgetItem.h
     widgets/DashboardWidget.h
+    widgets/AssetsWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -121,6 +123,7 @@ set(srcs
     managers/WebSocketManager.cpp
     managers/ParticipantComManager.cpp
     managers/BaseComManager.cpp
+    managers/AssetComManager.cpp
     # Dialogs
     dialogs/LoginDialog.cpp
     dialogs/DeviceAssignDialog.cpp
@@ -185,6 +188,7 @@ set(srcs
     widgets/TableDateWidgetItem.cpp
     widgets/TableNumberWidgetItem.cpp
     widgets/DashboardWidget.cpp
+    widgets/AssetsWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -242,6 +246,7 @@ SET(uis
     widgets/SessionInviteWidget.ui
     widgets/OnlineManagerWidget.ui
     widgets/DashboardWidget.ui
+    widgets/AssetsWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui

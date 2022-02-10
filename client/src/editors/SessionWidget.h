@@ -51,10 +51,6 @@ private:
     void queryAvailableInvitees();
 
 private slots:
-    void btnDownload_clicked();
-    void btnDeleteData_clicked();
-    void btnDownloadAll_clicked();
-
     void processFormsReply(QString form_type, QString data);
     //void processDeviceDatasReply(QList<TeraData> device_datas);
     void processSessionEventsReply(QList<TeraData> events);
@@ -69,7 +65,6 @@ private slots:
 
     void sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
 
-    void currentSelectedDataChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
     void on_icoUsers_clicked();
     void on_icoParticipant_clicked();
     void on_icoDevices_clicked();

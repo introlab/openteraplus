@@ -18,11 +18,12 @@ class BaseComManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit BaseComManager(QUrl serverUrl, QObject *parent = nullptr);
+    explicit BaseComManager(QUrl serverUrl = QUrl(), QObject *parent = nullptr);
     ~BaseComManager();
 
     virtual void doGet(const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=false);
     virtual void doPost(const QString &path, const QString &post_data, const bool &use_token=false);
+    virtual void doPost(const QUrl &full_url, const QString &post_data, const bool &use_token=false);
     virtual void doDelete(const QString &path, const int& id, const bool &use_token=false);
 
     virtual void doDownload(const QString& save_path, const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=false);

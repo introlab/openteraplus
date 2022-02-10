@@ -100,7 +100,9 @@ bool TeraData::hasEnabledField() const
 
 bool TeraData::isEnabled() const
 {
-    return getFieldValue(m_enabledField).toBool();
+    if (hasEnabledField())
+        return getFieldValue(m_enabledField).toBool();
+    return false;
 }
 
 bool TeraData::hasOnlineStateField() const
@@ -159,7 +161,8 @@ bool TeraData::operator ==(const TeraData &other) const
 
 void TeraData::updateFrom(const TeraData &other)
 {
-    foreach(QString key, other.m_fieldsValue.keys()){
+    const QStringList keys = other.m_fieldsValue.keys();
+    foreach(QString key, keys){
         m_fieldsValue[key] = other.m_fieldsValue[key];
     }
 }
@@ -203,7 +206,10 @@ QList<QString> TeraData::getFieldList() const
 {
     QList<QString> rval;
     //for (QByteArray fieldname:dynamicPropertyNames()){
-    for (const QString &fieldname:m_fieldsValue.keys()){
+    const QStringList keys = m_fieldsValue.keys();
+    //for (const QString &fieldname:m_fieldsValue.keys()){
+    foreach(QString fieldname, keys){
+    //foreach(QVariant value, m_fieldsValue){
         rval.append(fieldname);
     }
 
@@ -275,6 +281,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "stats";
     case TERADATA_USERPREFERENCE:
         return "user_preference";
+    case TERADATA_ASSET:
+        return "asset";
     }
 
     return "";
@@ -343,6 +351,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Participant: état");
     case TERADATA_ONLINE_USER:
         return tr("Utilisateur: état");
+    case TERADATA_ASSET:
+        return tr("Donnée");
     }
 
     return "";
@@ -378,6 +388,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_ONLINEDEVICEINFO_PATH)        return TERADATA_ONLINE_DEVICE;
     if (path==WEB_ONLINEPARTICIPANTINFO_PATH)   return TERADATA_ONLINE_PARTICIPANT;
     if (path==WEB_ONLINEUSERINFO_PATH)          return TERADATA_ONLINE_USER;
+    if (path==WEB_ASSETINFO_PATH)               return TERADATA_ASSET;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 
@@ -402,6 +413,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_SERVICE)            return WEB_SERVICEINFO_PATH;
     if (data_type==TERADATA_SITEACCESS)         return WEB_SITEACCESS_PATH;
     if (data_type==TERADATA_SERVICE_CONFIG)     return WEB_SERVICECONFIGINFO_PATH;
+    if (data_type==TERADATA_ASSET)              return WEB_ASSETINFO_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 
@@ -439,6 +451,8 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     case TERADATA_SERVICE:
     case TERADATA_SERVICE_CONFIG:
         return "://icons/service.png";
+    case TERADATA_ASSET:
+        return "://icons/data.png";
     default:
         return "://icons/error.png";
     }
@@ -554,8 +568,11 @@ QJsonObject TeraData::toJson(const QString specific_fieldName)
         }
     }
 
-    for (int i=0; i<m_fieldsValue.count(); i++){
-        QString fieldName = m_fieldsValue.keys().at(i);
+    QStringList keys = m_fieldsValue.keys();
+    //for (int i=0; i<m_fieldsValue.count(); i++){
+    foreach(QString fieldName, keys){
+        //QString fieldName = m_fieldsValue.keys().at(i);
+
         if (!specific_fieldName.isEmpty()){
             if (fieldName != specific_fieldName)
                 continue;

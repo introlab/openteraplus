@@ -139,5 +139,6 @@
         <file>icons/assets/web.png</file>
         <file>icons/assets/zip.png</file>
         <file>icons/assets/list.png</file>
+        <file>icons/assets/image.png</file>
     </qresource>
 </RCC>

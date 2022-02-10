@@ -42,7 +42,8 @@ enum TeraDataTypes {
     TERADATA_STATS,
     TERADATA_ONLINE_USER,
     TERADATA_ONLINE_PARTICIPANT,
-    TERADATA_ONLINE_DEVICE
+    TERADATA_ONLINE_DEVICE,
+    TERADATA_ASSET
 };
 
 Q_DECLARE_METATYPE(TeraDataTypes)
@@ -51,9 +52,9 @@ class TeraData : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(int id READ getId)
-    Q_PROPERTY(QString name READ getName)
-    Q_PROPERTY(TeraDataTypes data_type READ getDataType WRITE setDataType)
+    Q_PROPERTY(int id READ getId CONSTANT)
+    Q_PROPERTY(QString name READ getName CONSTANT)
+    Q_PROPERTY(TeraDataTypes data_type READ getDataType WRITE setDataType NOTIFY dataTypeChanged)
 
 public:
     explicit TeraData(QObject *parent = nullptr);
@@ -61,7 +62,7 @@ public:
     TeraData(const TeraData& copy, QObject *parent=nullptr);
     explicit TeraData(TeraDataTypes obj_type, const QJsonValue& json, QObject *parent = nullptr);
 
-    virtual bool        fromJson(const QJsonValue& value);
+    bool        fromJson(const QJsonValue& value);
     virtual QJsonObject toJson(const QString specific_fieldName = QString());
 
     virtual bool        fromMap(const QVariantMap& map);
@@ -131,7 +132,7 @@ private:
     //bool hasMetaProperty(const QString& fieldName) const;
 
 signals:
-
+    void dataTypeChanged(const TeraDataTypes& new_datatype);
 
 public slots:
     void setDataType(TeraDataTypes data_type);

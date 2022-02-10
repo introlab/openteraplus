@@ -33,6 +33,7 @@
 #define WEB_SERVICEACCESSINFO_PATH          "/api/user/services/access"
 #define WEB_SERVICECONFIGINFO_PATH          "/api/user/services/configs"
 #define WEB_STATS_PATH                      "/api/user/stats"
+#define WEB_ASSETINFO_PATH                  "/api/user/assets"
 
 #define WEB_SESSIONMANAGER_PATH             "/api/user/sessions/manager"
 
@@ -104,6 +105,7 @@
 #define WEB_QUERY_WITH_STATUS       "with_status"
 #define WEB_QUERY_WITH_WEBSOCKET    "with_websocket"
 #define WEB_QUERY_WITH_WARNINGS     "with_warnings"
+#define WEB_QUERY_WITH_URLS         "with_urls"
 
 #define WEB_QUERY_ORDERBY_RECENTS   "orderby_recents"
 
