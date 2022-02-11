@@ -837,8 +837,8 @@ void MainWindow::addMessage(Message &msg)
         addGlobalEvent(warning_event);
     }
 
-    if (ui->wdgMessages->isHidden())
-        ui->wdgMessages->showNextMessage();
+    /*if (ui->wdgMessages->isHidden())
+        ui->wdgMessages->showNextMessage();*/
 }
 
 void MainWindow::addNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath, const QString &soundPath, const int &width, const int &height, const int &duration)

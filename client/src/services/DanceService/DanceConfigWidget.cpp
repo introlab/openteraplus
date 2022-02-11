@@ -17,6 +17,7 @@ DanceConfigWidget::DanceConfigWidget(ComManager *comManager, int projectId, QStr
 
     ui->tabMain->setCurrentIndex(0);
     ui->lblWarning->hide();
+    ui->wdgMessages->hide();
 
     connectSignals();
 
@@ -176,8 +177,11 @@ void DanceConfigWidget::handleNetworkError(QNetworkReply::NetworkError error, QS
     else
         error_str = tr("Erreur ") + QString::number(error) + ": " + error_msg;
 
-    GlobalMessageBox msg;
-    msg.showError(tr("Télédanse - Erreur"), error_msg);
+    /*GlobalMessageBox msg;
+    msg.showError(tr("Télédanse - Erreur"), error_msg);*/
+    error_msg = error_msg.replace('\n', " - ");
+    error_msg = error_msg.replace('\r', "");
+    ui->wdgMessages->addMessage(Message(Message::MESSAGE_ERROR, error_msg));
 
 }
 
@@ -253,6 +257,22 @@ void DanceConfigWidget::danceComDeleteOK(QString path, int id)
             }
         }
         m_playlistIds.removeAll(id);
+        ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Suppression terminée")));
+    }
+
+}
+
+void DanceConfigWidget::danceComPostOK(QString path)
+{
+    ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Données sauvegardées")));
+}
+
+void DanceConfigWidget::nextMessageWasShown(Message current_message)
+{
+    if (current_message.getMessageType()==Message::MESSAGE_NONE){
+        ui->wdgMessages->hide();
+    }else{
+        ui->wdgMessages->show();
     }
 }
 
@@ -269,6 +289,9 @@ void DanceConfigWidget::connectSignals()
     connect(m_danceComManager, &DanceComManager::transferAborted, this, &DanceConfigWidget::danceComTransferAborted);
 
     connect(m_danceComManager, &DanceComManager::deleteResultsOK, this, &DanceConfigWidget::danceComDeleteOK);
+    connect(m_danceComManager, &DanceComManager::postResultsOK, this, &DanceConfigWidget::danceComPostOK);
+
+    connect(ui->wdgMessages, &ResultMessageWidget::nextMessageShown, this, &DanceConfigWidget::nextMessageWasShown);
 }
 
 void DanceConfigWidget::updateVideoInLibrary(const QJsonObject &video)

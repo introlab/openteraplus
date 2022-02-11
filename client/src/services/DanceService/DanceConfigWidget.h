@@ -10,6 +10,7 @@
 #include "managers/ComManager.h"
 #include "dialogs/FileUploaderDialog.h"
 #include "dialogs/TransferProgressDialog.h"
+#include "data/Message.h"
 
 #include "GlobalMessageBox.h"
 
@@ -67,6 +68,9 @@ private slots:
     void danceComUploadCompleted(UploadingFile* file);
     void danceComTransferAborted(TransferringFile *file);
     void danceComDeleteOK(QString path, int id);
+    void danceComPostOK(QString path);
+
+    void nextMessageWasShown(Message current_message);
 
     void on_tabMain_currentChanged(int index);
     void on_btnUpload_clicked();

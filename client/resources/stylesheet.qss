@@ -735,3 +735,11 @@ QLabel#lblNoUpcomingSessions, QLabel#lblNoRecentParticipants, QLabel#lblAttentio
     color: orange;
     background-color: black;
 }
+
+/* Customizations for ResultMessageWidget */
+QProgressBar#progTimer{
+    background-color: transparent;
+}
+QProgressBar#progTimer::chunk{
+    background-color: rgba(255,255,255,25%);
+}

@@ -560,8 +560,19 @@
      </widget>
     </widget>
    </item>
+   <item>
+    <widget class="ResultMessageWidget" name="wdgMessages" native="true"/>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ResultMessageWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/ResultMessageWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../resources/TeraClient.qrc"/>
  </resources>

@@ -31,15 +31,21 @@ private:
     QList<Message>              m_messages;
     Message                     m_currentMessage;
     QTimer                      m_msgTimer;
+    QTimer                      m_displayTimer;
 
     int                         m_displayTime;
 
     // UI items
     QMovie*                     m_loadingIcon;
 
+    void stopTimers();
+    void startTimers();
+
 public slots:
 
     void showNextMessage();
+
+    void updateTimeoutProgress();
 
 signals:
     void nextMessageShown(Message current_message);

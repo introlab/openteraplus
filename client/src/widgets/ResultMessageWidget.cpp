@@ -11,9 +11,14 @@ ResultMessageWidget::ResultMessageWidget(QWidget *parent, int displayTime) :
     m_currentMessage.setMessage(Message::MESSAGE_NONE,"");
     setDisplayTime(displayTime);
     m_msgTimer.setSingleShot(true);
+    m_displayTimer.setSingleShot(false);
+
+    // Init progress bar
+    ui->progTimer->hide();
 
     // Connect signals
     connect(&m_msgTimer, &QTimer::timeout, this, &ResultMessageWidget::showNextMessage);
+    connect(&m_displayTimer, &QTimer::timeout, this, &ResultMessageWidget::updateTimeoutProgress);
 
     // Setup loading icon animation
     m_loadingIcon = new QMovie("://status/loading.gif");
@@ -28,6 +33,7 @@ ResultMessageWidget::~ResultMessageWidget()
 void ResultMessageWidget::addMessage(const Message &msg)
 {
     m_messages.append(msg);
+    showNextMessage();
 }
 
 bool ResultMessageWidget::hasMessagesWaiting(const Message::MessageType &msg_type)
@@ -48,11 +54,28 @@ void ResultMessageWidget::setDisplayTime(const int &display_time)
 {
     m_displayTime = display_time;
     m_msgTimer.setInterval(m_displayTime);
+    ui->progTimer->setMaximum(m_displayTime);
+    m_displayTimer.setInterval(500);
+}
+
+void ResultMessageWidget::stopTimers()
+{
+    m_msgTimer.stop();
+    m_displayTimer.stop();
+    ui->progTimer->hide();
+}
+
+void ResultMessageWidget::startTimers()
+{
+    m_msgTimer.start();
+    m_displayTimer.start();
+    ui->progTimer->setValue(m_displayTime);
+    ui->progTimer->show();
 }
 
 void ResultMessageWidget::showNextMessage()
 {
-    m_msgTimer.stop();
+    stopTimers();
     if (m_messages.isEmpty()){
         m_currentMessage.setMessage(Message::MESSAGE_NONE,"");
         emit nextMessageShown(m_currentMessage);
@@ -88,7 +111,7 @@ void ResultMessageWidget::showNextMessage()
     ui->frameMessage->setStyleSheet("QWidget#frameMessage{background-color: " + background_color + ";}");
     ui->lblMessage->setText(m_currentMessage.getMessageText());
     if (m_currentMessage.getMessageType() != Message::MESSAGE_ERROR && m_currentMessage.getMessageType()!=Message::MESSAGE_NONE)
-        m_msgTimer.start();
+        startTimers();
 
     QPropertyAnimation *animate = new QPropertyAnimation(this,"windowOpacity",this->parent());
     animate->setDuration(1000);
@@ -99,6 +122,16 @@ void ResultMessageWidget::showNextMessage()
     animate->start(QAbstractAnimation::DeleteWhenStopped);
 
     emit nextMessageShown(m_currentMessage);
+}
+
+void ResultMessageWidget::updateTimeoutProgress()
+{
+    int new_value = ui->progTimer->value() - m_displayTimer.interval();
+    if (new_value>0)
+        ui->progTimer->setValue(new_value);
+    else
+        ui->progTimer->setValue(0);
+    ui->progTimer->update();
 }
 
 void ResultMessageWidget::on_btnCloseMessage_clicked()
