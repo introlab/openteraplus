@@ -96,6 +96,7 @@ set(headers
     widgets/TableNumberWidgetItem.h
     widgets/DashboardWidget.h
     widgets/AssetsWidget.h
+    widgets/ResultMessageWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -189,6 +190,7 @@ set(srcs
     widgets/TableNumberWidgetItem.cpp
     widgets/DashboardWidget.cpp
     widgets/AssetsWidget.cpp
+    widgets/ResultMessageWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -247,6 +249,7 @@ SET(uis
     widgets/OnlineManagerWidget.ui
     widgets/DashboardWidget.ui
     widgets/AssetsWidget.ui
+    widgets/ResultMessageWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui

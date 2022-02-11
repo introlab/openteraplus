@@ -31,7 +31,6 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_waiting_for_data_type = TERADATA_NONE;
     m_currentDataType = TERADATA_NONE;
     m_currentDataId = -1;
-    m_currentMessage.setMessage(Message::MESSAGE_NONE,"");
 
     // Initial UI state
     initUi();
@@ -90,8 +89,6 @@ void MainWindow::connectSignals()
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &MainWindow::ws_participantEvent);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &MainWindow::ws_joinSessionEvent);
 
-    connect(&m_msgTimer, &QTimer::timeout, this, &MainWindow::showNextMessage);
-
     connect(ui->projNavigator, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
     connect(ui->projNavigator, &ProjectNavigator::dataDeleteRequest, this, &MainWindow::dataDeleteRequested);
     connect(ui->projNavigator, &ProjectNavigator::currentSiteWasChanged, this, &MainWindow::currentSiteChanged);
@@ -101,17 +98,19 @@ void MainWindow::connectSignals()
     connect(ui->onlineManager, &OnlineManagerWidget::totalCountUpdated, this, &MainWindow::updateOnlineCounts);
 
     connect(GlobalEventLogger::instance(), &GlobalEventLogger::newEventLogged, this, &MainWindow::addGlobalEvent);
+
+    connect(ui->wdgMessages, &ResultMessageWidget::nextMessageShown, this, &MainWindow::nextMessageWasShown);
 }
 
 void MainWindow::initUi()
 {
     // Setup messages
-    ui->frameMessages->hide();
-    m_msgTimer.setSingleShot(true);
-    m_msgTimer.setInterval(8000);
+    ui->wdgMessages->hide();
+    ui->frameCentralBottom->hide();
 
     // Setup event view
     ui->tableHistory->setColumnWidth(0, 20);
+    ui->btnLog->hide(); // Disabled for now
 
     // Disable docker titles
     ui->dockerTop->setTitleBarWidget(new QWidget());
@@ -257,7 +256,7 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
 
     ui->dockerLeft->setVisible(!in_session);
     ui->btnLogout->setVisible(!in_session);
-    ui->frameCentralBottom->setVisible(!in_session);
+    ui->frameCentralBottom->setVisible(!in_session && ui->wdgMessages->hasMessagesWaiting());
 
     if (in_session){
         if (id_project == 0)
@@ -310,60 +309,21 @@ QIcon MainWindow::getGlobalEventIcon(GlobalEvent &global_event)
     return QIcon();
 }
 
-void MainWindow::showNextMessage()
+void MainWindow::nextMessageWasShown(Message current_message)
 {
     m_loadingIcon->stop();
-    ui->frameMessages->hide();
-    m_msgTimer.stop();
-    if (m_messages.isEmpty()){
-        m_currentMessage.setMessage(Message::MESSAGE_NONE,"");
-        if (m_inSessionWidget){
+    if (current_message.getMessageType() == Message::MESSAGE_NONE){
+        ui->wdgMessages->hide();
+        //if (m_inSessionWidget){
             // Hide frame when no more message
             ui->frameCentralBottom->hide();
-        }
+        //}
         return;
+    }else{
+        // We have a message displayed now
+        ui->frameCentralBottom->show();
+        ui->wdgMessages->show();
     }
-
-    m_currentMessage = m_messages.takeFirst();
-
-    QString background_color = "rgba(128,128,128,50%)";
-    // QString icon_path = "";
-
-    switch(m_currentMessage.getMessageType()){
-    case Message::MESSAGE_OK:
-        background_color = "rgba(0,200,0,50%)";
-        ui->icoMessage->setPixmap(QPixmap("://icons/ok.png"));
-        break;
-    case Message::MESSAGE_ERROR:
-        background_color = "rgba(200,0,0,50%)";
-        ui->icoMessage->setPixmap(QPixmap("://icons/error.png"));
-        break;
-    case Message::MESSAGE_WARNING:
-        background_color = "rgba(255,85,0,50%)";
-        ui->icoMessage->setPixmap(QPixmap("://icons/warning.png"));
-        break;
-    case Message::MESSAGE_WORKING:
-        background_color = "rgba(128,128,128,50%)";
-        ui->icoMessage->setMovie(m_loadingIcon);
-        m_loadingIcon->start();
-        break;
-    default:
-        break;
-    }
-    ui->frameMessages->setStyleSheet("QWidget#frameMessages{background-color: " + background_color + ";}");
-    ui->lblMessage->setText(m_currentMessage.getMessageText());
-    if (m_currentMessage.getMessageType() != Message::MESSAGE_ERROR && m_currentMessage.getMessageType()!=Message::MESSAGE_NONE)
-        m_msgTimer.start();
-
-    QPropertyAnimation *animate = new QPropertyAnimation(ui->frameMessages,"windowOpacity",this);
-    animate->setDuration(1000);
-    animate->setStartValue(0.0);
-    animate->setKeyValueAt(0.1, 0.8);
-    animate->setKeyValueAt(0.9, 0.8);
-    animate->setEndValue(0.0);
-    animate->start(QAbstractAnimation::DeleteWhenStopped);
-    ui->frameCentralBottom->show();
-    ui->frameMessages->show();
 }
 
 void MainWindow::notificationCompleted(NotificationWindow *notify)
@@ -863,7 +823,7 @@ void MainWindow::addMessage(Message::MessageType msg_type, QString msg)
 
 void MainWindow::addMessage(Message &msg)
 {
-    m_messages.append(msg);
+    ui->wdgMessages->addMessage(msg);
 
     // Create event for error
     if (msg.getMessageType() == Message::MESSAGE_ERROR){
@@ -877,8 +837,8 @@ void MainWindow::addMessage(Message &msg)
         addGlobalEvent(warning_event);
     }
 
-    if (ui->frameMessages->isHidden())
-        showNextMessage();
+    if (ui->wdgMessages->isHidden())
+        ui->wdgMessages->showNextMessage();
 }
 
 void MainWindow::addNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath, const QString &soundPath, const int &width, const int &height, const int &duration)
@@ -896,20 +856,6 @@ void MainWindow::addNotification(const NotificationWindow::NotificationType noti
         if (!m_inSessionWidget) // Don't play sounds when in session!
             QSound::play(soundPath);
     }
-}
-
-bool MainWindow::hasWaitingMessage()
-{
-    for (Message msg:qAsConst(m_messages)){
-        if (msg.getMessageType()==Message::MESSAGE_WORKING)
-            return true;
-    }
-    return false;
-}
-
-void MainWindow::on_btnCloseMessage_clicked()
-{
-    showNextMessage();
 }
 
 void MainWindow::on_btnEditUser_clicked()

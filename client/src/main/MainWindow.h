@@ -79,8 +79,7 @@ private slots:
 
     void inSession_sessionEndedWithError();
 
-    bool hasWaitingMessage();
-    void showNextMessage();
+    void nextMessageWasShown(Message current_message);
     void notificationCompleted(NotificationWindow* notify);
     void addNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath = QString(), const QString &soundPath = QString(), const int &width=400, const int &height=100, const int &duration=5000);
 
@@ -96,7 +95,6 @@ private slots:
     void dataDeleteRequested(TeraDataTypes data_type, int data_id);   
     void dataEditorCancelled();
 
-    void on_btnCloseMessage_clicked();
     void on_btnLogout_clicked();
     void on_btnEditUser_clicked();
     void on_btnConfig_clicked();
@@ -138,10 +136,7 @@ private:
     int                     m_currentDataId;
 
     // Message & notification system
-    QList<Message>              m_messages;
     QList<NotificationWindow*>  m_notifications;
-    Message                     m_currentMessage;
-    QTimer                      m_msgTimer;
 
     // UI items
     QMovie*         m_loadingIcon;
