@@ -175,3 +175,20 @@ bool Utils::isNewerVersion(QString version)
             versions.at(2).toInt() > QString(OPENTERAPLUS_VERSION_PATCH).toInt();
 }
 
+QString Utils::formatFileSize(const int &file_size)
+{
+    return QLocale().formattedDataSize(file_size, 2, QLocale::DataSizeTraditionalFormat);
+}
+
+QString Utils::formatDuration(const QString &duration)
+{
+    QTime video_duration = QTime::fromString(duration, "h:mm:ss.zzz");
+    if (!video_duration.isValid())
+        video_duration = QTime::fromString(duration, "hh:mm:ss.zzz");
+        if (!video_duration.isValid())
+            video_duration = QTime::fromString(duration, "hh:mm:ss");
+            if (!video_duration.isValid())
+                video_duration = QTime::fromString(duration, "h:mm:ss");
+    return video_duration.toString("hh:mm:ss");
+}
+

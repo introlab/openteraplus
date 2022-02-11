@@ -257,7 +257,7 @@ void DanceConfigWidget::danceComDeleteOK(QString path, int id)
             }
         }
         m_playlistIds.removeAll(id);
-        ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Suppression terminée")));
+        ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Suppression complétée")));
     }
 
 }

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>662</width>
+    <width>829</width>
     <height>481</height>
    </rect>
   </property>
@@ -24,6 +24,9 @@
        <width>32</width>
        <height>32</height>
       </size>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
      </property>
      <attribute name="headerStretchLastSection">
       <bool>false</bool>
@@ -70,7 +73,26 @@
      </column>
      <column>
       <property name="text">
+       <string>Taille</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignCenter</set>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Durée</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignCenter</set>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Actions</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignCenter</set>
       </property>
      </column>
     </widget>
@@ -167,8 +189,19 @@
      </item>
     </layout>
    </item>
+   <item>
+    <widget class="ResultMessageWidget" name="wdgMessages" native="true"/>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ResultMessageWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/ResultMessageWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>

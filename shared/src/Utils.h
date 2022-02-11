@@ -8,6 +8,7 @@
 #include <QUuid>
 #include <QAudioDeviceInfo>
 #include <QCameraInfo>
+#include <QTime>
 
 class Utils : public QObject
 {
@@ -36,6 +37,9 @@ public:
     static QString removeAccents(QString s);
 
     static bool isNewerVersion(QString version);
+
+    static QString formatFileSize(const int &file_size);
+    static QString formatDuration(const QString &duration);
 
 signals:
 
