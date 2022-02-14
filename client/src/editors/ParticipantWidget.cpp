@@ -811,11 +811,12 @@ void ParticipantWidget::btnDeleteSession_clicked()
 {
     // Check if the sender is a QToolButton (from the action column)
     QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
-    if (action_btn){
+    if (action_btn && action_btn != ui->btnDelSession){
         // Select row according to the session id of that button
         int id_session = action_btn->property("id_session").toInt();
         QTableWidgetItem* session_item = m_listSessions_items[id_session];
-        ui->tableSessions->selectRow(session_item->row());
+        if (session_item)
+            ui->tableSessions->selectRow(session_item->row());
     }
 
     if (ui->tableSessions->selectedItems().count()==0)
