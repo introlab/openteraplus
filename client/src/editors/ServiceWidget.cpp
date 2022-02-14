@@ -22,7 +22,7 @@ ServiceWidget::ServiceWidget(ComManager *comMan, const TeraData *data, QWidget *
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SERVICE));
 
     ui->wdgService->setComManager(m_comManager);
-    setData(data);
+    ServiceWidget::setData(data);
 
     ui->tabNav->setCurrentIndex(0);
 
@@ -115,9 +115,11 @@ void ServiceWidget::postServiceRoles()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for (int i=0; i<m_serviceRoles.count(); i++){
+    for (const QString &role_name:qAsConst(m_serviceRoles)){
+        int role_id = m_serviceRoles.key(role_name);
+/*    for (int i=0; i<m_serviceRoles.count(); i++){
         int role_id = m_serviceRoles.keys().at(i);
-        QString role_name = m_serviceRoles.values().at(i);
+        QString role_name = m_serviceRoles.values().at(i);*/
         QJsonObject data_obj;
         data_obj.insert("id_service_role", role_id);
         data_obj.insert("service_role_name", role_name);
@@ -198,8 +200,8 @@ void ServiceWidget::on_tabNav_currentChanged(int index)
 
     if (current_tab == ui->tabProjects){
         // Projects for that service
-        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1"); // Also gets unassociated projects
-        args.addQueryItem(WEB_QUERY_WITH_ROLES, "1");
+        //args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1"); // Also gets unassociated projects
+        //args.addQueryItem(WEB_QUERY_WITH_ROLES, "1");
         queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
     }
 }
@@ -210,9 +212,11 @@ void ServiceWidget::on_btnUpdateProjects_clicked()
     QJsonObject base_obj;
     QJsonArray projects;
 
-    for (int i=0; i<m_listProjects_items.count(); i++){
+    for(QListWidgetItem* item: qAsConst(m_listProjects_items)){
+        int project_id = m_listProjects_items.key(item);
+    /*for (int i=0; i<m_listProjects_items.count(); i++){
         int project_id = m_listProjects_items.keys().at(i);
-        QListWidgetItem* item = m_listProjects_items.values().at(i);
+        QListWidgetItem* item = m_listProjects_items.values().at(i);*/
         if (item->checkState() == Qt::Checked){
             QJsonObject data_obj;
             data_obj.insert("id_project", project_id);

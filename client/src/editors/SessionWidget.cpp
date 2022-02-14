@@ -11,6 +11,7 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     ui->setupUi(this);
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
+    m_alwaysShowAssets = false;
 
     // Init UI
     ui->wdgSession->setHighlightConditions(false); // Hide conditional questions indicator
@@ -34,6 +35,8 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     if (data->hasFieldName("id_project")){
         args.addQueryItem(WEB_QUERY_ID_PROJECT, data->getFieldValue("id_project").toString());
         m_idProject = data->getFieldValue("id_project").toInt();
+        ui->tabAssets->setAssociatedProject(m_idProject);
+        ui->tabAssets->enableNewAssets(true); // Enable creation of new assets, if possible. Only allow to project admin ??
     }else{
         if (!data->isNew()){
             args.addQueryItem(WEB_QUERY_ID, QString::number(data->getId()));
@@ -146,6 +149,12 @@ void SessionWidget::setData(const TeraData *data)
         queryDataRequest(WEB_STATS_PATH, args);
 
     }
+}
+
+void SessionWidget::alwaysShowAssets(const bool &allow)
+{
+    m_alwaysShowAssets = allow;
+
 }
 
 void SessionWidget::updateControlsState()
@@ -490,7 +499,7 @@ void SessionWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
     // Hide unused sections
     for (int i=ui->tabNav->count()-1; i>=0; i--){
-        if (ui->tabNav->widget(i) == ui->tabAssets && stats.getFieldValue("assets_total_count").toInt() == 0){
+        if (ui->tabNav->widget(i) == ui->tabAssets && stats.getFieldValue("assets_total_count").toInt() == 0 && !m_alwaysShowAssets){
             ui->tabNav->removeTab(i);
         }
         if (ui->tabNav->widget(i) == ui->tabEvents && stats.getFieldValue("events_total_count").toInt() == 0){
@@ -692,7 +701,7 @@ void SessionWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabAssets){
         // Data
         if (ui->tabAssets->isEmpty()){
-            ui->tabAssets->displayAssetsForSession(m_data->getId());
+            ui->tabAssets->displayAssetsForSession(m_data->getId());           
         }
         /*if (m_listDeviceDatas.isEmpty()){
             // Query session device data

@@ -64,6 +64,7 @@ private:
 
     QMap<int, QListWidgetItem*>   m_listServicesProjects_items;
     QMap<int, QListWidgetItem*>   m_listServices_items;
+    QMap<int, QString>            m_services_keys;
 
     QMap<int, QWidget*>           m_services_tabs;
 

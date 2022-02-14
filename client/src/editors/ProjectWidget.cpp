@@ -41,7 +41,6 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
 ProjectWidget::~ProjectWidget()
 {
     delete ui;
-
 }
 
 void ProjectWidget::saveData(bool signal)
@@ -262,6 +261,10 @@ void ProjectWidget::updateServiceProject(const TeraData *sp)
         item->setCheckState(Qt::Unchecked);
     }
 
+    if (sp->hasFieldName("service_key")){
+        m_services_keys[id_service] = sp->getFieldValue("service_key").toString();
+    }
+
 }
 
 void ProjectWidget::queryServicesProject()
@@ -400,29 +403,33 @@ void ProjectWidget::processDevicesReply(QList<TeraData> devices)
 
 void ProjectWidget::processServiceProjectsReply(QList<TeraData> services_projects)
 {
-    QList<int> ids_service;
+    //QList<int> ids_service;
 
     foreach(TeraData service_project, services_projects){
         updateServiceProject(&service_project);
 
         // Add specific services configuration tabs
         if (!dataIsNew()){ // Don't add anything if a new project
-            ids_service.append(service_project.getFieldValue("id_service").toInt());
+            //ids_service.append(service_project.getFieldValue("id_service").toInt());
             addServiceTab(service_project);
         }
 
     }
 
     // Remove service tabs not present anymore
-    if (!dataIsNew()){
+    /*if (!dataIsNew()){
+        QList<QWidget*> tabs_to_del;
         for(QWidget* tab: qAsConst(m_services_tabs)){
             if (!ids_service.contains(m_services_tabs.key(tab))){
-                ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
-                tab->deleteLater();
-                m_services_tabs.remove(m_services_tabs.key(tab));
+                tabs_to_del.append(tab);
             }
         }
-    }
+        for(QWidget *tab: tabs_to_del){
+            ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
+            tab->deleteLater();
+            m_services_tabs.remove(m_services_tabs.key(tab));
+        }
+    }*/
 
     /*bool services_empty = m_services.isEmpty();
     foreach(TeraData service, services){
@@ -539,12 +546,23 @@ void ProjectWidget::processPostOKReply(QString path)
 
 void ProjectWidget::deleteDataReply(QString path, int del_id)
 {
-    if (path == WEB_SERVICEPROJECTINFO_PATH){
+    if (path == WEB_SERVICEPROJECTINFO_PATH){       
         // A service-project association was deleted
         if (m_listServicesProjects_items.contains(del_id)){
+            // Remove tab if needed
+            int id_service =  m_listServices_items.key(m_listServicesProjects_items[del_id]);
+            if (m_services_tabs.contains(id_service)){
+                QWidget* tab = m_services_tabs[id_service];
+                ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
+                tab->deleteLater();
+                m_services_tabs.remove(m_services_tabs.key(tab));
+            }
+
             m_listServicesProjects_items[del_id]->setCheckState(Qt::Unchecked);
             m_listServicesProjects_items.remove(del_id);
         }
+
+
     }
 }
 
@@ -807,12 +825,17 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
     if (service_project.getFieldValue("id_project").toInt() != m_data->getId())
         return; // Service not enabled for that project
 
-    QString service_key = service_project.getFieldValue("service_key").toString();
+    QString service_key = m_services_keys[id_service];//service_project.getFieldValue("service_key").toString();
 
     // Dance Service
     if (service_key == "DanceService"){
         DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getId());
-        ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_project.getFieldValue("service_name").toString());
+        //ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_project.getFieldValue("service_name").toString());
+        QString service_name = service_key;
+        if (m_listServices_items.contains(id_service)){
+            service_name = m_listServices_items[id_service]->text();
+        }
+        ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_name);
         m_services_tabs.insert(id_service, wdg);
     }
 }

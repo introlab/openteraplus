@@ -743,3 +743,8 @@ QProgressBar#progTimer{
 QProgressBar#progTimer::chunk{
     background-color: rgba(255,255,255,25%);
 }
+
+/* Customizations for AssetsWidget */
+QTreeWidget#treeAssets {
+    selection-color: cyan;
+}

@@ -26,6 +26,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     m_totalSessions = 0;
     m_currentSessions = 0;
     m_sessionsLoading = false;
+    m_allowFileTransfers = false;
 
     ui->setupUi(this);
 
@@ -510,13 +511,13 @@ void ParticipantWidget::updateServiceTabs()
     }
 
     // Remove tabs not anymore present
-    for(QWidget* tab: qAsConst(m_services_tabs)){
+    /*for(QWidget* tab: qAsConst(m_services_tabs)){
         if (!ids_service.contains(m_services_tabs.key(tab))){
             ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
             tab->deleteLater();
             m_services_tabs.remove(m_services_tabs.key(tab));
         }
-    }
+    }*/
 }
 
 void ParticipantWidget::addServiceTab(const TeraData &service)
@@ -674,14 +675,25 @@ void ParticipantWidget::processParticipantsReply(QList<TeraData> participants)
     }
 }
 
-void ParticipantWidget::processServicesReply(QList<TeraData> services)
+void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)
 {
+    if (!reply_query.hasQueryItem(WEB_QUERY_ID_PROJECT))
+        return; // Probably not for us!
+
+    if (reply_query.queryItemValue(WEB_QUERY_ID_PROJECT).toInt() != m_data->getFieldValue("id_project").toInt())
+        return; // Really not for us!
+
     ui->cmbServices->clear();
     m_services.clear();
 
     foreach(TeraData service, services){
-        m_services.append(service);
-        ui->cmbServices->addItem(service.getName(), service.getFieldValue("service_key"));
+        QString service_key = service.getFieldValue("service_key").toString();
+        if (service_key != "FileTransferService"){
+            m_services.append(service);
+            ui->cmbServices->addItem(service.getName(), service_key);
+        }else{
+            m_allowFileTransfers = true; // We have a file transfer service with that project - allow uploads!
+        }
     }
 
     // Find and select VideoRehab by default in the combobox
@@ -1005,6 +1017,7 @@ void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
     if (ses_data){
         ses_data->setFieldValue("id_project", m_data->getFieldValue("id_project"));
         SessionWidget* ses_widget = new SessionWidget(m_comManager, ses_data, nullptr);
+        ses_widget->alwaysShowAssets(m_allowFileTransfers);
         m_diag_editor->setCentralWidget(ses_widget);
 
         m_diag_editor->setWindowTitle(tr("Séance"));

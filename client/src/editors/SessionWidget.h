@@ -27,12 +27,15 @@ public:
     void saveData(bool signal=true);
     void setData(const TeraData *data);
 
+    void alwaysShowAssets(const bool &allow);
+
     void connectSignals();
 private:
     Ui::SessionWidget *ui;
 
     int     m_idProject;
     QString m_baseParticipantUuid;  // Base participant UUID when editing a new session
+    bool    m_alwaysShowAssets;       // Allow creation of new assets, even when no assets are present
 
     //QMap<int, QTableWidgetItem*> m_listDeviceDatas;
     QMap<int, QTableWidgetItem*> m_listSessionEvents;

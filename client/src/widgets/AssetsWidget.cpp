@@ -8,6 +8,8 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     ui->setupUi(this);
 
     m_comAssetManager = nullptr;
+    m_fileTransferServiceInfos = nullptr;
+    m_idProject = -1;
     setComManager(comMan);
 
     connectSignals();
@@ -26,6 +28,8 @@ AssetsWidget::~AssetsWidget()
     delete ui;
     if (m_comAssetManager)
         m_comAssetManager->deleteLater();
+    if (m_fileTransferServiceInfos)
+        delete m_fileTransferServiceInfos;
     qDeleteAll(m_assets);
 }
 
@@ -35,6 +39,7 @@ void AssetsWidget::setComManager(ComManager *comMan)
 
     if (m_comManager){
         connect(m_comManager, &ComManager::assetsReceived, this, &AssetsWidget::processAssetsReply);
+        connect(m_comManager, &ComManager::servicesReceived, this, &AssetsWidget::processServicesReply);
 
         m_comAssetManager = new AssetComManager(m_comManager);
 
@@ -50,6 +55,11 @@ void AssetsWidget::setComManager(ComManager *comMan)
     }
 }
 
+void AssetsWidget::setAssociatedProject(const int &id_project)
+{
+    m_idProject = id_project;
+}
+
 bool AssetsWidget::isEmpty() const
 {
     return m_assets.isEmpty();
@@ -61,6 +71,22 @@ void AssetsWidget::clearAssets()
     qDeleteAll(m_assets);
     m_assets.clear();
     m_treeAssets.clear();
+}
+
+void AssetsWidget::enableNewAssets(const bool &enable)
+{
+    if (enable && !m_fileTransferServiceInfos && m_idProject >= 0 && m_comManager){
+        // Query FileTransferService infos
+        QUrlQuery query;
+        query.addQueryItem(WEB_QUERY_SERVICE_KEY, "FileTransferService");
+        m_comManager->doGet(WEB_SERVICEINFO_PATH, query);
+        return;
+    }
+    if (m_fileTransferServiceInfos && enable){
+        ui->btnNew->setVisible(true);
+    }
+    // Default - no setted id project or enable = false
+    ui->btnNew->setVisible(false);
 }
 
 void AssetsWidget::displayAssetsForSession(const int &id_session)
@@ -103,8 +129,11 @@ void AssetsWidget::queryAssetsInfos()
             access_token = asset->getFieldValue("access_token").toString();
         }
         if (asset->hasFieldName("asset_infos_url")){
-            QUrl asset_info_url = asset->getFieldValue("asset_infos_url").toString();
-            services_assets.insert(asset_info_url.url(QUrl::RemoveQuery), asset->getUuid());
+            QString asset_info_str = asset->getFieldValue("asset_infos_url").toString();
+            if (!asset_info_str.isEmpty()){
+                QUrl asset_info_url = QUrl(asset_info_str);
+                services_assets.insert(asset_info_url.url(QUrl::RemoveQuery), asset->getUuid());
+            }
         }
     }
 
@@ -129,6 +158,8 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
     foreach(TeraData asset, assets){
         QTreeWidgetItem* item = new QTreeWidgetItem();
         QTreeWidgetItem* parent_item = nullptr;
+
+        bool has_asset_infos_url = !asset.getFieldValue("asset_infos_url").toString().isEmpty();
 
         // Participant name
         if (reply_query.hasQueryItem(WEB_QUERY_ID_PARTICIPANT)){
@@ -178,6 +209,7 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         btnView->setMaximumWidth(32);
         btnView->setToolTip(tr("Ouvrir"));
         //connect(btnView, &QToolButton::clicked, this, &ParticipantWidget::btnViewSession_clicked);
+        btnView->setEnabled(has_asset_infos_url);
         layout->addWidget(btnView);
 
         // Delete
@@ -200,6 +232,7 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         btnDownload->setMaximumWidth(32);
         btnDownload->setToolTip(tr("Télécharger les données"));
         //connect(btnDownload, &QToolButton::clicked, this, &ParticipantWidget::btnDownloadSession_clicked);
+        btnDownload->setEnabled(has_asset_infos_url);
         layout->addWidget(btnDownload);
 
         ui->treeAssets->setItemWidget(item, ui->treeAssets->columnCount()-1, action_frame);
@@ -211,9 +244,35 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
 
     //resizeAssetsColumnsToContent();
 
+    if (ui->treeAssets->topLevelItemCount()>0)
+        ui->btnDownload->setEnabled(true);
+
     // Query extra information
     queryAssetsInfos();
 
+}
+
+void AssetsWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)
+{
+    for(const TeraData &service:services){
+       if (service.getFieldValue("service_key").toString() == "FileTransferService"){
+           // Check if project is in service_fields
+           if (service.hasFieldName("service_projects")){
+               QVariantList projects = service.getFieldValue("service_projects").toList();
+               for (const QVariant &project:qAsConst(projects)){
+                   QVariantMap project_info = project.toMap();
+                   if (project_info["id_project"].toInt() == m_idProject){
+                       // Ok, we are allowed to use file transfer service
+                       if (m_fileTransferServiceInfos)
+                           delete m_fileTransferServiceInfos;
+                       m_fileTransferServiceInfos = new TeraData(service);
+                       ui->btnNew->setVisible(true);
+                       break;
+                   }
+               }
+           }
+       }
+    }
 }
 
 void AssetsWidget::nextMessageWasShown(Message current_message)
@@ -290,3 +349,9 @@ void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_
     }
     resizeAssetsColumnsToContent();
 }
+
+void AssetsWidget::on_treeAssets_itemSelectionChanged()
+{
+    ui->btnDelete->setEnabled(!ui->treeAssets->selectedItems().isEmpty());
+}
+

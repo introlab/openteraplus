@@ -40,8 +40,8 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1054</width>
-         <height>758</height>
+         <width>1069</width>
+         <height>759</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -123,20 +123,6 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
            <height>32</height>
           </size>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-         </layout>
         </widget>
        </item>
       </layout>
@@ -773,7 +759,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
      <x>0</x>
      <y>0</y>
      <width>1689</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

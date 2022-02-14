@@ -26,9 +26,11 @@ public:
     ~AssetsWidget();
 
     void setComManager(ComManager* comMan);
+    void setAssociatedProject(const int &id_project);
 
     bool isEmpty() const;
     void clearAssets();
+    void enableNewAssets(const bool &enable);
 
     void displayAssetsForSession(const int &id_session);
 
@@ -48,10 +50,13 @@ private:
     ComManager*         m_comManager;
     AssetComManager*    m_comAssetManager;
 
-    QMap<QString, QTreeWidgetItem*>  m_treeAssets;
-    QMap<int, QTreeWidgetItem*>  m_treeSessions;
-    QMap<int, QTreeWidgetItem*>  m_treeParticipants;
-    QMap<QString, TeraData*>         m_assets;
+    int                 m_idProject;
+    TeraData*           m_fileTransferServiceInfos;
+
+    QMap<QString, QTreeWidgetItem*>     m_treeAssets;
+    QMap<int, QTreeWidgetItem*>         m_treeSessions;
+    QMap<int, QTreeWidgetItem*>         m_treeParticipants;
+    QMap<QString, TeraData*>            m_assets;
 
     void connectSignals();
 
@@ -62,6 +67,8 @@ private:
 
 private slots:
     void processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query);
+
+    void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
 
     void nextMessageWasShown(Message current_message);
 
@@ -76,6 +83,7 @@ private slots:
     void processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
 
 
+    void on_treeAssets_itemSelectionChanged();
 };
 
 #endif // ASSETSWIDGET_H

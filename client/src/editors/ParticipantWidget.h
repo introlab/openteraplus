@@ -54,6 +54,7 @@ private:
 
     QList<TeraData>                 m_services;
     QMap<int, QWidget*>             m_services_tabs;
+    bool                            m_allowFileTransfers;   // Allow to attach files to a session?
 
     BaseDialog*                     m_diag_editor;
     SessionLobbyDialog*             m_sessionLobby;
@@ -94,7 +95,7 @@ private slots:
     void processDeviceProjectsReply(QList<TeraData> device_projects);
     void processDeviceParticipantsReply(QList<TeraData> device_participants);
     void processParticipantsReply(QList<TeraData> participants);
-    void processServicesReply(QList<TeraData> services);
+    void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
 
     void deleteDataReply(QString path, int id);
