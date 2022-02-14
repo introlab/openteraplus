@@ -9,7 +9,10 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
 
     m_comAssetManager = nullptr;
     m_fileTransferServiceInfos = nullptr;
+    m_uploadDialog = nullptr;
+    m_transferDialog = nullptr;
     m_idProject = -1;
+    m_idSession = -1;
     setComManager(comMan);
 
     connectSignals();
@@ -31,6 +34,14 @@ AssetsWidget::~AssetsWidget()
     if (m_fileTransferServiceInfos)
         delete m_fileTransferServiceInfos;
     qDeleteAll(m_assets);
+
+    if (m_uploadDialog){
+        m_uploadDialog->deleteLater();
+    }
+
+    if (m_transferDialog){
+        m_transferDialog->deleteLater();
+    }
 }
 
 void AssetsWidget::setComManager(ComManager *comMan)
@@ -103,6 +114,8 @@ void AssetsWidget::displayAssetsForSession(const int &id_session)
 
     ui->treeAssets->hideColumn(AssetColumn::ASSET_PARTICIPANT); // No need to display the first column (participant) for that case
     ui->treeAssets->hideColumn(AssetColumn::ASSET_SESSION); // No need to display the second column (session) for that case
+
+    m_idSession = id_session;
 
 }
 
@@ -353,5 +366,57 @@ void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_
 void AssetsWidget::on_treeAssets_itemSelectionChanged()
 {
     ui->btnDelete->setEnabled(!ui->treeAssets->selectedItems().isEmpty());
+}
+
+
+void AssetsWidget::on_btnNew_clicked()
+{
+    // Upload a new asset to the FileTransfer service
+    if (!m_fileTransferServiceInfos || !m_comAssetManager || !m_comManager){
+        return; // Should not happen at this point.
+    }
+
+    // Open upload dialog
+    m_uploadDialog = new FileUploaderDialog(tr("Tous (*.*)"), dynamic_cast<QWidget*>(this));
+
+    connect(m_uploadDialog, &FileUploaderDialog::finished, this, &AssetsWidget::fileUploaderFinished);
+
+    m_uploadDialog->setModal(true);
+    m_uploadDialog->show();
+
+
+}
+
+void AssetsWidget::fileUploaderFinished(int result)
+{
+    if (result == QDialog::Accepted){
+        // Do the upload process!
+        QStringList files = m_uploadDialog->getFiles();
+        QStringList labels = m_uploadDialog->getLabels();
+
+        // Create JSON
+        QJsonDocument doc;
+        QJsonObject data_obj;
+        data_obj["id_session"] = m_idSession;
+
+        // Get path to upload to
+        if (!m_fileTransferServiceInfos)
+            return; // Shouldn't happen.
+
+        QString path = m_fileTransferServiceInfos->getFieldValue("service_clientendpoint").toString() + "/api/assets";
+
+        for(int i=0; i<files.count(); i++){
+            data_obj["asset_name"] = labels.at(i);
+            QJsonObject base_obj;
+            base_obj["file_asset"] = data_obj;
+            doc.setObject(base_obj);
+
+            m_comAssetManager->doUploadWithMultiPart(path, files.at(i), doc.toJson());
+        }
+
+    }
+
+    m_uploadDialog->deleteLater();
+    m_uploadDialog = nullptr;
 }
 

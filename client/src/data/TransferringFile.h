@@ -13,6 +13,8 @@ public:
     TransferringFile(const QString& file_path, const QString& file_name, QObject *parent = nullptr);
     TransferringFile(const TransferringFile& copy, QObject *parent=nullptr);
 
+    ~TransferringFile();
+
     TransferringFile &operator = (const TransferringFile& other);
 
     QString getFileName();

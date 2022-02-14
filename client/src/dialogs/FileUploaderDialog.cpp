@@ -1,9 +1,10 @@
 #include "FileUploaderDialog.h"
 #include "ui_FileUploaderDialog.h"
 
-FileUploaderDialog::FileUploaderDialog(QWidget *parent) :
+FileUploaderDialog::FileUploaderDialog(const QString &file_pattern, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::FileUploaderDialog)
+    ui(new Ui::FileUploaderDialog),
+    m_file_pattern(file_pattern)
 {
     ui->setupUi(this);
 
@@ -11,7 +12,7 @@ FileUploaderDialog::FileUploaderDialog(QWidget *parent) :
     QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
 
     if (!documents_path.isEmpty())
-        current_base_path = documents_path.first();
+        m_current_base_path = documents_path.first();
 }
 
 FileUploaderDialog::~FileUploaderDialog()
@@ -44,7 +45,7 @@ void FileUploaderDialog::on_btnAddFile_clicked()
 {
     QFileDialog dlg;
 
-    QStringList files_to_upload = dlg.getOpenFileNames(this, tr("Choisir le(s) fichier(s) à envoyer"), current_base_path, tr("Vidéos (*.mp4 *.webm *.mkv *.avi)"));
+    QStringList files_to_upload = dlg.getOpenFileNames(this, tr("Choisir le(s) fichier(s) à envoyer"), m_current_base_path, m_file_pattern);
 
     for (const QString &file:qAsConst(files_to_upload)){
         QFileInfo file_info(file);
@@ -52,7 +53,7 @@ void FileUploaderDialog::on_btnAddFile_clicked()
         QString default_label = filename.left(filename.length() - filename.split(".").last().length() - 1);
         if (file == files_to_upload.first()){
             // Update current path
-            current_base_path = file_info.path();
+            m_current_base_path = file_info.path();
         }
         addFileToTable(file, default_label);
     }
@@ -90,6 +91,14 @@ void FileUploaderDialog::addFileToTable(const QString &file_path, const QString 
 
     ui->btnUpload->setEnabled(ui->tableFiles->rowCount()>0);
 
+}
+
+void FileUploaderDialog::showEvent(QShowEvent *event)
+{
+     QDialog::showEvent( event );
+
+     if (ui->tableFiles->rowCount()==0)
+         on_btnAddFile_clicked();
 }
 
 void FileUploaderDialog::on_tableFiles_itemSelectionChanged()

@@ -20,6 +20,12 @@ TransferringFile::TransferringFile(const TransferringFile &copy, QObject *parent
     *this = copy;
 }
 
+TransferringFile::~TransferringFile()
+{
+    if (m_file.isOpen())
+        m_file.close();
+}
+
 TransferringFile &TransferringFile::operator =(const TransferringFile &other)
 {
     //m_file = other.m_file;

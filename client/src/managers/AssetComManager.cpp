@@ -1,7 +1,7 @@
 #include "AssetComManager.h"
 
 AssetComManager::AssetComManager(ComManager *comManager, QObject *parent)
-    : BaseComManager(QUrl(), parent),
+    : BaseComManager(comManager->getServerUrl(), parent),
       m_comManager(comManager)
 {
     // Set initial user token
@@ -33,6 +33,12 @@ void AssetComManager::doDelete(const QString &path, const int &id, const bool &u
 {
     Q_UNUSED(use_token)
     BaseComManager::doDelete(path, id, true); // Always use token!
+}
+
+void AssetComManager::doUploadWithMultiPart(const QString &path, const QString &file_name, const QString &form_infos, const QVariantMap extra_headers, const bool &use_token)
+{
+    Q_UNUSED(use_token)
+    BaseComManager::doUploadWithMultiPart(path, file_name, form_infos, extra_headers, true); // Always use token
 }
 
 void AssetComManager::connectSignals()

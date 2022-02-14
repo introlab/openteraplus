@@ -163,7 +163,6 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
         request.setRawHeader(extra_headers.key(header_value).toUtf8(), header_value.toString().toUtf8());
     }
 
-
     // Do the post request
     file->open(QIODevice::ReadOnly); // Open the file
     QNetworkReply* reply = m_netManager->post(request, file);
@@ -176,6 +175,59 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
 
     }else{
         file_to_upload->deleteLater();
+    }
+
+}
+
+void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &file_name, const QString &form_infos, const QVariantMap extra_headers, const bool &use_token)
+{
+    // General query initialization
+    QUrl query = m_serverUrl;
+    query.setPath(path);
+
+    // Prepare request
+    QNetworkRequest request(query);
+    setRequestCredentials(request, use_token);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
+    // Multipart construction
+    QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+
+    QHttpPart formPart;
+//    formPart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
+//    formPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file_asset\""));
+    formPart.setBody(form_infos.toUtf8());
+
+    QHttpPart filePart;
+//    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
+//    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\""));
+    // Create file to upload
+    UploadingFile* file_to_upload = new UploadingFile(file_name);
+    QFile* file = file_to_upload->getFile();
+    if (!file){ // Invalid file
+        delete multiPart;
+        return;
+    }
+
+    file->open(QIODevice::ReadOnly);
+    filePart.setBodyDevice(file);
+
+    multiPart->append(formPart);
+    multiPart->append(filePart);
+
+    QNetworkReply* reply = m_netManager->post(request, multiPart);
+    if (reply){
+        multiPart->setParent(reply); // delete the multiPart with the reply
+        file_to_upload->setNetworkReply(reply);
+        m_currentUploads[reply] = file_to_upload;
+        connect(file_to_upload, &UploadingFile::transferProgress, this, &BaseComManager::onTransferProgress);
+        connect(file_to_upload, &UploadingFile::transferComplete, this, &BaseComManager::onTransferCompleted);
+        connect(file_to_upload, &UploadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
+
+    }else{
+        file_to_upload->deleteLater();
+        multiPart->deleteLater();
     }
 
 

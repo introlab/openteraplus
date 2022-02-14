@@ -8,6 +8,9 @@
 #include "managers/ComManager.h"
 #include "managers/AssetComManager.h"
 
+#include "dialogs/FileUploaderDialog.h"
+#include "dialogs/TransferProgressDialog.h"
+
 #include "data/Message.h"
 #include "Utils.h"
 
@@ -50,7 +53,11 @@ private:
     ComManager*         m_comManager;
     AssetComManager*    m_comAssetManager;
 
+    FileUploaderDialog*     m_uploadDialog;
+    TransferProgressDialog* m_transferDialog;
+
     int                 m_idProject;
+    int                 m_idSession;
     TeraData*           m_fileTransferServiceInfos;
 
     QMap<QString, QTreeWidgetItem*>     m_treeAssets;
@@ -73,7 +80,6 @@ private slots:
     void nextMessageWasShown(Message current_message);
 
     void assetComNetworkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
-
     //void assetComUploadProgress(UploadingFile* file);
     //void assetComUploadCompleted(UploadingFile* file);
     //void assetComTransferAborted(TransferringFile *file);
@@ -84,6 +90,9 @@ private slots:
 
 
     void on_treeAssets_itemSelectionChanged();
+    void on_btnNew_clicked();
+
+    void fileUploaderFinished(int result);
 };
 
 #endif // ASSETSWIDGET_H

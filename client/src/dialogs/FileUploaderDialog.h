@@ -15,7 +15,7 @@ class FileUploaderDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit FileUploaderDialog(QWidget *parent = nullptr);
+    explicit FileUploaderDialog(const QString &file_pattern, QWidget *parent = nullptr);
     ~FileUploaderDialog();
 
     QStringList getFiles();
@@ -32,9 +32,13 @@ private slots:
 
 private:
     Ui::FileUploaderDialog *ui;
-    QString current_base_path;
+    QString m_current_base_path;
+    QString m_file_pattern;
 
     void addFileToTable(const QString& file_path, const QString &label);
+
+protected:
+    void showEvent(QShowEvent * event) override;
 };
 
 #endif // FILEUPLOADERDIALOG_H
