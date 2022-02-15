@@ -166,17 +166,34 @@ void AssetsWidget::queryAssetsInfos()
     }
 }
 
-void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query)
+void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant)
 {
-    foreach(TeraData asset, assets){
-        QTreeWidgetItem* item = new QTreeWidgetItem();
+    QTreeWidgetItem* item;
+    bool has_asset_infos_url = false;
+    bool has_asset_download_url = false;
+
+    if (asset.hasFieldName("asset_infos_url")){
+        has_asset_infos_url = !asset.getFieldValue("asset_infos_url").toString().isEmpty();
+    }
+
+    if (asset.hasFieldName("asset_url")){
+        has_asset_download_url = !asset.getFieldValue("asset_url").toString().isEmpty();
+    }
+
+    //btnDownload = dynamic_cast<QToolButton*>(ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(2)->widget());
+    QToolButton* btnDownload;
+    QToolButton* btnView;
+
+    if (m_treeAssets.contains(asset.getUuid())){
+        item = m_treeAssets[asset.getUuid()];
+        btnDownload = dynamic_cast<QToolButton*>(ui->treeAssets->itemWidget(item, ui->treeAssets->columnCount()-1)->layout()->itemAt(2)->widget());
+        btnView = dynamic_cast<QToolButton*>(ui->treeAssets->itemWidget(item, ui->treeAssets->columnCount()-1)->layout()->itemAt(0)->widget());
+    }else{
+        item = new QTreeWidgetItem();
         QTreeWidgetItem* parent_item = nullptr;
 
-        bool has_asset_infos_url = !asset.getFieldValue("asset_infos_url").toString().isEmpty();
-
         // Participant name
-        if (reply_query.hasQueryItem(WEB_QUERY_ID_PARTICIPANT)){
-            int id_participant = reply_query.queryItemValue(WEB_QUERY_ID_PARTICIPANT).toInt();
+        if (id_participant>=0){
             if (m_treeParticipants.contains(id_participant)){
                 parent_item = m_treeParticipants[id_participant];
             }
@@ -189,16 +206,10 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         }
 
         // Asset name and infos
-        item->setText(AssetColumn::ASSET_NAME, asset.getName());
-        item->setIcon(AssetColumn::ASSET_NAME, QIcon(TeraAsset::getIconForContentType(asset.getFieldValue("asset_type").toString())));
         item->setForeground(AssetColumn::ASSET_NAME, QColor(255,255,102));
         QFont font = item->font(AssetColumn::ASSET_NAME);
         font.setBold(true);
         item->setFont(AssetColumn::ASSET_NAME, font);
-
-        item->setText(AssetColumn::ASSET_DATETIME, asset.getFieldValue("asset_datetime").toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
-        if (asset.hasFieldName("asset_service_owner_name"))
-            item->setText(AssetColumn::ASSET_SERVICE, asset.getFieldValue("asset_service_owner_name").toString());
 
         if (!parent_item){
             ui->treeAssets->addTopLevelItem(item);
@@ -214,7 +225,7 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         action_frame->setLayout(layout);
 
         // View asset
-        QToolButton* btnView = new QToolButton();
+        btnView = new QToolButton();
         btnView->setIcon(QIcon(":/icons/search.png"));
         btnView->setIconSize(QSize(24,24));
         btnView->setProperty("asset_uuid", asset.getUuid());
@@ -222,7 +233,6 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         btnView->setMaximumWidth(32);
         btnView->setToolTip(tr("Ouvrir"));
         //connect(btnView, &QToolButton::clicked, this, &ParticipantWidget::btnViewSession_clicked);
-        btnView->setEnabled(has_asset_infos_url);
         layout->addWidget(btnView);
 
         // Delete
@@ -237,7 +247,7 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         layout->addWidget(btnDelete);
 
         // Download data
-        QToolButton* btnDownload = new QToolButton();
+        btnDownload = new QToolButton();
         btnDownload->setIcon(QIcon(":/icons/download.png"));
         btnDownload->setIconSize(QSize(24,24));
         btnDownload->setProperty("asset_uuid", asset.getUuid());
@@ -245,7 +255,6 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         btnDownload->setMaximumWidth(32);
         btnDownload->setToolTip(tr("Télécharger les données"));
         //connect(btnDownload, &QToolButton::clicked, this, &ParticipantWidget::btnDownloadSession_clicked);
-        btnDownload->setEnabled(has_asset_infos_url);
         layout->addWidget(btnDownload);
 
         ui->treeAssets->setItemWidget(item, ui->treeAssets->columnCount()-1, action_frame);
@@ -253,6 +262,27 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         // Update internal lists
         m_treeAssets.insert(asset.getUuid(), item);
         m_assets.insert(asset.getUuid(), new TeraData(asset));
+    }
+
+    // Update informations
+    item->setText(AssetColumn::ASSET_NAME, asset.getName());
+    item->setIcon(AssetColumn::ASSET_NAME, QIcon(TeraAsset::getIconForContentType(asset.getFieldValue("asset_type").toString())));
+    item->setText(AssetColumn::ASSET_DATETIME, asset.getFieldValue("asset_datetime").toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
+    if (asset.hasFieldName("asset_service_owner_name"))
+        item->setText(AssetColumn::ASSET_SERVICE, asset.getFieldValue("asset_service_owner_name").toString());
+    btnDownload->setEnabled(has_asset_download_url);
+    btnView->setEnabled(has_asset_infos_url);
+}
+
+void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query)
+{
+    foreach(TeraData asset, assets){
+        // Participant name
+        int id_participant = -1;
+        if (reply_query.hasQueryItem(WEB_QUERY_ID_PARTICIPANT)){
+            id_participant = reply_query.queryItemValue(WEB_QUERY_ID_PARTICIPANT).toInt();
+        }
+        updateAsset(asset, id_participant);
     }
 
     //resizeAssetsColumnsToContent();
@@ -332,13 +362,20 @@ void AssetsWidget::assetComDeleteOK(QString path, int id)
 
 void AssetsWidget::assetComPostOK(QString path)
 {
-    //ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Données sauvegardées")));
+    if (!path.endsWith("/assets/infos"))
+        ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Données sauvegardées")));
 }
 
 void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path)
 {
     for (const QJsonObject &asset_info:qAsConst(infos)){
         QString asset_uuid = asset_info["asset_uuid"].toString();
+
+        if (!m_treeAssets.contains(asset_uuid)){
+            // Create a new asset, if possible (should happen if we posted a new asset)
+            TeraData asset(TERADATA_ASSET, asset_info);
+            updateAsset(asset); // TODO: manage participant association, if required by the view
+        }
 
         if (m_treeAssets.contains(asset_uuid)){
             QTreeWidgetItem* asset_item = m_treeAssets[asset_uuid];

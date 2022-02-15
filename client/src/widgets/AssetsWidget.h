@@ -70,6 +70,7 @@ private:
     void resizeAssetsColumnsToContent();
 
     void queryAssetsInfos();
+    void updateAsset(const TeraData& asset, const int& id_participant = -1);
 
 
 private slots:

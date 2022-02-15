@@ -100,6 +100,10 @@ bool AssetComManager::processNetworkReply(QNetworkReply *reply)
 
     if (reply->operation()==QNetworkAccessManager::PostOperation){
         if (!handled){
+            if (reply_path.endsWith("/assets")){
+                // We posted a new asset - we received its info, change the path so it is handled properly
+                reply_path = reply_path.append("/infos");
+            }
             handled=handleDataReply(reply_path, reply_data, reply_query);
             if (handled) emit postResultsOK(reply_path);
         }
