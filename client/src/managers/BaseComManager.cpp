@@ -179,7 +179,7 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
 
 }
 
-void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &file_name, const QString &form_infos, const QVariantMap extra_headers, const bool &use_token)
+void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &file_name, const QString &form_field_name, const QString &form_infos, const QVariantMap extra_headers, const bool &use_token)
 {
     // General query initialization
     QUrl query = m_serverUrl;
@@ -193,17 +193,20 @@ void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &f
 
     // Multipart construction
     QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+    // Must remove "/" from boundary or it won't work.
+    multiPart->setBoundary(QString(multiPart->boundary()).replace('/', '_').toLatin1());
 
     QHttpPart formPart;
-//    formPart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
-//    formPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file_asset\""));
+    formPart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
+    formPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"" + form_field_name + "\""));
     formPart.setBody(form_infos.toUtf8());
 
     QHttpPart filePart;
-//    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
-//    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\""));
+    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
+
     // Create file to upload
     UploadingFile* file_to_upload = new UploadingFile(file_name);
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"" + file_to_upload->getFileName() + "\""));
     QFile* file = file_to_upload->getFile();
     if (!file){ // Invalid file
         delete multiPart;
@@ -226,7 +229,7 @@ void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &f
         connect(file_to_upload, &UploadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
 
     }else{
-        file_to_upload->deleteLater();
+        //file_to_upload->deleteLater();
         multiPart->deleteLater();
     }
 

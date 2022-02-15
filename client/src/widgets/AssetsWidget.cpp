@@ -407,11 +407,9 @@ void AssetsWidget::fileUploaderFinished(int result)
 
         for(int i=0; i<files.count(); i++){
             data_obj["asset_name"] = labels.at(i);
-            QJsonObject base_obj;
-            base_obj["file_asset"] = data_obj;
-            doc.setObject(base_obj);
+            doc.setObject(data_obj);
 
-            m_comAssetManager->doUploadWithMultiPart(path, files.at(i), doc.toJson());
+            m_comAssetManager->doUploadWithMultiPart(path, files.at(i), "file_asset", doc.toJson());
         }
 
     }

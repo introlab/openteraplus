@@ -35,10 +35,10 @@ void AssetComManager::doDelete(const QString &path, const int &id, const bool &u
     BaseComManager::doDelete(path, id, true); // Always use token!
 }
 
-void AssetComManager::doUploadWithMultiPart(const QString &path, const QString &file_name, const QString &form_infos, const QVariantMap extra_headers, const bool &use_token)
+void AssetComManager::doUploadWithMultiPart(const QString &path, const QString &file_name, const QString &form_field_name, const QString &form_infos, const QVariantMap extra_headers, const bool &use_token)
 {
     Q_UNUSED(use_token)
-    BaseComManager::doUploadWithMultiPart(path, file_name, form_infos, extra_headers, true); // Always use token
+    BaseComManager::doUploadWithMultiPart(path, file_name, form_field_name, form_infos, extra_headers, true); // Always use token
 }
 
 void AssetComManager::connectSignals()

@@ -36,7 +36,6 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
         args.addQueryItem(WEB_QUERY_ID_PROJECT, data->getFieldValue("id_project").toString());
         m_idProject = data->getFieldValue("id_project").toInt();
         ui->tabAssets->setAssociatedProject(m_idProject);
-        ui->tabAssets->enableNewAssets(true); // Enable creation of new assets, if possible. Only allow to project admin ??
     }else{
         if (!data->isNew()){
             args.addQueryItem(WEB_QUERY_ID, QString::number(data->getId()));
@@ -344,56 +343,7 @@ void SessionWidget::updateSessionDevices()
         ui->wdgSessionInvitees->addDevicesToSession(devices);
     }
 }
-/*
-void SessionWidget::updateDeviceData(TeraData *device_data)
-{
-    int id_device_data = device_data->getId();
-    QTableWidgetItem* base_item;
 
-    if (m_listDeviceDatas.contains(id_device_data)){
-        // Item is already present
-        base_item = m_listDeviceDatas[id_device_data];
-    }else{
-        ui->tableData->setRowCount(ui->tableData->rowCount()+1);
-        int current_row = ui->tableData->rowCount()-1;
-
-        // Must create new item
-        base_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICEDATA)),"");
-        ui->tableData->setItem(current_row, 0, base_item);
-        m_listDeviceDatas[id_device_data] = base_item;
-
-        QTableWidgetItem* item = new QTableWidgetItem();
-        ui->tableData->setItem(current_row, 1, item);
-
-        item = new QTableWidgetItem();
-        ui->tableData->setItem(current_row, 2, item);
-
-        item = new QTableWidgetItem();
-        ui->tableData->setItem(current_row, 3, item);
-
-        // Action button
-        QPushButton* btnDownload = new QPushButton(tr("Télécharger"));
-        btnDownload->setProperty("id_device_data", device_data->getId());
-        btnDownload->setCursor(Qt::PointingHandCursor);
-        connect(btnDownload, &QPushButton::clicked, this, &SessionWidget::btnDownload_clicked);
-        ui->tableData->setCellWidget(current_row, 4, btnDownload);
-    }
-
-    // Update values
-    base_item->setText(device_data->getFieldValue("device_name").toString());
-    ui->tableData->item(base_item->row(), 1)->setText(device_data->getFieldValue("devicedata_saved_date").toDateTime().toString("dd-MM-yyyy hh:mm:ss"));
-    ui->tableData->item(base_item->row(), 2)->setText(device_data->getFieldValue("devicedata_name").toString());
-    int file_size = device_data->getFieldValue("devicedata_filesize").toInt();
-    QString suffix = " MB";
-    if (file_size < 1024*1024){
-        suffix = " KB";
-        file_size /= 1024;
-    }else{
-        file_size /= (1024*1024);
-    }
-    ui->tableData->item(base_item->row(), 3)->setText(QString::number(file_size, 'f', 2) + suffix);
-}
-*/
 void SessionWidget::updateEvent(TeraData *event)
 {
     int id_event = event->getId();
@@ -701,6 +651,23 @@ void SessionWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabAssets){
         // Data
         if (ui->tabAssets->isEmpty()){
+            bool enable_new_assets = m_comManager->isCurrentUserSuperAdmin();
+            if (!enable_new_assets){
+                // Not super admin - check if we are project admin
+                enable_new_assets = m_comManager->isCurrentUserProjectAdmin(m_idProject);
+                if (!enable_new_assets){
+                    // Check if we are part of the users in this session
+                    enable_new_assets = ui->wdgSessionInvitees->getUsersUuidsInSession().contains(m_comManager->getCurrentUser().getUuid());
+                    if (!enable_new_assets){
+                        // Finally... Check if we created that session!
+                        if (m_data->hasFieldName("id_creator_user")){
+                            enable_new_assets = m_data->getFieldValue("id_creator_user").toInt() == m_comManager->getCurrentUser().getId();
+                        }
+                    }
+                }
+            }
+            ui->tabAssets->enableNewAssets(enable_new_assets); // Enable creation of new assets, if possible.
+
             ui->tabAssets->displayAssetsForSession(m_data->getId());           
         }
         /*if (m_listDeviceDatas.isEmpty()){

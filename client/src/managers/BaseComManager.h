@@ -31,7 +31,7 @@ public:
     virtual void doDownload(const QString& save_path, const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=false);
     virtual void doUpload(const QString &path, const QString& file_name, const QVariantMap extra_headers = QVariantMap(),
                           const QString& label = QString(), const bool &use_token=false);
-    virtual void doUploadWithMultiPart(const QString &path, const QString& file_name, const QString& form_infos, const QVariantMap extra_headers = QVariantMap(), const bool &use_token=false);
+    virtual void doUploadWithMultiPart(const QString &path, const QString& file_name, const QString &form_field_name, const QString& form_infos, const QVariantMap extra_headers = QVariantMap(), const bool &use_token=false);
 
     bool hasPendingDownloads();
     bool hasPendingUploads();
