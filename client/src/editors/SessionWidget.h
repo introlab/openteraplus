@@ -66,6 +66,8 @@ private slots:
 
     void onDownloadCompleted(DownloadingFile* file);
 
+    void onAssetsCountChanged(int new_count);
+
     void sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
 
     void on_icoUsers_clicked();
@@ -76,6 +78,9 @@ private slots:
     void on_icoTests_clicked();
 
     void on_tabNav_currentChanged(int index);
+
+signals:
+    void assetsCountChanged(int id_session, int new_count);
 };
 
 #endif // SESSIONWIDGET_H

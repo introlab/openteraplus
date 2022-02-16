@@ -443,7 +443,7 @@ void SessionWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
     ui->lblUsersStats->setText(stats.getFieldValue("users_total_count").toString() + tr(" Utilisateurs"));
     ui->lblParticipantsStats->setText(stats.getFieldValue("participants_total_count").toString() + tr(" Participants"));
     ui->lblDevicesStats->setText(stats.getFieldValue("devices_total_count").toString() + tr(" Appareils"));
-    ui->lblAssets->setText(stats.getFieldValue("assets_total_count").toString() + tr(" Fichiers de données"));
+    ui->lblAssets->setText(stats.getFieldValue("assets_total_count").toString() + tr(" Données"));
     ui->lblEvents->setText(stats.getFieldValue("events_total_count").toString() + tr(" Événements"));
     ui->lblTests->setText(stats.getFieldValue("tests_total_count").toString() + tr(" Évaluations"));
 
@@ -524,6 +524,14 @@ void SessionWidget::onDownloadCompleted(DownloadingFile *file)
     }
 }
 
+void SessionWidget::onAssetsCountChanged(int new_count)
+{
+    ui->lblAssets->setText(QString::number(new_count) + tr(" Données"));
+
+    if (!dataIsNew())
+        emit assetsCountChanged(m_data->getId(), new_count);
+}
+
 void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids)
 {
     // Post session update with new lists
@@ -592,6 +600,8 @@ void SessionWidget::connectSignals()
 
     connect(ui->wdgSessionInvitees, &SessionInviteWidget::newInvitees, this, &SessionWidget::sessionInviteesChanged);
     connect(ui->wdgSessionInvitees, &SessionInviteWidget::removedInvitees, this, &SessionWidget::sessionInviteesChanged);
+
+    connect(ui->tabAssets, &AssetsWidget::assetCountChanged, this, &SessionWidget::onAssetsCountChanged);
 }
 
 void SessionWidget::on_icoUsers_clicked()

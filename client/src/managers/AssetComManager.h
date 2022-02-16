@@ -19,6 +19,8 @@ public:
     void doDelete(const QString &path, const int& id, const bool &use_token=true) override;
     void doUploadWithMultiPart(const QString &path, const QString& file_name, const QString &form_field_name, const QString& form_infos, const QVariantMap extra_headers = QVariantMap(), const bool &use_token=false) override;
 
+    void doDelete(const QUrl &full_url, const QString& uuid, const QString &access_token);
+
 private:
     ComManager*     m_comManager;
 
@@ -35,6 +37,8 @@ signals:
     void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
 
     void assetsInfosReceived(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
+
+    void deleteUuidResultOK(QString path, QString uuid);
 };
 
 #endif // ASSETCOMMANAGER_H

@@ -70,7 +70,7 @@ private:
     void resizeAssetsColumnsToContent();
 
     void queryAssetsInfos();
-    void updateAsset(const TeraData& asset, const int& id_participant = -1);
+    void updateAsset(const TeraData& asset, const int& id_participant = -1, const bool& emit_count_update_signal=true);
 
 
 private slots:
@@ -79,21 +79,24 @@ private slots:
     void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
 
     void nextMessageWasShown(Message current_message);
+    void fileUploaderFinished(int result);
 
     void assetComNetworkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
-    //void assetComUploadProgress(UploadingFile* file);
-    //void assetComUploadCompleted(UploadingFile* file);
-    //void assetComTransferAborted(TransferringFile *file);
-    void assetComDeleteOK(QString path, int id);
+    void assetComUploadProgress(UploadingFile* file);
+    void assetComUploadCompleted(UploadingFile* file);
+    void assetComTransferAborted(TransferringFile *file);
+    void assetComDeleteOK(QString path, QString uuid);
     void assetComPostOK(QString path);
 
     void processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
 
-
     void on_treeAssets_itemSelectionChanged();
     void on_btnNew_clicked();
+    void on_btnDelete_clicked();
 
-    void fileUploaderFinished(int result);
+signals:
+    void assetCountChanged(int new_count);
+
 };
 
 #endif // ASSETSWIDGET_H

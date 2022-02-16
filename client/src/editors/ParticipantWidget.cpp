@@ -24,6 +24,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     m_diag_editor = nullptr;
     m_sessionLobby = nullptr;
     m_totalSessions = 0;
+    m_totalAssets = 0;
     m_currentSessions = 0;
     m_sessionsLoading = false;
     m_allowFileTransfers = false;
@@ -301,6 +302,10 @@ void ParticipantWidget::updateSession(TeraData *session)
                if (ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(3))
                   btnResume = dynamic_cast<QToolButton*>(ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(3)->widget());
            }
+
+       if (m_ids_sessions[id_session]->hasFieldName("session_assets_count")){
+           m_totalAssets -= m_ids_sessions[id_session]->getFieldValue("session_assets_count").toInt();
+       }
        delete m_ids_sessions[id_session];
     }else{
 
@@ -415,11 +420,11 @@ void ParticipantWidget::updateSession(TeraData *session)
     // Download data
     if (btnDownload){
         if (session->hasFieldName("session_assets_count")){
-            bool has_assets = session->getFieldValue("session_assets_count").toInt()>0;
+            int asset_count = session->getFieldValue("session_assets_count").toInt();
+            bool has_assets = asset_count>0;
             btnDownload->setVisible(has_assets);
-            if (has_assets && !ui->btnDownloadAll->isVisible()){
-                ui->btnDownloadAll->show();
-            }
+            m_totalAssets += asset_count;
+            ui->btnDownloadAll->setVisible(m_totalAssets>0);
         }else{
             btnDownload->hide();
         }
@@ -807,6 +812,17 @@ void ParticipantWidget::ws_participantEvent(opentera::protobuf::ParticipantEvent
     updateFieldsValue();
 }
 
+void ParticipantWidget::sessionAssetsCountChanged(int id_session, int new_count)
+{
+    qDebug() << "*** sessionAssetsCountChanged";
+    if (m_ids_sessions.contains(id_session)){
+        // Check if we need to toggle the "asset download" icon
+        TeraData session_data(*m_ids_sessions[id_session]); // Local copy to prevent deletion when calling updateSession
+        session_data.setFieldValue("session_assets_count", new_count);
+        updateSession(&session_data);
+    }
+}
+
 void ParticipantWidget::btnDeleteSession_clicked()
 {
     // Check if the sender is a QToolButton (from the action column)
@@ -1026,6 +1042,7 @@ void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
         m_diag_editor->setMinimumSize(this->width(), this->height());
 
         connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
+        connect(ses_widget, &SessionWidget::assetsCountChanged, this, &ParticipantWidget::sessionAssetsCountChanged);
 
         m_diag_editor->open();
     }

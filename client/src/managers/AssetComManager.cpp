@@ -41,6 +41,23 @@ void AssetComManager::doUploadWithMultiPart(const QString &path, const QString &
     BaseComManager::doUploadWithMultiPart(path, file_name, form_field_name, form_infos, extra_headers, true); // Always use token
 }
 
+void AssetComManager::doDelete(const QUrl &full_url, const QString &uuid, const QString& access_token)
+{
+    // Delete an asset with the specified uuid
+    QUrl query = full_url;
+    query.setQuery("uuid=" + uuid + "&access_token=" + access_token);
+    QNetworkRequest request(query);
+    setRequestCredentials(request, true);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
+    m_netManager->deleteResource(request);
+    emit waitingForReply(true);
+    emit deleting(query.path());
+
+    LOG_DEBUG("DELETE: " + full_url.toString() + ", with uuid=" + uuid, QString(this->metaObject()->className()) + "::doDelete");
+}
+
 void AssetComManager::connectSignals()
 {
     connect(m_comManager, &ComManager::userTokenUpdated, this, &AssetComManager::handleUserTokenUpdated);
@@ -110,12 +127,21 @@ bool AssetComManager::processNetworkReply(QNetworkReply *reply)
     }
 
     if (reply->operation()==QNetworkAccessManager::DeleteOperation){
-        // Extract id from url
-        int id = 0;
-        if (reply_query.hasQueryItem("id")){
-            id = reply_query.queryItemValue("id").toInt();
+        if (reply_path.endsWith("/assets")){
+            QString uuid;
+            if (reply_query.hasQueryItem("uuid")){
+                uuid = reply_query.queryItemValue("uuid");
+            }
+            emit deleteUuidResultOK(reply_path, uuid);
+        }else{
+            // Extract id from url
+            int id = 0;
+            if (reply_query.hasQueryItem("id")){
+                id = reply_query.queryItemValue("id").toInt();
+            }
+            emit deleteResultsOK(reply_path, id);
         }
-        emit deleteResultsOK(reply_path, id);
+
         handled=true;
     }
 

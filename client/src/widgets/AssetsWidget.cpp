@@ -55,10 +55,10 @@ void AssetsWidget::setComManager(ComManager *comMan)
         m_comAssetManager = new AssetComManager(m_comManager);
 
         connect(m_comAssetManager, &AssetComManager::networkError, this, &AssetsWidget::assetComNetworkError);
-        //connect(m_comAssetManager, &AssetComManager::uploadProgress, this, &AssetsWidget::assetComUploadProgress);
-        //connect(m_comAssetManager, &AssetComManager::uploadCompleted, this, &AssetsWidget::assetComUploadCompleted);
-        //connect(m_comAssetManager, &AssetComManager::transferAborted, this, &AssetsWidget::assetComTransferAborted);
-        connect(m_comAssetManager, &AssetComManager::deleteResultsOK, this, &AssetsWidget::assetComDeleteOK);
+        connect(m_comAssetManager, &AssetComManager::uploadProgress, this, &AssetsWidget::assetComUploadProgress);
+        connect(m_comAssetManager, &AssetComManager::uploadCompleted, this, &AssetsWidget::assetComUploadCompleted);
+        connect(m_comAssetManager, &AssetComManager::transferAborted, this, &AssetsWidget::assetComTransferAborted);
+        connect(m_comAssetManager, &AssetComManager::deleteUuidResultOK, this, &AssetsWidget::assetComDeleteOK);
         connect(m_comAssetManager, &AssetComManager::postResultsOK, this, &AssetsWidget::assetComPostOK);
 
         connect(m_comAssetManager, &AssetComManager::assetsInfosReceived, this, &AssetsWidget::processAssetsInfos);
@@ -134,12 +134,12 @@ void AssetsWidget::resizeAssetsColumnsToContent()
 void AssetsWidget::queryAssetsInfos()
 {
     QMultiMap<QString, QString> services_assets;
-    QString access_token;
+    QString accessToken;
 
     // Group each assets by access url
     foreach(TeraData* asset, m_assets){
         if (asset->hasFieldName("access_token")){
-            access_token = asset->getFieldValue("access_token").toString();
+            accessToken = asset->getFieldValue("access_token").toString();
         }
         if (asset->hasFieldName("asset_infos_url")){
             QString asset_info_str = asset->getFieldValue("asset_infos_url").toString();
@@ -157,7 +157,7 @@ void AssetsWidget::queryAssetsInfos()
         QJsonDocument document;
         QJsonObject base_obj;
 
-        base_obj.insert("access_token", access_token);
+        base_obj.insert("access_token", accessToken);
         base_obj.insert("asset_uuids", QJsonArray::fromStringList(asset_uuids));
 
         document.setObject(base_obj);
@@ -166,7 +166,7 @@ void AssetsWidget::queryAssetsInfos()
     }
 }
 
-void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant)
+void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant, const bool &emit_count_update_signal)
 {
     QTreeWidgetItem* item;
     bool has_asset_infos_url = false;
@@ -243,7 +243,7 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant)
         btnDelete->setCursor(Qt::PointingHandCursor);
         btnDelete->setMaximumWidth(32);
         btnDelete->setToolTip(tr("Supprimer"));
-        //connect(btnDelete, &QToolButton::clicked, this, &ParticipantWidget::btnDeleteSession_clicked);
+        connect(btnDelete, &QToolButton::clicked, this, &AssetsWidget::on_btnDelete_clicked);
         layout->addWidget(btnDelete);
 
         // Download data
@@ -262,6 +262,10 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant)
         // Update internal lists
         m_treeAssets.insert(asset.getUuid(), item);
         m_assets.insert(asset.getUuid(), new TeraData(asset));
+
+        // Emit update signal
+        if (emit_count_update_signal)
+            emit assetCountChanged(m_assets.count());
     }
 
     // Update informations
@@ -276,13 +280,20 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant)
 
 void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query)
 {
+    QString last_access_token;
+    bool empty_assets = m_assets.isEmpty();
     foreach(TeraData asset, assets){
         // Participant name
         int id_participant = -1;
         if (reply_query.hasQueryItem(WEB_QUERY_ID_PARTICIPANT)){
             id_participant = reply_query.queryItemValue(WEB_QUERY_ID_PARTICIPANT).toInt();
         }
-        updateAsset(asset, id_participant);
+        if (asset.hasFieldName("access_token")){
+            last_access_token = asset.getFieldValue("access_token").toString();
+        }else{
+            asset.setFieldValue("access_token", last_access_token);
+        }
+        updateAsset(asset, id_participant, !empty_assets); // No count change signal on new query
     }
 
     //resizeAssetsColumnsToContent();
@@ -355,9 +366,56 @@ void AssetsWidget::assetComNetworkError(QNetworkReply::NetworkError error, QStri
     ui->wdgMessages->addMessage(Message(Message::MESSAGE_ERROR, error_msg));
 }
 
-void AssetsWidget::assetComDeleteOK(QString path, int id)
+void AssetsWidget::assetComUploadProgress(UploadingFile *file)
 {
-    ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Suppression complétée")));
+    if (!m_transferDialog){
+        // New upload request - create dialog and add file
+        m_transferDialog = new TransferProgressDialog(this);
+        m_transferDialog->show();
+    }
+    m_transferDialog->updateTransferringFile(file);
+}
+
+void AssetsWidget::assetComUploadCompleted(UploadingFile *file)
+{
+    if (m_transferDialog){
+        if (m_transferDialog->transferFileCompleted(file)){
+            // If we are here, no more uploads are pending. Close transfer dialog.
+            m_transferDialog->close();
+            m_transferDialog->deleteLater();
+            m_transferDialog = nullptr;
+        }
+    }
+}
+
+void AssetsWidget::assetComTransferAborted(TransferringFile *file)
+{
+    if (m_transferDialog){
+        m_transferDialog->deleteLater();
+        m_transferDialog = nullptr;
+    }
+}
+
+void AssetsWidget::assetComDeleteOK(QString path, QString uuid)
+{
+    if (uuid.isEmpty())
+        return;
+
+    if (path.endsWith("/assets")){
+        // Remove asset
+        QTreeWidgetItem* asset_item = m_treeAssets[uuid];
+        if (asset_item){
+            m_treeAssets.remove(uuid);
+            delete m_assets.take(uuid);
+            delete asset_item;
+
+            // Emit update signal
+            emit assetCountChanged(m_assets.count());
+            ui->btnDownload->setEnabled(!isEmpty());
+            //ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Suppression complétée")));
+        }
+    }
+
 }
 
 void AssetsWidget::assetComPostOK(QString path)
@@ -453,5 +511,43 @@ void AssetsWidget::fileUploaderFinished(int result)
 
     m_uploadDialog->deleteLater();
     m_uploadDialog = nullptr;
+}
+
+
+void AssetsWidget::on_btnDelete_clicked()
+{
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    if (action_btn && action_btn != ui->btnDelete){
+        // Select row according to the session id of that button
+        QString asset_uuid = action_btn->property("asset_uuid").toString();
+        QTreeWidgetItem* asset_item = m_treeAssets[asset_uuid];
+        if (asset_item)
+            asset_item->setSelected(true);
+    }
+
+    if (ui->treeAssets->selectedItems().count()==0)
+        return;
+
+    GlobalMessageBox diag;
+    QMessageBox::StandardButton answer = QMessageBox::No;
+    if (ui->treeAssets->selectedItems().count() == 1){
+        QTreeWidgetItem* base_item = ui->treeAssets->selectedItems().first();
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer """) + base_item->text(ASSET_NAME) + """?");
+    }else{
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer toutes les données sélectionnées?"));
+    }
+
+    if (answer == QMessageBox::Yes){
+        // We must delete!
+        const QList<QTreeWidgetItem*> items = ui->treeAssets->selectedItems();
+        for(QTreeWidgetItem* asset:items){
+            QString asset_uuid = m_treeAssets.key(asset);
+            QString asset_url_str = m_assets[asset_uuid]->getFieldValue("asset_url").toString();
+            QString access_token = m_assets[asset_uuid]->getFieldValue("access_token").toString();
+            QUrl asset_url(asset_url_str);
+            m_comAssetManager->doDelete(asset_url.url(QUrl::RemoveQuery), asset_uuid, access_token);
+        }
+    }
 }
 

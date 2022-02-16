@@ -60,6 +60,7 @@ private:
     SessionLobbyDialog*             m_sessionLobby;
 
     int                             m_totalSessions;
+    int                             m_totalAssets;
     int                             m_currentSessions;
     bool                            m_sessionsLoading;
 
@@ -101,6 +102,7 @@ private slots:
     void deleteDataReply(QString path, int id);
     void onDownloadCompleted(DownloadingFile* file);
     void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
+    void sessionAssetsCountChanged(int id_session, int new_count);
 
     void btnDeleteSession_clicked();
     void btnAddDevice_clicked();
