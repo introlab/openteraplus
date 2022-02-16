@@ -139,11 +139,11 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
     query.setPath(path);
 
     // Prepare request
-    QNetworkRequest request(query);
-    setRequestCredentials(request, use_token);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
+    QNetworkRequest* request = new QNetworkRequest(query);
+    setRequestCredentials(*request, use_token);
+    setRequestLanguage(*request);
+    setRequestVersions(*request);
+    request->setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
 
     // Create file to upload
     UploadingFile* file_to_upload = new UploadingFile(file_name);
@@ -153,18 +153,25 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
 
     // Set filename info and label if required
     if (!label.isEmpty())
-        request.setRawHeader("X-Label", label.toLatin1());
+        request->setRawHeader("X-Label", label.toLatin1());
 
-    request.setRawHeader("X-Filename", file_to_upload->getFileName().toLatin1());
-    request.setHeader(QNetworkRequest::ContentLengthHeader, file_to_upload->totalBytes());
+    request->setRawHeader("X-Filename", file_to_upload->getFileName().toLatin1());
+    request->setHeader(QNetworkRequest::ContentLengthHeader, file_to_upload->totalBytes());
 
     // Create extra headers
     for(const QVariant &header_value:extra_headers){
-        request.setRawHeader(extra_headers.key(header_value).toUtf8(), header_value.toString().toUtf8());
+        request->setRawHeader(extra_headers.key(header_value).toUtf8(), header_value.toString().toUtf8());
     }
 
     // Do the post request
-    file->open(QIODevice::ReadOnly); // Open the file
+    if (m_currentUploads.count() < MAX_SIMULTANEOUS_UPLOADS){
+        startFileUpload(file_to_upload, request);
+    }else{
+        m_waitingUploads[request] = file_to_upload;
+        emit uploadProgress(file_to_upload); // Emit a request to indicate the file is waiting
+    }
+
+   /* file->open(QIODevice::ReadOnly); // Open the file
     QNetworkReply* reply = m_netManager->post(request, file);
     if (reply){
         file_to_upload->setNetworkReply(reply);
@@ -175,7 +182,7 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
 
     }else{
         file_to_upload->deleteLater();
-    }
+    }*/
 
 }
 
@@ -186,10 +193,10 @@ void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &f
     query.setPath(path);
 
     // Prepare request
-    QNetworkRequest request(query);
-    setRequestCredentials(request, use_token);
-    setRequestLanguage(request);
-    setRequestVersions(request);
+    QNetworkRequest* request = new QNetworkRequest(query);
+    setRequestCredentials(*request, use_token);
+    setRequestLanguage(*request);
+    setRequestVersions(*request);
 
     // Multipart construction
     QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
@@ -208,6 +215,7 @@ void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &f
     UploadingFile* file_to_upload = new UploadingFile(file_name);
     filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"" + file_to_upload->getFileName() + "\""));
     QFile* file = file_to_upload->getFile();
+    filePart.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(file_to_upload->totalBytes()));
     if (!file){ // Invalid file
         delete multiPart;
         return;
@@ -219,36 +227,28 @@ void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &f
     multiPart->append(formPart);
     multiPart->append(filePart);
 
-    QNetworkReply* reply = m_netManager->post(request, multiPart);
-    if (reply){
-        multiPart->setParent(reply); // delete the multiPart with the reply
-        file_to_upload->setNetworkReply(reply);
-        m_currentUploads[reply] = file_to_upload;
-        connect(file_to_upload, &UploadingFile::transferProgress, this, &BaseComManager::onTransferProgress);
-        connect(file_to_upload, &UploadingFile::transferComplete, this, &BaseComManager::onTransferCompleted);
-        connect(file_to_upload, &UploadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
-
+    file_to_upload->setHttpMultiPart(multiPart);
+    if (m_currentUploads.count() < MAX_SIMULTANEOUS_UPLOADS){
+        startFileUpload(file_to_upload, request);
     }else{
-        //file_to_upload->deleteLater();
-        multiPart->deleteLater();
+        m_waitingUploads[request] = file_to_upload;
+        emit uploadProgress(file_to_upload); // Emit a request to indicate the file is waiting
     }
-
-
 }
 
 bool BaseComManager::hasPendingDownloads()
 {
-    return !m_currentDownloads.isEmpty();
+    return !m_currentDownloads.isEmpty() || !m_waitingDownloads.isEmpty();
 }
 
 bool BaseComManager::hasPendingUploads()
 {
-    return !m_currentUploads.isEmpty();
+    return !m_currentUploads.isEmpty() || !m_waitingUploads.isEmpty();
 }
 
 bool BaseComManager::hasPendingFileTransfers()
 {
-    return !m_currentDownloads.isEmpty() || !m_currentUploads.isEmpty();
+    return !hasPendingDownloads() || !hasPendingUploads();
 }
 
 
@@ -352,6 +352,11 @@ void BaseComManager::onTransferCompleted(TransferringFile *file)
         //qDebug() << "Upload completed.";
         emit uploadCompleted(file);
         file->deleteLater();
+
+        // Check if we have pending uploads
+        if (!m_waitingUploads.isEmpty()){
+            startFileUpload(m_waitingUploads.first(), m_waitingUploads.key(m_waitingUploads.first()));
+        }
     }
 
     emit transferCompleted(file);
@@ -443,4 +448,42 @@ QString BaseComManager::filterReplyString(const QString &data_str)
         filtered_str = "[]"; // Replace empty string with empty list!
 
     return filtered_str;
+}
+
+void BaseComManager::startFileUpload(UploadingFile *upload_file, QNetworkRequest *request)
+{
+    QNetworkReply* reply = nullptr;
+    if (upload_file->getHttpMultiPart()){
+        // Upload using multipart data
+        reply = m_netManager->post(*request, upload_file->getHttpMultiPart());
+        if (reply){
+             upload_file->getHttpMultiPart()->setParent(reply); // delete the multiPart with the reply
+        }else{
+            upload_file->getHttpMultiPart()->deleteLater();
+            upload_file->setHttpMultiPart(nullptr);
+        }
+    }else{
+        // "Regular" upload
+        upload_file->getFile()->open(QIODevice::ReadOnly); // Open the file
+        reply = m_netManager->post(*request, upload_file->getFile());
+    }
+
+    if (reply){
+        upload_file->setNetworkReply(reply);
+        upload_file->setStatus(TransferringFile::INPROGRESS);
+        m_currentUploads[reply] = upload_file;
+        connect(upload_file, &UploadingFile::transferProgress, this, &BaseComManager::onTransferProgress);
+        connect(upload_file, &UploadingFile::transferComplete, this, &BaseComManager::onTransferCompleted);
+        connect(upload_file, &UploadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
+    }else{
+        upload_file->setStatus(TransferringFile::ERROR);
+        upload_file->setLastError(tr("Impossible de créer la requête"));
+        emit transferError(upload_file);
+        upload_file->deleteLater();
+    }
+
+    if (m_waitingUploads.contains(request))
+        m_waitingUploads.remove(request);
+
+    delete request;
 }

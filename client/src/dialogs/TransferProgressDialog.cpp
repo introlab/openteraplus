@@ -24,6 +24,7 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
     QTableWidgetItem* item;
     QProgressBar* progress;
     if (!m_files.contains(file)){
+        qDebug() << file->getFileName() << " -- Added";
         // Must create a new file in the list
         int current_row = ui->tableTransfers->rowCount();
         ui->tableTransfers->setRowCount(ui->tableTransfers->rowCount()+1);

@@ -3,12 +3,14 @@
 UploadingFile::UploadingFile(QObject *parent)
     : TransferringFile{parent}
 {
+    m_multiPart = nullptr;
 }
 
 UploadingFile::UploadingFile(const QString &file_name, QObject *parent)
     : TransferringFile()
 {
     setFile(file_name);
+    m_multiPart = nullptr;
 }
 
 UploadingFile::UploadingFile(const UploadingFile &copy, QObject *parent)
@@ -42,6 +44,15 @@ bool UploadingFile::setFile(const QString &file_name)
     return true;
 }
 
+void UploadingFile::setHttpMultiPart(QHttpMultiPart *multiPart)
+{
+    m_multiPart = multiPart;
+}
+
+QHttpMultiPart *UploadingFile::getHttpMultiPart()
+{
+    return m_multiPart;
+}
 
 void UploadingFile::setNetworkReply(QNetworkReply *reply)
 {

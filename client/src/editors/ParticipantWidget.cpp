@@ -814,7 +814,6 @@ void ParticipantWidget::ws_participantEvent(opentera::protobuf::ParticipantEvent
 
 void ParticipantWidget::sessionAssetsCountChanged(int id_session, int new_count)
 {
-    qDebug() << "*** sessionAssetsCountChanged";
     if (m_ids_sessions.contains(id_session)){
         // Check if we need to toggle the "asset download" icon
         TeraData session_data(*m_ids_sessions[id_session]); // Local copy to prevent deletion when calling updateSession

@@ -84,7 +84,7 @@ private slots:
     void assetComNetworkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
     void assetComUploadProgress(UploadingFile* file);
     void assetComUploadCompleted(UploadingFile* file);
-    void assetComTransferAborted(TransferringFile *file);
+    void assetComTransferAborted(TransferringFile* file);
     void assetComDeleteOK(QString path, QString uuid);
     void assetComPostOK(QString path);
 

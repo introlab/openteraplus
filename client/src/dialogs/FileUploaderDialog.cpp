@@ -13,6 +13,9 @@ FileUploaderDialog::FileUploaderDialog(const QString &file_pattern, QWidget *par
 
     if (!documents_path.isEmpty())
         m_current_base_path = documents_path.first();
+
+    if (ui->tableFiles->rowCount()==0)
+        on_btnAddFile_clicked();
 }
 
 FileUploaderDialog::~FileUploaderDialog()
@@ -97,8 +100,6 @@ void FileUploaderDialog::showEvent(QShowEvent *event)
 {
      QDialog::showEvent( event );
 
-     if (ui->tableFiles->rowCount()==0)
-         on_btnAddFile_clicked();
 }
 
 void FileUploaderDialog::on_tableFiles_itemSelectionChanged()

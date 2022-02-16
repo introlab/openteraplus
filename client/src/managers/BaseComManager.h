@@ -16,6 +16,9 @@
 #include "Logger.h"
 #include "Utils.h"
 
+#define MAX_SIMULTANEOUS_UPLOADS    2
+#define MAX_SIMULTANEOUS_DOWNLOADS  4
+
 class BaseComManager : public QObject
 {
     Q_OBJECT
@@ -59,8 +62,11 @@ protected:
 
     bool                    m_loggingInProgress; // Indicates a login procedure is going on
 
-    QMap<QNetworkReply*, DownloadingFile*>  m_currentDownloads;
-    QMap<QNetworkReply*, UploadingFile*>    m_currentUploads;
+    QMap<QNetworkReply*, DownloadingFile*>      m_currentDownloads;
+    QMap<QNetworkRequest*, DownloadingFile*>    m_waitingDownloads;
+
+    QMap<QNetworkReply*, UploadingFile*>        m_currentUploads;
+    QMap<QNetworkRequest*, UploadingFile*>      m_waitingUploads;
 
 
     virtual bool processNetworkReply(QNetworkReply* reply) = 0;
@@ -69,6 +75,8 @@ protected:
     void setRequestVersions(QNetworkRequest &request);
 
     QString filterReplyString(const QString &data_str);
+
+    void startFileUpload(UploadingFile* upload_file, QNetworkRequest* request);
 
 
 protected slots:
@@ -104,6 +112,7 @@ signals:
     void transferProgress(TransferringFile* file);
     void transferCompleted(TransferringFile* file);
     void transferAborted(TransferringFile* file);
+    void transferError(TransferringFile* file);
 
 };
 

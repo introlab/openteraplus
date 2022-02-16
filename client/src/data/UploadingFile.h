@@ -7,6 +7,7 @@
 
 #include <QObject>
 #include <QFileInfo>
+#include <QHttpMultiPart>
 
 class UploadingFile : public TransferringFile
 {
@@ -20,10 +21,13 @@ public:
 
     bool setFile(const QString& file_name);
 
+    void setHttpMultiPart(QHttpMultiPart* multiPart);
+    QHttpMultiPart* getHttpMultiPart();
+
     void setNetworkReply(QNetworkReply *reply) override;
 
 private:
-
+    QHttpMultiPart* m_multiPart;
 };
 
 #endif // UPLOADINGFILE_H

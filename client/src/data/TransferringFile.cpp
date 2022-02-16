@@ -4,19 +4,18 @@ TransferringFile::TransferringFile(QObject *parent)
     : QObject{parent}
 {
     m_reply = nullptr;
-    m_aborting = false;
+    m_status = TransferStatus::WAITING;
 }
 
 TransferringFile::TransferringFile(const QString &file_path, const QString &file_name, QObject *parent)
 {
     m_filename = file_name;
     m_filepath = file_path;
-    m_aborting = false;
+    m_status = TransferStatus::WAITING;
 }
 
 TransferringFile::TransferringFile(const TransferringFile &copy, QObject *parent)
 {
-    m_aborting = false;
     *this = copy;
 }
 
@@ -33,6 +32,7 @@ TransferringFile &TransferringFile::operator =(const TransferringFile &other)
     m_filename = other.m_filename;
     m_reply = other.m_reply;
     m_filepath = other.m_filepath;
+    m_status = other.m_status;
 
     m_totalBytes = other.m_totalBytes;
     m_currentBytes = other.m_currentBytes;
@@ -64,13 +64,9 @@ QNetworkReply *TransferringFile::getNetworkReply()
 void TransferringFile::abortTransfer()
 {
     qDebug() << "Aborting transfer...";
-    m_aborting=true;
+    m_status = TransferStatus::ABORTED;
     if (m_reply)
         m_reply->abort();
-
-    /*if (m_file.isOpen()){
-        m_file.close();
-    }*/
 
     emit transferAborted(this);
 }
@@ -80,7 +76,10 @@ void TransferringFile::onTransferCompleted()
     m_file.close();
     // qDebug() << "Transfer completed.";
 
-    if (!m_aborting) emit transferComplete(this);
+    if (m_status == TransferStatus::INPROGRESS){
+        m_status = TransferStatus::COMPLETED;
+        emit transferComplete(this);
+    }
 }
 
 void TransferringFile::onTransferProgress(qint64 bytesReceived, qint64 bytesTotal)
@@ -96,6 +95,15 @@ QString TransferringFile::getFullFilename(){
     return m_filepath + "/" + m_filename;
 }
 
+TransferringFile::TransferStatus TransferringFile::getStatus()
+{
+    return m_status;
+}
+
+void TransferringFile::setStatus(const TransferStatus &status)
+{
+    m_status = status;
+}
 
 qint64 TransferringFile::totalBytes()
 {
@@ -110,6 +118,11 @@ qint64 TransferringFile::currentBytes()
 QString TransferringFile::getLastError()
 {
     return m_lastError;
+}
+
+void TransferringFile::setLastError(const QString &err)
+{
+    m_lastError = err;
 }
 
 QFile* TransferringFile::getFile(){

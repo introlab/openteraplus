@@ -17,9 +17,21 @@ public:
 
     TransferringFile &operator = (const TransferringFile& other);
 
+    typedef enum {
+        WAITING,
+        INPROGRESS,
+        COMPLETED,
+        ABORTED,
+        ERROR}
+    TransferStatus;
+
+
     QString getFileName();
     QString getFilePath();
     QString getFullFilename();
+
+    TransferStatus getStatus();
+    void setStatus(const TransferStatus& status);
 
     QFile* getFile();
 
@@ -27,6 +39,7 @@ public:
     qint64 currentBytes();
 
     QString getLastError();
+    void setLastError(const QString& err);
 
     virtual void setNetworkReply(QNetworkReply* reply);
     QNetworkReply* getNetworkReply();
@@ -44,8 +57,9 @@ protected:
 
     QString         m_lastError;
 
+    TransferStatus  m_status;
+
 private:
-    bool            m_aborting;
 
 signals:
     void transferComplete(TransferringFile* transferred_file);
