@@ -5,7 +5,6 @@
 #include <QPropertyAnimation>
 #include <QMovie>
 #include <QDialog>
-#include <QTextDocumentFragment>
 
 #include "editors/UserWidget.h"
 #include "dialogs/BaseDialog.h"

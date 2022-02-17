@@ -24,6 +24,9 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     // Columns not used for general assets
     ui->treeAssets->hideColumn(AssetColumn::ASSET_SIZE);
     ui->treeAssets->hideColumn(AssetColumn::ASSET_DURATION);
+
+    // Catch keyboard events
+    ui->treeAssets->installEventFilter(this);
 }
 
 AssetsWidget::~AssetsWidget()
@@ -129,6 +132,21 @@ void AssetsWidget::resizeAssetsColumnsToContent()
 {
   for (int i=0; i<ui->treeAssets->columnCount(); i++)
       ui->treeAssets->resizeColumnToContents(i);
+}
+
+bool AssetsWidget::eventFilter(QObject *o, QEvent *e)
+{
+    if( o == ui->treeAssets && e->type() == QEvent::KeyRelease )
+    {
+        QKeyEvent* key_event = dynamic_cast<QKeyEvent*>(e);
+        if (key_event){
+            if (key_event->key() == Qt::Key_Delete){
+                on_btnDelete_clicked();
+            }
+        }
+    }
+
+    return QWidget::eventFilter(o,e);
 }
 
 void AssetsWidget::queryAssetsInfos()
@@ -347,10 +365,13 @@ void AssetsWidget::assetComNetworkError(QNetworkReply::NetworkError error, QStri
         return;
     }
 
+    if (m_transferDialog)
+        return; // Will be handled by that dialog
+
     if (error_msg.endsWith('\n'))
         error_msg = error_msg.left(error_msg.length()-1);
 
-    error_msg = QTextDocumentFragment::fromHtml(error_msg).toPlainText();
+    //error_msg = QTextDocumentFragment::fromHtml(error_msg).toPlainText();
 
     QString error_str;
 
@@ -359,8 +380,6 @@ void AssetsWidget::assetComNetworkError(QNetworkReply::NetworkError error, QStri
     else
         error_str = tr("Erreur ") + QString::number(error) + ": " + error_msg;
 
-    /*GlobalMessageBox msg;
-    msg.showError(tr("Télédanse - Erreur"), error_msg);*/
     error_msg = error_msg.replace('\n', " - ");
     error_msg = error_msg.replace('\r', "");
     ui->wdgMessages->addMessage(Message(Message::MESSAGE_ERROR, error_msg));
@@ -371,6 +390,7 @@ void AssetsWidget::assetComUploadProgress(UploadingFile *file)
     if (!m_transferDialog){
         // New upload request - create dialog and add file
         m_transferDialog = new TransferProgressDialog(this);
+        connect(m_transferDialog, &TransferProgressDialog::finished, this, &AssetsWidget::transferDialogCompleted);
         m_transferDialog->show();
     }
     m_transferDialog->updateTransferringFile(file);
@@ -381,16 +401,26 @@ void AssetsWidget::assetComUploadCompleted(UploadingFile *file)
     if (m_transferDialog){
         if (m_transferDialog->transferFileCompleted(file)){
             // If we are here, no more uploads are pending. Close transfer dialog.
-            m_transferDialog->close();
-            m_transferDialog->deleteLater();
-            m_transferDialog = nullptr;
+            transferDialogCompleted();
         }
     }
 }
 
 void AssetsWidget::assetComTransferAborted(TransferringFile *file)
 {
+    /*if (m_transferDialog){
+        m_transferDialog->deleteLater();
+        m_transferDialog = nullptr;
+    }*/
     if (m_transferDialog){
+        m_transferDialog->transferFileAborted(file);
+    }
+}
+
+void AssetsWidget::transferDialogCompleted()
+{
+    if (m_transferDialog){
+        m_transferDialog->close();
         m_transferDialog->deleteLater();
         m_transferDialog = nullptr;
     }
@@ -550,4 +580,6 @@ void AssetsWidget::on_btnDelete_clicked()
         }
     }
 }
+
+
 

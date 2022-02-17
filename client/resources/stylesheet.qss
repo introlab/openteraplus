@@ -53,11 +53,16 @@ QTabWidget::tab-bar {
     left: 0px;
 }
 
-QTableWidget::tab,QHeaderView::section {
+QTableWidget::tab, QHeaderView::section {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));
     border: 2px solid  rgba(128,128,140,50%);
     padding: 2px;
     min-height:25px;
+}
+
+
+QTableWidget QTableCornerButton::section {
+    background-color: rgb(64, 65, 74);
 }
 
 QHeaderView::down-arrow {

@@ -33,7 +33,7 @@ QString TeraAsset::getIconForContentType(const QString &content_type)
         return "://icons/assets/json.png";
 
     if (content_type.endsWith("pdf"))
-        return "://icons/assets/pdf.jpg";
+        return "://icons/assets/pdf.png";
 
     if (content_type.startsWith("text") || content_type.contains("document"))
         return "://icons/assets/document.png";

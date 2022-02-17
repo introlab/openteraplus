@@ -366,7 +366,7 @@ void MainWindow::addGlobalEvent(GlobalEvent event)
     // Create new table items and add to event table
     QTableWidgetItem* icon_item = new QTableWidgetItem(event_icon, "");
     QTableWidgetItem* time_item = new QTableWidgetItem(QTime::currentTime().toString("hh:mm:ss"));
-    QTableWidgetItem* desc_item = new QTableWidgetItem(QTextDocumentFragment::fromHtml(event.getEventText()).toPlainText());
+    QTableWidgetItem* desc_item = new QTableWidgetItem(event.getEventText());//new QTableWidgetItem(QTextDocumentFragment::fromHtml(event.getEventText()).toPlainText());
     desc_item->setData(Qt::UserRole, event.getEventText());
     //ui->tableHistory->insertRow(0);
     ui->tableHistory->insertRow(ui->tableHistory->rowCount());

@@ -88,6 +88,8 @@ private:
     QDate getMinimumSessionDate();
     QDate getMaximumSessionDate();
 
+    bool eventFilter(QObject* o, QEvent* e) override;
+
 private slots:
     void processFormsReply(QString form_type, QString data);
     void processSessionsReply(QList<TeraData> sessions);

@@ -63,8 +63,11 @@ QNetworkReply *TransferringFile::getNetworkReply()
 
 void TransferringFile::abortTransfer()
 {
-    qDebug() << "Aborting transfer...";
-    m_status = TransferStatus::ABORTED;
+    //qDebug() << "Aborting transfer...";
+    if (m_status != TransferStatus::ERROR && m_status != TransferStatus::COMPLETED){ // Don't change status if not needed
+        m_status = TransferStatus::ABORTED;
+        m_lastError = tr("Transfert annulé");
+    }
     if (m_reply)
         m_reply->abort();
 

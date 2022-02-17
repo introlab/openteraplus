@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QStandardPaths>
-#include <QTextDocumentFragment>
 #include <QProcess>
 
 #include "managers/ComManager.h"

@@ -5,6 +5,9 @@
 #include <QNetworkReply>
 #include <QFile>
 
+#define MAX_SIMULTANEOUS_UPLOADS    2
+#define MAX_SIMULTANEOUS_DOWNLOADS  4
+
 class TransferringFile : public QObject
 {
     Q_OBJECT

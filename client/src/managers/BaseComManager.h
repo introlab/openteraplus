@@ -2,6 +2,7 @@
 #define BASECOMMANAGER_H
 
 #include <QObject>
+#include <QTextDocumentFragment>
 #include <QNetworkAccessManager>
 #include <QNetworkCookieJar>
 #include <QNetworkReply>
@@ -16,8 +17,6 @@
 #include "Logger.h"
 #include "Utils.h"
 
-#define MAX_SIMULTANEOUS_UPLOADS    2
-#define MAX_SIMULTANEOUS_DOWNLOADS  4
 
 class BaseComManager : public QObject
 {

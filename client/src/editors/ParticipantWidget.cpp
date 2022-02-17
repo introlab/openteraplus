@@ -255,6 +255,9 @@ void ParticipantWidget::initUI()
     QStringList ignore_fields = {"participant_enabled", "participant_token_enabled", "participant_token", "participant_login_enabled",
                                 "participant_username", "participant_password"};
     ui->wdgParticipant->hideFields(ignore_fields);
+
+    // Intercepts some events
+    ui->tableSessions->installEventFilter(this);
 }
 
 bool ParticipantWidget::canStartNewSession()
@@ -1116,6 +1119,21 @@ QDate ParticipantWidget::getMaximumSessionDate()
     }
 
     return max_date;
+}
+
+bool ParticipantWidget::eventFilter(QObject *o, QEvent *e)
+{
+    if( o == ui->tableSessions && e->type() == QEvent::KeyRelease )
+    {
+        QKeyEvent* key_event = dynamic_cast<QKeyEvent*>(e);
+        if (key_event){
+            if (key_event->key() == Qt::Key_Delete){
+                btnDeleteSession_clicked();
+            }
+        }
+    }
+
+    return QWidget::eventFilter(o,e);
 }
 
 

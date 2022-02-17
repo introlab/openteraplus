@@ -22,6 +22,7 @@ public:
 
     void updateTransferringFile(TransferringFile* file);
     bool transferFileCompleted(TransferringFile* file);
+    bool transferFileAborted(TransferringFile* file);
 
 public slots:
     void reject() override;
@@ -34,6 +35,11 @@ private:
     Ui::TransferProgressDialog *ui;
 
     QMap<TransferringFile*, QTableWidgetItem*> m_files;
+
+    void addCompleted(const QString& filename);
+    void addError(const QString& filename, const QString &error);
+
+    void updateCancelButtonText();
 };
 
 #endif // DOWNLOADPROGRESSWIDGET_H

@@ -2,7 +2,6 @@
 #define DANCECONFIGWIDGET_H
 
 #include <QWidget>
-#include <QTextDocumentFragment>
 #include <QInputDialog>
 #include <QListWidgetItem>
 #include <QStyledItemDelegate>
@@ -67,6 +66,8 @@ private slots:
     void danceComUploadProgress(UploadingFile* file);
     void danceComUploadCompleted(UploadingFile* file);
     void danceComTransferAborted(TransferringFile *file);
+    void transferDialogCompleted();
+
     void danceComDeleteOK(QString path, int id);
     void danceComPostOK(QString path);
 

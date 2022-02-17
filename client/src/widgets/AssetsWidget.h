@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QTreeWidgetItem>
-#include <QTextDocumentFragment>
 
 #include "managers/ComManager.h"
 #include "managers/AssetComManager.h"
@@ -69,6 +68,8 @@ private:
 
     void resizeAssetsColumnsToContent();
 
+    bool eventFilter(QObject* o, QEvent* e);
+
     void queryAssetsInfos();
     void updateAsset(const TeraData& asset, const int& id_participant = -1, const bool& emit_count_update_signal=true);
 
@@ -85,6 +86,8 @@ private slots:
     void assetComUploadProgress(UploadingFile* file);
     void assetComUploadCompleted(UploadingFile* file);
     void assetComTransferAborted(TransferringFile* file);
+    void transferDialogCompleted();
+
     void assetComDeleteOK(QString path, QString uuid);
     void assetComPostOK(QString path);
 

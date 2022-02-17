@@ -356,7 +356,7 @@ void MainKitWindow::showInSessionDialog()
 
 void MainKitWindow::showError(QString error)
 {
-    QString filtered_msg = QTextDocumentFragment::fromHtml(error).toPlainText();
+    QString filtered_msg = error; //QTextDocumentFragment::fromHtml(error).toPlainText();
     ui->lblError->setText(filtered_msg);
     ui->frameError->show();
 }

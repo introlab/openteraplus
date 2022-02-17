@@ -283,6 +283,22 @@ void BaseComManager::onNetworkFinished(QNetworkReply *reply){
                   QString(this->metaObject()->className()) + "::onNetworkFinished");
         /*if (reply_msg.isEmpty())
             reply_msg = reply->errorString();*/
+
+        // Strip all HTML if needed
+        reply_msg = QTextDocumentFragment::fromHtml(reply_msg).toPlainText();
+
+        // Update file status if error occured for a transferring file
+        if (m_currentUploads.contains(reply)){
+            m_currentUploads[reply]->setStatus(TransferringFile::ERROR);
+            m_currentUploads[reply]->setLastError(reply_msg);
+            m_currentUploads[reply]->abortTransfer();
+        }
+        if (m_currentDownloads.contains(reply)){
+            m_currentDownloads[reply]->setStatus(TransferringFile::ERROR);
+            m_currentDownloads[reply]->setLastError(reply_msg);
+            m_currentDownloads[reply]->abortTransfer();
+        }
+
         emit networkError(reply->error(), reply_msg, reply->operation(), status_code);
     }
 
@@ -375,7 +391,14 @@ void BaseComManager::onTransferAborted(TransferringFile *file)
     if (m_currentUploads.contains(reply)){
         UploadingFile* file = m_currentUploads.take(reply);
         file->deleteLater();
+
+        // Check if we have pending uploads
+        if (!m_waitingUploads.isEmpty()){
+            startFileUpload(m_waitingUploads.first(), m_waitingUploads.key(m_waitingUploads.first()));
+        }
     }
+
+    reply->deleteLater();
 
     emit transferAborted(file);
 }

@@ -168,7 +168,7 @@ void DanceConfigWidget::handleNetworkError(QNetworkReply::NetworkError error, QS
     if (error_msg.endsWith('\n'))
         error_msg = error_msg.left(error_msg.length()-1);
 
-    error_msg = QTextDocumentFragment::fromHtml(error_msg).toPlainText();
+    //error_msg = QTextDocumentFragment::fromHtml(error_msg).toPlainText();
 
     QString error_str;
 
@@ -208,6 +208,7 @@ void DanceConfigWidget::danceComUploadProgress(UploadingFile *file)
     if (!m_transferDialog){
         // New download request - create dialog and add file
         m_transferDialog = new TransferProgressDialog(this);
+        connect(m_transferDialog, &TransferProgressDialog::finished, this, &DanceConfigWidget::transferDialogCompleted);
         m_transferDialog->show();
     }
     m_transferDialog->updateTransferringFile(file);
@@ -218,16 +219,26 @@ void DanceConfigWidget::danceComUploadCompleted(UploadingFile *file)
     if (m_transferDialog){
         if (m_transferDialog->transferFileCompleted(file)){
             // If we are here, no more uploads are pending. Close transfer dialog.
-            m_transferDialog->close();
-            m_transferDialog->deleteLater();
-            m_transferDialog = nullptr;
+            transferDialogCompleted();
         }
     }
 }
 
 void DanceConfigWidget::danceComTransferAborted(TransferringFile *file)
 {
+    /*if (m_transferDialog){
+        m_transferDialog->deleteLater();
+        m_transferDialog = nullptr;
+    }*/
     if (m_transferDialog){
+        m_transferDialog->transferFileAborted(file);
+    }
+}
+
+void DanceConfigWidget::transferDialogCompleted()
+{
+    if (m_transferDialog){
+        m_transferDialog->close();
         m_transferDialog->deleteLater();
         m_transferDialog = nullptr;
     }
