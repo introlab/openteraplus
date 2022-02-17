@@ -89,6 +89,7 @@ private:
     QDate getMaximumSessionDate();
 
     bool eventFilter(QObject* o, QEvent* e) override;
+    void displaySessionDetails(QTableWidgetItem* session_item, bool show_assets = false);
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -116,7 +117,6 @@ private slots:
 
     void currentSelectedSessionChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
     void currentCalendarDateChanged(QDate current_date);
-    void displaySessionDetails(QTableWidgetItem* session_item);
     void currentTypeFiltersChanged(QListWidgetItem* changed);
     void displayNextMonth();
     void displayPreviousMonth();
@@ -145,6 +145,7 @@ private slots:
     void on_cmbSessionType_currentIndexChanged(int index);
     void on_btnFilterSessionsTypes_clicked();
     void on_btnAddSession_clicked();
+    void on_tableSessions_itemDoubleClicked(QTableWidgetItem *item);
 };
 
 #endif // PARTICIPANTWIDGET_H

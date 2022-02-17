@@ -107,6 +107,7 @@
 #define WEB_QUERY_WITH_WEBSOCKET    "with_websocket"
 #define WEB_QUERY_WITH_WARNINGS     "with_warnings"
 #define WEB_QUERY_WITH_URLS         "with_urls"
+#define WEB_QUERY_WITH_ONLY_TOKEN   "with_only_token"
 
 #define WEB_QUERY_ORDERBY_RECENTS   "orderby_recents"
 

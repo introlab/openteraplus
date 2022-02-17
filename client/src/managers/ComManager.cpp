@@ -95,18 +95,6 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
             if (handled) emit queryResultsOK(reply_path, reply_query);
         }
 
-        /*if (reply_path == WEB_DEVICEDATAINFO_PATH && reply_query.hasQueryItem(WEB_QUERY_DOWNLOAD)){
-            //qDebug() << "Download complete.";
-            handled = true;
-
-            // Remove reply from current download list, if present
-            if (m_currentDownloads.contains(reply)){
-                DownloadedFile* file = m_currentDownloads.take(reply);
-                emit downloadCompleted(file);
-                file->deleteLater();
-            }
-        }*/
-
         if (!handled){
             // General case
             handled=handleDataReply(reply_path, reply_data, reply_query);
@@ -573,6 +561,22 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     // Refresh token information reply
     if (reply_path == WEB_REFRESH_TOKEN_PATH){
         return handleTokenRefreshReply(data_list);
+    }
+
+    // Asset token refresh reply
+    if (reply_path == WEB_ASSETINFO_PATH){
+        if (!data_list.isArray()){
+            // We have assets and an asset token
+            QJsonObject asset_reply = data_list.object();
+            if (asset_reply.contains("access_token")){
+                emit assetAccessTokenReceived(asset_reply["access_token"].toString(), reply_query);
+            }
+            if (asset_reply.contains("assets")){
+                data_list.setArray(asset_reply["assets"].toArray());
+            }else{
+                return true; // No assets to manage, only the token!
+            }
+        }
     }
 
     // Browse each items received

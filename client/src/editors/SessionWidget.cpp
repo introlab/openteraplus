@@ -156,6 +156,12 @@ void SessionWidget::alwaysShowAssets(const bool &allow)
 
 }
 
+void SessionWidget::showAssets()
+{
+    // Display assets tab by default
+    ui->tabNav->setCurrentWidget(ui->tabAssets);
+}
+
 void SessionWidget::updateControlsState()
 {
     ui->grpSummary->setVisible(!dataIsNew());

@@ -28,6 +28,7 @@ public:
     void setData(const TeraData *data);
 
     void alwaysShowAssets(const bool &allow);
+    void showAssets();
 
     void connectSignals();
 private:

@@ -136,7 +136,7 @@ void ParticipantWidget::connectSignals()
     connect(ui->btnDownloadAll, &QPushButton::clicked, this, &ParticipantWidget::btnDowloadAll_clicked);
 
     connect(ui->tableSessions, &QTableWidget::currentItemChanged, this, &ParticipantWidget::currentSelectedSessionChanged);
-    connect(ui->tableSessions, &QTableWidget::itemDoubleClicked, this, &ParticipantWidget::displaySessionDetails);
+
     connect(ui->lstFilters, &QListWidget::itemChanged, this, &ParticipantWidget::currentTypeFiltersChanged);
     connect(ui->btnNextCal, &QPushButton::clicked, this, &ParticipantWidget::displayNextMonth);
     connect(ui->btnPrevCal, &QPushButton::clicked, this, &ParticipantWidget::displayPreviousMonth);
@@ -361,7 +361,7 @@ void ParticipantWidget::updateSession(TeraData *session)
         btnDownload->setProperty("id_session", session->getId());
         btnDownload->setCursor(Qt::PointingHandCursor);
         btnDownload->setMaximumWidth(32);
-        btnDownload->setToolTip(tr("Télécharger les données"));
+        btnDownload->setToolTip(tr("Voir les données"));
         connect(btnDownload, &QToolButton::clicked, this, &ParticipantWidget::btnDownloadSession_clicked);
         layout->addWidget(btnDownload);
 
@@ -919,20 +919,26 @@ void ParticipantWidget::btnDelDevice_clicked()
 
 void ParticipantWidget::btnDownloadSession_clicked()
 {
-    return; // For now...
     QToolButton* button = dynamic_cast<QToolButton*>(sender());
+    QTableWidgetItem* session_item = nullptr;
     if (button){
+        int id_session = button->property("id_session").toInt();
+        session_item = m_listSessions_items[id_session];
+        if (session_item){
+            displaySessionDetails(session_item, true);
+        }
+
         // Query folder to save file
-        QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
+        /*QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
                                                               QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
         if (!save_path.isEmpty()){
             //int id_session = button->property("id_session").toInt();
-            /*QUrlQuery args;
+            QUrlQuery args;
             args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
             args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
             downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-            setWaiting();*/
-        }
+            setWaiting();
+        }*/
     }
 }
 
@@ -1024,7 +1030,7 @@ void ParticipantWidget::currentCalendarDateChanged(QDate current_date)
     }
 }
 
-void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
+void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item, bool show_assets)
 {
     if (m_diag_editor){
         m_diag_editor->deleteLater();
@@ -1037,6 +1043,8 @@ void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item)
         ses_data->setFieldValue("id_project", m_data->getFieldValue("id_project"));
         SessionWidget* ses_widget = new SessionWidget(m_comManager, ses_data, nullptr);
         ses_widget->alwaysShowAssets(m_allowFileTransfers);
+        if (show_assets)
+            ses_widget->showAssets();
         m_diag_editor->setCentralWidget(ses_widget);
 
         m_diag_editor->setWindowTitle(tr("Séance"));
@@ -1604,5 +1612,11 @@ void ParticipantWidget::on_btnAddSession_clicked()
 
     m_diag_editor->open();
 
+}
+
+
+void ParticipantWidget::on_tableSessions_itemDoubleClicked(QTableWidgetItem *item)
+{
+    displaySessionDetails(item);
 }
 

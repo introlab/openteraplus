@@ -15,6 +15,10 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     m_idSession = -1;
     setComManager(comMan);
 
+    // Initialize refresh access token timer
+    m_refreshTokenTimer.setSingleShot(true);
+    m_refreshTokenTimer.setInterval(29 * 60 * 1000); // 29 minutes interval
+
     connectSignals();
 
     // Hide add button by default
@@ -27,6 +31,8 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
 
     // Catch keyboard events
     ui->treeAssets->installEventFilter(this);
+
+
 }
 
 AssetsWidget::~AssetsWidget()
@@ -54,6 +60,7 @@ void AssetsWidget::setComManager(ComManager *comMan)
     if (m_comManager){
         connect(m_comManager, &ComManager::assetsReceived, this, &AssetsWidget::processAssetsReply);
         connect(m_comManager, &ComManager::servicesReceived, this, &AssetsWidget::processServicesReply);
+        connect(m_comManager, &ComManager::assetAccessTokenReceived, this, &AssetsWidget::processAssetAccessTokenReply);
 
         m_comAssetManager = new AssetComManager(m_comManager);
 
@@ -112,6 +119,8 @@ void AssetsWidget::displayAssetsForSession(const int &id_session)
 
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
+    m_dataQuery = query;
+
     query.addQueryItem(WEB_QUERY_WITH_URLS, "1");
     m_comManager->doGet(WEB_ASSETINFO_PATH, query);
 
@@ -126,6 +135,7 @@ void AssetsWidget::connectSignals()
 {
     // Com related signals are set in setComManager
     connect(ui->wdgMessages, &ResultMessageWidget::nextMessageShown, this, &AssetsWidget::nextMessageWasShown);
+    connect(&m_refreshTokenTimer, &QTimer::timeout, this, &AssetsWidget::refreshAccessToken);
 }
 
 void AssetsWidget::resizeAssetsColumnsToContent()
@@ -152,13 +162,9 @@ bool AssetsWidget::eventFilter(QObject *o, QEvent *e)
 void AssetsWidget::queryAssetsInfos()
 {
     QMultiMap<QString, QString> services_assets;
-    QString accessToken;
 
     // Group each assets by access url
     foreach(TeraData* asset, m_assets){
-        if (asset->hasFieldName("access_token")){
-            accessToken = asset->getFieldValue("access_token").toString();
-        }
         if (asset->hasFieldName("asset_infos_url")){
             QString asset_info_str = asset->getFieldValue("asset_infos_url").toString();
             if (!asset_info_str.isEmpty()){
@@ -175,7 +181,7 @@ void AssetsWidget::queryAssetsInfos()
         QJsonDocument document;
         QJsonObject base_obj;
 
-        base_obj.insert("access_token", accessToken);
+        base_obj.insert("access_token", m_accessToken);
         base_obj.insert("asset_uuids", QJsonArray::fromStringList(asset_uuids));
 
         document.setObject(base_obj);
@@ -298,18 +304,12 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
 
 void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query)
 {
-    QString last_access_token;
     bool empty_assets = m_assets.isEmpty();
     foreach(TeraData asset, assets){
         // Participant name
         int id_participant = -1;
         if (reply_query.hasQueryItem(WEB_QUERY_ID_PARTICIPANT)){
             id_participant = reply_query.queryItemValue(WEB_QUERY_ID_PARTICIPANT).toInt();
-        }
-        if (asset.hasFieldName("access_token")){
-            last_access_token = asset.getFieldValue("access_token").toString();
-        }else{
-            asset.setFieldValue("access_token", last_access_token);
         }
         updateAsset(asset, id_participant, !empty_assets); // No count change signal on new query
     }
@@ -322,6 +322,26 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
     // Query extra information
     queryAssetsInfos();
 
+}
+
+void AssetsWidget::processAssetAccessTokenReply(QString asset_token, QUrlQuery reply_query)
+{
+    // Don't consider some parameters in the query
+    reply_query.removeAllQueryItems(WEB_QUERY_WITH_URLS);
+    reply_query.removeAllQueryItems(WEB_QUERY_WITH_ONLY_TOKEN);
+    if (reply_query == m_dataQuery){
+        // This is really for us
+        m_accessToken = asset_token;
+        qDebug() << "Updated access token..." + m_accessToken;
+
+        // Remove all access token information from assets
+        for(TeraData* asset:qAsConst(m_assets)){
+            asset->removeFieldName("access_token");
+        }
+
+        // Start refresh timer
+        m_refreshTokenTimer.start();
+    }
 }
 
 void AssetsWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)
@@ -488,6 +508,17 @@ void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_
     resizeAssetsColumnsToContent();
 }
 
+void AssetsWidget::refreshAccessToken()
+{
+    if (!m_comManager)
+        return;
+
+    QUrlQuery query = m_dataQuery; // Original data query
+
+    query.addQueryItem(WEB_QUERY_WITH_ONLY_TOKEN, "1");
+    m_comManager->doGet(WEB_ASSETINFO_PATH, query);
+}
+
 void AssetsWidget::on_treeAssets_itemSelectionChanged()
 {
     ui->btnDelete->setEnabled(!ui->treeAssets->selectedItems().isEmpty());
@@ -574,7 +605,9 @@ void AssetsWidget::on_btnDelete_clicked()
         for(QTreeWidgetItem* asset:items){
             QString asset_uuid = m_treeAssets.key(asset);
             QString asset_url_str = m_assets[asset_uuid]->getFieldValue("asset_url").toString();
-            QString access_token = m_assets[asset_uuid]->getFieldValue("access_token").toString();
+            QString access_token = m_accessToken;
+            if (m_assets[asset_uuid]->hasFieldName("access_token"))
+                access_token = m_assets[asset_uuid]->getFieldValue("access_token").toString(); // Local access token overrides global one
             QUrl asset_url(asset_url_str);
             m_comAssetManager->doDelete(asset_url.url(QUrl::RemoveQuery), asset_uuid, access_token);
         }

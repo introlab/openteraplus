@@ -58,6 +58,9 @@ private:
     int                 m_idProject;
     int                 m_idSession;
     TeraData*           m_fileTransferServiceInfos;
+    QString             m_accessToken;
+    QTimer              m_refreshTokenTimer;
+    QUrlQuery           m_dataQuery;
 
     QMap<QString, QTreeWidgetItem*>     m_treeAssets;
     QMap<int, QTreeWidgetItem*>         m_treeSessions;
@@ -76,6 +79,7 @@ private:
 
 private slots:
     void processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query);
+    void processAssetAccessTokenReply(QString asset_token, QUrlQuery reply_query);
 
     void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
 
@@ -92,6 +96,8 @@ private slots:
     void assetComPostOK(QString path);
 
     void processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
+
+    void refreshAccessToken();
 
     void on_treeAssets_itemSelectionChanged();
     void on_btnNew_clicked();
