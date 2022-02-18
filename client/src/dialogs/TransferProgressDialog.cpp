@@ -33,6 +33,9 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
     if (m_aborting)
         return;
 
+    if (file->getStatus() == TransferringFile::ABORTED || file->getStatus() == TransferringFile::ERROR)
+        return;
+
     QTableWidgetItem* item;
     QProgressBar* progress;
     if (!m_files.contains(file)){
@@ -67,7 +70,14 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
 
     if (file->getStatus() == TransferringFile::INPROGRESS){
         // Make sure file is at the top of the list
-        if (item->row() >= MAX_SIMULTANEOUS_UPLOADS){
+        int max_simultaneous = 1;
+        if (dynamic_cast<DownloadingFile*>(file)){
+            max_simultaneous = MAX_SIMULTANEOUS_DOWNLOADS;
+        }
+        if (dynamic_cast<UploadingFile*>(file)){
+            max_simultaneous = MAX_SIMULTANEOUS_UPLOADS;
+        }
+        if (item->row() >= max_simultaneous){
             int row = item->row();
             item = ui->tableTransfers->takeItem(row, 1);
             progress = new QProgressBar();
@@ -108,10 +118,9 @@ bool TransferProgressDialog::transferFileAborted(TransferringFile *file)
     if (m_files.contains(file)){
         ui->tableTransfers->removeRow(m_files.value(file)->row());
         m_files.remove(file);
+        addError(file->getFileName(), file->getLastError());
+        updateCancelButtonText();
     }
-
-    addError(file->getFileName(), file->getLastError());
-    updateCancelButtonText();
 
     return m_files.isEmpty() && ui->tableErrors->rowCount()==0; // No more files to display?
 }

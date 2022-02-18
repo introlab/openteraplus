@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QRandomGenerator>
+#include <QRegularExpression>
 #include <QSysInfo>
 #include <QSettings>
 #include <QUuid>
@@ -34,7 +35,8 @@ public:
 
     static void inStringUnicodeConverter(QString* str);
 
-    static QString removeAccents(QString s);
+    static QString removeAccents(const QString& s);
+    static QString removeNonAlphanumerics(const QString& s);
 
     static bool isNewerVersion(QString version);
 

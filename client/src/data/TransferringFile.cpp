@@ -5,6 +5,9 @@ TransferringFile::TransferringFile(QObject *parent)
 {
     m_reply = nullptr;
     m_status = TransferStatus::WAITING;
+    m_aborting = false;
+    m_totalBytes = 1;
+    m_currentBytes = 0;
 }
 
 TransferringFile::TransferringFile(const QString &file_path, const QString &file_name, QObject *parent)
@@ -12,6 +15,9 @@ TransferringFile::TransferringFile(const QString &file_path, const QString &file
     m_filename = file_name;
     m_filepath = file_path;
     m_status = TransferStatus::WAITING;
+    m_aborting = false;
+    m_totalBytes = 1;
+    m_currentBytes = 0;
 }
 
 TransferringFile::TransferringFile(const TransferringFile &copy, QObject *parent)
@@ -65,11 +71,14 @@ QNetworkReply *TransferringFile::getNetworkReply()
 
 void TransferringFile::abortTransfer()
 {
+    if (m_aborting)
+        return;
     //qDebug() << "Aborting transfer...";
     if (m_status != TransferStatus::ERROR && m_status != TransferStatus::COMPLETED){ // Don't change status if not needed
         m_status = TransferStatus::ABORTED;
         m_lastError = tr("Transfert annulé");
     }
+    m_aborting = true;
     if (m_reply)
         m_reply->abort();
 

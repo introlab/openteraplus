@@ -362,7 +362,9 @@ QString AssetsWidget::getRelativePathForAsset(const QString &uuid)
 
     QTreeWidgetItem* current_item = m_treeAssets[uuid]->parent();
     while(current_item){
-        path = current_item->text(0) + "/" + path;
+        QString clean_text = Utils::removeAccents(current_item->text(0));
+        clean_text = Utils::removeNonAlphanumerics(clean_text);
+        path = "/" + clean_text + path;
         current_item = current_item->parent();
     }
     return path;
@@ -418,32 +420,44 @@ void AssetsWidget::startAssetsDownload(const QStringList &assets_to_download)
         full_path = m_fileDialog.getExistingDirectory(this, tr("Répertoire où les données seront téléchargées"));
         if (full_path.isEmpty())
             return;
+    }
 
-        for(const QString &asset_uuid:assets_to_download){
-            TeraData* asset = m_assets[asset_uuid];
-            QString file_path;
-            QString file_name;
-            if (assets_to_download.count() == 1){
-                // Only one file - use the info entered by the user
-                QFileInfo fileInfo(full_path);
-                file_path = fileInfo.absolutePath();
-                file_name = fileInfo.fileName();
-            }else{
-                // Multiple files - create save structure
-                file_path = full_path + getRelativePathForAsset(asset_uuid);
-                file_name = getFilenameForAsset(asset_uuid);
+    for(const QString &asset_uuid:assets_to_download){
+        TeraData* asset = m_assets[asset_uuid];
+        QString file_path;
+        QString file_name;
+        if (assets_to_download.count() == 1){
+            // Only one file - use the info entered by the user
+            QFileInfo fileInfo(full_path);
+            file_path = fileInfo.absolutePath();
+            file_name = fileInfo.fileName();
+        }else{
+            // Multiple files - create save structure
+            file_path = full_path + getRelativePathForAsset(asset_uuid);
+            file_name = getFilenameForAsset(asset_uuid);
+
+            // Check if file exists and if the size is the same as original file
+            if (asset->hasFieldName("asset_file_size")){
+                QString full_filename = file_path + "/" + file_name;
+                if (QFile::exists(full_filename)){
+                    QFileInfo file_info(full_filename);
+                    if (file_info.size() == asset->getFieldValue("asset_file_size").toLongLong()){
+                        LOG_DEBUG("Skipping file : " + full_filename, "AssetsWidget::startAssetsDownload");
+                        continue;
+                    }
+                }
             }
-            // Send download request
-            if (asset->hasFieldName("asset_url")){
-                QUrlQuery query;
-                query.addQueryItem("access_token", m_accessToken);
-                query.addQueryItem("asset_uuid", asset_uuid);
-                m_comAssetManager->doDownload(asset->getFieldValue("asset_url").toUrl(),
-                                              file_path, file_name,
-                                              query);
-            }else{
-                LOG_WARNING("No asset url for asset " + asset->getUuid() + " - skipping download.", "AssetsWidget::on_btnDownload_clicked");
-            }
+        }
+        // Send download request
+        if (asset->hasFieldName("asset_url")){
+            QUrlQuery query;
+            query.addQueryItem("access_token", m_accessToken);
+            query.addQueryItem("asset_uuid", asset_uuid);
+            m_comAssetManager->doDownload(asset->getFieldValue("asset_url").toUrl(),
+                                          file_path, file_name,
+                                          query);
+        }else{
+            LOG_WARNING("No asset url for asset " + asset->getUuid() + " - skipping download.", "AssetsWidget::on_btnDownload_clicked");
         }
     }
 }

@@ -133,8 +133,8 @@ void BaseComManager::doDownload(const QUrl &full_url, const QString &save_path, 
         startFileDownload(file_to_download, request);
     }else{
         m_waitingDownloads[request] = file_to_download;
-        emit downloadProgress(file_to_download); // Emit a request to indicate the file is waiting
     }
+    emit downloadProgress(file_to_download); // Emit a request to indicate the file is waiting
 }
 
 void BaseComManager::doUpload(const QString &path, const QString &file_name, const QVariantMap extra_headers, const QString &label, const bool &use_token)
@@ -172,8 +172,8 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
         startFileUpload(file_to_upload, request);
     }else{
         m_waitingUploads[request] = file_to_upload;
-        emit uploadProgress(file_to_upload); // Emit a request to indicate the file is waiting
     }
+    emit uploadProgress(file_to_upload); // Emit a request to indicate the file is waiting
 
 }
 
@@ -223,8 +223,8 @@ void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &f
         startFileUpload(file_to_upload, request);
     }else{
         m_waitingUploads[request] = file_to_upload;
-        emit uploadProgress(file_to_upload); // Emit a request to indicate the file is waiting
     }
+    emit uploadProgress(file_to_upload); // Emit a request to indicate the file is waiting
 }
 
 bool BaseComManager::hasPendingDownloads()

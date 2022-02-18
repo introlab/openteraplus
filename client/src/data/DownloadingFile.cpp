@@ -83,6 +83,10 @@ void DownloadingFile::onDownloadDataReceived()
 
         // Open the file for writing
         m_file.setFileName(getFullFilename());
+        QDir file_dir(m_filepath);
+        if (!file_dir.exists()){
+            file_dir.mkpath(m_filepath);
+        }
         if (!m_file.open(QIODevice::WriteOnly)){
             m_lastError = tr("Impossible d'ouvrir le fichier '") + getFullFilename() + "': " + m_file.errorString();
             m_status = TransferringFile::ERROR;

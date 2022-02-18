@@ -64,6 +64,8 @@ protected:
 
 private:
 
+    bool            m_aborting;
+
 signals:
     void transferComplete(TransferringFile* transferred_file);
     void transferProgress(TransferringFile* transferred_file);

@@ -7,6 +7,7 @@
 #include "GlobalMessageBox.h"
 #include "data/TransferringFile.h"
 #include "data/DownloadingFile.h"
+#include "data/UploadingFile.h"
 
 namespace Ui {
 class TransferProgressDialog;

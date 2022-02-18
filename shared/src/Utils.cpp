@@ -144,7 +144,7 @@ void Utils::inStringUnicodeConverter(QString *str)
     }
 }
 
-QString Utils::removeAccents(QString s) {
+QString Utils::removeAccents(const QString &s) {
     const QString diacriticLetters_ = QString::fromUtf8("ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ");
     const QStringList noDiacriticLetters_ = QStringList() << "S"<<"OE"<<"Z"<<"s"<<"oe"<<"z"<<"Y"<<"Y"<<"u"<<"A"<<"A"<<"A"<<"A"<<"A"<<"A"<<"AE"<<"C"<<"E"<<"E"<<"E"<<"E"<<"I"<<"I"<<"I"<<"I"<<"D"<<"N"<<"O"<<"O"<<"O"<<"O"<<"O"<<"O"<<"U"<<"U"<<"U"<<"U"<<"Y"<<"s"<<"a"<<"a"<<"a"<<"a"<<"a"<<"a"<<"ae"<<"c"<<"e"<<"e"<<"e"<<"e"<<"i"<<"i"<<"i"<<"i"<<"o"<<"n"<<"o"<<"o"<<"o"<<"o"<<"o"<<"o"<<"u"<<"u"<<"u"<<"u"<<"y"<<"y";
 
@@ -161,6 +161,14 @@ QString Utils::removeAccents(QString s) {
     }
 
     return output;
+}
+
+QString Utils::removeNonAlphanumerics(const QString &s)
+{
+    QRegularExpression regex("[-`~!@#$%^&*()_â€”+=|:;<>Â«Â»,.?/{}\'\"\\\[\\\]\\\\]");
+
+    QString rval = s;
+    return rval.remove(regex);
 }
 
 bool Utils::isNewerVersion(QString version)
