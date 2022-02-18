@@ -13,6 +13,7 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     m_transferDialog = nullptr;
     m_idProject = -1;
     m_idSession = -1;
+    m_viewMode = VIEWMODE_UNKNOWN;
     setComManager(comMan);
 
     // Initialize refresh access token timer
@@ -24,6 +25,7 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     // Hide add button by default
     ui->btnNew->hide();
     ui->wdgMessages->hide();
+    ui->btnExpandAll->hide();
 
     // Columns not used for general assets
     ui->treeAssets->hideColumn(AssetColumn::ASSET_SIZE);
@@ -125,17 +127,35 @@ void AssetsWidget::displayAssetsForSession(const int &id_session)
 
     clearAssets();
 
+    setViewMode(VIEWMODE_SESSION);
+
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
     m_dataQuery = query;
 
     query.addQueryItem(WEB_QUERY_WITH_URLS, "1");
+    query.addQueryItem(WEB_QUERY_FULL, "1"); // Include full information, including service name
     m_comManager->doGet(WEB_ASSETINFO_PATH, query);
 
-    ui->treeAssets->hideColumn(AssetColumn::ASSET_PARTICIPANT); // No need to display the first column (participant) for that case
-    ui->treeAssets->hideColumn(AssetColumn::ASSET_SESSION); // No need to display the second column (session) for that case
-
     m_idSession = id_session;
+}
+
+void AssetsWidget::displayAssetsForParticipant(const int &id_participant)
+{
+    if (!m_comManager)
+        return;
+
+    clearAssets();
+
+    setViewMode(VIEWMODE_PARTICIPANT);
+
+    QUrlQuery query;
+    query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(id_participant));
+    m_dataQuery = query;
+
+    query.addQueryItem(WEB_QUERY_WITH_URLS, "1");
+    query.addQueryItem(WEB_QUERY_FULL, "1"); // Include full information, including service name
+    m_comManager->doGet(WEB_ASSETINFO_PATH, query);
 
 }
 
@@ -225,17 +245,41 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
         QTreeWidgetItem* parent_item = nullptr;
 
         // Participant name
-        if (id_participant>=0){
+        QTreeWidgetItem* participant_item = nullptr;
+        /*if (id_participant>=0){
             if (m_treeParticipants.contains(id_participant)){
                 parent_item = m_treeParticipants[id_participant];
             }
-        }
+        }*/
 
         // Session name
-        int id_session = asset.getFieldValue("id_session").toInt();
-        if (m_treeSessions.contains(id_session)){
-            parent_item = m_treeSessions[id_session];
+        if (m_viewMode == VIEWMODE_PARTICIPANT || m_viewMode == VIEWMODE_PROJECT){
+            int id_session = asset.getFieldValue("id_session").toInt();
+            QTreeWidgetItem* session_item;
+            if (m_treeSessions.contains(id_session)){
+                session_item = m_treeSessions[id_session];
+            }else{
+                session_item = new QTreeWidgetItem();
+                QString session_name = tr("Séance ") + QString::number(id_session);
+                if (asset.hasFieldName("asset_session_name")){
+                    session_name = asset.getFieldValue("asset_session_name").toString();
+                }
+                session_item->setText(AssetColumn::ASSET_NAME, session_name);
+                session_item->setIcon(AssetColumn::ASSET_NAME, QIcon("://icons/group.png"));
+                session_item->setFirstColumnSpanned(true);
+                session_item->setForeground(AssetColumn::ASSET_NAME, Qt::cyan);
+
+                if (participant_item){
+                    participant_item->addChild(session_item);
+                }else{
+                    ui->treeAssets->addTopLevelItem(session_item);
+                }
+
+                m_treeSessions[id_session] = session_item;
+            }
+            parent_item = session_item;
         }
+
 
         // Asset name and infos
         item->setForeground(AssetColumn::ASSET_NAME, QColor(255,255,102));
@@ -404,6 +448,13 @@ void AssetsWidget::startAssetsDownload(const QStringList &assets_to_download)
     }
 }
 
+void AssetsWidget::setViewMode(const ViewMode &new_mode)
+{
+    m_viewMode = new_mode;
+
+    ui->btnExpandAll->setVisible(m_viewMode == VIEWMODE_PARTICIPANT || m_viewMode == VIEWMODE_PROJECT);
+}
+
 void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query)
 {
     bool empty_assets = m_assets.isEmpty();
@@ -431,6 +482,7 @@ void AssetsWidget::processAssetAccessTokenReply(QString asset_token, QUrlQuery r
     // Don't consider some parameters in the query
     reply_query.removeAllQueryItems(WEB_QUERY_WITH_URLS);
     reply_query.removeAllQueryItems(WEB_QUERY_WITH_ONLY_TOKEN);
+    reply_query.removeAllQueryItems(WEB_QUERY_FULL);
     if (reply_query == m_dataQuery){
         // This is really for us
         m_accessToken = asset_token;
@@ -653,8 +705,18 @@ void AssetsWidget::refreshAccessToken()
 
 void AssetsWidget::on_treeAssets_itemSelectionChanged()
 {
-    ui->btnDelete->setEnabled(!ui->treeAssets->selectedItems().isEmpty());
-    ui->btnDownload->setEnabled(!ui->treeAssets->selectedItems().isEmpty());
+    bool at_least_one_asset_selected = false;
+
+    // Make sure we don't have only "labels" items (session, participant, ...) selected
+    const QList<QTreeWidgetItem*> selected_items = ui->treeAssets->selectedItems();
+    for(QTreeWidgetItem* item:selected_items){
+        if (!m_treeAssets.key(item).isEmpty() ){
+            at_least_one_asset_selected = true;
+            break;
+        }
+    }
+    ui->btnDelete->setEnabled(at_least_one_asset_selected);
+    ui->btnDownload->setEnabled(at_least_one_asset_selected);
 }
 
 
@@ -782,5 +844,29 @@ void AssetsWidget::on_btnDownloadAll_clicked()
     }
 
     startAssetsDownload(assets_to_download);
+}
+
+
+void AssetsWidget::on_treeAssets_itemExpanded(QTreeWidgetItem *item)
+{
+    resizeAssetsColumnsToContent();
+}
+
+
+void AssetsWidget::on_treeAssets_itemCollapsed(QTreeWidgetItem *item)
+{
+    resizeAssetsColumnsToContent();
+}
+
+
+void AssetsWidget::on_btnExpandAll_clicked()
+{
+    if (ui->btnExpandAll->isChecked()){
+        ui->treeAssets->expandAll();
+        ui->btnExpandAll->setToolTip(tr("Tout masquer"));
+    }else{
+        ui->treeAssets->collapseAll();
+        ui->btnExpandAll->setToolTip(tr("Tout voir"));
+    }
 }
 

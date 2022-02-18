@@ -12,17 +12,18 @@
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
-#include "dialogs/DeviceAssignDialog.h"
-#include "dialogs/BaseDialog.h"
 #include "TeraSessionStatus.h"
 #include "Utils.h"
 //#include "StartSessionDialog.h"
 #include "ServiceConfigWidget.h"
-#include "dialogs/SessionLobbyDialog.h"
 
+#include "dialogs/SessionLobbyDialog.h"
 #include "dialogs/EmailInviteDialog.h"
+#include "dialogs/DeviceAssignDialog.h"
+#include "dialogs/BaseDialog.h"
 
 #include "widgets/TableDateWidgetItem.h"
+#include "widgets/AssetsWidget.h"
 
 namespace Ui {
 class ParticipantWidget;
@@ -111,7 +112,6 @@ private slots:
     void btnAddDevice_clicked();
     void btnDelDevice_clicked();
     void btnDownloadSession_clicked();
-    void btnDowloadAll_clicked();
     void btnViewSession_clicked();
     void btnResumeSession_clicked();
 
@@ -146,6 +146,7 @@ private slots:
     void on_btnFilterSessionsTypes_clicked();
     void on_btnAddSession_clicked();
     void on_tableSessions_itemDoubleClicked(QTableWidgetItem *item);
+    void on_btnAssetsBrowser_clicked();
 };
 
 #endif // PARTICIPANTWIDGET_H

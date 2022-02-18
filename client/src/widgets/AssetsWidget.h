@@ -35,17 +35,24 @@ public:
     void enableNewAssets(const bool &enable);
 
     void displayAssetsForSession(const int &id_session);
+    void displayAssetsForParticipant(const int &id_participant);
 
 private:
     typedef enum {
-        ASSET_PARTICIPANT=0,
-        ASSET_SESSION=1,
-        ASSET_NAME=2,
-        ASSET_DATETIME=3,
-        ASSET_SERVICE=4,
-        ASSET_SIZE=5,
-        ASSET_DURATION=6}
+        ASSET_NAME=0,
+        ASSET_DATETIME=1,
+        ASSET_SERVICE=2,
+        ASSET_SIZE=3,
+        ASSET_DURATION=4}
     AssetColumn;
+
+    typedef enum {
+        VIEWMODE_UNKNOWN,
+        VIEWMODE_SESSION,
+        VIEWMODE_PARTICIPANT,
+        VIEWMODE_PROJECT
+    }
+    ViewMode;
 
     Ui::AssetsWidget *ui;
 
@@ -58,6 +65,8 @@ private:
 
     int                 m_idProject;
     int                 m_idSession;
+    ViewMode            m_viewMode;
+
     TeraData*           m_fileTransferServiceInfos;
     QString             m_accessToken;
     QTimer              m_refreshTokenTimer;
@@ -81,6 +90,8 @@ private:
     QString getFilenameForAsset(const QString &uuid);
 
     void startAssetsDownload(const QStringList& assets_to_download);
+
+    void setViewMode(const ViewMode& new_mode);
 
 
 private slots:
@@ -114,6 +125,12 @@ private slots:
     void on_btnDownload_clicked();
 
     void on_btnDownloadAll_clicked();
+
+    void on_treeAssets_itemExpanded(QTreeWidgetItem *item);
+
+    void on_treeAssets_itemCollapsed(QTreeWidgetItem *item);
+
+    void on_btnExpandAll_clicked();
 
 signals:
     void assetCountChanged(int new_count);

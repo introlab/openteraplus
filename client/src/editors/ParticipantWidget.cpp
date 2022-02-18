@@ -133,7 +133,6 @@ void ParticipantWidget::connectSignals()
     connect(ui->btnDelSession, &QPushButton::clicked, this, &ParticipantWidget::btnDeleteSession_clicked);
     connect(ui->btnAddDevice, &QPushButton::clicked, this, &ParticipantWidget::btnAddDevice_clicked);
     connect(ui->btnDelDevice, &QPushButton::clicked, this, &ParticipantWidget::btnDelDevice_clicked);
-    connect(ui->btnDownloadAll, &QPushButton::clicked, this, &ParticipantWidget::btnDowloadAll_clicked);
 
     connect(ui->tableSessions, &QTableWidget::currentItemChanged, this, &ParticipantWidget::currentSelectedSessionChanged);
 
@@ -244,7 +243,7 @@ void ParticipantWidget::updateFieldsValue()
 
 void ParticipantWidget::initUI()
 {
-    ui->btnDownloadAll->hide();
+    ui->btnAssetsBrowser->hide();
     ui->frameParticipantLogin->hide();
     ui->frameActive->hide();
     ui->frameWeb->hide();
@@ -427,7 +426,7 @@ void ParticipantWidget::updateSession(TeraData *session)
             bool has_assets = asset_count>0;
             btnDownload->setVisible(has_assets);
             m_totalAssets += asset_count;
-            ui->btnDownloadAll->setVisible(m_totalAssets>0);
+            ui->btnAssetsBrowser->setVisible(m_totalAssets>0);
         }else{
             btnDownload->hide();
         }
@@ -939,23 +938,6 @@ void ParticipantWidget::btnDownloadSession_clicked()
             downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
             setWaiting();
         }*/
-    }
-}
-
-void ParticipantWidget::btnDowloadAll_clicked()
-{
-
-    return; // For now...
-
-    QString save_path = QFileDialog::getExistingDirectory(this, tr("Sélectionnez un dossier pour le téléchargement"),
-                                                          QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-    if (!save_path.isEmpty()){
-        //int id_participant = m_data->getId();
-        /*QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_DOWNLOAD, "");
-        args.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(id_participant));
-        downloadDataRequest(save_path, WEB_DEVICEDATAINFO_PATH, args);
-        setWaiting();*/
     }
 }
 
@@ -1618,5 +1600,23 @@ void ParticipantWidget::on_btnAddSession_clicked()
 void ParticipantWidget::on_tableSessions_itemDoubleClicked(QTableWidgetItem *item)
 {
     displaySessionDetails(item);
+}
+
+
+void ParticipantWidget::on_btnAssetsBrowser_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+    m_diag_editor = new BaseDialog(this);
+
+    AssetsWidget* asset_widget = new AssetsWidget(m_comManager);
+    asset_widget->displayAssetsForParticipant(m_data->getId());
+    m_diag_editor->setCentralWidget(asset_widget);
+
+    m_diag_editor->setWindowTitle(tr("Explorateur de données"));
+    m_diag_editor->setMinimumSize(this->width(), this->height());
+
+    m_diag_editor->open();
 }
 

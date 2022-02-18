@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1018</width>
-    <height>771</height>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -911,7 +911,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <x>0</x>
             <y>0</y>
             <width>978</width>
-            <height>410</height>
+            <height>439</height>
            </rect>
           </property>
           <attribute name="label">
@@ -1626,7 +1626,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QToolButton" name="btnDownloadAll">
+                   <widget class="QToolButton" name="btnAssetsBrowser">
                     <property name="enabled">
                      <bool>true</bool>
                     </property>
@@ -1640,11 +1640,11 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                      <cursorShape>PointingHandCursor</cursorShape>
                     </property>
                     <property name="text">
-                     <string>Tout télécharger</string>
+                     <string>Explorateur de données</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../resources/TeraClient.qrc">
-                      <normaloff>:/icons/download.png</normaloff>:/icons/download.png</iconset>
+                      <normaloff>:/icons/data.png</normaloff>:/icons/data.png</iconset>
                     </property>
                     <property name="iconSize">
                      <size>

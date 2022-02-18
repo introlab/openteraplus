@@ -751,5 +751,6 @@ QProgressBar#progTimer::chunk{
 
 /* Customizations for AssetsWidget */
 QTreeWidget#treeAssets {
-    selection-color: cyan;
+    selection-background-color: rgba(255,255,255,10%);/*rgba(0,5,45,50%)*/;
+    selection-color: lightblue;
 }
