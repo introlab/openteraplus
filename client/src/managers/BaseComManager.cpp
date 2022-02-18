@@ -103,34 +103,38 @@ void BaseComManager::doDelete(const QString &path, const int &id, const bool &us
     LOG_DEBUG("DELETE: " + path + ", with id=" + QString::number(id), QString(this->metaObject()->className()) + "::doDelete");
 }
 
-void BaseComManager::doDownload(const QString &save_path, const QString &path, const QUrlQuery &query_args, const bool &use_token)
+void BaseComManager::doDownload(const QString &path, const QString &save_path, const QString &save_filename, const QUrlQuery &query_args, const bool &use_token)
 {
     QUrl query = m_serverUrl;
 
     query.setPath(path);
+
+    doDownload(query, save_path, save_filename, query_args, use_token);
+
+}
+
+void BaseComManager::doDownload(const QUrl &full_url, const QString &save_path, const QString &save_filename, const QUrlQuery &query_args, const bool &use_token)
+{
+    QUrl query = full_url;
+
     if (!query_args.isEmpty()){
         query.setQuery(query_args);
     }
 
-    QNetworkRequest request(query);
-    setRequestCredentials(request, use_token);
-    setRequestLanguage(request);
-    setRequestVersions(request);
+    QNetworkRequest* request = new QNetworkRequest(query);
+    setRequestCredentials(*request, use_token);
+    setRequestLanguage(*request);
+    setRequestVersions(*request);
 
-    QNetworkReply* reply = m_netManager->get(request);
-    if (reply){
-        DownloadingFile* file_to_download = new DownloadingFile(save_path);
-        file_to_download->setNetworkReply(reply);
-        m_currentDownloads[reply] = file_to_download;
+    DownloadingFile* file_to_download = new DownloadingFile(save_path, save_filename);
 
-        connect(file_to_download, &DownloadingFile::transferProgress, this, &BaseComManager::onTransferProgress);
-        connect(file_to_download, &DownloadingFile::transferComplete, this, &BaseComManager::onTransferCompleted);
-        connect(file_to_download, &DownloadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
+    // Do the get request
+    if (m_currentDownloads.count() < MAX_SIMULTANEOUS_DOWNLOADS){
+        startFileDownload(file_to_download, request);
+    }else{
+        m_waitingDownloads[request] = file_to_download;
+        emit downloadProgress(file_to_download); // Emit a request to indicate the file is waiting
     }
-
-    emit waitingForReply(true);
-
-    LOG_DEBUG("DOWNLOADING: " + path + ", with " + query_args.toString() + ", to " + save_path, "ComManager::doQuery");
 }
 
 void BaseComManager::doUpload(const QString &path, const QString &file_name, const QVariantMap extra_headers, const QString &label, const bool &use_token)
@@ -170,19 +174,6 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
         m_waitingUploads[request] = file_to_upload;
         emit uploadProgress(file_to_upload); // Emit a request to indicate the file is waiting
     }
-
-   /* file->open(QIODevice::ReadOnly); // Open the file
-    QNetworkReply* reply = m_netManager->post(request, file);
-    if (reply){
-        file_to_upload->setNetworkReply(reply);
-        m_currentUploads[reply] = file_to_upload;
-        connect(file_to_upload, &UploadingFile::transferProgress, this, &BaseComManager::onTransferProgress);
-        connect(file_to_upload, &UploadingFile::transferComplete, this, &BaseComManager::onTransferCompleted);
-        connect(file_to_upload, &UploadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
-
-    }else{
-        file_to_upload->deleteLater();
-    }*/
 
 }
 
@@ -361,6 +352,11 @@ void BaseComManager::onTransferCompleted(TransferringFile *file)
         DownloadingFile* file = m_currentDownloads.take(reply);
         emit downloadCompleted(file);
         file->deleteLater();
+
+        // Check if we have pending downloads
+        if (!m_waitingDownloads.isEmpty()){
+            startFileDownload(m_waitingDownloads.first(), m_waitingDownloads.key(m_waitingDownloads.first()));
+        }
     }
 
     if (m_currentUploads.contains(reply)){
@@ -386,6 +382,11 @@ void BaseComManager::onTransferAborted(TransferringFile *file)
     if (m_currentDownloads.contains(reply)){
         DownloadingFile* file = m_currentDownloads.take(reply);
         file->deleteLater();
+
+        // Check if we have pending downloads
+        if (!m_waitingDownloads.isEmpty()){
+            startFileDownload(m_waitingDownloads.first(), m_waitingDownloads.key(m_waitingDownloads.first()));
+        }
     }
 
     if (m_currentUploads.contains(reply)){
@@ -509,4 +510,29 @@ void BaseComManager::startFileUpload(UploadingFile *upload_file, QNetworkRequest
         m_waitingUploads.remove(request);
 
     delete request;
+}
+
+void BaseComManager::startFileDownload(DownloadingFile *download_file, QNetworkRequest *request)
+{
+    QNetworkReply* reply = m_netManager->get(*request);
+
+    if (reply){
+        download_file->setNetworkReply(reply);
+        download_file->setStatus(TransferringFile::INPROGRESS);
+        m_currentDownloads[reply] = download_file;
+        connect(download_file, &DownloadingFile::transferProgress, this, &BaseComManager::onTransferProgress);
+        connect(download_file, &DownloadingFile::transferComplete, this, &BaseComManager::onTransferCompleted);
+        connect(download_file, &DownloadingFile::transferAborted, this, &BaseComManager::onTransferAborted);
+    }else{
+        download_file->setStatus(TransferringFile::ERROR);
+        download_file->setLastError(tr("Impossible de créer la requête"));
+        emit transferError(download_file);
+        download_file->deleteLater();
+    }
+
+    if (m_waitingDownloads.contains(request))
+        m_waitingDownloads.remove(request);
+
+    delete request;
+
 }

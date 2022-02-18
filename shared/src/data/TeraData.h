@@ -93,16 +93,17 @@ public:
     bool isNew() const;
 
     virtual TeraData &operator = (const TeraData& other);
-    virtual bool operator == (const TeraData& other) const;
-    void updateFrom(const TeraData& other);
+    virtual bool    operator == (const TeraData& other) const;
+    void            updateFrom(const TeraData& other);
+    void            updateFrom(const QJsonObject& object);
 
-    TeraDataTypes getDataType() const;
-    bool hasFieldName(const QString& fieldName) const;
-    void removeFieldName(const QString& fieldName);
-    QVariant getFieldValue(const QString &fieldName) const;
-    void setFieldValue(const QString& fieldName, const QVariant& fieldValue);
-    QList<QString> getFieldList() const;
-    QVariantMap getFieldValues();
+    TeraDataTypes   getDataType() const;
+    bool            hasFieldName(const QString& fieldName) const;
+    void            removeFieldName(const QString& fieldName);
+    QVariant        getFieldValue(const QString &fieldName) const;
+    void            setFieldValue(const QString& fieldName, const QVariant& fieldValue);
+    QList<QString>  getFieldList() const;
+    QVariantMap     getFieldValues();
 
     static QString getDataTypeName(const TeraDataTypes& data_type);
     static QString getDataTypeNameText(const TeraDataTypes& data_type);

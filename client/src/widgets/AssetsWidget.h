@@ -54,6 +54,7 @@ private:
 
     FileUploaderDialog*     m_uploadDialog;
     TransferProgressDialog* m_transferDialog;
+    QFileDialog             m_fileDialog; // Defined here to remember last directory
 
     int                 m_idProject;
     int                 m_idSession;
@@ -76,6 +77,11 @@ private:
     void queryAssetsInfos();
     void updateAsset(const TeraData& asset, const int& id_participant = -1, const bool& emit_count_update_signal=true);
 
+    QString getRelativePathForAsset(const QString &uuid);
+    QString getFilenameForAsset(const QString &uuid);
+
+    void startAssetsDownload(const QStringList& assets_to_download);
+
 
 private slots:
     void processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query);
@@ -89,6 +95,8 @@ private slots:
     void assetComNetworkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
     void assetComUploadProgress(UploadingFile* file);
     void assetComUploadCompleted(UploadingFile* file);
+    void assetComDownloadProgress(DownloadingFile* file);
+    void assetComDownloadCompleted(DownloadingFile* file);
     void assetComTransferAborted(TransferringFile* file);
     void transferDialogCompleted();
 
@@ -102,6 +110,10 @@ private slots:
     void on_treeAssets_itemSelectionChanged();
     void on_btnNew_clicked();
     void on_btnDelete_clicked();
+
+    void on_btnDownload_clicked();
+
+    void on_btnDownloadAll_clicked();
 
 signals:
     void assetCountChanged(int new_count);

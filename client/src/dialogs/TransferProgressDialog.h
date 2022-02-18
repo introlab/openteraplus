@@ -36,6 +36,8 @@ private:
 
     QMap<TransferringFile*, QTableWidgetItem*> m_files;
 
+    bool m_aborting;
+
     void addCompleted(const QString& filename);
     void addError(const QString& filename, const QString &error);
 

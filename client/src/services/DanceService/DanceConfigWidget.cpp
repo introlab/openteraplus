@@ -238,7 +238,7 @@ void DanceConfigWidget::danceComTransferAborted(TransferringFile *file)
 void DanceConfigWidget::transferDialogCompleted()
 {
     if (m_transferDialog){
-        m_transferDialog->close();
+        //m_transferDialog->close();
         m_transferDialog->deleteLater();
         m_transferDialog = nullptr;
     }

@@ -8,6 +8,9 @@ TransferProgressDialog::TransferProgressDialog(QWidget *parent) :
     ui(new Ui::TransferProgressDialog)
 {
     ui->setupUi(this);
+
+    m_aborting = false;
+
     //setWindowFlags(Qt::Popup);
     setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
     setModal(true);
@@ -27,6 +30,9 @@ TransferProgressDialog::~TransferProgressDialog()
 
 void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
 {
+    if (m_aborting)
+        return;
+
     QTableWidgetItem* item;
     QProgressBar* progress;
     if (!m_files.contains(file)){
@@ -78,6 +84,9 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
 
 bool TransferProgressDialog::transferFileCompleted(TransferringFile *file)
 {
+    if (m_aborting)
+        return false;
+
     updateTransferringFile(file);
 
     // Remove file from list
@@ -92,9 +101,14 @@ bool TransferProgressDialog::transferFileCompleted(TransferringFile *file)
 
 bool TransferProgressDialog::transferFileAborted(TransferringFile *file)
 {
+    if (m_aborting)
+        return false;
+
     // Remove file from list
-    ui->tableTransfers->removeRow(m_files.value(file)->row());
-    m_files.remove(file);
+    if (m_files.contains(file)){
+        ui->tableTransfers->removeRow(m_files.value(file)->row());
+        m_files.remove(file);
+    }
 
     addError(file->getFileName(), file->getLastError());
     updateCancelButtonText();
@@ -104,7 +118,7 @@ bool TransferProgressDialog::transferFileAborted(TransferringFile *file)
 
 void TransferProgressDialog::reject()
 {
-    if (!m_files.isEmpty()){
+    if (!m_files.isEmpty() && !m_aborting){
         on_btnCancel_clicked();
         return;
     }
@@ -118,12 +132,15 @@ void TransferProgressDialog::on_btnCancel_clicked()
         GlobalMessageBox::StandardButton conf = msg.showYesNo(tr("Annuler les transferts"), tr("Les transferts en cours seront annulés. Êtes-vous sûrs de vouloir poursuivre?"));
 
         if (conf == GlobalMessageBox::Yes){
+            // Set aborting flag to prevent further updates
+            m_aborting = true;
+
             for(QTableWidgetItem* item:qAsConst(m_files)){
                 m_files.key(item)->abortTransfer();
             }
         }
-        ui->tableTransfers->clearContents();
-        m_files.clear();
+        //ui->tableTransfers->clearContents();
+        //m_files.clear();
 
         reject();
     }else{

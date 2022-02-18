@@ -185,14 +185,6 @@ void DataEditorWidget::deleteDataRequest(const QString &path, const int &id)
     setWaiting();
 }
 
-void DataEditorWidget::downloadDataRequest(const QString &save_path, const QString &path, const QUrlQuery &query_args)
-{
-    QString query_name = getQueryDataName(path, query_args);
-    m_requests.append(query_name);
-    m_comManager->doDownload(save_path, path, query_args);
-    setWaiting();
-}
-
 ComManager *DataEditorWidget::getComManager()
 {
     return m_comManager;

@@ -32,6 +32,12 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     // Catch keyboard events
     ui->treeAssets->installEventFilter(this);
 
+    // Initialize default directory for file dialog
+    QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+
+    if (!documents_path.isEmpty())
+        m_fileDialog.setDirectory(documents_path.first());
+
 
 }
 
@@ -67,6 +73,8 @@ void AssetsWidget::setComManager(ComManager *comMan)
         connect(m_comAssetManager, &AssetComManager::networkError, this, &AssetsWidget::assetComNetworkError);
         connect(m_comAssetManager, &AssetComManager::uploadProgress, this, &AssetsWidget::assetComUploadProgress);
         connect(m_comAssetManager, &AssetComManager::uploadCompleted, this, &AssetsWidget::assetComUploadCompleted);
+        connect(m_comAssetManager, &AssetComManager::downloadProgress, this, &AssetsWidget::assetComDownloadProgress);
+        connect(m_comAssetManager, &AssetComManager::downloadCompleted, this, &AssetsWidget::assetComDownloadCompleted);
         connect(m_comAssetManager, &AssetComManager::transferAborted, this, &AssetsWidget::assetComTransferAborted);
         connect(m_comAssetManager, &AssetComManager::deleteUuidResultOK, this, &AssetsWidget::assetComDeleteOK);
         connect(m_comAssetManager, &AssetComManager::postResultsOK, this, &AssetsWidget::assetComPostOK);
@@ -278,7 +286,7 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
         btnDownload->setCursor(Qt::PointingHandCursor);
         btnDownload->setMaximumWidth(32);
         btnDownload->setToolTip(tr("Télécharger les données"));
-        //connect(btnDownload, &QToolButton::clicked, this, &ParticipantWidget::btnDownloadSession_clicked);
+        connect(btnDownload, &QToolButton::clicked, this, &AssetsWidget::on_btnDownload_clicked);
         layout->addWidget(btnDownload);
 
         ui->treeAssets->setItemWidget(item, ui->treeAssets->columnCount()-1, action_frame);
@@ -302,6 +310,100 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
     btnView->setEnabled(has_asset_infos_url);
 }
 
+QString AssetsWidget::getRelativePathForAsset(const QString &uuid)
+{
+    QString path = "/";
+    if (!m_treeAssets.contains(uuid))
+        return path;
+
+    QTreeWidgetItem* current_item = m_treeAssets[uuid]->parent();
+    while(current_item){
+        path = current_item->text(0) + "/" + path;
+        current_item = current_item->parent();
+    }
+    return path;
+
+}
+
+QString AssetsWidget::getFilenameForAsset(const QString &uuid)
+{
+    QString filename = tr("Inconnue");
+
+    if (!m_assets.contains(uuid)){
+        LOG_WARNING("Tried to get asset " + uuid + ", but not found", "AssetsWidget::getFilenameForAsset");
+        return filename;
+    }
+
+    TeraData* asset = m_assets[uuid];
+    if (asset->hasFieldName("asset_original_filename")){
+        filename = asset->getFieldValue("asset_original_filename").toString();
+    }else{
+        filename = asset->getName();
+    }
+    return filename;
+}
+
+void AssetsWidget::startAssetsDownload(const QStringList &assets_to_download)
+{
+    if (assets_to_download.isEmpty())
+        return; // Should not happen...
+
+    // Ask where to save (file if one asset, directory otherwise)
+    QString full_path;
+
+    if (assets_to_download.count() == 1){
+        TeraData* asset = m_assets[assets_to_download.first()];
+        QString filename = getFilenameForAsset(asset->getUuid());
+        m_fileDialog.selectFile(filename);
+        m_fileDialog.setFileMode(QFileDialog::AnyFile);
+        m_fileDialog.setWindowTitle(tr("Fichier à enregistrer"));
+        //m_fileDialog.setLabelText(QFileDialog::Accept, tr("Enregistrer"));
+        m_fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+
+        if (m_fileDialog.exec()){
+
+            QStringList selected_files = m_fileDialog.selectedFiles();
+            if (selected_files.isEmpty())
+                return;
+
+            full_path = selected_files.first();
+        }else{
+            return;
+        }
+    }else{
+        full_path = m_fileDialog.getExistingDirectory(this, tr("Répertoire où les données seront téléchargées"));
+        if (full_path.isEmpty())
+            return;
+
+        for(const QString &asset_uuid:assets_to_download){
+            TeraData* asset = m_assets[asset_uuid];
+            QString file_path;
+            QString file_name;
+            if (assets_to_download.count() == 1){
+                // Only one file - use the info entered by the user
+                QFileInfo fileInfo(full_path);
+                file_path = fileInfo.absolutePath();
+                file_name = fileInfo.fileName();
+            }else{
+                // Multiple files - create save structure
+                file_path = full_path + getRelativePathForAsset(asset_uuid);
+                file_name = getFilenameForAsset(asset_uuid);
+            }
+            // Send download request
+            if (asset->hasFieldName("asset_url")){
+                QUrlQuery query;
+                query.addQueryItem("access_token", m_accessToken);
+                query.addQueryItem("asset_uuid", asset_uuid);
+                m_comAssetManager->doDownload(asset->getFieldValue("asset_url").toUrl(),
+                                              file_path, file_name,
+                                              query);
+            }else{
+                LOG_WARNING("No asset url for asset " + asset->getUuid() + " - skipping download.", "AssetsWidget::on_btnDownload_clicked");
+            }
+        }
+    }
+}
+
 void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query)
 {
     bool empty_assets = m_assets.isEmpty();
@@ -317,7 +419,7 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
     //resizeAssetsColumnsToContent();
 
     if (ui->treeAssets->topLevelItemCount()>0)
-        ui->btnDownload->setEnabled(true);
+        ui->btnDownloadAll->setEnabled(true);
 
     // Query extra information
     queryAssetsInfos();
@@ -332,7 +434,7 @@ void AssetsWidget::processAssetAccessTokenReply(QString asset_token, QUrlQuery r
     if (reply_query == m_dataQuery){
         // This is really for us
         m_accessToken = asset_token;
-        qDebug() << "Updated access token..." + m_accessToken;
+        //qDebug() << "Updated access token..." + m_accessToken;
 
         // Remove all access token information from assets
         for(TeraData* asset:qAsConst(m_assets)){
@@ -426,6 +528,27 @@ void AssetsWidget::assetComUploadCompleted(UploadingFile *file)
     }
 }
 
+void AssetsWidget::assetComDownloadProgress(DownloadingFile *file)
+{
+    if (!m_transferDialog){
+        // New download request - create dialog and add file
+        m_transferDialog = new TransferProgressDialog(this);
+        connect(m_transferDialog, &TransferProgressDialog::finished, this, &AssetsWidget::transferDialogCompleted);
+        m_transferDialog->show();
+    }
+    m_transferDialog->updateTransferringFile(file);
+}
+
+void AssetsWidget::assetComDownloadCompleted(DownloadingFile *file)
+{
+    if (m_transferDialog){
+        if (m_transferDialog->transferFileCompleted(file)){
+            // If we are here, no more uploads are pending. Close transfer dialog.
+            transferDialogCompleted();
+        }
+    }
+}
+
 void AssetsWidget::assetComTransferAborted(TransferringFile *file)
 {
     /*if (m_transferDialog){
@@ -440,10 +563,13 @@ void AssetsWidget::assetComTransferAborted(TransferringFile *file)
 void AssetsWidget::transferDialogCompleted()
 {
     if (m_transferDialog){
-        m_transferDialog->close();
+        //m_transferDialog->close();
         m_transferDialog->deleteLater();
         m_transferDialog = nullptr;
     }
+
+    // Clear all selection
+    ui->treeAssets->clearSelection();
 }
 
 void AssetsWidget::assetComDeleteOK(QString path, QString uuid)
@@ -461,7 +587,7 @@ void AssetsWidget::assetComDeleteOK(QString path, QString uuid)
 
             // Emit update signal
             emit assetCountChanged(m_assets.count());
-            ui->btnDownload->setEnabled(!isEmpty());
+            ui->btnDownloadAll->setEnabled(!isEmpty());
             //ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Suppression complétée")));
         }
     }
@@ -504,6 +630,12 @@ void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_
                 ui->treeAssets->showColumn(AssetColumn::ASSET_DURATION);
             }
         }
+
+        if (m_assets.contains(asset_uuid)){
+            // Append received fields to current asset
+            TeraData* asset = m_assets[asset_uuid];
+            asset->updateFrom(asset_info);
+        }
     }
     resizeAssetsColumnsToContent();
 }
@@ -522,6 +654,7 @@ void AssetsWidget::refreshAccessToken()
 void AssetsWidget::on_treeAssets_itemSelectionChanged()
 {
     ui->btnDelete->setEnabled(!ui->treeAssets->selectedItems().isEmpty());
+    ui->btnDownload->setEnabled(!ui->treeAssets->selectedItems().isEmpty());
 }
 
 
@@ -583,6 +716,7 @@ void AssetsWidget::on_btnDelete_clicked()
         // Select row according to the session id of that button
         QString asset_uuid = action_btn->property("asset_uuid").toString();
         QTreeWidgetItem* asset_item = m_treeAssets[asset_uuid];
+        ui->treeAssets->clearSelection();
         if (asset_item)
             asset_item->setSelected(true);
     }
@@ -615,4 +749,38 @@ void AssetsWidget::on_btnDelete_clicked()
 }
 
 
+
+
+void AssetsWidget::on_btnDownload_clicked()
+{
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    QStringList assets_to_download;
+    if (action_btn && action_btn != ui->btnDownload){
+        // Select row according to the session id of that button
+        QString asset_uuid = action_btn->property("asset_uuid").toString();
+        assets_to_download.append(asset_uuid);
+    }else{
+        // Download all selected assets
+        const QList<QTreeWidgetItem*> items = ui->treeAssets->selectedItems();
+        for(QTreeWidgetItem* asset:items){
+            assets_to_download.append(m_treeAssets.key(asset));
+        }
+    }
+
+    startAssetsDownload(assets_to_download);
+
+}
+
+void AssetsWidget::on_btnDownloadAll_clicked()
+{
+    QStringList assets_to_download;
+
+    // Download all assets
+    for(TeraData* asset:qAsConst(m_assets)){
+        assets_to_download.append(asset->getUuid());
+    }
+
+    startAssetsDownload(assets_to_download);
+}
 

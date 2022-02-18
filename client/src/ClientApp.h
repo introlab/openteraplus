@@ -8,6 +8,7 @@
 #include <QUuid>
 #include <QTranslator>
 #include <QStandardPaths>
+#include <QLibraryInfo>
 
 #include "main/MainWindow.h"
 #include "main/MainKitWindow.h"
@@ -48,6 +49,7 @@ protected:
 
     ComManager*         m_comMan;
     QTranslator*        m_translator;
+    QTranslator*        m_qt_translator;
     QLocale             m_currentLocale;
 
 
@@ -65,7 +67,7 @@ private slots:
 
     void on_currentUserUpdated();
 
-    void ws_genericEventReceived(TeraEvent event);
+    void ws_genericEventReceived(opentera::protobuf::TeraEvent event);
 
 
     void preferencesUpdated();

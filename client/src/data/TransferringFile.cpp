@@ -23,6 +23,8 @@ TransferringFile::~TransferringFile()
 {
     if (m_file.isOpen())
         m_file.close();
+
+    // qDebug() << "Deleting " << m_filename << " file object...";
 }
 
 TransferringFile &TransferringFile::operator =(const TransferringFile &other)

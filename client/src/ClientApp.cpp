@@ -16,6 +16,7 @@ ClientApp::ClientApp(int &argc, char **argv)
     m_mainKitWindow = nullptr;
 
     m_translator = new QTranslator();
+    m_qt_translator = new QTranslator();
 
     //Translations
     setTranslation();
@@ -57,6 +58,9 @@ ClientApp::~ClientApp()
        m_comMan->disconnectFromServer();
        m_comMan->deleteLater();
     }
+
+    delete m_translator;
+    delete m_qt_translator;
 
 }
 
@@ -224,6 +228,12 @@ void ClientApp::setTranslation(QString language)
 
    if (lang_changed){
        QLocale::setDefault(m_currentLocale);
+
+       // Install Qt translator for default widgets
+       m_qt_translator->load("qt_" + m_currentLocale.name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+       this->installTranslator(m_qt_translator);
+
+       // Install app specific translator
        if (m_translator->load(m_currentLocale, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
            this->installTranslator(m_translator);
            //qDebug() << "Installed translator";

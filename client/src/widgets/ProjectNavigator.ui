@@ -66,7 +66,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
-          <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
+          <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
         </property>
         <property name="iconSize">
          <size>
