@@ -104,7 +104,6 @@ private slots:
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
 
     void deleteDataReply(QString path, int id);
-    void onDownloadCompleted(DownloadingFile* file);
     void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
     void sessionAssetsCountChanged(int id_session, int new_count);
 

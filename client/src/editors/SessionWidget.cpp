@@ -520,16 +520,6 @@ void SessionWidget::deleteDataReply(QString path, int id)
     }*/
 }
 
-void SessionWidget::onDownloadCompleted(DownloadingFile *file)
-{
-    if (!m_comManager->hasPendingDownloads()){
-        setEnabled(true);
-        setReady();
-        GlobalMessageBox msgbox;
-        msgbox.showInfo(tr("Téléchargement"), tr("Téléchargement terminé: ") + file->getFullFilename());
-    }
-}
-
 void SessionWidget::onAssetsCountChanged(int new_count)
 {
     ui->lblAssets->setText(QString::number(new_count) + tr(" Données"));
@@ -601,7 +591,6 @@ void SessionWidget::connectSignals()
     connect(m_comManager, &ComManager::participantsReceived, this, &SessionWidget::processParticipantsReply);
     connect(m_comManager, &ComManager::devicesReceived, this, &SessionWidget::processDevicesReply);
 
-    connect(m_comManager, &ComManager::downloadCompleted, this, &SessionWidget::onDownloadCompleted);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &SessionWidget::deleteDataReply);
 
     connect(ui->wdgSessionInvitees, &SessionInviteWidget::newInvitees, this, &SessionWidget::sessionInviteesChanged);

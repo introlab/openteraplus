@@ -126,7 +126,6 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::servicesReceived, this, &ParticipantWidget::processServicesReply);
     connect(m_comManager, &ComManager::statsReceived, this, &ParticipantWidget::processStatsReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
-    connect(m_comManager, &ComManager::downloadCompleted, this, &ParticipantWidget::onDownloadCompleted);
 
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &ParticipantWidget::ws_participantEvent);
 
@@ -775,20 +774,6 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
             }
         }
     }
-}
-
-void ParticipantWidget::onDownloadCompleted(DownloadingFile *file)
-{
-    if (!m_comManager->hasPendingDownloads()){
-        setEnabled(true);
-        setReady();
-        if (!m_diag_editor){
-            GlobalMessageBox msgbox;
-            msgbox.showInfo(tr("Téléchargement"), tr("Téléchargement terminé: ") + file->getFullFilename());
-        }
-    }
-
-
 }
 
 void ParticipantWidget::ws_participantEvent(opentera::protobuf::ParticipantEvent event)

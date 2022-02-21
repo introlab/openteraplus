@@ -19,6 +19,7 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     // Initialize refresh access token timer
     m_refreshTokenTimer.setSingleShot(true);
     m_refreshTokenTimer.setInterval(29 * 60 * 1000); // 29 minutes interval
+    //m_refreshTokenTimer.setInterval(2000); // 2 seconds interval for testing!
 
     connectSignals();
 
@@ -509,6 +510,9 @@ void AssetsWidget::processAssetAccessTokenReply(QString asset_token, QUrlQuery r
         for(TeraData* asset:qAsConst(m_assets)){
             asset->removeFieldName("access_token");
         }
+
+        // Update token in all pending download requests
+        m_comAssetManager->updateWaitingDownloadsQueryParameter("access_token", m_accessToken);
 
         // Start refresh timer
         m_refreshTokenTimer.start();

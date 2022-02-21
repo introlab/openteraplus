@@ -56,7 +56,6 @@ private:
 
 private slots:
     void processFormsReply(QString form_type, QString data);
-    //void processDeviceDatasReply(QList<TeraData> device_datas);
     void processSessionEventsReply(QList<TeraData> events);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
     void processParticipantsReply(QList<TeraData> participants);
@@ -64,8 +63,6 @@ private slots:
     void processUsersReply(QList<TeraData> users);
     void postResultReply(QString path);
     void deleteDataReply(QString path, int id);
-
-    void onDownloadCompleted(DownloadingFile* file);
 
     void onAssetsCountChanged(int new_count);
 

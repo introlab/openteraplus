@@ -227,21 +227,40 @@ void BaseComManager::doUploadWithMultiPart(const QString &path, const QString &f
     emit uploadProgress(file_to_upload); // Emit a request to indicate the file is waiting
 }
 
-bool BaseComManager::hasPendingDownloads()
+bool BaseComManager::isDownloadingFiles()
 {
     return !m_currentDownloads.isEmpty() || !m_waitingDownloads.isEmpty();
 }
 
-bool BaseComManager::hasPendingUploads()
+bool BaseComManager::isUploadingFiles()
 {
     return !m_currentUploads.isEmpty() || !m_waitingUploads.isEmpty();
 }
 
-bool BaseComManager::hasPendingFileTransfers()
+bool BaseComManager::isTransferringFiles()
 {
-    return !hasPendingDownloads() || !hasPendingUploads();
+    return !isDownloadingFiles() || !isUploadingFiles();
 }
 
+bool BaseComManager::hasDownloadsWaiting()
+{
+    return !m_waitingDownloads.isEmpty();
+}
+
+void BaseComManager::updateWaitingDownloadsQueryParameter(const QString &parameter, const QString &new_value)
+{
+    for(DownloadingFile* file: qAsConst(m_waitingDownloads)){
+        QNetworkRequest* request = m_waitingDownloads.key(file);
+        QUrlQuery query(request->url());
+        if (query.hasQueryItem(parameter)){
+            QUrl url = request->url();
+            query.removeAllQueryItems(parameter);
+            query.addQueryItem(parameter, new_value);
+            url.setQuery(query);
+            request->setUrl(url);
+        }
+    }
+}
 
 void BaseComManager::onNetworkFinished(QNetworkReply *reply){
     emit waitingForReply(false);

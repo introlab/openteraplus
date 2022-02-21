@@ -36,9 +36,11 @@ public:
                           const QString& label = QString(), const bool &use_token=false);
     virtual void doUploadWithMultiPart(const QString &path, const QString& file_name, const QString &form_field_name, const QString& form_infos, const QVariantMap extra_headers = QVariantMap(), const bool &use_token=false);
 
-    bool hasPendingDownloads();
-    bool hasPendingUploads();
-    bool hasPendingFileTransfers();
+    bool isDownloadingFiles();
+    bool isUploadingFiles();
+    bool isTransferringFiles();
+    bool hasDownloadsWaiting();
+    void updateWaitingDownloadsQueryParameter(const QString& parameter, const QString& new_value);
 
     void setCredentials(const QString &username, const QString &password);
     void setCredentials(const QString &token);
