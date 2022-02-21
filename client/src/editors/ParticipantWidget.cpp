@@ -127,6 +127,7 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::statsReceived, this, &ParticipantWidget::processStatsReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
 
+
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &ParticipantWidget::ws_participantEvent);
 
     connect(ui->btnDelSession, &QPushButton::clicked, this, &ParticipantWidget::btnDeleteSession_clicked);

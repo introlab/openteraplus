@@ -330,14 +330,19 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
 
     // Less simple case - the pointers are not the same, but we might be referencing an object already present.
     if (!data->isNew()){
-        for (TeraData* current_data:m_datamap.keys()){
+        for (QListWidgetItem* item: qAsConst(m_datamap)){
+            TeraData* current_data = m_datamap.key(item);
+        /*}
+        for (TeraData* current_data:m_datamap.keys()){*/
             if (*current_data == *data){
                 return m_datamap[current_data];
             }
         }
 
         // Not found - try to find an item which is new but with the same name
-        for (TeraData* current_data:m_datamap.keys()){
+        //for (TeraData* current_data:m_datamap.keys()){
+        for (QListWidgetItem* item: qAsConst(m_datamap)){
+            TeraData* current_data = m_datamap.key(item);
             if (current_data->isNew() && current_data->getName() == data->getName()){
                 m_newdata=false;
                 return m_datamap[current_data];
@@ -345,7 +350,9 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
         }
     }else{
         // We have a new item - try and match.
-        for (TeraData* current_data:m_datamap.keys()){
+        //for (TeraData* current_data:m_datamap.keys()){
+        for (QListWidgetItem* item: qAsConst(m_datamap)){
+            TeraData* current_data = m_datamap.key(item);
             if (current_data->isNew()){
                 return m_datamap[current_data];
             }
@@ -360,7 +367,9 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
 void DataListWidget::clearDataList(){
     ui->lstData->clear();
 
-    for (TeraData* data:m_datamap.keys()){
+    //for (TeraData* data:m_datamap.keys()){
+    for (QListWidgetItem* item: qAsConst(m_datamap)){
+        TeraData* data = m_datamap.key(item);
         delete data;
     }
     m_datamap.clear();
@@ -387,7 +396,9 @@ void DataListWidget::deleteDataReply(QString path, int id)
 
     if (path == TeraData::getPathForDataType(m_dataType)){
         // An item that we are managing got deleted
-        for (TeraData* data:m_datamap.keys()){
+        for (QListWidgetItem* item: qAsConst(m_datamap)){
+            TeraData* data = m_datamap.key(item);
+        //for (TeraData* data:m_datamap.keys()){
             if (data->getId() == id){
                 deleteDataFromList(data);
                 break;
@@ -504,7 +515,8 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
     if (!m_canView) // Check if the user can see the details of that item
         return;
 
-    TeraData* current_data = m_datamap.keys(current).first();
+    //TeraData* current_data = m_datamap.keys(current).first();
+    TeraData* current_data = m_datamap.key(current);
 
     if (current_data->isNew())
         return;

@@ -57,6 +57,7 @@ private slots:
     void on_btnNewRole_clicked();
     void on_btnDeleteRole_clicked();
     void on_btnEditRole_clicked();
+    void on_lstRoles_itemDoubleClicked(QListWidgetItem *item);
 };
 
 #endif // SERVICEWIDGET_H

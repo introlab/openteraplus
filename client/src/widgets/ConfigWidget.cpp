@@ -6,9 +6,7 @@ ConfigWidget::ConfigWidget(ComManager *comMan, QWidget *parent) :
     ui(new Ui::ConfigWidget),
     m_comManager(comMan)
 {
-
     ui->setupUi(this);
-
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 

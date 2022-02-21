@@ -143,7 +143,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <widget class="QLabel" name="lblTitle">
        <property name="font">
         <font>
-         <weight>50</weight>
          <bold>false</bold>
         </font>
        </property>
@@ -163,7 +162,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -545,40 +544,25 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <property name="text">
                  <string>État</string>
                 </property>
-                <property name="textAlignment">
-                 <set>AlignCenter</set>
-                </property>
                </column>
                <column>
                 <property name="text">
                  <string>Séances</string>
-                </property>
-                <property name="textAlignment">
-                 <set>AlignCenter</set>
                 </property>
                </column>
                <column>
                 <property name="text">
                  <string>Première séance</string>
                 </property>
-                <property name="textAlignment">
-                 <set>AlignCenter</set>
-                </property>
                </column>
                <column>
                 <property name="text">
                  <string>Dernière séance</string>
                 </property>
-                <property name="textAlignment">
-                 <set>AlignCenter</set>
-                </property>
                </column>
                <column>
                 <property name="text">
                  <string>Dernière connexion</string>
-                </property>
-                <property name="textAlignment">
-                 <set>AlignCenter</set>
                 </property>
                </column>
               </widget>
@@ -606,7 +590,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>5</number>
          </property>
          <property name="iconSize">
           <size>
@@ -997,7 +981,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../resources/TeraClient.qrc"/>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>

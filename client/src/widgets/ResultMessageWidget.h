@@ -17,7 +17,7 @@ class ResultMessageWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ResultMessageWidget(QWidget *parent = nullptr, int displayTime = 8000);
+    explicit ResultMessageWidget(QWidget *parent = nullptr, int displayTime = 5000);
     ~ResultMessageWidget();
 
     void addMessage(const Message &msg);

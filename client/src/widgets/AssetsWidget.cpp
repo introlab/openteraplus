@@ -116,6 +116,7 @@ void AssetsWidget::enableNewAssets(const bool &enable)
     }
     if (m_fileTransferServiceInfos && enable){
         ui->btnNew->setVisible(true);
+        return;
     }
     // Default - no setted id project or enable = false
     ui->btnNew->setVisible(false);
@@ -455,7 +456,11 @@ void AssetsWidget::startAssetsDownload(const QStringList &assets_to_download)
         // Send download request
         if (asset->hasFieldName("asset_url")){
             QUrlQuery query;
-            query.addQueryItem("access_token", m_accessToken);
+            if (!asset->hasFieldName("access_token"))
+                query.addQueryItem("access_token", m_accessToken);
+            else
+                query.addQueryItem("access_token", asset->getFieldValue("access_token").toString());
+
             query.addQueryItem("asset_uuid", asset_uuid);
             m_comAssetManager->doDownload(asset->getFieldValue("asset_url").toUrl(),
                                           file_path, file_name,
@@ -616,7 +621,7 @@ void AssetsWidget::assetComDownloadCompleted(DownloadingFile *file)
 {
     if (m_transferDialog){
         if (m_transferDialog->transferFileCompleted(file)){
-            // If we are here, no more uploads are pending. Close transfer dialog.
+            // If we are here, no more downloads are pending. Close transfer dialog.
             transferDialogCompleted();
         }
     }
@@ -643,6 +648,9 @@ void AssetsWidget::transferDialogCompleted()
 
     // Clear all selection
     ui->treeAssets->clearSelection();
+
+    // Inform user
+    ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Transfert de données complété")));
 }
 
 void AssetsWidget::assetComDeleteOK(QString path, QString uuid)

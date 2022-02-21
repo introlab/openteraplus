@@ -411,8 +411,8 @@ QList<TeraData> SessionInviteWidget::getUsersInSession()
         rval.append(m_users[id]);
     }*/
     foreach(QTreeWidgetItem* item, m_usersInSession){
-            rval.append(m_users[m_usersInSession.key(item)]);
-        }
+        rval.append(m_users[m_usersInSession.key(item)]);
+    }
     return rval;
 }
 

@@ -53,6 +53,8 @@ private slots:
     void userGroupsEditor_finished();
     void on_tableSummary_itemDoubleClicked(QTableWidgetItem *item);
 
+    void on_lstServices_itemChanged(QListWidgetItem *item);
+
 private:
     Ui::ProjectWidget *ui;
 

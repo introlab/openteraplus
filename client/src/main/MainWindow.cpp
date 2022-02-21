@@ -612,6 +612,7 @@ void MainWindow::com_postReplyOK(QString path)
 void MainWindow::com_deleteResultsOK(QString path, int id)
 {
     ui->projNavigator->removeItem(TeraData::getDataTypeFromPath(path), id);
+    addMessage(Message::MESSAGE_OK, tr("Données supprimées."));
 }
 
 void MainWindow::com_posting(QString path, QString data)

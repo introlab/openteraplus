@@ -662,7 +662,7 @@ void SessionWidget::on_tabNav_currentChanged(int index)
                 enable_new_assets = m_comManager->isCurrentUserProjectAdmin(m_idProject);
                 if (!enable_new_assets){
                     // Check if we are part of the users in this session
-                    enable_new_assets = ui->wdgSessionInvitees->getUsersUuidsInSession().contains(m_comManager->getCurrentUser().getUuid());
+                    enable_new_assets = ui->wdgSessionInvitees->getUsersIdsInSession().contains(m_comManager->getCurrentUser().getId());
                     if (!enable_new_assets){
                         // Finally... Check if we created that session!
                         if (m_data->hasFieldName("id_creator_user")){

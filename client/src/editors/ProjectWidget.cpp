@@ -265,6 +265,18 @@ void ProjectWidget::updateServiceProject(const TeraData *sp)
         m_services_keys[id_service] = sp->getFieldValue("service_key").toString();
     }
 
+    if (sp->hasFieldName("service_system")){
+        if (sp->getFieldValue("service_system").toBool() == true){
+            item->setForeground(Qt::lightGray);
+            QFont item_font = item->font();
+            item_font.setItalic(true);
+            item->setFont(item_font);
+            if (!m_comManager->isCurrentUserSuperAdmin()){
+                item->setData(Qt::UserRole, true); // Lock value
+            }
+        }
+    }
+
 }
 
 void ProjectWidget::queryServicesProject()
@@ -284,9 +296,18 @@ void ProjectWidget::updateControlsState()
             ui->tabNav->removeTab(1);
         }
     }else{
+        bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(m_data->getId());
+
+        if (!is_project_admin){
+            ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDetails), false);
+            return;
+        }else{
+            ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDetails), true);
+        }
+
         bool is_site_admin = isSiteAdmin();
 
-        // m_limited = true if current user isn't project admin
+        // m_limited = true if current user isn't site admin
         ui->btnUpdateRoles->setVisible(!m_limited);
         ui->lblInherited->setVisible(!m_limited);
 
@@ -415,6 +436,9 @@ void ProjectWidget::processServiceProjectsReply(QList<TeraData> services_project
         }
 
     }
+
+    // New list received - disable save button
+    ui->btnUpdateServices->setEnabled(false);
 
     // Remove service tabs not present anymore
     /*if (!dataIsNew()){
@@ -560,6 +584,8 @@ void ProjectWidget::deleteDataReply(QString path, int del_id)
 
             m_listServicesProjects_items[del_id]->setCheckState(Qt::Unchecked);
             m_listServicesProjects_items.remove(del_id);
+            ui->btnUpdateServices->setEnabled(false);
+
         }
 
 
@@ -839,3 +865,32 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
         m_services_tabs.insert(id_service, wdg);
     }
 }
+
+void ProjectWidget::on_lstServices_itemChanged(QListWidgetItem *item)
+{
+    if (item->checkState() == Qt::Unchecked){
+        // Check if it is uncheckable - system services can only be deselected by super admins
+        if (item->data(Qt::UserRole).toBool() == true){
+            item->setCheckState(Qt::Checked);
+            GlobalMessageBox msgbox;
+            msgbox.showWarning(tr("Impossible de retirer"), tr("Ce service a été sélectionné par un administrateur système. Impossible de le retirer du projet sans son intervention"));
+            return;
+        }
+    }
+
+    // Check for changed items
+    bool has_changes = false;
+    if (m_listServicesProjects_items.key(item) > 0 && item->checkState() == Qt::Unchecked){
+        // Item deselected
+        has_changes = true;
+    }else{
+        if (m_listServicesProjects_items.key(item) <= 0 && item->checkState() == Qt::Checked){
+            // Item selected
+            has_changes = true;
+        }
+    }
+
+    ui->btnUpdateServices->setEnabled(has_changes);
+
+}
+

@@ -50,7 +50,11 @@ void ServiceWidget::saveData(bool signal){
 }
 
 void ServiceWidget::updateControlsState(){
-
+    if (dataIsNew()){
+        // Hide useless tabs when creating a new service
+        while (ui->tabNav->count() > 1)
+            ui->tabNav->removeTab(1);
+    }
 }
 
 void ServiceWidget::updateFieldsValue(){
@@ -200,8 +204,8 @@ void ServiceWidget::on_tabNav_currentChanged(int index)
 
     if (current_tab == ui->tabProjects){
         // Projects for that service
-        //args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1"); // Also gets unassociated projects
-        //args.addQueryItem(WEB_QUERY_WITH_ROLES, "1");
+        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1"); // Also gets unassociated projects
+        args.addQueryItem(WEB_QUERY_WITH_ROLES, "1");
         queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
     }
 }
@@ -281,8 +285,8 @@ void ServiceWidget::on_btnEditRole_clicked()
         return;
 
     bool ok;
-    QString current_role = ui->lstRoles->currentItem()->text();
     int current_role_id = ui->lstRoles->currentItem()->data(Qt::UserRole).toInt();
+    QString current_role = m_serviceRoles[current_role_id]; //ui->lstRoles->currentItem()->text();
     QString role = QInputDialog::getText(this, tr("Édition du rôle"), tr("Code du rôle:"), QLineEdit::Normal, current_role, &ok);
 
     if (ok && !role.isEmpty() && current_role != role){
@@ -291,3 +295,9 @@ void ServiceWidget::on_btnEditRole_clicked()
         postServiceRoles();
     }
 }
+
+void ServiceWidget::on_lstRoles_itemDoubleClicked(QListWidgetItem *item)
+{
+    on_btnEditRole_clicked();
+}
+
