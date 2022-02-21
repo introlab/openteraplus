@@ -178,9 +178,13 @@ bool Utils::isNewerVersion(QString version)
         return false;
     }
 
+    float minor_version = QString(versions.at(1) + "." + versions.at(2)).toFloat();
+    float current_minor = QString(QString(OPENTERAPLUS_VERSION_MINOR) + "." + QString(OPENTERAPLUS_VERSION_PATCH)).toFloat();
+
+    qDebug() << minor_version << current_minor;
+
     return versions.at(0).toInt() > QString(OPENTERAPLUS_VERSION_MAJOR).toInt() ||
-            versions.at(1).toInt() > QString(OPENTERAPLUS_VERSION_MINOR).toInt() ||
-            versions.at(2).toInt() > QString(OPENTERAPLUS_VERSION_PATCH).toInt();
+           current_minor < minor_version;
 }
 
 QString Utils::formatFileSize(const int &file_size)

@@ -384,7 +384,10 @@ QString AssetsWidget::getFilenameForAsset(const QString &uuid)
     if (asset->hasFieldName("asset_original_filename")){
         filename = asset->getFieldValue("asset_original_filename").toString();
     }else{
-        filename = asset->getName();
+        if (asset->hasFieldName("file_name")){
+            filename = asset->getFieldValue("file_name").toString();
+        }else
+            filename = asset->getName();
     }
     return filename;
 }
