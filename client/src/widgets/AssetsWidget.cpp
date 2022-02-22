@@ -640,7 +640,12 @@ void AssetsWidget::assetComTransferAborted(TransferringFile *file)
 
 void AssetsWidget::transferDialogCompleted()
 {
+
     if (m_transferDialog){
+        // Inform user
+        if (!m_transferDialog->hasErrors())
+            ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Transfert de données complété")));
+
         //m_transferDialog->close();
         m_transferDialog->deleteLater();
         m_transferDialog = nullptr;
@@ -648,9 +653,6 @@ void AssetsWidget::transferDialogCompleted()
 
     // Clear all selection
     ui->treeAssets->clearSelection();
-
-    // Inform user
-    ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Transfert de données complété")));
 }
 
 void AssetsWidget::assetComDeleteOK(QString path, QString uuid)

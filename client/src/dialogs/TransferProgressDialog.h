@@ -25,6 +25,8 @@ public:
     bool transferFileCompleted(TransferringFile* file);
     bool transferFileAborted(TransferringFile* file);
 
+    bool hasErrors();
+
 public slots:
     void reject() override;
 

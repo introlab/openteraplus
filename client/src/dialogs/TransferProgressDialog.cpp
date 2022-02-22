@@ -52,6 +52,9 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
         progress->setMinimum(0);
         progress->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui->tableTransfers->setCellWidget(current_row, 0, progress);
+
+        ui->tabTransfers->setTabText(0, tr("En cours") + " (" + QString::number(ui->tableTransfers->rowCount()) + ")");
+
     }else{
         item = m_files[file];
         progress = dynamic_cast<QProgressBar*>(ui->tableTransfers->cellWidget(item->row(), 0));
@@ -125,6 +128,11 @@ bool TransferProgressDialog::transferFileAborted(TransferringFile *file)
     return m_files.isEmpty() && ui->tableErrors->rowCount()==0; // No more files to display?
 }
 
+bool TransferProgressDialog::hasErrors()
+{
+    return ui->tableErrors->rowCount()>0;
+}
+
 void TransferProgressDialog::reject()
 {
     if (!m_files.isEmpty() && !m_aborting){
@@ -164,6 +172,8 @@ void TransferProgressDialog::addCompleted(const QString &filename)
 
     ui->tabTransfers->setTabText(1, tr("Complétés") + " (" + QString::number(ui->lstCompleted->count()) + ")");
     ui->tabTransfers->setTabVisible(1, true);
+
+    ui->tabTransfers->setTabText(0, tr("En cours") + " (" + QString::number(ui->tableTransfers->rowCount()) + ")");
 }
 
 void TransferProgressDialog::addError(const QString &filename, const QString &error)
@@ -180,6 +190,8 @@ void TransferProgressDialog::addError(const QString &filename, const QString &er
     ui->tabTransfers->setTabVisible(2, true);
 
     ui->tableErrors->resizeColumnsToContents();
+
+    ui->tabTransfers->setTabText(0, tr("En cours") + " (" + QString::number(ui->tableTransfers->rowCount()) + ")");
 }
 
 void TransferProgressDialog::updateCancelButtonText()

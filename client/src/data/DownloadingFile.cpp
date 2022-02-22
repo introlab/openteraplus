@@ -82,11 +82,24 @@ void DownloadingFile::onDownloadDataReceived()
         }
 
         // Open the file for writing
-        m_file.setFileName(getFullFilename());
         QDir file_dir(m_filepath);
         if (!file_dir.exists()){
             file_dir.mkpath(m_filepath);
         }
+
+        // Check if file already exist or not
+        if (QFile::exists(getFullFilename())){
+            // File already exists... Append a number to it
+            QFileInfo file_info(m_filename);
+
+            // Count existing files with a similar name
+            QStringList similar_files = file_dir.entryList(QStringList(file_info.baseName() + "*." + file_info.completeSuffix()), QDir::Files);
+
+            m_filename = file_info.baseName() + "(" + QString::number(similar_files.count()) + ")." + file_info.completeSuffix();
+        }
+        m_file.setFileName(getFullFilename());
+
+
         if (!m_file.open(QIODevice::WriteOnly)){
             m_lastError = tr("Impossible d'ouvrir le fichier '") + getFullFilename() + "': " + m_file.errorString();
             m_status = TransferringFile::ERROR;
