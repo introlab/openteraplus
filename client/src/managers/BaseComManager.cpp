@@ -103,17 +103,17 @@ void BaseComManager::doDelete(const QString &path, const int &id, const bool &us
     LOG_DEBUG("DELETE: " + path + ", with id=" + QString::number(id), QString(this->metaObject()->className()) + "::doDelete");
 }
 
-void BaseComManager::doDownload(const QString &path, const QString &save_path, const QString &save_filename, const QUrlQuery &query_args, const bool &use_token)
+void BaseComManager::doDownload(const QString &path, const QString &save_path, const QString& download_uuid, const QString &save_filename, const QUrlQuery &query_args, const bool &use_token)
 {
     QUrl query = m_serverUrl;
 
     query.setPath(path);
 
-    doDownload(query, save_path, save_filename, query_args, use_token);
+    doDownload(query, save_path, download_uuid, save_filename, query_args, use_token);
 
 }
 
-void BaseComManager::doDownload(const QUrl &full_url, const QString &save_path, const QString &save_filename, const QUrlQuery &query_args, const bool &use_token)
+void BaseComManager::doDownload(const QUrl &full_url, const QString &save_path, const QString &download_uuid, const QString &save_filename, const QUrlQuery &query_args, const bool &use_token)
 {
     QUrl query = full_url;
 
@@ -127,6 +127,7 @@ void BaseComManager::doDownload(const QUrl &full_url, const QString &save_path, 
     setRequestVersions(*request);
 
     DownloadingFile* file_to_download = new DownloadingFile(save_path, save_filename);
+    file_to_download->setAssociatedUuid(download_uuid);
 
     // Do the get request
     if (m_currentDownloads.count() < MAX_SIMULTANEOUS_DOWNLOADS){
@@ -151,6 +152,7 @@ void BaseComManager::doUpload(const QString &path, const QString &file_name, con
 
     // Create file to upload
     UploadingFile* file_to_upload = new UploadingFile(file_name);
+
     QFile* file = file_to_upload->getFile();
     if (!file) // Invalid file
         return;
@@ -260,6 +262,57 @@ void BaseComManager::updateWaitingDownloadsQueryParameter(const QString &paramet
             request->setUrl(url);
         }
     }
+}
+
+void BaseComManager::updateWaitingDownloadsQueryParameter(const QString &download_uuid, const QString &parameter, const QString &new_value)
+{
+    for(DownloadingFile* file: qAsConst(m_waitingDownloads)){
+        if (file->getAssociatedUuid() == download_uuid){
+            QNetworkRequest* request = m_waitingDownloads.key(file);
+            QUrlQuery query(request->url());
+            if (query.hasQueryItem(parameter)){
+                QUrl url = request->url();
+                query.removeAllQueryItems(parameter);
+                query.addQueryItem(parameter, new_value);
+                url.setQuery(query);
+                request->setUrl(url);
+            }
+        }
+    }
+}
+
+void BaseComManager::abortDownloads()
+{
+    for(DownloadingFile* file:qAsConst(m_waitingDownloads)){
+        delete m_waitingDownloads.key(file);
+        file->deleteLater();
+    }
+    m_waitingDownloads.clear();
+
+    QList<DownloadingFile*> files = m_currentDownloads.values();
+    for(DownloadingFile* file:qAsConst(files)){
+        file->abortTransfer(); // Should cascade and be deleted on_Transfer_abort
+    }
+}
+
+void BaseComManager::abortUploads()
+{
+    for(UploadingFile* file:qAsConst(m_waitingUploads)){
+        delete m_waitingUploads.key(file);
+        file->deleteLater();
+    }
+    m_waitingUploads.clear();
+
+    QList<UploadingFile*> files = m_currentUploads.values();
+    for(UploadingFile* file:qAsConst(files)){
+        file->abortTransfer(); // Should cascade and be deleted on_Transfer_abort
+    }
+}
+
+void BaseComManager::abortTransfers()
+{
+    abortDownloads();
+    abortUploads();
 }
 
 void BaseComManager::onNetworkFinished(QNetworkReply *reply){

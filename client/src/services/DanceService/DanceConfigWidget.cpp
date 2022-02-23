@@ -244,6 +244,11 @@ void DanceConfigWidget::transferDialogCompleted()
     }
 }
 
+void DanceConfigWidget::transferDialogAbortRequested()
+{
+    m_danceComManager->abortTransfers();
+}
+
 void DanceConfigWidget::danceComDeleteOK(QString path, int id)
 {
     if (path == DANCE_LIBRARY_PATH){

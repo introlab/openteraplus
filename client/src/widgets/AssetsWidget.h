@@ -68,7 +68,6 @@ private:
     ViewMode            m_viewMode;
 
     TeraData*           m_fileTransferServiceInfos;
-    QString             m_accessToken;
     QTimer              m_refreshTokenTimer;
     QUrlQuery           m_dataQuery;
 
@@ -91,6 +90,7 @@ private:
     QString getFilenameForAsset(const QString &uuid);
 
     void startAssetsDownload(const QStringList& assets_to_download);
+    void showTransferDialog();
 
     void setViewMode(const ViewMode& new_mode);
     void setLoading(const bool &loading, const QString &msg = QString(), const bool &hide_ui = false);
@@ -98,7 +98,6 @@ private:
 
 private slots:
     void processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query);
-    void processAssetAccessTokenReply(QString asset_token, QUrlQuery reply_query);
 
     void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
 
@@ -111,7 +110,9 @@ private slots:
     void assetComDownloadProgress(DownloadingFile* file);
     void assetComDownloadCompleted(DownloadingFile* file);
     void assetComTransferAborted(TransferringFile* file);
+
     void transferDialogCompleted();
+    void transferDialogAbortRequested();
 
     void assetComDeleteOK(QString path, QString uuid);
     void assetComPostOK(QString path);

@@ -66,7 +66,9 @@ private slots:
     void danceComUploadProgress(UploadingFile* file);
     void danceComUploadCompleted(UploadingFile* file);
     void danceComTransferAborted(TransferringFile *file);
+
     void transferDialogCompleted();
+    void transferDialogAbortRequested();
 
     void danceComDeleteOK(QString path, int id);
     void danceComPostOK(QString path);

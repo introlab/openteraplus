@@ -105,7 +105,6 @@ signals:
 
     void currentUserUpdated();
     void userTokenUpdated();
-    void assetAccessTokenReceived(QString access_token, QUrlQuery reply_query);
     void preferencesUpdated();
 
     void formReceived(QString form_type, QString data);

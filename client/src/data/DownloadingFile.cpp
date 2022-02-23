@@ -43,6 +43,16 @@ void DownloadingFile::abortTransfer()
 
 }
 
+QString DownloadingFile::getAssociatedUuid()
+{
+    return m_associatedUuid;
+}
+
+void DownloadingFile::setAssociatedUuid(const QString &uuid)
+{
+    m_associatedUuid = uuid;
+}
+
 void DownloadingFile::onDownloadDataReceived()
 {
     // Check if we have a file open for writing

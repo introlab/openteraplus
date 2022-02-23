@@ -92,6 +92,7 @@ void ResultMessageWidget::showNextMessage()
 
     QString background_color = "rgba(128,128,128,50%)";
     // QString icon_path = "";
+    ui->btnCloseMessage->show();
 
     switch(m_currentMessage.getMessageType()){
     case Message::MESSAGE_OK:
@@ -110,6 +111,7 @@ void ResultMessageWidget::showNextMessage()
         background_color = "rgba(50, 137, 168, 50%)";
         ui->icoMessage->setMovie(m_loadingIcon);
         m_loadingIcon->start();
+        ui->btnCloseMessage->hide();
         break;
     default:
         break;

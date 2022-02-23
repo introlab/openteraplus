@@ -170,7 +170,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
    <item>
     <widget class="QTabWidget" name="tabTransfers">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -206,6 +206,9 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
          </property>
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
          </attribute>
          <column>
           <property name="text">
@@ -271,17 +274,14 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QProgressBar" name="progTotalTransfer">
+       <property name="value">
+        <number>0</number>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
-      </spacer>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnCancel">

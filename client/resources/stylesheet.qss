@@ -480,6 +480,15 @@ selection-color: rgb(0, 255, 0);
 
 QCalendarWidget QAbstractItemView:disabled { color: rgb(64, 64, 64); }
 
+/* QProgressBar */
+QProgressBar{
+    background-color: rgba(0,0,0,50);
+    border-radius: 5px;
+}
+QProgressBar::chunk{
+    background-color: qlineargradient(spread:reflect, x1:1, y1:0.5, x2:1, y2:1, stop:0.35 rgba(62, 126, 186, 255), stop:1 rgba(85, 170, 255, 255))
+}
+
 /* Customizations */
 QWidget#ConfigWidget{background-image: url(://TeRA_Background.png); }
 QWidget#SessionWidget{background-image: url(://TeRA_Background.png); }

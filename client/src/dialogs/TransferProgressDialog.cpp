@@ -10,6 +10,7 @@ TransferProgressDialog::TransferProgressDialog(QWidget *parent) :
     ui->setupUi(this);
 
     m_aborting = false;
+    m_totalFiles = 0;
 
     //setWindowFlags(Qt::Popup);
     setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
@@ -36,11 +37,21 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
     if (file->getStatus() == TransferringFile::ABORTED || file->getStatus() == TransferringFile::ERROR)
         return;
 
-    if (m_files.count() > 10) // Don't display if too many files displayed...
+    if (file->getStatus() == TransferringFile::WAITING){
+        m_waitingFiles.append(file);
+        m_totalFiles++;
+        updateTotalProgress();
         return;
+    }
 
     QTableWidgetItem* item;
     QProgressBar* progress;
+
+    if (m_waitingFiles.contains(file)){
+        m_waitingFiles.removeOne(file);
+        m_totalFiles--;
+    }
+
     if (!m_files.contains(file)){
         // qDebug() << file->getFileName() << " -- Added";
         // Must create a new file in the list
@@ -57,7 +68,7 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
         ui->tableTransfers->setCellWidget(current_row, 0, progress);
 
         ui->tabTransfers->setTabText(0, tr("En cours") + " (" + QString::number(ui->tableTransfers->rowCount()) + ")");
-
+        m_totalFiles++;
     }else{
         item = m_files[file];
         progress = dynamic_cast<QProgressBar*>(ui->tableTransfers->cellWidget(item->row(), 0));
@@ -96,6 +107,8 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
         }
     }
 
+    updateTotalProgress();
+
 }
 
 bool TransferProgressDialog::transferFileCompleted(TransferringFile *file)
@@ -112,7 +125,9 @@ bool TransferProgressDialog::transferFileCompleted(TransferringFile *file)
     addCompleted(file->getFileName());
     updateCancelButtonText();
 
-    return m_files.isEmpty() && ui->tableErrors->rowCount()==0; // No more files to display?
+    updateTotalProgress();
+
+    return m_files.isEmpty() && ui->tableErrors->rowCount()==0 && m_waitingFiles.isEmpty(); // No more files to display?
 }
 
 bool TransferProgressDialog::transferFileAborted(TransferringFile *file)
@@ -126,6 +141,7 @@ bool TransferProgressDialog::transferFileAborted(TransferringFile *file)
         m_files.remove(file);
         addError(file->getFileName(), file->getLastError());
         updateCancelButtonText();
+        updateTotalProgress();
     }
 
     return m_files.isEmpty() && ui->tableErrors->rowCount()==0; // No more files to display?
@@ -134,6 +150,11 @@ bool TransferProgressDialog::transferFileAborted(TransferringFile *file)
 bool TransferProgressDialog::hasErrors()
 {
     return ui->tableErrors->rowCount()>0;
+}
+
+bool TransferProgressDialog::hasAborted()
+{
+    return m_aborting;
 }
 
 void TransferProgressDialog::reject()
@@ -147,7 +168,7 @@ void TransferProgressDialog::reject()
 
 void TransferProgressDialog::on_btnCancel_clicked()
 {
-    if (!m_files.isEmpty()){
+    if (!m_files.isEmpty() || !m_waitingFiles.isEmpty()){
         GlobalMessageBox msg;
         GlobalMessageBox::StandardButton conf = msg.showYesNo(tr("Annuler les transferts"), tr("Les transferts en cours seront annulés. Êtes-vous sûrs de vouloir poursuivre?"));
 
@@ -155,12 +176,14 @@ void TransferProgressDialog::on_btnCancel_clicked()
             // Set aborting flag to prevent further updates
             m_aborting = true;
 
-            for(QTableWidgetItem* item:qAsConst(m_files)){
+            /*for(QTableWidgetItem* item:qAsConst(m_files)){
                 m_files.key(item)->abortTransfer();
             }
+            for(TransferringFile* file:qAsConst(m_waitingFiles)){
+                file->abortTransfer();
+            }*/
+            emit transferAbortRequested();
         }
-        //ui->tableTransfers->clearContents();
-        //m_files.clear();
 
         reject();
     }else{
@@ -199,11 +222,17 @@ void TransferProgressDialog::addError(const QString &filename, const QString &er
 
 void TransferProgressDialog::updateCancelButtonText()
 {
-    if (m_files.isEmpty()){
+    if (m_files.isEmpty() && m_waitingFiles.isEmpty()){
         ui->btnCancel->setText(tr("Fermer"));
     }else{
         ui->btnCancel->setText(tr("Annuler"));
     }
+}
+
+void TransferProgressDialog::updateTotalProgress()
+{
+    ui->progTotalTransfer->setMaximum(m_totalFiles);
+    ui->progTotalTransfer->setValue(ui->lstCompleted->count() + ui->tableErrors->rowCount());
 }
 
 

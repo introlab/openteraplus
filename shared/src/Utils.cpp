@@ -165,10 +165,11 @@ QString Utils::removeAccents(const QString &s) {
 
 QString Utils::removeNonAlphanumerics(const QString &s)
 {
-    QRegularExpression regex("[-`~!@#$%^&*()_â€”+=|:;<>Â«Â»,.?/{}\'\"\\\[\\\]\\\\]");
+    QRegularExpression regex("[`~!@#$%^&*()â€”+=|:;<>Â«Â»,.?/{}\'\"\\\[\\\]\\\\]");  // No _ and - removed
 
     QString rval = s;
-    return rval.remove(regex);
+    //return rval.remove(regex);
+    return rval.replace(regex, "_");
 }
 
 bool Utils::isNewerVersion(QString version)

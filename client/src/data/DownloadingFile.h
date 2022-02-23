@@ -21,7 +21,12 @@ public:
     void setNetworkReply(QNetworkReply* reply);
     void abortTransfer();
 
+    QString getAssociatedUuid();
+    void setAssociatedUuid(const QString& uuid);
+
 private:
+
+    QString         m_associatedUuid;
 
 
 signals:

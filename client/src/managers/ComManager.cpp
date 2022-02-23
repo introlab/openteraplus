@@ -564,7 +564,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     }
 
     // Asset token refresh reply
-    if (reply_path == WEB_ASSETINFO_PATH){
+   /* if (reply_path == WEB_ASSETINFO_PATH){
         if (!data_list.isArray()){
             // We have assets and an asset token
             QJsonObject asset_reply = data_list.object();
@@ -577,7 +577,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
                 return true; // No assets to manage, only the token!
             }
         }
-    }
+    }*/
 
     // Browse each items received
     QList<TeraData> items;
