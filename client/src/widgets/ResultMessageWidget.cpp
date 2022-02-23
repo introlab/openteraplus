@@ -50,6 +50,12 @@ bool ResultMessageWidget::hasMessagesWaiting(const Message::MessageType &msg_typ
     return false;
 }
 
+void ResultMessageWidget::clearMessages()
+{
+    m_messages.clear();
+    showNextMessage();
+}
+
 void ResultMessageWidget::setDisplayTime(const int &display_time)
 {
     m_displayTime = display_time;
@@ -101,7 +107,7 @@ void ResultMessageWidget::showNextMessage()
         ui->icoMessage->setPixmap(QPixmap("://icons/warning.png"));
         break;
     case Message::MESSAGE_WORKING:
-        background_color = "rgba(128,128,128,50%)";
+        background_color = "rgba(50, 137, 168, 50%)";
         ui->icoMessage->setMovie(m_loadingIcon);
         m_loadingIcon->start();
         break;
@@ -110,7 +116,9 @@ void ResultMessageWidget::showNextMessage()
     }
     ui->frameMessage->setStyleSheet("QWidget#frameMessage{background-color: " + background_color + ";}");
     ui->lblMessage->setText(m_currentMessage.getMessageText());
-    if (m_currentMessage.getMessageType() != Message::MESSAGE_ERROR && m_currentMessage.getMessageType()!=Message::MESSAGE_NONE)
+    if (m_currentMessage.getMessageType() != Message::MESSAGE_ERROR
+            && m_currentMessage.getMessageType()!=Message::MESSAGE_NONE
+            && m_currentMessage.getMessageType()!=Message::MESSAGE_WORKING)
         startTimers();
 
     QPropertyAnimation *animate = new QPropertyAnimation(this,"windowOpacity",this->parent());

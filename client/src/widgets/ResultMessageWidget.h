@@ -22,6 +22,7 @@ public:
 
     void addMessage(const Message &msg);
     bool hasMessagesWaiting(const Message::MessageType &msg_type = Message::MESSAGE_NONE);
+    void clearMessages();
 
     void setDisplayTime(const int &display_time);
 

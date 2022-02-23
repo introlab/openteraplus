@@ -103,6 +103,9 @@ void AssetsWidget::clearAssets()
     qDeleteAll(m_assets);
     m_assets.clear();
     m_treeAssets.clear();
+    m_treeSessions.clear();
+    m_treeParticipants.clear();
+    m_assetsSessions.clear();
 }
 
 void AssetsWidget::enableNewAssets(const bool &enable)
@@ -131,6 +134,8 @@ void AssetsWidget::displayAssetsForSession(const int &id_session)
 
     setViewMode(VIEWMODE_SESSION);
 
+    setLoading(true, tr("Chargement des données en cours..."), true);
+
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
     m_dataQuery = query;
@@ -150,6 +155,8 @@ void AssetsWidget::displayAssetsForParticipant(const int &id_participant)
     clearAssets();
 
     setViewMode(VIEWMODE_PARTICIPANT);
+
+    setLoading(true, tr("Chargement des données en cours..."), true);
 
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(id_participant));
@@ -191,6 +198,8 @@ bool AssetsWidget::eventFilter(QObject *o, QEvent *e)
 
 void AssetsWidget::queryAssetsInfos()
 {
+    setLoading(true, tr("Chargement des informations de données en cours..."), true);
+
     QMultiMap<QString, QString> services_assets;
 
     // Group each assets by access url
@@ -238,12 +247,18 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
     QToolButton* btnDownload;
     QToolButton* btnView;
 
-    if (m_treeAssets.contains(asset.getUuid())){
-        item = m_treeAssets[asset.getUuid()];
+    QString asset_uuid = asset.getUuid();
+
+    // Check to display asset correctly
+    if (m_treeAssets.contains(asset_uuid)){
+        item = m_treeAssets[asset_uuid];
         btnDownload = dynamic_cast<QToolButton*>(ui->treeAssets->itemWidget(item, ui->treeAssets->columnCount()-1)->layout()->itemAt(2)->widget());
         btnView = dynamic_cast<QToolButton*>(ui->treeAssets->itemWidget(item, ui->treeAssets->columnCount()-1)->layout()->itemAt(0)->widget());
     }else{
-        item = new QTreeWidgetItem();
+        // Add assets info to internal list
+        if (!m_assets.contains(asset_uuid))
+            m_assets.insert(asset_uuid, new TeraData(asset));
+
         QTreeWidgetItem* parent_item = nullptr;
 
         // Participant name
@@ -270,6 +285,7 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
                 session_item->setIcon(AssetColumn::ASSET_NAME, QIcon("://icons/group.png"));
                 session_item->setFirstColumnSpanned(true);
                 session_item->setForeground(AssetColumn::ASSET_NAME, Qt::cyan);
+                session_item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
 
                 if (participant_item){
                     participant_item->addChild(session_item);
@@ -280,8 +296,20 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
                 m_treeSessions[id_session] = session_item;
             }
             parent_item = session_item;
+
+            if (!m_assetsSessions.values(id_session).contains(asset_uuid)){
+                m_assetsSessions.insert(id_session, asset_uuid);
+            }
         }
 
+
+
+        if (parent_item){
+            if (!parent_item->isExpanded())
+                return; // If parent item is not expanded, don't display the asset!
+        }
+
+        item = new QTreeWidgetItem();
 
         // Asset name and infos
         item->setForeground(AssetColumn::ASSET_NAME, QColor(255,255,102));
@@ -339,7 +367,6 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
 
         // Update internal lists
         m_treeAssets.insert(asset.getUuid(), item);
-        m_assets.insert(asset.getUuid(), new TeraData(asset));
 
         // Emit update signal
         if (emit_count_update_signal)
@@ -478,6 +505,25 @@ void AssetsWidget::setViewMode(const ViewMode &new_mode)
     ui->btnExpandAll->setVisible(m_viewMode == VIEWMODE_PARTICIPANT || m_viewMode == VIEWMODE_PROJECT);
 }
 
+void AssetsWidget::setLoading(const bool &loading, const QString &msg, const bool &hide_ui)
+{
+    setEnabled(!loading);
+
+    if (hide_ui && loading){
+        ui->treeAssets->setVisible(false);
+        ui->frameButtons->setVisible(false);
+    }else{
+        ui->treeAssets->setVisible(true);
+        ui->frameButtons->setVisible(true);
+    }
+
+    if (loading){
+        ui->wdgMessages->addMessage(Message(Message::MESSAGE_WORKING, msg));
+    }else{
+        ui->wdgMessages->clearMessages();
+    }
+}
+
 void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query)
 {
     bool empty_assets = m_assets.isEmpty();
@@ -494,6 +540,14 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
 
     if (ui->treeAssets->topLevelItemCount()>0)
         ui->btnDownloadAll->setEnabled(true);
+
+    ui->lblAssetsCount->setText(QString::number(m_assets.count()) + " " + tr("données"));
+    ui->btnExpandAll->setEnabled(m_assets.count()<=100);
+    if (!ui->btnExpandAll->isEnabled()){
+        ui->btnExpandAll->setToolTip(tr("Trop de données - fonctionnalité désactivée"));
+    }else{
+        ui->btnExpandAll->setToolTip(tr("Tout voir"));
+    }
 
     // Query extra information
     queryAssetsInfos();
@@ -721,6 +775,8 @@ void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_
         }
     }
     resizeAssetsColumnsToContent();
+
+    setLoading(false);
 }
 
 void AssetsWidget::refreshAccessToken()
@@ -880,13 +936,44 @@ void AssetsWidget::on_btnDownloadAll_clicked()
 
 void AssetsWidget::on_treeAssets_itemExpanded(QTreeWidgetItem *item)
 {
+    if (item->childCount() == 0){
+        int id_session = m_treeSessions.key(item, -1);
+
+        if (id_session != -1){
+            // Display all assets for that session
+            setLoading(true, tr("Affichage des données en cours..."));
+            QCoreApplication::processEvents();
+            QStringList assets_uuids = m_assetsSessions.values(id_session);
+            for (const QString &asset_uuid: qAsConst(assets_uuids)){
+                if (m_assets.contains(asset_uuid)){
+                    updateAsset(*m_assets[asset_uuid]);
+                }
+            }
+            setLoading(false);
+        }
+    }
     resizeAssetsColumnsToContent();
 }
 
 
 void AssetsWidget::on_treeAssets_itemCollapsed(QTreeWidgetItem *item)
 {
+    if (item->childCount() > 0){
+        int id_session = m_treeSessions.key(item, -1);
+
+        if (id_session != -1){
+            // Remove all assets from display
+            QList<QTreeWidgetItem*> assets_items = item->takeChildren();
+            for(QTreeWidgetItem* asset_item: qAsConst(assets_items)){
+                QString asset_uuid = m_treeAssets.key(asset_item);
+                m_treeAssets.remove(asset_uuid);
+                delete asset_item;
+            }
+        }
+    }
+
     resizeAssetsColumnsToContent();
+
 }
 
 

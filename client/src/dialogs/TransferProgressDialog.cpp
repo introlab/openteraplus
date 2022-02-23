@@ -36,6 +36,9 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
     if (file->getStatus() == TransferringFile::ABORTED || file->getStatus() == TransferringFile::ERROR)
         return;
 
+    if (m_files.count() > 10) // Don't display if too many files displayed...
+        return;
+
     QTableWidgetItem* item;
     QProgressBar* progress;
     if (!m_files.contains(file)){

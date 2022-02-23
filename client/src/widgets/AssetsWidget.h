@@ -76,6 +76,7 @@ private:
     QMap<int, QTreeWidgetItem*>         m_treeSessions;
     QMap<int, QTreeWidgetItem*>         m_treeParticipants;
     QMap<QString, TeraData*>            m_assets;
+    QMultiHash<int, QString>            m_assetsSessions;
 
     void connectSignals();
 
@@ -92,6 +93,7 @@ private:
     void startAssetsDownload(const QStringList& assets_to_download);
 
     void setViewMode(const ViewMode& new_mode);
+    void setLoading(const bool &loading, const QString &msg = QString(), const bool &hide_ui = false);
 
 
 private slots:
