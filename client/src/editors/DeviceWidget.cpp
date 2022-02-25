@@ -137,7 +137,6 @@ void DeviceWidget::connectSignals()
 
     connect(ui->btnSites, &QPushButton::clicked, this, &DeviceWidget::btnSaveSites_clicked);
 
-    connect(ui->lstSites, &QTreeWidget::itemExpanded, this, &DeviceWidget::lstSites_itemExpanded);
     connect(ui->lstSites, &QTreeWidget::itemChanged, this, &DeviceWidget::lstSites_itemChanged);
 }
 
@@ -203,15 +202,16 @@ bool DeviceWidget::validateSitesProjects()
 {
     //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
-        for (int i=0; i<m_listSites_items.count(); i++){
-            if (m_listSites_items.values().at(i)->checkState(0) == Qt::Checked){
+        for(QTreeWidgetItem* item: qAsConst(m_listSites_items)){
+            if (item->checkState(0) == Qt::Checked){
                 at_least_one_selected = true;
                 break;
             }
         }
+
         if (!at_least_one_selected){
-            for (int i=0; i<m_listProjects_items.count(); i++){
-                if (m_listProjects_items.values().at(i)->checkState(0) == Qt::Checked){
+            for(QTreeWidgetItem* item: qAsConst(m_listProjects_items)){
+                if (item->checkState(0) == Qt::Checked){
                     at_least_one_selected = true;
                     break;
                 }
@@ -231,9 +231,9 @@ bool DeviceWidget::validateSitesProjects()
 QJsonArray DeviceWidget::getSelectedProjectsAsJsonArray()
 {
     QJsonArray projects;
-    for (int i=0; i<m_listProjects_items.count(); i++){
-        int project_id = m_listProjects_items.keys().at(i);
-        QTreeWidgetItem* item = m_listProjects_items.values().at(i);
+    for(QTreeWidgetItem* item: qAsConst(m_listProjects_items)){
+    //for (int i=0; i<m_listProjects_items.count(); i++){
+        int project_id = m_listProjects_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;
             data_obj.insert("id_project", project_id);
@@ -284,11 +284,11 @@ void DeviceWidget::processDeviceSitesReply(QList<TeraData> device_sites)
         return;
 
     // Uncheck all sites
-    for (QTreeWidgetItem* item:m_listSites_items){
+    for (QTreeWidgetItem* item:qAsConst(m_listSites_items)){
         item->setCheckState(0, Qt::Unchecked);
     }
     // Check required sites
-    for(TeraData device_site:device_sites){
+    for(const TeraData &device_site:device_sites){
         int site_id = device_site.getFieldValue("id_site").toInt();
         if (m_listSites_items.contains(site_id)){
             m_listSites_items[site_id]->setCheckState(0, Qt::Checked);
@@ -306,14 +306,14 @@ void DeviceWidget::processDeviceProjectsReply(QList<TeraData> device_projects)
         return;
 
     // Uncheck all projects
-    for (QTreeWidgetItem* item:m_listProjects_items){
+    for (QTreeWidgetItem* item:qAsConst(m_listProjects_items)){
         item->setCheckState(0, Qt::Unchecked);
     }
 //    bool first_load = m_listSites_items.isEmpty();
     m_listDeviceProjects_items.clear();
 
     // Check required projects
-    for(TeraData device_project:device_projects){
+    for(const TeraData &device_project:device_projects){
         int project_id = device_project.getFieldValue("id_project").toInt();
         int device_project_id = device_project.getId();
         if (m_listProjects_items.contains(project_id)){
@@ -367,15 +367,16 @@ void DeviceWidget::btnSaveSites_clicked()
     QJsonArray devices;
     QList<int> projects_to_delete;
 
-    for (int i=0; i<m_listProjects_items.count(); i++){
+    //for (int i=0; i<m_listProjects_items.count(); i++){
+    for (QTreeWidgetItem* item: qAsConst(m_listProjects_items)){
         // Build json list of devices and projects
-        if (m_listProjects_items.values().at(i)->checkState(0)==Qt::Checked){
+        if (item->checkState(0)==Qt::Checked){
             QJsonObject item_obj;
             item_obj.insert("id_device", m_data->getId());
-            item_obj.insert("id_project", m_listProjects_items.keys().at(i));
+            item_obj.insert("id_project", m_listProjects_items.key(item));
             devices.append(item_obj);
         }else{
-            int id_device_project = m_listDeviceProjects_items.key(m_listProjects_items.values().at(i),-1);
+            int id_device_project = m_listDeviceProjects_items.key(item,-1);
             if (id_device_project>=0){
                 projects_to_delete.append(id_device_project);
             }
@@ -420,16 +421,6 @@ void DeviceWidget::deleteDataReply(QString path, int id)
     }
 }
 
-void DeviceWidget::lstSites_itemExpanded(QTreeWidgetItem *item)
-{
-    /*if (item->childCount() == 0){
-        // Query projects for that site
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_listSites_items.key(item)));
-        queryDataRequest(WEB_PROJECTINFO_PATH, args);
-    }*/
-}
-
 void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
 {
     Q_UNUSED(column)
@@ -440,9 +431,8 @@ void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
         return;
 
     updating = true;
-    if (m_listSites_items.values().contains(item)){
+    if (std::find(m_listSites_items.cbegin(), m_listSites_items.cend(), item) != m_listSites_items.cend()){
         if (item->childCount() == 0 && !isLoading()){
-            // Query projects for that site if needed
             item->setExpanded(true);
         }else{
             // Check or uncheck all childs (projects)
@@ -452,7 +442,7 @@ void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
         }
     }
 
-    if (m_listProjects_items.values().contains(item)){
+    if (std::find(m_listProjects_items.cbegin(), m_listProjects_items.cend(), item) != m_listProjects_items.cend()){
         // We have a project - check if we need to check the parent (site)
         QTreeWidgetItem* site = item->parent();
         if (site){
@@ -482,7 +472,7 @@ void DeviceWidget::on_tabNav_currentChanged(int index)
 
 
     if (current_tab == ui->tabSites){
-        // Sites / Projets
+        // Sites / Projects
         if (m_listSites_items.isEmpty() || m_listProjects_items.isEmpty()){
             args.addQueryItem(WEB_QUERY_LIST, "true");
             queryDataRequest(WEB_SITEINFO_PATH, args);

@@ -27,11 +27,11 @@ SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SITE));
 
     ui->wdgSite->setComManager(m_comManager);
-    setData(data);
+    SiteWidget::setData(data);
 
     // Set default tabs
     ui->tabNav->setCurrentIndex(0);
-    ui->tabSiteInfos->setCurrentIndex(0);
+    ui->tabManageUsers->setCurrentIndex(0);
 }
 
 SiteWidget::~SiteWidget()
@@ -62,14 +62,12 @@ void SiteWidget::setData(const TeraData *data)
 
     if (!dataIsNew()){
         // Loads first detailled informations tab
-        on_tabSiteInfos_currentChanged(0);
+        //on_tabSiteInfos_currentChanged(0);
 
         // Query stats
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
         queryDataRequest(WEB_STATS_PATH, args);
-    }else{
-        ui->tabSiteInfos->setEnabled(false);
     }
 }
 
@@ -78,13 +76,10 @@ void SiteWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &SiteWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SiteWidget::processPostOKReply);
     connect(m_comManager, &ComManager::siteAccessReceived, this, &SiteWidget::processSiteAccessReply);
+    connect(m_comManager, &ComManager::servicesSitesReceived, this, &SiteWidget::processServiceSiteAccessReply);
     connect(m_comManager, &ComManager::statsReceived, this, &SiteWidget::processStatsReply);
 
-    //connect(ui->btnUndo, &QPushButton::clicked, this, &SiteWidget::btnUndo_clicked);
-    //connect(ui->btnSave, &QPushButton::clicked, this, &SiteWidget::btnSave_clicked);
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &SiteWidget::btnUpdateAccess_clicked);
-    //connect(ui->btnProjects, &QPushButton::clicked, this, &SiteWidget::btnProjects_clicked);
-    //connect(ui->btnDevices, &QPushButton::clicked, this, &SiteWidget::btnDevices_clicked);
 
 }
 
@@ -144,84 +139,18 @@ void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
 
 }
 
-void SiteWidget::updateProject(const TeraData *project)
-{
-    int id_project = project->getId();
-    if (m_listProjects_items.contains(id_project)){
-        QListWidgetItem* item = m_listProjects_items[id_project];
-        item->setText(project->getName());
-    }else{
-        QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)), project->getName());
-        ui->lstProjects->addItem(item);
-        m_listProjects_items[id_project] = item;
-    }
-}
-
-/*void SiteWidget::updateDevice(const TeraData *device)
-{
-    int id_device = device->getId();
-
-    // Create list of projects and participants
-    QStringList projects;
-    QStringList participants;
-    if (device->hasFieldName("device_participants")){
-        QVariantList part_list = device->getFieldValue("device_participants").toList();
-        for (QVariant part:part_list){
-            QVariantMap part_info = part.toMap();
-            QString project_name = tr("Project inconnu");
-            QString participant_name = "";
-            if (part_info.contains("participant_name")){
-                participant_name = part_info["participant_name"].toString();
-            }
-            if (part_info.contains("project_name")){
-                project_name = part_info["project_name"].toString();
-            }
-            projects.append(project_name);
-            participants.append(participant_name);
-        }
-    }
-
-    // Build assignment string
-    QString assignment="";
-    for (int i=0; i<participants.count(); i++){
-        if (i>0)
-            assignment += ", ";
-        assignment += participants.at(i);
-        if (!participants.at(i).isEmpty())
-            assignment += " (" + projects.at(i) + ")";
-    }
-
-    // Build device name, if empty
-    QString device_name = device->getName();
-    if (device_name.isEmpty())
-        device_name = tr("(Appareil sans nom)");
-
-    // Create / update values in table
-    if (m_listDevices_items.contains(id_device)){
-       QTableWidgetItem* item = m_listDevices_items[id_device];
-       item->setText(device_name);
-       ui->lstDevices->item(item->row(), 1)->setText(assignment);
-    }else{
-        ui->lstDevices->setRowCount(ui->lstDevices->rowCount()+1);
-        QTableWidgetItem* item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)), device->getName());
-        ui->lstDevices->setItem(ui->lstDevices->rowCount()-1, 0, item);
-        m_listDevices_items[id_device] = item;
-
-        item = new QTableWidgetItem(assignment);
-        ui->lstDevices->setItem(ui->lstDevices->rowCount()-1, 1, item);
-    }  
-
-}*/
-
 void SiteWidget::updateControlsState()
 {
-    //ui->btnDevices->setVisible(!m_limited);
-    //ui->btnProjects->setVisible(!m_limited);
-    bool is_site_admin = isSiteAdmin();
-    ui->btnUpdateRoles->setVisible(is_site_admin);
-    //ui->btnDevices->setVisible(is_site_admin);
+    bool is_super_admin = m_comManager->isCurrentUserSuperAdmin();
+    bool is_site_admin = isSiteAdmin() || is_super_admin;
 
-    ui->btnUserGroups->setVisible(is_site_admin);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabUsersDetails), is_site_admin);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), is_site_admin);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), is_site_admin);
+
+    // TODO: Services and devices read only
+    /*ui->btnUpdateRoles->setVisible(is_site_admin);
+    ui->btnUserGroups->setVisible(is_site_admin);*/
 
     ui->grpSummary->setVisible(!dataIsNew());
     if (ui->tabNav->count() > 1 && dataIsNew()){
@@ -262,6 +191,15 @@ void SiteWidget::queryUserGroupsSiteAccess()
 
 }
 
+void SiteWidget::queryServiceSiteAccess()
+{
+    // Query services for this site
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_SERVICES, "1");
+    queryDataRequest(WEB_SERVICESITEINFO_PATH, args);
+}
+
 void SiteWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_SITE){
@@ -288,40 +226,19 @@ void SiteWidget::processSiteAccessReply(QList<TeraData> access, QUrlQuery reply_
            updateUserGroupSiteAccess(&access.at(i));
         }
     }
+
 }
 
-void SiteWidget::processProjectsReply(QList<TeraData> projects)
+void SiteWidget::processServiceSiteAccessReply(QList<TeraData> service_sites, QUrlQuery reply_query)
 {
-    if (!m_data)
-        return;
-
-    for (int i=0; i<projects.count(); i++){
-        if (projects.at(i).getFieldValue("id_site") == m_data->getFieldValue("id_site")){
-            updateProject(&projects.at(i));
-        }
-    }
-}
-
-/*void SiteWidget::processDevicesReply(QList<TeraData> devices)
-{
-    if (!m_data)
-        return;
-
-    for (int i=0; i<devices.count(); i++){
-        QVariantList sites_list = devices.at(i).getFieldValue("device_sites").toList();
-        for (int j=0; j<sites_list.count(); j++){
-            QVariantMap site_info = sites_list.at(j).toMap();
-            if (site_info.contains("id_site")){
-                if (site_info["id_site"].toInt() == m_data->getId()){
-                    updateDevice(&devices.at(i));
-                    break;
-                }
-            }
-        }
+    for(const TeraData &service_site: service_sites){
+        updateServiceSite(&service_site);
     }
 
+    // New list received - disable save button
+    ui->btnUpdateServices->setEnabled(false);
 }
-*/
+
 void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 {
 
@@ -344,6 +261,37 @@ void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
 }
 
+void SiteWidget::updateServiceSite(const TeraData *service_site)
+{
+    int id_service = service_site->getFieldValue("id_service").toInt();
+    QString service_name = service_site->getFieldValue("service_name").toString();
+    QListWidgetItem* item;
+
+    if (m_listServices_items.contains(id_service)){
+        item = m_listServices_items[id_service];
+    }else{
+        item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_SERVICE)), service_name);
+        ui->lstServices->addItem(item);
+        m_listServices_items[id_service] = item;
+
+    }
+
+    item->setText(service_name);
+    int id_service_site = service_site->getId();
+    if (id_service_site > 0){
+        item->setCheckState(Qt::Checked);
+        if (!m_listServicesSites_items.contains(id_service_site)){
+            m_listServicesSites_items[id_service_site] = item;
+        }
+    }else{
+        item->setCheckState(Qt::Unchecked);
+        if (m_listServicesSites_items.contains(id_service_site)){
+            m_listServicesSites_items.remove(id_service_site);
+        }
+    }
+
+}
+
 void SiteWidget::processPostOKReply(QString path)
 {
     if (path == WEB_SITEINFO_PATH){
@@ -363,9 +311,13 @@ void SiteWidget::btnUpdateAccess_clicked()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for (int i=0; i<m_tableUserGroups_items.count(); i++){
-        int user_group_id = m_tableUserGroups_items.keys().at(i);
-        int row = m_tableUserGroups_items[user_group_id]->row();
+    for (QTableWidgetItem* item: qAsConst(m_tableUserGroups_items)){
+        int user_group_id = m_tableUserGroups_items.key(item);
+        int row = item->row();
+//    }
+//    for (int i=0; i<m_tableUserGroups_items.count(); i++){
+//        int user_group_id = m_tableUserGroups_items.keys().at(i);
+//        int row = m_tableUserGroups_items[user_group_id]->row();
         QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableUserGroups->cellWidget(row,1));
         if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
             QJsonObject data_obj;
@@ -385,131 +337,6 @@ void SiteWidget::btnUpdateAccess_clicked()
     }
 
 
-
-}
-
-void SiteWidget::btnProjects_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-
-    m_diag_editor = new BaseDialog(this);
-    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_PROJECT, nullptr);
-    m_diag_editor->setCentralWidget(list_widget);
-
-    m_diag_editor->setWindowTitle(tr("Projets"));
-    m_diag_editor->setMinimumSize(size().width(), 2*size().height()/3);
-
-    m_diag_editor->open();
-}
-
-/*void SiteWidget::btnDevices_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new BaseDialog(this);
-    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_DEVICE, nullptr);
-    m_diag_editor->setCentralWidget(list_widget);
-
-    m_diag_editor->setWindowTitle(tr("Appareils"));
-    m_diag_editor->setFixedSize(size().width(), size().height());
-
-    m_diag_editor->open();
-}*/
-
-void SiteWidget::on_tabSiteInfos_currentChanged(int index)
-{
-
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
-
-    QWidget* current_tab = ui->tabSiteInfos->widget(index);
-
-    if (current_tab == ui->tabProjects){
-        // Projects
-        if (m_listProjects_items.isEmpty()){
-            // Connect signal to receive updates
-            connect(m_comManager, &ComManager::projectsReceived, this, &SiteWidget::processProjectsReply);
-
-            // Query
-            args.addQueryItem(WEB_QUERY_LIST, "true");
-            queryDataRequest(WEB_PROJECTINFO_PATH, args);
-        }
-    }
-
-    if (current_tab == ui->tabDevices){
-        // Devices
-        if (!ui->wdgDevices->layout()){
-            QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
-            ui->wdgDevices->setLayout(layout);
-        }
-        if (ui->wdgDevices->layout()->count() == 0){
-            args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "");
-            args.addQueryItem(WEB_QUERY_WITH_SITES, "");
-            DataListWidget* deviceslist_editor = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList("device_participants.participant_name"), ui->wdgUsers);
-            deviceslist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
-            deviceslist_editor->setFilterText(tr("Seuls les appareils associés au site sont affichés."));
-            ui->wdgDevices->layout()->addWidget(deviceslist_editor);
-        }
-        /*if (m_listDevices_items.isEmpty()){
-            // Connect signal to receive updates
-            connect(m_comManager, &ComManager::devicesReceived, this, &SiteWidget::processDevicesReply);
-
-            // Query
-            args.addQueryItem(WEB_QUERY_PARTICIPANTS, "");
-            args.addQueryItem(WEB_QUERY_SITES, "");
-            queryDataRequest(WEB_DEVICEINFO_PATH, args);
-        }*/
-    }
-
-    if (current_tab == ui->tabUsers){
-        // Users
-        if (!ui->wdgUsers->layout()){
-            QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
-            ui->wdgUsers->setLayout(layout);
-        }
-        if (ui->wdgUsers->layout()->count() == 0){
-            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
-            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups details
-            DataListWidget* userlist_editor = new DataListWidget(m_comManager, TERADATA_USER, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), ui->wdgUsers);
-            userlist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
-            userlist_editor->setFilterText(tr("Seuls les utilisateurs ayant un accès au site sont affichés."));
-            ui->wdgUsers->layout()->addWidget(userlist_editor);
-        }
-        /*if (m_tableUsers_items.isEmpty()){
-            // Query
-            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
-            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups details
-            queryDataRequest(WEB_SITEACCESS_PATH, args);
-        }*/
-    }
-
-    if (current_tab == ui->tabUserGroups){
-        // User groups
-        if (m_tableUserGroups_items.isEmpty()){
-            // Query
-            queryUserGroupsSiteAccess();
-
-        /*
-           if (!ui->wdgUserGroups->layout()){
-                QHBoxLayout* layout = new QHBoxLayout();
-                layout->setMargin(0);
-                ui->wdgUserGroups->setLayout(layout);
-            }
-            if (ui->wdgUserGroups->layout()->count() == 0){
-                //args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1"); // Includes user groups without any access
-                DataListWidget* usergroupslist_editor = new DataListWidget(m_comManager, TERADATA_USERGROUP, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), ui->wdgUserGroups);
-                usergroupslist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
-                usergroupslist_editor->setFilterText(tr("Seuls les groupes utilisateurs ayant un accès au site sont affichés."));
-                ui->wdgUserGroups->layout()->addWidget(usergroupslist_editor);
-            }*/
-        }
-    }
 
 }
 
@@ -538,20 +365,22 @@ void SiteWidget::on_btnUserGroups_clicked()
 
 void SiteWidget::on_icoUsers_clicked()
 {
-    ui->tabSiteInfos->setCurrentWidget(ui->tabUsers);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
+    if (isSiteAdmin()){
+        ui->tabNav->setCurrentWidget(ui->tabUsersDetails);
+    }
 }
 
 void SiteWidget::on_icoProjects_clicked()
 {
-    ui->tabSiteInfos->setCurrentWidget(ui->tabProjects);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
+    //ui->tabSiteInfos->setCurrentWidget(ui->tabProjects);
+    //ui->tabNav->setCurrentWidget(ui->tabDetails);
 }
 
 void SiteWidget::on_icoDevices_clicked()
 {
-    ui->tabSiteInfos->setCurrentWidget(ui->tabDevices);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
+    if (isSiteAdmin()){
+        ui->tabNav->setCurrentWidget(ui->tabDevices);
+    }
 }
 
 void SiteWidget::userGroupsEditor_finished()
@@ -567,3 +396,135 @@ void SiteWidget::userGroupsEditor_finished()
     m_tableUserGroups_items.clear();
     queryUserGroupsSiteAccess();
 }
+
+void SiteWidget::on_tabNav_currentChanged(int index)
+{
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+
+    QWidget* current_tab = ui->tabNav->widget(index);
+
+    /*if (current_tab == ui->tabProjects){
+        // Projects
+        if (m_listProjects_items.isEmpty()){
+            // Connect signal to receive updates
+            connect(m_comManager, &ComManager::projectsReceived, this, &SiteWidget::processProjectsReply);
+
+            // Query
+            args.addQueryItem(WEB_QUERY_LIST, "true");
+            queryDataRequest(WEB_PROJECTINFO_PATH, args);
+        }
+    }*/
+
+    if (current_tab == ui->tabDevices){
+        // Devices
+        if (!ui->wdgDevices->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgDevices->setLayout(layout);
+        }
+        if (ui->wdgDevices->layout()->count() == 0){
+            args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "");
+            args.addQueryItem(WEB_QUERY_WITH_SITES, "");
+            DataListWidget* deviceslist_editor = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList("device_participants.participant_name"), ui->wdgUsers);
+            deviceslist_editor->setPermissions(isSiteAdmin(), m_comManager->isCurrentUserSuperAdmin());
+            deviceslist_editor->setFilterText(tr("Seuls les appareils associés au site sont affichés."));
+            ui->wdgDevices->layout()->addWidget(deviceslist_editor);
+        }
+    }
+
+    if (current_tab == ui->tabUsersDetails){
+        // Users
+        if (!ui->wdgUsers->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgUsers->setLayout(layout);
+        }
+        if (ui->wdgUsers->layout()->count() == 0){
+            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
+            args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups details
+            DataListWidget* userlist_editor = new DataListWidget(m_comManager, TERADATA_USER, WEB_SITEACCESS_PATH, args, QStringList("site_access_role"), ui->wdgUsers);
+            userlist_editor->setPermissions(isSiteAdmin(), isSiteAdmin());
+            userlist_editor->setFilterText(tr("Seuls les utilisateurs ayant un accès au site sont affichés."));
+            ui->wdgUsers->layout()->addWidget(userlist_editor);
+        }
+    }
+
+    if (current_tab == ui->tabServices){
+        if (m_listServices_items.isEmpty()){
+            queryServiceSiteAccess();
+        }
+    }
+
+
+}
+
+
+void SiteWidget::on_tabManageUsers_currentChanged(int index)
+{
+    QWidget* current_tab = ui->tabManageUsers->widget(index);
+
+    if (current_tab == ui->tabUserGroups){
+        // User groups
+        if (m_tableUserGroups_items.isEmpty()){
+            // Query
+            queryUserGroupsSiteAccess();
+        }
+    }
+}
+
+
+void SiteWidget::on_btnUpdateServices_clicked()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray services_sites;
+    bool removed_services = false;
+
+    for (int i=0; i<ui->lstServices->count(); i++){
+        QListWidgetItem* item = ui->lstServices->item(i);
+        int service_id = m_listServices_items.key(item, 0);
+        if (item->checkState() == Qt::Checked){
+            // New item selected
+            QJsonObject item_obj;
+            item_obj.insert("id_service", service_id);
+            item_obj.insert("id_site", m_data->getId());
+            services_sites.append(item_obj);
+        }else{
+            if (std::find(m_listServicesSites_items.cbegin(), m_listServicesSites_items.cend(), item) == m_listServicesSites_items.cend()){
+                removed_services = true;
+            }
+        }
+     }
+
+    if (removed_services){
+        GlobalMessageBox msgbox;
+        int rval = msgbox.showYesNo(tr("Suppression de service associé"), tr("Au moins un service retiré est associé à un projet.\nSi vous le retirez, il sera désassocié de ce projet et les séances associées à ce service ne seront plus accessibles.\nSouhaitez-vous continuer?"));
+        if (rval != GlobalMessageBox::Yes){
+            return;
+        }
+    }
+
+    base_obj.insert("service_site", services_sites);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SERVICESITEINFO_PATH, document.toJson());
+}
+
+
+void SiteWidget::on_lstServices_itemChanged(QListWidgetItem *item)
+{
+    // Check for changed items
+    bool has_changes = false;
+    if (m_listServicesSites_items.key(item) > 0 && item->checkState() == Qt::Unchecked){
+        // Item deselected
+        has_changes = true;
+    }else{
+        if (m_listServicesSites_items.key(item) <= 0 && item->checkState() == Qt::Checked){
+            // Item selected
+            has_changes = true;
+        }
+    }
+
+    ui->btnUpdateServices->setEnabled(has_changes);
+}
+

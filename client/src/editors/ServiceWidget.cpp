@@ -68,27 +68,56 @@ void ServiceWidget::updateServiceProject(TeraData *project)
 {
 
     int id_project = project->getFieldValue("id_project").toInt();
-    QListWidgetItem* item;
+    QTreeWidgetItem* item;
     QString project_name = project->getFieldValue("project_name").toString();
 
-    if (m_listProjects_items.contains(id_project)){
-        item = m_listProjects_items[id_project];
+    if (m_treeProjects_items.contains(id_project)){
+        item = m_treeProjects_items[id_project];
     }else{
-        item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)), project_name);
-        item->setCheckState(Qt::Unchecked);
-        ui->lstProjects->addItem(item);
-        m_listProjects_items[id_project] = item;
-        //combo_roles = buildRolesComboBox(m_serviceRoles);
+        item = new QTreeWidgetItem();
+        item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
+        int id_site = project->getFieldValue("id_site").toInt();
+        QTreeWidgetItem* parent_item = m_treeSites_items[id_site];
+        if (!parent_item){
+            LOG_WARNING(tr("Site not found for project") + " :" + project_name, "ServiceWidget::updateServiceProject");
+            delete item;
+            return;
+        }
+        parent_item->addChild(item);
+        m_treeProjects_items[id_project] = item;
     }
 
     if (!project_name.isEmpty())
-        item->setText(project_name);
+        item->setText(0, project_name);
 
     int service_id = project->getFieldValue("id_service").toInt();
     if (service_id > 0){
-        item->setCheckState(Qt::Checked);
+        item->setCheckState(0, Qt::Checked);
     }else{
-        item->setCheckState(Qt::Unchecked);
+        item->setCheckState(0, Qt::Unchecked);
+    }
+}
+
+void ServiceWidget::updateServiceSite(TeraData *service_site)
+{
+    int id_site = service_site->getFieldValue("id_site").toInt();
+    QTreeWidgetItem* item;
+    if (m_treeSites_items.contains(id_site)){
+        item = m_treeSites_items[id_site];
+
+    }else{
+        item = new QTreeWidgetItem();
+        item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)));
+        item->setCheckState(0, Qt::Unchecked);
+        item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        ui->treeProjects->addTopLevelItem(item);
+        m_treeSites_items[id_site] = item;
+    }
+    item->setText(0, service_site->getFieldValue("site_name").toString());
+    if (service_site->getId() > 0){
+        item->setCheckState(0, Qt::Checked);
+    }else{
+        item->setCheckState(0, Qt::Unchecked);
     }
 }
 
@@ -138,6 +167,52 @@ void ServiceWidget::postServiceRoles()
     postDataRequest(WEB_SERVICEINFO_PATH, document.toJson());
 }
 
+void ServiceWidget::postServiceSites()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray sites;
+
+    for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+        int site_id = m_treeSites_items.key(item);
+        if (item->checkState(0) == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_site", site_id);
+            sites.append(data_obj);
+        }
+    }
+
+    QJsonObject service_obj;
+    service_obj.insert("id_service", m_data->getId());
+    service_obj.insert("sites", sites);
+    base_obj.insert("service", service_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SERVICESITEINFO_PATH, document.toJson());
+}
+
+void ServiceWidget::postServiceProjects()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray projects;
+
+    for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+        int project_id = m_treeProjects_items.key(item);
+        if (item->checkState(0) == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_project", project_id);
+            projects.append(data_obj);
+        }
+    }
+
+    QJsonObject service_obj;
+    service_obj.insert("id_service", m_data->getId());
+    service_obj.insert("projects", projects);
+    base_obj.insert("service", service_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SERVICEPROJECTINFO_PATH, document.toJson());
+}
+
 void ServiceWidget::setData(const TeraData *data)
 {
     DataEditorWidget::setData(data);
@@ -177,6 +252,11 @@ void ServiceWidget::postResultReply(QString path)
         if (parent())
             emit closeRequest();
     }
+
+    if (path==WEB_SERVICESITEINFO_PATH){
+        // We saved the service-site association, now saving the service-project association
+        postServiceProjects();
+    }
 }
 
 void ServiceWidget::processServiceProjects(QList<TeraData> projects)
@@ -184,6 +264,22 @@ void ServiceWidget::processServiceProjects(QList<TeraData> projects)
     for (TeraData project:projects){
         updateServiceProject(&project);
     }
+
+    ui->treeProjects->expandAll();
+}
+
+void ServiceWidget::processServiceSites(QList<TeraData> sites, QUrlQuery reply_query)
+{
+    for (TeraData site:sites){
+        updateServiceSite(&site);
+    }
+
+    // Query projects for service
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SERVICE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
+    args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+    queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
 }
 
 void ServiceWidget::connectSignals()
@@ -191,6 +287,7 @@ void ServiceWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &ServiceWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &ServiceWidget::postResultReply);
     connect(m_comManager, &ComManager::servicesProjectsReceived, this, &ServiceWidget::processServiceProjects);
+    connect(m_comManager, &ComManager::servicesSitesReceived, this, &ServiceWidget::processServiceSites);
 }
 
 
@@ -203,37 +300,22 @@ void ServiceWidget::on_tabNav_currentChanged(int index)
     QWidget* current_tab = ui->tabNav->widget(index);
 
     if (current_tab == ui->tabProjects){
+        // Sites / Projects
+        if (m_treeSites_items.isEmpty() || m_treeSites_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+            queryDataRequest(WEB_SERVICESITEINFO_PATH, args);
+        }
         // Projects for that service
-        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1"); // Also gets unassociated projects
+        /*args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1"); // Also gets unassociated projects
         args.addQueryItem(WEB_QUERY_WITH_ROLES, "1");
-        queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
+        queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);*/
     }
 }
 
 void ServiceWidget::on_btnUpdateProjects_clicked()
 {
-    QJsonDocument document;
-    QJsonObject base_obj;
-    QJsonArray projects;
-
-    for(QListWidgetItem* item: qAsConst(m_listProjects_items)){
-        int project_id = m_listProjects_items.key(item);
-    /*for (int i=0; i<m_listProjects_items.count(); i++){
-        int project_id = m_listProjects_items.keys().at(i);
-        QListWidgetItem* item = m_listProjects_items.values().at(i);*/
-        if (item->checkState() == Qt::Checked){
-            QJsonObject data_obj;
-            data_obj.insert("id_project", project_id);
-            projects.append(data_obj);
-        }
-    }
-
-    QJsonObject service_obj;
-    service_obj.insert("id_service", m_data->getId());
-    service_obj.insert("projects", projects);
-    base_obj.insert("service", service_obj);
-    document.setObject(base_obj);
-    postDataRequest(WEB_SERVICEPROJECTINFO_PATH, document.toJson());
+    // We post service-site association first
+    postServiceSites();
 
 }
 
@@ -299,5 +381,46 @@ void ServiceWidget::on_btnEditRole_clicked()
 void ServiceWidget::on_lstRoles_itemDoubleClicked(QListWidgetItem *item)
 {
     on_btnEditRole_clicked();
+}
+
+
+void ServiceWidget::on_treeProjects_itemChanged(QTreeWidgetItem *item, int column)
+{
+    Q_UNUSED(column)
+    static bool updating = false;
+
+    // Lock to prevent recursive updates
+    if (updating)
+        return;
+
+    updating = true;
+    if (std::find(m_treeSites_items.cbegin(), m_treeSites_items.cend(), item) != m_treeSites_items.cend()){
+        if (item->childCount() == 0 && !isLoading()){
+            item->setExpanded(true);
+        }else{
+            // Check or uncheck all childs (projects)
+            for (int i=0; i<item->childCount(); i++){
+                item->child(i)->setCheckState(0, item->checkState(0));
+            }
+        }
+    }
+
+    if (std::find(m_treeProjects_items.cbegin(), m_treeProjects_items.cend(), item) != m_treeProjects_items.cend()){
+        // We have a project - check if we need to check the parent (site)
+        QTreeWidgetItem* site = item->parent();
+        if (site){
+            for(int i=0; i<site->childCount(); i++){
+                if (site->child(i)->checkState(0) == Qt::Checked){
+                    site->setCheckState(0, Qt::Checked);
+                    updating = false;
+                    return;
+                }
+            }
+            // No projects selected for that site
+            site->setCheckState(0, Qt::Unchecked);
+        }
+    }
+
+    updating = false;
 }
 

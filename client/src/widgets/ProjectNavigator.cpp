@@ -10,7 +10,7 @@ ProjectNavigator::ProjectNavigator(QWidget *parent) :
     ui(new Ui::ProjectNavigator)
 {
     ui->setupUi(this);
-    ui->cmbSites->setItemDelegate(new QStyledItemDelegate);
+    ui->cmbSites->setItemDelegate(new QStyledItemDelegate(ui->cmbSites));
 
     m_comManager = nullptr;
     m_newItemMenu = nullptr;

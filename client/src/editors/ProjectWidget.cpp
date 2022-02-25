@@ -35,7 +35,6 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
         queryServicesProject();
     }
 
-
 }
 
 ProjectWidget::~ProjectWidget()

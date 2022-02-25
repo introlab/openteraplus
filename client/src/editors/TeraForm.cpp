@@ -559,7 +559,7 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QComboBox* item_combo = new QComboBox();
-    item_combo->setItemDelegate(new QStyledItemDelegate());
+    item_combo->setItemDelegate(new QStyledItemDelegate(item_combo));
 
     // Add empty item
     item_combo->addItem("", "");
@@ -585,7 +585,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QComboBox* item_combo = new QComboBox();
-    item_combo->setItemDelegate(new QStyledItemDelegate());
+    item_combo->setItemDelegate(new QStyledItemDelegate(item_combo));
 
     // Add empty item
     item_combo->addItem("", "");
@@ -609,7 +609,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
 QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
 {
     QComboBox* item_combo = new QComboBox();
-    item_combo->setItemDelegate(new QStyledItemDelegate());
+    item_combo->setItemDelegate(new QStyledItemDelegate(item_combo));
 
     // Add empty item
     item_combo->addItem("", "");

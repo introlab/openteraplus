@@ -7,7 +7,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
     ui(new Ui::LoginDialog)
 {
     ui->setupUi(this);
-    ui->cmbServers->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbServers->setItemDelegate(new QStyledItemDelegate(ui->cmbServers));
 
     // Hide logos for now
     ui->frameLogos->hide();

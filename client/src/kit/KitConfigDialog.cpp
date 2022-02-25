@@ -239,10 +239,10 @@ void KitConfigDialog::initUi()
     ui->lblStatus->hide();
     ui->frameTechSup->hide();
 
-    ui->cmbSites->setItemDelegate(new QStyledItemDelegate());
-    ui->cmbProjects->setItemDelegate(new QStyledItemDelegate());
-    ui->cmbGroups->setItemDelegate(new QStyledItemDelegate());
-    ui->cmbServices->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbSites->setItemDelegate(new QStyledItemDelegate(ui->cmbSites));
+    ui->cmbProjects->setItemDelegate(new QStyledItemDelegate(ui->cmbProjects));
+    ui->cmbGroups->setItemDelegate(new QStyledItemDelegate(ui->cmbGroups));
+    ui->cmbServices->setItemDelegate(new QStyledItemDelegate(ui->cmbServices));
 
     ui->btnUnsetParticipant->setEnabled(!m_kitConfig->getParticipantToken().isEmpty());
     ui->chkTechSup->setChecked(!m_kitConfig->getTechSupportClient().isEmpty());

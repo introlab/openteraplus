@@ -31,8 +31,8 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
     ui->setupUi(this);
 
-    ui->cmbServices->setItemDelegate(new QStyledItemDelegate());
-    ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbServices->setItemDelegate(new QStyledItemDelegate(ui->cmbServices));
+    ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate(ui->cmbSessionType));
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
     setLimited(false);

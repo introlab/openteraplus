@@ -9,7 +9,7 @@ DanceConfigWidget::DanceConfigWidget(ComManager *comManager, int projectId, QStr
     m_uuidParticipant(participantUuid)
 {
     ui->setupUi(this);
-    ui->cmbSessionTypes->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbSessionTypes->setItemDelegate(new QStyledItemDelegate(ui->cmbSessionTypes));
 
     m_danceComManager = new DanceComManager(comManager);
     m_uploadDialog = nullptr;

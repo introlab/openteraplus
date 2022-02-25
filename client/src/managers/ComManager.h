@@ -136,6 +136,7 @@ signals:
     void userPreferencesReceived(QList<TeraData> user_prefs_list, QUrlQuery reply_query);
     void servicesReceived(QList<TeraData> services_list, QUrlQuery reply_query);
     void servicesProjectsReceived(QList<TeraData> projects_list, QUrlQuery reply_query);
+    void servicesSitesReceived(QList<TeraData> sites_list, QUrlQuery reply_query);
     void servicesAccessReceived(QList<TeraData> access_list, QUrlQuery reply_query);
     void servicesConfigReceived(QList<TeraData> config_list, QUrlQuery reply_query);
     void statsReceived(TeraData stats, QUrlQuery reply_query);

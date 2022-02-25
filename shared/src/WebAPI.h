@@ -30,6 +30,7 @@
 #define WEB_SESSIONEVENT_PATH               "/api/user/sessions/events"
 #define WEB_SERVICEINFO_PATH                "/api/user/services"
 #define WEB_SERVICEPROJECTINFO_PATH         "/api/user/services/projects"
+#define WEB_SERVICESITEINFO_PATH            "/api/user/services/sites"
 #define WEB_SERVICEACCESSINFO_PATH          "/api/user/services/access"
 #define WEB_SERVICECONFIGINFO_PATH          "/api/user/services/configs"
 #define WEB_STATS_PATH                      "/api/user/stats"
