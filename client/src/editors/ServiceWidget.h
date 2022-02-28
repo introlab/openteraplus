@@ -59,7 +59,6 @@ private slots:
     void on_tabNav_currentChanged(int index);
     void on_btnUpdateProjects_clicked();
 
-    void on_lstProjects_itemChanged(QListWidgetItem *item);
     void on_lstRoles_currentRowChanged(int currentRow);
     void on_btnNewRole_clicked();
     void on_btnDeleteRole_clicked();

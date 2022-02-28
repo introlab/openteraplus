@@ -167,6 +167,7 @@ void ParticipantWidget::querySessions()
         query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
         query.addQueryItem(WEB_QUERY_OFFSET, QString::number(m_currentSessions));
         query.addQueryItem(WEB_QUERY_LIMIT, QString::number(QUERY_SESSION_LIMIT_PER_QUERY)); // Limit number of sessions per query
+        query.addQueryItem(WEB_QUERY_WITH_SESSIONTYPE, "1");
         //queryDataRequest(WEB_SESSIONINFO_PATH, query);
         m_comManager->doGet(WEB_SESSIONINFO_PATH, query);
     }else{
@@ -388,13 +389,22 @@ void ParticipantWidget::updateSession(TeraData *session)
     /*QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
     date_item->setText(session_date.toString("dd-MM-yyyy hh:mm:ss"));*/
     date_item->setDate(session->getFieldValue("session_start_datetime"));
-    int session_type = session->getFieldValue("id_session_type").toInt();
-    if (m_ids_session_types.contains(session_type)){
-        type_item->setText(m_ids_session_types[session_type]->getFieldValue("session_type_name").toString());
-        type_item->setForeground(QColor(m_ids_session_types[session_type]->getFieldValue("session_type_color").toString()));
+
+    if (session->hasFieldName("session_type_name")){
+        type_item->setText(session->getFieldValue("session_type_name").toString());
+        if (session->hasFieldName("session_type_color"))
+            type_item->setForeground(QColor(session->getFieldValue("session_type_color").toString()));
     }else{
-        type_item->setText("Inconnu");
+        // No session type in that structure - old API - use previous stored values
+        int session_type = session->getFieldValue("id_session_type").toInt();
+        if (m_ids_session_types.contains(session_type)){
+            type_item->setText(m_ids_session_types[session_type]->getFieldValue("session_type_name").toString());
+            type_item->setForeground(QColor(m_ids_session_types[session_type]->getFieldValue("session_type_color").toString()));
+        }else{
+            type_item->setText("Inconnu");
+        }
     }
+
     duration_item->setText(QTime(0,0).addSecs(session->getFieldValue("session_duration").toInt()).toString("hh:mm:ss"));
     TeraSessionStatus::SessionStatus session_status = static_cast<TeraSessionStatus::SessionStatus>(session->getFieldValue("session_status").toInt());
     status_item->setText(TeraSessionStatus::getStatusName(session_status));

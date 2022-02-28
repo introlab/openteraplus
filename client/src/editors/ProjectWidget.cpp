@@ -63,17 +63,12 @@ void ProjectWidget::setData(const TeraData *data)
     DataEditorWidget::setData(data);
 
     if (!dataIsNew()){
-        // Loads first detailled informations tab
-        on_tabProjectInfos_currentChanged(0);
-
         // Query stats
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
         args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "1");
         queryDataRequest(WEB_STATS_PATH, args);
 
-    }else{
-        ui->tabProjectInfos->setEnabled(false);
     }
 }
 
@@ -95,7 +90,8 @@ void ProjectWidget::initUI()
 {
     // Default display
     ui->tabNav->setCurrentIndex(0);
-    ui->tabProjectInfos->setCurrentIndex(0);
+    ui->tabManageUsers->setCurrentIndex(0);
+    ui->tabManageServices->setCurrentIndex(0);
 
 }
 
@@ -169,19 +165,6 @@ void ProjectWidget::updateUserGroupProjectAccess(const TeraData *access)
     }
 }
 
-void ProjectWidget::updateGroup(const TeraData *group)
-{
-    int id_group = group->getId();
-    if (m_listGroups_items.contains(id_group)){
-        QListWidgetItem* item = m_listGroups_items[id_group];
-        item->setText(group->getName());
-    }else{
-        QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_GROUP)), group->getName());
-        ui->lstGroups->addItem(item);
-        m_listGroups_items[id_group] = item;
-    }
-}
-
 void ProjectWidget::updateDevice(const TeraData *device)
 {
     int id_device = device->getId();
@@ -246,25 +229,26 @@ void ProjectWidget::updateServiceProject(const TeraData *sp)
         m_listServices_items[id_service] = item;
     }
 
-    if (id_service_project > 0){
-        if (!m_listServicesProjects_items.contains(id_service_project)){
-            m_listServicesProjects_items[id_service_project] = item;
-        }
-    }
     if (!service_name.isEmpty())
         item->setText(service_name);
 
     if (sp->getFieldValue("id_project").toInt() == m_data->getId()){
         item->setCheckState(Qt::Checked);
+        if (!m_listServicesProjects_items.contains(id_service_project)){
+            m_listServicesProjects_items[id_service_project] = item;
+        }
     }else{
         item->setCheckState(Qt::Unchecked);
+        if (m_listServicesProjects_items.contains(id_service_project)){
+            m_listServicesProjects_items.remove(id_service_project);
+        }
     }
 
     if (sp->hasFieldName("service_key")){
         m_services_keys[id_service] = sp->getFieldValue("service_key").toString();
     }
 
-    if (sp->hasFieldName("service_system")){
+    /*if (sp->hasFieldName("service_system")){
         if (sp->getFieldValue("service_system").toBool() == true){
             item->setForeground(Qt::lightGray);
             QFont item_font = item->font();
@@ -274,7 +258,7 @@ void ProjectWidget::updateServiceProject(const TeraData *sp)
                 item->setData(Qt::UserRole, true); // Lock value
             }
         }
-    }
+    }*/
 
 }
 
@@ -296,15 +280,16 @@ void ProjectWidget::updateControlsState()
         }
     }else{
         bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(m_data->getId());
-
-        if (!is_project_admin){
-            ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDetails), false);
-            return;
-        }else{
-            ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDetails), true);
-        }
-
         bool is_site_admin = isSiteAdmin();
+
+        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabUsersDetails), is_project_admin);
+        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), is_project_admin);
+        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabSessionTypes), is_project_admin);
+        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServicesDetails), is_site_admin);
+
+        ui->tabManageServices->setTabVisible(ui->tabManageServices->indexOf(ui->tabServices), is_site_admin);
+
+        ui->tabManageUsers->setTabVisible(ui->tabManageUsers->indexOf(ui->tabUserGroups), is_site_admin);
 
         // m_limited = true if current user isn't site admin
         ui->btnUpdateRoles->setVisible(!m_limited);
@@ -387,27 +372,6 @@ void ProjectWidget::processProjectAccessReply(QList<TeraData> access, QUrlQuery 
     }
 }
 
-
-void ProjectWidget::processGroupsReply(QList<TeraData> groups)
-{
-    if (!m_data)
-        return;
-
-    for (int i=0; i<groups.count(); i++){
-        if (groups.at(i).getFieldValue("id_project") == m_data->getId()){
-            updateGroup(&groups.at(i));
-        }
-    }
-
-    /*if (isLoading()){
-        // Query kits for that site (depending on projects first to have names)
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
-        args.addQueryItem(WEB_QUERY_LIST, "");
-        queryDataRequest(WEB_KITINFO_PATH, args);
-    }*/
-}
-
 void ProjectWidget::processDevicesReply(QList<TeraData> devices)
 {
     if (!m_data)
@@ -438,6 +402,16 @@ void ProjectWidget::processServiceProjectsReply(QList<TeraData> services_project
 
     // New list received - disable save button
     ui->btnUpdateServices->setEnabled(false);
+
+    // Update used list from what is checked right now
+    for (int i=0; i<ui->lstServices->count(); i++){
+        QListWidgetItem* item = ui->lstServices->item(i);
+        if (item->checkState() == Qt::Unchecked){
+            if (std::find(m_listServicesProjects_items.cbegin(), m_listServicesProjects_items.cend(), item) != m_listServicesProjects_items.cend()){
+                m_listServicesProjects_items.remove(m_listServicesProjects_items.key(item));
+            }
+        }
+    }
 
     // Remove service tabs not present anymore
     /*if (!dataIsNew()){
@@ -623,152 +597,45 @@ void ProjectWidget::btnUpdateAccess_clicked()
     }
 }
 
-void ProjectWidget::on_tabProjectInfos_currentChanged(int index)
-{
-    // Load data depending on selected tab
-    QUrlQuery args;
-    QWidget* current_tab = ui->tabProjectInfos->widget(index);
-
-    if (current_tab == ui->tabGroups){
-        // Groups
-        if (m_listGroups_items.isEmpty()){
-            connect(m_comManager, &ComManager::groupsReceived, this, &ProjectWidget::processGroupsReply);
-
-            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_LIST, "true");
-            queryDataRequest(WEB_GROUPINFO_PATH, args);
-        }
-    }
-
-    if (current_tab == ui->tabDevices){
-        // Devices
-        if (m_listDevices_items.isEmpty()){
-            connect(m_comManager, &ComManager::devicesReceived, this, &ProjectWidget::processDevicesReply);
-
-            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
-            args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "");
-            queryDataRequest(WEB_DEVICEINFO_PATH, args);
-        }
-    }
-
-    if (current_tab == ui->tabUsers){
-        // Users
-        if (m_tableUsers_items.isEmpty()){
-            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
-            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
-        }
-    }
-
-    if (current_tab == ui->tabSessionTypes){
-        // Session types
-        if (!ui->wdgSessionTypes->layout()){
-            QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
-            ui->wdgSessionTypes->setLayout(layout);
-        }
-        if (ui->wdgSessionTypes->layout()->count() == 0){
-            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
-            DataListWidget* stlist_editor = new DataListWidget(m_comManager, TERADATA_SESSIONTYPE, WEB_SESSIONTYPEPROJECT_PATH, args, QStringList(), ui->wdgSessionTypes);
-            // m_limited = true = user only, not project admin
-            stlist_editor->setPermissions(!m_limited, !m_limited);
-            stlist_editor->setFilterText(tr("Seuls les types de séance associés au projet sont affichés."));
-            ui->wdgSessionTypes->layout()->addWidget(stlist_editor);
-        }
-    }
-
-    if (current_tab == ui->tabUserGroups){
-        // User groups
-        if (m_tableUserGroups_items.isEmpty()){
-            // Query
-           queryUserGroupsProjectAccess();
-        }
-    }
-
-    if (current_tab == ui->tabServices){
-        // Services
-       if (m_listServicesProjects_items.isEmpty()){
-           queryServicesProject();
-       }
-    }
-
-
-}
-/*
-void ProjectWidget::on_btnUpdateServiceRoles_clicked()
-{
-    QJsonDocument document;
-    QJsonObject base_obj;
-    QJsonArray roles;
-    QList<int> roles_to_delete;
-
-    for (int i=0; i<ui->tableServices->rowCount(); i++){
-        int id_service = ui->tableServices->item(i,0)->data(Qt::UserRole).toInt();
-        int id_user_group = ui->tableServices->item(i,1)->data(Qt::UserRole).toInt();
-        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableServices->cellWidget(i,2));
-        int id_service_project_role = combo_roles->property("id_service_project_role").toInt();
-        if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
-            if (combo_roles->currentIndex()==0){
-                // No role now - must delete!
-                if (id_service_project_role != 0)
-                    roles_to_delete.append(id_service_project_role);
-            }else{
-                QJsonObject data_obj;
-                // Ok, value was modified - must add!
-                QJsonValue role = combo_roles->currentData().toString();
-                data_obj.insert("id_service", id_service);
-                data_obj.insert("id_project", m_data->getId());
-                data_obj.insert("id_user_group", id_user_group);
-                data_obj.insert("id_service_role", role);
-                data_obj.insert("id_service_project_role", id_service_project_role);
-                roles.append(data_obj);
-            }
-            combo_roles->setProperty("original_index", combo_roles->currentIndex());
-        }
-    }
-
-    // Delete queries
-    for (int id_service_project_role:roles_to_delete){
-        deleteDataRequest(WEB_SERVICEACCESSINFO_PATH, id_service_project_role);
-    }
-
-    // Update query
-    base_obj.insert("service_project_role", roles);
-    document.setObject(base_obj);
-    postDataRequest(WEB_SERVICEACCESSINFO_PATH, document.toJson());
-}
-*/
-
 void ProjectWidget::on_btnUpdateServices_clicked()
 {
     QJsonDocument document;
     QJsonObject base_obj;
+    QJsonObject project_obj;
     QJsonArray services_projects;
-    QList<int> todel_ids;
+    //QList<int> todel_ids;
+    bool removed_services = false;
 
+    project_obj.insert("id_project", m_data->getId());
     for (int i=0; i<ui->lstServices->count(); i++){
         QListWidgetItem* item = ui->lstServices->item(i);
-        int service_id = m_listServicesProjects_items.key(item, 0);
+        int service_id = m_listServices_items.key(item, 0);
         //if (m_listServicesProjects_items.values().contains(item)){
-        if (service_id >0){
-            if (item->checkState() == Qt::Unchecked){
-                // Service was unselected
-                //todel_ids.append(m_listServicesProjects_items.key(item));
-                todel_ids.append(service_id);
-            }
-        }else{
-            if (item->checkState() == Qt::Checked){
-                // New item selected
-                QJsonObject item_obj;
-                item_obj.insert("id_service", m_listServices_items.key(item));
-                item_obj.insert("id_project", m_data->getId());
-                services_projects.append(item_obj);
+        if (item->checkState() == Qt::Checked){
+            // New item selected
+            QJsonObject item_obj;
+            item_obj.insert("id_service", service_id);
+            services_projects.append(item_obj);
+        }
+        if (item->checkState() == Qt::Unchecked){
+            // Service was unselected
+            //todel_ids.append(service_id);
+            if (std::find(m_listServicesProjects_items.cbegin(), m_listServicesProjects_items.cend(), item) != m_listServicesProjects_items.cend()){
+                removed_services = true;
             }
         }
      }
 
+    if (removed_services){
+        GlobalMessageBox msgbox;
+        int rval = msgbox.showYesNo(tr("Suppression de service associé"), tr("Au moins un service a été retiré de ce project. S'il y a des types de séances qui utilisent ce service, elles ne seront plus accessibles.\nSouhaitez-vous continuer?"));
+        if (rval != GlobalMessageBox::Yes){
+            return;
+        }
+    }
+
     // Delete queries
-    for (int id_service_project:todel_ids){
+   /* for (int id_service_project:todel_ids){
         deleteDataRequest(WEB_SERVICEPROJECTINFO_PATH, id_service_project);
     }
 
@@ -777,19 +644,22 @@ void ProjectWidget::on_btnUpdateServices_clicked()
         base_obj.insert("service_project", services_projects);
         document.setObject(base_obj);
         postDataRequest(WEB_SERVICEPROJECTINFO_PATH, document.toJson());
-    }
+    }*/
+
+    project_obj.insert("services", services_projects);
+    base_obj.insert("project", project_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SERVICEPROJECTINFO_PATH, document.toJson());
 }
 
 void ProjectWidget::on_icoUsers_clicked()
 {
-    ui->tabProjectInfos->setCurrentWidget(ui->tabUsers);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
+    ui->tabNav->setCurrentWidget(ui->tabUsersDetails);
 }
 
 void ProjectWidget::on_icoSessions_clicked()
 {
-    ui->tabProjectInfos->setCurrentWidget(ui->tabSessionTypes);
-    ui->tabNav->setCurrentWidget(ui->tabDetails);
+    ui->tabNav->setCurrentWidget(ui->tabSessionTypes);
 }
 
 void ProjectWidget::on_btnUserGroups_clicked()
@@ -851,23 +721,30 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
         return; // Service not enabled for that project
 
     QString service_key = m_services_keys[id_service];//service_project.getFieldValue("service_key").toString();
+    bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(m_data->getId());
 
     // Dance Service
     if (service_key == "DanceService"){
-        DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getId());
-        //ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_project.getFieldValue("service_name").toString());
-        QString service_name = service_key;
-        if (m_listServices_items.contains(id_service)){
-            service_name = m_listServices_items[id_service]->text();
+        if (is_project_admin){
+            DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getId());
+            //ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_project.getFieldValue("service_name").toString());
+            QString service_name = service_key;
+            if (m_listServices_items.contains(id_service)){
+                service_name = m_listServices_items[id_service]->text();
+            }
+            ui->tabManageServices->insertTab(0, wdg, QIcon("://icons/config.png"), service_name);
+            m_services_tabs.insert(id_service, wdg);
         }
-        ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_name);
-        m_services_tabs.insert(id_service, wdg);
     }
+
+    int index_service_details = ui->tabNav->indexOf(ui->tabServicesDetails);
+    if (!ui->tabNav->isTabVisible(index_service_details))
+        ui->tabNav->setTabVisible(index_service_details, !m_services_tabs.isEmpty());
 }
 
 void ProjectWidget::on_lstServices_itemChanged(QListWidgetItem *item)
 {
-    if (item->checkState() == Qt::Unchecked){
+    /*if (item->checkState() == Qt::Unchecked){
         // Check if it is uncheckable - system services can only be deselected by super admins
         if (item->data(Qt::UserRole).toBool() == true){
             item->setCheckState(Qt::Checked);
@@ -875,7 +752,7 @@ void ProjectWidget::on_lstServices_itemChanged(QListWidgetItem *item)
             msgbox.showWarning(tr("Impossible de retirer"), tr("Ce service a été sélectionné par un administrateur système. Impossible de le retirer du projet sans son intervention"));
             return;
         }
-    }
+    }*/
 
     // Check for changed items
     bool has_changes = false;
@@ -883,13 +760,90 @@ void ProjectWidget::on_lstServices_itemChanged(QListWidgetItem *item)
         // Item deselected
         has_changes = true;
     }else{
-        if (m_listServicesProjects_items.key(item) <= 0 && item->checkState() == Qt::Checked){
+        if (m_listServicesProjects_items.key(item, -1) <= 0 && item->checkState() == Qt::Checked){
             // Item selected
             has_changes = true;
         }
     }
 
     ui->btnUpdateServices->setEnabled(has_changes);
+
+}
+
+
+void ProjectWidget::on_tabNav_currentChanged(int index)
+{
+    // Load data depending on selected tab
+    QUrlQuery args;
+    QWidget* current_tab = ui->tabNav->widget(index);
+
+    if (current_tab == ui->tabDevices){
+        // Devices
+        if (m_listDevices_items.isEmpty()){
+            connect(m_comManager, &ComManager::devicesReceived, this, &ProjectWidget::processDevicesReply);
+
+            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getFieldValue("id_site").toInt()));
+            args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "");
+            queryDataRequest(WEB_DEVICEINFO_PATH, args);
+        }
+    }
+
+    if (current_tab == ui->tabUsersDetails){
+        // Users
+        if (m_tableUsers_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
+            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+        }
+    }
+
+    if (current_tab == ui->tabSessionTypes){
+        // Session types
+        if (!ui->wdgSessionTypes->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgSessionTypes->setLayout(layout);
+        }
+        if (ui->wdgSessionTypes->layout()->count() == 0){
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+            DataListWidget* stlist_editor = new DataListWidget(m_comManager, TERADATA_SESSIONTYPE, WEB_SESSIONTYPEPROJECT_PATH, args, QStringList(), ui->wdgSessionTypes);
+            // m_limited = true = user only, not project admin
+            stlist_editor->setPermissions(!m_limited, !m_limited);
+            stlist_editor->setFilterText(tr("Seuls les types de séance associés au projet sont affichés."));
+            ui->wdgSessionTypes->layout()->addWidget(stlist_editor);
+        }
+    }
+
+}
+
+
+void ProjectWidget::on_tabManageUsers_currentChanged(int index)
+{
+    // Load data depending on selected tab
+    // QUrlQuery args;
+    QWidget* current_tab = ui->tabManageUsers->widget(index);
+
+    if (current_tab == ui->tabUserGroups){
+        // User groups
+        if (m_tableUserGroups_items.isEmpty()){
+            // Query
+           queryUserGroupsProjectAccess();
+        }
+    }
+}
+
+void ProjectWidget::on_tabManageServices_currentChanged(int index)
+{
+
+    QWidget* current_tab = ui->tabManageServices->widget(index);
+    if (current_tab == ui->tabServices){
+        // Services
+       if (m_listServicesProjects_items.isEmpty()){
+           queryServicesProject();
+       }
+    }
+
+    // Service configuration tabs
 
 }
 

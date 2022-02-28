@@ -32,13 +32,13 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     // Query form definition
     m_idProject = -1;
     QUrlQuery args(WEB_FORMS_QUERY_SESSION);
-    if (data->hasFieldName("id_project")){
-        args.addQueryItem(WEB_QUERY_ID_PROJECT, data->getFieldValue("id_project").toString());
-        m_idProject = data->getFieldValue("id_project").toInt();
-        ui->tabAssets->setAssociatedProject(m_idProject);
+    if (!data->isNew()){
+        args.addQueryItem(WEB_QUERY_ID, QString::number(data->getId()));
     }else{
-        if (!data->isNew()){
-            args.addQueryItem(WEB_QUERY_ID, QString::number(data->getId()));
+        if (data->hasFieldName("id_project")){
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, data->getFieldValue("id_project").toString());
+            m_idProject = data->getFieldValue("id_project").toInt();
+            ui->tabAssets->setAssociatedProject(m_idProject);
         }
     }
 

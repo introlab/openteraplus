@@ -39,7 +39,7 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
 
     ui->wdgUser->setComManager(m_comManager);
-    setData(data);
+    UserWidget::setData(data);
 
 }
 
@@ -188,24 +188,19 @@ void UserWidget::refreshUsersUserGroups()
         if (std::find(m_listUserUserGroups_items.cbegin(), m_listUserUserGroups_items.cend(), item) != m_listUserUserGroups_items.cend()){
         //if (m_listUserUserGroups_items.contains(item)){
             item->setCheckState(Qt::Checked);
+            item->setHidden(false);
         }else{
             item->setCheckState(Qt::Unchecked);
-        }
-        /*if (m_data->hasFieldName("user_groups")){
-            QVariantList groups_list = m_data->getFieldValue("user_groups").toList();
-            for (int j=0; j<groups_list.count(); j++){
-                QVariantMap group_info = groups_list.at(j).toMap();
-                if (group_info.contains("id_user_group")){
-                    if (group_info["id_user_group"].toInt() == m_listUserGroups_items.keys().at(i)){
-                        item->setCheckState(Qt::Checked);
-                        break;
-                    }
-                }
+            if (m_limited){
+                item->setHidden(true);
             }
-        }*/
+        }
         // Save initial state, to only update required items when saving
         item->setData(Qt::UserRole, item->checkState());
+
+
     }
+
 }
 
 QJsonArray UserWidget::getSelectedGroupsAsJsonArray()
@@ -281,6 +276,9 @@ void UserWidget::updateUserGroup(const TeraData *group)
         ui->lstGroups->addItem(item);
         item->setCheckState(Qt::Unchecked);
         m_listUserGroups_items[id_user_group] = item;
+        if (m_limited){
+            item->setHidden(true);
+        }
     }
 
 }

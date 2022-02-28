@@ -319,15 +319,6 @@ void ServiceWidget::on_btnUpdateProjects_clicked()
 
 }
 
-void ServiceWidget::on_lstProjects_itemChanged(QListWidgetItem *item)
-{
-    if (item->checkState()==Qt::Checked){
-        item->setForeground(Qt::green);
-    }else{
-        item->setForeground(Qt::white);
-    }
-}
-
 void ServiceWidget::on_lstRoles_currentRowChanged(int currentRow)
 {
     ui->btnDeleteRole->setEnabled(currentRow != -1);

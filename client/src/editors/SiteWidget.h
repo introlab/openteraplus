@@ -40,7 +40,6 @@ private slots:
     void on_btnUserGroups_clicked();
 
     void on_icoUsers_clicked();
-    void on_icoProjects_clicked();
     void on_icoDevices_clicked();
 
     void userGroupsEditor_finished();

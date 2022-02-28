@@ -153,8 +153,10 @@ void SiteWidget::updateControlsState()
     ui->btnUserGroups->setVisible(is_site_admin);*/
 
     ui->grpSummary->setVisible(!dataIsNew());
-    if (ui->tabNav->count() > 1 && dataIsNew()){
-        ui->tabNav->removeTab(1);
+    if (dataIsNew()){
+        while(ui->tabNav->count() > 1){
+            ui->tabNav->removeTab(1);
+        }
     }
 
 }
@@ -235,6 +237,16 @@ void SiteWidget::processServiceSiteAccessReply(QList<TeraData> service_sites, QU
         updateServiceSite(&service_site);
     }
 
+    // Update used list from what is checked right now
+    for (int i=0; i<ui->lstServices->count(); i++){
+        QListWidgetItem* item = ui->lstServices->item(i);
+        if (item->checkState() == Qt::Unchecked){
+            if (std::find(m_listServicesSites_items.cbegin(), m_listServicesSites_items.cend(), item) != m_listServicesSites_items.cend()){
+                m_listServicesSites_items.remove(m_listServicesSites_items.key(item));
+            }
+        }
+    }
+
     // New list received - disable save button
     ui->btnUpdateServices->setEnabled(false);
 }
@@ -276,7 +288,9 @@ void SiteWidget::updateServiceSite(const TeraData *service_site)
 
     }
 
-    item->setText(service_name);
+    if (!service_name.isEmpty())
+        item->setText(service_name);
+
     int id_service_site = service_site->getId();
     if (id_service_site > 0){
         item->setCheckState(Qt::Checked);
@@ -301,6 +315,9 @@ void SiteWidget::processPostOKReply(QString path)
     if (path == WEB_SITEACCESS_PATH){
         // Refresh roles
         queryUserGroupsSiteAccess();
+    }
+    if (path == WEB_SERVICESITEINFO_PATH){
+
     }
 }
 
@@ -368,12 +385,6 @@ void SiteWidget::on_icoUsers_clicked()
     if (isSiteAdmin()){
         ui->tabNav->setCurrentWidget(ui->tabUsersDetails);
     }
-}
-
-void SiteWidget::on_icoProjects_clicked()
-{
-    //ui->tabSiteInfos->setCurrentWidget(ui->tabProjects);
-    //ui->tabNav->setCurrentWidget(ui->tabDetails);
 }
 
 void SiteWidget::on_icoDevices_clicked()
@@ -478,9 +489,11 @@ void SiteWidget::on_btnUpdateServices_clicked()
 {
     QJsonDocument document;
     QJsonObject base_obj;
+    QJsonObject site_obj;
     QJsonArray services_sites;
     bool removed_services = false;
 
+    site_obj.insert("id_site", m_data->getId());
     for (int i=0; i<ui->lstServices->count(); i++){
         QListWidgetItem* item = ui->lstServices->item(i);
         int service_id = m_listServices_items.key(item, 0);
@@ -488,10 +501,9 @@ void SiteWidget::on_btnUpdateServices_clicked()
             // New item selected
             QJsonObject item_obj;
             item_obj.insert("id_service", service_id);
-            item_obj.insert("id_site", m_data->getId());
             services_sites.append(item_obj);
         }else{
-            if (std::find(m_listServicesSites_items.cbegin(), m_listServicesSites_items.cend(), item) == m_listServicesSites_items.cend()){
+            if (std::find(m_listServicesSites_items.cbegin(), m_listServicesSites_items.cend(), item) != m_listServicesSites_items.cend()){
                 removed_services = true;
             }
         }
@@ -499,13 +511,14 @@ void SiteWidget::on_btnUpdateServices_clicked()
 
     if (removed_services){
         GlobalMessageBox msgbox;
-        int rval = msgbox.showYesNo(tr("Suppression de service associé"), tr("Au moins un service retiré est associé à un projet.\nSi vous le retirez, il sera désassocié de ce projet et les séances associées à ce service ne seront plus accessibles.\nSouhaitez-vous continuer?"));
+        int rval = msgbox.showYesNo(tr("Suppression de service associé"), tr("Au moins un service a été retiré de ce site. S'il y a des projets qui utilisent ce service, ils ne pourront plus l'utiliser.\nSouhaitez-vous continuer?"));
         if (rval != GlobalMessageBox::Yes){
             return;
         }
     }
 
-    base_obj.insert("service_site", services_sites);
+    site_obj.insert("services", services_sites);
+    base_obj.insert("site", site_obj);
     document.setObject(base_obj);
     postDataRequest(WEB_SERVICESITEINFO_PATH, document.toJson());
 }
