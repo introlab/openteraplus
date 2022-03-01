@@ -282,12 +282,12 @@ void ProjectWidget::updateControlsState()
         bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(m_data->getId());
         bool is_site_admin = isSiteAdmin();
 
+        ui->tabManageServices->setTabVisible(ui->tabManageServices->indexOf(ui->tabServices), is_site_admin);
+
         ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabUsersDetails), is_project_admin);
         ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), is_project_admin);
         ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabSessionTypes), is_project_admin);
-        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServicesDetails), is_site_admin);
-
-        ui->tabManageServices->setTabVisible(ui->tabManageServices->indexOf(ui->tabServices), is_site_admin);
+        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServicesDetails), is_site_admin || !m_services_tabs.isEmpty());
 
         ui->tabManageUsers->setTabVisible(ui->tabManageUsers->indexOf(ui->tabUserGroups), is_site_admin);
 
@@ -736,10 +736,6 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
             m_services_tabs.insert(id_service, wdg);
         }
     }
-
-    int index_service_details = ui->tabNav->indexOf(ui->tabServicesDetails);
-    if (!ui->tabNav->isTabVisible(index_service_details))
-        ui->tabNav->setTabVisible(index_service_details, !m_services_tabs.isEmpty());
 }
 
 void ProjectWidget::on_lstServices_itemChanged(QListWidgetItem *item)
@@ -812,6 +808,10 @@ void ProjectWidget::on_tabNav_currentChanged(int index)
             stlist_editor->setFilterText(tr("Seuls les types de séance associés au projet sont affichés."));
             ui->wdgSessionTypes->layout()->addWidget(stlist_editor);
         }
+    }
+
+    if (current_tab == ui->tabServicesDetails){
+        ui->tabManageServices->setCurrentIndex(0);
     }
 
 }
