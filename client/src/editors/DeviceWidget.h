@@ -25,9 +25,8 @@ public:
 private:
     Ui::DeviceWidget *ui;
 
-    QMap<int, QTreeWidgetItem*>  m_listSites_items;
-    QMap<int, QTreeWidgetItem*>  m_listProjects_items;
-    QMap<int, QTreeWidgetItem*>  m_listDeviceProjects_items;
+    QMap<int, QTreeWidgetItem*>  m_treeSites_items;
+    QMap<int, QTreeWidgetItem*>  m_treeProjects_items;
     QMap<int, QListWidgetItem*>  m_listParticipants_items;
 
     void updateControlsState();
@@ -38,10 +37,15 @@ private:
 
     void updateSite(TeraData *site);
     void updateProject(TeraData * project);
+    void updateDeviceProject(TeraData* device_project);
+    void updateDeviceSite(TeraData* device_site);
     void updateParticipant(TeraData *participant);
 
-    bool validateSitesProjects();
+    void postDeviceSites();
+    void postDeviceProjects();
+
     QJsonArray getSelectedProjectsAsJsonArray();
+    QJsonArray getSelectedSitesAsJsonArray();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -54,6 +58,7 @@ private slots:
     void btnSaveSites_clicked();
 
     void deleteDataReply(QString path, int id);
+    void postResultReply(QString path);
 
     void lstSites_itemChanged(QTreeWidgetItem* item, int column);
 

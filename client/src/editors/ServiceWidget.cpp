@@ -113,7 +113,9 @@ void ServiceWidget::updateServiceSite(TeraData *service_site)
         ui->treeProjects->addTopLevelItem(item);
         m_treeSites_items[id_site] = item;
     }
-    item->setText(0, service_site->getFieldValue("site_name").toString());
+    QString site_name = service_site->getFieldValue("site_name").toString();
+    if (!site_name.isEmpty())
+        item->setText(0, site_name);
     if (service_site->getId() > 0){
         item->setCheckState(0, Qt::Checked);
     }else{
@@ -385,7 +387,8 @@ void ServiceWidget::on_treeProjects_itemChanged(QTreeWidgetItem *item, int colum
         return;
 
     updating = true;
-    if (std::find(m_treeSites_items.cbegin(), m_treeSites_items.cend(), item) != m_treeSites_items.cend()){
+    // Don't select all projects of sites anymore
+    /*if (std::find(m_treeSites_items.cbegin(), m_treeSites_items.cend(), item) != m_treeSites_items.cend()){
         if (item->childCount() == 0 && !isLoading()){
             item->setExpanded(true);
         }else{
@@ -394,7 +397,17 @@ void ServiceWidget::on_treeProjects_itemChanged(QTreeWidgetItem *item, int colum
                 item->child(i)->setCheckState(0, item->checkState(0));
             }
         }
+    }*/
+
+    // Uncheck all projects if site was unselected
+    if (std::find(m_treeSites_items.cbegin(), m_treeSites_items.cend(), item) != m_treeSites_items.cend()){
+        if (item->checkState(0) == Qt::Unchecked){
+            for (int i=0; i<item->childCount(); i++){
+                item->child(i)->setCheckState(0, Qt::Unchecked);
+            }
+        }
     }
+
 
     if (std::find(m_treeProjects_items.cbegin(), m_treeProjects_items.cend(), item) != m_treeProjects_items.cend()){
         // We have a project - check if we need to check the parent (site)
@@ -408,7 +421,7 @@ void ServiceWidget::on_treeProjects_itemChanged(QTreeWidgetItem *item, int colum
                 }
             }
             // No projects selected for that site
-            site->setCheckState(0, Qt::Unchecked);
+            //site->setCheckState(0, Qt::Unchecked);
         }
     }
 

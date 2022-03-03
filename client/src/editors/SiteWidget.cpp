@@ -8,7 +8,7 @@ SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     ui(new Ui::SiteWidget)
 {
     m_diag_editor = nullptr;
-
+    m_devicesCount = 0;
 
     ui->setupUi(this);
 
@@ -76,6 +76,7 @@ void SiteWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &SiteWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SiteWidget::processPostOKReply);
     connect(m_comManager, &ComManager::siteAccessReceived, this, &SiteWidget::processSiteAccessReply);
+    connect(m_comManager, &ComManager::deviceSitesReceived, this, &SiteWidget::processDeviceSiteAccessReply);
     connect(m_comManager, &ComManager::servicesSitesReceived, this, &SiteWidget::processServiceSiteAccessReply);
     connect(m_comManager, &ComManager::statsReceived, this, &SiteWidget::processStatsReply);
 
@@ -145,10 +146,12 @@ void SiteWidget::updateControlsState()
     bool is_site_admin = isSiteAdmin() || is_super_admin;
 
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabUsersDetails), is_site_admin);
-    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), is_site_admin);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), (is_site_admin && m_devicesCount>0) || is_super_admin);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), is_site_admin);
 
-    // TODO: Services and devices read only
+    ui->btnUpdateServices->setVisible(is_super_admin);
+    ui->btnUpdateDevices->setVisible(is_super_admin);
+    ui->btnEditDevices->setVisible(is_site_admin);
     /*ui->btnUpdateRoles->setVisible(is_site_admin);
     ui->btnUserGroups->setVisible(is_site_admin);*/
 
@@ -202,6 +205,15 @@ void SiteWidget::queryServiceSiteAccess()
     queryDataRequest(WEB_SERVICESITEINFO_PATH, args);
 }
 
+void SiteWidget::queryDeviceSiteAccess()
+{
+    // Query devices for this site
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_DEVICES, "1");
+    queryDataRequest(WEB_DEVICESITEINFO_PATH, args);
+}
+
 void SiteWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_SITE){
@@ -251,6 +263,26 @@ void SiteWidget::processServiceSiteAccessReply(QList<TeraData> service_sites, QU
     ui->btnUpdateServices->setEnabled(false);
 }
 
+void SiteWidget::processDeviceSiteAccessReply(QList<TeraData> device_sites, QUrlQuery reply_query)
+{
+    for(const TeraData &device_site: device_sites){
+        updateDeviceSite(&device_site);
+    }
+
+    // Update used list from what is checked right now
+    for (int i=0; i<ui->lstDevices->count(); i++){
+        QListWidgetItem* item = ui->lstDevices->item(i);
+        if (item->checkState() == Qt::Unchecked){
+            if (std::find(m_listDevicesSites_items.cbegin(), m_listDevicesSites_items.cend(), item) != m_listDevicesSites_items.cend()){
+                m_listDevicesSites_items.remove(m_listDevicesSites_items.key(item));
+            }
+        }
+    }
+
+    // New list received - disable save button
+    ui->btnUpdateDevices->setEnabled(false);
+}
+
 void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 {
 
@@ -271,10 +303,17 @@ void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
     ui->lblSessions->setText(stats.getFieldValue("sessions_total_count").toString() + tr(" Séances planifiées \nou réalisées"));
     ui->lblDevices->setText(stats.getFieldValue("devices_total_count").toString() + tr(" Appareils"));
 
+    m_devicesCount = stats.getFieldValue("devices_total_count").toInt();
+
 }
 
 void SiteWidget::updateServiceSite(const TeraData *service_site)
 {
+    int id_site = service_site->getFieldValue("id_site").toInt();
+
+    if (id_site != m_data->getId() && id_site>0)
+        return; // Not for us
+
     int id_service = service_site->getFieldValue("id_service").toInt();
     QString service_name = service_site->getFieldValue("service_name").toString();
     QListWidgetItem* item;
@@ -293,17 +332,58 @@ void SiteWidget::updateServiceSite(const TeraData *service_site)
 
     int id_service_site = service_site->getId();
     if (id_service_site > 0){
-        item->setCheckState(Qt::Checked);
+        if (m_comManager->isCurrentUserSuperAdmin())
+            item->setCheckState(Qt::Checked);
         if (!m_listServicesSites_items.contains(id_service_site)){
             m_listServicesSites_items[id_service_site] = item;
         }
     }else{
-        item->setCheckState(Qt::Unchecked);
+        if (m_comManager->isCurrentUserSuperAdmin())
+            item->setCheckState(Qt::Unchecked);
         if (m_listServicesSites_items.contains(id_service_site)){
             m_listServicesSites_items.remove(id_service_site);
         }
     }
 
+}
+
+void SiteWidget::updateDeviceSite(const TeraData *device_site)
+{
+    int id_site = device_site->getFieldValue("id_site").toInt();
+
+    if (id_site != m_data->getId() && id_site>0)
+        return; // Not for us
+
+    int id_device = device_site->getFieldValue("id_device").toInt();
+    QString device_name = device_site->getFieldValue("device_name").toString();
+    QListWidgetItem* item;
+
+    if (m_listDevices_items.contains(id_device)){
+        item = m_listDevices_items[id_device];
+    }else{
+        item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_DEVICE)), device_name);
+        ui->lstDevices->addItem(item);
+        m_listDevices_items[id_device] = item;
+
+    }
+
+    if (!device_name.isEmpty())
+        item->setText(device_name);
+
+    int id_device_site = device_site->getId();
+    if (id_device_site > 0){
+        if (m_comManager->isCurrentUserSuperAdmin())
+            item->setCheckState(Qt::Checked);
+        if (!m_listDevicesSites_items.contains(id_device_site)){
+            m_listDevicesSites_items[id_device_site] = item;
+        }
+    }else{
+        if (m_comManager->isCurrentUserSuperAdmin())
+            item->setCheckState(Qt::Unchecked);
+        if (m_listDevicesSites_items.contains(id_device_site)){
+            m_listDevicesSites_items.remove(id_device_site);
+        }
+    }
 }
 
 void SiteWidget::processPostOKReply(QString path)
@@ -408,6 +488,20 @@ void SiteWidget::userGroupsEditor_finished()
     queryUserGroupsSiteAccess();
 }
 
+void SiteWidget::devicesEditor_finished()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+        m_diag_editor = nullptr;
+    }
+
+    // Refresh device site informations
+    m_listDevicesSites_items.clear();
+    m_listDevices_items.clear();
+    ui->lstDevices->clear();
+    queryDeviceSiteAccess();
+}
+
 void SiteWidget::on_tabNav_currentChanged(int index)
 {
     QUrlQuery args;
@@ -415,21 +509,12 @@ void SiteWidget::on_tabNav_currentChanged(int index)
 
     QWidget* current_tab = ui->tabNav->widget(index);
 
-    /*if (current_tab == ui->tabProjects){
-        // Projects
-        if (m_listProjects_items.isEmpty()){
-            // Connect signal to receive updates
-            connect(m_comManager, &ComManager::projectsReceived, this, &SiteWidget::processProjectsReply);
-
-            // Query
-            args.addQueryItem(WEB_QUERY_LIST, "true");
-            queryDataRequest(WEB_PROJECTINFO_PATH, args);
-        }
-    }*/
-
     if (current_tab == ui->tabDevices){
+        if (m_listDevices_items.isEmpty()){
+            queryDeviceSiteAccess();
+        }
         // Devices
-        if (!ui->wdgDevices->layout()){
+        /*if (!ui->wdgDevices->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
             layout->setMargin(0);
             ui->wdgDevices->setLayout(layout);
@@ -441,7 +526,7 @@ void SiteWidget::on_tabNav_currentChanged(int index)
             deviceslist_editor->setPermissions(isSiteAdmin(), m_comManager->isCurrentUserSuperAdmin());
             deviceslist_editor->setFilterText(tr("Seuls les appareils associés au site sont affichés."));
             ui->wdgDevices->layout()->addWidget(deviceslist_editor);
-        }
+        }*/
     }
 
     if (current_tab == ui->tabUsersDetails){
@@ -526,6 +611,9 @@ void SiteWidget::on_btnUpdateServices_clicked()
 
 void SiteWidget::on_lstServices_itemChanged(QListWidgetItem *item)
 {
+    if (!m_comManager->isCurrentUserSuperAdmin())
+        return;
+
     // Check for changed items
     bool has_changes = false;
     if (m_listServicesSites_items.key(item) > 0 && item->checkState() == Qt::Unchecked){
@@ -538,6 +626,115 @@ void SiteWidget::on_lstServices_itemChanged(QListWidgetItem *item)
         }
     }
 
+    if (item->checkState() == Qt::Checked){
+        item->setForeground(Qt::green);
+    }else{
+        item->setForeground(Qt::red);
+    }
+
     ui->btnUpdateServices->setEnabled(has_changes);
+}
+
+
+void SiteWidget::on_lstDevices_itemChanged(QListWidgetItem *item)
+{
+    if (!m_comManager->isCurrentUserSuperAdmin())
+        return;
+
+    // Check for changed items
+    bool has_changes = false;
+    if (m_listDevicesSites_items.key(item) > 0 && item->checkState() == Qt::Unchecked){
+        // Item deselected
+        has_changes = true;
+    }else{
+        if (m_listDevicesSites_items.key(item) <= 0 && item->checkState() == Qt::Checked){
+            // Item selected
+            has_changes = true;
+        }
+    }
+
+    if (item->checkState() == Qt::Checked){
+        item->setForeground(Qt::green);
+    }else{
+        item->setForeground(Qt::red);
+    }
+
+    ui->btnUpdateDevices->setEnabled(has_changes);
+}
+
+
+void SiteWidget::on_btnUpdateDevices_clicked()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonObject site_obj;
+    QJsonArray devices_sites;
+    bool removed_devices = false;
+
+    site_obj.insert("id_site", m_data->getId());
+    for (int i=0; i<ui->lstDevices->count(); i++){
+        QListWidgetItem* item = ui->lstDevices->item(i);
+        int device_id = m_listDevices_items.key(item, 0);
+        if (item->checkState() == Qt::Checked){
+            // New item selected
+            QJsonObject item_obj;
+            item_obj.insert("id_device", device_id);
+            devices_sites.append(item_obj);
+        }else{
+            if (std::find(m_listDevicesSites_items.cbegin(), m_listDevicesSites_items.cend(), item) != m_listDevicesSites_items.cend()){
+                removed_devices = true;
+            }
+        }
+     }
+
+    if (removed_devices){
+        GlobalMessageBox msgbox;
+        int rval = msgbox.showYesNo(tr("Suppression d'appareil associé"), tr("Au moins un appareil a été retiré de ce site. S'il y a des projets qui utilisent cet appareil, ils ne pourront plus l'utiliser.\nSouhaitez-vous continuer?"));
+        if (rval != GlobalMessageBox::Yes){
+            return;
+        }
+    }
+
+    site_obj.insert("devices", devices_sites);
+    base_obj.insert("site", site_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_DEVICESITEINFO_PATH, document.toJson());
+}
+
+
+void SiteWidget::on_txtSearchDevices_textChanged(const QString &search_text)
+{
+    for(QListWidgetItem* item: qAsConst(m_listDevices_items)){
+        item->setHidden(!item->text().contains(search_text, Qt::CaseInsensitive));
+    }
+}
+
+
+void SiteWidget::on_btnEditDevices_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+
+    m_diag_editor = new BaseDialog(this);
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "1");
+    args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList(), m_diag_editor);
+    list_widget->setPermissions(isSiteAdmin(), m_comManager->isCurrentUserSuperAdmin());
+    list_widget->setFilterText(tr("Seuls les appareils associés au site sont affichés."));
+    m_diag_editor->setCentralWidget(list_widget);
+
+    m_diag_editor->setWindowTitle(tr("Appareils"));
+    m_diag_editor->setMinimumSize(size().width(), 2*size().height()/3);
+
+    connect(m_diag_editor, &BaseDialog::finished, this, &SiteWidget::devicesEditor_finished);
+    m_diag_editor->open();
+    /*args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "");
+    args.addQueryItem(WEB_QUERY_WITH_SITES, "");
+    DataListWidget* deviceslist_editor = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList("device_participants.participant_name"), ui->wdgUsers);
+    deviceslist_editor->setPermissions(isSiteAdmin(), m_comManager->isCurrentUserSuperAdmin());
+    deviceslist_editor->setFilterText(tr("Seuls les appareils associés au site sont affichés."));*/
 }
 

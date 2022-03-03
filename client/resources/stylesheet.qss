@@ -378,7 +378,8 @@ QCheckBox::indicator {
      width: 32px;
      height: 32px;
  }
-QListWidget::indicator, QTreeWidget::indicator {
+
+QListWidget::indicator, QTreeWidget::indicator, QTableWidget::indicator {
      width: 20px;
      height: 20px;
 }
@@ -386,28 +387,28 @@ QListWidget::indicator, QTreeWidget::indicator {
 QCheckBox::indicator:unchecked:!enabled {
     image: url(://controls/check_off_disabled.png);
 }
-QListWidget::indicator:unchecked:!enabled, QTreeWidget::indicator:unchecked:!enabled{
+QListWidget::indicator:unchecked:!enabled, QTreeWidget::indicator:unchecked:!enabled, QTableWidget::indicator:unchecked:!enabled{
     image: url(://controls/check2_off_disabled.png);
 }
 
 QCheckBox::indicator:checked:!enabled{
     image: url(://controls/check_on_disabled.png);
 }
-QListWidget::indicator:checked:!enabled, QTreeWidget::indicator:checked:!enabled {
+QListWidget::indicator:checked:!enabled, QTreeWidget::indicator:checked:!enabled, QTableWidget::indicator:checked:!enabled {
     image: url(://controls/check2_on_disabled.png);
 }
 
 QCheckBox::indicator:unchecked {
     image: url(://controls/check_off.png);
 }
-QListWidget::indicator:unchecked, QTreeWidget::indicator:unchecked{
+QListWidget::indicator:unchecked, QTreeWidget::indicator:unchecked, QTableWidget::indicator:unchecked{
     image: url(://controls/check2_off.png);
 }
 
 QCheckBox::indicator:checked{
     image: url(://controls/check_on.png);
 }
-QListWidget::indicator:checked, QTreeWidget::indicator:checked{
+QListWidget::indicator:checked, QTreeWidget::indicator:checked, QTableWidget::indicator:checked{
     image: url(://controls/check2_on.png);
 }
 
@@ -599,7 +600,7 @@ QToolButton#btnVideo:checked, QToolButton#btnLog:checked, QToolButton#btnInSessi
     border: 0px;
 }
 
-QLineEdit#txtPartSearch, QLineEdit#txtNavSearch{
+QLineEdit#txtPartSearch, QLineEdit#txtNavSearch, QLineEdit#txtSearchDevices{
     color: white;
     background-color: rgba(0,0,0,15%);
 }
