@@ -146,7 +146,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <widget class="QLabel" name="lblTitle">
        <property name="font">
         <font>
-         <weight>50</weight>
          <bold>false</bold>
         </font>
        </property>
@@ -160,7 +159,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -287,20 +286,28 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <widget class="QWidget" name="tabProjects">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/project.png</normaloff>:/icons/project.png</iconset>
+        <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Projets</string>
+       <string>Sites / Projets</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QListWidget" name="lstProjects">
+        <widget class="QTreeWidget" name="treeProjects">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
         </widget>
        </item>
        <item>
@@ -315,11 +322,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>Mettre à jour les projets de ce type de séance</string>
+          <string>Mettre à jour les sites / projets associés</string>
          </property>
          <property name="icon">
           <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/project.png</normaloff>:/icons/project.png</iconset>
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
          </property>
          <property name="iconSize">
           <size>

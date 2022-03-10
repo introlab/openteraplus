@@ -2,7 +2,7 @@
 #define SESSIONTYPEWIDGET_H
 
 #include <QWidget>
-#include <QListWidgetItem>
+#include <QTreeWidgetItem>
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
@@ -26,28 +26,30 @@ public:
 private:
     Ui::SessionTypeWidget *ui;
 
-    QMap<int, QListWidgetItem*>  m_listProjects_items;
-    QMap<int, QListWidgetItem*>  m_listTypesProjects_items;
+    QMap<int, QTreeWidgetItem*>  m_treeSites_items;
+    QMap<int, QTreeWidgetItem*>  m_treeProjects_items;
 
     void updateControlsState();
     void updateFieldsValue();
 
-    void updateProject(TeraData* project);
+    void updateSessionTypeSite(TeraData* sts);
+    void updateSessionTypeProject(TeraData* stp);
 
-    bool validateData();
+    void postSessionTypeSites();
+    void postSessionTypeProjects();
+
     bool validateProjects();
-
-    QJsonArray getSelectedProjectsAsJsonArray();
+    bool validateData();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
     void processSessionTypesProjectsReply(QList<TeraData> stp_list);
-    void processProjectsReply(QList<TeraData> projects);
+    void processSessionTypesSitesReply(QList<TeraData> sts_list);
     void postResultReply(QString path);
 
     void btnSaveProjects_clicked();
 
-    void on_lstProjects_itemChanged(QListWidgetItem *item);
+    void on_treeProjects_itemChanged(QTreeWidgetItem *item, int column);
     void on_tabNav_currentChanged(int index);
     void on_btnUpdateConfig_clicked();
 };

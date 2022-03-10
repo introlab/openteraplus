@@ -563,22 +563,6 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         return handleTokenRefreshReply(data_list);
     }
 
-    // Asset token refresh reply
-   /* if (reply_path == WEB_ASSETINFO_PATH){
-        if (!data_list.isArray()){
-            // We have assets and an asset token
-            QJsonObject asset_reply = data_list.object();
-            if (asset_reply.contains("access_token")){
-                emit assetAccessTokenReceived(asset_reply["access_token"].toString(), reply_query);
-            }
-            if (asset_reply.contains("assets")){
-                data_list.setArray(asset_reply["assets"].toArray());
-            }else{
-                return true; // No assets to manage, only the token!
-            }
-        }
-    }*/
-
     // Browse each items received
     QList<TeraData> items;
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
@@ -676,6 +660,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_SESSIONTYPEPROJECT:
         emit sessionTypesProjectsReceived(items, reply_query);
+        break;
+    case TERADATA_SESSIONTYPESITE:
+        emit sessionTypesSitesReceived(items, reply_query);
         break;
     case TERADATA_SESSIONEVENT:
         emit sessionEventsReceived(items, reply_query);

@@ -275,6 +275,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "device_type";
     case TERADATA_SESSIONTYPEPROJECT:
         return "session_type_project";
+    case TERADATA_SESSIONTYPESITE:
+        return "session_type_site";
     case TERADATA_SESSIONEVENT:
         return "session_event";
     case TERADATA_SERVICE:
@@ -343,6 +345,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Appareil: type");
     case TERADATA_SESSIONTYPEPROJECT:
         return tr("Type de séance: projet");
+    case TERADATA_SESSIONTYPESITE:
+        return tr("Type de séance: site");
     case TERADATA_SESSIONEVENT:
         return tr("Séance: événement");
     case TERADATA_SERVICE:
@@ -386,6 +390,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_DEVICEPROJECTINFO_PATH)       return TERADATA_DEVICEPROJECT;
     if (path==WEB_DEVICEPARTICIPANTINFO_PATH)   return TERADATA_DEVICEPARTICIPANT;
     if (path==WEB_SESSIONTYPEPROJECT_PATH)      return TERADATA_SESSIONTYPEPROJECT;
+    if (path==WEB_SESSIONTYPESITE_PATH)         return TERADATA_SESSIONTYPESITE;
     if (path==WEB_SESSIONEVENT_PATH)            return TERADATA_SESSIONEVENT;
     if (path==WEB_DEVICESUBTYPE_PATH)           return TERADATA_DEVICESUBTYPE;
     if (path==WEB_DEVICETYPE_PATH)              return TERADATA_DEVICETYPE;
@@ -442,6 +447,7 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
         return "://icons/usergroup.png";
     case TERADATA_SITE:
     case TERADATA_SERVICE_SITE:
+    case TERADATA_SESSIONTYPESITE:
         return "://icons/site.png";
     case TERADATA_SESSIONTYPE:
         return "://icons/session_type.png";

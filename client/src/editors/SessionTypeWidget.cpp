@@ -39,7 +39,8 @@ void SessionTypeWidget::saveData(bool signal){
     // If data is new, we request all the fields.
     QJsonDocument st_data = ui->wdgSessionType->getFormDataJson(m_data->isNew());
 
-    if (m_data->isNew() && ui->lstProjects->isEnabled()){
+    // TODO: New session type - also include projects and sites
+    /*if (m_data->isNew() && ui->treeProjects->isEnabled()){
         QJsonObject base_obj = st_data.object();
         QJsonObject base_st = base_obj["session_type"].toObject();
         QJsonArray projects = getSelectedProjectsAsJsonArray();
@@ -49,7 +50,7 @@ void SessionTypeWidget::saveData(bool signal){
             base_obj.insert("session_type", base_st);
             st_data.setObject(base_obj);
         }
-    }
+    }*/
 
     postDataRequest(WEB_SESSIONTYPE_PATH, st_data.toJson());
 
@@ -68,7 +69,7 @@ void SessionTypeWidget::updateControlsState(){
     if (dataIsNew() && ui->tabNav->count()>1){
 
         // Move projects list to first tab
-        ui->tabProjects->layout()->removeWidget(ui->lstProjects);
+        ui->tabProjects->layout()->removeWidget(ui->treeProjects);
         ui->tabDashboard->layout()->removeWidget(ui->frameButtons);
 
         QLabel* lbl = new QLabel(tr("Projets associés"));
@@ -78,21 +79,19 @@ void SessionTypeWidget::updateControlsState(){
         lbl->setFont(labelFont);
 
         ui->tabDashboard->layout()->addWidget(lbl);
-        ui->tabDashboard->layout()->addWidget(ui->lstProjects);
+        ui->tabDashboard->layout()->addWidget(ui->treeProjects);
         ui->tabDashboard->layout()->addWidget(ui->frameButtons);
         while (ui->tabNav->count() > 1)
             ui->tabNav->removeTab(1);
 
         // Query sites and projects if needed
-        if (m_listProjects_items.isEmpty()){
+        // TODO - query projects and sites when new session type is created...
+
+        /*if (m_treeProjects_items.isEmpty()){
             QUrlQuery args;
-            //args.addQueryItem(WEB_QUERY_LIST, "true");
-            if (m_data->hasFieldName("id_project")){
-                args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
-                m_data->removeFieldName("id_project");
-            }
-            queryDataRequest(WEB_PROJECTINFO_PATH, args);
-        }
+            args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+            queryDataRequest(WEB_SESSIONTYPESITE_PATH, args);
+        }*/
     }
 }
 
@@ -104,26 +103,106 @@ void SessionTypeWidget::updateFieldsValue(){
     }
 }
 
-void SessionTypeWidget::updateProject(TeraData *project)
+void SessionTypeWidget::updateSessionTypeSite(TeraData *sts)
 {
-    int id_project = project->getId();
-    if (m_listProjects_items.contains(id_project)){
-        QListWidgetItem* item = m_listProjects_items[id_project];
-        item->setText(project->getName());
-    }else{
-        QString item_name = project->getName();
-        if (project->hasFieldName("site_name")){
-            item_name = project->getFieldValue("site_name").toString() + " / " + item_name;
-        }
+    int id_site = sts->getFieldValue("id_site").toInt();
+    QTreeWidgetItem* item;
+    if (m_treeSites_items.contains(id_site)){
+        item = m_treeSites_items[id_site];
 
-        QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)), item_name);
-        if(!m_comManager->isCurrentUserProjectAdmin(id_project)){
-            item->setForeground(Qt::gray);
-        }
-        item->setCheckState(Qt::Unchecked);
-        ui->lstProjects->addItem(item);
-        m_listProjects_items[id_project] = item;
+    }else{
+        item = new QTreeWidgetItem();
+        item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)));
+        item->setCheckState(0, Qt::Unchecked);
+        item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        ui->treeProjects->addTopLevelItem(item);
+        m_treeSites_items[id_site] = item;
     }
+    QString site_name = sts->getFieldValue("site_name").toString();
+    if (!site_name.isEmpty())
+        item->setText(0, site_name);
+    if (sts->getId() > 0){
+        item->setCheckState(0, Qt::Checked);
+    }else{
+        item->setCheckState(0, Qt::Unchecked);
+    }
+}
+
+void SessionTypeWidget::updateSessionTypeProject(TeraData *stp)
+{
+    int id_project = stp->getFieldValue("id_project").toInt();
+    QTreeWidgetItem* item;
+    QString project_name = stp->getFieldValue("project_name").toString();
+
+    if (m_treeProjects_items.contains(id_project)){
+        item = m_treeProjects_items[id_project];
+    }else{
+        item = new QTreeWidgetItem();
+        item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
+        int id_site = stp->getFieldValue("id_site").toInt();
+        QTreeWidgetItem* parent_item = m_treeSites_items[id_site];
+        if (!parent_item){
+            LOG_WARNING(tr("Site not found for project") + " :" + project_name, "SessionTypeWidget::updateSessionTypeProject");
+            delete item;
+            return;
+        }
+        parent_item->addChild(item);
+        m_treeProjects_items[id_project] = item;
+    }
+
+    if (!project_name.isEmpty())
+        item->setText(0, project_name);
+
+    int st_id = stp->getFieldValue("id_session_type").toInt();
+    if (st_id > 0){
+        item->setCheckState(0, Qt::Checked);
+    }else{
+        item->setCheckState(0, Qt::Unchecked);
+    }
+}
+
+void SessionTypeWidget::postSessionTypeSites()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray sites;
+
+    for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+        int site_id = m_treeSites_items.key(item);
+        if (item->checkState(0) == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_site", site_id);
+            sites.append(data_obj);
+        }
+    }
+
+    QJsonObject service_obj;
+    service_obj.insert("id_session_type", m_data->getId());
+    service_obj.insert("sites", sites);
+    base_obj.insert("session_type", service_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SESSIONTYPESITE_PATH, document.toJson());
+}
+
+void SessionTypeWidget::postSessionTypeProjects()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray projects;
+
+    for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+        int project_id = m_treeProjects_items.key(item);
+        if (item->checkState(0) == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_project", project_id);
+            data_obj.insert("id_session_type", m_data->getId());
+            projects.append(data_obj);
+        }
+    }
+
+    base_obj.insert("session_type_project", projects);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SESSIONTYPEPROJECT_PATH, document.toJson());
 }
 
 bool SessionTypeWidget::validateData(){
@@ -139,10 +218,10 @@ bool SessionTypeWidget::validateData(){
 
 bool SessionTypeWidget::validateProjects()
 {
-    //if (!m_comManager->isCurrentUserSuperAdmin()){
+    if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
-        for (int i=0; i<m_listProjects_items.count(); i++){
-            if (m_listProjects_items.values().at(i)->checkState() == Qt::Checked){
+        for (int i=0; i<m_treeSites_items.count(); i++){
+            if (m_treeSites_items.values().at(i)->checkState(0) == Qt::Checked){
                 at_least_one_selected = true;
                 break;
             }
@@ -150,26 +229,11 @@ bool SessionTypeWidget::validateProjects()
         if (!at_least_one_selected){
             // Warning: that session type not having any project meaning that it will be not available to the current user
             GlobalMessageBox msgbox;
-            msgbox.showError(tr("Attention"), tr("Aucun projet n'a été associé.\nVous devez associer au moins un projet."));
+            msgbox.showError(tr("Attention"), tr("Aucun site n'a été associé.\nVous devez associer au moins un site."));
             return false;
         }
-    //}
-    return true;
-}
-
-QJsonArray SessionTypeWidget::getSelectedProjectsAsJsonArray()
-{
-    QJsonArray projects;
-    for (int i=0; i<m_listProjects_items.count(); i++){
-        int project_id = m_listProjects_items.keys().at(i);
-        QListWidgetItem* item = m_listProjects_items.values().at(i);
-        if (item->checkState() == Qt::Checked){
-            QJsonObject data_obj;
-            data_obj.insert("id_project", project_id);
-            projects.append(data_obj);
-        }
     }
-    return projects;
+    return true;
 }
 
 void SessionTypeWidget::processFormsReply(QString form_type, QString data)
@@ -188,55 +252,27 @@ void SessionTypeWidget::processFormsReply(QString form_type, QString data)
 
 void SessionTypeWidget::processSessionTypesProjectsReply(QList<TeraData> stp_list)
 {
-    if (stp_list.isEmpty())
-        return;
-
-    // Check if it is for us
-    if (stp_list.first().hasFieldName(WEB_QUERY_ID_SESSION_TYPE)){
-        if (stp_list.first().getFieldValue(WEB_QUERY_ID_SESSION_TYPE).toInt() != m_data->getId())
-            return;
-    }else{
-        return;
+    for (TeraData project:stp_list){
+        updateSessionTypeProject(&project);
     }
 
-    // Uncheck all projects
-    for (QListWidgetItem* item:m_listProjects_items){
-        item->setCheckState(Qt::Unchecked);
-    }
-    m_listTypesProjects_items.clear();
-
-    // Check required projects
-    for(TeraData type_project:stp_list){
-        int project_id = type_project.getFieldValue("id_project").toInt();
-        int stp_id = type_project.getId();
-        if (m_listProjects_items.contains(project_id)){
-            m_listProjects_items[project_id]->setCheckState(Qt::Checked);
-            m_listTypesProjects_items[stp_id] = m_listProjects_items[project_id];
-        }
-    }
+    ui->treeProjects->expandAll();
 }
 
-void SessionTypeWidget::processProjectsReply(QList<TeraData> projects)
+void SessionTypeWidget::processSessionTypesSitesReply(QList<TeraData> sts_list)
 {
-    // If our site list is empty, already query sites for that device
-    bool need_to_load_sessions_type_projects = m_listProjects_items.isEmpty();
-
-    for(TeraData project:projects){
-        updateProject(&project);
+    for (TeraData sts:sts_list){
+        updateSessionTypeSite(&sts);
     }
 
-    if (need_to_load_sessions_type_projects && !dataIsNew()){
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getId()));
-        args.addQueryItem(WEB_QUERY_LIST, "true");
-        queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
-    }else{
-        if (dataIsNew() && m_listProjects_items.count() == 1){
-            // New data and only one item in list - auto-check!
-            m_listProjects_items.first()->setCheckState(Qt::Checked);
-        }
-    }
+    // Query projects for session type
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
+    args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+    queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
 }
+
 
 void SessionTypeWidget::postResultReply(QString path)
 {
@@ -245,6 +281,10 @@ void SessionTypeWidget::postResultReply(QString path)
         if (parent())
             emit closeRequest();
     }
+
+    if (path==WEB_SESSIONTYPESITE_PATH){
+        postSessionTypeProjects();
+    }
 }
 
 void SessionTypeWidget::connectSignals()
@@ -252,80 +292,66 @@ void SessionTypeWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &SessionTypeWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &SessionTypeWidget::postResultReply);
     connect(m_comManager, &ComManager::sessionTypesProjectsReceived, this, &SessionTypeWidget::processSessionTypesProjectsReply);
-    connect(m_comManager, &ComManager::projectsReceived, this, &SessionTypeWidget::processProjectsReply);
+    connect(m_comManager, &ComManager::sessionTypesSitesReceived, this, &SessionTypeWidget::processSessionTypesSitesReply);
 
     connect(ui->btnProjects, & QPushButton::clicked, this, &SessionTypeWidget::btnSaveProjects_clicked);
 }
 
 void SessionTypeWidget::btnSaveProjects_clicked()
 {
-
     if (!validateProjects())
         return;
 
-    QJsonDocument document;
-    QJsonObject base_obj;
-    QJsonArray projects;
-    QList<int> projects_to_delete;
+    postSessionTypeSites();
+}
 
-    for (int i=0; i<ui->lstProjects->count(); i++){
-        // Build json list of projects
-        if (ui->lstProjects->item(i)->checkState()==Qt::Checked){
-            QJsonObject item_obj;
-            item_obj.insert("id_session_type", m_data->getId());
-            item_obj.insert("id_project", m_listProjects_items.key(ui->lstProjects->item(i)));
-            projects.append(item_obj);
-        }else{
-            int id_type_project = m_listTypesProjects_items.key(ui->lstProjects->item(i),-1);
-            if (id_type_project>=0){
-                projects_to_delete.append(id_type_project);
+void SessionTypeWidget::on_treeProjects_itemChanged(QTreeWidgetItem *item, int column)
+{
+    Q_UNUSED(column)
+    static bool updating = false;
+
+    // Lock to prevent recursive updates
+    if (updating)
+        return;
+
+    updating = true;
+    // Uncheck all projects if site was unselected
+    if (std::find(m_treeSites_items.cbegin(), m_treeSites_items.cend(), item) != m_treeSites_items.cend()){
+        if (item->checkState(0) == Qt::Unchecked){
+            for (int i=0; i<item->childCount(); i++){
+                item->child(i)->setCheckState(0, Qt::Unchecked);
             }
         }
     }
 
-    // Delete queries
-    for (int id_type_project:projects_to_delete){
-        deleteDataRequest(WEB_SESSIONTYPEPROJECT_PATH, id_type_project);
-    }
-
-    // Update query
-    base_obj.insert("session_type_project", projects);
-    document.setObject(base_obj);
-    postDataRequest(WEB_SESSIONTYPEPROJECT_PATH, document.toJson());
-}
-
-void SessionTypeWidget::on_lstProjects_itemChanged(QListWidgetItem *item)
-{
-    int id_project = m_listProjects_items.key(item);
-    bool is_admin = m_comManager->isCurrentUserProjectAdmin(id_project);
-
-    if (!is_admin){
-        // Prevent checking item if not project admin of that project
-        if (item->checkState() == Qt::Checked  && !m_listTypesProjects_items.values().contains(item)){
-            // Item should not be checked!
-            item->setCheckState(Qt::Unchecked);
-        }
-        if (item->checkState() == Qt::Unchecked && m_listTypesProjects_items.values().contains(item)){
-            // Item should be checked!
-            item->setCheckState(Qt::Checked);
+    if (std::find(m_treeProjects_items.cbegin(), m_treeProjects_items.cend(), item) != m_treeProjects_items.cend()){
+        // We have a project - check if we need to check the parent (site)
+        QTreeWidgetItem* site = item->parent();
+        if (site){
+            for(int i=0; i<site->childCount(); i++){
+                if (site->child(i)->checkState(0) == Qt::Checked){
+                    site->setCheckState(0, Qt::Checked);
+                    updating = false;
+                    return;
+                }
+            }
         }
     }
-
-
-
+    updating = false;
 }
 
 void SessionTypeWidget::on_tabNav_currentChanged(int index)
 {
     QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getId()));
 
     QWidget* current_tab = ui->tabNav->widget(index);
 
     if (current_tab == ui->tabProjects){
-        // Query available projects
-        if (m_listProjects_items.isEmpty()){
-            //args.addQueryItem(WEB_QUERY_LIST, "true");
-            queryDataRequest(WEB_PROJECTINFO_PATH, args);
+        // Sites / Projects
+        if (m_treeSites_items.isEmpty() || m_treeSites_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+            queryDataRequest(WEB_SESSIONTYPESITE_PATH, args);
         }
     }
 
