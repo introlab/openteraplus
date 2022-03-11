@@ -432,6 +432,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::servicesProjectsReceived;
     case TERADATA_SESSIONTYPEPROJECT:
         return &ComManager::sessionTypesProjectsReceived;
+    case TERADATA_SESSIONTYPESITE:
+        return &ComManager::sessionTypesSitesReceived;
     case TERADATA_SERVICE_CONFIG:
         return &ComManager::servicesConfigReceived;
     default:

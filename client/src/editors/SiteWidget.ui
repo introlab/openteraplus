@@ -171,7 +171,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -313,7 +313,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <x>0</x>
             <y>0</y>
             <width>1034</width>
-            <height>372</height>
+            <height>371</height>
            </rect>
           </property>
           <attribute name="label">
@@ -842,6 +842,20 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           </layout>
          </widget>
         </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabSessionTypes">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/session_type.png</normaloff>:/icons/session_type.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Types de séances</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QWidget" name="wdgSessionTypes" native="true"/>
        </item>
       </layout>
      </widget>

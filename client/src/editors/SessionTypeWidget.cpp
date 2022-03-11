@@ -191,16 +191,18 @@ void SessionTypeWidget::postSessionTypeProjects()
     QJsonArray projects;
 
     for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
-        int project_id = m_treeProjects_items.key(item);
+        int proj_id = m_treeProjects_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;
-            data_obj.insert("id_project", project_id);
-            data_obj.insert("id_session_type", m_data->getId());
+            data_obj.insert("id_project", proj_id);
             projects.append(data_obj);
         }
     }
 
-    base_obj.insert("session_type_project", projects);
+    QJsonObject service_obj;
+    service_obj.insert("id_session_type", m_data->getId());
+    service_obj.insert("projects", projects);
+    base_obj.insert("session_type", service_obj);
     document.setObject(base_obj);
     postDataRequest(WEB_SESSIONTYPEPROJECT_PATH, document.toJson());
 }
@@ -266,11 +268,13 @@ void SessionTypeWidget::processSessionTypesSitesReply(QList<TeraData> sts_list)
     }
 
     // Query projects for session type
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getId()));
-    args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
-    args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
-    queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
+    if (m_treeProjects_items.isEmpty()){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getId()));
+        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+        queryDataRequest(WEB_SESSIONTYPEPROJECT_PATH, args);
+    }
 }
 
 

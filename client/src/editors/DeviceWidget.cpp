@@ -368,11 +368,13 @@ void DeviceWidget::processDeviceSitesReply(QList<TeraData> device_sites)
     }
 
     // Query projects for device
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
-    args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
-    args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
-    queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
+    if (m_treeProjects_items.isEmpty()){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
+        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+        queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
+    }
 }
 
 void DeviceWidget::processDeviceProjectsReply(QList<TeraData> device_projects)

@@ -277,11 +277,13 @@ void ServiceWidget::processServiceSites(QList<TeraData> sites, QUrlQuery reply_q
     }
 
     // Query projects for service
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_SERVICE, QString::number(m_data->getId()));
-    args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
-    args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
-    queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
+    if (m_treeProjects_items.isEmpty()){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SERVICE, QString::number(m_data->getId()));
+        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+        queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
+    }
 }
 
 void ServiceWidget::connectSignals()

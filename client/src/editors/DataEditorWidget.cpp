@@ -45,8 +45,8 @@ void DataEditorWidget::setData(const TeraData* data)
     if (data != nullptr){
         m_data = new TeraData(*data);
         // Start editing if new data
-        if (dataIsNew()){
-            editToggleClicked();
+        if (DataEditorWidget::dataIsNew()){
+            DataEditorWidget::editToggleClicked();
         }
     }
 
@@ -355,7 +355,7 @@ void DataEditorWidget::saveButtonClicked()
 
         if (!invalids.isEmpty()){
             QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-            for (QString field:invalids){
+            for (const QString &field:qAsConst(invalids)){
                 msg += "<li>" + field + "</li>";
             }
             msg += "</ul>";

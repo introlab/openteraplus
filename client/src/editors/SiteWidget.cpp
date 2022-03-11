@@ -148,6 +148,7 @@ void SiteWidget::updateControlsState()
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabUsersDetails), is_site_admin);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), (is_site_admin && m_devicesCount>0) || is_super_admin);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), is_site_admin);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabSessionTypes), is_site_admin);
 
     ui->btnUpdateServices->setVisible(is_super_admin);
     ui->btnUpdateDevices->setVisible(is_super_admin);
@@ -549,6 +550,22 @@ void SiteWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabServices){
         if (m_listServices_items.isEmpty()){
             queryServiceSiteAccess();
+        }
+    }
+
+    if (current_tab == ui->tabSessionTypes){
+        // Session types
+        if (!ui->wdgSessionTypes->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgSessionTypes->setLayout(layout);
+        }
+        if (ui->wdgSessionTypes->layout()->count() == 0){
+            DataListWidget* stlist_editor = new DataListWidget(m_comManager, TERADATA_SESSIONTYPE, WEB_SESSIONTYPESITE_PATH, args, QStringList(), ui->wdgSessionTypes);
+            // m_limited = true = user only, not project admin
+            stlist_editor->setPermissions(!m_limited, !m_limited);
+            stlist_editor->setFilterText(tr("Seuls les types de séances associés au site sont affichés."));
+            ui->wdgSessionTypes->layout()->addWidget(stlist_editor);
         }
     }
 
