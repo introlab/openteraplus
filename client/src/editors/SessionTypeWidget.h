@@ -34,6 +34,8 @@ private:
 
     void updateSessionTypeSite(TeraData* sts);
     void updateSessionTypeProject(TeraData* stp);
+    void updateSite(TeraData *site);
+    void updateProject(TeraData *project);
 
     void postSessionTypeSites();
     void postSessionTypeProjects();
@@ -45,6 +47,8 @@ private slots:
     void processFormsReply(QString form_type, QString data);
     void processSessionTypesProjectsReply(QList<TeraData> stp_list);
     void processSessionTypesSitesReply(QList<TeraData> sts_list);
+    void processSitesReply(QList<TeraData> sites);
+    void processProjectsReply(QList<TeraData> projects);
     void postResultReply(QString path);
 
     void btnSaveProjects_clicked();

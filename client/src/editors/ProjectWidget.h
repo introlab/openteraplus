@@ -36,6 +36,7 @@ private slots:
     void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processDevicesReply(QList<TeraData> devices);
     void processServiceProjectsReply(QList<TeraData> services);
+    void processSessionTypeProjectReply(QList<TeraData> stp_list, QUrlQuery reply_query);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
 
     void processPostOKReply(QString path);
@@ -54,10 +55,12 @@ private slots:
     void on_lstServices_itemChanged(QListWidgetItem *item);
 
     void on_tabNav_currentChanged(int index);
-
     void on_tabManageUsers_currentChanged(int index);
-
     void on_tabManageServices_currentChanged(int index);
+
+    void on_btnUpdateSessionTypes_clicked();
+
+    void on_lstSessionTypes_itemChanged(QListWidgetItem *item);
 
 private:
     Ui::ProjectWidget *ui;
@@ -72,6 +75,9 @@ private:
     QMap<int, QListWidgetItem*>   m_listServices_items;
     QMap<int, QString>            m_services_keys;
 
+    QMap<int, QListWidgetItem*>   m_listSessionTypesProjects_items;
+    QMap<int, QListWidgetItem*>   m_listSessionTypes_items;
+
     QMap<int, QWidget*>           m_services_tabs;
 
     BaseDialog*                   m_diag_editor;
@@ -83,8 +89,10 @@ private:
     void updateUserGroupProjectAccess(const TeraData* access);
     void updateDevice(const TeraData* device);
     void updateServiceProject(const TeraData* sp);
+    void updateSessionTypeProject(const TeraData* stp);
 
     void queryServicesProject();
+    void querySessionTypesProject();
 
     void addServiceTab(const TeraData& service_project);
 

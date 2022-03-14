@@ -201,6 +201,10 @@ void DataListWidget::deleteDataFromList(TeraData *data)
 void DataListWidget::showEditor(TeraData *data)
 {
     if (m_editor){
+        if (data && m_editor->getData()){
+            if (m_editor->getData()->getId() == data->getId() && m_editor->getData()->getDataType() == data->getDataType())
+                return; // Already displayed
+        }
         ui->wdgEditor->layout()->removeWidget(m_editor);
         m_editor->disconnectSignals();
         m_editor->deleteLater();

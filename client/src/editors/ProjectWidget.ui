@@ -162,7 +162,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -295,7 +295,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <x>0</x>
             <y>0</y>
             <width>713</width>
-            <height>529</height>
+            <height>531</height>
            </rect>
           </property>
           <attribute name="label">
@@ -827,7 +827,33 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QWidget" name="wdgSessionTypes" native="true"/>
+        <widget class="QListWidget" name="lstSessionTypes"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateSessionTypes">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les types de séances associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -931,7 +957,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </property>
              <property name="icon">
               <iconset resource="../../resources/TeraClient.qrc">
-               <normaloff>:/icons/service.png</normaloff>:/icons/service.png</iconset>
+               <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
              </property>
              <property name="iconSize">
               <size>

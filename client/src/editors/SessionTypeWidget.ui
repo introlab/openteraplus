@@ -300,6 +300,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::NoSelection</enum>
+         </property>
          <attribute name="headerVisible">
           <bool>false</bool>
          </attribute>

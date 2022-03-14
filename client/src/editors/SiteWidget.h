@@ -30,6 +30,7 @@ private slots:
     void processSiteAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processServiceSiteAccessReply(QList<TeraData> service_sites, QUrlQuery reply_query);
     void processDeviceSiteAccessReply(QList<TeraData>device_sites, QUrlQuery reply_query);
+    void processSessionTypeSiteAccessReply(QList<TeraData>st_sites, QUrlQuery reply_query);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);   
 
     void processPostOKReply(QString path);
@@ -42,6 +43,7 @@ private slots:
 
     void userGroupsEditor_finished();
     void devicesEditor_finished();
+    void sessionTypesEditor_finished();
 
     void on_tabNav_currentChanged(int index);
     void on_tabManageUsers_currentChanged(int index);
@@ -51,6 +53,12 @@ private slots:
     void on_btnUpdateDevices_clicked();
     void on_txtSearchDevices_textChanged(const QString &search_text);
     void on_btnEditDevices_clicked();
+
+    void on_lstSessionTypes_itemChanged(QListWidgetItem *item);
+
+    void on_btnUpdateSessionTypes_clicked();
+
+    void on_btnEditSessionTypes_clicked();
 
 private:
     Ui::SiteWidget *ui;
@@ -63,6 +71,9 @@ private:
     QMap<int, QListWidgetItem*>  m_listDevicesSites_items;
     QMap<int, QListWidgetItem*>  m_listDevices_items;
 
+    QMap<int, QListWidgetItem*>  m_listSessionTypeSites_items;
+    QMap<int, QListWidgetItem*>  m_listSessionTypes_items;
+
     BaseDialog*                  m_diag_editor;
 
     int                          m_devicesCount;
@@ -72,6 +83,7 @@ private:
     void updateUserGroupSiteAccess(const TeraData* access);
     void updateServiceSite(const TeraData* service_site);
     void updateDeviceSite(const TeraData* device_site);
+    void updateSessionTypeSite(const TeraData* st_site);
 
     void updateControlsState();
     void updateFieldsValue();
@@ -82,6 +94,7 @@ private:
     void queryUserGroupsSiteAccess();
     void queryServiceSiteAccess();
     void queryDeviceSiteAccess();
+    void querySessionTypeSiteAccess();
 };
 
 #endif // SITEWIDGET_H

@@ -78,6 +78,7 @@ void SiteWidget::connectSignals()
     connect(m_comManager, &ComManager::siteAccessReceived, this, &SiteWidget::processSiteAccessReply);
     connect(m_comManager, &ComManager::deviceSitesReceived, this, &SiteWidget::processDeviceSiteAccessReply);
     connect(m_comManager, &ComManager::servicesSitesReceived, this, &SiteWidget::processServiceSiteAccessReply);
+    connect(m_comManager, &ComManager::sessionTypesSitesReceived, this, &SiteWidget::processSessionTypeSiteAccessReply);
     connect(m_comManager, &ComManager::statsReceived, this, &SiteWidget::processStatsReply);
 
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &SiteWidget::btnUpdateAccess_clicked);
@@ -215,6 +216,15 @@ void SiteWidget::queryDeviceSiteAccess()
     queryDataRequest(WEB_DEVICESITEINFO_PATH, args);
 }
 
+void SiteWidget::querySessionTypeSiteAccess()
+{
+    // Query session types for this site
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_SESSIONTYPE, "1");
+    queryDataRequest(WEB_SESSIONTYPESITE_PATH, args);
+}
+
 void SiteWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_SITE){
@@ -282,6 +292,26 @@ void SiteWidget::processDeviceSiteAccessReply(QList<TeraData> device_sites, QUrl
 
     // New list received - disable save button
     ui->btnUpdateDevices->setEnabled(false);
+}
+
+void SiteWidget::processSessionTypeSiteAccessReply(QList<TeraData> st_sites, QUrlQuery reply_query)
+{
+    for(const TeraData &st_site: st_sites){
+        updateSessionTypeSite(&st_site);
+    }
+
+    // Update used list from what is checked right now
+    for (int i=0; i<ui->lstSessionTypes->count(); i++){
+        QListWidgetItem* item = ui->lstSessionTypes->item(i);
+        if (item->checkState() == Qt::Unchecked){
+            if (std::find(m_listSessionTypeSites_items.cbegin(), m_listSessionTypeSites_items.cend(), item) != m_listSessionTypeSites_items.cend()){
+                m_listSessionTypeSites_items.remove(m_listSessionTypeSites_items.key(item));
+            }
+        }
+    }
+
+    // New list received - disable save button
+    ui->btnUpdateSessionTypes->setEnabled(false);
 }
 
 void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
@@ -387,6 +417,45 @@ void SiteWidget::updateDeviceSite(const TeraData *device_site)
     }
 }
 
+void SiteWidget::updateSessionTypeSite(const TeraData *st_site)
+{
+    int id_site = st_site->getFieldValue("id_site").toInt();
+
+    if (id_site != m_data->getId() && id_site>0)
+        return; // Not for us
+
+    int id_session_type = st_site->getFieldValue("id_session_type").toInt();
+    QString st_name = st_site->getFieldValue("session_type_name").toString();
+    QListWidgetItem* item;
+
+    if (m_listSessionTypes_items.contains(id_session_type)){
+        item = m_listSessionTypes_items[id_session_type];
+    }else{
+        item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_SESSIONTYPE)), st_name);
+        ui->lstSessionTypes->addItem(item);
+        m_listSessionTypes_items[id_session_type] = item;
+
+    }
+
+    if (!st_name.isEmpty())
+        item->setText(st_name);
+
+    int id_session_type_site = st_site->getId();
+    if (id_session_type_site > 0){
+        if (m_comManager->isCurrentUserSuperAdmin())
+            item->setCheckState(Qt::Checked);
+        if (!m_listSessionTypeSites_items.contains(id_session_type_site)){
+            m_listSessionTypeSites_items[id_session_type_site] = item;
+        }
+    }else{
+        if (m_comManager->isCurrentUserSuperAdmin())
+            item->setCheckState(Qt::Unchecked);
+        if (m_listSessionTypeSites_items.contains(id_session_type_site)){
+            m_listSessionTypeSites_items.remove(id_session_type_site);
+        }
+    }
+}
+
 void SiteWidget::processPostOKReply(QString path)
 {
     if (path == WEB_SITEINFO_PATH){
@@ -396,9 +465,6 @@ void SiteWidget::processPostOKReply(QString path)
     if (path == WEB_SITEACCESS_PATH){
         // Refresh roles
         queryUserGroupsSiteAccess();
-    }
-    if (path == WEB_SERVICESITEINFO_PATH){
-
     }
 }
 
@@ -503,6 +569,20 @@ void SiteWidget::devicesEditor_finished()
     queryDeviceSiteAccess();
 }
 
+void SiteWidget::sessionTypesEditor_finished()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+        m_diag_editor = nullptr;
+    }
+
+    // Refresh session type site informations
+    m_listSessionTypeSites_items.clear();
+    m_listSessionTypes_items.clear();
+    ui->lstSessionTypes->clear();
+    querySessionTypeSiteAccess();
+}
+
 void SiteWidget::on_tabNav_currentChanged(int index)
 {
     QUrlQuery args;
@@ -555,7 +635,7 @@ void SiteWidget::on_tabNav_currentChanged(int index)
 
     if (current_tab == ui->tabSessionTypes){
         // Session types
-        if (!ui->wdgSessionTypes->layout()){
+        /*if (!ui->wdgSessionTypes->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
             layout->setMargin(0);
             ui->wdgSessionTypes->setLayout(layout);
@@ -566,7 +646,8 @@ void SiteWidget::on_tabNav_currentChanged(int index)
             stlist_editor->setPermissions(!m_limited, !m_limited);
             stlist_editor->setFilterText(tr("Seuls les types de séances associés au site sont affichés."));
             ui->wdgSessionTypes->layout()->addWidget(stlist_editor);
-        }
+        }*/
+        querySessionTypeSiteAccess();
     }
 
 
@@ -753,5 +834,93 @@ void SiteWidget::on_btnEditDevices_clicked()
     DataListWidget* deviceslist_editor = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList("device_participants.participant_name"), ui->wdgUsers);
     deviceslist_editor->setPermissions(isSiteAdmin(), m_comManager->isCurrentUserSuperAdmin());
     deviceslist_editor->setFilterText(tr("Seuls les appareils associés au site sont affichés."));*/
+}
+
+
+void SiteWidget::on_lstSessionTypes_itemChanged(QListWidgetItem *item)
+{
+    if (!isSiteAdmin())
+        return;
+
+    // Check for changed items
+    bool has_changes = false;
+    if (m_listSessionTypeSites_items.key(item) > 0 && item->checkState() == Qt::Unchecked){
+        // Item deselected
+        has_changes = true;
+    }else{
+        if (m_listSessionTypeSites_items.key(item) <= 0 && item->checkState() == Qt::Checked){
+            // Item selected
+            has_changes = true;
+        }
+    }
+
+    if (item->checkState() == Qt::Checked){
+        item->setForeground(Qt::green);
+    }else{
+        item->setForeground(Qt::red);
+    }
+
+    ui->btnUpdateSessionTypes->setEnabled(has_changes);
+}
+
+
+void SiteWidget::on_btnUpdateSessionTypes_clicked()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonObject site_obj;
+    QJsonArray st_sites;
+    bool removed_sts = false;
+
+    site_obj.insert("id_site", m_data->getId());
+    for (int i=0; i<ui->lstSessionTypes->count(); i++){
+        QListWidgetItem* item = ui->lstSessionTypes->item(i);
+        int st_id = m_listSessionTypes_items.key(item, 0);
+        if (item->checkState() == Qt::Checked){
+            // New item selected
+            QJsonObject item_obj;
+            item_obj.insert("id_session_type", st_id);
+            st_sites.append(item_obj);
+        }else{
+            if (std::find(m_listSessionTypes_items.cbegin(), m_listSessionTypes_items.cend(), item) != m_listSessionTypes_items.cend()){
+                removed_sts = true;
+            }
+        }
+     }
+
+    if (removed_sts){
+        GlobalMessageBox msgbox;
+        int rval = msgbox.showYesNo(tr("Suppression de types de séances associés"), tr("Au moins un type de séance a été retiré de ce site. S'il y a des projets qui utilisent ce type, ils ne pourront plus l'utiliser.\nSouhaitez-vous continuer?"));
+        if (rval != GlobalMessageBox::Yes){
+            return;
+        }
+    }
+
+    site_obj.insert("sessiontypes", st_sites);
+    base_obj.insert("site", site_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SESSIONTYPESITE_PATH, document.toJson());
+}
+
+
+void SiteWidget::on_btnEditSessionTypes_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+
+    m_diag_editor = new BaseDialog(this);
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_data->getId()));
+    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_SESSIONTYPE, WEB_SESSIONTYPESITE_PATH, args, QStringList(), m_diag_editor);
+    list_widget->setPermissions(isSiteAdmin(), isSiteAdmin());
+    list_widget->setFilterText(tr("Seuls les types de séances associés au site sont affichés."));
+    m_diag_editor->setCentralWidget(list_widget);
+
+    m_diag_editor->setWindowTitle(tr("Types de séances"));
+    m_diag_editor->setMinimumSize(size().width(), 2*size().height()/3);
+
+    connect(m_diag_editor, &BaseDialog::finished, this, &SiteWidget::sessionTypesEditor_finished);
+    m_diag_editor->open();
 }
 

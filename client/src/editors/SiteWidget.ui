@@ -171,7 +171,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="iconSize">
       <size>
@@ -313,7 +313,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <x>0</x>
             <y>0</y>
             <width>1034</width>
-            <height>371</height>
+            <height>372</height>
            </rect>
           </property>
           <attribute name="label">
@@ -855,7 +855,76 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QWidget" name="wdgSessionTypes" native="true"/>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnEditSessionTypes">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Gestion des types de séances</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resources/TeraClient.qrc">
+             <normaloff>:/icons/session_type.png</normaloff>:/icons/session_type.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QListWidget" name="lstSessionTypes"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateSessionTypes">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les types de séances associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -976,7 +1045,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </property>
          <property name="icon">
           <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/device_online.png</normaloff>:/icons/device_online.png</iconset>
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -1016,7 +1085,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </property>
          <property name="icon">
           <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/service.png</normaloff>:/icons/service.png</iconset>
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
          </property>
          <property name="iconSize">
           <size>
