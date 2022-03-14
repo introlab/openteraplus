@@ -48,6 +48,7 @@ void ProjectNavigator::initUi()
 
     // Initialize new items menu
     m_newItemMenu = new QMenu();
+    m_newItemMenu->setMinimumWidth(100);
     QAction* new_action = addNewItemAction(TERADATA_PROJECT, tr("Projet"));
     /*addNewItemAction(TERADATA_SITE, tr("Site"));
     new_action->setDisabled(true);
@@ -105,6 +106,19 @@ QString ProjectNavigator::getCurrentGroupName() const
         return group_item->text(0);
     }
     return "???";
+}
+
+int ProjectNavigator::getCurrentParticipantId() const
+{
+    if (m_currentParticipantId == -1){
+        // Check if we have a uuid
+        if (!m_currentParticipantUuid.isEmpty()){
+            return m_participants[m_currentParticipantUuid].getId();
+        }else{
+            return -1;
+        }
+    }
+    return m_currentParticipantId;
 }
 
 void ProjectNavigator::selectItem(const TeraDataTypes &data_type, const int &id)
@@ -206,9 +220,21 @@ bool ProjectNavigator::selectItemByUuid(const TeraDataTypes &data_type, const QS
     return false;
 }
 
+bool ProjectNavigator::selectParentItem()
+{
+    if (ui->treeNavigator->currentItem()){
+        if (ui->treeNavigator->currentItem()->parent()){
+            setCurrentItem(ui->treeNavigator->currentItem()->parent());
+            currentNavItemChanged(ui->treeNavigator->currentItem(), nullptr);
+            return true;
+        }
+    }
+    return false;
+}
+
 void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
 {
-    bool handled = true;
+    //bool handled = true;
     switch(data_type){
     case TERADATA_SITE:
         // Check if we have that site in the list
@@ -245,6 +271,19 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
             if (item->parent()){
                 for (int i=0; i<item->parent()->childCount(); i++){
                     if (item->parent()->child(i) == item){
+                        if (item == ui->treeNavigator->currentItem()){
+                            // Select parent item if current item was deleted
+                            /*int group_id = getParticipantGroupId(item);
+                            if (group_id > 0){
+                                selectItem(TERADATA_GROUP, group_id);
+                            }else{
+                                int project_id = getParticipantProjectId(item);
+                                if (project_id > 0){
+                                    selectItem(TERADATA_PROJECT, project_id);
+                                }
+                            }*/
+                            selectParentItem();
+                        }
                         delete item->parent()->takeChild(i);
                         if (data_type==TERADATA_GROUP)
                             m_groups_items.remove(id);
@@ -252,6 +291,7 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
                             //m_participants.remove(m_participants_items.key(item));
                             m_participants_items.remove(id);
                         }
+
                         break;
                     }
                 }
@@ -261,10 +301,15 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
         break;
     default: ;
         // Don't do anything!
-        handled = false;
+       // handled = false;
     }
-    if (handled)
-        refreshRequested();
+    /*if (handled)
+        refreshRequested();*/
+}
+
+QTreeWidgetItem *ProjectNavigator::getCurrentItem()
+{
+    return ui->treeNavigator->currentItem();
 }
 
 void ProjectNavigator::setOnHold(const bool &hold)

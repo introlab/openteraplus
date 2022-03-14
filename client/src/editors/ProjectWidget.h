@@ -37,6 +37,7 @@ private slots:
     void processDevicesReply(QList<TeraData> devices);
     void processServiceProjectsReply(QList<TeraData> services);
     void processSessionTypeProjectReply(QList<TeraData> stp_list, QUrlQuery reply_query);
+    void processSessionTypeSiteReply(QList<TeraData> sts_list, QUrlQuery reply_query);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
 
     void processPostOKReply(QString path);
@@ -90,6 +91,7 @@ private:
     void updateDevice(const TeraData* device);
     void updateServiceProject(const TeraData* sp);
     void updateSessionTypeProject(const TeraData* stp);
+    void updateSessionTypeSite(const TeraData* sts);
 
     void queryServicesProject();
     void querySessionTypesProject();

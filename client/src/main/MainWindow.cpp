@@ -611,7 +611,19 @@ void MainWindow::com_postReplyOK(QString path)
 
 void MainWindow::com_deleteResultsOK(QString path, int id)
 {
+    if (m_data_editor){
+        TeraData* current_data = m_data_editor->getData();
+        if (current_data){
+            if (current_data->getDataType() == TeraData::getDataTypeFromPath(path) &&
+                    current_data->getId() == id && path != WEB_PARTICIPANTINFO_PATH && path != WEB_GROUPINFO_PATH){
+                // Show dashboard as current item was deleted and not a participant or a participant group
+                showDashboard(true);
+            }
+        }
+    }
+
     ui->projNavigator->removeItem(TeraData::getDataTypeFromPath(path), id);
+
     addMessage(Message::MESSAGE_OK, tr("Données supprimées."));
 }
 

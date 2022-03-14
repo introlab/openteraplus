@@ -435,6 +435,23 @@ QRadioButton:checked{color:lightgreen;background-color:rgba(0,0,0,0%);}
 QRadioButton:!checked{color:red;background-color:rgba(0,0,0,0%);}
 
 /*
+    QMenu
+*/
+
+QMenu {
+    icon-size: 20px;
+}
+
+QMenu::item{
+    background: transparent;
+
+}
+
+QMenu::item:selected{
+    background-color: rgba(100,100,200,50%);
+}
+
+/*
     QCalendarWidget
 */
 

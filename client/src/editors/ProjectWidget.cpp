@@ -29,6 +29,12 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PROJECT));
 
     ui->wdgProject->setComManager(m_comManager);
+
+    if (data->isNew()){
+        // Connect session-type site for new project
+        connect(m_comManager, &ComManager::sessionTypesSitesReceived, this, &ProjectWidget::processSessionTypeSiteReply);
+    }
+
     ProjectWidget::setData(data);
 
     if (!dataIsNew()){
@@ -45,10 +51,32 @@ ProjectWidget::~ProjectWidget()
 void ProjectWidget::saveData(bool signal)
 {
     // Project data
-    QJsonDocument site_data = ui->wdgProject->getFormDataJson(m_data->isNew());
+    QJsonDocument project_data = ui->wdgProject->getFormDataJson(m_data->isNew());
+
+    if (dataIsNew()){
+        // New data - also include session types
+        QJsonObject base_obj = project_data.object();
+        QJsonObject base_st = base_obj["project"].toObject();
+        QJsonArray session_types;
+
+        for(QListWidgetItem* item:qAsConst(m_listSessionTypes_items)){
+            if (item->checkState() == Qt::Checked){
+                int session_type_id = m_listSessionTypes_items.key(item);
+                QJsonObject data_obj;
+                data_obj.insert("id_session_type", session_type_id);
+                session_types.append(data_obj);
+            }
+        }
+
+        if (!session_types.isEmpty()){
+            base_st.insert("sessiontypes", session_types);
+            base_obj.insert("project", base_st);
+            project_data.setObject(base_obj);
+        }
+    }
 
     //qDebug() << user_data.toJson();
-    postDataRequest(WEB_PROJECTINFO_PATH, site_data.toJson());
+    postDataRequest(WEB_PROJECTINFO_PATH, project_data.toJson());
 
     if (signal){
         TeraData* new_data = ui->wdgProject->getFormDataObject(TERADATA_PROJECT);
@@ -299,6 +327,30 @@ void ProjectWidget::updateSessionTypeProject(const TeraData *stp)
     }
 }
 
+void ProjectWidget::updateSessionTypeSite(const TeraData *sts)
+{
+    int id_session_type = sts->getFieldValue("id_session_type").toInt();
+    QString st_name;
+    if (sts->hasFieldName("session_type_name"))
+        st_name = sts->getFieldValue("session_type_name").toString();
+
+    QListWidgetItem* item;
+    if (m_listSessionTypes_items.contains(id_session_type)){
+        item = m_listSessionTypes_items[id_session_type];
+    }else{
+        // Must create a new item
+        item = new QListWidgetItem(st_name);
+        item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSIONTYPE)));
+        item->setCheckState(Qt::Unchecked);
+        ui->lstSessionTypes->addItem(item);
+
+        m_listSessionTypes_items[id_session_type] = item;
+    }
+
+    if (!st_name.isEmpty())
+        item->setText(st_name);
+}
+
 void ProjectWidget::queryServicesProject()
 {
     // Query services for this project
@@ -318,11 +370,34 @@ void ProjectWidget::querySessionTypesProject()
 
 void ProjectWidget::updateControlsState()
 {   
-    if (dataIsNew()){
+    if (dataIsNew() && ui->tabNav->count() > 1){
         ui->grpSummary->hide();
-        if (ui->tabNav->count() > 1){
+        while (ui->tabNav->count() > 1){
             ui->tabNav->removeTab(1);
         }
+
+        // Move projects list to first tab
+        ui->tabSessionTypes->layout()->removeWidget(ui->lstSessionTypes);
+        ui->tabDashboard->layout()->removeWidget(ui->frameButtons);
+
+        QLabel* lbl = new QLabel(tr("Types de séances associés"));
+        QFont labelFont;
+        labelFont.setBold(true);
+        labelFont.setPointSize(10);
+        lbl->setFont(labelFont);
+
+        ui->tabDashboard->layout()->addWidget(lbl);
+        ui->tabDashboard->layout()->addWidget(ui->lstSessionTypes);
+        ui->tabDashboard->layout()->addWidget(ui->frameButtons);
+
+        // Query session types
+        if (m_listSessionTypes_items.isEmpty()){
+            QUrlQuery args;
+            args.addQueryItem(WEB_QUERY_ID_SITE, m_data->getFieldValue("id_site").toString());
+            queryDataRequest(WEB_SESSIONTYPESITE_PATH, args);
+        }
+
+
     }else{
         bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(m_data->getId());
         bool is_site_admin = isSiteAdmin();
@@ -505,6 +580,13 @@ void ProjectWidget::processSessionTypeProjectReply(QList<TeraData> stp_list, QUr
                 m_listSessionTypesProjects_items.remove(m_listSessionTypesProjects_items.key(item));
             }
         }
+    }
+}
+
+void ProjectWidget::processSessionTypeSiteReply(QList<TeraData> sts_list, QUrlQuery reply_query)
+{
+    foreach(TeraData st_site, sts_list){
+        updateSessionTypeSite(&st_site);
     }
 }
 

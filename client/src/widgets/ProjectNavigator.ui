@@ -299,8 +299,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="popupMode">
@@ -340,8 +340,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="popupMode">
@@ -395,8 +395,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="checkable">
@@ -428,8 +428,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="checkable">
@@ -463,8 +463,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
        </widget>

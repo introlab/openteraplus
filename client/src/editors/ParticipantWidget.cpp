@@ -91,7 +91,7 @@ void ParticipantWidget::saveData(bool signal)
 {
     // If data is new, we request all the fields.
     QJsonDocument part_data = ui->wdgParticipant->getFormDataJson(m_data->isNew());
-    qDebug() << part_data.toJson();
+    //qDebug() << part_data.toJson();
 
     postDataRequest(WEB_PARTICIPANTINFO_PATH, part_data.toJson());
 

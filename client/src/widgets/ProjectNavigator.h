@@ -33,11 +33,15 @@ public:
     QString getCurrentProjetName() const;
     int getCurrentGroupId() const;
     QString getCurrentGroupName() const;
+    int getCurrentParticipantId() const;
 
     void selectItem(const TeraDataTypes& data_type, const int& id);
     bool selectItemByName(const TeraDataTypes& data_type, const QString& name);
     bool selectItemByUuid(const TeraDataTypes& data_type, const QString& uuid);
+    bool selectParentItem();
+
     void removeItem(const TeraDataTypes& data_type, const int& id);
+    QTreeWidgetItem* getCurrentItem();
 
     void setOnHold(const bool& hold);
     void refreshCurrentItem();
@@ -98,7 +102,7 @@ private slots:
      void processProjectsReply(const QList<TeraData> projects);
      void processGroupsReply(const QList<TeraData> groups);
      void processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_args);
-     void ws_participantEvent(ParticipantEvent event);
+     void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
 
      void processItemDeletedReply(QString path, int id);
      void moveItemRequested(QTreeWidgetItem* src, QTreeWidgetItem* target);
