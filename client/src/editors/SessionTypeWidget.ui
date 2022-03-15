@@ -159,15 +159,15 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+        <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Résumé</string>
+       <string>Informations</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -286,7 +286,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <widget class="QWidget" name="tabProjects">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
+        <normaloff>:/icons/site-icon.png</normaloff>:/icons/site-icon.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Sites / Projets</string>
@@ -300,8 +300,17 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::NoSelection</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
          </property>
          <attribute name="headerVisible">
           <bool>false</bool>

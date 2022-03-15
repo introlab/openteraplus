@@ -171,7 +171,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -182,7 +182,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+        <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Informations</string>
@@ -898,7 +898,14 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         </layout>
        </item>
        <item>
-        <widget class="QListWidget" name="lstSessionTypes"/>
+        <widget class="QListWidget" name="lstSessionTypes">
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btnUpdateSessionTypes">
@@ -1027,6 +1034,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
          </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
@@ -1067,7 +1080,14 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QListWidget" name="lstServices"/>
+        <widget class="QListWidget" name="lstServices">
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btnUpdateServices">

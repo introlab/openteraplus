@@ -369,7 +369,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
                     data_str += " - " + part_data["months"].toString() + " " + tr("mois");
                 QTreeWidgetItem* part_item = new QTreeWidgetItem(item);
                 part_item->setText(1, data_str);
-                part_item->setIcon(1, QIcon("://icons/patient_installed.png"));
+                part_item->setIcon(1, QIcon("://icons/patient.png"));
             }
         }
     }
@@ -431,7 +431,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
                         data_str += " - " + user_data["months"].toString() + " " + tr("mois");
                     QTreeWidgetItem* part_item = new QTreeWidgetItem(item);
                     part_item->setText(1, data_str);
-                    part_item->setIcon(1, QIcon("://icons/software_user_offline_busy.png"));
+                    part_item->setIcon(1, QIcon("://icons/software_user.png"));
                 }
             }
         }
@@ -646,6 +646,8 @@ QToolButton *DashboardWidget::createManageWarningButton()
 {
     QToolButton* manage_btn = new QToolButton();
     manage_btn->setIcon(QIcon("://icons/config.png"));
+    manage_btn->setIconSize(QSize(20,20));
+    manage_btn->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     manage_btn->setToolTip(tr("Gérer"));
     manage_btn->setCursor(Qt::PointingHandCursor);
     manage_btn->setStyleSheet("QToolButton::hover{background-color:transparent;}");

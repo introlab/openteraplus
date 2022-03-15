@@ -24,10 +24,6 @@ DeviceTypeWidget::DeviceTypeWidget(ComManager *comMan, const TeraData *data, QWi
     ui->wdgDeviceType->setComManager(m_comManager);
     setData(data);
 
-    // Loads first detailled informations tab
-    if (!dataIsNew())
-        on_tabDeviceTypeInfos_currentChanged(0);
-
 }
 
 DeviceTypeWidget::~DeviceTypeWidget()
@@ -127,11 +123,12 @@ void DeviceTypeWidget::connectSignals()
     connect(m_comManager, &ComManager::devicesReceived, this, &DeviceTypeWidget::processDevicesReply);
 }
 
-void DeviceTypeWidget::on_tabDeviceTypeInfos_currentChanged(int index)
+void DeviceTypeWidget::on_tabNav_currentChanged(int index)
 {
     QUrlQuery query;
+    QWidget* current_tab = ui->tabNav->widget(index);
 
-    if (index==0){
+    if (current_tab == ui->tabDevices){
         // Devices
         if (m_listDevices_items.isEmpty() && m_data){
             query.addQueryItem(WEB_QUERY_ID_DEVICE_TYPE, QString::number(m_data->getId()));
@@ -139,3 +136,4 @@ void DeviceTypeWidget::on_tabDeviceTypeInfos_currentChanged(int index)
         }
     }
 }
+

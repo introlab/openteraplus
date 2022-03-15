@@ -97,6 +97,7 @@ void ServiceConfigWidget::updateControlsState(){
     ui->wdgServiceConfig->setDisabled(m_limited);
     ui->wdgServiceConfigConfig->setDisabled(m_limited);
     ui->frameButtons->setVisible(!m_limited && ui->wdgServiceConfigConfig->formHasStructure());
+    ui->btnUndo->setVisible(!dataIsNew());
 }
 
 void ServiceConfigWidget::updateFieldsValue(){
@@ -117,7 +118,7 @@ void ServiceConfigWidget::updateFieldsValue(){
         QVariantList specifics = m_data->getFieldValue("service_config_specifics").toList();
         if (!specifics.isEmpty()){
             ui->cmbSpecific->addItem(tr("Globale"));
-            for (QVariant specific_id:specifics){
+            for (const QVariant &specific_id:qAsConst(specifics)){
                 ui->cmbSpecific->addItem(specific_id.toString());
             }
             ui->frameSpecific->show();
@@ -143,6 +144,7 @@ void ServiceConfigWidget::updateService(const TeraData *service)
     }else{
         // New service with a config
         item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE_CONFIG)), service_name);
+        item->setSizeHint(QSize(ui->lstServiceConfig->width(), 64));
         ui->lstServiceConfig->addItem(item);
         m_listServices_items[id_service] = item;
     }
@@ -276,7 +278,7 @@ void ServiceConfigWidget::on_btnSave_clicked()
 
         if (!invalids.isEmpty()){
             QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-            for (QString field:invalids){
+            for (const QString &field:qAsConst(invalids)){
                 msg += "<li>" + field + "</li>";
             }
             msg += "</ul>";

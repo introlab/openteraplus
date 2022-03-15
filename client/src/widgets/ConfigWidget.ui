@@ -170,7 +170,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <enum>QListView::IconMode</enum>
        </property>
        <property name="uniformItemSizes">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -179,7 +179,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <bool>true</bool>
        </property>
        <property name="itemAlignment">
-        <set>Qt::AlignCenter</set>
+        <set>Qt::AlignAbsolute|Qt::AlignBaseline|Qt::AlignBottom|Qt::AlignCenter|Qt::AlignHCenter|Qt::AlignHorizontal_Mask|Qt::AlignJustify|Qt::AlignLeading|Qt::AlignLeft|Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing|Qt::AlignVCenter|Qt::AlignVertical_Mask</set>
        </property>
       </widget>
      </item>
@@ -193,8 +193,8 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>575</width>
-          <height>443</height>
+          <width>580</width>
+          <height>447</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">

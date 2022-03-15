@@ -289,7 +289,7 @@ bool SessionTypeWidget::validateProjects()
 {
     if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
-        for(QTreeWidgetItem* site_item:m_treeSites_items){
+        for(QTreeWidgetItem* site_item:qAsConst(m_treeSites_items)){
             if (site_item->checkState(0) == Qt::Checked){
                 at_least_one_selected = true;
                 break;

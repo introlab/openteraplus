@@ -157,7 +157,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -168,7 +168,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+        <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Informations</string>
@@ -293,7 +293,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <widget class="QWidget" name="tabSites">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
+        <normaloff>:/icons/site-icon.png</normaloff>:/icons/site-icon.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Sites / Projets</string>
@@ -312,6 +312,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::NoSelection</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
          </property>
          <attribute name="headerVisible">
           <bool>false</bool>
@@ -364,6 +370,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <widget class="QListWidget" name="lstParticipants">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
          </property>
         </widget>
        </item>

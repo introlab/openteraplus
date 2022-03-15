@@ -66,12 +66,12 @@
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
-          <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
+          <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
        </widget>
@@ -109,8 +109,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
        </widget>

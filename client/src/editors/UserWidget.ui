@@ -23,103 +23,7 @@
    <string>Utilisateur</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/*
-QPushButton#btnConnect{background-color:rgb(80,180,80)}
-QWidget{background-color: rgba(0,0,0,0);color:white;border-radius:5px}
-QWidget#mainWidget{background-color:rgba(128,128,128,25%);}
-QWidget#frmProfile,QWidget#pageProfile{background-color:rgba(108,8,156,25%);}
-QPlainTextEdit,QLineEdit,QListWidget,QComboBox,QTextEdit,QSpinBox{background-color: rgba(255,255,255,50%); color: black;}
-
-QTableWidget{
-background-color: rgba(0,0,0,50%);
-color: white;
-border: 1px solid rgba(255,255,255,50%);
-}
-
-QLabel#lblLastOnline{color:lightblue;}
-QLabel#lblError,QLabel#lblCamMissing,QLabel#lblAudioMissing{color:red; background-color:rgba(255,0,0,30%);}
-
-QLineEdit:!enabled, QListWidget:!enabled,QComboBox:!enabled,QTextEdit:!enabled,QPlainTextEdit:!enabled{background-color: rgba(0,0,0,30%);color:white;border:0}
-QDateEdit::down-arrow:!enabled,QTimeEdit::down-arrow:!enabled,QDateEdit::up-arrow:!enabled,QTimeEdit::up-arrow:!enabled,QComboBox::drop-down:!enabled{background-color:rgba(0,0,0,0%);}
-
-QTextEdit#txtProfile{background-color: rgba(255,255,255,80%);color:black;border:0}
-QTextEdit:!enabled#txtProfile{background-color: rgba(255,255,255,60%);color:black;border:0}
-
-QFrame#frmSelUser{background-color:rgba(100,100,200,50%);}
-QFrame#frmAudio,QFrame#frmCam1,QFrame#frmCam2,QFrame#frmSensors,QFrame#frmWebRTC,QFrame#frmVirtualCam,QFrame#frmExternalPrograms{background-color:rgba(100,100,200,35%);}
-
-QCheckBox::indicator:unchecked:!enabled { background-color:rgba(128,0,0,100%);}
-QCheckBox::indicator:checked:!enabled { background-color:green;}
-QCheckBox::indicator:unchecked{ background-color:red;border-radius:3px;}
-QCheckBox::indicator:checked {background-color:rgb(0,255,0);border-radius:3px;}
-QCheckBox:checked{color:lightgreen;background-color:rgba(0,0,0,0%);}
-QCheckBox:!checked{color:red;background-color:rgba(0,0,0,0%);}
-
-QPushButton{background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #2198c0, stop: 1 #0d5ca6);}
-QPushButton:checked{background-color:rgb(128,128,128); border:1px solid rgba(255,255,255,50%);}
-QPushButton:hover,QPushButton:checked{background-color:  rgba(255,255,255,75%);color:black;}
-QPushButton#btnEditUser:hover{background-color:  rgba(255,255,255,75%);color:black;}
-QPushButton#btnEdit,QPushButton#btnDelete,QPushButton#btnExisting{background-color:  rgba(255,255,255,0%);border:0 px;}
-QPushButton#btnEdit:hover,QPushButton#btnDelete:hover,QPushButton#btnExisting:hover{background-color:  rgba(255,255,255,25%);border:0 px;}
-QPushButton#btnExisting:checked{background-color:rgba(0,100,200,50%);}
-QPushButton#btnUpgrade{background-color:rgba(200,0,0,90%);}
-
-QToolButton:hover{background-color:  rgba(255,255,255,50);}
-
-QTreeWidget::branch:closed:has-children:has-siblings  {
-            border-image: none;
-            image: url(:/pictures/controls/branch_closed.png);
-    }
-     
-    QTreeView::branch:open:has-children:!has-siblings,
-    QTreeView::branch:open:has-children:has-siblings   {
-            border-image: none;
-            image:url(:/pictures/controls/branch_opened.png);
-    }
-
-QWidget#lineOnline{background-color:blue;}
-QWidget#lineOffline{background-color:red;}
-QWidget#lineBoth{background-color:rgb(255,0,255);}
-
-
-QTabWidget::pane { 
-	background-color: rgba(128,128,140,25%);
-	border-radius: 5px;
-    border: 2px solid rgba(128,128,140,50%);
- }
-
- QTabWidget::tab-bar {
-     left: 5px; 
- }
-
-
- QTabBar::tab,QTableWidget::tab,QHeaderView::section {
-     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(128,128,140,25%));
-     border: 2px solid  rgba(128,128,140,50%);
-     border-bottom: 0px;
-     border-top-left-radius: 4px;
-     border-top-right-radius: 4px;
-     padding: 2px;
-min-height:25px;
- }
-
- QTabBar::tab:selected, QTabBar::tab:hover {
-
-background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0  rgba(128,128,140,70%),  stop: 1.0  rgba(128,128,140,50%));
- }
-
- QTabBar::tab:selected {
-     border-color:rgba(128,128,140,60%);
-     border-bottom-color:rgba(128,128,140,60%); 
- }
-
- QTabBar::tab:!selected {
-     margin-top: 2px; 
- }
-*/
-
+   <string notr="true">
 </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -154,7 +58,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <widget class="QLabel" name="lblTitle">
        <property name="font">
         <font>
-         <weight>50</weight>
          <bold>false</bold>
         </font>
        </property>
@@ -197,7 +100,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <widget class="QWidget" name="tabInfos">
          <attribute name="icon">
           <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+           <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
          </attribute>
          <attribute name="title">
           <string>Informations</string>
@@ -265,33 +168,53 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               </layout>
              </item>
              <item>
-              <widget class="QPushButton" name="btnGeneratePassword">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>32</height>
-                </size>
-               </property>
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
-               <property name="text">
-                <string>Générer mot de passe aléatoire</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../resources/TeraClient.qrc">
-                 <normaloff>:/icons/random.png</normaloff>:/icons/random.png</iconset>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>24</width>
-                 <height>24</height>
-                </size>
-               </property>
-              </widget>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <widget class="QPushButton" name="btnGeneratePassword">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>32</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>Générer mot de passe aléatoire</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../resources/TeraClient.qrc">
+                   <normaloff>:/icons/random.png</normaloff>:/icons/random.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>24</width>
+                   <height>24</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
              <item>
               <widget class="TeraForm" name="wdgUser" native="true">
@@ -378,7 +301,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <item alignment="Qt::AlignTop">
            <widget class="QLabel" name="lblWarning">
             <property name="text">
-             <string>Cet utilisateur est un super administrateur. Il est donc impossible de lui assigner des groupes utiilsateurs.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cet utilisateur est un super administrateur.&lt;/p&gt;&lt;p&gt;Il est donc impossible de lui assigner des groupes utiilsateurs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -478,19 +401,47 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lblSitesRoles">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-              <underline>true</underline>
-             </font>
-            </property>
-            <property name="text">
-             <string>Sites</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="lblSiteIcon">
+              <property name="minimumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../../resources/TeraClient.qrc">:/icons/site.png</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="lblSitesRoles">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+                <bold>true</bold>
+                <underline>true</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>Sites</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <widget class="QTableWidget" name="tableSitesRoles">
@@ -528,19 +479,47 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lblProjectsRoles">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-              <underline>true</underline>
-             </font>
-            </property>
-            <property name="text">
-             <string>Projets</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="lblProjectIcon">
+              <property name="minimumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../../resources/TeraClient.qrc">:/icons/project.png</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="lblProjectsRoles">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+                <bold>true</bold>
+                <underline>true</underline>
+               </font>
+              </property>
+              <property name="text">
+               <string>Projets</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <widget class="QTableWidget" name="tableProjectsRoles">
@@ -594,7 +573,14 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
-           <widget class="TeraForm" name="wdgPrefs" native="true"/>
+           <widget class="TeraForm" name="wdgPrefs" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="btnUpdatePrefs">
@@ -621,6 +607,19 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </size>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>

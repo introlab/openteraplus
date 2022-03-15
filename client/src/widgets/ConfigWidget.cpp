@@ -38,6 +38,7 @@ void ConfigWidget::addSection(const QString &name, const QIcon &icon, const int 
     tmp->setText(name);
     tmp->setTextAlignment(Qt::AlignCenter);
     tmp->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    tmp->setSizeHint(QSize(ui->lstSections->width(), 64));
     tmp->setData(Qt::UserRole,id);
 }
 
@@ -45,7 +46,7 @@ void ConfigWidget::setupSections()
 {
     addSection(tr("Utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)), TERADATA_USER);
     addSection(tr("Groupes utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USERGROUP)), TERADATA_USERGROUP);
-    addSection(tr("Sites"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)), TERADATA_SITE);
+    addSection(tr("Sites"), QIcon("://icons/site-icon.png"), TERADATA_SITE);
     addSection(tr("Appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)), TERADATA_DEVICE);
     addSection(tr("Type appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICETYPE)), TERADATA_DEVICETYPE);
     addSection(tr("Sous-types appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICESUBTYPE)), TERADATA_DEVICESUBTYPE);

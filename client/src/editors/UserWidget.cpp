@@ -289,6 +289,7 @@ void UserWidget::updateSiteAccess(const TeraData *site_access)
     ui->tableSitesRoles->setRowCount(ui->tableSitesRoles->rowCount()+1);
     int current_row = ui->tableSitesRoles->rowCount()-1;
     QTableWidgetItem* item = new QTableWidgetItem(site_access->getFieldValue("site_name").toString());
+    item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)));
     ui->tableSitesRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(getRoleName(site_access->getFieldValue("site_access_role").toString()));
     ui->tableSitesRoles->setItem(current_row,1,item);
@@ -302,6 +303,7 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
     QTableWidgetItem* item = new QTableWidgetItem(project_access->getFieldValue("site_name").toString());
     ui->tableProjectsRoles->setItem(current_row,1,item);
     item = new QTableWidgetItem(project_access->getFieldValue("project_name").toString());
+    item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
     ui->tableProjectsRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(getRoleName(project_access->getFieldValue("project_access_role").toString()));
     ui->tableProjectsRoles->setItem(current_row,2,item);
@@ -355,6 +357,7 @@ void UserWidget::processSitesAccessReply(QList<TeraData> sites)
     foreach (TeraData site, sites){
         updateSiteAccess(&site);
     }
+    ui->tableSitesRoles->resizeColumnsToContents();
 }
 
 void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
@@ -362,6 +365,7 @@ void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
     foreach (TeraData project, projects){
         updateProjectAccess(&project);
     }
+    ui->tableProjectsRoles->resizeColumnsToContents();
 }
 
 void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query)

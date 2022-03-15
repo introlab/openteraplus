@@ -60,7 +60,6 @@
       <widget class="QLabel" name="lblTitle">
        <property name="font">
         <font>
-         <weight>50</weight>
          <bold>false</bold>
         </font>
        </property>
@@ -80,12 +79,12 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+        <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Informations</string>
@@ -207,7 +206,7 @@
      <widget class="QWidget" name="tabSites">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
+        <normaloff>:/icons/site-icon.png</normaloff>:/icons/site-icon.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Accès - Sites</string>
@@ -312,7 +311,7 @@
      <widget class="QWidget" name="tabProjects">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/project.png</normaloff>:/icons/project.png</iconset>
+        <normaloff>:/icons/project-icon.png</normaloff>:/icons/project-icon.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Accès - Projets</string>
@@ -429,7 +428,14 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QListWidget" name="lstUsers"/>
+        <widget class="QListWidget" name="lstUsers">
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btnUpdateUsers">
