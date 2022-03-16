@@ -46,9 +46,14 @@ void ProjectNavigator::initUi()
     // Hide search frame
     ui->frameSearch->hide();
 
+    ui->treeNavigator->setContextMenuPolicy(Qt::CustomContextMenu);
+
     // Initialize new items menu
     m_newItemMenu = new QMenu();
     m_newItemMenu->setMinimumWidth(100);
+    //m_newItemMenu->setWindowTitle(tr("Nouveau"));
+    //m_newItemMenu->setIcon(QIcon("://icons/new.png"));
+
     QAction* new_action = addNewItemAction(TERADATA_PROJECT, tr("Projet"));
     /*addNewItemAction(TERADATA_SITE, tr("Site"));
     new_action->setDisabled(true);
@@ -758,9 +763,16 @@ QString ProjectNavigator::getParticipantUuid(int participant_id)
 
 QAction *ProjectNavigator::addNewItemAction(const TeraDataTypes &data_type, const QString &label)
 {
-    QIcon icon = QIcon(TeraData::getIconFilenameForDataType(data_type));
+    QIcon icon;// = QIcon(TeraData::getIconFilenameForDataType(data_type));
     if (data_type == TERADATA_PARTICIPANT)
-        icon = QIcon("://icons/patient_installed.png");
+        icon = QIcon("://icons/patient_new.png");
+    if (data_type == TERADATA_PROJECT)
+        icon = QIcon("://icons/project_new.png");
+    if (data_type == TERADATA_GROUP)
+        icon = QIcon("://icons/group_new.png");
+    if (icon.isNull())
+        icon = QIcon(TeraData::getIconFilenameForDataType(data_type));
+
     QAction* new_action = new QAction(icon, label);
     new_action->setData(data_type);
     m_newItemActions.append(new_action);
@@ -1157,5 +1169,28 @@ void ProjectNavigator::on_toolButton_clicked()
 {
     // Query to display dashboard (default view)
     emit dataDisplayRequest(TERADATA_NONE, 0);
+}
+
+
+void ProjectNavigator::on_treeNavigator_customContextMenuRequested(const QPoint &pos)
+{
+    /*QTreeWidgetItem* pointed_item = ui->treeNavigator->itemAt(pos);
+
+    if (!pointed_item){
+        // No item clicked - remove everything except projects
+        getActionForDataType(TERADATA_GROUP)->setVisible(false);
+        getActionForDataType(TERADATA_PARTICIPANT)->setVisible(false);
+    }else{
+        // Show everything
+        updateAvailableActions(pointed_item);
+    }
+
+    if (m_newItemMenu)
+            m_newItemMenu->exec(ui->treeNavigator->mapToGlobal(pos));
+
+    getActionForDataType(TERADATA_GROUP)->setVisible(true);
+    getActionForDataType(TERADATA_PARTICIPANT)->setVisible(true);
+    updateAvailableActions(ui->treeNavigator->currentItem());*/
+
 }
 

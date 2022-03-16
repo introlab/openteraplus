@@ -162,12 +162,18 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+        <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Informations</string>
@@ -295,7 +301,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <x>0</x>
             <y>0</y>
             <width>713</width>
-            <height>531</height>
+            <height>527</height>
            </rect>
           </property>
           <attribute name="label">
@@ -590,7 +596,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <property name="iconSize">
           <size>
@@ -623,6 +629,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </property>
              <property name="selectionBehavior">
               <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
              <property name="sortingEnabled">
               <bool>true</bool>
@@ -758,6 +770,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <property name="selectionBehavior">
               <enum>QAbstractItemView::SelectRows</enum>
              </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
              <property name="sortingEnabled">
               <bool>true</bool>
              </property>
@@ -827,7 +845,14 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QListWidget" name="lstSessionTypes"/>
+        <widget class="QListWidget" name="lstSessionTypes">
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btnUpdateSessionTypes">
@@ -867,41 +892,56 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QTableWidget" name="lstDevices">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
+        <widget class="QTreeWidget" name="treeDevices">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::NoSelection</enum>
          </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
          </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
+         <property name="indentation">
+          <number>40</number>
          </property>
-         <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>175</number>
-         </attribute>
-         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
+         <attribute name="headerVisible">
+          <bool>false</bool>
          </attribute>
          <column>
           <property name="text">
-           <string>Appareil</string>
+           <string notr="true">1</string>
           </property>
          </column>
-         <column>
-          <property name="text">
-           <string>Participant(s)</string>
-          </property>
-         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateDevices">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les appareils associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
         </widget>
        </item>
       </layout>
@@ -939,7 +979,14 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QListWidget" name="lstServices"/>
+            <widget class="QListWidget" name="lstServices">
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QPushButton" name="btnUpdateServices">

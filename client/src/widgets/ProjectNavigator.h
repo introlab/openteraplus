@@ -121,6 +121,8 @@ private slots:
      void on_cmbSites_currentIndexChanged(int index);
      void on_toolButton_clicked();
 
+     void on_treeNavigator_customContextMenuRequested(const QPoint &pos);
+
 signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);
      void dataDeleteRequest(TeraDataTypes data_type, int data_id);

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QListWidgetItem>
-#include <QTableWidgetItem>
+#include <QTreeWidgetItem>
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
@@ -35,6 +35,7 @@ private slots:
     void processFormsReply(QString form_type, QString data);
     void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processDevicesReply(QList<TeraData> devices);
+    void processDevicesProjectsReply(QList<TeraData> devices_projects);
     void processServiceProjectsReply(QList<TeraData> services);
     void processSessionTypeProjectReply(QList<TeraData> stp_list, QUrlQuery reply_query);
     void processSessionTypeSiteReply(QList<TeraData> sts_list, QUrlQuery reply_query);
@@ -63,6 +64,11 @@ private slots:
 
     void on_lstSessionTypes_itemChanged(QListWidgetItem *item);
 
+
+    void on_treeDevices_itemChanged(QTreeWidgetItem *item, int column);
+
+    void on_btnUpdateDevices_clicked();
+
 private:
     Ui::ProjectWidget *ui;
 
@@ -70,7 +76,9 @@ private:
     QMap<int, QTableWidgetItem*>  m_tableUserGroups_items;
     QMap<int, QTableWidgetItem*>  m_tableParticipants_items;
     QMap<int, QListWidgetItem*>   m_listGroups_items;
-    QMap<int, QTableWidgetItem*>  m_listDevices_items;
+
+    QMap<int, QTreeWidgetItem*>   m_treeDevices_items;
+    QMap<int, QTreeWidgetItem*>   m_treeDevicesProjects_items;
 
     QMap<int, QListWidgetItem*>   m_listServicesProjects_items;
     QMap<int, QListWidgetItem*>   m_listServices_items;
@@ -89,6 +97,7 @@ private:
     void updateUserProjectAccess(const TeraData* access);
     void updateUserGroupProjectAccess(const TeraData* access);
     void updateDevice(const TeraData* device);
+    void updateDeviceProject(const TeraData* device_proj);
     void updateServiceProject(const TeraData* sp);
     void updateSessionTypeProject(const TeraData* stp);
     void updateSessionTypeSite(const TeraData* sts);

@@ -39,7 +39,7 @@ void DeviceAssignDialog::connectSignals()
 void DeviceAssignDialog::processDeviceParticipants(QList<TeraData> device_participants)
 {
     if(ui->lstParticipants->count()==0){
-        for (TeraData device_part:device_participants){
+        for (const TeraData &device_part:device_participants){
             if (device_part.getFieldValue("id_device").toInt() == m_id_device){
                 QListWidgetItem* item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)),
                                                             device_part.getFieldValue("participant_name").toString());

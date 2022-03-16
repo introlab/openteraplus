@@ -66,6 +66,12 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
         args.addQueryItem(WEB_QUERY_LIST, "1");
         args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
         queryDataRequest(WEB_SERVICEINFO_PATH, args);
+
+        // Query devices if not a new participant
+        args.clear();
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
+        queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
+
     }else{
         // Set default calendar view for new participants
         updateCalendars(QDate::currentDate());
@@ -73,7 +79,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
     // Default display
     ui->tabNav->setCurrentIndex(0);
-    ui->tabInfos->setCurrentIndex(0);
+    ui->tabServicesDetails->setCurrentIndex(0);
     ui->frameFilterSessionTypes->hide();
 }
 
@@ -189,15 +195,14 @@ void ParticipantWidget::updateControlsState()
     if (dataIsNew()){
         // Clean up the widget
         if (ui->tabNav->count() > 1){
-            ui->tabNav->setCurrentWidget(ui->tabDetails);
+            ui->tabNav->setCurrentWidget(ui->tabInfos);
             ui->tabNav->removeTab(0);
 
-            int tabCount = ui->tabInfos->count();
-            for (int i=1; i<tabCount; i++){
-                ui->tabInfos->removeTab(1);
-            }
+            while (ui->tabNav->count() > 1)
+                ui->tabNav->removeTab(1);
+
+            ui->frameNewSession->hide();
         }
-        ui->frameNewSession->hide();
     }
 }
 
@@ -255,6 +260,11 @@ void ParticipantWidget::initUI()
     QStringList ignore_fields = {"participant_enabled", "participant_token_enabled", "participant_token", "participant_login_enabled",
                                 "participant_username", "participant_password"};
     ui->wdgParticipant->hideFields(ignore_fields);
+
+    // Hide device & service tabs by default
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), false);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), false);
+    ui->tabServicesDetails->setTabVisible(ui->tabServicesDetails->indexOf(ui->tabServiceParams), false);
 
     // Intercepts some events
     ui->tableSessions->installEventFilter(this);
@@ -548,9 +558,15 @@ void ParticipantWidget::addServiceTab(const TeraData &service)
     // Dance Service
     if (service_key == "DanceService"){
         DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getUuid());
-        ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service.getName());
+        ui->tabServicesDetails->insertTab(0, wdg, QIcon("://icons/service.png"), service.getName());
         m_services_tabs.insert(id_service, wdg);
+    }
 
+    int indexTabServices = ui->tabNav->indexOf(ui->tabServices);
+    if (!ui->tabNav->isTabVisible(indexTabServices)){
+        ui->tabNav->setTabVisible(indexTabServices, true);
+        // Select first tab
+        ui->tabServicesDetails->setCurrentIndex(0);
     }
 }
 
@@ -667,6 +683,8 @@ void ParticipantWidget::processDeviceProjectsReply(QList<TeraData> device_projec
             updateDeviceProject(&device_project);
         }
     }
+
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), !device_projects.isEmpty());
 }
 
 void ParticipantWidget::processDeviceParticipantsReply(QList<TeraData> device_participants)
@@ -710,6 +728,18 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
             ui->cmbServices->addItem(service.getName(), service_key);
         }else{
             m_allowFileTransfers = true; // We have a file transfer service with that project - allow uploads!
+        }
+
+        if (service.hasFieldName("service_editable_config")){
+            if (service.getFieldValue("service_editable_config").toBool()){
+                // At least one service with editable config - show services tabs
+                int indexTabServices = ui->tabNav->indexOf(ui->tabServices);
+                if (!ui->tabNav->isTabVisible(indexTabServices)){
+                    ui->tabNav->setTabVisible(indexTabServices, true);
+                }
+                indexTabServices = ui->tabServicesDetails->indexOf(ui->tabServiceParams);
+                ui->tabServicesDetails->setTabVisible(indexTabServices, true);
+            }
         }
     }
 
@@ -1119,7 +1149,7 @@ bool ParticipantWidget::eventFilter(QObject *o, QEvent *e)
         }
     }
 
-    return QWidget::eventFilter(o,e);
+     return QWidget::eventFilter(o,e);
 }
 
 
@@ -1390,37 +1420,6 @@ void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
     }*/
 }
 
-void ParticipantWidget::on_tabInfos_currentChanged(int index)
-{
-    QUrlQuery query;
-
-    QWidget* current_tab = ui->tabInfos->widget(index);
-
-    if (current_tab == ui->tabDevices){ // Devices
-        if (m_listDevices_items.isEmpty()){
-            query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
-            queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, query);
-
-            // Query devices for the current site
-            query.removeQueryItem(WEB_QUERY_ID_PARTICIPANT);
-            query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
-            queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);
-        }
-    }
-
-    if (current_tab == ui->tabConfig){ // Configuration
-        if (!ui->wdgServiceConfig->layout()){
-            QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
-            ui->wdgServiceConfig->setLayout(layout);
-        }
-        if (ui->wdgServiceConfig->layout()->count() == 0){
-            ServiceConfigWidget* service_config_widget = new ServiceConfigWidget(m_comManager, m_data->getIdFieldName(), m_data->getId(), ui->wdgServiceConfig);
-            ui->wdgServiceConfig->layout()->addWidget(service_config_widget);
-        }
-    }
-}
-
 void ParticipantWidget::on_btnNewSession_clicked()
 {
     if (ui->cmbSessionType->currentIndex() < 0)
@@ -1614,5 +1613,49 @@ void ParticipantWidget::on_btnAssetsBrowser_clicked()
     m_diag_editor->setMinimumSize(this->width(), this->height());
 
     m_diag_editor->open();
+}
+
+
+void ParticipantWidget::on_tabNav_currentChanged(int index)
+{
+    QUrlQuery query;
+
+    QWidget* current_tab = ui->tabNav->widget(index);
+
+    if (current_tab == ui->tabDevices){ // Devices
+        if (m_listDevices_items.isEmpty()){
+            query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
+            queryDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, query);
+
+            // Query devices for the current project - already done when loading widget
+            /*query.removeQueryItem(WEB_QUERY_ID_PARTICIPANT);
+            query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
+            queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, query);*/
+        }
+    }
+
+    if (current_tab == ui->tabServices){ // Services
+        if (!ui->wdgServiceConfig->layout()){
+            QHBoxLayout* layout = new QHBoxLayout();
+            layout->setMargin(0);
+            ui->wdgServiceConfig->setLayout(layout);
+        }
+        if (ui->wdgServiceConfig->layout()->count() == 0){
+            ServiceConfigWidget* service_config_widget = new ServiceConfigWidget(m_comManager, m_data->getIdFieldName(), m_data->getId(), ui->wdgServiceConfig);
+            ui->wdgServiceConfig->layout()->addWidget(service_config_widget);
+        }
+    }
+}
+
+
+void ParticipantWidget::on_lstAvailDevices_itemDoubleClicked(QListWidgetItem *item)
+{
+    btnAddDevice_clicked();
+}
+
+
+void ParticipantWidget::on_lstDevices_itemDoubleClicked(QListWidgetItem *item)
+{
+    btnDelDevice_clicked();
 }
 

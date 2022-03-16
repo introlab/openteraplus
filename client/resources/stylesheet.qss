@@ -441,12 +441,12 @@ QRadioButton:!checked{color:red;background-color:rgba(0,0,0,0%);}
 */
 
 QMenu {
-    icon-size: 20px;
+    icon-size: 22px;
+    font-size: 10pt;
 }
 
 QMenu::item{
     background: transparent;
-
 }
 
 QMenu::item:selected{
@@ -659,9 +659,9 @@ QToolButton#btnNextCal, QToolButton#btnPrevCal {
     border: 2px solid rgb(186, 186, 186);
 }
 
-QPushButton#btnAddDevice, QPushButton#btnDelDevice{
+/*QPushButton#btnAddDevice, QPushButton#btnDelDevice{
     min-width: 0px;
-}
+}*/
 
 QFrame#frameCheckSessionTypes{
     background-color: black;

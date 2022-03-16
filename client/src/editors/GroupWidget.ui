@@ -152,7 +152,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <widget class="QLabel" name="lblTitle">
        <property name="font">
         <font>
-         <weight>50</weight>
          <bold>false</bold>
         </font>
        </property>
@@ -168,13 +167,19 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+        <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Tableau de bord</string>
+       <string>Informations</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -299,7 +304,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <x>0</x>
             <y>0</y>
             <width>710</width>
-            <height>376</height>
+            <height>374</height>
            </rect>
           </property>
           <attribute name="label">
@@ -467,40 +472,25 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <property name="text">
                <string>État</string>
               </property>
-              <property name="textAlignment">
-               <set>AlignCenter</set>
-              </property>
              </column>
              <column>
               <property name="text">
                <string>Séances</string>
-              </property>
-              <property name="textAlignment">
-               <set>AlignCenter</set>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Première séance</string>
               </property>
-              <property name="textAlignment">
-               <set>AlignCenter</set>
-              </property>
              </column>
              <column>
               <property name="text">
                <string>Dernière séance</string>
               </property>
-              <property name="textAlignment">
-               <set>AlignCenter</set>
-              </property>
              </column>
              <column>
               <property name="text">
                <string>Dernière connexion</string>
-              </property>
-              <property name="textAlignment">
-               <set>AlignCenter</set>
               </property>
              </column>
             </widget>
@@ -524,7 +514,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../resources/TeraClient.qrc"/>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>

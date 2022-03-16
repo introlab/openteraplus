@@ -134,7 +134,6 @@ private slots:
     void on_btnSaveLogin_clicked();
     void on_txtUsername_textEdited(const QString &current);
     void on_txtPassword_textEdited(const QString &current);
-    void on_tabInfos_currentChanged(int index);
     void on_btnNewSession_clicked();
     void on_btnCheckSessionTypes_clicked();
     void on_btnUnchekSessionTypes_clicked();
@@ -146,6 +145,9 @@ private slots:
     void on_btnAddSession_clicked();
     void on_tableSessions_itemDoubleClicked(QTableWidgetItem *item);
     void on_btnAssetsBrowser_clicked();
+    void on_tabNav_currentChanged(int index);
+    void on_lstAvailDevices_itemDoubleClicked(QListWidgetItem *item);
+    void on_lstDevices_itemDoubleClicked(QListWidgetItem *item);
 };
 
 #endif // PARTICIPANTWIDGET_H

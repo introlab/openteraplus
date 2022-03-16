@@ -26,7 +26,7 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
     }*/
 
     ui->wdgGroup->setComManager(m_comManager);
-    setData(data);
+    GroupWidget::setData(data);
 
     // Query form definition
     QUrlQuery args(WEB_FORMS_QUERY_GROUP);

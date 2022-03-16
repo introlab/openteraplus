@@ -21,7 +21,11 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
 
     // Query form definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION_TYPE));
-    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION_TYPE_CONFIG));
+    if (!data->isNew()){
+        QUrlQuery args(WEB_FORMS_QUERY_SESSION_TYPE_CONFIG);
+        args.addQueryItem(WEB_QUERY_ID, QString::number(data->getId()));
+        queryDataRequest(WEB_FORMS_PATH, args);
+    }
 
     ui->wdgSessionType->setComManager(m_comManager);
     setData(data);
@@ -307,14 +311,16 @@ bool SessionTypeWidget::validateProjects()
 
 void SessionTypeWidget::processFormsReply(QString form_type, QString data)
 {
-    if (form_type == WEB_FORMS_QUERY_SESSION_TYPE){
-        ui->wdgSessionType->buildUiFromStructure(data);
-        ui->wdgSessionType->hideField("session_type_config");
+    if (form_type.startsWith(WEB_FORMS_QUERY_SESSION_TYPE_CONFIG)){
+        ui->wdgSessionTypeConfig->buildUiFromStructure(data);
+        bool show_params = ui->wdgSessionTypeConfig->formHasStructure();
+        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabConfig), show_params);
         return;
     }
 
-    if (form_type == WEB_FORMS_QUERY_SESSION_TYPE_CONFIG){
-        ui->wdgSessionTypeConfig->buildUiFromStructure(data);
+    if (form_type.startsWith(WEB_FORMS_QUERY_SESSION_TYPE)){
+        ui->wdgSessionType->buildUiFromStructure(data);
+        ui->wdgSessionType->hideField("session_type_config");
         return;
     }
 }

@@ -179,9 +179,10 @@ void DanceConfigWidget::handleNetworkError(QNetworkReply::NetworkError error, QS
 
     /*GlobalMessageBox msg;
     msg.showError(tr("Télédanse - Erreur"), error_msg);*/
-    error_msg = error_msg.replace('\n', " - ");
-    error_msg = error_msg.replace('\r', "");
-    ui->wdgMessages->addMessage(Message(Message::MESSAGE_ERROR, error_msg));
+    error_str = "DanceService: " + error_str;
+    error_str = error_str.replace('\n', " - ");
+    error_str = error_str.replace('\r', "");
+    ui->wdgMessages->addMessage(Message(Message::MESSAGE_ERROR, error_str));
 
 }
 

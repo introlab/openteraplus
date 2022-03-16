@@ -23,6 +23,23 @@
         <file>controls/yellow_button.png</file>
         <file>defaults/OpenTeraPlus.json</file>
         <file>icons/OpenTeraPlus.ico</file>
+        <file>icons/assets/audio.png</file>
+        <file>icons/assets/binary.png</file>
+        <file>icons/assets/database.png</file>
+        <file>icons/assets/document.png</file>
+        <file>icons/assets/encrypted.png</file>
+        <file>icons/assets/generic.png</file>
+        <file>icons/assets/graph.png</file>
+        <file>icons/assets/icon_source.txt</file>
+        <file>icons/assets/image.png</file>
+        <file>icons/assets/json.png</file>
+        <file>icons/assets/list.png</file>
+        <file>icons/assets/pdf.png</file>
+        <file>icons/assets/sensor.png</file>
+        <file>icons/assets/unknown.png</file>
+        <file>icons/assets/video.png</file>
+        <file>icons/assets/web.png</file>
+        <file>icons/assets/zip.png</file>
         <file>icons/config.png</file>
         <file>icons/copy.png</file>
         <file>icons/dashboard.png</file>
@@ -60,6 +77,7 @@
         <file>icons/patient_online.png</file>
         <file>icons/patient_online_busy.png</file>
         <file>icons/play.png</file>
+        <file>icons/project-icon.png</file>
         <file>icons/project.png</file>
         <file>icons/random.png</file>
         <file>icons/record.png</file>
@@ -72,6 +90,7 @@
         <file>icons/service.png</file>
         <file>icons/session.png</file>
         <file>icons/session_type.png</file>
+        <file>icons/site-icon.png</file>
         <file>icons/site.png</file>
         <file>icons/smile.png</file>
         <file>icons/software_user.png</file>
@@ -108,24 +127,8 @@
         <file>status/status_unknown.png</file>
         <file>status/warning.png</file>
         <file>stylesheet.qss</file>
-        <file>icons/assets/audio.png</file>
-        <file>icons/assets/binary.png</file>
-        <file>icons/assets/database.png</file>
-        <file>icons/assets/document.png</file>
-        <file>icons/assets/encrypted.png</file>
-        <file>icons/assets/generic.png</file>
-        <file>icons/assets/graph.png</file>
-        <file>icons/assets/icon_source.txt</file>
-        <file>icons/assets/json.png</file>
-        <file>icons/assets/pdf.png</file>
-        <file>icons/assets/sensor.png</file>
-        <file>icons/assets/unknown.png</file>
-        <file>icons/assets/video.png</file>
-        <file>icons/assets/web.png</file>
-        <file>icons/assets/zip.png</file>
-        <file>icons/assets/list.png</file>
-        <file>icons/assets/image.png</file>
-        <file>icons/project-icon.png</file>
-        <file>icons/site-icon.png</file>
+        <file>icons/group_new.png</file>
+        <file>icons/patient_new.png</file>
+        <file>icons/project_new.png</file>
     </qresource>
 </RCC>
