@@ -446,7 +446,7 @@ QMenu {
 }
 
 QMenu::item{
-    background: transparent;
+    background: black;
 }
 
 QMenu::item:selected{
