@@ -37,10 +37,13 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     }else{
         if (data->hasFieldName("id_project")){
             args.addQueryItem(WEB_QUERY_ID_PROJECT, data->getFieldValue("id_project").toString());
-            m_idProject = data->getFieldValue("id_project").toInt();
-            ui->tabAssets->setAssociatedProject(m_idProject);
         }
     }
+
+     if (data->hasFieldName("id_project")){
+         m_idProject = data->getFieldValue("id_project").toInt();
+         ui->tabAssets->setAssociatedProject(m_idProject);
+     }
 
     if (data->hasFieldName("participant_uuid")){
         m_baseParticipantUuid = data->getFieldValue("participant_uuid").toString();
