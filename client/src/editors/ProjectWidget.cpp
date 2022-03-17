@@ -444,6 +444,8 @@ void ProjectWidget::updateControlsState()
         ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabSessionTypes), is_project_admin);
         ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServicesDetails), is_site_admin || !m_services_tabs.isEmpty());
 
+        ui->btnNewGroup->setEnabled(is_project_admin);
+
         ui->tabManageUsers->setTabVisible(ui->tabManageUsers->indexOf(ui->tabUserGroups), is_site_admin);
 
         // m_limited = true if current user isn't site admin
@@ -492,6 +494,15 @@ void ProjectWidget::queryUserGroupsProjectAccess()
 
     args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
     args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups without any access
+    queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+}
+
+void ProjectWidget::queryUsers()
+{
+    QUrlQuery args;
+
+    args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_BY_USERS, "1");
     queryDataRequest(WEB_PROJECTACCESS_PATH, args);
 }
 
@@ -774,9 +785,16 @@ void ProjectWidget::deleteDataReply(QString path, int del_id)
             ui->btnUpdateServices->setEnabled(false);
 
         }
-
-
     }
+
+    if (path == WEB_PARTICIPANTINFO_PATH){
+        // A participant got deleted - check if it affects the current display
+        if (m_tableParticipants_items.contains(del_id)){
+            ui->tableSummary->removeRow(m_tableParticipants_items[del_id]->row());
+            m_tableParticipants_items.remove(del_id);
+        }
+    }
+
 }
 
 void ProjectWidget::btnUpdateAccess_clicked()
@@ -900,6 +918,20 @@ void ProjectWidget::userGroupsEditor_finished()
     queryUserGroupsProjectAccess();
 }
 
+void ProjectWidget::usersEditor_finished()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+        m_diag_editor = nullptr;
+    }
+
+    // Refresh user groups informations
+    ui->tableUsers->clearContents();
+    ui->tableUsers->setRowCount(0);
+    m_tableUsers_items.clear();
+    queryUsers();
+}
+
 void ProjectWidget::on_tableSummary_itemDoubleClicked(QTableWidgetItem *item)
 {
     QTableWidgetItem* base_item = ui->tableSummary->item(item->row(), 0);
@@ -989,8 +1021,7 @@ void ProjectWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabUsersDetails){
         // Users
         if (m_tableUsers_items.isEmpty()){
-            args.addQueryItem(WEB_QUERY_BY_USERS, "1");
-            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+            queryUsers();
         }
     }
 
@@ -1169,5 +1200,68 @@ void ProjectWidget::on_btnUpdateDevices_clicked()
     base_obj.insert("project", device_obj);
     document.setObject(base_obj);
     postDataRequest(WEB_DEVICEPROJECTINFO_PATH, document.toJson());
+}
+
+
+void ProjectWidget::on_btnNewParticipant_clicked()
+{
+    emit dataDisplayRequest(TERADATA_PARTICIPANT, 0);
+}
+
+
+void ProjectWidget::on_btnNewGroup_clicked()
+{
+    emit dataDisplayRequest(TERADATA_GROUP, 0);
+}
+
+
+void ProjectWidget::on_btnDelete_clicked()
+{
+    GlobalMessageBox diag;
+    QMessageBox::StandardButton answer = QMessageBox::No;
+    if (ui->tableSummary->selectionModel()->selectedRows().count() == 1){
+        QTableWidgetItem* base_item = ui->tableSummary->item(ui->tableSummary->currentRow(),0);
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer """) + base_item->text() + """?");
+    }else{
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer tous les participants sélectionnés?"));
+    }
+
+    if (answer == QMessageBox::Yes){
+        // We must delete!
+        foreach(QModelIndex selected_row, ui->tableSummary->selectionModel()->selectedRows()){
+            QTableWidgetItem* base_item = ui->tableSummary->item(selected_row.row(),0); // Get item at index 0 which is linked to session id
+            //m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_SESSION), m_listSessions_items.key(base_item));
+            m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_PARTICIPANT), m_tableParticipants_items.key(base_item));
+        }
+    }
+}
+
+
+void ProjectWidget::on_tableSummary_itemSelectionChanged()
+{
+    ui->btnDelete->setEnabled(!ui->tableSummary->selectedItems().isEmpty());
+}
+
+void ProjectWidget::on_btnManageUsers_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+
+    m_diag_editor = new BaseDialog(this);
+    //DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USERGROUP, nullptr);
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_BY_USERS, "1");
+    DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_USER, WEB_PROJECTACCESS_PATH, args, QStringList("project_access_role"), nullptr);
+    list_widget->setPermissions(m_comManager->getCurrentUserProjectRole(m_data->getId()) == "admin", isSiteAdmin());
+    list_widget->setFilterText(tr("Seuls les utilisateurs ayant un accès au projet sont affichés."));
+    m_diag_editor->setCentralWidget(list_widget);
+
+    m_diag_editor->setWindowTitle(tr("Utilisateurs"));
+    m_diag_editor->setMinimumSize(size().width(), 3*size().height()/4);
+
+    connect(m_diag_editor, &BaseDialog::finished, this, &ProjectWidget::usersEditor_finished);
+    m_diag_editor->open();
 }
 

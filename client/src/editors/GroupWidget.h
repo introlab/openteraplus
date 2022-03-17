@@ -35,8 +35,6 @@ private:
     void updateControlsState();
     void updateFieldsValue();
 
-    //void updateParticipant(TeraData* participant);
-    //void updateStats();
     void setData(const TeraData* data);
 
     bool validateData();
@@ -45,8 +43,12 @@ private slots:
     void processFormsReply(QString form_type, QString data);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
     void postResultReply(QString path);
-    //void processParticipants(QList<TeraData> participants);
 
+    void deleteDataReply(QString path, int del_id);
+
+    void on_btnNewParticipant_clicked();
+    void on_btnDelete_clicked();
+    void on_tableSummary_itemSelectionChanged();
 };
 
 #endif // GROUPWIDGET_H

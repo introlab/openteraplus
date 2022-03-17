@@ -645,6 +645,7 @@ QFrame#frameFilter{
     background-color:rgba(255,255,255,10%);
     border-radius:5px;
 }
+
 QLabel#lblFilter{
     font-weight: bold;
     color: orange;
@@ -669,7 +670,7 @@ QFrame#frameCheckSessionTypes{
 
 QFrame#frameActive{background-color: transparent;}
 
-QFrame#frameWeb, QFrame#frameParticipantLogin{
+QFrame#frameWeb, QFrame#frameParticipantLogin, QFrame#frameActions, QFrame#frameSessionsControls, QFrame#frameFilterSessionTypes{
     background-color: rgba(23,54,93,50%);
 }
 

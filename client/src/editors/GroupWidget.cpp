@@ -266,24 +266,58 @@ void GroupWidget::postResultReply(QString path)
             emit closeRequest();
     }
 }
-/*
-void GroupWidget::processParticipants(QList<TeraData> participants)
+
+void GroupWidget::deleteDataReply(QString path, int del_id)
 {
-    for (TeraData participant:participants){
-        if (participant.getFieldValue("id_participant_group").toInt() == m_data->getId()){
-            updateParticipant(&participant);
+    if (path == WEB_PARTICIPANTINFO_PATH){
+        // A participant got deleted - check if it affects the current display
+        if (m_tableParticipants_items.contains(del_id)){
+            ui->tableSummary->removeRow(m_tableParticipants_items[del_id]->row());
+            m_tableParticipants_items.remove(del_id);
         }
     }
-
-    //ui->tableParticipants->resizeColumnsToContents();
-    updateStats();
-}*/
+}
 
 void GroupWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &GroupWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &GroupWidget::postResultReply);
     connect(m_comManager, &ComManager::statsReceived, this, &GroupWidget::processStatsReply);
+    connect(m_comManager, &ComManager::deleteResultsOK, this, &GroupWidget::deleteDataReply);
 }
 
+
+
+void GroupWidget::on_btnNewParticipant_clicked()
+{
+    emit dataDisplayRequest(TERADATA_PARTICIPANT, 0);
+}
+
+
+void GroupWidget::on_btnDelete_clicked()
+{
+    GlobalMessageBox diag;
+    QMessageBox::StandardButton answer = QMessageBox::No;
+    if (ui->tableSummary->selectionModel()->selectedRows().count() == 1){
+        QTableWidgetItem* base_item = ui->tableSummary->item(ui->tableSummary->currentRow(),0);
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer """) + base_item->text() + """?");
+    }else{
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer tous les participants sélectionnés?"));
+    }
+
+    if (answer == QMessageBox::Yes){
+        // We must delete!
+        foreach(QModelIndex selected_row, ui->tableSummary->selectionModel()->selectedRows()){
+            QTableWidgetItem* base_item = ui->tableSummary->item(selected_row.row(),0); // Get item at index 0 which is linked to session id
+            //m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_SESSION), m_listSessions_items.key(base_item));
+            m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_PARTICIPANT), m_tableParticipants_items.key(base_item));
+        }
+    }
+}
+
+
+void GroupWidget::on_tableSummary_itemSelectionChanged()
+{
+    ui->btnDelete->setEnabled(!ui->tableSummary->selectedItems().isEmpty());
+}
 

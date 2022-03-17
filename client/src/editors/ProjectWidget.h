@@ -52,6 +52,9 @@ private slots:
     void on_icoSessions_clicked();
     void on_btnUserGroups_clicked();
     void userGroupsEditor_finished();
+
+    void usersEditor_finished();
+
     void on_tableSummary_itemDoubleClicked(QTableWidgetItem *item);
 
     void on_lstServices_itemChanged(QListWidgetItem *item);
@@ -68,6 +71,14 @@ private slots:
     void on_treeDevices_itemChanged(QTreeWidgetItem *item, int column);
 
     void on_btnUpdateDevices_clicked();
+
+    void on_btnNewParticipant_clicked();
+    void on_btnNewGroup_clicked();
+    void on_btnDelete_clicked();
+
+    void on_tableSummary_itemSelectionChanged();
+
+    void on_btnManageUsers_clicked();
 
 private:
     Ui::ProjectWidget *ui;
@@ -104,6 +115,8 @@ private:
 
     void queryServicesProject();
     void querySessionTypesProject();
+    void queryUserGroupsProjectAccess();
+    void queryUsers();
 
     void addServiceTab(const TeraData& service_project);
 
@@ -113,7 +126,7 @@ private:
 
     bool isSiteAdmin();
 
-    void queryUserGroupsProjectAccess();
+
 };
 
 #endif // ProjectWidget_H

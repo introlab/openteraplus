@@ -685,13 +685,43 @@ void ProjectNavigator::setCurrentItem(QTreeWidgetItem *item)
     updateAvailableActions(item);
 }
 
+void ProjectNavigator::selectItem(QTreeWidgetItem *item)
+{
+    TeraDataTypes data_type = getItemType(item);
+    if (data_type == TERADATA_PROJECT){
+        int id = m_projects_items.key(item);
+        setCurrentItem(m_projects_items[id]);
+        m_currentProjectId = id;
+        return;
+    }
+    if (data_type == TERADATA_GROUP){
+        int id = m_groups_items.key(item);
+        setCurrentItem(m_groups_items[id]);
+        m_currentGroupId = id;
+        return;
+    }
+    if (data_type == TERADATA_PARTICIPANT){
+        int id = m_participants_items.key(item);
+        setCurrentItem(m_participants_items[id]);
+        m_currentParticipantUuid = getParticipantUuid(id);
+        return;
+    }
+}
+
 void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
 {
     // Get user access for current site and project
-    bool is_site_admin = m_comManager->isCurrentUserSiteAdmin(m_currentSiteId);
-    bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(m_currentProjectId);
-    bool at_least_one_enabled = false;
     TeraDataTypes item_type = getItemType(current_item);
+    int project_id;
+    if (item_type == TERADATA_PROJECT){
+        project_id = m_projects_items.key(current_item);
+    }else{
+        project_id = m_currentProjectId;
+    }
+    bool is_site_admin = m_comManager->isCurrentUserSiteAdmin(m_currentSiteId);
+    bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(project_id);
+    bool at_least_one_enabled = false;
+
 
     // New project
     //ui->btnEditSite->setVisible(is_site_admin);
@@ -711,7 +741,7 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
     // New participant
     QAction* new_part = getActionForDataType(TERADATA_PARTICIPANT);
     if (new_part){
-        new_part->setEnabled(/*is_project_admin &&*/ (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT));
+        new_part->setEnabled(/*is_project_admin &&*/project_id > 0 && (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT));
         if (new_part->isEnabled()) at_least_one_enabled = true;
     }
 
@@ -1174,15 +1204,14 @@ void ProjectNavigator::on_toolButton_clicked()
 
 void ProjectNavigator::on_treeNavigator_customContextMenuRequested(const QPoint &pos)
 {
-    /*QTreeWidgetItem* pointed_item = ui->treeNavigator->itemAt(pos);
+    QTreeWidgetItem* pointed_item = ui->treeNavigator->itemAt(pos);
 
     if (!pointed_item){
         // No item clicked - remove everything except projects
         getActionForDataType(TERADATA_GROUP)->setVisible(false);
         getActionForDataType(TERADATA_PARTICIPANT)->setVisible(false);
     }else{
-        // Show everything
-        updateAvailableActions(pointed_item);
+        selectItem(pointed_item);
     }
 
     if (m_newItemMenu)
@@ -1190,7 +1219,7 @@ void ProjectNavigator::on_treeNavigator_customContextMenuRequested(const QPoint 
 
     getActionForDataType(TERADATA_GROUP)->setVisible(true);
     getActionForDataType(TERADATA_PARTICIPANT)->setVisible(true);
-    updateAvailableActions(ui->treeNavigator->currentItem());*/
+    updateAvailableActions(ui->treeNavigator->currentItem());
 
 }
 

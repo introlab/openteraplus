@@ -36,6 +36,9 @@ ServiceConfigWidget::ServiceConfigWidget(ComManager *comMan, const QString id_fi
         }
     }
 
+    // Query generic service config form
+    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SERVICE_CONFIG));
+
     // Query services
     QUrlQuery args;
     //args.addQueryItem(id_field_name, QString::number(id_field_value));
@@ -45,9 +48,6 @@ ServiceConfigWidget::ServiceConfigWidget(ComManager *comMan, const QString id_fi
         args.addQueryItem(WEB_QUERY_ID_SPECIFIC, m_specificId);
     }*/
     queryDataRequest(WEB_SERVICEINFO_PATH, args);
-
-    // Query generic service config form
-    queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SERVICE_CONFIG));
 
 }
 
@@ -176,8 +176,9 @@ void ServiceConfigWidget::processFormsReply(QString form_type, QString data)
             ui->wdgServiceConfigConfig->buildUiFromStructure(data);
             updateFieldsValue();
             ui->frameEditor->setVisible(true);
+            m_gotServiceForm = true;
         }
-        m_gotServiceForm = true;
+
         return;
     }
 }
@@ -213,7 +214,11 @@ void ServiceConfigWidget::processServicesReply(QList<TeraData> services, QUrlQue
             if (service.getFieldValue("service_editable_config").toBool())
                 updateService(&service);
         }
+    }
 
+    if (!ui->lstServiceConfig->currentItem() && ui->lstServiceConfig->count()>0){
+        ui->lstServiceConfig->setCurrentRow(0);
+        on_lstServiceConfig_itemClicked(ui->lstServiceConfig->item(0)); // Select first item if none selected
     }
 }
 
@@ -244,16 +249,6 @@ void ServiceConfigWidget::on_lstServiceConfig_itemClicked(QListWidgetItem *item)
     ui->frameSpecific->hide();
 
     int id_service = m_listServices_items.key(item);
-    // Query config for that service
-    QUrlQuery args;
-    args.addQueryItem(m_idFieldName, QString::number(m_idFieldValue));
-    args.addQueryItem(WEB_QUERY_LIST, "1"); // Also lists specific ids
-    args.addQueryItem(WEB_QUERY_ID_SERVICE, QString::number(id_service));
-    if (!m_specificId.isEmpty()){
-        args.addQueryItem(WEB_QUERY_ID_SPECIFIC, m_specificId);
-    }
-    queryDataRequest(WEB_SERVICECONFIGINFO_PATH, args);
-
     m_gotServiceForm = false;
 
     // Query form for that service
@@ -266,6 +261,16 @@ void ServiceConfigWidget::on_lstServiceConfig_itemClicked(QListWidgetItem *item)
     ui->wdgServiceConfig->setFieldValue("id_service", id_service);
 
     ui->lblTitle->setText(item->text());
+
+    // Query config for that service
+    QUrlQuery args;
+    args.addQueryItem(m_idFieldName, QString::number(m_idFieldValue));
+    args.addQueryItem(WEB_QUERY_LIST, "1"); // Also lists specific ids
+    args.addQueryItem(WEB_QUERY_ID_SERVICE, QString::number(id_service));
+    if (!m_specificId.isEmpty()){
+        args.addQueryItem(WEB_QUERY_ID_SPECIFIC, m_specificId);
+    }
+    queryDataRequest(WEB_SERVICECONFIGINFO_PATH, args);
 
 }
 
