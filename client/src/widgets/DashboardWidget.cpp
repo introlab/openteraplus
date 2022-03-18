@@ -316,8 +316,11 @@ void DashboardWidget::processParticipantsReply(const QList<TeraData> participant
         }
 
     }
+
     ui->lblNoRecentParticipants->setVisible(m_listParticipants_items.isEmpty());
     ui->tableRecentParticipants->setVisible(!m_listParticipants_items.isEmpty());
+    ui->tableRecentParticipants->resizeColumnToContents(0);
+    //ui->tableRecentParticipants->resizeColumnsToContents();
 
     if (m_listParticipants_items.isEmpty()){
         ui->frameRecent->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum));

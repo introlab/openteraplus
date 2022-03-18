@@ -515,12 +515,12 @@ QWidget#SessionWidget{background-image: url(://TeRA_Background.png); }
 
 /* Customizations for Editors */
 
-QPushButton#btnGeneratePassword{
+QPushButton#btnGeneratePassword, QToolButton#btnGeneratePassword{
     background-color: qlineargradient(spread:pad, x1:1, y1:0.511, x2:0.994413, y2:0.142, stop:0 rgba(76, 76, 84, 255), stop:1 rgba(136, 136, 136, 255));
     border: 2px solid grey;
 }
 
-QPushButton#btnGeneratePassword:hover{
+QPushButton#btnGeneratePassword:hover, QToolButton#btnGeneratePassword:hover{
     background-color: qlineargradient(spread:pad, x1:1, y1:0.511, x2:0.994413, y2:0.142, stop:0 rgba(136, 136, 136, 255), stop:1 rgba(76, 76, 84, 255));
     color: black;
     border: 2px solid grey;

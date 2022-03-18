@@ -7,6 +7,7 @@
 #include <QHBoxLayout>
 
 #include "managers/ComManager.h"
+#include "data/IconMenuDelegate.h"
 #include "TeraData.h"
 
 #include "GlobalMessageBox.h"

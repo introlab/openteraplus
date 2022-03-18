@@ -38,6 +38,9 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
 
+    // Disable generate password button for now, since it has been moved to password strength dialog
+    ui->btnGeneratePassword->hide();
+
     ui->wdgUser->setComManager(m_comManager);
     UserWidget::setData(data);
 
@@ -465,6 +468,7 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::userPreferencesReceived, this, &UserWidget::processUserPrefsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserWidget::postResultReply);
     connect(ui->wdgUser, &TeraForm::widgetValueHasChanged, this, &UserWidget::userFormValueChanged);
+    connect(ui->wdgUser, &TeraForm::widgetValueHasFocus, this, &UserWidget::userFormValueHasFocus);
 
 }
 
@@ -601,6 +605,31 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
         QString current_pass = value.toString();
         if (!current_pass.isEmpty() && !m_passwordJustGenerated){
             // Show password dialog
+            PasswordStrengthDialog dlg(current_pass);
+            //QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->wdgUser->getWidgetForField("user_password"));
+            //dlg.setCursorPosition(wdg_editor->cursorPosition());
+
+            if (dlg.exec() == QDialog::Accepted){
+                m_passwordJustGenerated = true;
+                ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
+            }else{
+                ui->wdgUser->setFieldValue("user_password", "");
+                //wdg_editor->undo();
+            }
+
+        }else{
+            if (m_passwordJustGenerated)
+                m_passwordJustGenerated = false;
+        }
+    }
+}
+
+void UserWidget::userFormValueHasFocus(QWidget *widget)
+{
+    if (widget == ui->wdgUser->getWidgetForField("user_password")){
+        if (!m_passwordJustGenerated){
+            // Show password dialog
+            QString current_pass = ui->wdgUser->getFieldValue("user_password").toString();
             PasswordStrengthDialog dlg(current_pass);
             //QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->wdgUser->getWidgetForField("user_password"));
             //dlg.setCursorPosition(wdg_editor->cursorPosition());

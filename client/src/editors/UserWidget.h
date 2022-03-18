@@ -81,6 +81,7 @@ private slots:
     void on_btnUpdateGroups_clicked();
 
     void userFormValueChanged(QWidget* widget, QVariant value);
+    void userFormValueHasFocus(QWidget* widget);
     void on_btnUpdatePrefs_clicked();
     void on_btnGeneratePassword_clicked();
 

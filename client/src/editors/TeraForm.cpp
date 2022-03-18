@@ -214,7 +214,7 @@ void TeraForm::hideField(const QString &field)
         setWidgetVisibility(widget, nullptr, false);
         checkConditions(widget);
         // Disable condition
-        if (widget->property("condition").isValid()){
+        if (widget->property("condition").isValid() && !hasHookCondition(widget)){
             widget->setProperty("_condition", widget->property("condition"));
             widget->setProperty("condition", QVariant::Invalid);
         }
@@ -526,6 +526,9 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
                     hideField(item_id);
                 }
 
+                // Install event filter if needed to process some specific events
+                item_widget->installEventFilter(this);
+
             }else{
                 LOG_WARNING("Unknown item type: " + item_type, "TeraForm::buildFormFromStructure");
                 item_label->deleteLater();
@@ -652,7 +655,6 @@ QWidget *TeraForm::createTextWidget(const QVariantHash &structure, bool is_maske
     }
 
     connect(item_text, &QLineEdit::textChanged, this, &TeraForm::widgetValueChanged);
-
     return item_text;
 }
 
@@ -723,6 +725,8 @@ QWidget *TeraForm::createLongTextWidget(const QVariantHash &structure)
 
     //item_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 
+    connect(item_text, &QTextEdit::textChanged, this, &TeraForm::widgetValueChanged);
+
     return item_text;
 }
 
@@ -756,6 +760,8 @@ QWidget *TeraForm::createDateTimeWidget(const QVariantHash &structure)
         }
     }
 
+    connect(item_dt, &QDateTimeEdit::dateTimeChanged, this, &TeraForm::widgetValueChanged);
+
     return item_dt;
 
 }
@@ -765,6 +771,8 @@ QWidget *TeraForm::createDurationWidget(const QVariantHash &structure)
     Q_UNUSED(structure)
     QTimeEdit* item_t = new QTimeEdit();
     item_t->setDisplayFormat("hh:mm:ss");
+
+    connect(item_t, &QTimeEdit::timeChanged, this, &TeraForm::widgetValueChanged);
 
     return item_t;
 }
@@ -872,6 +880,21 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
         }
     }
 
+}
+
+bool TeraForm::hasHookCondition(QWidget *item)
+{
+    // Check if any item a hook condition on it
+    if (item->property("condition").isValid()){
+        // Item has a condition
+        if (item->property("condition").canConvert(QMetaType::QVariantHash)){
+            QVariantHash condition = item->property("condition").toHash();
+            if (condition.contains("hook"))
+                return true;
+        }
+    }
+
+    return false;
 }
 
 void TeraForm::setWidgetVisibility(QWidget *widget, QWidget *linked_widget, bool visible)
@@ -1209,6 +1232,21 @@ qreal TeraForm::doLinearInterpolation(const qreal &p1, const qreal &p2, const qr
     return (p1 + (p2-p1)*value);
 }
 
+bool TeraForm::eventFilter(QObject *object, QEvent *event)
+{
+    if(event->type() == QEvent::FocusIn) {
+        QFocusEvent* focus_event = dynamic_cast<QFocusEvent*>(event);
+        if (focus_event->reason() != Qt::ActiveWindowFocusReason){
+            //qDebug() << object << " has focus now!";
+            QWidget* widget = dynamic_cast<QWidget*>(object);
+            if (widget)
+                emit widgetValueHasFocus(widget);
+        }
+        return false; // lets the event continue to the edit
+    }
+    return false;
+}
+
 void TeraForm::widgetValueChanged()
 {
     // This will work only if the sender is in the same thread, which is always the case here.
@@ -1225,6 +1263,11 @@ void TeraForm::widgetValueChanged()
             sender_widget->setProperty("last_value", current_value);
             emit widgetValueHasChanged(sender_widget, getWidgetValue(sender_widget));
             checkConditions(sender_widget);
+        }else{
+            // If item has a hook, always trigger it!
+            /*if (hasHookCondition(sender_widget))
+                checkConditions(sender_widget);*/
+
         }
         emit formIsNowDirty(isDirty());
     }

@@ -286,12 +286,37 @@ void ServiceWidget::processServiceSites(QList<TeraData> sites, QUrlQuery reply_q
     }
 }
 
+void ServiceWidget::processServices(QList<TeraData> services, QUrlQuery reply_query)
+{
+    Q_UNUSED(reply_query)
+
+    for (int i=0; i<services.count(); i++){
+        // Only update roles
+        if (services.at(i).getId() != m_data->getId())
+            continue;
+
+        if (services.at(i).hasFieldName("service_roles")){
+            QVariantList roles = services.at(i).getFieldValue("service_roles").toList();
+            m_serviceRoles.clear();
+            m_listRoles_items.clear();
+            ui->lstRoles->clear();
+            foreach(QVariant role, roles){
+                QVariantMap role_map = role.toMap();
+                int id_role = role_map["id_service_role"].toInt();
+                QString role_name = role_map["service_role_name"].toString();
+                updateServiceRole(id_role, role_name);
+            }
+        }
+    }
+}
+
 void ServiceWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &ServiceWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &ServiceWidget::postResultReply);
     connect(m_comManager, &ComManager::servicesProjectsReceived, this, &ServiceWidget::processServiceProjects);
     connect(m_comManager, &ComManager::servicesSitesReceived, this, &ServiceWidget::processServiceSites);
+    connect(m_comManager, &ComManager::servicesReceived, this, &ServiceWidget::processServices);
 }
 
 
@@ -351,7 +376,10 @@ void ServiceWidget::on_btnDeleteRole_clicked()
     GlobalMessageBox msg_box;
 
     if (msg_box.showYesNo(tr("Supprimer ce rôle?"), tr("Êtes-vous sûrs de vouloir supprimer le rôle:") +  " \"" + ui->lstRoles->currentItem()->text() + "\"?") == QMessageBox::Yes){
-        m_serviceRoles.remove(ui->lstRoles->currentItem()->data(Qt::UserRole).toInt());
+        int id_role = ui->lstRoles->currentItem()->data(Qt::UserRole).toInt();
+        m_serviceRoles.remove(id_role);
+        ui->lstRoles->removeItemWidget(m_listRoles_items.value(id_role));
+        m_listRoles_items.remove(id_role);
         postServiceRoles();
     }
 }

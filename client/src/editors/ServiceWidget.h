@@ -55,6 +55,7 @@ private slots:
     void postResultReply(QString path);
     void processServiceProjects(QList<TeraData> projects);
     void processServiceSites(QList<TeraData> sites, QUrlQuery reply_query);
+    void processServices(QList<TeraData> services, QUrlQuery reply_query);
 
     void on_tabNav_currentChanged(int index);
     void on_btnUpdateProjects_clicked();

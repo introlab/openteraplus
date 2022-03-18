@@ -345,7 +345,7 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
         action_frame->setLayout(layout);
 
         // View asset
-        btnView = new QToolButton();
+        /*btnView = new QToolButton();
         btnView->setIcon(QIcon(":/icons/search.png"));
         btnView->setIconSize(QSize(24,24));
         btnView->setProperty("asset_uuid", asset.getUuid());
@@ -353,7 +353,7 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
         btnView->setMaximumWidth(32);
         btnView->setToolTip(tr("Ouvrir"));
         //connect(btnView, &QToolButton::clicked, this, &ParticipantWidget::btnViewSession_clicked);
-        layout->addWidget(btnView);
+        layout->addWidget(btnView);*/
 
         // Delete
         QToolButton* btnDelete = new QToolButton();

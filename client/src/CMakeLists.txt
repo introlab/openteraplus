@@ -20,6 +20,7 @@ set(headers
     data/Message.h
     data/TransferringFile.h
     data/UploadingFile.h
+    data/IconMenuDelegate.h
     # Main Windows
     main/MainWindow.h
     main/MainKitWindow.h
@@ -115,6 +116,7 @@ set(srcs
     data/Message.cpp
     data/TransferringFile.cpp
     data/UploadingFile.cpp
+    data/IconMenuDelegate.cpp
     # Main Windows
     main/MainWindow.cpp
     main/MainKitWindow.cpp

@@ -110,12 +110,12 @@ void DeviceWidget::updateControlsState()
 
 void DeviceWidget::updateFieldsValue()
 {
-    if (m_data && !hasPendingDataRequests()){
-        if (!ui->wdgDevice->formHasData()){
-            ui->wdgDevice->fillFormFromData(m_data->toJson());
-        }else {
+    if (m_data/* && !hasPendingDataRequests()*/){
+        //if (!ui->wdgDevice->formHasData()){
+        ui->wdgDevice->fillFormFromData(m_data->toJson());
+        /*}else {
             ui->wdgDevice->resetFormValues();
-        }
+        }*/
         ui->lblTitle->setText(m_data->getName());
     }
 }

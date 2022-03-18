@@ -23,6 +23,7 @@ ServiceConfigWidget::ServiceConfigWidget(ComManager *comMan, const QString id_fi
 
     ui->wdgServiceConfig->setComManager(m_comManager);
     ui->wdgServiceConfigConfig->setComManager(m_comManager);
+    ui->lstServiceConfig->setItemDelegate(new IconMenuDelegate(ui->lstServiceConfig->gridSize().height(), this));
 
     m_idFieldName = id_field_name;
     m_idFieldValue = id_field_value;
@@ -144,6 +145,7 @@ void ServiceConfigWidget::updateService(const TeraData *service)
     }else{
         // New service with a config
         item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE_CONFIG)), service_name);
+        item->setToolTip(service_name);
         item->setSizeHint(QSize(ui->lstServiceConfig->width(), 64));
         ui->lstServiceConfig->addItem(item);
         m_listServices_items[id_service] = item;

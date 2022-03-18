@@ -36,14 +36,15 @@ private slots:
     void btnUpdateSiteAccess_clicked();
     void btnUpdateProjectAccess_clicked();
 
+    void comboSiteRole_changed(int index);
     void on_tabNav_currentChanged(int index);
-
     void on_btnUpdateUsers_clicked();
 
 private:
     Ui::UserGroupWidget *ui;
 
     QMap<int, QTableWidgetItem*> m_tableProjects_items;
+    QMultiMap<int, QTableWidgetItem*> m_tableProjectSite_items; // Map: id_site, project item
     QMap<int, QTableWidgetItem*> m_tableSites_items;
 
     QMap<int, QListWidgetItem*>  m_listUsersUserGroups_items;

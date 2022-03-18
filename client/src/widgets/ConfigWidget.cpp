@@ -22,6 +22,7 @@ ConfigWidget::ConfigWidget(ComManager *comMan, QWidget *parent) :
     connectSignals();
 
     ui->lstSections->setCurrentRow(0);
+    ui->lstSections->setItemDelegate(new IconMenuDelegate(ui->lstSections->gridSize().height(), this));
 
 }
 
@@ -39,7 +40,8 @@ void ConfigWidget::addSection(const QString &name, const QIcon &icon, const int 
     tmp->setTextAlignment(Qt::AlignCenter);
     tmp->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     tmp->setSizeHint(QSize(ui->lstSections->width(), 64));
-    tmp->setData(Qt::UserRole,id);
+    tmp->setToolTip(name);
+    tmp->setData(Qt::UserRole, id);
 }
 
 void ConfigWidget::setupSections()
@@ -104,4 +106,3 @@ void ConfigWidget::connectSignals()
 
     //connect(ui->btnClose, &QPushButton::clicked, this, &ConfigWidget::closeRequest);
 }
-

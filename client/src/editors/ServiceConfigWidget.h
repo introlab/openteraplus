@@ -5,6 +5,7 @@
 #include <QListWidgetItem>
 
 #include "editors/DataEditorWidget.h"
+#include "data/IconMenuDelegate.h"
 #include "GlobalMessageBox.h"
 
 #include "Utils.h"

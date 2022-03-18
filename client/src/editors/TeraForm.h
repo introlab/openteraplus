@@ -24,6 +24,8 @@
 #include <QDateTimeEdit>
 #include <QTimeEdit>
 
+#include <QFocusEvent>
+
 #include <QtMultimedia/QCameraInfo>
 #include <QtMultimedia/QAudioDeviceInfo>
 
@@ -121,6 +123,7 @@ private:
 
     void checkConditions(QWidget* item_triggering = nullptr);
     void checkConditionsForItem(QWidget* item, QWidget* item_triggering = nullptr);
+    bool hasHookCondition(QWidget* item);
     void setWidgetVisibility(QWidget* widget, QWidget *linked_widget, bool visible);
     bool getWidgetValues(QWidget *widget, QVariant *id, QVariant* value);
     QVariant getWidgetValue(QWidget* widget);
@@ -133,6 +136,8 @@ private:
     bool validateWidget(QWidget* widget, bool include_hidden=false);
 
     static qreal doLinearInterpolation(const qreal &p1, const qreal &p2, const qreal &value);
+
+    bool eventFilter(QObject* object, QEvent* event);
 
 private slots:
     void widgetValueChanged();
@@ -148,6 +153,7 @@ public slots:
 
 signals:
     void widgetValueHasChanged(QWidget* widget, QVariant value);
+    void widgetValueHasFocus(QWidget* widget);
     void formIsNowDirty(bool dirty);
 
 };

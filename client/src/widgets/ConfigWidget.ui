@@ -126,7 +126,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </property>
        <property name="maximumSize">
         <size>
-         <width>125</width>
+         <width>150</width>
          <height>16777215</height>
         </size>
        </property>
@@ -148,6 +148,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          <height>48</height>
         </size>
        </property>
+       <property name="textElideMode">
+        <enum>Qt::ElideRight</enum>
+       </property>
        <property name="movement">
         <enum>QListView::Static</enum>
        </property>
@@ -163,14 +166,14 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <property name="gridSize">
         <size>
          <width>100</width>
-         <height>90</height>
+         <height>100</height>
         </size>
        </property>
        <property name="viewMode">
         <enum>QListView::IconMode</enum>
        </property>
        <property name="uniformItemSizes">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -179,7 +182,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <bool>true</bool>
        </property>
        <property name="itemAlignment">
-        <set>Qt::AlignAbsolute|Qt::AlignBaseline|Qt::AlignBottom|Qt::AlignCenter|Qt::AlignHCenter|Qt::AlignHorizontal_Mask|Qt::AlignJustify|Qt::AlignLeading|Qt::AlignLeft|Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing|Qt::AlignVCenter|Qt::AlignVertical_Mask</set>
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -193,7 +196,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>580</width>
+          <width>555</width>
           <height>447</height>
          </rect>
         </property>
