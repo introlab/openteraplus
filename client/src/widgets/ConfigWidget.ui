@@ -166,7 +166,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <property name="gridSize">
         <size>
          <width>100</width>
-         <height>100</height>
+         <height>90</height>
         </size>
        </property>
        <property name="viewMode">
