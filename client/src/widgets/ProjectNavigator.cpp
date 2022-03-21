@@ -66,7 +66,7 @@ void ProjectNavigator::initUi()
     ui->btnNewItem->setMenu(m_newItemMenu);
 
     // Load setting for filter inactive
-    bool filter = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_FILTERINACTIVE).toBool();
+    bool filter = TeraSettings::getUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_FILTERINACTIVE).toBool();
     ui->btnFilterActive->setChecked(filter);
 
     // Request sites
@@ -728,36 +728,46 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
     QAction* new_project = getActionForDataType(TERADATA_PROJECT);
     if (new_project){
         new_project->setEnabled(is_site_admin);
-        if (new_project->isEnabled()) at_least_one_enabled = true;
+        //if (new_project->isEnabled()) at_least_one_enabled = true;
+        new_project->setVisible(is_site_admin);
+        if (new_project->isVisible()) at_least_one_enabled = true;
     }
 
     // New group
     QAction* new_group = getActionForDataType(TERADATA_GROUP);
     if (new_group){
         new_group->setEnabled(is_project_admin);
-        if (new_group->isEnabled()) at_least_one_enabled = true;
+        //if (new_group->isEnabled()) at_least_one_enabled = true;
+        new_group->setVisible(is_project_admin);
+        if (new_group->isVisible()) at_least_one_enabled = true;
     }
 
     // New participant
     QAction* new_part = getActionForDataType(TERADATA_PARTICIPANT);
     if (new_part){
         new_part->setEnabled(/*is_project_admin &&*/project_id > 0 && (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT));
-        if (new_part->isEnabled()) at_least_one_enabled = true;
+        //if (new_part->isEnabled()) at_least_one_enabled = true;
+        new_part->setVisible(new_part->isEnabled());
+        if (new_part->isVisible()) at_least_one_enabled = true;
     }
 
     ui->btnNewItem->setEnabled(at_least_one_enabled);
 
     // Delete button
-    ui->btnDeleteItem->setEnabled(false);
+    //ui->btnDeleteItem->setEnabled(false);
+    ui->btnDeleteItem->setVisible(false);
 
     if (item_type==TERADATA_PROJECT && is_site_admin){
-        ui->btnDeleteItem->setEnabled(true);
+        //ui->btnDeleteItem->setEnabled(true);
+        ui->btnDeleteItem->setVisible(true);
     }
     if (item_type==TERADATA_GROUP && is_project_admin){
-        ui->btnDeleteItem->setEnabled(true);
+        //ui->btnDeleteItem->setEnabled(true);
+        ui->btnDeleteItem->setVisible(true);
     }
     if (item_type==TERADATA_PARTICIPANT && is_project_admin){
-        ui->btnDeleteItem->setEnabled(true);
+        //ui->btnDeleteItem->setEnabled(true);
+        ui->btnDeleteItem->setVisible(true);
     }
 
 }
@@ -882,7 +892,7 @@ void ProjectNavigator::processSitesReply(const QList<TeraData> sites)
     }else{
         if (m_comManager){
             if (m_sitesLoaded == false){ // Only select the last site on first connection
-                int lastSiteId = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_LASTSITEID).toInt();
+                int lastSiteId = TeraSettings::getUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_LASTSITEID).toInt();
                 if (getCurrentSiteId() != lastSiteId){
                     selectItem(TERADATA_SITE, lastSiteId);
                     //m_siteJustChanged = true;

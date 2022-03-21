@@ -28,3 +28,21 @@ bool BaseServiceWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
 
     return true; // Accept by default
 }
+
+QStringList BaseServiceWidget::getHandledServiceKeys()
+{
+    // Get all handled service keys by that software
+    // TODO: Dynamic plugin for each service
+
+    return QStringList() << "VideoRehabService" /*<< "DanceService"*/ << "RobotTeleOperationService";
+}
+
+QList<TeraSessionCategory::SessionTypeCategories> BaseServiceWidget::getHandledSessionCategories()
+{
+    QList<TeraSessionCategory::SessionTypeCategories> categories;
+
+    // List handled session types
+    categories.append(TeraSessionCategory::SESSION_TYPE_SERVICE);
+
+    return categories;
+}

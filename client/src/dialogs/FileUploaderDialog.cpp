@@ -1,6 +1,8 @@
 #include "FileUploaderDialog.h"
 #include "ui_FileUploaderDialog.h"
 
+#include <QDebug>
+
 FileUploaderDialog::FileUploaderDialog(const QString &file_pattern, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FileUploaderDialog),
@@ -13,6 +15,8 @@ FileUploaderDialog::FileUploaderDialog(const QString &file_pattern, QWidget *par
 
     if (!documents_path.isEmpty())
         m_current_base_path = documents_path.first();
+
+    setResult(QDialog::Accepted); // Accepted by default - so it could be rejected properly if no initial file selection
 
     if (ui->tableFiles->rowCount()==0)
         on_btnAddFile_clicked();
@@ -61,6 +65,13 @@ void FileUploaderDialog::on_btnAddFile_clicked()
         addFileToTable(file, default_label);
     }
 
+    ui->tableFiles->resizeColumnsToContents();
+
+    if (ui->tableFiles->rowCount() == 0){
+        // No file added, list still empty, close!
+        qDebug() << "No file - closing!";
+        reject();
+    }
 }
 
 
@@ -93,7 +104,6 @@ void FileUploaderDialog::addFileToTable(const QString &file_path, const QString 
     ui->tableFiles->setCellWidget(current_row, 1, item_label);
 
     ui->btnUpload->setEnabled(ui->tableFiles->rowCount()>0);
-
 }
 
 void FileUploaderDialog::showEvent(QShowEvent *event)

@@ -489,14 +489,14 @@ void InSessionWidget::initUI()
         }
 
         //SB - Even more lazy programmer reusing VideoRehabService widget!
-        if (service_key == "DanceService") {
+        /*if (service_key == "DanceService") {
             // Main widget = QWebEngine
             m_serviceWidget = new VideoRehabWidget(m_comManager, this);
             setMainWidget(m_serviceWidget);
             m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
             setToolsWidget(m_serviceToolsWidget);
             handled = true;
-        }
+        }*/
 
         if (!handled){
             GlobalMessageBox msg_box;

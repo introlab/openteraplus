@@ -130,5 +130,7 @@
         <file>icons/group_new.png</file>
         <file>icons/patient_new.png</file>
         <file>icons/project_new.png</file>
+        <file>translations/openteraplus_en.qm</file>
+        <file>translations/openteraplus_fr.qm</file>
     </qresource>
 </RCC>

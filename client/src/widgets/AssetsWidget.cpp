@@ -129,6 +129,9 @@ void AssetsWidget::displayAssetsForSession(const int &id_session)
     if (!m_comManager)
         return;
 
+    if (m_viewMode == VIEWMODE_SESSION)
+        return; // Already in that mode!
+
     clearAssets();
 
     setViewMode(VIEWMODE_SESSION);
@@ -150,6 +153,9 @@ void AssetsWidget::displayAssetsForParticipant(const int &id_participant)
 {
     if (!m_comManager)
         return;
+
+    if (m_viewMode == VIEWMODE_PARTICIPANT)
+        return; // Already in that mode!
 
     clearAssets();
 
@@ -241,17 +247,22 @@ void AssetsWidget::queryAssetsInfos()
 
         m_comAssetManager->doPost(QUrl(service_url), document.toJson(), true);
     }
+
+    if (service_urls.isEmpty()){
+        // No request done, remove loading message
+        setLoading(false);
+    }
 }
 
 void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant, const bool &emit_count_update_signal)
 {
     QTreeWidgetItem* item;
-    bool has_asset_infos_url = false;
+    //bool has_asset_infos_url = false;
     bool has_asset_download_url = false;
 
-    if (asset.hasFieldName("asset_infos_url")){
+    /*if (asset.hasFieldName("asset_infos_url")){
         has_asset_infos_url = !asset.getFieldValue("asset_infos_url").toString().isEmpty();
-    }
+    }*/
 
     if (asset.hasFieldName("asset_url")){
         has_asset_download_url = !asset.getFieldValue("asset_url").toString().isEmpty();
@@ -259,19 +270,24 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
 
     //btnDownload = dynamic_cast<QToolButton*>(ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(2)->widget());
     QToolButton* btnDownload;
-    QToolButton* btnView;
+    //QToolButton* btnView;
 
     QString asset_uuid = asset.getUuid();
 
     // Check to display asset correctly
     if (m_treeAssets.contains(asset_uuid)){
         item = m_treeAssets[asset_uuid];
-        btnDownload = dynamic_cast<QToolButton*>(ui->treeAssets->itemWidget(item, ui->treeAssets->columnCount()-1)->layout()->itemAt(2)->widget());
-        btnView = dynamic_cast<QToolButton*>(ui->treeAssets->itemWidget(item, ui->treeAssets->columnCount()-1)->layout()->itemAt(0)->widget());
+        btnDownload = dynamic_cast<QToolButton*>(ui->treeAssets->itemWidget(item, ui->treeAssets->columnCount()-1)->layout()->itemAt(1)->widget());
+       // btnView = dynamic_cast<QToolButton*>(ui->treeAssets->itemWidget(item, ui->treeAssets->columnCount()-1)->layout()->itemAt(0)->widget());
     }else{
         // Add assets info to internal list
         if (!m_assets.contains(asset_uuid))
             m_assets.insert(asset_uuid, new TeraData(asset));
+        else{
+            // Assets already present - merge infos
+            m_assets[asset_uuid]->updateFrom(asset);
+        }
+
 
         QTreeWidgetItem* parent_item = nullptr;
 
@@ -290,11 +306,14 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
             if (m_treeSessions.contains(id_session)){
                 session_item = m_treeSessions[id_session];
             }else{
-                session_item = new QTreeWidgetItem();
-                QString session_name = tr("Séance ") + QString::number(id_session);
+                QString session_name;// = tr("Séance") + " " + QString::number(id_session);
                 if (asset.hasFieldName("asset_session_name")){
                     session_name = asset.getFieldValue("asset_session_name").toString();
+                }else{
+                    // No session name - abort.
+                    return;
                 }
+                session_item = new QTreeWidgetItem();
                 session_item->setText(AssetColumn::ASSET_NAME, session_name);
                 session_item->setIcon(AssetColumn::ASSET_NAME, QIcon("://icons/group.png"));
                 session_item->setFirstColumnSpanned(true);
@@ -394,7 +413,7 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
     if (asset.hasFieldName("asset_service_owner_name"))
         item->setText(AssetColumn::ASSET_SERVICE, asset.getFieldValue("asset_service_owner_name").toString());
     btnDownload->setEnabled(has_asset_download_url);
-    btnView->setEnabled(has_asset_infos_url);
+    //btnView->setEnabled(has_asset_infos_url);
 }
 
 QString AssetsWidget::getRelativePathForAsset(const QString &uuid)
@@ -562,6 +581,17 @@ void AssetsWidget::setLoading(const bool &loading, const QString &msg, const boo
     }
 }
 
+void AssetsWidget::updateAssetsCountLabel()
+{
+    QString suffix;
+    if (m_assets.count()>1){
+        suffix = tr("éléments");
+    }else{
+        suffix = tr("élément");
+    }
+    ui->lblAssetsCount->setText(QString::number(m_assets.count()) + " " + suffix);
+}
+
 void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query)
 {
     if (reply_query.hasQueryItem(WEB_QUERY_WITH_ONLY_TOKEN)){
@@ -595,7 +625,7 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         if (ui->treeAssets->topLevelItemCount()>0)
             ui->btnDownloadAll->setEnabled(true);
 
-        ui->lblAssetsCount->setText(QString::number(m_assets.count()) + " " + tr("données"));
+        updateAssetsCountLabel();
         ui->btnExpandAll->setEnabled(m_assets.count()<=100);
         if (!ui->btnExpandAll->isEnabled()){
             ui->btnExpandAll->setToolTip(tr("Trop de données - fonctionnalité désactivée"));
@@ -737,6 +767,9 @@ void AssetsWidget::transferDialogCompleted()
 
     // Clear all selection
     ui->treeAssets->clearSelection();
+
+    // Update assets count
+    updateAssetsCountLabel();
 }
 
 void AssetsWidget::transferDialogAbortRequested()
@@ -761,6 +794,8 @@ void AssetsWidget::assetComDeleteOK(QString path, QString uuid)
             emit assetCountChanged(m_assets.count());
             ui->btnDownloadAll->setEnabled(!isEmpty());
             //ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Suppression complétée")));
+
+            updateAssetsCountLabel();
         }
     }
 
@@ -849,8 +884,19 @@ void AssetsWidget::on_btnNew_clicked()
         return; // Should not happen at this point.
     }
 
+    if (m_uploadDialog){
+        m_uploadDialog->deleteLater();
+    }
+
     // Open upload dialog
     m_uploadDialog = new FileUploaderDialog(tr("Tous (*.*)"), dynamic_cast<QWidget*>(this));
+    if (m_uploadDialog->result() == QDialog::Rejected){
+        // No file selected - no need to upload anything!
+        m_uploadDialog->deleteLater();
+        m_uploadDialog = nullptr;
+        return;
+    }
+    m_uploadDialog->setMinimumWidth(2*this->width()/3);
 
     connect(m_uploadDialog, &FileUploaderDialog::finished, this, &AssetsWidget::fileUploaderFinished);
 

@@ -23,8 +23,20 @@ void TeraSettings::setUserSetting(const QString &user_uuid, const QString &key, 
     settings.setValue("user/" + user_uuid + "/" + key, value);
 }
 
-QVariant TeraSettings::getUsersetting(const QString &user_uuid, const QString &key)
+QVariant TeraSettings::getUserSetting(const QString &user_uuid, const QString &key)
 {
     QSettings settings;
     return settings.value("user/" + user_uuid + "/" + key);
+}
+
+void TeraSettings::setUserSettingForProject(const QString &user_uuid, const int &id_project, const QString &key, const QVariant &value)
+{
+    QSettings settings;
+    settings.setValue("user/" + user_uuid + "/project_" + QString::number(id_project) + "/" + key, value);
+}
+
+QVariant TeraSettings::getUserSettingForProject(const QString &user_uuid, const int &id_project, const QString &key)
+{
+    QSettings settings;
+    return settings.value("user/" + user_uuid + "/project_" + QString::number(id_project) + "/" + key);
 }

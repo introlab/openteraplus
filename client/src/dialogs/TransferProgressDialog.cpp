@@ -77,8 +77,9 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
     // Update values
     if (progress){
         if (file->totalBytes()>std::numeric_limits<int>::max()){
-            progress->setMaximum(static_cast<int>(file->totalBytes()/2));
-            progress->setValue(static_cast<int>(file->currentBytes()/2));
+            progress->setMaximum(static_cast<int>(file->totalBytes()/1024));
+            progress->setValue(static_cast<int>(file->currentBytes()/1024));
+            qDebug() << progress->maximum() << progress->value();
         }else{
             progress->setMaximum(static_cast<int>(file->totalBytes()));
             progress->setValue(static_cast<int>(file->currentBytes()));
@@ -218,6 +219,8 @@ void TransferProgressDialog::addError(const QString &filename, const QString &er
     ui->tableErrors->resizeColumnsToContents();
 
     ui->tabTransfers->setTabText(0, tr("En cours") + " (" + QString::number(ui->tableTransfers->rowCount()) + ")");
+
+    ui->tabTransfers->setCurrentWidget(ui->tabErrors); // Select current errors tabs when errors
 }
 
 void TransferProgressDialog::updateCancelButtonText()

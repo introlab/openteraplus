@@ -207,8 +207,8 @@ void ClientApp::setTranslation(QString language)
 
    if (language.isEmpty()){
        //Set French as default
-       m_currentLocale = QLocale(QLocale::French);
-       //m_currentLocale = QLocale(); // Use system locale by default
+       //m_currentLocale = QLocale(QLocale::French);
+       m_currentLocale = QLocale(); // Use system locale by default
        lang_changed = true;
    }
    if (language.toLower() == "en" && m_currentLocale != QLocale::English){

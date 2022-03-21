@@ -57,6 +57,13 @@ void DanceConfigWidget::on_btnUpload_clicked()
     }
 
     m_uploadDialog = new FileUploaderDialog(tr("Vidéos (*.mp4 *.webm *.mkv *.avi)"), dynamic_cast<QWidget*>(this));
+    if (m_uploadDialog->result() == QDialog::Rejected){
+        // No file selected - no need to upload anything!
+        m_uploadDialog->deleteLater();
+        m_uploadDialog = nullptr;
+        return;
+    }
+    m_uploadDialog->setMinimumWidth(2*this->width()/3);
 
     connect(m_uploadDialog, &FileUploaderDialog::finished, this, &DanceConfigWidget::fileUploaderFinished);
 

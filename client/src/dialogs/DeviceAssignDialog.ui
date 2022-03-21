@@ -223,14 +223,15 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
        <property name="minimumSize">
         <size>
          <width>150</width>
-         <height>32</height>
+         <height>48</height>
         </size>
        </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="text">
-        <string>Déassocier puis ajouter</string>
+        <string>Déassocier puis 
+ajouter</string>
        </property>
        <property name="icon">
         <iconset resource="../../resources/TeraClient.qrc">
@@ -249,14 +250,15 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
        <property name="minimumSize">
         <size>
          <width>150</width>
-         <height>32</height>
+         <height>48</height>
         </size>
        </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="text">
-        <string>Ajouter sans désassocier</string>
+        <string>Ajouter sans 
+désassocier</string>
        </property>
        <property name="icon">
         <iconset resource="../../resources/TeraClient.qrc">

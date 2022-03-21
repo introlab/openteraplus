@@ -95,6 +95,8 @@ private:
     void setViewMode(const ViewMode& new_mode);
     void setLoading(const bool &loading, const QString &msg = QString(), const bool &hide_ui = false);
 
+    void updateAssetsCountLabel();
+
 
 private slots:
     void processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query);

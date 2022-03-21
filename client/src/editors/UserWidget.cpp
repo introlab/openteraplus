@@ -38,9 +38,6 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
 
-    // Disable generate password button for now, since it has been moved to password strength dialog
-    ui->btnGeneratePassword->hide();
-
     ui->wdgUser->setComManager(m_comManager);
     UserWidget::setData(data);
 
@@ -671,7 +668,7 @@ void UserWidget::on_btnUpdatePrefs_clicked()
 
 }
 
-void UserWidget::on_btnGeneratePassword_clicked()
+/*void UserWidget::on_btnGeneratePassword_clicked()
 {
     // Show random password dialog
     GeneratePasswordDialog dlg;
@@ -681,25 +678,21 @@ void UserWidget::on_btnGeneratePassword_clicked()
         m_passwordJustGenerated = true;
         ui->wdgUser->setFieldValue("user_password", password);
     }
-}
+}*/
 
 void UserWidget::editToggleClicked()
 {
     DataEditorWidget::editToggleClicked();
-
-    ui->btnGeneratePassword->setEnabled(true);
 }
 
 void UserWidget::saveButtonClicked()
 {
     DataEditorWidget::saveButtonClicked();
 
-    ui->btnGeneratePassword->setEnabled(false);
 }
 
 void UserWidget::undoButtonClicked()
 {
     DataEditorWidget::undoButtonClicked();
 
-    ui->btnGeneratePassword->setEnabled(false);
 }

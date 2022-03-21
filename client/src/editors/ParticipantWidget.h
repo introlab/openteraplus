@@ -14,6 +14,7 @@
 #include "GlobalMessageBox.h"
 #include "TeraSessionStatus.h"
 #include "Utils.h"
+#include "TeraSettings.h"
 //#include "StartSessionDialog.h"
 #include "ServiceConfigWidget.h"
 
@@ -24,6 +25,8 @@
 
 #include "widgets/TableDateWidgetItem.h"
 #include "widgets/AssetsWidget.h"
+
+#include "services/BaseServiceWidget.h"
 
 namespace Ui {
 class ParticipantWidget;
@@ -73,10 +76,11 @@ private:
     void initUI();
 
     bool canStartNewSession();
+    void newSessionRequest(const QDateTime& session_datetime);
 
     bool validateData() override;
 
-    void updateSession(TeraData *session);
+    void updateSession(TeraData *session, const bool &auto_position);
     void updateDeviceProject(TeraData* device_project);
     void updateDeviceParticipant(TeraData* device_participant);
 
@@ -91,6 +95,8 @@ private:
 
     bool eventFilter(QObject* o, QEvent* e) override;
     void displaySessionDetails(QTableWidgetItem* session_item, bool show_assets = false);
+
+    bool isProjectAdmin();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -116,6 +122,7 @@ private slots:
 
     void currentSelectedSessionChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
     void currentCalendarDateChanged(QDate current_date);
+    void currentCalendarDateActivated(QDate current_date);
     void currentTypeFiltersChanged(QListWidgetItem* changed);
     void displayNextMonth();
     void displayPreviousMonth();

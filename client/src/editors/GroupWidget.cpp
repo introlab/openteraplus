@@ -66,6 +66,7 @@ void GroupWidget::saveData(bool signal){
 
 void GroupWidget::updateControlsState(){
     ui->grpSummary->setVisible(!dataIsNew());
+    ui->frameActions->setVisible(!dataIsNew());
 }
 
 void GroupWidget::updateFieldsValue(){
