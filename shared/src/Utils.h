@@ -37,6 +37,7 @@ public:
 
     static QString removeAccents(const QString& s);
     static QString removeNonAlphanumerics(const QString& s);
+    static QString toCamelCase(const QString& s);
 
     static bool isNewerVersion(QString version);
 

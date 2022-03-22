@@ -222,7 +222,7 @@
          <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>Inivités</string>
+        <string>Invités</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="leftMargin">

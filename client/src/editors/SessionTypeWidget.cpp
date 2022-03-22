@@ -172,7 +172,7 @@ void SessionTypeWidget::updateSessionTypeProject(TeraData *stp)
         int id_site = stp->getFieldValue("id_site").toInt();
         QTreeWidgetItem* parent_item = m_treeSites_items[id_site];
         if (!parent_item){
-            LOG_WARNING(tr("Site not found for project") + " :" + project_name, "SessionTypeWidget::updateSessionTypeProject");
+            LOG_WARNING("Site not found for project: " + project_name, "SessionTypeWidget::updateSessionTypeProject");
             delete item;
             return;
         }

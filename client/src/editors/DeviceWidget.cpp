@@ -197,7 +197,7 @@ void DeviceWidget::updateDeviceProject(TeraData *device_project)
         int id_site = device_project->getFieldValue("id_site").toInt();
         QTreeWidgetItem* parent_item = m_treeSites_items[id_site];
         if (!parent_item){
-            LOG_WARNING(tr("Site not found for project") + " :" + project_name, "ServiceWidget::updateServiceProject");
+            LOG_WARNING("Site not found for project: " + project_name, "DeviceWidget::updateDeviceProject");
             delete item;
             return;
         }

@@ -143,7 +143,7 @@
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_AssetsWidget.h" line="166"/>
-        <source>Form</source>
+        <source>Données</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -366,78 +366,78 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="284"/>
+        <location filename="../../src/ClientApp.cpp" line="287"/>
         <source>Bienvenue!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="290"/>
+        <location filename="../../src/ClientApp.cpp" line="293"/>
         <source>Déconnexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="290"/>
+        <location filename="../../src/ClientApp.cpp" line="293"/>
         <source>Vous avez été déconnecté du serveur. Veuillez vous connecter à nouveau.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="310"/>
-        <location filename="../../src/ClientApp.cpp" line="324"/>
+        <location filename="../../src/ClientApp.cpp" line="313"/>
+        <location filename="../../src/ClientApp.cpp" line="327"/>
         <source>La connexion a été refusée par le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="331"/>
+        <location filename="../../src/ClientApp.cpp" line="334"/>
         <source>Impossible de rejoindre le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="334"/>
+        <location filename="../../src/ClientApp.cpp" line="337"/>
         <source>Le serveur est introuvable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="337"/>
+        <location filename="../../src/ClientApp.cpp" line="340"/>
         <source>Impossible de se connecter (Code erreur: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="350"/>
-        <source>Le format de la version est inconnu: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/ClientApp.cpp" line="357"/>
+        <location filename="../../src/ClientApp.cpp" line="360"/>
         <source>Une nouvelle version (</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="357"/>
+        <location filename="../../src/ClientApp.cpp" line="360"/>
         <source>) du logiciel est disponible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="359"/>
+        <location filename="../../src/ClientApp.cpp" line="362"/>
         <source>Veuillez contacter votre fournisseur pour l&apos;obtenir.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="361"/>
+        <location filename="../../src/ClientApp.cpp" line="364"/>
         <source>Cliquez </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="361"/>
+        <location filename="../../src/ClientApp.cpp" line="364"/>
         <source>ICI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="361"/>
+        <location filename="../../src/ClientApp.cpp" line="364"/>
         <source> pour la télécharger.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="363"/>
+        <location filename="../../src/ClientApp.cpp" line="365"/>
+        <source>Important: assurez-vous que le logiciel est bien fermé avant de procéder à la mise à jour.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/ClientApp.cpp" line="367"/>
         <source>Nouvelle version disponible!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -450,17 +450,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="768"/>
+        <location filename="../../src/managers/ComManager.cpp" line="769"/>
         <source>Erreur inconnue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="869"/>
+        <location filename="../../src/managers/ComManager.cpp" line="870"/>
         <source>Utilisateur ou mot de passe invalide.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="879"/>
+        <location filename="../../src/managers/ComManager.cpp" line="880"/>
         <source>La communication avec le serveur n&apos;a pu être établie.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -852,7 +852,23 @@
     </message>
     <message>
         <location filename="../../src/editors/DataListWidget.cpp" line="564"/>
-        <source>Êtes-vous sûrs de vouloir supprimer </source>
+        <source>Êtes-vous sûrs de vouloir supprimer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/DataListWidget.cpp" line="568"/>
+        <source>Suppression de service?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/DataListWidget.cpp" line="569"/>
+        <source>En supprimant le service </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/DataListWidget.cpp" line="569"/>
+        <source>toutes les données créées par ce service seront supprimées.
+Êtes-vous vraiment sûrs?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -907,16 +923,18 @@
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="269"/>
-        <source>Déassocier puis ajouter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="270"/>
-        <source>Ajouter sans désassocier</source>
+        <source>Déassocier puis 
+ajouter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="271"/>
+        <source>Ajouter sans 
+désassocier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_DeviceAssignDialog.h" line="273"/>
         <source>Annuler</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1002,11 +1020,6 @@
     <message>
         <location filename="../../src/editors/DeviceWidget.cpp" line="86"/>
         <source>Sites / Projets associés</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/editors/DeviceWidget.cpp" line="200"/>
-        <source>Site not found for project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1541,7 +1554,7 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_InSessionWidget.h" line="232"/>
-        <source>Inivités</source>
+        <source>Invités</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2793,12 +2806,12 @@ Souhaitez-vous continuer cette séance?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="845"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="875"/>
         <source>Suppression?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="846"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="876"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation type="unfinished"></translation>
     </message>
@@ -3214,11 +3227,6 @@ Souhaitez-vous continuer?</source>
 <context>
     <name>ServiceWidget</name>
     <message>
-        <location filename="../../src/editors/ServiceWidget.cpp" line="82"/>
-        <source>Site not found for project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/editors/ServiceWidget.cpp" line="360"/>
         <source>Nouveau rôle</source>
         <translation type="unfinished"></translation>
@@ -3440,11 +3448,6 @@ Souhaitez-vous continuer?</source>
     <message>
         <location filename="../../src/editors/SessionTypeWidget.cpp" line="106"/>
         <source>Sites / projets associés</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/editors/SessionTypeWidget.cpp" line="175"/>
-        <source>Site not found for project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3942,6 +3945,174 @@ Souhaitez-vous continuer?</source>
     </message>
 </context>
 <context>
+    <name>TeraData</name>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="83"/>
+        <source>Inconnu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="309"/>
+        <source>Utilisateur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="311"/>
+        <source>Groupe utilisateur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="313"/>
+        <source>Utilisateurs: Groupe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="315"/>
+        <source>Utilisateurs: Préférences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="317"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="319"/>
+        <source>Type de séance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="321"/>
+        <source>Type d&apos;évaluation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="323"/>
+        <source>Projet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="325"/>
+        <source>Appareil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="327"/>
+        <source>Participant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="329"/>
+        <source>Groupe participant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="331"/>
+        <source>Accès: site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="333"/>
+        <source>Accès: projet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="335"/>
+        <source>Séance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="337"/>
+        <source>Appareil: site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="339"/>
+        <source>Appareil: projet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="341"/>
+        <source>Appareil: participant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="343"/>
+        <source>Appareil: sous-type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="345"/>
+        <source>Appareil: type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="347"/>
+        <source>Type de séance: projet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="349"/>
+        <source>Type de séance: site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="351"/>
+        <source>Séance: événement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="353"/>
+        <source>Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="355"/>
+        <source>Service: projet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="357"/>
+        <source>Service: site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="359"/>
+        <source>Service: Accès</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="361"/>
+        <source>Service: Configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="363"/>
+        <source>Statistiques</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="365"/>
+        <source>Appareil: état</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="367"/>
+        <source>Participant: état</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="369"/>
+        <source>Utilisateur: état</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="371"/>
+        <source>Donnée</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TeraForm</name>
     <message>
         <location filename="../../src/editors/TeraForm.cpp" line="1287"/>
@@ -3956,6 +4127,145 @@ Souhaitez-vous continuer?</source>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_TeraForm.h" line="146"/>
         <source>Ce formulaire ne contient aucune information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TeraSessionCategory</name>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionCategory.cpp" line="12"/>
+        <source>Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionCategory.cpp" line="15"/>
+        <source>Protocole</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionCategory.cpp" line="18"/>
+        <source>Collecte de données</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionCategory.cpp" line="21"/>
+        <source>Transfert de fichier</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TeraSessionEvent</name>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="12"/>
+        <source>Erreur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="14"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="16"/>
+        <source>Avertissement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="18"/>
+        <source>Début</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="20"/>
+        <source>Fin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="22"/>
+        <source>Chargement - Début</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="24"/>
+        <source>Chargement - Fin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="26"/>
+        <source>Pile faible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="28"/>
+        <source>Espace disque faible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="30"/>
+        <source>Espace disque plein</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="32"/>
+        <source>Événement appareil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="34"/>
+        <source>Marque</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="36"/>
+        <source>Arrivée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="38"/>
+        <source>Départ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="40"/>
+        <source>Refus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="51"/>
+        <source>Événément</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionEvent.cpp" line="54"/>
+        <source>Inconnu</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TeraSessionStatus</name>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionStatus.cpp" line="12"/>
+        <source>Annulée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionStatus.cpp" line="14"/>
+        <source>Complétée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionStatus.cpp" line="16"/>
+        <source>En cours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionStatus.cpp" line="18"/>
+        <source>Planifiée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraSessionStatus.cpp" line="20"/>
+        <source>Interrompue</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

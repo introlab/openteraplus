@@ -683,6 +683,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_SERVICE_CONFIG:
         emit servicesConfigReceived(items, reply_query);
+        break;
     case TERADATA_STATS:
         if (items.count() > 0)
             emit statsReceived(items.first(), reply_query);

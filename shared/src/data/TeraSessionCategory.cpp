@@ -11,16 +11,17 @@ QString TeraSessionCategory::getSessionTypeCategoryName(const TeraSessionCategor
         case SESSION_TYPE_SERVICE:
             return tr("Service");
         break;
-    case SESSION_TYPE_PROTOCOL:
-        return tr("Protocole");
+        case SESSION_TYPE_PROTOCOL:
+            return tr("Protocole");
         break;
-    case SESSION_TYPE_DATACOLLECT:
-        return tr("Collecte de données");
+        case SESSION_TYPE_DATACOLLECT:
+            return tr("Collecte de données");
         break;
-    case SESSION_TYPE_FILETRANSFER:
-        return tr("Transfert de fichier");
-    default:
-        return tr("");
+        case SESSION_TYPE_FILETRANSFER:
+            return tr("Transfert de fichier");
+        break;
+        default:
+            return tr("");
     }
 }
 

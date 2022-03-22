@@ -561,12 +561,12 @@ void DataListWidget::deleteDataRequested()
 
     GlobalMessageBox diag;
     QMessageBox::StandardButton answer = diag.showYesNo(tr("Suppression?"),
-                                                        tr("Êtes-vous sûrs de vouloir supprimer """) + ui->lstData->currentItem()->text() + """?");
+                                                        tr("Êtes-vous sûrs de vouloir supprimer") + " """ + ui->lstData->currentItem()->text() + """?");
     if (answer == QMessageBox::Yes){
         if (m_dataType == TERADATA_SERVICE){
             // Double confirm!
             answer = diag.showYesNo(tr("Suppression de service?"),
-                                    tr("En supprimant le service """) + ui->lstData->currentItem()->text() + """, toutes les données créées par ce service seront supprimées.\nÊtes-vous vraiment sûrs?");
+                                    tr("En supprimant le service """) + ui->lstData->currentItem()->text() + """, " + tr("toutes les données créées par ce service seront supprimées.\nÊtes-vous vraiment sûrs?"));
             if (answer != QMessageBox::Yes){
                 return;
             }

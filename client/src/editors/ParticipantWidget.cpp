@@ -1230,15 +1230,15 @@ void ParticipantWidget::currentTypeFiltersChanged(QListWidgetItem *changed)
 
 void ParticipantWidget::updateCalendars(QDate left_date){
     ui->calMonth1->setCurrentPage(left_date.year(),left_date.month());
-    ui->lblMonth1->setText(QLocale::system().monthName(left_date.month()) + " " + QString::number(left_date.year()));
+    ui->lblMonth1->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     left_date = left_date.addMonths(1);
     ui->calMonth2->setCurrentPage(left_date.year(),left_date.month());
-    ui->lblMonth2->setText(QLocale::system().monthName(left_date.month()) + " " + QString::number(left_date.year()));
+    ui->lblMonth2->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     left_date = left_date.addMonths(1);
     ui->calMonth3->setCurrentPage(left_date.year(),left_date.month());
-    ui->lblMonth3->setText(QLocale::system().monthName(left_date.month()) + " " + QString::number(left_date.year()));
+    ui->lblMonth3->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     // Check if we must enable the previous month button
     QDate min_date = getMinimumSessionDate();

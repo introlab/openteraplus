@@ -9,6 +9,7 @@
 #define SETTINGS_UI_ONLINEFILTERDEVICES         "ui_filterOnlineDevices"
 #define SETTINGS_LASTSITEID                     "lastSiteId"
 #define SETTINGS_LASTSESSIONTYPEID              "lastSessionTypeId"
+#define SETTINGS_LASTLANGUAGE                   "lastLanguage"
 
 class TeraSettings
 {

@@ -172,6 +172,16 @@ QString Utils::removeNonAlphanumerics(const QString &s)
     return rval.replace(regex, "_");
 }
 
+QString Utils::toCamelCase(const QString &s)
+{
+    QStringList parts = s.split(" ", Qt::SkipEmptyParts);
+    for (int i = 0; i < parts.size(); ++i)
+        parts[i].replace(0, 1, parts[i][0].toUpper());
+
+    return parts.join(" ");
+
+}
+
 bool Utils::isNewerVersion(QString version)
 {
     QStringList versions = version.split(".");
@@ -196,12 +206,14 @@ QString Utils::formatFileSize(const int &file_size)
 QString Utils::formatDuration(const QString &duration)
 {
     QTime video_duration = QTime::fromString(duration, "h:mm:ss.zzz");
-    if (!video_duration.isValid())
+    if (!video_duration.isValid()){
         video_duration = QTime::fromString(duration, "hh:mm:ss.zzz");
-        if (!video_duration.isValid())
+        if (!video_duration.isValid()){
             video_duration = QTime::fromString(duration, "hh:mm:ss");
             if (!video_duration.isValid())
                 video_duration = QTime::fromString(duration, "h:mm:ss");
+        }
+    }
     return video_duration.toString("hh:mm:ss");
 }
 

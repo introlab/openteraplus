@@ -8,7 +8,6 @@ HistoryCalendarWidget::HistoryCalendarWidget(QWidget *parent) :
     m_currentDate = QDate::currentDate();
 
     //setStyleSheet("QWidget{background-color: white; color: black;}");
-
 }
 
 HistoryCalendarWidget::~HistoryCalendarWidget(){
@@ -45,7 +44,7 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
     }
 
     // Check for sessions on that date
-    if (!m_sessions.keys().contains(date) || date.month() != monthShown()){
+    if (!m_sessions.contains(date) || date.month() != monthShown()){
         // Paint with default format
         QCalendarWidget::paintCell (painter, rect, date);
         return;
@@ -105,8 +104,11 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
 
     //qDebug() << date.toString() << ": Count = " << QString::number(count) << ", Total = " << QString::number(total);
 
-    for (int i=0; i<display_colors.count(); i++){
-        QColor color(display_colors.values().at(i));
+    //for (int i=0; i<display_colors.count(); i++){
+    for(const QString &color_str:qAsConst(display_colors)){
+        //QColor color(display_colors.values().at(i));
+        QColor color(color_str);
+
         //qDebug() << date.toString() << ": Count = " << QString::number(count) << ", Total = " << QString::number(total) << ", Color = " << to_display.values().at(i);
         pen.setColor(color);
         brush.setColor(color);
