@@ -81,7 +81,7 @@ void BaseComManager::doPost(const QUrl &full_url, const QString &post_data, cons
         LOG_DEBUG("POST: " + full_url.toString() + ", with " + post_data, QString(this->metaObject()->className()) + "::doPost");
     #else
         // Strip data from logging in release, since this might contains passwords!
-        LOG_DEBUG("POST: " + path, QString(this->metaObject()->className()) + "::doPost");
+        LOG_DEBUG("POST: " + full_url.toString(), QString(this->metaObject()->className()) + "::doPost");
     #endif
 }
 
