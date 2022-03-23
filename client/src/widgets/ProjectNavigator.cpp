@@ -765,29 +765,32 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
     // New participant
     QAction* new_part = getActionForDataType(TERADATA_PARTICIPANT);
     if (new_part){
-        new_part->setEnabled(/*is_project_admin &&*/project_id > 0 && (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT));
+        bool allowed = /*is_project_admin &&*/project_id > 0 && (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT);
+        new_part->setEnabled(allowed);
         //if (new_part->isEnabled()) at_least_one_enabled = true;
-        new_part->setVisible(new_part->isEnabled());
-        if (new_part->isVisible()) at_least_one_enabled = true;
+        new_part->setVisible(allowed);
+        if (new_part->isVisible())
+            at_least_one_enabled = true;
     }
 
     ui->btnNewItem->setEnabled(at_least_one_enabled);
 
     // Delete button
-    //ui->btnDeleteItem->setEnabled(false);
-    ui->btnDeleteItem->setVisible(false);
+    ui->btnDeleteItem->setEnabled(false);
+    //ui->btnDeleteItem->setVisible(false);
+    ui->btnDeleteItem->setVisible(is_site_admin || is_project_admin);
 
     if (item_type==TERADATA_PROJECT && is_site_admin){
-        //ui->btnDeleteItem->setEnabled(true);
-        ui->btnDeleteItem->setVisible(true);
+        ui->btnDeleteItem->setEnabled(true);
+        //ui->btnDeleteItem->setVisible(true);
     }
     if (item_type==TERADATA_GROUP && is_project_admin){
-        //ui->btnDeleteItem->setEnabled(true);
-        ui->btnDeleteItem->setVisible(true);
+        ui->btnDeleteItem->setEnabled(true);
+        //ui->btnDeleteItem->setVisible(true);
     }
     if (item_type==TERADATA_PARTICIPANT && is_project_admin){
-        //ui->btnDeleteItem->setEnabled(true);
-        ui->btnDeleteItem->setVisible(true);
+        ui->btnDeleteItem->setEnabled(true);
+        //ui->btnDeleteItem->setVisible(true);
     }
 
 }
