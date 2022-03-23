@@ -51,6 +51,9 @@ OpenTeraPlus is a client that works with [OpenTera Server](https://github.com/in
 <td><img src="docs/screenshots/SessionLobby.png" width="100" alt="Session Lobby" title="Session Lobby"></td>
 <td><img src="docs/screenshots/AdminConfig.png" width="100" alt="Admin configuration" title="Admin configuration"></td>
 </tr></table>
+
+# Video
+[![OpenTera+ Clinical Telehealth Software](https://img.youtube.com/vi/4YMKSUE6xJs/maxresdefault.jpg)](https://youtu.be/4YMKSUE6xJs)
  
 # License
 OpenTeraPlus is licensed under [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
