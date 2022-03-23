@@ -162,7 +162,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>

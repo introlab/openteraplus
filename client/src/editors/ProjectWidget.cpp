@@ -425,6 +425,8 @@ void ProjectWidget::updateControlsState()
         ui->tabDashboard->layout()->addWidget(ui->lstSessionTypes);
         ui->tabDashboard->layout()->addWidget(ui->frameButtons);
 
+        ui->frameActions->hide(); // Can't add participant when creating new project
+
         // Query session types
         if (m_listSessionTypes_items.isEmpty()){
             QUrlQuery args;
