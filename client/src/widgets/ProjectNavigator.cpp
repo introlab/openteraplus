@@ -240,6 +240,7 @@ bool ProjectNavigator::selectParentItem()
 void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
 {
     //bool handled = true;
+    QTreeWidgetItem* removed_item = nullptr;
     switch(data_type){
     case TERADATA_SITE:
         // Check if we have that site in the list
@@ -253,7 +254,7 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
         if (m_projects_items.contains(id)){
             for (int i=0; i<ui->treeNavigator->topLevelItemCount(); i++){
                 if (ui->treeNavigator->topLevelItem(i) == m_projects_items[id]){
-                    delete ui->treeNavigator->takeTopLevelItem(i);
+                    removed_item = m_projects_items[id] ; //ui->treeNavigator->takeTopLevelItem(i);
                     m_projects_items.remove(id);
                     break;
                 }
@@ -263,33 +264,27 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
     case TERADATA_GROUP:
     case TERADATA_PARTICIPANT:
     {
-        QTreeWidgetItem* item = nullptr;
         if (data_type==TERADATA_GROUP){
-            if (m_groups_items.contains(id))
-                item = m_groups_items[id];
+            if (m_groups_items.contains(id)){
+                removed_item = m_groups_items[id];
+                m_groups_items.remove(id);
+            }
         }
         if (data_type==TERADATA_PARTICIPANT){
-            if (m_participants_items.contains(id))
-                item = m_participants_items[id];
+            if (m_participants_items.contains(id)){
+                removed_item = m_participants_items[id];
+                m_participants_items.remove(id);
+            }
         }
-        if (item){
-            if (item->parent()){
-                for (int i=0; i<item->parent()->childCount(); i++){
-                    if (item->parent()->child(i) == item){
-                        if (item == ui->treeNavigator->currentItem()){
+        /*if (removed_item){
+            if (removed_item->parent()){
+                for (int i=0; i<removed_item->parent()->childCount(); i++){
+                    if (removed_item->parent()->child(i) == removed_item){
+                        if (removed_item == ui->treeNavigator->currentItem()){
                             // Select parent item if current item was deleted
-                            /*int group_id = getParticipantGroupId(item);
-                            if (group_id > 0){
-                                selectItem(TERADATA_GROUP, group_id);
-                            }else{
-                                int project_id = getParticipantProjectId(item);
-                                if (project_id > 0){
-                                    selectItem(TERADATA_PROJECT, project_id);
-                                }
-                            }*/
                             selectParentItem();
                         }
-                        delete item->parent()->takeChild(i);
+                        removed_item->parent()->takeChild(i);
                         if (data_type==TERADATA_GROUP)
                             m_groups_items.remove(id);
                         if (data_type==TERADATA_PARTICIPANT){
@@ -301,7 +296,7 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
                     }
                 }
             }
-        }
+        }*/
     }
         break;
     default: ;
@@ -310,6 +305,47 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
     }
     /*if (handled)
         refreshRequested();*/
+
+    if (removed_item){
+        // Check to remove all childs from appropriate mappings
+        for (int i=0; i<removed_item->childCount(); i++){
+            QTreeWidgetItem* child_item = removed_item->child(i);
+            TeraDataTypes child_type = getItemType(child_item);
+            // Items will be deleted when removed from TreeWidget
+            switch (child_type){
+                case TERADATA_PROJECT:
+                        m_projects_items.remove(m_projects_items.key(child_item));
+                    break;
+                case TERADATA_GROUP:
+                        m_groups_items.remove(m_groups_items.key(child_item));
+                    break;
+                case TERADATA_PARTICIPANT:
+                        m_participants_items.remove(m_participants_items.key(child_item));
+                    break;
+                default:
+                    break;
+
+            }
+        }
+        if (removed_item->parent()){
+            if (removed_item == ui->treeNavigator->currentItem()){
+                // Select parent item if current item was deleted
+                selectParentItem();
+            }
+            // Removed the item from the parent
+            /*for (int i=0; i<removed_item->parent()->childCount(); i++){
+                if (removed_item->parent()->child(i) == removed_item){
+                    if (removed_item == ui->treeNavigator->currentItem()){
+                        // Select parent item if current item was deleted
+                        selectParentItem();
+                    }
+                    removed_item->parent()->takeChild(i);
+                    break;
+                }
+            }*/
+        }
+        delete removed_item;
+    }
 }
 
 QTreeWidgetItem *ProjectNavigator::getCurrentItem()
