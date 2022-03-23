@@ -79,7 +79,7 @@ void UserSummaryWidget::initUI()
 {
     ui->btnEditUser->hide(); // For now
 
-    ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate(ui->cmbSessionType));
 }
 
 bool UserSummaryWidget::validateData()

@@ -38,11 +38,11 @@ void OnlineManagerWidget::setComManager(ComManager *comMan)
     connectSignals();
 
     // Update filter buttons state
-    bool filter = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERDEVICES).toBool();
+    bool filter = TeraSettings::getUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERDEVICES).toBool();
     ui->btnFilterDevices->setChecked(filter);
-    filter = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERUSERS).toBool();
+    filter = TeraSettings::getUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERUSERS).toBool();
     ui->btnFilterUsers->setChecked(filter);
-    filter = TeraSettings::getUsersetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERPARTICIPANTS).toBool();
+    filter = TeraSettings::getUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERPARTICIPANTS).toBool();
     ui->btnFilterParticipants->setChecked(filter);
 
     // If all off, select at least users and participants
@@ -119,9 +119,9 @@ void OnlineManagerWidget::refreshOnlines()
     m_onlineParticipantsData.clear();
 
     QUrlQuery args;
-    m_comManager->doQuery(WEB_ONLINEDEVICEINFO_PATH, args);
-    m_comManager->doQuery(WEB_ONLINEPARTICIPANTINFO_PATH, args);
-    m_comManager->doQuery(WEB_ONLINEUSERINFO_PATH, args);
+    m_comManager->doGet(WEB_ONLINEDEVICEINFO_PATH, args);
+    m_comManager->doGet(WEB_ONLINEPARTICIPANTINFO_PATH, args);
+    m_comManager->doGet(WEB_ONLINEUSERINFO_PATH, args);
 
 }
 

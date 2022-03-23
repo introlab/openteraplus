@@ -4,8 +4,8 @@
 #include <QDir>
 
 
-#include "GlobalEventLogger.h"
-#include "GlobalEvent.h"
+#include "data/GlobalEventLogger.h"
+#include "data/GlobalEvent.h"
 
 ClientApp::ClientApp(int &argc, char **argv)
  :   QApplication(argc, argv)
@@ -16,10 +16,11 @@ ClientApp::ClientApp(int &argc, char **argv)
     m_mainKitWindow = nullptr;
 
     m_translator = new QTranslator();
+    m_qt_translator = new QTranslator();
 
-    //Translations
-    setTranslation();
-
+    // Translations
+    QString last_lang = TeraSettings::getGlobalSetting(SETTINGS_LASTLANGUAGE).toString();
+    setTranslation(last_lang);
 
     QFile file(":/stylesheet.qss");
     file.open(QFile::ReadOnly);
@@ -57,6 +58,9 @@ ClientApp::~ClientApp()
        m_comMan->disconnectFromServer();
        m_comMan->deleteLater();
     }
+
+    delete m_translator;
+    delete m_qt_translator;
 
 }
 
@@ -198,13 +202,13 @@ void ClientApp::processQueuedEvents()
 
 void ClientApp::setTranslation(QString language)
 {
-
    bool lang_changed = false;
+   QStringList supported_languages = {"fr", "en"};
 
-   if (language.isEmpty()){
+   if (language.isEmpty() || !supported_languages.contains(language.toLower())){
        //Set French as default
-       m_currentLocale = QLocale(QLocale::French);
-       //m_currentLocale = QLocale(); // Use system locale by default
+       //m_currentLocale = QLocale(QLocale::French);
+       m_currentLocale = QLocale(); // Use system locale by default
        lang_changed = true;
    }
    if (language.toLower() == "en" && m_currentLocale != QLocale::English){
@@ -224,10 +228,19 @@ void ClientApp::setTranslation(QString language)
 
    if (lang_changed){
        QLocale::setDefault(m_currentLocale);
+
+       // Install Qt translator for default widgets
+       m_qt_translator->load("qt_" + m_currentLocale.name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+       this->installTranslator(m_qt_translator);
+
+       // Install app specific translator
        if (m_translator->load(m_currentLocale, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
            this->installTranslator(m_translator);
            //qDebug() << "Installed translator";
        }
+
+       // Save last used language
+       TeraSettings::setGlobalSetting(SETTINGS_LASTLANGUAGE, language.toLower());
    }
 
 }
@@ -265,11 +278,11 @@ void ClientApp::logoutRequested()
     showLogin();
 }
 
-void ClientApp::on_loginResult(bool logged)
+void ClientApp::on_loginResult(bool logged, QString log_msg)
 {
     if (m_loginDiag){
         if (!logged){
-            m_loginDiag->setStatusMessage(tr("Utilisateur ou mot de passe invalide."),true);
+            m_loginDiag->setStatusMessage(log_msg,true);
         }else{
             m_loginDiag->setStatusMessage(tr("Bienvenue!"));
             showMainWindow();
@@ -314,7 +327,7 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
                 error_str = tr("La connexion a été refusée par le serveur.");
             break;
             case QNetworkReply::AuthenticationRequiredError:
-                //on_loginResult(false);
+                //error_str = tr("Impossible de négocier l'authentification avec le serveur");
                 return;
             break;
             case QNetworkReply::TimeoutError:
@@ -337,7 +350,7 @@ void ClientApp::on_newVersionAvailable(QString version, QString download_url)
 {
     // Check to be sure that the new version is an updated version and not a previous one...
     if (version.split(".").count() < 3){
-        LOG_WARNING(tr("Le format de la version est inconnu: ") + version, "ClientApp::on_newVersionAvailable");
+        LOG_WARNING("Unknown version format: " + version, "ClientApp::on_newVersionAvailable");
     }
 
     if (Utils::isNewerVersion(version))
@@ -348,7 +361,8 @@ void ClientApp::on_newVersionAvailable(QString version, QString download_url)
         if (download_url.isEmpty()){
             version_info += tr("Veuillez contacter votre fournisseur pour l'obtenir.");
         }else{
-            version_info += tr("Cliquez ") + "<a href=" + download_url + ">" + tr("ICI") + "</a>" + tr(" pour la télécharger.");
+            version_info += tr("Cliquez ") + "<a href=" + download_url + ">" + tr("ICI") + "</a>" + tr(" pour la télécharger.") + "\n\n";
+            version_info += tr("Important: assurez-vous que le logiciel est bien fermé avant de procéder à la mise à jour.");
         }
         msg.showInfo(tr("Nouvelle version disponible!"), version_info);
     }

@@ -34,15 +34,18 @@ enum TeraDataTypes {
     TERADATA_DEVICESUBTYPE,
     TERADATA_DEVICETYPE,
     TERADATA_SESSIONTYPEPROJECT,
+    TERADATA_SESSIONTYPESITE,
     TERADATA_SESSIONEVENT,
     TERADATA_SERVICE,
     TERADATA_SERVICE_PROJECT,
+    TERADATA_SERVICE_SITE,
     TERADATA_SERVICE_ACCESS,
     TERADATA_SERVICE_CONFIG,
     TERADATA_STATS,
     TERADATA_ONLINE_USER,
     TERADATA_ONLINE_PARTICIPANT,
-    TERADATA_ONLINE_DEVICE
+    TERADATA_ONLINE_DEVICE,
+    TERADATA_ASSET
 };
 
 Q_DECLARE_METATYPE(TeraDataTypes)
@@ -51,9 +54,9 @@ class TeraData : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(int id READ getId)
-    Q_PROPERTY(QString name READ getName)
-    Q_PROPERTY(TeraDataTypes data_type READ getDataType WRITE setDataType)
+    Q_PROPERTY(int id READ getId CONSTANT)
+    Q_PROPERTY(QString name READ getName CONSTANT)
+    Q_PROPERTY(TeraDataTypes data_type READ getDataType WRITE setDataType NOTIFY dataTypeChanged)
 
 public:
     explicit TeraData(QObject *parent = nullptr);
@@ -61,8 +64,10 @@ public:
     TeraData(const TeraData& copy, QObject *parent=nullptr);
     explicit TeraData(TeraDataTypes obj_type, const QJsonValue& json, QObject *parent = nullptr);
 
-    virtual bool        fromJson(const QJsonValue& value);
+    bool        fromJson(const QJsonValue& value);
     virtual QJsonObject toJson(const QString specific_fieldName = QString());
+
+    virtual bool        fromMap(const QVariantMap& map);
 
     int getId() const;
     QString getIdFieldName() const;
@@ -90,16 +95,17 @@ public:
     bool isNew() const;
 
     virtual TeraData &operator = (const TeraData& other);
-    virtual bool operator == (const TeraData& other) const;
-    void updateFrom(const TeraData& other);
+    virtual bool    operator == (const TeraData& other) const;
+    void            updateFrom(const TeraData& other);
+    void            updateFrom(const QJsonObject& object);
 
-    TeraDataTypes getDataType() const;
-    bool hasFieldName(const QString& fieldName) const;
-    void removeFieldName(const QString& fieldName);
-    QVariant getFieldValue(const QString &fieldName) const;
-    void setFieldValue(const QString& fieldName, const QVariant& fieldValue);
-    QList<QString> getFieldList() const;
-    QVariantMap getFieldValues();
+    TeraDataTypes   getDataType() const;
+    bool            hasFieldName(const QString& fieldName) const;
+    void            removeFieldName(const QString& fieldName);
+    QVariant        getFieldValue(const QString &fieldName) const;
+    void            setFieldValue(const QString& fieldName, const QVariant& fieldValue);
+    QList<QString>  getFieldList() const;
+    QVariantMap     getFieldValues();
 
     static QString getDataTypeName(const TeraDataTypes& data_type);
     static QString getDataTypeNameText(const TeraDataTypes& data_type);
@@ -129,7 +135,7 @@ private:
     //bool hasMetaProperty(const QString& fieldName) const;
 
 signals:
-
+    void dataTypeChanged(const TeraDataTypes& new_datatype);
 
 public slots:
     void setDataType(TeraDataTypes data_type);

@@ -144,7 +144,7 @@ void Utils::inStringUnicodeConverter(QString *str)
     }
 }
 
-QString Utils::removeAccents(QString s) {
+QString Utils::removeAccents(const QString &s) {
     const QString diacriticLetters_ = QString::fromUtf8("ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ");
     const QStringList noDiacriticLetters_ = QStringList() << "S"<<"OE"<<"Z"<<"s"<<"oe"<<"z"<<"Y"<<"Y"<<"u"<<"A"<<"A"<<"A"<<"A"<<"A"<<"A"<<"AE"<<"C"<<"E"<<"E"<<"E"<<"E"<<"I"<<"I"<<"I"<<"I"<<"D"<<"N"<<"O"<<"O"<<"O"<<"O"<<"O"<<"O"<<"U"<<"U"<<"U"<<"U"<<"Y"<<"s"<<"a"<<"a"<<"a"<<"a"<<"a"<<"a"<<"ae"<<"c"<<"e"<<"e"<<"e"<<"e"<<"i"<<"i"<<"i"<<"i"<<"o"<<"n"<<"o"<<"o"<<"o"<<"o"<<"o"<<"o"<<"u"<<"u"<<"u"<<"u"<<"y"<<"y";
 
@@ -163,6 +163,25 @@ QString Utils::removeAccents(QString s) {
     return output;
 }
 
+QString Utils::removeNonAlphanumerics(const QString &s)
+{
+    QRegularExpression regex("[`~!@#$%^&*()â€”+=|:;<>Â«Â»,.?/{}\'\"\\\[\\\\]\\\\]");  // No _ and - removed
+
+    QString rval = s;
+    //return rval.remove(regex);
+    return rval.replace(regex, "_");
+}
+
+QString Utils::toCamelCase(const QString &s)
+{
+    QStringList parts = s.split(" ", Qt::SkipEmptyParts);
+    for (int i = 0; i < parts.size(); ++i)
+        parts[i].replace(0, 1, parts[i][0].toUpper());
+
+    return parts.join(" ");
+
+}
+
 bool Utils::isNewerVersion(QString version)
 {
     QStringList versions = version.split(".");
@@ -170,8 +189,31 @@ bool Utils::isNewerVersion(QString version)
         return false;
     }
 
+    float minor_version = QString(versions.at(1) + "." + versions.at(2)).toFloat();
+    float current_minor = QString(QString(OPENTERAPLUS_VERSION_MINOR) + "." + QString(OPENTERAPLUS_VERSION_PATCH)).toFloat();
+
+    //qDebug() << minor_version << current_minor;
+
     return versions.at(0).toInt() > QString(OPENTERAPLUS_VERSION_MAJOR).toInt() ||
-            versions.at(1).toInt() > QString(OPENTERAPLUS_VERSION_MINOR).toInt() ||
-            versions.at(2).toInt() > QString(OPENTERAPLUS_VERSION_PATCH).toInt();
+           current_minor < minor_version;
+}
+
+QString Utils::formatFileSize(const int &file_size)
+{
+    return QLocale().formattedDataSize(file_size, 2, QLocale::DataSizeTraditionalFormat);
+}
+
+QString Utils::formatDuration(const QString &duration)
+{
+    QTime video_duration = QTime::fromString(duration, "h:mm:ss.zzz");
+    if (!video_duration.isValid()){
+        video_duration = QTime::fromString(duration, "hh:mm:ss.zzz");
+        if (!video_duration.isValid()){
+            video_duration = QTime::fromString(duration, "hh:mm:ss");
+            if (!video_duration.isValid())
+                video_duration = QTime::fromString(duration, "h:mm:ss");
+        }
+    }
+    return video_duration.toString("hh:mm:ss");
 }
 

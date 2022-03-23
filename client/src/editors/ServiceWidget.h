@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include <QTableWidgetItem>
+#include <QTreeWidgetItem>
 #include <QInputDialog>
 
 #include "DataEditorWidget.h"
@@ -28,7 +29,8 @@ public:
 private:
     Ui::ServiceWidget *ui;
 
-    QMap<int, QListWidgetItem*>  m_listProjects_items;
+    QMap<int, QTreeWidgetItem*>  m_treeSites_items;
+    QMap<int, QTreeWidgetItem*>  m_treeProjects_items;
     QMap<int, QListWidgetItem*>  m_listRoles_items;
     QMap<int, QString>           m_serviceRoles;
 
@@ -36,9 +38,13 @@ private:
     void updateFieldsValue();
 
     void updateServiceProject(TeraData* project);
+    void updateServiceSite(TeraData* service_site);
     void updateServiceRole(const int &id_role, const QString &role_name);
 
     void postServiceRoles();
+
+    void postServiceSites();
+    void postServiceProjects();
 
     void setData(const TeraData *data);
 
@@ -48,15 +54,18 @@ private slots:
     void processFormsReply(QString form_type, QString data);
     void postResultReply(QString path);
     void processServiceProjects(QList<TeraData> projects);
+    void processServiceSites(QList<TeraData> sites, QUrlQuery reply_query);
+    void processServices(QList<TeraData> services, QUrlQuery reply_query);
 
     void on_tabNav_currentChanged(int index);
     void on_btnUpdateProjects_clicked();
 
-    void on_lstProjects_itemChanged(QListWidgetItem *item);
     void on_lstRoles_currentRowChanged(int currentRow);
     void on_btnNewRole_clicked();
     void on_btnDeleteRole_clicked();
     void on_btnEditRole_clicked();
+    void on_lstRoles_itemDoubleClicked(QListWidgetItem *item);
+    void on_treeProjects_itemChanged(QTreeWidgetItem *item, int column);
 };
 
 #endif // SERVICEWIDGET_H

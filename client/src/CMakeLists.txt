@@ -6,17 +6,21 @@ find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Network REQUIRED)
 find_package(Qt5LinguistTools REQUIRED)
 
-# Driverss first
+# Drivers first
 add_subdirectory(drivers)
 
 
 set(headers
     ClientApp.h
-    Message.h
     GlobalMessageBox.h
-    DownloadedFile.h
-    GlobalEvent.h
-    GlobalEventLogger.h
+    # Data structures
+    data/DownloadingFile.h
+    data/GlobalEvent.h
+    data/GlobalEventLogger.h
+    data/Message.h
+    data/TransferringFile.h
+    data/UploadingFile.h
+    data/IconMenuDelegate.h
     # Main Windows
     main/MainWindow.h
     main/MainKitWindow.h
@@ -25,6 +29,8 @@ set(headers
     managers/ComManager.h
     managers/ParticipantComManager.h
     managers/WebSocketManager.h
+    managers/BaseComManager.h
+    managers/AssetComManager.h
     # Dialogs
     dialogs/LoginDialog.h
     dialogs/StartSessionDialog.h
@@ -35,9 +41,11 @@ set(headers
     dialogs/AboutDialogPage.h
     dialogs/GeneratePasswordDialog.h
     dialogs/PasswordStrengthDialog.h
-    dialogs/DownloadProgressDialog.h
+    dialogs/TransferProgressDialog.h
     dialogs/BaseDialog.h
     dialogs/DeviceAssignDialog.h
+    dialogs/CleanUpDialog.h
+    dialogs/FileUploaderDialog.h
     # Editors
     editors/DataEditorWidget.h
     editors/UserWidget.h
@@ -72,6 +80,9 @@ set(headers
     services/VideoRehabService/WebSocket/SharedObject.h
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
     services/VideoRehabService/WebSocket/WebSocketTransport.h
+    services/DanceService/DanceConfigWidget.h
+    services/DanceService/DanceWebAPI.h
+    services/DanceService/DanceComManager.h
     # Widgets
     widgets/InSessionWidget.h
     widgets/SessionInviteWidget.h
@@ -80,9 +91,13 @@ set(headers
     widgets/ConfigWidget.h
     widgets/HistoryCalendarWidget.h
     widgets/ProjectNavigator.h
+    widgets/ProjectNavigatorTree.h
     widgets/NotificationWindow.h
     widgets/TableDateWidgetItem.h
     widgets/TableNumberWidgetItem.h
+    widgets/DashboardWidget.h
+    widgets/AssetsWidget.h
+    widgets/ResultMessageWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -93,11 +108,15 @@ set(headers
 set(srcs
     main.cpp
     ClientApp.cpp
-    Message.cpp
     GlobalMessageBox.cpp
-    DownloadedFile.cpp
-    GlobalEvent.cpp
-    GlobalEventLogger.cpp
+    # Data structures
+    data/DownloadingFile.cpp
+    data/GlobalEvent.cpp
+    data/GlobalEventLogger.cpp
+    data/Message.cpp
+    data/TransferringFile.cpp
+    data/UploadingFile.cpp
+    data/IconMenuDelegate.cpp
     # Main Windows
     main/MainWindow.cpp
     main/MainKitWindow.cpp
@@ -106,10 +125,12 @@ set(srcs
     managers/ComManager.cpp
     managers/WebSocketManager.cpp
     managers/ParticipantComManager.cpp
+    managers/BaseComManager.cpp
+    managers/AssetComManager.cpp
     # Dialogs
     dialogs/LoginDialog.cpp
     dialogs/DeviceAssignDialog.cpp
-    dialogs/DownloadProgressDialog.cpp
+    dialogs/TransferProgressDialog.cpp
     dialogs/BaseDialog.cpp
     dialogs/StartSessionDialog.cpp
     dialogs/SessionLobbyDialog.cpp
@@ -119,6 +140,8 @@ set(srcs
     dialogs/AboutDialogPage.cpp
     dialogs/GeneratePasswordDialog.cpp
     dialogs/PasswordStrengthDialog.cpp
+    dialogs/CleanUpDialog.cpp
+    dialogs/FileUploaderDialog.cpp
     # Editors
     editors/DataEditorWidget.cpp
     editors/UserWidget.cpp
@@ -153,8 +176,11 @@ set(srcs
     services/VideoRehabService/WebSocket/SharedObject.cpp
     services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
     services/VideoRehabService/WebSocket/WebSocketTransport.cpp
+    services/DanceService/DanceConfigWidget.cpp
+    services/DanceService/DanceComManager.cpp
     # Widgets
     widgets/ProjectNavigator.cpp
+    widgets/ProjectNavigatorTree.cpp
     widgets/NotificationWindow.cpp
     widgets/ConfigWidget.cpp
     widgets/HistoryCalendarWidget.cpp
@@ -164,6 +190,9 @@ set(srcs
     widgets/ClickableLabel.cpp
     widgets/TableDateWidgetItem.cpp
     widgets/TableNumberWidgetItem.cpp
+    widgets/DashboardWidget.cpp
+    widgets/AssetsWidget.cpp
+    widgets/ResultMessageWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -178,7 +207,7 @@ SET(uis
     # Dialogs
     dialogs/LoginDialog.ui
     dialogs/DeviceAssignDialog.ui
-    dialogs/DownloadProgressDialog.ui
+    dialogs/TransferProgressDialog.ui
     dialogs/BaseDialog.ui
     dialogs/StartSessionDialog.ui
     dialogs/SessionLobbyDialog.ui
@@ -187,6 +216,8 @@ SET(uis
     dialogs/AboutDialog.ui
     dialogs/GeneratePasswordDialog.ui
     dialogs/PasswordStrengthDialog.ui
+    dialogs/CleanUpDialog.ui
+    dialogs/FileUploaderDialog.ui
     # Editors
     editors/UserWidget.ui
     editors/UserSummaryWidget.ui
@@ -210,6 +241,7 @@ SET(uis
     services/VideoRehabService/VideoRehabToolsWidget.ui
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
     services/VideoRehabService/VideoRehabPTZDialog.ui
+    services/DanceService/DanceConfigWidget.ui
     # Widgets
     widgets/ProjectNavigator.ui
     widgets/notification.ui
@@ -217,6 +249,9 @@ SET(uis
     widgets/InSessionWidget.ui
     widgets/SessionInviteWidget.ui
     widgets/OnlineManagerWidget.ui
+    widgets/DashboardWidget.ui
+    widgets/AssetsWidget.ui
+    widgets/ResultMessageWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui
@@ -231,11 +266,11 @@ SET(qrcs
 #Generate .h files from the .ui files
 QT5_WRAP_UI(moc_uis ${uis})
 
+#This will generate moc_* for Qt
+QT5_WRAP_CPP(moc_srcs ${headers})
+
 # generate rules for building source files from the resources
 QT5_ADD_RESOURCES(client_qrc ${qrcs})
-
-#This will generate moc_* for Qt
-qt5_wrap_cpp(moc_srcs ${headers})
 
 set(translation_files_srcs
     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
@@ -243,14 +278,15 @@ set(translation_files_srcs
 )
 
 #Translation files, this is done manually to avoid removing the file when doing make clean
+# Add -noobsolete parameter to remove obsoleted translations
 add_custom_target(openteraplus_en_ts
-    COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+    COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${moc_uis}
 )
 
 add_custom_target(openteraplus_fr_ts
-    COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+    COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${moc_uis}
 )

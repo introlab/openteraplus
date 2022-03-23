@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QListWidgetItem>
-#include <QTableWidgetItem>
+#include <QTreeWidgetItem>
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
@@ -11,6 +11,9 @@
 
 #include "widgets/TableDateWidgetItem.h"
 #include "widgets/TableNumberWidgetItem.h"
+
+// Service specific config widgets
+#include "services/DanceService/DanceConfigWidget.h"
 
 namespace Ui {
 class ProjectWidget;
@@ -31,9 +34,11 @@ public:
 private slots:
     void processFormsReply(QString form_type, QString data);
     void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
-    void processGroupsReply(QList<TeraData> groups);
     void processDevicesReply(QList<TeraData> devices);
+    void processDevicesProjectsReply(QList<TeraData> devices_projects);
     void processServiceProjectsReply(QList<TeraData> services);
+    void processSessionTypeProjectReply(QList<TeraData> stp_list, QUrlQuery reply_query);
+    void processSessionTypeSiteReply(QList<TeraData> sts_list, QUrlQuery reply_query);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
 
     void processPostOKReply(QString path);
@@ -42,19 +47,38 @@ private slots:
 
     void btnUpdateAccess_clicked();
 
-    void on_tabProjectInfos_currentChanged(int index);
-
     void on_btnUpdateServices_clicked();
-
-
     void on_icoUsers_clicked();
-
     void on_icoSessions_clicked();
-
     void on_btnUserGroups_clicked();
     void userGroupsEditor_finished();
 
+    void usersEditor_finished();
+
     void on_tableSummary_itemDoubleClicked(QTableWidgetItem *item);
+
+    void on_lstServices_itemChanged(QListWidgetItem *item);
+
+    void on_tabNav_currentChanged(int index);
+    void on_tabManageUsers_currentChanged(int index);
+    void on_tabManageServices_currentChanged(int index);
+
+    void on_btnUpdateSessionTypes_clicked();
+
+    void on_lstSessionTypes_itemChanged(QListWidgetItem *item);
+
+
+    void on_treeDevices_itemChanged(QTreeWidgetItem *item, int column);
+
+    void on_btnUpdateDevices_clicked();
+
+    void on_btnNewParticipant_clicked();
+    void on_btnNewGroup_clicked();
+    void on_btnDelete_clicked();
+
+    void on_tableSummary_itemSelectionChanged();
+
+    void on_btnManageUsers_clicked();
 
 private:
     Ui::ProjectWidget *ui;
@@ -63,10 +87,18 @@ private:
     QMap<int, QTableWidgetItem*>  m_tableUserGroups_items;
     QMap<int, QTableWidgetItem*>  m_tableParticipants_items;
     QMap<int, QListWidgetItem*>   m_listGroups_items;
-    QMap<int, QTableWidgetItem*>  m_listDevices_items;
+
+    QMap<int, QTreeWidgetItem*>   m_treeDevices_items;
+    QMap<int, QTreeWidgetItem*>   m_treeDevicesProjects_items;
 
     QMap<int, QListWidgetItem*>   m_listServicesProjects_items;
     QMap<int, QListWidgetItem*>   m_listServices_items;
+    QMap<int, QString>            m_services_keys;
+
+    QMap<int, QListWidgetItem*>   m_listSessionTypesProjects_items;
+    QMap<int, QListWidgetItem*>   m_listSessionTypes_items;
+
+    QMap<int, QWidget*>           m_services_tabs;
 
     BaseDialog*                   m_diag_editor;
 
@@ -75,9 +107,18 @@ private:
 
     void updateUserProjectAccess(const TeraData* access);
     void updateUserGroupProjectAccess(const TeraData* access);
-    void updateGroup(const TeraData* group);
     void updateDevice(const TeraData* device);
+    void updateDeviceProject(const TeraData* device_proj);
     void updateServiceProject(const TeraData* sp);
+    void updateSessionTypeProject(const TeraData* stp);
+    void updateSessionTypeSite(const TeraData* sts);
+
+    void queryServicesProject();
+    void querySessionTypesProject();
+    void queryUserGroupsProjectAccess();
+    void queryUsers();
+
+    void addServiceTab(const TeraData& service_project);
 
     void updateControlsState() override;
     void updateFieldsValue() override;
@@ -85,7 +126,7 @@ private:
 
     bool isSiteAdmin();
 
-    void queryUserGroupsProjectAccess();
+
 };
 
 #endif // ProjectWidget_H

@@ -54,7 +54,6 @@ public:
     bool hasPendingDataRequests();
     void postDataRequest(const QString &path, const QString &query_args);
     void deleteDataRequest(const QString &path, const int &id);
-    void downloadDataRequest(const QString& save_path, const QString &path, const QUrlQuery &query_args);
 
     ComManager* getComManager();
 

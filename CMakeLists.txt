@@ -1,3 +1,7 @@
+if (APPLE)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version")
+endif(APPLE)
+
 project(OpenTeraPlus)
 
 include(CTest)
@@ -12,8 +16,8 @@ cmake_policy(SET CMP0043 NEW)
 
 # Software version
 SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "4")
+SET(CPACK_PACKAGE_VERSION_MINOR "1")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 add_definitions(-DOPENTERAPLUS_VERSION="${CPACK_PACKAGE_VERSION}" )
 add_definitions(-DOPENTERAPLUS_VERSION_MAJOR="${CPACK_PACKAGE_VERSION_MAJOR}" )
@@ -35,6 +39,12 @@ if (APPLE)
     set(CMAKE_INSTALL_LIBDIR OpenTeraPlus.app/Contents/Frameworks)
     set(CMAKE_INSTALL_INCLUDEDIR OpenTeraPlus.app/Contents/Helpers)
 endif(APPLE)
+
+if (UNIX AND NOT APPLE)
+    # Fix QWebEngine linking issues on Linux (https://bugreports.qt.io/browse/QTBUG-80964)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold")
+endif(UNIX)
 
 
 set(CMAKE_VERBOSE_MAKEFILE ON)

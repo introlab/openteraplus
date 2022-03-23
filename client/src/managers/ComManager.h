@@ -29,11 +29,13 @@
 #include "TeraPreferences.h"
 #include "TeraSessionStatus.h"
 #include "TeraSessionCategory.h"
-#include "DownloadedFile.h"
+#include "data/DownloadingFile.h"
 #include "WebSocketManager.h"
 
+#include "BaseComManager.h"
 
-class ComManager : public QObject
+
+class ComManager : public BaseComManager
 {
     Q_OBJECT
 public:
@@ -44,31 +46,24 @@ public:
     void disconnectFromServer();
 
     bool processNetworkReply(QNetworkReply* reply);
-    void doQuery(const QString &path, const QUrlQuery &query_args = QUrlQuery());
-    void doPost(const QString &path, const QString &post_data);
-    void doDelete(const QString &path, const int& id);
+
     void doUpdateCurrentUser();
-    void doDownload(const QString& save_path, const QString &path, const QUrlQuery &query_args = QUrlQuery());
 
     void startSession(const TeraData& session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list, const QJsonDocument &session_config);
     void joinSession(const TeraData& session_type, const int &id_session);
     void stopSession(const TeraData& session, const int &id_service = 0);
     void leaveSession(const int &id_session, bool signal_server = true);
-    void sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg = QString());
+    void sendJoinSessionReply(const QString &session_uuid, const opentera::protobuf::JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg = QString());
 
     TeraData &getCurrentUser();
     TeraPreferences &getCurrentPreferences();
     QString getCurrentUserSiteRole(const int &site_id);
     QString getCurrentUserProjectRole(const int &project_id);
+
     bool isCurrentUserProjectAdmin(const int& project_id);
     bool isCurrentUserSiteAdmin(const int& site_id);
     bool isCurrentUserSuperAdmin();
     typedef void (ComManager::* signal_ptr)(QList<TeraData>, QUrlQuery);
-
-    bool hasPendingDownloads();
-
-    void setCredentials(const QString &username, const QString &password);
-    QUrl getServerUrl() const;
 
     WebSocketManager* getWebSocketManager();
 
@@ -84,27 +79,18 @@ protected:
     bool handleSessionManagerReply(const QString& reply_data, const QUrlQuery& reply_query);
     bool handleFormReply(const QUrlQuery& reply_query, const QString& reply_data);
     bool handleVersionsReply(const QJsonDocument &version_data);
+    bool handleTokenRefreshReply(const QJsonDocument &refresh_data);
 
     void updateCurrentUser(const TeraData& user_data);
     void updateCurrentPrefs(const TeraData& user_prefs);
 
     void clearCurrentUser();
+    void refreshUserToken();
 
-    QString filterReplyString(const QString& data_str);
-
-    QUrl                    m_serverUrl;
-    QNetworkAccessManager*  m_netManager;
-    QNetworkCookieJar       m_cookieJar;
     WebSocketManager*       m_webSocketMan;
+    QTimer                  m_tokenRefreshTimer;
 
-    QMap<QNetworkReply*, DownloadedFile*>   m_currentDownloads;
-
-    bool                    m_loggingInProgress;
-    bool                    m_settedCredentials;
     bool                    m_enableWebsocket;
-
-    QString                 m_username;
-    QString                 m_password;
 
     TeraData                m_currentUser;
     TeraPreferences         m_currentPreferences;
@@ -113,13 +99,12 @@ protected:
 
 signals:
     void serverDisconnected();
-    void networkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
     void socketError(QAbstractSocket::SocketError, QString);
-    void waitingForReply(bool waiting);
 
-    void loginResult(bool logged_in);
+    void loginResult(bool logged_in, QString login_msg);
 
     void currentUserUpdated();
+    void userTokenUpdated();
     void preferencesUpdated();
 
     void formReceived(QString form_type, QString data);
@@ -143,6 +128,7 @@ signals:
     void deviceProjectsReceived(QList<TeraData> device_projects_list, QUrlQuery reply_query);
     void deviceParticipantsReceived(QList<TeraData> device_participants_list, QUrlQuery reply_query);
     void sessionTypesProjectsReceived(QList<TeraData> session_types_projects_list, QUrlQuery reply_query);
+    void sessionTypesSitesReceived(QList<TeraData> session_types_sites_list, QUrlQuery reply_query);
     void sessionEventsReceived(QList<TeraData> events_list, QUrlQuery reply_query);
     void deviceTypesReceived(QList<TeraData> device_types_list, QUrlQuery reply_query);
     void deviceSubtypesReceived(QList<TeraData> device_subtypes_list, QUrlQuery reply_query);
@@ -151,25 +137,14 @@ signals:
     void userPreferencesReceived(QList<TeraData> user_prefs_list, QUrlQuery reply_query);
     void servicesReceived(QList<TeraData> services_list, QUrlQuery reply_query);
     void servicesProjectsReceived(QList<TeraData> projects_list, QUrlQuery reply_query);
+    void servicesSitesReceived(QList<TeraData> sites_list, QUrlQuery reply_query);
     void servicesAccessReceived(QList<TeraData> access_list, QUrlQuery reply_query);
     void servicesConfigReceived(QList<TeraData> config_list, QUrlQuery reply_query);
     void statsReceived(TeraData stats, QUrlQuery reply_query);
     void onlineUsersReceived(QList<TeraData> users_list, QUrlQuery reply_query);
     void onlineParticipantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
     void onlineDevicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
-
-    //void queryResultsReceived(QString object, QUrlQuery url_query, QString data);
-    //void postResultsReceived(QString path, QString data);
-    void queryResultsOK(QString path, QUrlQuery url_query);
-    void postResultsOK(QString path);
-    void deleteResultsOK(QString path, int id);
-    void posting(QString path, QString data);
-    void querying(QString path);
-    void deleting(QString path);
-
-    // File transfer
-    void downloadCompleted(DownloadedFile* file);
-    void downloadProgress(DownloadedFile* file);
+    void assetsReceived(QList<TeraData> assets_list, QUrlQuery reply_query);
 
     // Generic session
     void sessionStarted(TeraData session_type, int id_session);
@@ -179,22 +154,11 @@ signals:
     void sessionError(QString error);
 
     // Version management
-    void newVersionAvailable(QString version, QString download_url);
-
-
-public slots:
-
-protected:
-    void setRequestLanguage(QNetworkRequest &request);
-    void setRequestCredentials(QNetworkRequest &request);
-    void setRequestVersions(QNetworkRequest &request);
+    void newVersionAvailable(QString version, QString download_url);   
 
 private slots:
     // Network
-    void onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
-    void onNetworkEncrypted(QNetworkReply *reply);
-    void onNetworkFinished(QNetworkReply *reply);
-    void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+    void onNetworkAuthenticationFailed();
 
     void onWebSocketLoginResult(bool logged_in);
 

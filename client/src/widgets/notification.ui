@@ -81,7 +81,7 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}*/</string>
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../resources/TeraClient.qrc">
+        <iconset resource="../../resources/TeraClient.qrc">
          <normaloff>:/status/status_notok.png</normaloff>:/status/status_notok.png</iconset>
        </property>
        <property name="iconSize">
@@ -142,7 +142,6 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}*/</string>
         <property name="font">
          <font>
           <pointsize>11</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -286,7 +285,7 @@ QLabel{background-color:rgba(0,0,0,0%); color: black;}*/</string>
   </layout>
  </widget>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -15,6 +15,9 @@ public:
 
     virtual bool handleJoinSessionEvent(const JoinSessionEvent &event);
 
+    static QStringList getHandledServiceKeys();
+    static QList<TeraSessionCategory::SessionTypeCategories> getHandledSessionCategories();
+
 protected:
     ComManager*     m_comManager;
 

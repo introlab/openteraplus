@@ -95,11 +95,12 @@ FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin/AvKysPlugins)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin/AvKysPlugins)
 SET (AVKYS_LIBRARY_INSTALL_PATH ${CMAKE_INSTALL_BINDIR}/AvKysPlugins)
 
-add_subdirectory(MultiSrc)
+
 
 if(WIN32)
-add_subdirectory(VirtualCamera)
+    add_subdirectory(MultiSrc)
+    add_subdirectory(VirtualCamera)
+    add_subdirectory(ACapsConvert)
+    add_subdirectory(DesktopCapture)
 endif(WIN32)
 
-add_subdirectory(ACapsConvert)
-add_subdirectory(DesktopCapture)

@@ -17,6 +17,7 @@ class ProjectNavigator;
 class ProjectNavigator : public QWidget
 {
     Q_OBJECT
+    friend class ProjectNavigatorTree;
 
 public:
     explicit ProjectNavigator(QWidget *parent = nullptr);
@@ -32,11 +33,15 @@ public:
     QString getCurrentProjetName() const;
     int getCurrentGroupId() const;
     QString getCurrentGroupName() const;
+    int getCurrentParticipantId() const;
 
     void selectItem(const TeraDataTypes& data_type, const int& id);
     bool selectItemByName(const TeraDataTypes& data_type, const QString& name);
     bool selectItemByUuid(const TeraDataTypes& data_type, const QString& uuid);
+    bool selectParentItem();
+
     void removeItem(const TeraDataTypes& data_type, const int& id);
+    QTreeWidgetItem* getCurrentItem();
 
     void setOnHold(const bool& hold);
     void refreshCurrentItem();
@@ -71,6 +76,9 @@ private:
 
     bool isParticipantFiltered(const QString &part_uuid);
 
+    void setCurrentItem(QTreeWidgetItem* item);
+    void selectItem(QTreeWidgetItem* item);
+
     void updateAvailableActions(QTreeWidgetItem *current_item);
     TeraDataTypes getItemType(QTreeWidgetItem* item);
 
@@ -92,13 +100,14 @@ private slots:
      void deleteItemRequested();
      void refreshRequested();
 
-     void processSitesReply(QList<TeraData> sites);
-     void processProjectsReply(QList<TeraData> projects);
-     void processGroupsReply(QList<TeraData> groups);
-     void processParticipantsReply(QList<TeraData> participants);
-     void ws_participantEvent(ParticipantEvent event);
+     void processSitesReply(const QList<TeraData> sites);
+     void processProjectsReply(const QList<TeraData> projects);
+     void processGroupsReply(const QList<TeraData> groups);
+     void processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_args);
+     void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
 
      void processItemDeletedReply(QString path, int id);
+     void moveItemRequested(QTreeWidgetItem* src, QTreeWidgetItem* target);
 
      void processCurrentUserUpdated();
 
@@ -109,12 +118,12 @@ private slots:
      void btnEditSite_clicked();
 
      void on_btnFilterActive_toggled(bool checked);
-
      void on_btnSearch_toggled(bool checked);
-
      void on_txtNavSearch_textChanged(const QString &search_text);
-
      void on_cmbSites_currentIndexChanged(int index);
+     void on_toolButton_clicked();
+
+     void on_treeNavigator_customContextMenuRequested(const QPoint &pos);
 
 signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);

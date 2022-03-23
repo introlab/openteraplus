@@ -1,0 +1,2 @@
+Papirus Mimetypes Icons by Papirus Development Team
+https://github.com/PapirusDevelopmentTeam/papirus-icon-theme

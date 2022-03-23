@@ -245,7 +245,7 @@ void AkFrac::setNumDen(const QString &fracString)
     }
 
     QStringList fracChunks = fracString.split(QRegExp("\\s*/\\s*"),
-                                              QString::SkipEmptyParts);
+                                              Qt::SkipEmptyParts);
 
     qint64 num = fracChunks[0].trimmed().toInt();
     qint64 den = fracChunks[1].trimmed().toInt();

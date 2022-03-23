@@ -24,7 +24,17 @@ public:
         USER_EVENT = 11,
         SESSION_JOIN = 12,
         SESSION_LEAVE = 13,
-        SESSION_JOIN_REFUSED = 14
+        SESSION_JOIN_REFUSED = 14,
+        CUSTOM_EVENT1 = 100,
+        CUSTOM_EVENT2 = 101,
+        CUSTOM_EVENT3 = 102,
+        CUSTOM_EVENT4 = 103,
+        CUSTOM_EVENT5 = 104,
+        CUSTOM_EVENT6 = 105,
+        CUSTOM_EVENT7 = 106,
+        CUSTOM_EVENT8 = 107,
+        CUSTOM_EVENT9 = 108,
+        CUSTOM_EVENT10 = 109
     };
 
     static QString getEventTypeName(const SessionEventType& event);

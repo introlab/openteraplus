@@ -5,20 +5,20 @@
 #include <QPropertyAnimation>
 #include <QMovie>
 #include <QDialog>
-#include <QTextDocumentFragment>
 
 #include "editors/UserWidget.h"
 #include "dialogs/BaseDialog.h"
 #include "widgets/ConfigWidget.h"
+#include "widgets/DashboardWidget.h"
 
-#include "dialogs/DownloadProgressDialog.h"
+#include "dialogs/TransferProgressDialog.h"
 #include "widgets/NotificationWindow.h"
 
 #include "managers/ComManager.h"
-#include "Message.h"
-#include "GlobalEventLogger.h"
-#include "GlobalEvent.h"
-#include "DownloadedFile.h"
+#include "data/Message.h"
+#include "data/GlobalEventLogger.h"
+#include "data/GlobalEvent.h"
+#include "data/DownloadingFile.h"
 #include "TeraSessionCategory.h"
 #include "widgets/InSessionWidget.h"
 #include "dialogs/JoinSessionDialog.h"
@@ -48,9 +48,9 @@ signals:
     void logout_request();
 
 public slots:
-    void ws_userEvent(UserEvent event);
-    void ws_participantEvent(ParticipantEvent event);
-    void ws_joinSessionEvent(JoinSessionEvent event);
+    void ws_userEvent(opentera::protobuf::UserEvent event);
+    void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
+    void ws_joinSessionEvent(opentera::protobuf::JoinSessionEvent event);
 
 private slots:
     void updateCurrentUser();
@@ -66,8 +66,8 @@ private slots:
     void com_posting(QString path, QString data);
     void com_querying(QString path);
     void com_deleting(QString path);
-    void com_downloadProgress(DownloadedFile* file);
-    void com_downloadCompleted(DownloadedFile* file);
+    void com_downloadProgress(DownloadingFile* file);
+    void com_downloadCompleted(DownloadingFile* file);
 
     void com_preferencesUpdated();
 
@@ -78,8 +78,7 @@ private slots:
 
     void inSession_sessionEndedWithError();
 
-    bool hasWaitingMessage();
-    void showNextMessage();
+    void nextMessageWasShown(Message current_message);
     void notificationCompleted(NotificationWindow* notify);
     void addNotification(const NotificationWindow::NotificationType notification_type, const QString& text, const QString& iconPath = QString(), const QString &soundPath = QString(), const int &width=400, const int &height=100, const int &duration=5000);
 
@@ -95,7 +94,6 @@ private slots:
     void dataDeleteRequested(TeraDataTypes data_type, int data_id);   
     void dataEditorCancelled();
 
-    void on_btnCloseMessage_clicked();
     void on_btnLogout_clicked();
     void on_btnEditUser_clicked();
     void on_btnConfig_clicked();
@@ -110,6 +108,7 @@ private:
     void connectSignals();
     void initUi();
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
+    void showDashboard(const bool &show);
     void setInSession(bool in_session, const TeraData *session_type, const int& id_session, int id_project=0);
 
     // Messages and notifications
@@ -127,18 +126,16 @@ private:
     ComManager*             m_comManager;
     BaseDialog*             m_diag_editor;
     DataEditorWidget*       m_data_editor;
+    DashboardWidget*        m_dashboard;
     InSessionWidget*        m_inSessionWidget;
-    DownloadProgressDialog* m_download_dialog;
+    TransferProgressDialog* m_download_dialog;
     JoinSessionDialog*      m_joinSession_dialog;
     TeraDataTypes           m_waiting_for_data_type;
     TeraDataTypes           m_currentDataType;
     int                     m_currentDataId;
 
     // Message & notification system
-    QList<Message>              m_messages;
     QList<NotificationWindow*>  m_notifications;
-    Message                     m_currentMessage;
-    QTimer                      m_msgTimer;
 
     // UI items
     QMovie*         m_loadingIcon;

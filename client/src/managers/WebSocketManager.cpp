@@ -245,10 +245,13 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
                }
 
                emit genericEventReceived(tera_event);
+               return;
            }
         }else{
             LOG_WARNING("Got unhandled message on websocket", "WebSocketManager::onSocketTextMessageReceived");
         }
+    }else{
+        LOG_ERROR("Unable to decode received protobuf message", "WebSocketManager::onSocketTextMessageReceived");
     }
 
 }
@@ -272,6 +275,7 @@ void WebSocketManager::onTimerConnectTimeout()
 
 void WebSocketManager::onTimerKeepAliveTimeout()
 {
+    // qDebug() << "Ping";
     if (m_webSocket){
         m_webSocket->ping();
     }

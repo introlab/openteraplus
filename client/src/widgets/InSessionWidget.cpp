@@ -62,7 +62,7 @@ void InSessionWidget::setSessionId(int session_id)
 
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(session_id));
-    m_comManager->doQuery(WEB_SESSIONINFO_PATH, args);
+    m_comManager->doGet(WEB_SESSIONINFO_PATH, args);
 }
 
 void InSessionWidget::setPendingEvent(JoinSessionEvent *event)
@@ -488,6 +488,16 @@ void InSessionWidget::initUI()
             handled = true;
         }
 
+        //SB - Even more lazy programmer reusing VideoRehabService widget!
+        /*if (service_key == "DanceService") {
+            // Main widget = QWebEngine
+            m_serviceWidget = new VideoRehabWidget(m_comManager, this);
+            setMainWidget(m_serviceWidget);
+            m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
+            setToolsWidget(m_serviceToolsWidget);
+            handled = true;
+        }*/
+
         if (!handled){
             GlobalMessageBox msg_box;
             msg_box.showWarning(tr("Service non-supporté"), tr("Le service \"") + service_key + tr("\" n'est pas gérée par cette version du logiciel.\n\nVeuillez vérifier si une mise à jour existe ou contribuez au développement du logiciel!"));
@@ -573,9 +583,9 @@ void InSessionWidget::queryLists()
     args.addQueryItem(WEB_QUERY_ENABLED, "1");
     args.addQueryItem(WEB_QUERY_LIST, "1");
     // args.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
-    m_comManager->doQuery(WEB_USERINFO_PATH, args);
-    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, args);
-    m_comManager->doQuery(WEB_DEVICEINFO_PATH, args);
+    m_comManager->doGet(WEB_USERINFO_PATH, args);
+    m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, args);
+    m_comManager->doGet(WEB_DEVICEINFO_PATH, args);
 
 
 }

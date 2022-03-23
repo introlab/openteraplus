@@ -239,10 +239,10 @@ void KitConfigDialog::initUi()
     ui->lblStatus->hide();
     ui->frameTechSup->hide();
 
-    ui->cmbSites->setItemDelegate(new QStyledItemDelegate());
-    ui->cmbProjects->setItemDelegate(new QStyledItemDelegate());
-    ui->cmbGroups->setItemDelegate(new QStyledItemDelegate());
-    ui->cmbServices->setItemDelegate(new QStyledItemDelegate());
+    ui->cmbSites->setItemDelegate(new QStyledItemDelegate(ui->cmbSites));
+    ui->cmbProjects->setItemDelegate(new QStyledItemDelegate(ui->cmbProjects));
+    ui->cmbGroups->setItemDelegate(new QStyledItemDelegate(ui->cmbGroups));
+    ui->cmbServices->setItemDelegate(new QStyledItemDelegate(ui->cmbServices));
 
     ui->btnUnsetParticipant->setEnabled(!m_kitConfig->getParticipantToken().isEmpty());
     ui->chkTechSup->setChecked(!m_kitConfig->getTechSupportClient().isEmpty());
@@ -318,7 +318,7 @@ void KitConfigDialog::querySites()
     m_loading = true;
     setStatusMessage(tr("Chargement des sites en cours..."));
 
-    m_comManager->doQuery(WEB_SITEINFO_PATH, QUrlQuery(WEB_QUERY_LIST));
+    m_comManager->doGet(WEB_SITEINFO_PATH, QUrlQuery(WEB_QUERY_LIST));
 }
 
 void KitConfigDialog::queryProjects(int id_site)
@@ -329,7 +329,7 @@ void KitConfigDialog::queryProjects(int id_site)
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_SITE, QString::number(id_site));
     query.addQueryItem(WEB_QUERY_LIST, "true");
-    m_comManager->doQuery(WEB_PROJECTINFO_PATH, query);
+    m_comManager->doGet(WEB_PROJECTINFO_PATH, query);
 }
 
 void KitConfigDialog::queryGroups(int id_project)
@@ -340,7 +340,7 @@ void KitConfigDialog::queryGroups(int id_project)
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id_project));
     query.addQueryItem(WEB_QUERY_LIST, "true");
-    m_comManager->doQuery(WEB_GROUPINFO_PATH, query);
+    m_comManager->doGet(WEB_GROUPINFO_PATH, query);
 }
 
 void KitConfigDialog::queryServices(int id_project)
@@ -351,7 +351,7 @@ void KitConfigDialog::queryServices(int id_project)
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id_project));
     query.addQueryItem(WEB_QUERY_LIST, "true");
-    m_comManager->doQuery(WEB_SERVICEINFO_PATH, query);
+    m_comManager->doGet(WEB_SERVICEINFO_PATH, query);
 }
 
 void KitConfigDialog::queryParticipantsForProject(int id_project)
@@ -363,7 +363,7 @@ void KitConfigDialog::queryParticipantsForProject(int id_project)
     query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id_project));
     query.addQueryItem(WEB_QUERY_LIST, "true");
     query.addQueryItem(WEB_QUERY_ENABLED, "true");
-    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
+    m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
 }
 
 void KitConfigDialog::queryParticipantsForGroup(int id_group)
@@ -375,7 +375,7 @@ void KitConfigDialog::queryParticipantsForGroup(int id_group)
     query.addQueryItem(WEB_QUERY_ID_GROUP, QString::number(id_group));
     query.addQueryItem(WEB_QUERY_LIST, "true");
     query.addQueryItem(WEB_QUERY_ENABLED, "true");
-    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
+    m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
 
 }
 
@@ -386,14 +386,14 @@ void KitConfigDialog::queryParticipant(int id_participant)
 
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(id_participant));
-    m_comManager->doQuery(WEB_PARTICIPANTINFO_PATH, query);
+    m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
 }
 
 void KitConfigDialog::queryDeviceConfigForm()
 {
     QUrlQuery query(WEB_FORMS_QUERY_SERVICE_CONFIG);
     query.addQueryItem(WEB_QUERY_KEY, "VideoRehabService");
-    m_comManager->doQuery(WEB_FORMS_PATH, query);
+    m_comManager->doGet(WEB_FORMS_PATH, query);
 }
 
 void KitConfigDialog::on_cmbSites_currentIndexChanged(int index)

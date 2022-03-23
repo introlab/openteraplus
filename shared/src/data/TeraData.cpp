@@ -100,7 +100,9 @@ bool TeraData::hasEnabledField() const
 
 bool TeraData::isEnabled() const
 {
-    return getFieldValue(m_enabledField).toBool();
+    if (hasEnabledField())
+        return getFieldValue(m_enabledField).toBool();
+    return false;
 }
 
 bool TeraData::hasOnlineStateField() const
@@ -159,8 +161,17 @@ bool TeraData::operator ==(const TeraData &other) const
 
 void TeraData::updateFrom(const TeraData &other)
 {
-    foreach(QString key, other.m_fieldsValue.keys()){
+    const QStringList keys = other.m_fieldsValue.keys();
+    foreach(QString key, keys){
         m_fieldsValue[key] = other.m_fieldsValue[key];
+    }
+}
+
+void TeraData::updateFrom(const QJsonObject &object)
+{
+    QVariantHash fields = object.toVariantHash();
+    for(const QVariant &field_value:qAsConst(fields)){
+        m_fieldsValue[fields.key(field_value)] = field_value;
     }
 }
 
@@ -188,7 +199,8 @@ QVariant TeraData::getFieldValue(const QString &fieldName) const
         //return property(fieldName.toStdString().c_str());
         return m_fieldsValue[fieldName];
 
-    LOG_WARNING("Field " + fieldName + " not found in " + metaObject()->className(), "TeraData::getFieldValue");
+    if (fieldName != getIdFieldName())
+        LOG_WARNING("Field " + fieldName + " not found in " + metaObject()->className(), "TeraData::getFieldValue");
     return QVariant();
 }
 
@@ -202,7 +214,10 @@ QList<QString> TeraData::getFieldList() const
 {
     QList<QString> rval;
     //for (QByteArray fieldname:dynamicPropertyNames()){
-    for (const QString &fieldname:m_fieldsValue.keys()){
+    const QStringList keys = m_fieldsValue.keys();
+    //for (const QString &fieldname:m_fieldsValue.keys()){
+    foreach(QString fieldname, keys){
+    //foreach(QVariant value, m_fieldsValue){
         rval.append(fieldname);
     }
 
@@ -260,12 +275,16 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "device_type";
     case TERADATA_SESSIONTYPEPROJECT:
         return "session_type_project";
+    case TERADATA_SESSIONTYPESITE:
+        return "session_type_site";
     case TERADATA_SESSIONEVENT:
         return "session_event";
     case TERADATA_SERVICE:
         return "service";
     case TERADATA_SERVICE_PROJECT:
         return "service_project";
+    case TERADATA_SERVICE_SITE:
+        return "service_site";
     case TERADATA_SERVICE_ACCESS:
         return "service_access";
     case TERADATA_SERVICE_CONFIG:
@@ -274,6 +293,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "stats";
     case TERADATA_USERPREFERENCE:
         return "user_preference";
+    case TERADATA_ASSET:
+        return "asset";
     }
 
     return "";
@@ -324,12 +345,16 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Appareil: type");
     case TERADATA_SESSIONTYPEPROJECT:
         return tr("Type de séance: projet");
+    case TERADATA_SESSIONTYPESITE:
+        return tr("Type de séance: site");
     case TERADATA_SESSIONEVENT:
         return tr("Séance: événement");
     case TERADATA_SERVICE:
         return tr("Service");
     case TERADATA_SERVICE_PROJECT:
         return tr("Service: projet");
+    case TERADATA_SERVICE_SITE:
+        return tr("Service: site");
     case TERADATA_SERVICE_ACCESS:
         return tr("Service: Accès");
     case TERADATA_SERVICE_CONFIG:
@@ -342,6 +367,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Participant: état");
     case TERADATA_ONLINE_USER:
         return tr("Utilisateur: état");
+    case TERADATA_ASSET:
+        return tr("Donnée");
     }
 
     return "";
@@ -363,12 +390,14 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_DEVICEPROJECTINFO_PATH)       return TERADATA_DEVICEPROJECT;
     if (path==WEB_DEVICEPARTICIPANTINFO_PATH)   return TERADATA_DEVICEPARTICIPANT;
     if (path==WEB_SESSIONTYPEPROJECT_PATH)      return TERADATA_SESSIONTYPEPROJECT;
+    if (path==WEB_SESSIONTYPESITE_PATH)         return TERADATA_SESSIONTYPESITE;
     if (path==WEB_SESSIONEVENT_PATH)            return TERADATA_SESSIONEVENT;
     if (path==WEB_DEVICESUBTYPE_PATH)           return TERADATA_DEVICESUBTYPE;
     if (path==WEB_DEVICETYPE_PATH)              return TERADATA_DEVICETYPE;
     if (path==WEB_USERGROUPINFO_PATH)           return TERADATA_USERGROUP;
     if (path==WEB_SERVICEINFO_PATH)             return TERADATA_SERVICE;
     if (path==WEB_SERVICEPROJECTINFO_PATH)      return TERADATA_SERVICE_PROJECT;
+    if (path==WEB_SERVICESITEINFO_PATH)         return TERADATA_SERVICE_SITE;
     if (path==WEB_SERVICEACCESSINFO_PATH)       return TERADATA_SERVICE_ACCESS;
     if (path==WEB_SERVICECONFIGINFO_PATH)       return TERADATA_SERVICE_CONFIG;
     if (path==WEB_USERUSERGROUPINFO_PATH)       return TERADATA_USERUSERGROUP;
@@ -377,6 +406,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_ONLINEDEVICEINFO_PATH)        return TERADATA_ONLINE_DEVICE;
     if (path==WEB_ONLINEPARTICIPANTINFO_PATH)   return TERADATA_ONLINE_PARTICIPANT;
     if (path==WEB_ONLINEUSERINFO_PATH)          return TERADATA_ONLINE_USER;
+    if (path==WEB_ASSETINFO_PATH)               return TERADATA_ASSET;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 
@@ -401,6 +431,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_SERVICE)            return WEB_SERVICEINFO_PATH;
     if (data_type==TERADATA_SITEACCESS)         return WEB_SITEACCESS_PATH;
     if (data_type==TERADATA_SERVICE_CONFIG)     return WEB_SERVICECONFIGINFO_PATH;
+    if (data_type==TERADATA_ASSET)              return WEB_ASSETINFO_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 
@@ -415,6 +446,8 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     case TERADATA_USERGROUP:
         return "://icons/usergroup.png";
     case TERADATA_SITE:
+    case TERADATA_SERVICE_SITE:
+    case TERADATA_SESSIONTYPESITE:
         return "://icons/site.png";
     case TERADATA_SESSIONTYPE:
         return "://icons/session_type.png";
@@ -438,6 +471,8 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     case TERADATA_SERVICE:
     case TERADATA_SERVICE_CONFIG:
         return "://icons/service.png";
+    case TERADATA_ASSET:
+        return "://icons/data.png";
     default:
         return "://icons/error.png";
     }
@@ -553,8 +588,11 @@ QJsonObject TeraData::toJson(const QString specific_fieldName)
         }
     }
 
-    for (int i=0; i<m_fieldsValue.count(); i++){
-        QString fieldName = m_fieldsValue.keys().at(i);
+    QStringList keys = m_fieldsValue.keys();
+    //for (int i=0; i<m_fieldsValue.count(); i++){
+    foreach(QString fieldName, keys){
+        //QString fieldName = m_fieldsValue.keys().at(i);
+
         if (!specific_fieldName.isEmpty()){
             if (fieldName != specific_fieldName)
                 continue;
@@ -576,4 +614,14 @@ QJsonObject TeraData::toJson(const QString specific_fieldName)
     }
 
     return object;
+}
+
+bool TeraData::fromMap(const QVariantMap &map)
+{
+    foreach(QVariant value, map){
+        QString key = map.key(value);
+        setFieldValue(key, value);
+    }
+
+    return true;
 }

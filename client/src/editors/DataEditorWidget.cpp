@@ -45,8 +45,8 @@ void DataEditorWidget::setData(const TeraData* data)
     if (data != nullptr){
         m_data = new TeraData(*data);
         // Start editing if new data
-        if (m_data->isNew()){
-            editToggleClicked();
+        if (DataEditorWidget::dataIsNew()){
+            DataEditorWidget::editToggleClicked();
         }
     }
 
@@ -61,7 +61,7 @@ void DataEditorWidget::setLimited(bool limited){
             m_cancelButton->hide();
     }
 
-    if (m_editToggle){
+    if (m_editToggle && !dataIsNew()){
         m_editToggle->setVisible(!limited);
     }
     updateControlsState();
@@ -160,7 +160,7 @@ void DataEditorWidget::queryDataRequest(const QString &path, const QUrlQuery &qu
 {
     QString query_name = getQueryDataName(path, query_args);
     m_requests.append(query_name);
-    m_comManager->doQuery(path, query_args);
+    m_comManager->doGet(path, query_args);
     setWaiting();
 }
 
@@ -182,14 +182,6 @@ void DataEditorWidget::deleteDataRequest(const QString &path, const int &id)
     QString query_name = getQueryDataName(path, QUrlQuery("del_id=" + QString::number(id)));
     m_requests.append(query_name);
     m_comManager->doDelete(path, id);
-    setWaiting();
-}
-
-void DataEditorWidget::downloadDataRequest(const QString &save_path, const QString &path, const QUrlQuery &query_args)
-{
-    QString query_name = getQueryDataName(path, query_args);
-    m_requests.append(query_name);
-    m_comManager->doDownload(save_path, path, query_args);
     setWaiting();
 }
 
@@ -363,7 +355,7 @@ void DataEditorWidget::saveButtonClicked()
 
         if (!invalids.isEmpty()){
             QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-            for (QString field:invalids){
+            for (const QString &field:qAsConst(invalids)){
                 msg += "<li>" + field + "</li>";
             }
             msg += "</ul>";

@@ -8,20 +8,25 @@
 #include <QFrame>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QSpacerItem>
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
-#include "dialogs/DeviceAssignDialog.h"
-#include "dialogs/BaseDialog.h"
 #include "TeraSessionStatus.h"
 #include "Utils.h"
+#include "TeraSettings.h"
 //#include "StartSessionDialog.h"
 #include "ServiceConfigWidget.h"
-#include "dialogs/SessionLobbyDialog.h"
 
+#include "dialogs/SessionLobbyDialog.h"
 #include "dialogs/EmailInviteDialog.h"
+#include "dialogs/DeviceAssignDialog.h"
+#include "dialogs/BaseDialog.h"
 
 #include "widgets/TableDateWidgetItem.h"
+#include "widgets/AssetsWidget.h"
+
+#include "services/BaseServiceWidget.h"
 
 namespace Ui {
 class ParticipantWidget;
@@ -35,7 +40,8 @@ public:
     explicit ParticipantWidget(ComManager* comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
     ~ParticipantWidget();
 
-    void saveData(bool signal=true);
+    void saveData(bool signal=true) override;
+    void setData(const TeraData* data) override;
 
     void connectSignals();
 
@@ -51,27 +57,46 @@ private:
     QMap<int, QListWidgetItem*>     m_listDevices_items;        // int  = device_id
 
     QList<TeraData>                 m_services;
+    QMap<int, QWidget*>             m_services_tabs;
+    bool                            m_allowFileTransfers;   // Allow to attach files to a session?
 
     BaseDialog*                     m_diag_editor;
     SessionLobbyDialog*             m_sessionLobby;
 
-    void updateControlsState();
-    void updateFieldsValue();
+    int                             m_totalSessions;
+    int                             m_totalAssets;
+    int                             m_currentSessions;
+    bool                            m_sessionsLoading;
+
+    void setSessionsLoading(const bool& loading);
+    void querySessions();
+
+    void updateControlsState() override;
+    void updateFieldsValue() override;
     void initUI();
 
     bool canStartNewSession();
+    void newSessionRequest(const QDateTime& session_datetime);
 
-    bool validateData();
+    bool validateData() override;
 
-    void updateSession(TeraData *session);
+    void updateSession(TeraData *session, const bool &auto_position);
     void updateDeviceProject(TeraData* device_project);
     void updateDeviceParticipant(TeraData* device_participant);
+
+    void updateServiceTabs();
+    void addServiceTab(const TeraData& service);
 
     void refreshWebAccessUrl();
 
     void updateCalendars(QDate left_date);
     QDate getMinimumSessionDate();
     QDate getMaximumSessionDate();
+
+    bool eventFilter(QObject* o, QEvent* e) override;
+    void displaySessionDetails(QTableWidgetItem* session_item, bool show_assets = false);
+
+    bool isProjectAdmin();
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -81,22 +106,23 @@ private slots:
     void processDeviceProjectsReply(QList<TeraData> device_projects);
     void processDeviceParticipantsReply(QList<TeraData> device_participants);
     void processParticipantsReply(QList<TeraData> participants);
-    void processServicesReply(QList<TeraData> services);
+    void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
+
     void deleteDataReply(QString path, int id);
-    void onDownloadCompleted(DownloadedFile* file);
-    void ws_participantEvent(ParticipantEvent event);
+    void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
+    void sessionAssetsCountChanged(int id_session, int new_count);
 
     void btnDeleteSession_clicked();
     void btnAddDevice_clicked();
     void btnDelDevice_clicked();
     void btnDownloadSession_clicked();
-    void btnDowloadAll_clicked();
     void btnViewSession_clicked();
     void btnResumeSession_clicked();
 
     void currentSelectedSessionChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
     void currentCalendarDateChanged(QDate current_date);
-    void displaySessionDetails(QTableWidgetItem* session_item);
+    void currentCalendarDateActivated(QDate current_date);
     void currentTypeFiltersChanged(QListWidgetItem* changed);
     void displayNextMonth();
     void displayPreviousMonth();
@@ -115,7 +141,6 @@ private slots:
     void on_btnSaveLogin_clicked();
     void on_txtUsername_textEdited(const QString &current);
     void on_txtPassword_textEdited(const QString &current);
-    void on_tabInfos_currentChanged(int index);
     void on_btnNewSession_clicked();
     void on_btnCheckSessionTypes_clicked();
     void on_btnUnchekSessionTypes_clicked();
@@ -124,6 +149,12 @@ private slots:
     void on_btnEmailWeb_clicked();
     void on_cmbSessionType_currentIndexChanged(int index);
     void on_btnFilterSessionsTypes_clicked();
+    void on_btnAddSession_clicked();
+    void on_tableSessions_itemDoubleClicked(QTableWidgetItem *item);
+    void on_btnAssetsBrowser_clicked();
+    void on_tabNav_currentChanged(int index);
+    void on_lstAvailDevices_itemDoubleClicked(QListWidgetItem *item);
+    void on_lstDevices_itemDoubleClicked(QListWidgetItem *item);
 };
 
 #endif // PARTICIPANTWIDGET_H

@@ -37,10 +37,23 @@ OpenTeraPlus is a client that works with [OpenTera Server](https://github.com/in
   * Device configuration editing
 * Services managements
   * Edit configuration
+* Assets managements
+  * View and download assets related to a session
+* Video / tele rehabilitation sessions
+  * Create and manage video sessions, with a focus on telerehabilitation 
 * ... and more!
 
 # Screenshots
-Coming soon!
+<table><tr>
+<td><img src="docs/screenshots/LoginScreen.png" width="100" alt="Login Screen" title="Login Screen"></td>
+<td><img src="docs/screenshots/ProjectNavigator.png" width="100" alt="Project Navigator" title="Project Navigator"></td>
+<td><img src="docs/screenshots/Participant.png" width="100" alt="Participant Viewer" title="Participant Viewer"></td>
+<td><img src="docs/screenshots/SessionLobby.png" width="100" alt="Session Lobby" title="Session Lobby"></td>
+<td><img src="docs/screenshots/AdminConfig.png" width="100" alt="Admin configuration" title="Admin configuration"></td>
+</tr></table>
+
+# Video
+[![OpenTera+ Clinical Telehealth Software](https://img.youtube.com/vi/4YMKSUE6xJs/maxresdefault.jpg)](https://youtu.be/4YMKSUE6xJs)
  
 # License
 OpenTeraPlus is licensed under [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)

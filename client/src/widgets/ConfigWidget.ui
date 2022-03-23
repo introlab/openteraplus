@@ -126,7 +126,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </property>
        <property name="maximumSize">
         <size>
-         <width>125</width>
+         <width>150</width>
          <height>16777215</height>
         </size>
        </property>
@@ -147,6 +147,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          <width>48</width>
          <height>48</height>
         </size>
+       </property>
+       <property name="textElideMode">
+        <enum>Qt::ElideRight</enum>
        </property>
        <property name="movement">
         <enum>QListView::Static</enum>
@@ -193,8 +196,8 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>575</width>
-          <height>443</height>
+          <width>555</width>
+          <height>447</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">

@@ -22,7 +22,7 @@ ServiceWidget::ServiceWidget(ComManager *comMan, const TeraData *data, QWidget *
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SERVICE));
 
     ui->wdgService->setComManager(m_comManager);
-    setData(data);
+    ServiceWidget::setData(data);
 
     ui->tabNav->setCurrentIndex(0);
 
@@ -50,7 +50,11 @@ void ServiceWidget::saveData(bool signal){
 }
 
 void ServiceWidget::updateControlsState(){
-
+    if (dataIsNew()){
+        // Hide useless tabs when creating a new service
+        while (ui->tabNav->count() > 1)
+            ui->tabNav->removeTab(1);
+    }
 }
 
 void ServiceWidget::updateFieldsValue(){
@@ -64,27 +68,58 @@ void ServiceWidget::updateServiceProject(TeraData *project)
 {
 
     int id_project = project->getFieldValue("id_project").toInt();
-    QListWidgetItem* item;
+    QTreeWidgetItem* item;
     QString project_name = project->getFieldValue("project_name").toString();
 
-    if (m_listProjects_items.contains(id_project)){
-        item = m_listProjects_items[id_project];
+    if (m_treeProjects_items.contains(id_project)){
+        item = m_treeProjects_items[id_project];
     }else{
-        item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)), project_name);
-        item->setCheckState(Qt::Unchecked);
-        ui->lstProjects->addItem(item);
-        m_listProjects_items[id_project] = item;
-        //combo_roles = buildRolesComboBox(m_serviceRoles);
+        item = new QTreeWidgetItem();
+        item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
+        int id_site = project->getFieldValue("id_site").toInt();
+        QTreeWidgetItem* parent_item = m_treeSites_items[id_site];
+        if (!parent_item){
+            LOG_WARNING("Site not found for project: " + project_name, "ServiceWidget::updateServiceProject");
+            delete item;
+            return;
+        }
+        parent_item->addChild(item);
+        m_treeProjects_items[id_project] = item;
     }
 
     if (!project_name.isEmpty())
-        item->setText(project_name);
+        item->setText(0, project_name);
 
     int service_id = project->getFieldValue("id_service").toInt();
     if (service_id > 0){
-        item->setCheckState(Qt::Checked);
+        item->setCheckState(0, Qt::Checked);
     }else{
-        item->setCheckState(Qt::Unchecked);
+        item->setCheckState(0, Qt::Unchecked);
+    }
+}
+
+void ServiceWidget::updateServiceSite(TeraData *service_site)
+{
+    int id_site = service_site->getFieldValue("id_site").toInt();
+    QTreeWidgetItem* item;
+    if (m_treeSites_items.contains(id_site)){
+        item = m_treeSites_items[id_site];
+
+    }else{
+        item = new QTreeWidgetItem();
+        item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)));
+        item->setCheckState(0, Qt::Unchecked);
+        item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        ui->treeProjects->addTopLevelItem(item);
+        m_treeSites_items[id_site] = item;
+    }
+    QString site_name = service_site->getFieldValue("site_name").toString();
+    if (!site_name.isEmpty())
+        item->setText(0, site_name);
+    if (service_site->getId() > 0){
+        item->setCheckState(0, Qt::Checked);
+    }else{
+        item->setCheckState(0, Qt::Unchecked);
     }
 }
 
@@ -115,9 +150,11 @@ void ServiceWidget::postServiceRoles()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for (int i=0; i<m_serviceRoles.count(); i++){
+    for (const QString &role_name:qAsConst(m_serviceRoles)){
+        int role_id = m_serviceRoles.key(role_name);
+/*    for (int i=0; i<m_serviceRoles.count(); i++){
         int role_id = m_serviceRoles.keys().at(i);
-        QString role_name = m_serviceRoles.values().at(i);
+        QString role_name = m_serviceRoles.values().at(i);*/
         QJsonObject data_obj;
         data_obj.insert("id_service_role", role_id);
         data_obj.insert("service_role_name", role_name);
@@ -130,6 +167,52 @@ void ServiceWidget::postServiceRoles()
     base_obj.insert("service", service_obj);
     document.setObject(base_obj);
     postDataRequest(WEB_SERVICEINFO_PATH, document.toJson());
+}
+
+void ServiceWidget::postServiceSites()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray sites;
+
+    for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+        int site_id = m_treeSites_items.key(item);
+        if (item->checkState(0) == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_site", site_id);
+            sites.append(data_obj);
+        }
+    }
+
+    QJsonObject service_obj;
+    service_obj.insert("id_service", m_data->getId());
+    service_obj.insert("sites", sites);
+    base_obj.insert("service", service_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SERVICESITEINFO_PATH, document.toJson());
+}
+
+void ServiceWidget::postServiceProjects()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray projects;
+
+    for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+        int project_id = m_treeProjects_items.key(item);
+        if (item->checkState(0) == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_project", project_id);
+            projects.append(data_obj);
+        }
+    }
+
+    QJsonObject service_obj;
+    service_obj.insert("id_service", m_data->getId());
+    service_obj.insert("projects", projects);
+    base_obj.insert("service", service_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SERVICEPROJECTINFO_PATH, document.toJson());
 }
 
 void ServiceWidget::setData(const TeraData *data)
@@ -171,12 +254,59 @@ void ServiceWidget::postResultReply(QString path)
         if (parent())
             emit closeRequest();
     }
+
+    if (path==WEB_SERVICESITEINFO_PATH){
+        // We saved the service-site association, now saving the service-project association
+        postServiceProjects();
+    }
 }
 
 void ServiceWidget::processServiceProjects(QList<TeraData> projects)
 {
     for (TeraData project:projects){
         updateServiceProject(&project);
+    }
+
+    ui->treeProjects->expandAll();
+}
+
+void ServiceWidget::processServiceSites(QList<TeraData> sites, QUrlQuery reply_query)
+{
+    for (TeraData site:sites){
+        updateServiceSite(&site);
+    }
+
+    // Query projects for service
+    if (m_treeProjects_items.isEmpty()){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SERVICE, QString::number(m_data->getId()));
+        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+        queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
+    }
+}
+
+void ServiceWidget::processServices(QList<TeraData> services, QUrlQuery reply_query)
+{
+    Q_UNUSED(reply_query)
+
+    for (int i=0; i<services.count(); i++){
+        // Only update roles
+        if (services.at(i).getId() != m_data->getId())
+            continue;
+
+        if (services.at(i).hasFieldName("service_roles")){
+            QVariantList roles = services.at(i).getFieldValue("service_roles").toList();
+            m_serviceRoles.clear();
+            m_listRoles_items.clear();
+            ui->lstRoles->clear();
+            foreach(QVariant role, roles){
+                QVariantMap role_map = role.toMap();
+                int id_role = role_map["id_service_role"].toInt();
+                QString role_name = role_map["service_role_name"].toString();
+                updateServiceRole(id_role, role_name);
+            }
+        }
     }
 }
 
@@ -185,6 +315,8 @@ void ServiceWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &ServiceWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &ServiceWidget::postResultReply);
     connect(m_comManager, &ComManager::servicesProjectsReceived, this, &ServiceWidget::processServiceProjects);
+    connect(m_comManager, &ComManager::servicesSitesReceived, this, &ServiceWidget::processServiceSites);
+    connect(m_comManager, &ComManager::servicesReceived, this, &ServiceWidget::processServices);
 }
 
 
@@ -197,45 +329,23 @@ void ServiceWidget::on_tabNav_currentChanged(int index)
     QWidget* current_tab = ui->tabNav->widget(index);
 
     if (current_tab == ui->tabProjects){
+        // Sites / Projects
+        if (m_treeSites_items.isEmpty() || m_treeSites_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+            queryDataRequest(WEB_SERVICESITEINFO_PATH, args);
+        }
         // Projects for that service
-        args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1"); // Also gets unassociated projects
+        /*args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1"); // Also gets unassociated projects
         args.addQueryItem(WEB_QUERY_WITH_ROLES, "1");
-        queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);
+        queryDataRequest(WEB_SERVICEPROJECTINFO_PATH, args);*/
     }
 }
 
 void ServiceWidget::on_btnUpdateProjects_clicked()
 {
-    QJsonDocument document;
-    QJsonObject base_obj;
-    QJsonArray projects;
+    // We post service-site association first
+    postServiceSites();
 
-    for (int i=0; i<m_listProjects_items.count(); i++){
-        int project_id = m_listProjects_items.keys().at(i);
-        QListWidgetItem* item = m_listProjects_items.values().at(i);
-        if (item->checkState() == Qt::Checked){
-            QJsonObject data_obj;
-            data_obj.insert("id_project", project_id);
-            projects.append(data_obj);
-        }
-    }
-
-    QJsonObject service_obj;
-    service_obj.insert("id_service", m_data->getId());
-    service_obj.insert("projects", projects);
-    base_obj.insert("service", service_obj);
-    document.setObject(base_obj);
-    postDataRequest(WEB_SERVICEPROJECTINFO_PATH, document.toJson());
-
-}
-
-void ServiceWidget::on_lstProjects_itemChanged(QListWidgetItem *item)
-{
-    if (item->checkState()==Qt::Checked){
-        item->setForeground(Qt::green);
-    }else{
-        item->setForeground(Qt::white);
-    }
 }
 
 void ServiceWidget::on_lstRoles_currentRowChanged(int currentRow)
@@ -266,7 +376,10 @@ void ServiceWidget::on_btnDeleteRole_clicked()
     GlobalMessageBox msg_box;
 
     if (msg_box.showYesNo(tr("Supprimer ce rôle?"), tr("Êtes-vous sûrs de vouloir supprimer le rôle:") +  " \"" + ui->lstRoles->currentItem()->text() + "\"?") == QMessageBox::Yes){
-        m_serviceRoles.remove(ui->lstRoles->currentItem()->data(Qt::UserRole).toInt());
+        int id_role = ui->lstRoles->currentItem()->data(Qt::UserRole).toInt();
+        m_serviceRoles.remove(id_role);
+        ui->lstRoles->removeItemWidget(m_listRoles_items.value(id_role));
+        m_listRoles_items.remove(id_role);
         postServiceRoles();
     }
 }
@@ -277,8 +390,8 @@ void ServiceWidget::on_btnEditRole_clicked()
         return;
 
     bool ok;
-    QString current_role = ui->lstRoles->currentItem()->text();
     int current_role_id = ui->lstRoles->currentItem()->data(Qt::UserRole).toInt();
+    QString current_role = m_serviceRoles[current_role_id]; //ui->lstRoles->currentItem()->text();
     QString role = QInputDialog::getText(this, tr("Édition du rôle"), tr("Code du rôle:"), QLineEdit::Normal, current_role, &ok);
 
     if (ok && !role.isEmpty() && current_role != role){
@@ -287,3 +400,61 @@ void ServiceWidget::on_btnEditRole_clicked()
         postServiceRoles();
     }
 }
+
+void ServiceWidget::on_lstRoles_itemDoubleClicked(QListWidgetItem *item)
+{
+    on_btnEditRole_clicked();
+}
+
+
+void ServiceWidget::on_treeProjects_itemChanged(QTreeWidgetItem *item, int column)
+{
+    Q_UNUSED(column)
+    static bool updating = false;
+
+    // Lock to prevent recursive updates
+    if (updating)
+        return;
+
+    updating = true;
+    // Don't select all projects of sites anymore
+    /*if (std::find(m_treeSites_items.cbegin(), m_treeSites_items.cend(), item) != m_treeSites_items.cend()){
+        if (item->childCount() == 0 && !isLoading()){
+            item->setExpanded(true);
+        }else{
+            // Check or uncheck all childs (projects)
+            for (int i=0; i<item->childCount(); i++){
+                item->child(i)->setCheckState(0, item->checkState(0));
+            }
+        }
+    }*/
+
+    // Uncheck all projects if site was unselected
+    if (std::find(m_treeSites_items.cbegin(), m_treeSites_items.cend(), item) != m_treeSites_items.cend()){
+        if (item->checkState(0) == Qt::Unchecked){
+            for (int i=0; i<item->childCount(); i++){
+                item->child(i)->setCheckState(0, Qt::Unchecked);
+            }
+        }
+    }
+
+
+    if (std::find(m_treeProjects_items.cbegin(), m_treeProjects_items.cend(), item) != m_treeProjects_items.cend()){
+        // We have a project - check if we need to check the parent (site)
+        QTreeWidgetItem* site = item->parent();
+        if (site){
+            for(int i=0; i<site->childCount(); i++){
+                if (site->child(i)->checkState(0) == Qt::Checked){
+                    site->setCheckState(0, Qt::Checked);
+                    updating = false;
+                    return;
+                }
+            }
+            // No projects selected for that site
+            //site->setCheckState(0, Qt::Unchecked);
+        }
+    }
+
+    updating = false;
+}
+

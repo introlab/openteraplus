@@ -14,6 +14,10 @@ add_definitions(-DHAVE_SAMPLEFORMAT64)
 SET(LIBRARY_OUTPUT_PATH ${LIBRARY_OUTPUT_PATH}/submodules/${PLUGIN_NAME})
 
 find_package(Qt5Core REQUIRED)
+find_package(Qt5Concurrent REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Qml REQUIRED)
+find_package(Qt5Widgets REQUIRED)
 
 include_directories(
     ${AVKYS_PLUGIN_INCLUDES}
@@ -55,7 +59,8 @@ QT5_WRAP_CPP(submodule_moc_srcs ${submodule_headers})
 QT5_ADD_RESOURCES(submodule_qrc_srcs ${summodule_qrc})
 
 add_library(${SUBMMODULE_NAME} SHARED ${submodule_srcs} ${submodule_headers} ${submodule_moc_srcs} ${submodule_qrc_srcs})
-qt5_use_modules(${SUBMMODULE_NAME} Core Concurrent Widgets Gui Qml)
+# qt5_use_modules(${SUBMMODULE_NAME} Core Concurrent Widgets Gui Qml)
+target_link_libraries(${SUBMMODULE_NAME} Qt5::Core Qt5::Concurrent Qt5::Widgets Qt5::Gui Qt5::Qml)
 target_link_libraries(${SUBMMODULE_NAME} ${AVKYS_PLUGIN_LIBRARIES} ${FFMPEG_LIBS})
 install(TARGETS ${SUBMMODULE_NAME} DESTINATION ${AVKYS_LIBRARY_INSTALL_PATH}/submodules/${PLUGIN_NAME})
 

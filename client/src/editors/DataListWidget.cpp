@@ -201,6 +201,10 @@ void DataListWidget::deleteDataFromList(TeraData *data)
 void DataListWidget::showEditor(TeraData *data)
 {
     if (m_editor){
+        if (data && m_editor->getData()){
+            if (m_editor->getData()->getId() == data->getId() && m_editor->getData()->getDataType() == data->getDataType())
+                return; // Already displayed
+        }
         ui->wdgEditor->layout()->removeWidget(m_editor);
         m_editor->disconnectSignals();
         m_editor->deleteLater();
@@ -292,7 +296,7 @@ void DataListWidget::queryDataList()
     if (!query_path.isEmpty()){
         QUrlQuery args;
         args.addQueryItem(WEB_QUERY_LIST, "true");
-        m_comManager->doQuery(query_path, args);
+        m_comManager->doGet(query_path, args);
     }
 }
 
@@ -304,7 +308,7 @@ void DataListWidget::queryDataList(QUrlQuery args)
     if (!m_queryPath.isEmpty()){
         if (args.isEmpty()) // "list" parameter must be appended manually if we provide an args list
             args.addQueryItem(WEB_QUERY_LIST, "true");
-        m_comManager->doQuery(m_queryPath, args);
+        m_comManager->doGet(m_queryPath, args);
     }
 }
 
@@ -330,14 +334,19 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
 
     // Less simple case - the pointers are not the same, but we might be referencing an object already present.
     if (!data->isNew()){
-        for (TeraData* current_data:m_datamap.keys()){
+        for (QListWidgetItem* item: qAsConst(m_datamap)){
+            TeraData* current_data = m_datamap.key(item);
+        /*}
+        for (TeraData* current_data:m_datamap.keys()){*/
             if (*current_data == *data){
                 return m_datamap[current_data];
             }
         }
 
         // Not found - try to find an item which is new but with the same name
-        for (TeraData* current_data:m_datamap.keys()){
+        //for (TeraData* current_data:m_datamap.keys()){
+        for (QListWidgetItem* item: qAsConst(m_datamap)){
+            TeraData* current_data = m_datamap.key(item);
             if (current_data->isNew() && current_data->getName() == data->getName()){
                 m_newdata=false;
                 return m_datamap[current_data];
@@ -345,7 +354,9 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
         }
     }else{
         // We have a new item - try and match.
-        for (TeraData* current_data:m_datamap.keys()){
+        //for (TeraData* current_data:m_datamap.keys()){
+        for (QListWidgetItem* item: qAsConst(m_datamap)){
+            TeraData* current_data = m_datamap.key(item);
             if (current_data->isNew()){
                 return m_datamap[current_data];
             }
@@ -360,7 +371,9 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
 void DataListWidget::clearDataList(){
     ui->lstData->clear();
 
-    for (TeraData* data:m_datamap.keys()){
+    //for (TeraData* data:m_datamap.keys()){
+    for (QListWidgetItem* item: qAsConst(m_datamap)){
+        TeraData* data = m_datamap.key(item);
         delete data;
     }
     m_datamap.clear();
@@ -387,7 +400,9 @@ void DataListWidget::deleteDataReply(QString path, int id)
 
     if (path == TeraData::getPathForDataType(m_dataType)){
         // An item that we are managing got deleted
-        for (TeraData* data:m_datamap.keys()){
+        for (QListWidgetItem* item: qAsConst(m_datamap)){
+            TeraData* data = m_datamap.key(item);
+        //for (TeraData* data:m_datamap.keys()){
             if (data->getId() == id){
                 deleteDataFromList(data);
                 break;
@@ -504,7 +519,8 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
     if (!m_canView) // Check if the user can see the details of that item
         return;
 
-    TeraData* current_data = m_datamap.keys(current).first();
+    //TeraData* current_data = m_datamap.keys(current).first();
+    TeraData* current_data = m_datamap.key(current);
 
     if (current_data->isNew())
         return;
@@ -512,7 +528,7 @@ void DataListWidget::lstData_currentItemChanged(QListWidgetItem *current, QListW
     // Query full data for that data item
     QUrlQuery args;
     args.addQueryItem(current_data->getIdFieldName(), QString::number(current_data->getId()));
-    m_comManager->doQuery(TeraData::getPathForDataType(current_data->getDataType()), args);
+    m_comManager->doGet(TeraData::getPathForDataType(current_data->getDataType()), args);
 }
 
 void DataListWidget::newDataRequested()
@@ -545,8 +561,17 @@ void DataListWidget::deleteDataRequested()
 
     GlobalMessageBox diag;
     QMessageBox::StandardButton answer = diag.showYesNo(tr("Suppression?"),
-                                                        tr("Êtes-vous sûrs de vouloir supprimer """) + ui->lstData->currentItem()->text() + """?");
+                                                        tr("Êtes-vous sûrs de vouloir supprimer") + " """ + ui->lstData->currentItem()->text() + """?");
     if (answer == QMessageBox::Yes){
+        if (m_dataType == TERADATA_SERVICE){
+            // Double confirm!
+            answer = diag.showYesNo(tr("Suppression de service?"),
+                                    tr("En supprimant le service """) + ui->lstData->currentItem()->text() + """, " + tr("toutes les données créées par ce service seront supprimées.\nÊtes-vous vraiment sûrs?"));
+            if (answer != QMessageBox::Yes){
+                return;
+            }
+
+        }
         // We must delete!
         m_comManager->doDelete(TeraData::getPathForDataType(m_dataType), m_datamap.key(ui->lstData->currentItem())->getId());
     }

@@ -4,15 +4,11 @@
 #include "Utils.h"
 
 ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
-    QObject(parent),
+    BaseComManager(serverUrl, parent),
     m_currentUser(TERADATA_USER),
     m_currentSessionType(nullptr)
 {
     m_enableWebsocket = connectWebsocket;
-
-    // Initialize communication objects
-    m_netManager = new QNetworkAccessManager(this);
-    m_netManager->setCookieJar(&m_cookieJar);
 
     // Setup signals and slots
     if (m_enableWebsocket){
@@ -24,13 +20,12 @@ ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
     }
 
     // Network manager
-    connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &ComManager::onNetworkAuthenticationRequired);
-    connect(m_netManager, &QNetworkAccessManager::encrypted, this, &ComManager::onNetworkEncrypted);
-    connect(m_netManager, &QNetworkAccessManager::finished, this, &ComManager::onNetworkFinished);
-    connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &ComManager::onNetworkSslErrors);
+    connect(this, &ComManager::networkAuthFailed, this, &ComManager::onNetworkAuthenticationFailed);
 
-    // Create correct server url
-    m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
+    // Initialize token refresher timer @ each 29 minutes
+    m_tokenRefreshTimer.setInterval(1000*60*29);
+    m_tokenRefreshTimer.setSingleShot(false);
+    connect(&m_tokenRefreshTimer, &QTimer::timeout, this, &ComManager::refreshUserToken);
 
 }
 
@@ -52,19 +47,21 @@ void ComManager::connectToServer(QString username, QString password)
 
     m_loggingInProgress = true;     // Indicate that a login request was sent, but not processed
 
-    doQuery(QString(WEB_LOGIN_PATH));
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_WITH_WEBSOCKET, "1");
+    doGet(QString(WEB_LOGIN_PATH), args);
 
 }
 
 void ComManager::disconnectFromServer()
 {
-    doQuery(QString(WEB_LOGOUT_PATH));
+    doGet(QString(WEB_LOGOUT_PATH));
     if (m_enableWebsocket){
         m_webSocketMan->disconnectWebSocket();
     }
 
     clearCurrentUser();
-    m_settedCredentials = false;
+
 }
 
 bool ComManager::processNetworkReply(QNetworkReply *reply)
@@ -98,19 +95,6 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
             if (handled) emit queryResultsOK(reply_path, reply_query);
         }
 
-
-        /*if (reply_path == WEB_DEVICEDATAINFO_PATH && reply_query.hasQueryItem(WEB_QUERY_DOWNLOAD)){
-            //qDebug() << "Download complete.";
-            handled = true;
-
-            // Remove reply from current download list, if present
-            if (m_currentDownloads.contains(reply)){
-                DownloadedFile* file = m_currentDownloads.take(reply);
-                emit downloadCompleted(file);
-                file->deleteLater();
-            }
-        }*/
-
         if (!handled){
             // General case
             handled=handleDataReply(reply_path, reply_data, reply_query);
@@ -142,110 +126,17 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
     return handled;
 }
 
-void ComManager::doQuery(const QString &path, const QUrlQuery &query_args)
-{
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    if (!query_args.isEmpty()){
-        query.setQuery(query_args);
-    }
-    QNetworkRequest request(query);
-
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    m_netManager->get(request);
-    emit waitingForReply(true);
-    emit querying(path);
-
-    if (!query_args.isEmpty())
-        LOG_DEBUG("GET: " + path + " with " + query_args.toString(), "ComManager::doQuery");
-    else
-        LOG_DEBUG("GET: " + path, "ComManager::doQuery");
-}
-
-void ComManager::doPost(const QString &path, const QString &post_data)
-{
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    QNetworkRequest request(query);
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    request.setRawHeader("Content-Type", "application/json");
-
-    m_netManager->post(request, post_data.toUtf8());
-    emit waitingForReply(true);
-    emit posting(path, post_data);
-
-#ifndef QT_NO_DEBUG
-    LOG_DEBUG("POST: " + path + ", with " + post_data, "ComManager::doPost");
-#else
-    // Strip data from logging in release, since this might contains passwords!
-    LOG_DEBUG("POST: " + path, "ComManager::doPost");
-#endif
-}
-
-void ComManager::doDelete(const QString &path, const int &id)
-{
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    query.setQuery("id=" + QString::number(id));
-    QNetworkRequest request(query);
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    m_netManager->deleteResource(request);
-    emit waitingForReply(true);
-    emit deleting(path);
-
-    LOG_DEBUG("DELETE: " + path + ", with id=" + QString::number(id), "ComManager::doDelete");
-}
-
 void ComManager::doUpdateCurrentUser()
 {
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_SELF, "");
     args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1");
-    doQuery(QString(WEB_USERINFO_PATH), args);
+    doGet(QString(WEB_USERINFO_PATH), args);
 
     // Update preferences
     args.clear();
     args.addQueryItem(WEB_QUERY_APPTAG, APPLICATION_TAG);
-    doQuery(WEB_USERPREFSINFO_PATH, args);
-}
-
-void ComManager::doDownload(const QString &save_path, const QString &path, const QUrlQuery &query_args)
-{
-    QUrl query = m_serverUrl;
-
-    query.setPath(path);
-    if (!query_args.isEmpty()){
-        query.setQuery(query_args);
-    }
-
-    QNetworkRequest request(query);
-    setRequestCredentials(request);
-    setRequestLanguage(request);
-    setRequestVersions(request);
-
-    QNetworkReply* reply = m_netManager->get(request);
-    if (reply){
-        DownloadedFile* file_to_download = new DownloadedFile(reply, save_path);
-        m_currentDownloads[reply] = file_to_download;
-
-        connect(file_to_download, &DownloadedFile::downloadProgress, this, &ComManager::downloadProgress);
-    }
-
-    emit waitingForReply(true);
-
-    LOG_DEBUG("DOWNLOADING: " + path + ", with " + query_args.toString() + ", to " + save_path, "ComManager::doQuery");
+    doGet(WEB_USERPREFSINFO_PATH, args);
 }
 
 void ComManager::startSession(const TeraData &session_type, const int &id_session, const QStringList &participants_list, const QStringList &users_list, const QStringList &devices_list, const QJsonDocument &session_config)
@@ -265,6 +156,14 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
 
     // Do the correct request to server, depending on the type of the session we want to start
     switch(session_type_category){
+    case TeraSessionCategory::SESSION_TYPE_UNKNOWN:
+        break;
+    case TeraSessionCategory::SESSION_TYPE_DATACOLLECT:
+        break;
+    case TeraSessionCategory::SESSION_TYPE_FILETRANSFER:
+        break;
+    case TeraSessionCategory::SESSION_TYPE_PROTOCOL:
+        break;
     case TeraSessionCategory::SESSION_TYPE_SERVICE:
        {
         QJsonDocument document;
@@ -280,7 +179,7 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
         // Devices
         if (!devices_list.isEmpty()){
             QJsonArray devices;
-            for(QString device_uuid:devices_list){
+            for(const QString &device_uuid:devices_list){
                 devices.append(QJsonValue(device_uuid));
             }
             item_obj.insert("session_devices", devices);
@@ -289,7 +188,7 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
         // Participants
         if (!participants_list.isEmpty()){
             QJsonArray participants;
-            for(QString part_uuid:participants_list){
+            for(const QString &part_uuid:participants_list){
                 participants.append(QJsonValue(part_uuid));
             }
             item_obj.insert("session_participants", participants);
@@ -302,7 +201,7 @@ void ComManager::startSession(const TeraData &session_type, const int &id_sessio
 
         if (!current_users_list.isEmpty()){
             QJsonArray users;
-            for(QString user_uuid:current_users_list){
+            for(const QString &user_uuid:current_users_list){
                 users.append(QJsonValue(user_uuid));
             }
             item_obj.insert("session_users", users);
@@ -392,7 +291,7 @@ void ComManager::leaveSession(const int &id_session, bool signal_server)
     emit sessionStopped(id_session);
 }
 
-void ComManager::sendJoinSessionReply(const QString &session_uuid, const JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)
+void ComManager::sendJoinSessionReply(const QString &session_uuid, const opentera::protobuf::JoinSessionReplyEvent::ReplyType reply_type, const QString &join_msg)
 {
     QJsonDocument document;
     QJsonObject base_obj;
@@ -486,24 +385,6 @@ bool ComManager::isCurrentUserSuperAdmin()
     return rval;
 }
 
-bool ComManager::hasPendingDownloads()
-{
-    return !m_currentDownloads.isEmpty();
-}
-
-void ComManager::setCredentials(const QString &username, const QString &password)
-{
-    m_username = username;
-    m_password = password;
-
-    m_settedCredentials = false;  // Credentials were changed, must update on next request
-}
-
-QUrl ComManager::getServerUrl() const
-{
-    return m_serverUrl;
-}
-
 WebSocketManager *ComManager::getWebSocketManager()
 {
     return m_webSocketMan;
@@ -551,6 +432,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::servicesProjectsReceived;
     case TERADATA_SESSIONTYPEPROJECT:
         return &ComManager::sessionTypesProjectsReceived;
+    case TERADATA_SESSIONTYPESITE:
+        return &ComManager::sessionTypesSitesReceived;
     case TERADATA_SERVICE_CONFIG:
         return &ComManager::servicesConfigReceived;
     default:
@@ -582,18 +465,24 @@ bool ComManager::handleLoginReply(const QString &reply_data)
     QString user_uuid = login_info["user_uuid"].toString();
     if (m_enableWebsocket){
         QString web_socket_url = login_info["websocket_url"].toString();
-        m_webSocketMan->connectWebSocket(web_socket_url, user_uuid);
+        if (!web_socket_url.isEmpty())
+            m_webSocketMan->connectWebSocket(web_socket_url, user_uuid);
+        else{
+            clearCurrentUser();
+            emit loginResult(false, tr("L'utilisateur est déjà connecté."));
+            return true;
+        }
     }else{
         onWebSocketLoginResult(true); // Simulate successful login with websocket
     }
 
-    // Query connected user information
-
+    // Set current user values
     m_currentUser.setFieldValue("user_uuid", user_uuid);
-    //doUpdateCurrentUser();
+    setCredentials(login_info["user_token"].toString());
+    m_tokenRefreshTimer.start();
 
     // Query versions informations
-    doQuery(WEB_VERSIONSINFO_PATH);
+    doGet(WEB_VERSIONSINFO_PATH);
 
     return true;
 }
@@ -616,7 +505,7 @@ bool ComManager::handleLoginSequence(const QString &reply_path, const QString &r
         return handleVersionsReply(data_list);
     }
 
-    QList<TeraData> items;
+    //QList<TeraData> items;
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
 
     if (items_type != TERADATA_USER && items_type != TERADATA_USERPREFERENCE)
@@ -645,7 +534,7 @@ bool ComManager::handleLoginSequence(const QString &reply_path, const QString &r
         //qDebug() << "Still logging in...";
         if (m_currentPreferences.isSet()){
             //qDebug() << "All set!";
-            emit loginResult(true);
+            emit loginResult(true, "");
             m_loggingInProgress = false;
         }
     }
@@ -671,11 +560,17 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         return handleVersionsReply(data_list);
     }
 
+    // Refresh token information reply
+    if (reply_path == WEB_REFRESH_TOKEN_PATH){
+        return handleTokenRefreshReply(data_list);
+    }
+
     // Browse each items received
     QList<TeraData> items;
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
     if (data_list.isArray()){
-        for (const QJsonValue &data:data_list.array()){
+        const QJsonArray data_array = data_list.array();
+        for (const QJsonValue &data:data_array){
             TeraData item_data(items_type, data);
 
             // Check if the currently connected user was updated and not requesting a list (limited information)
@@ -768,6 +663,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_SESSIONTYPEPROJECT:
         emit sessionTypesProjectsReceived(items, reply_query);
         break;
+    case TERADATA_SESSIONTYPESITE:
+        emit sessionTypesSitesReceived(items, reply_query);
+        break;
     case TERADATA_SESSIONEVENT:
         emit sessionEventsReceived(items, reply_query);
         break;
@@ -777,11 +675,15 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_SERVICE_PROJECT:
         emit servicesProjectsReceived(items, reply_query);
         break;
+    case TERADATA_SERVICE_SITE:
+        emit servicesSitesReceived(items, reply_query);
+        break;
     case TERADATA_SERVICE_ACCESS:
         emit servicesAccessReceived(items, reply_query);
         break;
     case TERADATA_SERVICE_CONFIG:
         emit servicesConfigReceived(items, reply_query);
+        break;
     case TERADATA_STATS:
         if (items.count() > 0)
             emit statsReceived(items.first(), reply_query);
@@ -794,6 +696,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_ONLINE_USER:
         emit onlineUsersReceived(items, reply_query);
+        break;
+    case TERADATA_ASSET:
+        emit assetsReceived(items, reply_query);
         break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/
@@ -909,6 +814,15 @@ bool ComManager::handleVersionsReply(const QJsonDocument &version_data)
     return true;
 }
 
+bool ComManager::handleTokenRefreshReply(const QJsonDocument &refresh_data)
+{
+    if (!refresh_data.object().contains("refresh_token"))
+        return false;
+    setCredentials(refresh_data["refresh_token"].toString());
+    emit userTokenUpdated();
+    return true;
+}
+
 void ComManager::updateCurrentUser(const TeraData &user_data)
 {
     //qDebug() << "ComManager::updateCurrentUser";
@@ -938,124 +852,35 @@ void ComManager::updateCurrentPrefs(const TeraData &user_prefs)
 void ComManager::clearCurrentUser()
 {
     m_currentPreferences.clear();
+    m_tokenRefreshTimer.stop();
     m_currentUser = TeraData(TERADATA_USER);
+    clearCredentials();
 }
 
-QString ComManager::filterReplyString(const QString &data_str)
+void ComManager::refreshUserToken()
 {
-    QString filtered_str = data_str;
-    if (data_str.isEmpty() || data_str == "\n" || data_str == "null\n")
-        filtered_str = "[]"; // Replace empty string with empty list!
+    //qDebug() << "Refreshing user token...";
+    doGet(WEB_REFRESH_TOKEN_PATH, QUrlQuery(), true);
+}
 
-    return filtered_str;
+
+
+void ComManager::onNetworkAuthenticationFailed()
+{
+    emit loginResult(false, tr("Utilisateur ou mot de passe invalide."));
 }
 
 
 
 /////////////////////////////////////////////////////////////////////////////////////
-void ComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
-{
-    Q_UNUSED(reply)
-    // If we are logging in, credentials were already sent, and if we get here, it's because they were
-    // rejected
-    if (!m_settedCredentials && !m_loggingInProgress){
-        LOG_DEBUG("Sending authentication request...", "ComManager::onNetworkAuthenticationRequired");
-        authenticator->setUser(m_username);
-        authenticator->setPassword(m_password);
-        m_settedCredentials = true; // We setted the credentials in authentificator
-    }else{
-        LOG_DEBUG("Authentication error", "ComManager::onNetworkAuthenticationRequired");
-        emit loginResult(false);
-    }
-}
-
-void ComManager::onNetworkEncrypted(QNetworkReply *reply)
-{
-    Q_UNUSED(reply)
-    //qDebug() << "ComManager::onNetworkEncrypted";
-}
-
-void ComManager::onNetworkFinished(QNetworkReply *reply)
-{
-    emit waitingForReply(false);
-
-    if (reply->error() == QNetworkReply::NoError)
-    {
-        if (!processNetworkReply(reply)){
-            LOG_WARNING("Unhandled reply - " + reply->url().path(), "ComManager::onNetworkFinished");
-        }
-    }
-    else {
-        QByteArray reply_data = reply->readAll();
-
-        QString reply_msg = QString::fromUtf8(reply_data).replace("\"", "");
-
-        // Convert in-string unicode characters
-        Utils::inStringUnicodeConverter(&reply_msg);
-
-        if (reply_msg.isEmpty() || reply_msg.startsWith("\"\"") || reply_msg == "\n"){
-            //reply_msg = tr("Erreur non-détaillée.");
-            reply_msg = reply->errorString();
-        }
-
-        int status_code = -1;
-        if (reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).isValid())
-            status_code = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute).toInt();
-        //qDebug() << "ComManager::onNetworkFinished - Reply error: " << reply->error() << ", Reply message: " << reply_msg;
-        LOG_ERROR("ComManager::onNetworkFinished - Reply error: " + reply->errorString() + ", Reply message: " + reply_msg, "ComManager::onNetworkFinished");
-        /*if (reply_msg.isEmpty())
-            reply_msg = reply->errorString();*/
-        emit networkError(reply->error(), reply_msg, reply->operation(), status_code);
-    }
-
-    reply->deleteLater();
-}
-
-void ComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
-{
-    Q_UNUSED(reply)
-    Q_UNUSED(errors)
-    LOG_WARNING("Ignoring SSL errors, this is unsafe", "ComManager::onNetworkSslErrors");
-    reply->ignoreSslErrors();
-    for(const QSslError &error : errors){
-        LOG_WARNING("Ignored: " + error.errorString(), "ComManager::onNetworkSslErrors");
-    }
-}
-
 void ComManager::onWebSocketLoginResult(bool logged_in)
 {
     if (!logged_in){
         clearCurrentUser();
-        emit loginResult(logged_in);
+        emit loginResult(false, tr("La communication avec le serveur n'a pu être établie."));
         return;
     }
 
     doUpdateCurrentUser();
 }
 
-
-void ComManager::setRequestLanguage(QNetworkRequest &request) {
-    //Locale will be initialized with default locale
-    QString localeString = QLocale().bcp47Name();
-    //qDebug() << "localeString : " << localeString;
-    request.setRawHeader(QByteArray("Accept-Language"), localeString.toUtf8());
-}
-
-void ComManager::setRequestCredentials(QNetworkRequest &request)
-{
-    //Needed?
-    request.setAttribute(QNetworkRequest::AuthenticationReuseAttribute, false);
-
-    // Pack in credentials
-    QString concatenatedCredentials = m_username + ":" + m_password;
-    QByteArray data = concatenatedCredentials.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + data;
-    request.setRawHeader( "Authorization", headerData.toLocal8Bit() );
-
-}
-
-void ComManager::setRequestVersions(QNetworkRequest &request)
-{
-    request.setRawHeader("X-Client-Name", QByteArray(OPENTERAPLUS_CLIENT_NAME));
-    request.setRawHeader("X-Client-Version", QByteArray(OPENTERAPLUS_VERSION));
-}

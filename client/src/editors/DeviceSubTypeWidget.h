@@ -41,7 +41,7 @@ private slots:
 
     void postResultReply(QString path);
 
-    void on_tabDeviceSubInfos_currentChanged(int index);
+    void on_tabNav_currentChanged(int index);
 };
 
 #endif // DEVICESUBTYPEWIDGET_H

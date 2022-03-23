@@ -37,7 +37,11 @@ public:
     void removeDeviceFromSession(const QString& device_uuid);
 
     void selectDefaultFilter();
-    void showAvailableInvitees(const bool &show);
+    void autoSelectFilters();
+    void selectFilterParticipant();
+
+    void showAvailableInvitees(const bool &show, const bool &hide_button=false);
+    void showOnlineFilter(const bool &show);
 
     void setAvailableParticipants(const QList<TeraData> &participants);
     void setAvailableUsers(const QList<TeraData> &users);
@@ -48,14 +52,32 @@ public:
     bool hasAvailableUsers() const;
 
     void addRequiredUser(const int& required_id);
+    void addRequiredUser(const QString& required_uuid);
     void addRequiredParticipant(const int& required_id);
+    void addRequiredParticipant(const QString& required_uuid);
     void addRequiredDevice(const int& required_id);
 
     void setConfirmOnRemove(const bool &confirm);
 
+    void setEditable(const bool &editable);
+    bool isEditable() const;
+
     QList<TeraData> getParticipantsInSession();
     QList<TeraData> getUsersInSession();
     QList<TeraData> getDevicesInSession();
+
+    QStringList getParticipantsUuidsInSession();
+    QStringList getUsersUuidsInSession();
+    QStringList getDevicesUuidsInSession();
+
+    QList<int> getParticipantsIdsInSession();
+    QList<int> getUsersIdsInSession();
+    QList<int> getDevicesIdsInSession();
+
+    quint8 getInviteesCount();
+    quint8 getParticipantsInSessionCount();
+    quint8 getUsersInSessionCount();
+    quint8 getDevicesInSessionCount();
 
     TeraData* getUserFromUuid(const QString& uuid);
     TeraData* getParticipantFromUuid(const QString& uuid);
@@ -87,6 +109,7 @@ private:
 
     bool m_searching;
     bool m_confirmRemove;
+    bool m_editable;
 
     QHash<int, TeraData>    m_users; // id, data
     QHash<int, TeraData>    m_participants;
@@ -112,8 +135,6 @@ private:
 
     void updateItem(const TeraData &item);
     void refreshInSessionTreeWidget();
-
-    quint8 getInviteesCount();
 
     void setSearching(const bool &search);
 

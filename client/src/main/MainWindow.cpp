@@ -23,6 +23,7 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_comManager = com_manager;
     m_diag_editor = nullptr;
     m_data_editor = nullptr;
+    m_dashboard = nullptr;
     m_inSessionWidget = nullptr;
     m_download_dialog = nullptr;
     m_joinSession_dialog = nullptr;
@@ -30,7 +31,6 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_waiting_for_data_type = TERADATA_NONE;
     m_currentDataType = TERADATA_NONE;
     m_currentDataId = -1;
-    m_currentMessage.setMessage(Message::MESSAGE_NONE,"");
 
     // Initial UI state
     initUi();
@@ -41,6 +41,8 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     // Update user in case we already have it
     updateCurrentUser();
 
+    // Show dashboard
+    //showDashboard(true);
 }
 
 MainWindow::~MainWindow()
@@ -87,8 +89,6 @@ void MainWindow::connectSignals()
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &MainWindow::ws_participantEvent);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &MainWindow::ws_joinSessionEvent);
 
-    connect(&m_msgTimer, &QTimer::timeout, this, &MainWindow::showNextMessage);
-
     connect(ui->projNavigator, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
     connect(ui->projNavigator, &ProjectNavigator::dataDeleteRequest, this, &MainWindow::dataDeleteRequested);
     connect(ui->projNavigator, &ProjectNavigator::currentSiteWasChanged, this, &MainWindow::currentSiteChanged);
@@ -98,17 +98,19 @@ void MainWindow::connectSignals()
     connect(ui->onlineManager, &OnlineManagerWidget::totalCountUpdated, this, &MainWindow::updateOnlineCounts);
 
     connect(GlobalEventLogger::instance(), &GlobalEventLogger::newEventLogged, this, &MainWindow::addGlobalEvent);
+
+    connect(ui->wdgMessages, &ResultMessageWidget::nextMessageShown, this, &MainWindow::nextMessageWasShown);
 }
 
 void MainWindow::initUi()
 {
     // Setup messages
-    ui->frameMessages->hide();
-    m_msgTimer.setSingleShot(true);
-    m_msgTimer.setInterval(8000);
+    ui->wdgMessages->hide();
+    ui->frameCentralBottom->hide();
 
     // Setup event view
     ui->tableHistory->setColumnWidth(0, 20);
+    ui->btnLog->hide(); // Disabled for now
 
     // Disable docker titles
     ui->dockerTop->setTitleBarWidget(new QWidget());
@@ -144,8 +146,11 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
     if (data_type == TERADATA_NONE || data == nullptr){
         m_currentDataType = data_type;
         m_currentDataId = -1;
+        showDashboard(true);
         return;
     }
+
+    showDashboard(false);
 
     // Save values to display them again if needed
     m_currentDataType = data_type;
@@ -176,7 +181,8 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
 
     if (data_type == TERADATA_PARTICIPANT){
         m_data_editor = new ParticipantWidget(m_comManager, data);
-        bool limited = true;
+        // Don't limit editing for project admins
+        /*bool limited = true;
         if (data->hasFieldName("id_project")){
             limited = !(m_comManager->isCurrentUserProjectAdmin(data->getFieldValue("id_project").toInt())); //m_comManager->getCurrentUserProjectRole(data->getFieldValue("id_project").toInt()) != "admin";
         }
@@ -184,6 +190,9 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
             limited = false;
         if (!data->isNew())
             m_data_editor->setLimited(limited);
+        */
+
+
 
     }
 
@@ -202,6 +211,32 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
 
 }
 
+void MainWindow::showDashboard(const bool &show)
+{
+    if (!show){
+        if (m_dashboard){
+            m_dashboard->deleteLater();
+            m_dashboard = nullptr;
+        }
+    }else{
+        // Remove any pending editor
+        if (m_data_editor){
+            m_data_editor->disconnectSignals();
+            m_data_editor->deleteLater();
+            m_data_editor = nullptr;
+        }
+
+        if (!m_dashboard){
+            m_dashboard = new DashboardWidget(m_comManager, ui->projNavigator->getCurrentSiteId());
+            connect(m_dashboard, &DashboardWidget::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
+            ui->wdgMainTop->layout()->addWidget(m_dashboard);
+        }else{
+            m_dashboard->setCurrentSiteId(ui->projNavigator->getCurrentSiteId());
+        }
+    }
+
+}
+
 void MainWindow::setInSession(bool in_session, const TeraData *session_type, const int &id_session, int id_project)
 {
     if (m_data_editor){
@@ -209,6 +244,11 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
         ui->wdgMainTop->layout()->removeWidget(m_data_editor);
         m_data_editor->deleteLater();
         m_data_editor = nullptr;
+    }
+
+    if (m_dashboard){
+        m_dashboard->deleteLater();
+        m_dashboard = nullptr;
     }
     if (m_inSessionWidget){
         m_inSessionWidget->disconnectSignals();
@@ -220,7 +260,7 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
 
     ui->dockerLeft->setVisible(!in_session);
     ui->btnLogout->setVisible(!in_session);
-    ui->frameCentralBottom->setVisible(!in_session);
+    ui->frameCentralBottom->setVisible(!in_session && ui->wdgMessages->hasMessagesWaiting());
 
     if (in_session){
         if (id_project == 0)
@@ -273,60 +313,21 @@ QIcon MainWindow::getGlobalEventIcon(GlobalEvent &global_event)
     return QIcon();
 }
 
-void MainWindow::showNextMessage()
+void MainWindow::nextMessageWasShown(Message current_message)
 {
     m_loadingIcon->stop();
-    ui->frameMessages->hide();
-    m_msgTimer.stop();
-    if (m_messages.isEmpty()){
-        m_currentMessage.setMessage(Message::MESSAGE_NONE,"");
-        if (m_inSessionWidget){
+    if (current_message.getMessageType() == Message::MESSAGE_NONE){
+        ui->wdgMessages->hide();
+        //if (m_inSessionWidget){
             // Hide frame when no more message
             ui->frameCentralBottom->hide();
-        }
+        //}
         return;
+    }else{
+        // We have a message displayed now
+        ui->frameCentralBottom->show();
+        ui->wdgMessages->show();
     }
-
-    m_currentMessage = m_messages.takeFirst();
-
-    QString background_color = "rgba(128,128,128,50%)";
-    QString icon_path = "";
-
-    switch(m_currentMessage.getMessageType()){
-    case Message::MESSAGE_OK:
-        background_color = "rgba(0,200,0,50%)";
-        ui->icoMessage->setPixmap(QPixmap("://icons/ok.png"));
-        break;
-    case Message::MESSAGE_ERROR:
-        background_color = "rgba(200,0,0,50%)";
-        ui->icoMessage->setPixmap(QPixmap("://icons/error.png"));
-        break;
-    case Message::MESSAGE_WARNING:
-        background_color = "rgba(255,85,0,50%)";
-        ui->icoMessage->setPixmap(QPixmap("://icons/warning.png"));
-        break;
-    case Message::MESSAGE_WORKING:
-        background_color = "rgba(128,128,128,50%)";
-        ui->icoMessage->setMovie(m_loadingIcon);
-        m_loadingIcon->start();
-        break;
-    default:
-        break;
-    }
-    ui->frameMessages->setStyleSheet("QWidget#frameMessages{background-color: " + background_color + ";}");
-    ui->lblMessage->setText(m_currentMessage.getMessageText());
-    if (m_currentMessage.getMessageType() != Message::MESSAGE_ERROR && m_currentMessage.getMessageType()!=Message::MESSAGE_NONE)
-        m_msgTimer.start();
-
-    QPropertyAnimation *animate = new QPropertyAnimation(ui->frameMessages,"windowOpacity",this);
-    animate->setDuration(1000);
-    animate->setStartValue(0.0);
-    animate->setKeyValueAt(0.1, 0.8);
-    animate->setKeyValueAt(0.9, 0.8);
-    animate->setEndValue(0.0);
-    animate->start(QAbstractAnimation::DeleteWhenStopped);
-    ui->frameCentralBottom->show();
-    ui->frameMessages->show();
 }
 
 void MainWindow::notificationCompleted(NotificationWindow *notify)
@@ -342,6 +343,11 @@ void MainWindow::notificationCompleted(NotificationWindow *notify)
 void MainWindow::currentSiteChanged(QString site_name, int site_id)
 {
     ui->onlineManager->setCurrentSite(site_name, site_id);
+    if (m_dashboard)
+        m_dashboard->setCurrentSiteId(site_id);
+    else{
+        showDashboard(true);
+    }
 }
 
 void MainWindow::dataRefreshRequested()
@@ -364,7 +370,7 @@ void MainWindow::addGlobalEvent(GlobalEvent event)
     // Create new table items and add to event table
     QTableWidgetItem* icon_item = new QTableWidgetItem(event_icon, "");
     QTableWidgetItem* time_item = new QTableWidgetItem(QTime::currentTime().toString("hh:mm:ss"));
-    QTableWidgetItem* desc_item = new QTableWidgetItem(QTextDocumentFragment::fromHtml(event.getEventText()).toPlainText());
+    QTableWidgetItem* desc_item = new QTableWidgetItem(event.getEventText());//new QTableWidgetItem(QTextDocumentFragment::fromHtml(event.getEventText()).toPlainText());
     desc_item->setData(Qt::UserRole, event.getEventText());
     //ui->tableHistory->insertRow(0);
     ui->tableHistory->insertRow(ui->tableHistory->rowCount());
@@ -462,7 +468,7 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
     }*/
-    m_comManager->doQuery(TeraData::getPathForDataType(data_type), query);
+    m_comManager->doGet(TeraData::getPathForDataType(data_type), query);
 
 }
 
@@ -479,7 +485,7 @@ void MainWindow::dataDisplayRequestedByUuid(TeraDataTypes data_type, QString dat
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
     }
-    m_comManager->doQuery(TeraData::getPathForDataType(data_type), query);
+    m_comManager->doGet(TeraData::getPathForDataType(data_type), query);
 
     // Set flag to wait for that specific data type
     if (m_waiting_for_data_type != TERADATA_NONE)
@@ -609,7 +615,20 @@ void MainWindow::com_postReplyOK(QString path)
 
 void MainWindow::com_deleteResultsOK(QString path, int id)
 {
+    if (m_data_editor){
+        TeraData* current_data = m_data_editor->getData();
+        if (current_data){
+            if (current_data->getDataType() == TeraData::getDataTypeFromPath(path) &&
+                    current_data->getId() == id && path != WEB_PARTICIPANTINFO_PATH && path != WEB_GROUPINFO_PATH){
+                // Show dashboard as current item was deleted and not a participant or a participant group
+                showDashboard(true);
+            }
+        }
+    }
+
     ui->projNavigator->removeItem(TeraData::getDataTypeFromPath(path), id);
+
+    addMessage(Message::MESSAGE_OK, tr("Données supprimées."));
 }
 
 void MainWindow::com_posting(QString path, QString data)
@@ -626,7 +645,7 @@ void MainWindow::com_posting(QString path, QString data)
 
 void MainWindow::com_querying(QString path)
 {
-    if (path != WEB_FORMS_PATH && path != WEB_LOGOUT_PATH){
+    if (path != WEB_FORMS_PATH && path != WEB_LOGOUT_PATH && path != WEB_REFRESH_TOKEN_PATH){
         QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
         if (!data_type.isEmpty()){
             GlobalEvent event(EVENT_DATA_QUERY, tr("Récupération de ") + data_type + "...");
@@ -644,20 +663,20 @@ void MainWindow::com_deleting(QString path)
     }
 }
 
-void MainWindow::com_downloadProgress(DownloadedFile *file)
+void MainWindow::com_downloadProgress(DownloadingFile *file)
 {
     if (!m_download_dialog){
         // New download request - create dialog and add file
-        m_download_dialog = new DownloadProgressDialog(this);
+        m_download_dialog = new TransferProgressDialog(this);
         m_download_dialog->show();
     }
-    m_download_dialog->updateDownloadedFile(file);
+    m_download_dialog->updateTransferringFile(file);
 }
 
-void MainWindow::com_downloadCompleted(DownloadedFile *file)
+void MainWindow::com_downloadCompleted(DownloadingFile *file)
 {
     if (m_download_dialog){
-        if (m_download_dialog->downloadFileCompleted(file)){
+        if (m_download_dialog->transferFileCompleted(file)){
             // If we are here, no more downloads are pending. Close download dialog.
             m_download_dialog->close();
             m_download_dialog->deleteLater();
@@ -821,7 +840,7 @@ void MainWindow::addMessage(Message::MessageType msg_type, QString msg)
 
 void MainWindow::addMessage(Message &msg)
 {
-    m_messages.append(msg);
+    ui->wdgMessages->addMessage(msg);
 
     // Create event for error
     if (msg.getMessageType() == Message::MESSAGE_ERROR){
@@ -835,8 +854,8 @@ void MainWindow::addMessage(Message &msg)
         addGlobalEvent(warning_event);
     }
 
-    if (ui->frameMessages->isHidden())
-        showNextMessage();
+    /*if (ui->wdgMessages->isHidden())
+        ui->wdgMessages->showNextMessage();*/
 }
 
 void MainWindow::addNotification(const NotificationWindow::NotificationType notification_type, const QString &text, const QString &iconPath, const QString &soundPath, const int &width, const int &height, const int &duration)
@@ -854,20 +873,6 @@ void MainWindow::addNotification(const NotificationWindow::NotificationType noti
         if (!m_inSessionWidget) // Don't play sounds when in session!
             QSound::play(soundPath);
     }
-}
-
-bool MainWindow::hasWaitingMessage()
-{
-    for (Message msg:m_messages){
-        if (msg.getMessageType()==Message::MESSAGE_WORKING)
-            return true;
-    }
-    return false;
-}
-
-void MainWindow::on_btnCloseMessage_clicked()
-{
-    showNextMessage();
 }
 
 void MainWindow::on_btnEditUser_clicked()

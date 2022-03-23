@@ -8,6 +8,8 @@
 #define SETTINGS_UI_ONLINEFILTERUSERS           "ui_filterOnlineUsers"
 #define SETTINGS_UI_ONLINEFILTERDEVICES         "ui_filterOnlineDevices"
 #define SETTINGS_LASTSITEID                     "lastSiteId"
+#define SETTINGS_LASTSESSIONTYPEID              "lastSessionTypeId"
+#define SETTINGS_LASTLANGUAGE                   "lastLanguage"
 
 class TeraSettings
 {
@@ -18,7 +20,10 @@ public:
     static QVariant getGlobalSetting(const QString& key);
 
     static void setUserSetting(const QString &user_uuid, const QString& key, const QVariant &value);
-    static QVariant getUsersetting(const QString &user_uuid, const QString& key);
+    static QVariant getUserSetting(const QString &user_uuid, const QString& key);
+
+    static void setUserSettingForProject(const QString &user_uuid, const int& id_project, const QString& key, const QVariant &value);
+    static QVariant getUserSettingForProject(const QString &user_uuid, const int& id_project, const QString& key);
 };
 
 #endif // TERASETTINGS_H

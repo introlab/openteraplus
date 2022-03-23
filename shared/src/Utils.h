@@ -3,11 +3,13 @@
 
 #include <QObject>
 #include <QRandomGenerator>
+#include <QRegularExpression>
 #include <QSysInfo>
 #include <QSettings>
 #include <QUuid>
 #include <QAudioDeviceInfo>
 #include <QCameraInfo>
+#include <QTime>
 
 class Utils : public QObject
 {
@@ -33,9 +35,14 @@ public:
 
     static void inStringUnicodeConverter(QString* str);
 
-    static QString removeAccents(QString s);
+    static QString removeAccents(const QString& s);
+    static QString removeNonAlphanumerics(const QString& s);
+    static QString toCamelCase(const QString& s);
 
     static bool isNewerVersion(QString version);
+
+    static QString formatFileSize(const int &file_size);
+    static QString formatDuration(const QString &duration);
 
 signals:
 

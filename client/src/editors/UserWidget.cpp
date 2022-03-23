@@ -39,7 +39,7 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
 
     ui->wdgUser->setComManager(m_comManager);
-    setData(data);
+    UserWidget::setData(data);
 
 }
 
@@ -184,37 +184,30 @@ bool UserWidget::validateData(){
 
 void UserWidget::refreshUsersUserGroups()
 {
-    for (int i=0; i<m_listUserGroups_items.count(); i++){
-        QListWidgetItem* item = m_listUserGroups_items.values().at(i);
-        // Check item if the group is in the users groups list
-        if (m_listUserUserGroups_items.values().contains(item)){
+    for(QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+        if (std::find(m_listUserUserGroups_items.cbegin(), m_listUserUserGroups_items.cend(), item) != m_listUserUserGroups_items.cend()){
+        //if (m_listUserUserGroups_items.contains(item)){
             item->setCheckState(Qt::Checked);
+            item->setHidden(false);
         }else{
             item->setCheckState(Qt::Unchecked);
-        }
-        /*if (m_data->hasFieldName("user_groups")){
-            QVariantList groups_list = m_data->getFieldValue("user_groups").toList();
-            for (int j=0; j<groups_list.count(); j++){
-                QVariantMap group_info = groups_list.at(j).toMap();
-                if (group_info.contains("id_user_group")){
-                    if (group_info["id_user_group"].toInt() == m_listUserGroups_items.keys().at(i)){
-                        item->setCheckState(Qt::Checked);
-                        break;
-                    }
-                }
+            if (m_limited){
+                item->setHidden(true);
             }
-        }*/
+        }
         // Save initial state, to only update required items when saving
         item->setData(Qt::UserRole, item->checkState());
+
+
     }
+
 }
 
 QJsonArray UserWidget::getSelectedGroupsAsJsonArray()
 {
     QJsonArray user_groups;
-    for (int i=0; i<m_listUserGroups_items.count(); i++){
-        int user_group_id = m_listUserGroups_items.keys().at(i);
-        QListWidgetItem* item = m_listUserGroups_items.values().at(i);
+    for(QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+        int user_group_id = m_listUserGroups_items.key(item);
         if (item->checkState() == Qt::Checked){
             QJsonObject data_obj;
             data_obj.insert("id_user_group", user_group_id);
@@ -283,6 +276,9 @@ void UserWidget::updateUserGroup(const TeraData *group)
         ui->lstGroups->addItem(item);
         item->setCheckState(Qt::Unchecked);
         m_listUserGroups_items[id_user_group] = item;
+        if (m_limited){
+            item->setHidden(true);
+        }
     }
 
 }
@@ -293,6 +289,7 @@ void UserWidget::updateSiteAccess(const TeraData *site_access)
     ui->tableSitesRoles->setRowCount(ui->tableSitesRoles->rowCount()+1);
     int current_row = ui->tableSitesRoles->rowCount()-1;
     QTableWidgetItem* item = new QTableWidgetItem(site_access->getFieldValue("site_name").toString());
+    item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)));
     ui->tableSitesRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(getRoleName(site_access->getFieldValue("site_access_role").toString()));
     ui->tableSitesRoles->setItem(current_row,1,item);
@@ -306,6 +303,7 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
     QTableWidgetItem* item = new QTableWidgetItem(project_access->getFieldValue("site_name").toString());
     ui->tableProjectsRoles->setItem(current_row,1,item);
     item = new QTableWidgetItem(project_access->getFieldValue("project_name").toString());
+    item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
     ui->tableProjectsRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(getRoleName(project_access->getFieldValue("project_access_role").toString()));
     ui->tableProjectsRoles->setItem(current_row,2,item);
@@ -315,8 +313,9 @@ bool UserWidget::validateUserGroups()
 {
     //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
-        for (int i=0; i<m_listUserGroups_items.count(); i++){
-            if (m_listUserGroups_items.values().at(i)->checkState() == Qt::Checked){
+        //for (int i=0; i<m_listUserGroups_items.count(); i++){
+        for (QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+            if (item->checkState() == Qt::Checked){
                 at_least_one_selected = true;
                 break;
             }
@@ -358,6 +357,7 @@ void UserWidget::processSitesAccessReply(QList<TeraData> sites)
     foreach (TeraData site, sites){
         updateSiteAccess(&site);
     }
+    ui->tableSitesRoles->resizeColumnsToContents();
 }
 
 void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
@@ -365,6 +365,7 @@ void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
     foreach (TeraData project, projects){
         updateProjectAccess(&project);
     }
+    ui->tableProjectsRoles->resizeColumnsToContents();
 }
 
 void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query)
@@ -464,6 +465,7 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::userPreferencesReceived, this, &UserWidget::processUserPrefsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserWidget::postResultReply);
     connect(ui->wdgUser, &TeraForm::widgetValueHasChanged, this, &UserWidget::userFormValueChanged);
+    connect(ui->wdgUser, &TeraForm::widgetValueHasFocus, this, &UserWidget::userFormValueHasFocus);
 
 }
 
@@ -559,15 +561,16 @@ void UserWidget::on_btnUpdateGroups_clicked()
     QJsonArray groups;
     QList<int> user_user_group_to_delete;
 
-    for (int i=0; i<m_listUserGroups_items.count(); i++){
+    //for (int i=0; i<m_listUserGroups_items.count(); i++){
+    for (QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
         // Build json list of user and groups
-        if (m_listUserGroups_items.values().at(i)->checkState()==Qt::Checked){
+        if (item->checkState()==Qt::Checked){
             QJsonObject item_obj;
             item_obj.insert("id_user", m_data->getId());
-            item_obj.insert("id_user_group", m_listUserGroups_items.keys().at(i));
+            item_obj.insert("id_user_group", m_listUserGroups_items.key(item));
             groups.append(item_obj);
         }else{
-            int id_user_user_group = m_listUserUserGroups_items.key(m_listUserGroups_items.values().at(i),-1);
+            int id_user_user_group = m_listUserUserGroups_items.key(item,-1);
             if (id_user_user_group>=0){
                 user_user_group_to_delete.append(id_user_user_group);
             }
@@ -618,6 +621,31 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
     }
 }
 
+void UserWidget::userFormValueHasFocus(QWidget *widget)
+{
+    if (widget == ui->wdgUser->getWidgetForField("user_password")){
+        if (!m_passwordJustGenerated){
+            // Show password dialog
+            QString current_pass = ui->wdgUser->getFieldValue("user_password").toString();
+            PasswordStrengthDialog dlg(current_pass);
+            //QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->wdgUser->getWidgetForField("user_password"));
+            //dlg.setCursorPosition(wdg_editor->cursorPosition());
+
+            if (dlg.exec() == QDialog::Accepted){
+                m_passwordJustGenerated = true;
+                ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
+            }else{
+                ui->wdgUser->setFieldValue("user_password", "");
+                //wdg_editor->undo();
+            }
+
+        }else{
+            if (m_passwordJustGenerated)
+                m_passwordJustGenerated = false;
+        }
+    }
+}
+
 void UserWidget::on_btnUpdatePrefs_clicked()
 {
     if (!m_data)
@@ -640,7 +668,7 @@ void UserWidget::on_btnUpdatePrefs_clicked()
 
 }
 
-void UserWidget::on_btnGeneratePassword_clicked()
+/*void UserWidget::on_btnGeneratePassword_clicked()
 {
     // Show random password dialog
     GeneratePasswordDialog dlg;
@@ -650,25 +678,21 @@ void UserWidget::on_btnGeneratePassword_clicked()
         m_passwordJustGenerated = true;
         ui->wdgUser->setFieldValue("user_password", password);
     }
-}
+}*/
 
 void UserWidget::editToggleClicked()
 {
     DataEditorWidget::editToggleClicked();
-
-    ui->btnGeneratePassword->setEnabled(true);
 }
 
 void UserWidget::saveButtonClicked()
 {
     DataEditorWidget::saveButtonClicked();
 
-    ui->btnGeneratePassword->setEnabled(false);
 }
 
 void UserWidget::undoButtonClicked()
 {
     DataEditorWidget::undoButtonClicked();
 
-    ui->btnGeneratePassword->setEnabled(false);
 }

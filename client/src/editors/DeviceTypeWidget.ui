@@ -143,7 +143,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <widget class="QLabel" name="lblTitle">
        <property name="font">
         <font>
-         <weight>50</weight>
          <bold>false</bold>
         </font>
        </property>
@@ -159,13 +158,19 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+        <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Résumé</string>
+       <string>Informations</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -293,49 +298,26 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabDetails">
+     <widget class="QWidget" name="tabDevices">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
+        <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Détails</string>
+       <string>Appareils</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
-        <widget class="QTabWidget" name="tabDeviceTypeInfos">
-         <property name="tabPosition">
-          <enum>QTabWidget::West</enum>
+        <widget class="QListWidget" name="lstDevices">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
          </property>
-         <property name="currentIndex">
-          <number>0</number>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
          </property>
-         <widget class="QWidget" name="tabDevices">
-          <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
-            <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Appareils</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <item>
-            <widget class="QListWidget" name="lstDevices"/>
-           </item>
-          </layout>
-         </widget>
         </widget>
        </item>
       </layout>

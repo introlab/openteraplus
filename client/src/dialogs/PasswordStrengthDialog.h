@@ -33,6 +33,10 @@ private slots:
 
     void on_txtPasswordConf_textChanged(const QString &arg1);
 
+    void on_btnGeneratePassword_clicked();
+
+    void on_btnViewPassword_clicked();
+
 private:
     Ui::PasswordStrengthDialog *ui;
     QList<Utils::PasswordValidationErrors> m_errors;

@@ -18,6 +18,7 @@ PasswordStrengthDialog::~PasswordStrengthDialog()
 void PasswordStrengthDialog::setCurrentPassword(const QString &password)
 {
     ui->txtPassword->setText(password);
+    on_txtPassword_textChanged(password);
 }
 
 QString PasswordStrengthDialog::getCurrentPassword()
@@ -84,3 +85,22 @@ void PasswordStrengthDialog::on_txtPasswordConf_textChanged(const QString &arg1)
 
     checkPasswordsMatch();
 }
+
+void PasswordStrengthDialog::on_btnGeneratePassword_clicked()
+{
+    ui->txtPassword->setText(Utils::generatePassword(10));
+    ui->txtPasswordConf->setText(ui->txtPassword->text());
+    ui->btnViewPassword->setChecked(true);
+    on_btnViewPassword_clicked();
+}
+
+
+void PasswordStrengthDialog::on_btnViewPassword_clicked()
+{
+    if (ui->btnViewPassword->isChecked()){
+        ui->txtPassword->setEchoMode(QLineEdit::Normal);
+    }else{
+        ui->txtPassword->setEchoMode(QLineEdit::Password);
+    }
+}
+

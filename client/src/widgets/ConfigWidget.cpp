@@ -6,9 +6,7 @@ ConfigWidget::ConfigWidget(ComManager *comMan, QWidget *parent) :
     ui(new Ui::ConfigWidget),
     m_comManager(comMan)
 {
-
     ui->setupUi(this);
-
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
@@ -24,6 +22,7 @@ ConfigWidget::ConfigWidget(ComManager *comMan, QWidget *parent) :
     connectSignals();
 
     ui->lstSections->setCurrentRow(0);
+    ui->lstSections->setItemDelegate(new IconMenuDelegate(ui->lstSections->gridSize().height(), this));
 
 }
 
@@ -40,14 +39,16 @@ void ConfigWidget::addSection(const QString &name, const QIcon &icon, const int 
     tmp->setText(name);
     tmp->setTextAlignment(Qt::AlignCenter);
     tmp->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    tmp->setData(Qt::UserRole,id);
+    tmp->setSizeHint(QSize(ui->lstSections->width(), 64));
+    tmp->setToolTip(name);
+    tmp->setData(Qt::UserRole, id);
 }
 
 void ConfigWidget::setupSections()
 {
     addSection(tr("Utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)), TERADATA_USER);
     addSection(tr("Groupes utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USERGROUP)), TERADATA_USERGROUP);
-    addSection(tr("Sites"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_SITE)), TERADATA_SITE);
+    addSection(tr("Sites"), QIcon("://icons/site-icon.png"), TERADATA_SITE);
     addSection(tr("Appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)), TERADATA_DEVICE);
     addSection(tr("Type appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICETYPE)), TERADATA_DEVICETYPE);
     addSection(tr("Sous-types appareils"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICESUBTYPE)), TERADATA_DEVICESUBTYPE);
@@ -105,4 +106,3 @@ void ConfigWidget::connectSignals()
 
     //connect(ui->btnClose, &QPushButton::clicked, this, &ConfigWidget::closeRequest);
 }
-

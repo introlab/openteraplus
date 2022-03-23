@@ -98,7 +98,7 @@
          <string>Joindre la séance</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/icons/ok2.png</normaloff>:/icons/ok2.png</iconset>
         </property>
         <property name="iconSize">
@@ -130,7 +130,7 @@
          <string>Refuser de joindre la séance</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/icons/error2.png</normaloff>:/icons/error2.png</iconset>
         </property>
         <property name="iconSize">
@@ -162,7 +162,7 @@
          <string>Désolé, je suis occupé!</string>
         </property>
         <property name="icon">
-         <iconset resource="../resources/TeraClient.qrc">
+         <iconset resource="../../resources/TeraClient.qrc">
           <normaloff>:/icons/warning.png</normaloff>:/icons/warning.png</iconset>
         </property>
         <property name="iconSize">
@@ -179,7 +179,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resources/TeraClient.qrc"/>
+  <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>
 </ui>

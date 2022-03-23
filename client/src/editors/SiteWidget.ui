@@ -152,7 +152,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <widget class="QLabel" name="lblTitle">
        <property name="font">
         <font>
-         <weight>50</weight>
          <bold>false</bold>
         </font>
        </property>
@@ -174,13 +173,19 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/dashboard.png</normaloff>:/icons/dashboard.png</iconset>
+        <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Tableau de bord</string>
+       <string>Informations</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
@@ -308,7 +313,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <x>0</x>
             <y>0</y>
             <width>1034</width>
-            <height>379</height>
+            <height>372</height>
            </rect>
           </property>
           <attribute name="label">
@@ -498,7 +503,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </widget>
               </item>
               <item row="4" column="1" alignment="Qt::AlignHCenter">
-               <widget class="ClickableLabel" name="icoProjects">
+               <widget class="QLabel" name="icoProjects">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -613,17 +618,17 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabDetails">
+     <widget class="QWidget" name="tabUsersDetails">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
+        <normaloff>:/icons/software_user.png</normaloff>:/icons/software_user.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Détails</string>
+       <string>Utilisateurs</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
-        <widget class="QTabWidget" name="tabSiteInfos">
+        <widget class="QTabWidget" name="tabManageUsers">
          <property name="tabPosition">
           <enum>QTabWidget::West</enum>
          </property>
@@ -644,7 +649,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <attribute name="title">
            <string>Utilisateurs</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
+          <layout class="QVBoxLayout" name="verticalLayout_12">
            <item>
             <widget class="QWidget" name="wdgUsers" native="true">
              <property name="sizePolicy">
@@ -679,7 +684,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <attribute name="title">
            <string>Groupes utilisateurs</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
@@ -719,7 +724,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="text">
-                <string>Gérer les groupes utilisateurs</string>
+                <string>Gestion des groupes utilisateurs</string>
                </property>
                <property name="icon">
                 <iconset resource="../../resources/TeraClient.qrc">
@@ -775,6 +780,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </property>
              <property name="selectionBehavior">
               <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
              <property name="sortingEnabled">
               <bool>true</bool>
@@ -836,68 +847,278 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tabDevices">
-          <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
-            <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Appareils</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QWidget" name="wdgDevices" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_11">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tabProjects">
-          <attribute name="icon">
-           <iconset resource="../../resources/TeraClient.qrc">
-            <normaloff>:/icons/project.png</normaloff>:/icons/project.png</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Projets</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QListWidget" name="lstProjects">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
-             </property>
-             <property name="showDropIndicator" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="uniformItemSizes">
-              <bool>true</bool>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-             <property name="sortingEnabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabSessionTypes">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/session_type.png</normaloff>:/icons/session_type.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Types de séances</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnEditSessionTypes">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Gestion des types de séances</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resources/TeraClient.qrc">
+             <normaloff>:/icons/session_type.png</normaloff>:/icons/session_type.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QListWidget" name="lstSessionTypes">
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateSessionTypes">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les types de séances associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabDevices">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Appareils</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QFrame" name="frameSearchDevices">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QLabel" name="lblSearchDevices">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../resources/TeraClient.qrc">:/icons/search.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="txtSearchDevices">
+            <property name="placeholderText">
+             <string>Appareil à rechercher</string>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnEditDevices">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>Gestion des appareils</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../resources/TeraClient.qrc">
+              <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="lstDevices">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="dragDropOverwriteMode">
+          <bool>false</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::NoSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateDevices">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les appareils associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabServices">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/service.png</normaloff>:/icons/service.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Services</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QListWidget" name="lstServices">
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateServices">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les services associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
         </widget>
        </item>
       </layout>
@@ -924,7 +1145,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../resources/TeraClient.qrc"/>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>
  <connections/>

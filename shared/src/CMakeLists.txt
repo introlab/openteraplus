@@ -23,6 +23,7 @@ set(sharedlib_headers
     data/TeraSessionCategory.h
     data/TeraPreferences.h
     data/TeraSettings.h
+    data/TeraAsset.h
     WebAPI.h
     ParticipantWebAPI.h
 )
@@ -38,6 +39,7 @@ set(sharedlib_srcs
     data/TeraSessionCategory.cpp
     data/TeraPreferences.cpp
     data/TeraSettings.cpp
+    data/TeraAsset.cpp
 )
 
 include_directories(

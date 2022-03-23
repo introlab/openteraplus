@@ -164,11 +164,11 @@ AkCaps &AkCaps::fromString(const QString &caps)
 
     if (this->d->m_isValid)
         capsChunks = caps.split(QRegExp("\\s*,\\s*"),
-                                      QString::SkipEmptyParts);
+                                      Qt::SkipEmptyParts);
 
     for (int i = 1; i < capsChunks.length(); i++) {
         QStringList pair = capsChunks[i].split(QRegExp("\\s*=\\s*"),
-                                               QString::SkipEmptyParts);
+                                               Qt::SkipEmptyParts);
 
         this->setProperty(pair[0].trimmed().toStdString().c_str(),
                           pair[1].trimmed());

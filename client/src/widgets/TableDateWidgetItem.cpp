@@ -10,3 +10,9 @@ bool TableDateWidgetItem::operator<(const QTableWidgetItem &other) const
     return (QDateTime::fromString(current_value, "dd-MM-yyyy hh:mm:ss") < QDateTime::fromString(other_value, "dd-MM-yyyy hh:mm:ss"));
 }
 
+void TableDateWidgetItem::setDate(const QVariant &date_var)
+{
+    QDateTime date_value = date_var.toDateTime().toLocalTime();
+    setText(date_value.toString("dd-MM-yyyy hh:mm:ss"));
+}
+

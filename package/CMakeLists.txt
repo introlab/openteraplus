@@ -73,7 +73,7 @@ if (WIN32)
     set(CPACK_PACKAGE_NAME "OpenTeraPlus")
     set(CPACK_PACKAGE_FILE_NAME OpenTeraPlus_${CPACK_PACKAGE_VERSION}_setup)
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenTeraPlus - Installateur")
-    set(CPACK_PACKAGE_VENDOR "CdRV / ESTRAD / IntRoLab / Université de Sherbrooke")
+    set(CPACK_PACKAGE_VENDOR "CdRV / ESTRAD / INTER / IntRoLab / Université de Sherbrooke")
 
     set(CPACK_PACKAGE_EXECUTABLES "bin\\\\OpenTeraPlus" "OpenTeraPlus")
     set(CPACK_CREATE_DESKTOP_LINKS "OpenTeraPlus")

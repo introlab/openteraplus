@@ -20,7 +20,7 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
     // Query service config form for VideoRehab
     QUrlQuery args(WEB_FORMS_QUERY_SERVICE_CONFIG);
     args.addQueryItem(WEB_QUERY_KEY, "VideoRehabService");
-    m_comManager->doQuery(WEB_FORMS_PATH, args);
+    m_comManager->doGet(WEB_FORMS_PATH, args);
 
 }
 
@@ -326,7 +326,7 @@ void VideoRehabSetupWidget::processFormsReply(QString form_type, QString data)
         args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_comManager->getCurrentUser().getId()));
         args.addQueryItem(WEB_QUERY_SERVICE_KEY, "VideoRehabService");
         args.addQueryItem(WEB_QUERY_ID_SPECIFIC, Utils::getMachineUniqueId());
-        m_comManager->doQuery(WEB_SERVICECONFIGINFO_PATH, args);
+        m_comManager->doGet(WEB_SERVICECONFIGINFO_PATH, args);
     }
 }
 
