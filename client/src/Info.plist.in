@@ -38,5 +38,7 @@
         <string>Camera access</string>
         <key>NSMicrophoneUsageDescription</key>
         <string>Microphone access</string>
+        <key>LSMinimumSystemVersion</key>
+        <string>10.13</string>
 </dict>
 </plist>
