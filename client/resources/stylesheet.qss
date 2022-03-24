@@ -796,8 +796,3 @@ QTreeWidget#treeAssets {
     selection-color: lightblue;
 }
 
-
-QWidget#wdgServiceConfig{
-    background-color: rgba(255,255,255,50%);
-
-}
