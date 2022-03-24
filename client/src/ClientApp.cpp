@@ -113,6 +113,10 @@ void ClientApp::connectSignals()
 
 void ClientApp::showLogin()
 {
+    if (m_comMan){
+        m_comMan->deleteLater();
+        m_comMan = nullptr;
+    }
     if (m_loginDiag == nullptr){
         m_loginDiag = new LoginDialog();
         connect(m_loginDiag, &LoginDialog::loginRequest,    this, &ClientApp::loginRequested);

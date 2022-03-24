@@ -25,16 +25,16 @@ public:
     explicit BaseComManager(QUrl serverUrl = QUrl(), QObject *parent = nullptr);
     ~BaseComManager();
 
-    virtual void doGet(const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=false);
-    virtual void doPost(const QString &path, const QString &post_data, const bool &use_token=false);
-    virtual void doPost(const QUrl &full_url, const QString &post_data, const bool &use_token=false);
-    virtual void doDelete(const QString &path, const int& id, const bool &use_token=false);
+    virtual void doGet(const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=true);
+    virtual void doPost(const QString &path, const QString &post_data, const bool &use_token=true);
+    virtual void doPost(const QUrl &full_url, const QString &post_data, const bool &use_token=true);
+    virtual void doDelete(const QString &path, const int& id, const bool &use_token=true);
 
-    virtual void doDownload(const QString &path, const QString& save_path, const QString& download_uuid, const QString& save_filename = QString(), const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=false);
-    virtual void doDownload(const QUrl &full_url, const QString& save_path, const QString& download_uuid, const QString& save_filename = QString(), const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=false);
+    virtual void doDownload(const QString &path, const QString& save_path, const QString& download_uuid, const QString& save_filename = QString(), const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=true);
+    virtual void doDownload(const QUrl &full_url, const QString& save_path, const QString& download_uuid, const QString& save_filename = QString(), const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=true);
     virtual void doUpload(const QString &path, const QString& file_name, const QVariantMap extra_headers = QVariantMap(),
-                          const QString& label = QString(), const bool &use_token=false);
-    virtual void doUploadWithMultiPart(const QString &path, const QString& file_name, const QString &form_field_name, const QString& form_infos, const QVariantMap extra_headers = QVariantMap(), const bool &use_token=false);
+                          const QString& label = QString(), const bool &use_token=true);
+    virtual void doUploadWithMultiPart(const QString &path, const QString& file_name, const QString &form_field_name, const QString& form_infos, const QVariantMap extra_headers = QVariantMap(), const bool &use_token=true);
 
     bool isDownloadingFiles();
     bool isUploadingFiles();
