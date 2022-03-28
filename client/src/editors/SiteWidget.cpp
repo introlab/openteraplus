@@ -820,7 +820,7 @@ void SiteWidget::on_btnEditDevices_clicked()
     args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "1");
     args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
     DataListWidget* list_widget = new DataListWidget(m_comManager, TERADATA_DEVICE, args, QStringList(), m_diag_editor);
-    list_widget->setPermissions(isSiteAdmin(), m_comManager->isCurrentUserSuperAdmin());
+    list_widget->setPermissions(isSiteAdmin(), isSiteAdmin());
     list_widget->setFilterText(tr("Seuls les appareils associés au site sont affichés."));
     m_diag_editor->setCentralWidget(list_widget);
 

@@ -360,7 +360,13 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
      </property>
      <property name="iconSize">
       <size>

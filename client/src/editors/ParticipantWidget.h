@@ -68,6 +68,17 @@ private:
     int                             m_currentSessions;
     bool                            m_sessionsLoading;
 
+    // Infos when querying extra sessions
+    int                             m_currentIdSession;
+    bool                            m_currentSessionShowAssets;
+
+    // Icons are defined here (speed up load)
+    QIcon m_deleteIcon;
+    QIcon m_viewIcon;
+    QIcon m_downloadIcon;
+    QIcon m_resumeIcon;
+
+
     void setSessionsLoading(const bool& loading);
     void querySessions();
 
@@ -80,7 +91,7 @@ private:
 
     bool validateData() override;
 
-    void updateSession(TeraData *session, const bool &auto_position);
+    void updateSession(const TeraData *session, const bool &auto_position);
     void updateDeviceProject(TeraData* device_project);
     void updateDeviceParticipant(TeraData* device_participant);
 
@@ -95,8 +106,10 @@ private:
 
     bool eventFilter(QObject* o, QEvent* e) override;
     void displaySessionDetails(QTableWidgetItem* session_item, bool show_assets = false);
+    void showSessionEditor(TeraData *session_info);
 
     bool isProjectAdmin();
+
 
 private slots:
     void processFormsReply(QString form_type, QString data);

@@ -491,12 +491,14 @@ void BaseComManager::setRequestCredentials(QNetworkRequest &request, const bool 
     // Pack in credentials
     QString headerData;
     if (!use_token){
+        //qDebug() << "NOT Using token";
         QString concatenatedCredentials = m_username + ":" + m_password;
         QByteArray data = concatenatedCredentials.toLocal8Bit().toBase64();
         headerData = "Basic " + data;
-    }else
+    }else{
+        //qDebug() << "Using token";
         headerData = "OpenTera " + m_token;
-
+    }
 
     // Pack in credentials
     request.setRawHeader( "Authorization", headerData.toLocal8Bit());

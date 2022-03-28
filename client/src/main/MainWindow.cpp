@@ -727,8 +727,11 @@ void MainWindow::com_sessionError(QString error)
 
 void MainWindow::ws_userEvent(UserEvent event)
 {
-    // TODO: Don't do anything for current user!
+
     if (event.type() == UserEvent_EventType_USER_CONNECTED){
+        // Don't do anything for current user!
+        if (event.user_uuid() == m_comManager->getCurrentUser().getUuid().toStdString())
+            return;
         QString msg_text = "<font color=yellow>" + QString::fromStdString(event.user_fullname()) + "</font>" + tr(" est en ligne.");
         addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/software_user_online.png", "://sounds/notify_online.wav");
 

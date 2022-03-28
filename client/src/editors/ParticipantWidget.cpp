@@ -25,9 +25,11 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     m_sessionLobby = nullptr;
     m_totalSessions = 0;
     m_totalAssets = 0;
+    m_currentIdSession = -1;
     m_currentSessions = 0;
     m_sessionsLoading = false;
     m_allowFileTransfers = false;
+    m_currentSessionShowAssets = false;
 
     ui->setupUi(this);
 
@@ -167,6 +169,7 @@ void ParticipantWidget::setSessionsLoading(const bool &loading)
 
 void ParticipantWidget::querySessions()
 {
+    ui->tableSessions->setSortingEnabled(false);
     int sessions_left = m_totalSessions - m_currentSessions;
     setSessionsLoading(sessions_left > 0);
 
@@ -177,6 +180,7 @@ void ParticipantWidget::querySessions()
         query.addQueryItem(WEB_QUERY_OFFSET, QString::number(m_currentSessions));
         query.addQueryItem(WEB_QUERY_LIMIT, QString::number(QUERY_SESSION_LIMIT_PER_QUERY)); // Limit number of sessions per query
         query.addQueryItem(WEB_QUERY_WITH_SESSIONTYPE, "1");
+        query.addQueryItem(WEB_QUERY_LIST, "1");
         //queryDataRequest(WEB_SESSIONINFO_PATH, query);
         m_comManager->doGet(WEB_SESSIONINFO_PATH, query);
     }else{
@@ -190,6 +194,7 @@ void ParticipantWidget::querySessions()
         ui->calMonth2->setData(m_ids_sessions.values());
         ui->calMonth3->setData(m_ids_sessions.values());
 
+        ui->tableSessions->setSortingEnabled(true);
         ui->tableSessions->resizeColumnsToContents();
     }
 
@@ -291,6 +296,13 @@ void ParticipantWidget::initUI()
 
     // Set default session sorting
     ui->tableSessions->sortItems(1, Qt::DescendingOrder);
+
+    // Load table icons
+    m_deleteIcon = QIcon(":/icons/delete_old.png");
+    m_viewIcon = QIcon(":/icons/search.png");
+    m_downloadIcon = QIcon(":/icons/data.png");
+    m_resumeIcon = QIcon(":/icons/play.png");
+
 }
 
 bool ParticipantWidget::canStartNewSession()
@@ -343,7 +355,7 @@ bool ParticipantWidget::validateData()
     return valid;
 }
 
-void ParticipantWidget::updateSession(TeraData *session, const bool &auto_position)
+void ParticipantWidget::updateSession(const TeraData *session, const bool &auto_position)
 {
     int id_session = session->getId();
 
@@ -377,10 +389,12 @@ void ParticipantWidget::updateSession(TeraData *session, const bool &auto_positi
        }
        delete m_ids_sessions[id_session];
     }else{
-        ui->tableSessions->setSortingEnabled(false); // Disable sorting so we know the correct inserted row
+        //ui->tableSessions->setSortingEnabled(false); // Disable sorting so we know the correct inserted row
 
-        ui->tableSessions->setRowCount(ui->tableSessions->rowCount()+1);
-        int current_row = ui->tableSessions->rowCount()-1;
+        if (ui->tableSessions->rowCount() < m_currentSessions+1){
+            ui->tableSessions->setRowCount(ui->tableSessions->rowCount()+1);
+        }
+        int current_row = m_currentSessions;
         name_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSION)),"");
         ui->tableSessions->setItem(current_row, 0, name_item);
         date_item = new TableDateWidgetItem("");
@@ -403,8 +417,8 @@ void ParticipantWidget::updateSession(TeraData *session, const bool &auto_positi
         action_frame->setLayout(layout);
 
         // View session
-        QToolButton* btnView = new QToolButton();
-        btnView->setIcon(QIcon(":/icons/search.png"));
+        QToolButton* btnView = new QToolButton(action_frame);
+        btnView->setIcon(m_viewIcon);
         btnView->setProperty("id_session", session->getId());
         btnView->setCursor(Qt::PointingHandCursor);
         btnView->setMaximumWidth(32);
@@ -413,8 +427,8 @@ void ParticipantWidget::updateSession(TeraData *session, const bool &auto_positi
         layout->addWidget(btnView);
 
         // Delete
-        QToolButton* btnDelete = new QToolButton();
-        btnDelete->setIcon(QIcon(":/icons/delete_old.png"));
+        QToolButton* btnDelete = new QToolButton(action_frame);
+        btnDelete->setIcon(m_deleteIcon);
         btnDelete->setProperty("id_session", session->getId());
         btnDelete->setCursor(Qt::PointingHandCursor);
         btnDelete->setMaximumWidth(32);
@@ -425,8 +439,8 @@ void ParticipantWidget::updateSession(TeraData *session, const bool &auto_positi
         layout->addWidget(btnDelete);
 
         // Download data
-        btnDownload = new QToolButton();
-        btnDownload->setIcon(QIcon(":/icons/data.png"));
+        btnDownload = new QToolButton(action_frame);
+        btnDownload->setIcon(m_downloadIcon);
         btnDownload->setProperty("id_session", session->getId());
         btnDownload->setCursor(Qt::PointingHandCursor);
         btnDownload->setMaximumWidth(32);
@@ -435,8 +449,8 @@ void ParticipantWidget::updateSession(TeraData *session, const bool &auto_positi
         layout->addWidget(btnDownload);
 
         // Resume session
-        btnResume = new QToolButton();
-        btnResume->setIcon(QIcon(":/icons/play.png"));
+        btnResume = new QToolButton(action_frame);
+        btnResume->setIcon(m_resumeIcon);
         btnResume->setProperty("id_session", session->getId());
         btnResume->setProperty("id_session_type", session->getFieldValue("id_session_type").toInt());
         btnResume->setCursor(Qt::PointingHandCursor);
@@ -451,15 +465,13 @@ void ParticipantWidget::updateSession(TeraData *session, const bool &auto_positi
 
         m_currentSessions++;
 
-        ui->tableSessions->setSortingEnabled(true); // Reenable sorting
+        //ui->tableSessions->setSortingEnabled(true); // Reenable sorting
 
     }
     m_ids_sessions[id_session] = new TeraData(*session);
 
     // Update values
     name_item->setText(session->getName());
-    /*QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
-    date_item->setText(session_date.toString("dd-MM-yyyy hh:mm:ss"));*/
     date_item->setDate(session->getFieldValue("session_start_datetime"));
 
     if (session->hasFieldName("session_type_name")){
@@ -527,10 +539,10 @@ void ParticipantWidget::updateSession(TeraData *session, const bool &auto_positi
     // If only 1 session added, check to put it at the right place in the table
     if (m_currentSessions > 1 && auto_position){
         // Check if we have a sorting or not
-        int sort_column = ui->tableSessions->horizontalHeader()->sortIndicatorSection();
+        /*int sort_column = ui->tableSessions->horizontalHeader()->sortIndicatorSection();
         Qt::SortOrder sort_order = ui->tableSessions->horizontalHeader()->sortIndicatorOrder();
         // Reapply sorting
-        ui->tableSessions->sortByColumn(sort_column, sort_order);
+        ui->tableSessions->sortByColumn(sort_column, sort_order);*/
 
         // Select added item
         ui->tableSessions->selectRow(name_item->row());
@@ -679,8 +691,16 @@ void ParticipantWidget::processFormsReply(QString form_type, QString data)
 
 void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
 {
-    for(TeraData session:sessions){
-        QVariantList session_parts_list = session.getFieldValue("session_participants").toList();
+
+    for(TeraData &session:sessions){
+        if (session.getId() == m_currentIdSession && sessions.count() == 1){
+            // This is a session we requested info on
+            showSessionEditor(&session);
+            m_currentIdSession = -1;
+            return;
+        }
+        updateSession(&session, sessions.count()==1);
+        /*QVariantList session_parts_list = session.getFieldValue("session_participants").toList();
 
         for(const QVariant &session_part:qAsConst(session_parts_list)){
             QVariantMap part_info = session_part.toMap();
@@ -693,7 +713,7 @@ void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
                 // Session is not for us - ignore it.
                 continue;
             }
-        }
+        }*/
     }
 
     // Query next sessions if needed
@@ -873,6 +893,7 @@ void ParticipantWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
     // Fill stats information
     m_totalSessions = stats.getFieldValue("sessions_total_count").toInt();
+    ui->tableSessions->setRowCount(m_totalSessions);
     ui->progSessionsLoad->setMaximum(m_totalSessions);
     ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
 
@@ -1169,30 +1190,42 @@ void ParticipantWidget::currentCalendarDateActivated(QDate current_date)
 
 void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item, bool show_assets)
 {
+    // Query full session information
+    m_currentIdSession = m_listSessions_items.key(ui->tableSessions->item(session_item->row(),0));
+    m_currentSessionShowAssets = show_assets;
+
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_currentIdSession));
+    queryDataRequest(WEB_SESSIONINFO_PATH, args);
+
+}
+
+void ParticipantWidget::showSessionEditor(TeraData *session_info)
+{
     if (m_diag_editor){
         m_diag_editor->deleteLater();
     }
     m_diag_editor = new BaseDialog(this);
 
-    int id_session = m_listSessions_items.key(ui->tableSessions->item(session_item->row(),0));
-    TeraData* ses_data = m_ids_sessions[id_session];
-    if (ses_data){
-        ses_data->setFieldValue("id_project", m_data->getFieldValue("id_project"));
-        SessionWidget* ses_widget = new SessionWidget(m_comManager, ses_data, nullptr);
-        ses_widget->alwaysShowAssets(m_allowFileTransfers);
-        if (show_assets)
-            ses_widget->showAssets();
-        m_diag_editor->setCentralWidget(ses_widget);
+    //int id_session = m_listSessions_items.key(ui->tableSessions->item(session_item->row(),0));
+    //TeraData* ses_data = m_ids_sessions[id_session];
+    //if (ses_data){
+    session_info->setFieldValue("id_project", m_data->getFieldValue("id_project"));
+    SessionWidget* ses_widget = new SessionWidget(m_comManager, session_info, nullptr);
+    ses_widget->alwaysShowAssets(m_allowFileTransfers);
+    if (m_currentSessionShowAssets)
+        ses_widget->showAssets();
+    m_diag_editor->setCentralWidget(ses_widget);
 
-        m_diag_editor->setWindowTitle(tr("Séance"));
-        //m_diag_editor->setMinimumSize(2*this->width()/3, 5*this->height()/6);
-        m_diag_editor->setMinimumSize(this->width(), this->height());
+    m_diag_editor->setWindowTitle(tr("Séance"));
+    //m_diag_editor->setMinimumSize(2*this->width()/3, 5*this->height()/6);
+    m_diag_editor->setMinimumSize(this->width(), this->height());
 
-        connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
-        connect(ses_widget, &SessionWidget::assetsCountChanged, this, &ParticipantWidget::sessionAssetsCountChanged);
+    connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
+    connect(ses_widget, &SessionWidget::assetsCountChanged, this, &ParticipantWidget::sessionAssetsCountChanged);
 
-        m_diag_editor->open();
-    }
+    m_diag_editor->open();
+    //}
 }
 
 bool ParticipantWidget::isProjectAdmin()

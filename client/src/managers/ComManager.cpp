@@ -22,8 +22,8 @@ ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
     // Network manager
     connect(this, &ComManager::networkAuthFailed, this, &ComManager::onNetworkAuthenticationFailed);
 
-    // Initialize token refresher timer @ each 29 minutes
-    m_tokenRefreshTimer.setInterval(1000*60*29);
+    // Initialize token refresher timer @ each 15 minutes
+    m_tokenRefreshTimer.setInterval(1000*60*15);
     m_tokenRefreshTimer.setSingleShot(false);
     connect(&m_tokenRefreshTimer, &QTimer::timeout, this, &ComManager::refreshUserToken);
 
@@ -49,7 +49,7 @@ void ComManager::connectToServer(QString username, QString password)
 
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_WITH_WEBSOCKET, "1");
-    doGet(QString(WEB_LOGIN_PATH), args);
+    doGet(QString(WEB_LOGIN_PATH), args, false);
 
 }
 

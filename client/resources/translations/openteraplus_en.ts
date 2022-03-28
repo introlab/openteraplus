@@ -200,8 +200,8 @@
 <context>
     <name>BaseComManager</name>
     <message>
-        <location filename="../../src/managers/BaseComManager.cpp" line="576"/>
-        <location filename="../../src/managers/BaseComManager.cpp" line="600"/>
+        <location filename="../../src/managers/BaseComManager.cpp" line="578"/>
+        <location filename="../../src/managers/BaseComManager.cpp" line="602"/>
         <source>Impossible de créer la requête</source>
         <translation>Unable to create request</translation>
     </message>
@@ -361,83 +361,83 @@
 <context>
     <name>ClientApp</name>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="153"/>
+        <location filename="../../src/ClientApp.cpp" line="157"/>
         <source>Connexion</source>
         <translation>Connection</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="287"/>
+        <location filename="../../src/ClientApp.cpp" line="291"/>
         <source>Bienvenue!</source>
         <translation>Welcome!</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="293"/>
+        <location filename="../../src/ClientApp.cpp" line="297"/>
         <source>Déconnexion</source>
         <translation>Disconnect</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="293"/>
+        <location filename="../../src/ClientApp.cpp" line="297"/>
         <source>Vous avez été déconnecté du serveur. Veuillez vous connecter à nouveau.</source>
         <translation>You have been disconnected. Please connect again.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="313"/>
-        <location filename="../../src/ClientApp.cpp" line="327"/>
+        <location filename="../../src/ClientApp.cpp" line="317"/>
+        <location filename="../../src/ClientApp.cpp" line="331"/>
         <source>La connexion a été refusée par le serveur.</source>
         <translation>Connection refused by server.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="334"/>
+        <location filename="../../src/ClientApp.cpp" line="338"/>
         <source>Impossible de rejoindre le serveur.</source>
         <translation>Unable to reach server.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="337"/>
+        <location filename="../../src/ClientApp.cpp" line="341"/>
         <source>Le serveur est introuvable.</source>
         <translation>Server is unreachable.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="340"/>
+        <location filename="../../src/ClientApp.cpp" line="344"/>
         <source>Impossible de se connecter (Code erreur: </source>
         <translation>Unable to connect (Error code: </translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="360"/>
+        <location filename="../../src/ClientApp.cpp" line="364"/>
         <source>Une nouvelle version (</source>
         <translation>A software update (</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="360"/>
+        <location filename="../../src/ClientApp.cpp" line="364"/>
         <source>) du logiciel est disponible.</source>
         <translation>) is available.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="362"/>
+        <location filename="../../src/ClientApp.cpp" line="366"/>
         <source>Veuillez contacter votre fournisseur pour l&apos;obtenir.</source>
         <translation>Please contact your provider to update.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="364"/>
+        <location filename="../../src/ClientApp.cpp" line="368"/>
         <source>Cliquez </source>
         <translation>Click </translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="364"/>
+        <location filename="../../src/ClientApp.cpp" line="368"/>
         <source>ICI</source>
         <translation>HERE</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="364"/>
+        <location filename="../../src/ClientApp.cpp" line="368"/>
         <source> pour la télécharger.</source>
         <translation> to download.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="365"/>
+        <location filename="../../src/ClientApp.cpp" line="369"/>
         <source>Important: assurez-vous que le logiciel est bien fermé avant de procéder à la mise à jour.</source>
         <translation>Important: please close the software before proceeding to install this update.</translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="367"/>
+        <location filename="../../src/ClientApp.cpp" line="371"/>
         <source>Nouvelle version disponible!</source>
         <translation>Software update available!</translation>
     </message>
@@ -2155,51 +2155,51 @@ La séance ne peut pas continuer.</source>
 The session cannot continue.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="732"/>
-        <location filename="../../src/main/MainWindow.cpp" line="761"/>
+        <location filename="../../src/main/MainWindow.cpp" line="735"/>
+        <location filename="../../src/main/MainWindow.cpp" line="764"/>
         <source> est en ligne.</source>
         <translation> is online.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="744"/>
-        <location filename="../../src/main/MainWindow.cpp" line="776"/>
+        <location filename="../../src/main/MainWindow.cpp" line="747"/>
+        <location filename="../../src/main/MainWindow.cpp" line="779"/>
         <source> est hors-ligne.</source>
         <translation> is offline.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="817"/>
+        <location filename="../../src/main/MainWindow.cpp" line="820"/>
         <source>Erreur de serveur.</source>
         <translation>Server error.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="824"/>
-        <location filename="../../src/main/MainWindow.cpp" line="829"/>
+        <location filename="../../src/main/MainWindow.cpp" line="827"/>
+        <location filename="../../src/main/MainWindow.cpp" line="832"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_MainWindow.h" line="480"/>
         <source>Déconnexion</source>
         <translation>Disconnect</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="824"/>
+        <location filename="../../src/main/MainWindow.cpp" line="827"/>
         <source>Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.</source>
         <translation>You&apos;ll be logged out. Unsaved data will be lost.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="824"/>
+        <location filename="../../src/main/MainWindow.cpp" line="827"/>
         <source>Souhaitez-vous continuer?</source>
         <translation>Do you want to continue?</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="898"/>
+        <location filename="../../src/main/MainWindow.cpp" line="901"/>
         <source>Votre compte</source>
         <translation>You Account</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="922"/>
+        <location filename="../../src/main/MainWindow.cpp" line="925"/>
         <source>Configuration Globale</source>
         <translation>Global Configuration</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="942"/>
+        <location filename="../../src/main/MainWindow.cpp" line="945"/>
         <source>Détails</source>
         <translation>Details</translation>
     </message>
@@ -2375,81 +2375,81 @@ Would you like to disconnect to apply the changes?</translation>
 <context>
     <name>ParticipantWidget</name>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="411"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="425"/>
         <source>Ouvrir</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="421"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="435"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1243"/>
         <source>Supprimer</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="444"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="458"/>
         <source>Continuer la séance</source>
         <translation>Continue session</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="495"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="507"/>
         <source>Appareil: </source>
         <translation>Device: </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="497"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="509"/>
         <source>Participant: </source>
         <translation>Participant: </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="499"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="511"/>
         <source>Service: </source>
         <translation>Service: </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="501"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="513"/>
         <source>Inconnu</source>
         <translation>Unknown</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="982"/>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="984"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1003"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1005"/>
         <source>Suppression?</source>
         <translation>Delete?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="982"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1003"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation>Are you sure you want to delete </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="984"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1005"/>
         <source>Êtes-vous sûrs de vouloir supprimer toutes les séances sélectionnées?</source>
         <translation>Are you sure you want to delete all selected sessions ?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1053"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1074"/>
         <source>Déassignation?</source>
         <translation>Unassign?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1054"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1075"/>
         <source>Êtes-vous sûrs de vouloir désassigner </source>
         <translation>Are you sure you want to unassign </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="327"/>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1187"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="339"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1220"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1228"/>
         <source>Séance</source>
         <translation>Session</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1413"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1446"/>
         <source>Confirmation</source>
         <translation>Confirmation</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1413"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1446"/>
         <source>En désactivant l&apos;accès web, le lien sera supprimé.
 
 Si un accès est à nouveau créé, le lien sera différent et il faudra envoyer à nouveau le lien au participant.
@@ -2462,62 +2462,62 @@ If a the link is re-activated, you will need the newly generated URL to the part
 Do you want to continue?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1510"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1543"/>
         <source>Code utilisateur manquant&lt;br/&gt;</source>
         <translation>Username missing&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="312"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="324"/>
         <source>Nouvelle séance</source>
         <translation>New session</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="433"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="447"/>
         <source>Voir les données</source>
         <translation>View assets</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1515"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1548"/>
         <source>Aucun mot de passe spécifié.</source>
         <translation>No specified password.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1520"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1553"/>
         <source>Informations manquantes</source>
         <translation>Missing information</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1520"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1553"/>
         <source>Les informations suivantes sont incorrectes:</source>
         <translation>The following information is missing:</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1603"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1636"/>
         <source>existe déjà.</source>
         <translation>already exists.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1605"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1638"/>
         <source>a été réalisée récemment et n&apos;a pas été terminée.</source>
         <translation>has been realised lately but not finished.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1608"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1641"/>
         <source>a été planifiée.</source>
         <translation>has been planned.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1610"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1643"/>
         <source>Reprendre une séance?</source>
         <translation>Resume session?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1610"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1643"/>
         <source>Un séance de ce type, </source>
         <translation>A session of the type, </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1611"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1644"/>
         <source>
 
 Souhaitez-vous continuer cette séance?</source>
@@ -2526,18 +2526,18 @@ Souhaitez-vous continuer cette séance?</source>
 Would you like to continue this session?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1690"/>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1697"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1723"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1730"/>
         <source>Démarrer une nouvelle séance</source>
         <translation>Start a new session</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1693"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1726"/>
         <source>Le participant n&apos;a pas d&apos;accès (web ou identification).</source>
         <translation>Participant doesn&apos;t have any access (web or login).</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1748"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1781"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1244"/>
         <source>Explorateur de données</source>
         <translation>Assets explorer</translation>
@@ -2719,8 +2719,8 @@ Would you like to continue this session?</translation>
         <translation>Services</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="877"/>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="906"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="898"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="927"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_ParticipantWidget.h" line="1245"/>
         <source>Séances</source>
         <translation>Sessions</translation>
@@ -2843,12 +2843,12 @@ Would you like to continue this session?</translation>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="875"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="914"/>
         <source>Suppression?</source>
         <translation>Delete?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="876"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="915"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation>Are you sure you want to delete </translation>
     </message>
@@ -2926,56 +2926,56 @@ Would you like to continue this session?</translation>
         <translation>Associated session types</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="681"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="683"/>
         <source> Utilisateurs</source>
         <translation> Users</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="683"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="685"/>
         <source> Groupes participants</source>
         <translation> Participants Groups</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="684"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="686"/>
         <source> Participants</source>
         <translation> Participants</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="685"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="687"/>
         <source> Participants actifs</source>
         <translation> Active Participants</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="686"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="688"/>
         <source> Séances planifiées 
 ou réalisées</source>
         <translation> Planned sessions 
 or done</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="863"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="865"/>
         <source>Suppression de service associé</source>
         <translation>Associated service deletion</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="863"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="865"/>
         <source>Au moins un service a été retiré de ce project. S&apos;il y a des types de séances qui utilisent ce service, elles ne seront plus accessibles.
 Souhaitez-vous continuer?</source>
         <translation>At least one service has been removed from this project. If there&apos;s session types who are associated to this service, they won&apos;t be available anymore.
 Do you want to continue?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="897"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="899"/>
         <source>Seuls les groupes utilisateurs ayant un accès au projet sont affichés.</source>
         <translation>Only user groups with access to this project are displayed.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="1193"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="1195"/>
         <source>Suppression d&apos;appareil associé</source>
         <translation>Related device association</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="1193"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="1195"/>
         <source>Au moins un appareil associé à un / des participants a été retiré de ce project.
 Ces participants ne pourront plus utiliser cet appareil.
 Souhaitez-vous continuer?</source>
@@ -2984,33 +2984,33 @@ Those participants won&apos;t be able to use that device anymore.
 Do you want to continue?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="1224"/>
         <location filename="../../src/editors/ProjectWidget.cpp" line="1226"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="1228"/>
         <source>Suppression?</source>
         <translation>Deletion?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="1224"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="1226"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation>Are you sure you want to delete </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="1226"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="1228"/>
         <source>Êtes-vous sûrs de vouloir supprimer tous les participants sélectionnés?</source>
         <translation>Are you sure you want to delete all selected participants?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="1258"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="1260"/>
         <source>Seuls les utilisateurs ayant un accès au projet sont affichés.</source>
         <translation>Only users with access to this project are displayed.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="709"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="711"/>
         <source>Actif</source>
         <translation>Active</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="712"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="714"/>
         <source>Inactif</source>
         <translation>Inactive</translation>
     </message>
@@ -3161,7 +3161,7 @@ Do you want to continue?</translation>
         <translation>Role</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="1261"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="1263"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_ProjectWidget.h" line="779"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/client/src/ui_ProjectWidget.h" line="788"/>
         <source>Utilisateurs</source>
@@ -3183,7 +3183,7 @@ Do you want to continue?</translation>
         <translation>Update roles</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ProjectWidget.cpp" line="900"/>
+        <location filename="../../src/editors/ProjectWidget.cpp" line="902"/>
         <source>Groupes Utilisateurs</source>
         <translation>Users Groups</translation>
     </message>
