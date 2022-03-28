@@ -32,6 +32,7 @@ private:
     void updateControlsState();
     void updateFieldsValue();
     bool validateData();
+    bool validateSitesProjects();
 
     void connectSignals();
 
@@ -65,6 +66,7 @@ private slots:
     void on_tabNav_currentChanged(int index);
     void on_lstParticipants_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_btnRemoveParticipant_clicked();
+    void on_treeSites_itemChanged(QTreeWidgetItem *item, int column);
 };
 
 #endif // DEVICEWIDGET_H

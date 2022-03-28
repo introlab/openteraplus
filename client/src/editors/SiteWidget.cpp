@@ -147,7 +147,7 @@ void SiteWidget::updateControlsState()
     bool is_site_admin = isSiteAdmin() || is_super_admin;
 
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabUsersDetails), is_site_admin);
-    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), (is_site_admin && m_devicesCount>0) || is_super_admin);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), is_site_admin /*(is_site_admin && m_devicesCount>0) || is_super_admin*/);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), is_site_admin);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabSessionTypes), is_site_admin);
 

@@ -55,7 +55,7 @@ void DeviceWidget::saveData(bool signal)
         // ... and sites
         QJsonArray sites = getSelectedSitesAsJsonArray();
         if (!sites.isEmpty()){
-            base_st.insert("device_sites", projects);
+            base_st.insert("device_sites", sites);
             base_obj.insert("device", base_st);
             device_data.setObject(base_obj);
         }
@@ -122,7 +122,39 @@ void DeviceWidget::updateFieldsValue()
 
 bool DeviceWidget::validateData()
 {
-    return ui->wdgDevice->validateFormData();
+
+    return ui->wdgDevice->validateFormData() && validateSitesProjects();
+}
+
+bool DeviceWidget::validateSitesProjects()
+{
+    if (!m_comManager->isCurrentUserSuperAdmin()){
+        bool at_least_one_selected = false;
+        // Sites
+        for (QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+            if (item->checkState(0) == Qt::Checked){
+                at_least_one_selected = true;
+                break;
+            }
+        }
+
+        // Projects
+        for (QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+            if (item->checkState(0) == Qt::Checked){
+                at_least_one_selected = true;
+                break;
+            }
+        }
+
+
+        if (!at_least_one_selected){
+            // Warning: that user not having any site/projects meaning that it will be not available to the current user
+            GlobalMessageBox msgbox;
+            msgbox.showError(tr("Attention"), tr("Aucun site / project n'a été spécifié.\nVous devez spécifier au moins un site / projet"));
+            return false;
+        }
+    }
+    return true;
 }
 
 void DeviceWidget::connectSignals()
@@ -412,6 +444,9 @@ void DeviceWidget::processProjectsReply(QList<TeraData> projects)
 
 void DeviceWidget::btnSaveSites_clicked()
 {
+    if (!validateSitesProjects())
+        return;
+
     bool has_removed = false;
 
     for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
@@ -439,13 +474,14 @@ void DeviceWidget::btnSaveSites_clicked()
 
     }
 
-    if (m_comManager->isCurrentUserSuperAdmin()){
+    postDeviceSites();
+    /*if (m_comManager->isCurrentUserSuperAdmin()){
         // Save device sites
         postDeviceSites();
     }else{
         // Not super admin - save device projects
         postDeviceProjects();
-    }
+    }*/
 
 }
 
@@ -592,3 +628,39 @@ void DeviceWidget::on_btnRemoveParticipant_clicked()
         deleteDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, id_device_participant);
     }
 }
+
+void DeviceWidget::on_treeSites_itemChanged(QTreeWidgetItem *item, int column)
+{
+    Q_UNUSED(column)
+    static bool updating = false;
+
+    // Lock to prevent recursive updates
+    if (updating)
+        return;
+
+    updating = true;
+    // Uncheck all projects if site was unselected
+    if (std::find(m_treeSites_items.cbegin(), m_treeSites_items.cend(), item) != m_treeSites_items.cend()){
+        if (item->checkState(0) == Qt::Unchecked){
+            for (int i=0; i<item->childCount(); i++){
+                item->child(i)->setCheckState(0, Qt::Unchecked);
+            }
+        }
+    }
+
+    if (std::find(m_treeProjects_items.cbegin(), m_treeProjects_items.cend(), item) != m_treeProjects_items.cend()){
+        // We have a project - check if we need to check the parent (site)
+        QTreeWidgetItem* site = item->parent();
+        if (site){
+            for(int i=0; i<site->childCount(); i++){
+                if (site->child(i)->checkState(0) == Qt::Checked){
+                    site->setCheckState(0, Qt::Checked);
+                    updating = false;
+                    return;
+                }
+            }
+        }
+    }
+    updating = false;
+}
+
