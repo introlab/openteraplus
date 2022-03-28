@@ -122,8 +122,11 @@ void DeviceWidget::updateFieldsValue()
 
 bool DeviceWidget::validateData()
 {
+    if (dataIsNew())
+        if (!validateSitesProjects())
+            return false;
 
-    return ui->wdgDevice->validateFormData() && validateSitesProjects();
+    return ui->wdgDevice->validateFormData();
 }
 
 bool DeviceWidget::validateSitesProjects()
