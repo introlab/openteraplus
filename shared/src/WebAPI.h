@@ -35,6 +35,9 @@
 #define WEB_SERVICECONFIGINFO_PATH          "/api/user/services/configs"
 #define WEB_STATS_PATH                      "/api/user/stats"
 #define WEB_ASSETINFO_PATH                  "/api/user/assets"
+#define WEB_TESTTYPEINFO_PATH               "/api/user/testtypes"
+#define WEB_TESTTYPESITE_PATH               "/api/user/testtypes/sites"
+#define WEB_TESTTYPEPROJECT_PATH            "/api/user/testtypes/projects"
 
 #define WEB_SESSIONMANAGER_PATH             "/api/user/sessions/manager"
 
@@ -59,6 +62,7 @@
 #define WEB_FORMS_QUERY_USER_GROUP          "type=user_group"
 #define WEB_FORMS_QUERY_SERVICE             "type=service"
 #define WEB_FORMS_QUERY_SERVICE_CONFIG      "type=service_config"
+#define WEB_FORMS_QUERY_TEST_TYPE           "type=test_type"
 
 #define WEB_QUERY_ID_USER           "id_user"
 #define WEB_QUERY_ID                "id"
@@ -75,6 +79,7 @@
 #define WEB_QUERY_ID_SERVICE        "id_service"
 #define WEB_QUERY_ID_SPECIFIC       "id_specific"
 #define WEB_QUERY_ID_SERVICE_CONFIG "id_service_config"
+#define WEB_QUERY_ID_TEST_TYPE      "id_test_type"
 
 #define WEB_QUERY_UUID_PARTICIPANT  "participant_uuid"
 #define WEB_QUERY_UUID_ASSET        "asset_uuid"

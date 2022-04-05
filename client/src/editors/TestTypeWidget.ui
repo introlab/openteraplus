@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DeviceWidget</class>
- <widget class="QWidget" name="DeviceWidget">
-  <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
-  </property>
+ <class>TestTypeWidget</class>
+ <widget class="QWidget" name="TestTypeWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>821</width>
-    <height>472</height>
+    <width>750</width>
+    <height>505</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Type Évaluation</string>
   </property>
   <property name="styleSheet">
    <string notr="true">/*
@@ -24,7 +21,7 @@ QWidget#mainWidget{background-color:rgba(128,128,128,25%);}
 QWidget#frmProfile,QWidget#pageProfile{background-color:rgba(108,8,156,25%);}
 QPlainTextEdit,QLineEdit,QListWidget,QComboBox,QTextEdit,QSpinBox{background-color: rgba(255,255,255,50%); color: black;}
 
-QTableWidget,QListWidget{
+QTableWidget{
 background-color: rgba(0,0,0,50%);
 color: white;
 border: 1px solid rgba(255,255,255,50%);
@@ -50,6 +47,11 @@ QCheckBox::indicator:checked, QListWidget::indicator:checked {background-color:r
 QPushButton{background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #2198c0, stop: 1 #0d5ca6);}
 QPushButton:checked{background-color:rgb(128,128,128); border:1px solid rgba(255,255,255,50%);}
 QPushButton:hover,QPushButton:checked{background-color:  rgba(255,255,255,75%);color:black;}
+QPushButton#btnEditUser:hover{background-color:  rgba(255,255,255,75%);color:black;}
+QPushButton#btnEdit,QPushButton#btnDelete,QPushButton#btnExisting{background-color:  rgba(255,255,255,0%);border:0 px;}
+QPushButton#btnEdit:hover,QPushButton#btnDelete:hover,QPushButton#btnExisting:hover{background-color:  rgba(255,255,255,25%);border:0 px;}
+QPushButton#btnExisting:checked{background-color:rgba(0,100,200,50%);}
+QPushButton#btnUpgrade{background-color:rgba(200,0,0,90%);}
 
 QToolButton:hover{background-color:  rgba(255,255,255,50);}
 
@@ -99,7 +101,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
 
  QTabBar::tab:selected {
      border-color:rgba(128,128,140,60%);
-     border-bottom-color:rgba(128,128,140,60%); 
+     border-bottom-color:rgba(128,128,140,60%);
  }
 
  QTabBar::tab:!selected {
@@ -111,7 +113,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>10</number>
+    <number>2</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -133,7 +135,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../resources/TeraClient.qrc">:/icons/device.png</pixmap>
+        <pixmap resource="../../resources/TeraClient.qrc">:/icons/test_type.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -148,7 +150,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         </font>
        </property>
        <property name="text">
-        <string>Appareil</string>
+        <string>Type d'évaluation</string>
        </property>
       </widget>
      </item>
@@ -159,12 +161,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <property name="iconSize">
-      <size>
-       <width>20</width>
-       <height>20</height>
-      </size>
-     </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
@@ -173,7 +169,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <attribute name="title">
        <string>Informations</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QScrollArea" name="scrollArea">
          <property name="widgetResizable">
@@ -184,11 +180,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>779</width>
-            <height>300</height>
+            <width>708</width>
+            <height>345</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -202,7 +198,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <number>0</number>
            </property>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <spacer name="horizontalSpacer">
                <property name="orientation">
@@ -245,12 +241,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             </layout>
            </item>
            <item>
-            <widget class="TeraForm" name="wdgDevice" native="true">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
+            <widget class="TeraForm" name="wdgTestType" native="true">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -263,7 +256,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
        <item>
         <widget class="QFrame" name="frameButtons">
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QPushButton" name="btnSave">
             <property name="minimumSize">
@@ -321,7 +314,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabSites">
+     <widget class="QWidget" name="tabProjects">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
         <normaloff>:/icons/site-icon.png</normaloff>:/icons/site-icon.png</iconset>
@@ -329,11 +322,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <attribute name="title">
        <string>Sites / Projets</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QTreeWidget" name="treeSites">
+        <widget class="QTreeWidget" name="treeProjects">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -361,7 +354,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnSites">
+        <widget class="QPushButton" name="btnProjects">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -372,11 +365,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>Mettre à jour les sites / projets associés à cet appareil</string>
+          <string>Mettre à jour les sites / projets associés</string>
          </property>
          <property name="icon">
           <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/site.png</normaloff>:/icons/site.png</iconset>
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -385,73 +378,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           </size>
          </property>
         </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabParticipants">
-      <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Participants</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QListWidget" name="lstParticipants">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnRemoveParticipant">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string>Retirer cet appareil de ce participant</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabServiceConfig">
-      <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Configuration</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QWidget" name="wdgServiceConfig" native="true"/>
        </item>
       </layout>
      </widget>

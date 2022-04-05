@@ -245,8 +245,12 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "site";
     case TERADATA_SESSIONTYPE:
         return "session_type";
-    case TERADATA_TESTDEF:
+    case TERADATA_TESTTYPE:
         return "test_type";
+    case TERADATA_TESTTYPEPROJECT:
+        return "test_type_project";
+    case TERADATA_TESTTYPESITE:
+        return "test_type_site";
     case TERADATA_PROJECT:
         return "project";
     case TERADATA_DEVICE:
@@ -317,8 +321,12 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Site");
     case TERADATA_SESSIONTYPE:
         return tr("Type de séance");
-    case TERADATA_TESTDEF:
-        return tr("Type d'évaluation");
+    case TERADATA_TESTTYPE:
+        return tr("Évaluation");
+    case TERADATA_TESTTYPEPROJECT:
+        return tr("Évaluation: projet");
+    case TERADATA_TESTTYPESITE:
+        return tr("Évaluation: site");
     case TERADATA_PROJECT:
         return tr("Projet");
     case TERADATA_DEVICE:
@@ -407,6 +415,9 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_ONLINEPARTICIPANTINFO_PATH)   return TERADATA_ONLINE_PARTICIPANT;
     if (path==WEB_ONLINEUSERINFO_PATH)          return TERADATA_ONLINE_USER;
     if (path==WEB_ASSETINFO_PATH)               return TERADATA_ASSET;
+    if (path==WEB_TESTTYPEINFO_PATH)            return TERADATA_TESTTYPE;
+    if (path==WEB_TESTTYPEPROJECT_PATH)         return TERADATA_TESTTYPEPROJECT;
+    if (path==WEB_TESTTYPESITE_PATH)            return TERADATA_TESTTYPESITE;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 
@@ -432,6 +443,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_SITEACCESS)         return WEB_SITEACCESS_PATH;
     if (data_type==TERADATA_SERVICE_CONFIG)     return WEB_SERVICECONFIGINFO_PATH;
     if (data_type==TERADATA_ASSET)              return WEB_ASSETINFO_PATH;
+    if (data_type==TERADATA_TESTTYPE)           return WEB_TESTTYPEINFO_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 
@@ -453,8 +465,8 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
         return "://icons/session_type.png";
     case TERADATA_SESSION:
         return "://icons/session.png";
-    case TERADATA_TESTDEF:
-        return "://icons/test.png";
+    case TERADATA_TESTTYPE:
+        return "://icons/test_type.png";
     case TERADATA_DEVICE:
         return "://icons/device.png";
     case TERADATA_PARTICIPANT:

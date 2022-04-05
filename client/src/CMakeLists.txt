@@ -64,6 +64,7 @@ set(headers
     editors/UserGroupWidget.h
     editors/ServiceWidget.h
     editors/ServiceConfigWidget.h
+    editors/TestTypeWidget.h
     # Wizards
     wizards/UserWizard.h
     wizards/BaseWizard.h
@@ -160,6 +161,7 @@ set(srcs
     editors/UserGroupWidget.cpp
     editors/ServiceWidget.cpp
     editors/ServiceConfigWidget.cpp
+    editors/TestTypeWidget.cpp
     # Wizards
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
@@ -252,6 +254,7 @@ SET(uis
     widgets/DashboardWidget.ui
     widgets/AssetsWidget.ui
     widgets/ResultMessageWidget.ui
+    editors/TestTypeWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui
