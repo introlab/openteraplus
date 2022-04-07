@@ -84,6 +84,7 @@ private:
     bool eventFilter(QObject* o, QEvent* e);
 
     void queryAssetsInfos();
+    void updateAssetInfos(const QString& asset_uuid);
     void updateAsset(const TeraData& asset, const int& id_participant = -1, const bool& emit_count_update_signal=true);
 
     QString getRelativePathForAsset(const QString &uuid);

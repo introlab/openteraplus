@@ -99,6 +99,7 @@ set(headers
     widgets/DashboardWidget.h
     widgets/AssetsWidget.h
     widgets/ResultMessageWidget.h
+    widgets/TestsWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -195,6 +196,7 @@ set(srcs
     widgets/DashboardWidget.cpp
     widgets/AssetsWidget.cpp
     widgets/ResultMessageWidget.cpp
+    widgets/TestsWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -237,6 +239,7 @@ SET(uis
     editors/UserGroupWidget.ui
     editors/ServiceWidget.ui
     editors/ServiceConfigWidget.ui
+    editors/TestTypeWidget.ui
     # Services
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
@@ -254,7 +257,7 @@ SET(uis
     widgets/DashboardWidget.ui
     widgets/AssetsWidget.ui
     widgets/ResultMessageWidget.ui
-    editors/TestTypeWidget.ui
+    widgets/TestsWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui

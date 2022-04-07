@@ -632,6 +632,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_TESTTYPESITE:
         emit testTypesSitesReceived(items, reply_query);
         break;
+    case TERADATA_TEST:
+        emit testsReceived(items, reply_query);
+        break;
     case TERADATA_PROJECT:
         emit projectsReceived(items, reply_query);
         break;

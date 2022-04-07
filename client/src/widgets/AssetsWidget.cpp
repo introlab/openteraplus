@@ -254,6 +254,32 @@ void AssetsWidget::queryAssetsInfos()
     }
 }
 
+void AssetsWidget::updateAssetInfos(const QString &asset_uuid)
+{
+    if (m_treeAssets.contains(asset_uuid)){
+        QTreeWidgetItem* asset_item = m_treeAssets[asset_uuid];
+        TeraData* asset = m_assets[asset_uuid];
+        if (!asset)
+            return;
+
+        if (asset->hasFieldName("asset_file_size")){
+
+            asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset->getFieldValue("asset_file_size").toInt()));
+            ui->treeAssets->showColumn(AssetColumn::ASSET_SIZE);
+        }
+
+        if (asset->hasFieldName("file_size")){
+            asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset->getFieldValue("file_size").toInt()));
+            ui->treeAssets->showColumn(AssetColumn::ASSET_SIZE);
+        }
+
+        if (asset->hasFieldName("video_duration")){
+            asset_item->setText(AssetColumn::ASSET_DURATION, Utils::formatDuration(asset->getFieldValue("video_duration").toString()));
+            ui->treeAssets->showColumn(AssetColumn::ASSET_DURATION);
+        }
+    }
+}
+
 void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant, const bool &emit_count_update_signal)
 {
     QTreeWidgetItem* item;
@@ -414,6 +440,8 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
         item->setText(AssetColumn::ASSET_SERVICE, asset.getFieldValue("asset_service_owner_name").toString());
     btnDownload->setEnabled(has_asset_download_url);
     //btnView->setEnabled(has_asset_infos_url);
+
+    updateAssetInfos(asset_uuid);
 }
 
 QString AssetsWidget::getRelativePathForAsset(const QString &uuid)
@@ -818,31 +846,13 @@ void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_
             updateAsset(asset); // TODO: manage participant association, if required by the view
         }
 
-        if (m_treeAssets.contains(asset_uuid)){
-            QTreeWidgetItem* asset_item = m_treeAssets[asset_uuid];
-
-            if (asset_info.contains("asset_file_size")){
-
-                asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset_info["asset_file_size"].toInt()));
-                ui->treeAssets->showColumn(AssetColumn::ASSET_SIZE);
-            }
-
-            if (asset_info.contains("file_size")){
-                asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset_info["file_size"].toInt()));
-                ui->treeAssets->showColumn(AssetColumn::ASSET_SIZE);
-            }
-
-            if (asset_info.contains("video_duration")){
-                asset_item->setText(AssetColumn::ASSET_DURATION, Utils::formatDuration(asset_info["video_duration"].toString()));
-                ui->treeAssets->showColumn(AssetColumn::ASSET_DURATION);
-            }
-        }
-
         if (m_assets.contains(asset_uuid)){
             // Append received fields to current asset
             TeraData* asset = m_assets[asset_uuid];
             asset->updateFrom(asset_info);
         }
+
+        updateAssetInfos(asset_uuid);
     }
     resizeAssetsColumnsToContent();
 
