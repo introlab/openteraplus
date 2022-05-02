@@ -85,6 +85,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     ui->tabNav->setCurrentIndex(0);
     ui->tabServicesDetails->setCurrentIndex(0);
     ui->frameFilterSessionTypes->hide();
+
 }
 
 ParticipantWidget::~ParticipantWidget()
@@ -96,6 +97,9 @@ ParticipantWidget::~ParticipantWidget()
     if (m_sessionLobby)
         m_sessionLobby->deleteLater();
 }
+
+
+
 
 void ParticipantWidget::saveData(bool signal)
 {
@@ -353,7 +357,7 @@ void ParticipantWidget::newSessionRequest(const QDateTime &session_datetime)
     new_session->setFieldValue("id_creator_user", m_comManager->getCurrentUser().getId());
     new_session->setFieldValue("participant_uuid", m_data->getUuid());
 
-    SessionWidget* ses_widget = new SessionWidget(m_comManager, new_session);
+    SessionWidget* ses_widget = new SessionWidget(m_comManager, new_session, m_diag_editor);
     m_diag_editor->setCentralWidget(ses_widget);
 
     m_diag_editor->setWindowTitle(tr("Séance"));
@@ -1287,7 +1291,7 @@ void ParticipantWidget::showSessionEditor(TeraData *session_info)
     //TeraData* ses_data = m_ids_sessions[id_session];
     //if (ses_data){
     session_info->setFieldValue("id_project", m_data->getFieldValue("id_project"));
-    SessionWidget* ses_widget = new SessionWidget(m_comManager, session_info, nullptr);
+    SessionWidget* ses_widget = new SessionWidget(m_comManager, session_info, m_diag_editor);
     ses_widget->alwaysShowAssets(m_allowFileTransfers);
     if (m_currentSessionShowAssets)
         ses_widget->showAssets();
@@ -1854,7 +1858,7 @@ void ParticipantWidget::on_btnAssetsBrowser_clicked()
     }
     m_diag_editor = new BaseDialog(this);
 
-    AssetsWidget* asset_widget = new AssetsWidget(m_comManager);
+    AssetsWidget* asset_widget = new AssetsWidget(m_comManager, m_diag_editor);
     asset_widget->displayAssetsForParticipant(m_data->getId());
     m_diag_editor->setCentralWidget(asset_widget);
 
@@ -1916,12 +1920,30 @@ void ParticipantWidget::on_btnTestsBrowser_clicked()
     }
     m_diag_editor = new BaseDialog(this);
 
-    TestsWidget* test_widget = new TestsWidget(m_comManager);
+    TestsWidget* test_widget = new TestsWidget(m_comManager, m_diag_editor);
     test_widget->displayTestsForParticipant(m_data->getId());
     m_diag_editor->setCentralWidget(test_widget);
 
     m_diag_editor->setWindowTitle(tr("Explorateur d'évaluations"));
     m_diag_editor->setMinimumSize(this->width(), this->height());
+
+    m_diag_editor->open();
+}
+
+
+void ParticipantWidget::on_btnQR_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+    m_diag_editor = new BaseDialog(this);
+
+    QRWidget* qr_widget = new QRWidget(m_diag_editor);
+    qr_widget->setText(ui->txtWeb->text());
+    m_diag_editor->setCentralWidget(qr_widget);
+
+    m_diag_editor->setWindowTitle(tr("Code QR du lien"));
+    m_diag_editor->setFixedSize(this->height()/2-40, this->height()/2);
 
     m_diag_editor->open();
 }

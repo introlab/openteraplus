@@ -133,5 +133,6 @@
         <file>translations/openteraplus_en.qm</file>
         <file>translations/openteraplus_fr.qm</file>
         <file>icons/test_type.png</file>
+        <file>icons/qr.png</file>
     </qresource>
 </RCC>

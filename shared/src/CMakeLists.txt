@@ -27,6 +27,7 @@ set(sharedlib_headers
     data/TeraTest.h
     WebAPI.h
     ParticipantWebAPI.h
+    qrcodegen.hpp
 )
 
 set(sharedlib_srcs
@@ -42,6 +43,7 @@ set(sharedlib_srcs
     data/TeraSettings.cpp
     data/TeraAsset.cpp
     data/TeraTest.cpp
+    qrcodegen.cpp
 )
 
 include_directories(

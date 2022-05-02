@@ -25,8 +25,10 @@
 #include "widgets/TableDateWidgetItem.h"
 #include "widgets/AssetsWidget.h"
 #include "widgets/TestsWidget.h"
+#include "widgets/QRWidget.h"
 
 #include "services/BaseServiceWidget.h"
+
 
 namespace Ui {
 class ParticipantWidget;
@@ -174,6 +176,7 @@ private slots:
     void on_lstAvailDevices_itemDoubleClicked(QListWidgetItem *item);
     void on_lstDevices_itemDoubleClicked(QListWidgetItem *item);
     void on_btnTestsBrowser_clicked();
+    void on_btnQR_clicked();
 };
 
 #endif // PARTICIPANTWIDGET_H

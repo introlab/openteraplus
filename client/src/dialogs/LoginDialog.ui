@@ -151,7 +151,6 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <font>
           <family>10px Arial</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -179,7 +178,6 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <font>
           <family>10px Arial</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -195,7 +193,6 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
          <font>
           <family>10px Arial</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
