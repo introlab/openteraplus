@@ -10,6 +10,7 @@
 #include "editors/UserGroupWidget.h"
 #include "editors/ServiceWidget.h"
 #include "editors/ServiceConfigWidget.h"
+#include "editors/TestTypeWidget.h"
 
 #include "wizards/UserWizard.h"
 
@@ -85,9 +86,13 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
     item = getItemForData(data);
 
     // If we don't, create a new one.
+    QString data_name = tr("Inconnu");
+    if (data->hasNameField())
+        data_name = data->getName();
     if (!item){
         // Check if we have a new item that we could match
-        item = new QListWidgetItem(data->getName(),ui->lstData);
+
+        item = new QListWidgetItem(data_name, ui->lstData);
         m_datamap[data] = item;
 
     }else{
@@ -97,7 +102,6 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
     }
 
     item->setIcon(QIcon(TeraData::getIconFilenameForDataType(data->getDataType())));
-    QString data_name = data->getName();
     // If a parent is specified, append the parent name
     if (data->hasFieldName(data->getDataTypeName(data->getDataType()) + "_parent"))
         data_name = "[" + data->getFieldValue(data->getDataTypeName(data->getDataType()) + "_parent").toString() + "]\n" + data_name;
@@ -239,6 +243,9 @@ void DataListWidget::showEditor(TeraData *data)
         break;
         case TERADATA_SERVICE:
             m_editor = new ServiceWidget(m_comManager, data);
+        break;
+        case TERADATA_TESTTYPE:
+            m_editor = new TestTypeWidget(m_comManager, data);
         break;
         default:
             LOG_ERROR("Unhandled datatype for editor: " + TeraData::getDataTypeName(data->getDataType()), "DataListWidget::showEditor()");

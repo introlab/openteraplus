@@ -15,7 +15,6 @@
 #include "TeraSessionStatus.h"
 #include "Utils.h"
 #include "TeraSettings.h"
-//#include "StartSessionDialog.h"
 #include "ServiceConfigWidget.h"
 
 #include "dialogs/SessionLobbyDialog.h"
@@ -25,8 +24,11 @@
 
 #include "widgets/TableDateWidgetItem.h"
 #include "widgets/AssetsWidget.h"
+#include "widgets/TestsWidget.h"
+#include "widgets/QRWidget.h"
 
 #include "services/BaseServiceWidget.h"
+
 
 namespace Ui {
 class ParticipantWidget;
@@ -65,17 +67,20 @@ private:
 
     int                             m_totalSessions;
     int                             m_totalAssets;
+    int                             m_totalTests;
     int                             m_currentSessions;
     bool                            m_sessionsLoading;
 
     // Infos when querying extra sessions
     int                             m_currentIdSession;
     bool                            m_currentSessionShowAssets;
+    bool                            m_currentSessionShowTests;
 
     // Icons are defined here (speed up load)
     QIcon m_deleteIcon;
     QIcon m_viewIcon;
     QIcon m_downloadIcon;
+    QIcon m_testIcon;
     QIcon m_resumeIcon;
 
 
@@ -86,7 +91,7 @@ private:
     void updateFieldsValue() override;
     void initUI();
 
-    bool canStartNewSession();
+    bool canStartNewSession(const int& id_session_type=0);
     void newSessionRequest(const QDateTime& session_datetime);
 
     bool validateData() override;
@@ -105,7 +110,7 @@ private:
     QDate getMaximumSessionDate();
 
     bool eventFilter(QObject* o, QEvent* e) override;
-    void displaySessionDetails(QTableWidgetItem* session_item, bool show_assets = false);
+    void displaySessionDetails(QTableWidgetItem* session_item, bool show_assets = false, bool show_tests = false);
     void showSessionEditor(TeraData *session_info);
 
     bool isProjectAdmin();
@@ -125,6 +130,7 @@ private slots:
     void deleteDataReply(QString path, int id);
     void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
     void sessionAssetsCountChanged(int id_session, int new_count);
+    void sessionTestsCountChanged(int id_session, int new_count);
 
     void btnDeleteSession_clicked();
     void btnAddDevice_clicked();
@@ -132,6 +138,7 @@ private slots:
     void btnDownloadSession_clicked();
     void btnViewSession_clicked();
     void btnResumeSession_clicked();
+    void btnViewTests_clicked();
 
     void currentSelectedSessionChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
     void currentCalendarDateChanged(QDate current_date);
@@ -168,6 +175,8 @@ private slots:
     void on_tabNav_currentChanged(int index);
     void on_lstAvailDevices_itemDoubleClicked(QListWidgetItem *item);
     void on_lstDevices_itemDoubleClicked(QListWidgetItem *item);
+    void on_btnTestsBrowser_clicked();
+    void on_btnQR_clicked();
 };
 
 #endif // PARTICIPANTWIDGET_H

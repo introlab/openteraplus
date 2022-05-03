@@ -22,6 +22,7 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     ui->wdgSessionInvitees->showOnlineFilter(false);
 
     ui->tabAssets->setComManager(m_comManager);
+    ui->tabTests->setComManager(m_comManager);
 
     // Use base class to manage editing
     setEditorControls(ui->wdgSession, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
@@ -163,6 +164,12 @@ void SessionWidget::showAssets()
 {
     // Display assets tab by default
     ui->tabNav->setCurrentWidget(ui->tabAssets);
+}
+
+void SessionWidget::showTests()
+{
+    // Display tests tab by default
+    ui->tabNav->setCurrentWidget(ui->tabTests);
 }
 
 void SessionWidget::updateControlsState()
@@ -531,6 +538,14 @@ void SessionWidget::onAssetsCountChanged(int new_count)
         emit assetsCountChanged(m_data->getId(), new_count);
 }
 
+void SessionWidget::onTestsCountChanged(int new_count)
+{
+    ui->lblTests->setText(QString::number(new_count) + tr(" Évaluations"));
+
+    if (!dataIsNew())
+        emit testsCountChanged(m_data->getId(), new_count);
+}
+
 void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids)
 {
     // Post session update with new lists
@@ -600,6 +615,7 @@ void SessionWidget::connectSignals()
     connect(ui->wdgSessionInvitees, &SessionInviteWidget::removedInvitees, this, &SessionWidget::sessionInviteesChanged);
 
     connect(ui->tabAssets, &AssetsWidget::assetCountChanged, this, &SessionWidget::onAssetsCountChanged);
+    connect(ui->tabTests, &TestsWidget::testCountChanged, this, &SessionWidget::onTestsCountChanged);
 }
 
 void SessionWidget::on_icoUsers_clicked()
@@ -687,7 +703,8 @@ void SessionWidget::on_tabNav_currentChanged(int index)
 
     if (current_tab == ui->tabTests){
         // Tests
-        // TODO
+        ui->tabTests->enableNewTests(false);
+        ui->tabTests->displayTestsForSession(m_data->getId());
     }
 }
 

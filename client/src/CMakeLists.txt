@@ -64,6 +64,7 @@ set(headers
     editors/UserGroupWidget.h
     editors/ServiceWidget.h
     editors/ServiceConfigWidget.h
+    editors/TestTypeWidget.h
     # Wizards
     wizards/UserWizard.h
     wizards/BaseWizard.h
@@ -98,6 +99,8 @@ set(headers
     widgets/DashboardWidget.h
     widgets/AssetsWidget.h
     widgets/ResultMessageWidget.h
+    widgets/TestsWidget.h
+    widgets/QRWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -160,6 +163,7 @@ set(srcs
     editors/UserGroupWidget.cpp
     editors/ServiceWidget.cpp
     editors/ServiceConfigWidget.cpp
+    editors/TestTypeWidget.cpp
     # Wizards
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
@@ -193,6 +197,8 @@ set(srcs
     widgets/DashboardWidget.cpp
     widgets/AssetsWidget.cpp
     widgets/ResultMessageWidget.cpp
+    widgets/TestsWidget.cpp
+     widgets/QRWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -235,6 +241,7 @@ SET(uis
     editors/UserGroupWidget.ui
     editors/ServiceWidget.ui
     editors/ServiceConfigWidget.ui
+    editors/TestTypeWidget.ui
     # Services
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
@@ -252,6 +259,7 @@ SET(uis
     widgets/DashboardWidget.ui
     widgets/AssetsWidget.ui
     widgets/ResultMessageWidget.ui
+    widgets/TestsWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui

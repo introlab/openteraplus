@@ -198,7 +198,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <property name="iconSize">
       <size>
@@ -411,7 +411,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <string>Données</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="tabTests">
+     <widget class="TestsWidget" name="tabTests">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
         <normaloff>:/icons/test.png</normaloff>:/icons/test.png</iconset>
@@ -419,21 +419,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <attribute name="title">
        <string>Évaluations</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QListWidget" name="lstTests">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </widget>
    </item>
@@ -814,6 +799,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <class>AssetsWidget</class>
    <extends>QWidget</extends>
    <header>widgets/AssetsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TestsWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/TestsWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

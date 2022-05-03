@@ -404,8 +404,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::sitesReceived;
     case TERADATA_SESSIONTYPE:
         return &ComManager::sessionTypesReceived;
-    case TERADATA_TESTDEF:
-        return &ComManager::testDefsReceived;
+    case TERADATA_TESTTYPE:
+        return &ComManager::testTypesReceived;
     case TERADATA_PROJECT:
         return &ComManager::projectsReceived;
     case TERADATA_DEVICE:
@@ -483,6 +483,8 @@ bool ComManager::handleLoginReply(const QString &reply_data)
 
     // Query versions informations
     doGet(WEB_VERSIONSINFO_PATH);
+
+    doUpdateCurrentUser();
 
     return true;
 }
@@ -621,8 +623,17 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_SESSIONTYPE:
         emit sessionTypesReceived(items, reply_query);
         break;
-    case TERADATA_TESTDEF:
-        emit testDefsReceived(items, reply_query);
+    case TERADATA_TESTTYPE:
+        emit testTypesReceived(items, reply_query);
+        break;
+    case TERADATA_TESTTYPEPROJECT:
+        emit testTypesProjectsReceived(items, reply_query);
+        break;
+    case TERADATA_TESTTYPESITE:
+        emit testTypesSitesReceived(items, reply_query);
+        break;
+    case TERADATA_TEST:
+        emit testsReceived(items, reply_query);
         break;
     case TERADATA_PROJECT:
         emit projectsReceived(items, reply_query);
@@ -880,7 +891,5 @@ void ComManager::onWebSocketLoginResult(bool logged_in)
         emit loginResult(false, tr("La communication avec le serveur n'a pu être établie."));
         return;
     }
-
-    doUpdateCurrentUser();
 }
 

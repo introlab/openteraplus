@@ -24,8 +24,10 @@ set(sharedlib_headers
     data/TeraPreferences.h
     data/TeraSettings.h
     data/TeraAsset.h
+    data/TeraTest.h
     WebAPI.h
     ParticipantWebAPI.h
+    qrcodegen.hpp
 )
 
 set(sharedlib_srcs
@@ -40,6 +42,8 @@ set(sharedlib_srcs
     data/TeraPreferences.cpp
     data/TeraSettings.cpp
     data/TeraAsset.cpp
+    data/TeraTest.cpp
+    qrcodegen.cpp
 )
 
 include_directories(

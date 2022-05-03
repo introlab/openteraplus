@@ -30,6 +30,8 @@ public:
     void alwaysShowAssets(const bool &allow);
     void showAssets();
 
+    void showTests();
+
     void connectSignals();
 private:
     Ui::SessionWidget *ui;
@@ -65,6 +67,7 @@ private slots:
     void deleteDataReply(QString path, int id);
 
     void onAssetsCountChanged(int new_count);
+    void onTestsCountChanged(int new_count);
 
     void sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids);
 
@@ -79,6 +82,7 @@ private slots:
 
 signals:
     void assetsCountChanged(int id_session, int new_count);
+    void testsCountChanged(int id_session, int new_count);
 };
 
 #endif // SESSIONWIDGET_H
