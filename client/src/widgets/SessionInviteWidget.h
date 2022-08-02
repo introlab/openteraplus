@@ -9,6 +9,8 @@
 #include "GlobalMessageBox.h"
 #include "managers/ComManager.h"
 
+#define MAX_INVITEES_IN_SESSION 7
+
 namespace Ui {
 class SessionInviteWidget;
 }

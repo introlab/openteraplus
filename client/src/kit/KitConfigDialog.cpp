@@ -238,6 +238,7 @@ void KitConfigDialog::initUi()
 {
     ui->lblStatus->hide();
     ui->frameTechSup->hide();
+    ui->frameOtherSoftware->hide();
 
     ui->cmbSites->setItemDelegate(new QStyledItemDelegate(ui->cmbSites));
     ui->cmbProjects->setItemDelegate(new QStyledItemDelegate(ui->cmbProjects));
@@ -246,9 +247,15 @@ void KitConfigDialog::initUi()
 
     ui->btnUnsetParticipant->setEnabled(!m_kitConfig->getParticipantToken().isEmpty());
     ui->chkTechSup->setChecked(!m_kitConfig->getTechSupportClient().isEmpty());
-    ui->chkTechSup->setProperty("initial_value", ui->btnTechSup->isChecked());
+    ui->chkTechSup->setProperty("initial_value", ui->chkTechSup->isChecked());
     ui->txtTechSup->setText(m_kitConfig->getTechSupportClient());
     ui->txtTechSup->setProperty("initial_value", ui->txtTechSup->text());
+
+    QString other_software = m_kitConfig->getOtherSoftwarePath();
+    ui->chkOtherSoftware->setChecked(!other_software.isEmpty());
+    ui->chkOtherSoftware->setProperty("initial_value", ui->chkOtherSoftware->isChecked());
+    ui->txtOtherSoftware->setText(other_software);
+    ui->txtOtherSoftware->setProperty("initial_value", other_software);
 
     ui->tabSections->setCurrentIndex(0);
 }
@@ -274,7 +281,9 @@ void KitConfigDialog::updateSaveButtonState()
 {
     ui->btnSaveConfig->setEnabled(ui->wdgDeviceConfig->isDirty() ||
                                   ui->chkTechSup->isChecked() != ui->chkTechSup->property("initial_value").toBool() ||
-                                  ui->txtTechSup->text() != ui->txtTechSup->property("initial_value").toString());
+                                  ui->txtTechSup->text() != ui->txtTechSup->property("initial_value").toString() ||
+                                  ui->chkOtherSoftware->isChecked() != ui->chkOtherSoftware->property("initial_value").toBool() ||
+                                  ui->txtOtherSoftware->text() != ui->txtOtherSoftware->property("initial_value").toString());
 }
 
 void KitConfigDialog::setStatusMessage(QString msg, bool error)
@@ -497,10 +506,19 @@ void KitConfigDialog::on_btnSaveConfig_clicked()
         tech_sup_client = ui->txtTechSup->text();
     }
     m_kitConfig->setTechSupportClient(tech_sup_client);
+
+    QString other_software;
+    if (ui->chkOtherSoftware->isChecked() && !ui->txtOtherSoftware->text().isEmpty()){
+        other_software = ui->txtOtherSoftware->text();
+    }
+    m_kitConfig->setOtherSoftwarePath(other_software);
     m_kitConfig->saveConfig();
 
     ui->chkTechSup->setProperty("initial_value", ui->chkTechSup->isChecked());
     ui->txtTechSup->setProperty("initial_value", ui->txtTechSup->text());
+
+    ui->chkOtherSoftware->setProperty("initial_value", ui->chkOtherSoftware->isChecked());
+    ui->txtOtherSoftware->setProperty("initial_value", ui->txtOtherSoftware->text());
 
     ui->btnSaveConfig->setEnabled(false);
     GlobalMessageBox msg;
@@ -534,3 +552,32 @@ void KitConfigDialog::on_txtTechSup_textChanged(const QString &arg1)
 
     updateSaveButtonState();
 }
+
+void KitConfigDialog::on_chkOtherSoftware_stateChanged(int arg1)
+{
+    Q_UNUSED(arg1)
+
+    ui->frameOtherSoftware->setVisible(ui->chkOtherSoftware->isChecked());
+    updateSaveButtonState();
+}
+
+
+void KitConfigDialog::on_btnOtherSoftware_clicked()
+{
+    QStringList base_paths = QStandardPaths::standardLocations(QStandardPaths::RuntimeLocation);
+    QString base_path = base_paths.first();
+    QString filename = QFileDialog::getOpenFileName(this, tr("Sélectionnez le logiciel à lancer lors du démarrage"), base_path);
+
+    if (!filename.isEmpty()){
+        ui->txtOtherSoftware->setText(filename);
+    }
+}
+
+
+void KitConfigDialog::on_txtOtherSoftware_textChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1)
+
+    updateSaveButtonState();
+}
+

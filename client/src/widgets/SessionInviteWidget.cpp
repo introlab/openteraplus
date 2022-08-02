@@ -828,6 +828,8 @@ void SessionInviteWidget::refreshInSessionTreeWidget()
     // Always expand items
     ui->treeInvitees->expandAll();
 
+    // Update count label
+    ui->lblCount->setText(QString::number(getInviteesCount()) + " / " + QString::number(MAX_INVITEES_IN_SESSION));
 
 }
 
@@ -926,10 +928,9 @@ void SessionInviteWidget::setSearching(const bool &search)
 void SessionInviteWidget::on_btnInvite_clicked()
 {
     // Check if we are under the allowed maximum number of invitees in a session
-    if (getInviteesCount() + ui->lstInvitables->selectedItems().count() > 5){
-        // 5: 1 clinician and 4 others maximum
+    if (getInviteesCount() + ui->lstInvitables->selectedItems().count() > MAX_INVITEES_IN_SESSION){
         GlobalMessageBox msgbox;
-        msgbox.showError(tr("Nombre d'invités atteint"), tr("Impossible d'ajouter ces invités à la séance: le nombre maximal de participants (5) serait dépassé"));
+        msgbox.showError(tr("Nombre maximal d'invités atteint"), tr("Impossible d'ajouter ces invités à la séance: le nombre maximal de participants (") + QString::number(MAX_INVITEES_IN_SESSION) + ") serait dépassé");
         return;
     }
 
