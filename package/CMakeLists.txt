@@ -28,7 +28,7 @@ if (APPLE)
 #        DEPENDS OpenTeraPlus
 #    )
 
-    set(MACSIGNID "")
+    set(MACSIGNID "S636XF5A8U")
     set(MACQTDEPLOY_COMMAND "${qt5_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:OpenTeraPlus>/../.. -always-overwrite -verbose=1")
 
     # message(STATUS "********** ${MACQTDEPLOY_COMMAND}")
@@ -49,10 +49,10 @@ if (APPLE)
     install(CODE "
         execute_process(COMMAND ${MACQTDEPLOY_COMMAND} COMMAND_ECHO STDOUT)
 
-        execute_process(COMMAND codesign --force -s ${MACSIGNID} --deep --options=runtime --timestamp -v ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
+        execute_process(COMMAND codesign --force -s ${MACSIGNID} --deep --options=runtime --timestamp --entitlements ${CMAKE_CURRENT_SOURCE_DIR}/QtWebEngineProcess.entitlements -v ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
         execute_process(COMMAND codesign -dvv -v -v ${APPSIGNPATH}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
         execute_process(COMMAND codesign --force --verify --verbose --sign ${MACSIGNID} --entitlements ${CMAKE_CURRENT_SOURCE_DIR}/QtWebEngineProcess.entitlements --options=runtime --timestamp -v ${APPSIGNPATH}/OpenTeraPlus.app/Contents/Frameworks/QtWebEngineCore.framework/Helpers/QtWebEngineProcess.app/Contents/MacOS/QtWebEngineProcess COMMAND_ECHO STDOUT)
-        execute_process(COMMAND codesign --force --verify --verbose --sign ${MACSIGNID} --options=runtime --timestamp -v ${APPSIGNPATH}/OpenTeraPlus.app/Contents/MacOS/OpenTeraPlus COMMAND_ECHO STDOUT)
+        execute_process(COMMAND codesign --force --verify --verbose --sign ${MACSIGNID} --options=runtime --timestamp --entitlements ${CMAKE_CURRENT_SOURCE_DIR}/QtWebEngineProcess.entitlements -v ${APPSIGNPATH}/OpenTeraPlus.app/Contents/MacOS/OpenTeraPlus COMMAND_ECHO STDOUT)
         ")
     # execute_process(COMMAND codesign -s ${MACSIGNID} --deep -v ${CMAKE_INSTALL_PREFIX}/OpenTeraPlus.app COMMAND_ECHO STDOUT)
     include(CPack REQUIRED)

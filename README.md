@@ -8,6 +8,10 @@ OpenTeraPlus is a client that works with [OpenTera Server](https://github.com/in
 * Simon Brière, ing. M.Sc.A., Research Center on Aging, CIUSSS de l'Estrie-CHUS (@sbriere)
 * Dominic Létourneau, ing. M.Sc.A., IntRoLab, Université de Sherbrooke (@doumdi)
 
+## Publication(s)
+
+* Panchea, A.M., Létourneau, D., Brière, S. et al., [OpenTera: A microservice architecture solution for rapid prototyping of robotic solutions to COVID-19 challenges in care facilities](https://rdcu.be/cHzmf),  Health Technol. 12, 583–596 (2022)
+
 ## Current Features
 
 ### High-level features
