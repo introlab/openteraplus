@@ -72,6 +72,7 @@ set(headers
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
     services/BaseServiceSetupWidget.h
+    services/VideoRehabService/ScreenController.h
     services/VideoRehabService/VideoRehabWidget.h
     services/VideoRehabService/VideoRehabWebPage.h
     services/VideoRehabService/VideoRehabSetupWidget.h
@@ -171,6 +172,7 @@ set(srcs
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
     services/BaseServiceSetupWidget.cpp
+    services/VideoRehabService/ScreenController.cpp
     services/VideoRehabService/VideoRehabWidget.cpp
     services/VideoRehabService/VideoRehabWebPage.cpp
     services/VideoRehabService/VideoRehabSetupWidget.cpp

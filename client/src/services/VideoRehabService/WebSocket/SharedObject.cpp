@@ -1,10 +1,25 @@
 #include "SharedObject.h"
+#include <QScreen>
+#include <QGuiApplication>
 
 SharedObject::SharedObject(QObject *parent) : QObject(parent)
 {
     m_cameraIndex = -1;
     m_ptzCameraDriver = nullptr;
     m_imgSettingsDialog = nullptr;
+
+    // Create Screen Controller
+    // TODO: Don't always create it?
+    QScreen* target_screen;
+    if (QGuiApplication::screens().count() > 1){
+        // More than one screen - always screen 2 that is shared using screen sharing
+        target_screen = QGuiApplication::screens().at(1);
+    }else{
+        // One screen, share primary screen
+        target_screen = QGuiApplication::primaryScreen();
+    }
+    m_screenController = new ScreenController(target_screen, parent);
+
     m_camPTZName = "";
 }
 
@@ -12,6 +27,10 @@ SharedObject::~SharedObject()
 {
     if (m_ptzCameraDriver){
         stopPTZCameraDriver();
+    }
+
+    if (m_screenController){
+        m_screenController->deleteLater();
     }
 }
 
@@ -172,6 +191,31 @@ void SharedObject::imageClicked(QString uuid, int x, int y, int w, int h)
         m_ptzCameraDriver->setPointNClick(QPoint(x,y), QSize(w,h));
     }
     emit move(uuid, x, y, w, h);
+}
+
+void SharedObject::screenClicked(QString uuid, int x, int y, int w, int h)
+{
+    qDebug() << "SharedObject -> Screen Clicked UUID = " << uuid << ", x = " << x << " y = " << y << " width = " << w << " height = " << h;
+    if (uuid == m_userUUID)
+        m_screenController->doClick(x, y, w, h);
+}
+
+void SharedObject::mouseUpEvent(QString uuid, int x, int y, int w, int h)
+{
+    if (uuid == m_userUUID)
+        m_screenController->doMouseUp(x, y, w, h);
+}
+
+void SharedObject::mouseDownEvent(QString uuid, int x, int y, int w, int h)
+{
+    if (uuid == m_userUUID)
+        m_screenController->doMouseDown(x, y, w, h);
+}
+
+void SharedObject::mouseMoveEvent(QString uuid, int x, int y, int w, int h)
+{
+    if (uuid == m_userUUID)
+        m_screenController->doMouseMove(x, y, w, h);
 }
 
 QString SharedObject::getCurrentVideoSource()
@@ -434,7 +478,8 @@ QString SharedObject::getAllSettings()
         {"mirror", m_localMirror},
         {"extraParams", m_extraParams},
         {"secondAudioVideo", serialize2ndSources()},
-        {"ptz", serializePtzCapabilities()}
+        {"ptz", serializePtzCapabilities()},
+        {"screenControl", true}
     };
 
     QJsonDocument doc(myObject);
@@ -466,3 +511,4 @@ void SharedObject::setGeneralError(QString context, QString error)
 {
     emit generalErrorOccured(context, error);
 }
+
