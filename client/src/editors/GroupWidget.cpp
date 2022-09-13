@@ -402,7 +402,7 @@ void GroupWidget::showSessionLobby(const int &id_session_type, const int &id_ses
         part_data.setDataType(TeraDataTypes::TERADATA_PARTICIPANT);
         part_data.setId(id_part);
         part_data.setName(m_tableParticipants_items[id_part]->text());
-        m_sessionLobby->addParticipantsToSession(QList<TeraData>() << part_data, QList<int>() << id_part);
+        m_sessionLobby->addParticipantsToSession(QList<TeraData>() << part_data/*, QList<int>() << id_part*/);
     }
 
     // Add current user to session
