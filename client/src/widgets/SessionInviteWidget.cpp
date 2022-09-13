@@ -45,6 +45,12 @@ void SessionInviteWidget::setCurrentSessionUuid(const QString &session_uuid)
 
 void SessionInviteWidget::addParticipantsToSession(const QList<TeraData> &participants, const QList<int> &required_ids)
 {
+    // Required ids
+    foreach(int required_id, required_ids){
+        if (!m_requiredParticipants.contains(required_id))
+            m_requiredParticipants.append(required_id);
+    }
+
     // Participants
     foreach(TeraData participant, participants){
         // Add in session - widget will be created and updated in updateItem
@@ -56,11 +62,6 @@ void SessionInviteWidget::addParticipantsToSession(const QList<TeraData> &partic
         updateItem(participant);
     }
 
-    // Required ids
-    foreach(int required_id, required_ids){
-        if (!m_requiredParticipants.contains(required_id))
-            m_requiredParticipants.append(required_id);
-    }
 }
 
 void SessionInviteWidget::addUsersToSession(const QList<TeraData> &users, const QList<int> &required_ids)
@@ -138,7 +139,7 @@ void SessionInviteWidget::addParticipantToSession(const QString &participant_uui
             m_participantsInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
 
         // Update item display
-       updateItem(m_participants[data->getId()]);
+       //updateItem(m_participants[data->getId()]);
     }
 }
 
@@ -343,7 +344,7 @@ void SessionInviteWidget::addRequiredParticipant(const int &required_id)
         if (!m_participantsInSession.contains(required_id)){
             m_participantsInSession[required_id] = nullptr; // Will create new TreeWidgetItem
         }
-        updateItem(m_participants[required_id]);
+        //updateItem(m_participants[required_id]);
     }
 
 }
@@ -743,7 +744,7 @@ void SessionInviteWidget::updateItem(const TeraData &item)
     // Check in which list the item is
     bool invited = item_invitees->contains(id_item) || item_required->contains(id_item);
 
-    //qDebug() << item.getName() << " - " << item.getDataTypeName(item.getDataType()) << " ID " << id_item << ": " << invited;
+    // qDebug() << item.getName() << " - " << item.getDataTypeName(item.getDataType()) << " ID " << id_item << ": " << invited;
 
     if (invited){
         // Item is in the invited list
@@ -756,7 +757,7 @@ void SessionInviteWidget::updateItem(const TeraData &item)
         }
 
         // Update informations
-        tree_item->setText(0, item.getName());
+        tree_item->setText(0, item.getName()/* + " [" + QString::number(id_item) + "]"*/);
         tree_item->setIcon(0, QIcon(item.getIconStateFilename()));
 
         tree_item->setDisabled(item_required->contains(id_item)); // Required, so can't be removed!

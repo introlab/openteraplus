@@ -1,6 +1,9 @@
 #include "GroupWidget.h"
 #include "ui_GroupWidget.h"
 
+#include "services/BaseServiceWidget.h"
+#include "TeraSettings.h"
+
 GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::GroupWidget)
@@ -11,6 +14,8 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
     setLimited(false);
+
+    m_sessionLobby = nullptr;
 
     // Use base class to manage editing
     setEditorControls(ui->wdgGroup, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
@@ -41,12 +46,26 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
 
     queryDataRequest(WEB_FORMS_PATH, args);
 
+    // Query session types for that group's project
+    if (!dataIsNew()){
+        if (m_data->hasFieldName("id_project")){
+            args.clear();
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+            queryDataRequest(WEB_SESSIONTYPE_PATH, args);
+        }
+    }
+
 }
 
 GroupWidget::~GroupWidget()
 {
     if (ui)
         delete ui;
+
+    qDeleteAll(m_ids_session_types);
+
+    if (m_sessionLobby)
+        m_sessionLobby->deleteLater();
 }
 
 void GroupWidget::saveData(bool signal){
@@ -67,12 +86,21 @@ void GroupWidget::saveData(bool signal){
 void GroupWidget::updateControlsState(){
     ui->grpSummary->setVisible(!dataIsNew());
     ui->frameActions->setVisible(!dataIsNew());
+
+    if (dataIsNew()){
+        ui->frameNewSession->hide();
+    }
 }
 
 void GroupWidget::updateFieldsValue(){
     if (m_data){
         ui->wdgGroup->fillFormFromData(m_data->toJson());
         ui->lblTitle->setText(m_data->getName());
+
+        bool can_start = canStartSession();
+        ui->btnNewSession->setEnabled(can_start);
+        ui->cmbSessionType->setVisible(can_start);
+
     }
 }
 /*
@@ -155,6 +183,25 @@ void GroupWidget::setData(const TeraData *data)
     }
 }
 
+bool GroupWidget::canStartSession()
+{
+    if (m_ids_session_types.isEmpty()){
+        return false;
+    }
+
+    if (m_activeParticipants.isEmpty()){
+        ui->lblInfos->setText(tr("Aucun participant actif dans ce groupe"));
+        return false;
+    }
+
+    if (m_activeParticipants.count() > 6){
+        ui->lblInfos->setText(tr("Trop de participants actifs dans ce groupe"));
+        return false;
+    }
+
+    return true;
+}
+
 bool GroupWidget::validateData(){
     bool valid = false;
 
@@ -189,6 +236,7 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
     if (stats.hasFieldName("participants")){
         ui->tableSummary->clearContents();
         m_tableParticipants_items.clear();
+        m_activeParticipants.clear();
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
@@ -208,6 +256,8 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
             if (part_info["participant_enabled"].toBool() == true){
                 status = tr("Actif");
                 item->setForeground(Qt::green);
+                if (!m_activeParticipants.contains(part_id))
+                    m_activeParticipants.append(part_id);
             }else{
                 status = tr("Inactif");
                 item->setForeground(Qt::red);
@@ -259,6 +309,65 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
 }
 
+void GroupWidget::processSessionTypesReply(QList<TeraData> session_types)
+{
+    for (const TeraData &st:session_types){
+        if (!m_ids_session_types.contains(st.getId())){
+            m_ids_session_types[st.getId()] = new TeraData(st);
+
+            // New session ComboBox
+            QString ses_type_name = st.getName();
+
+            // Check if it is a session type handled
+            if (st.hasFieldName("session_type_category")){
+                TeraSessionCategory::SessionTypeCategories st_category = static_cast<TeraSessionCategory::SessionTypeCategories>(st.getFieldValue("session_type_category").toInt());
+                if (BaseServiceWidget::getHandledSessionCategories().contains(st_category)){
+                    bool can_start_session = true;
+                    if (st_category == TeraSessionCategory::SESSION_TYPE_SERVICE){
+                        if (st.hasFieldName("session_type_service_key")){
+                            can_start_session = BaseServiceWidget::getHandledServiceKeys().contains(st.getFieldValue("session_type_service_key").toString());
+                        }else{
+                            can_start_session=false;
+                        }
+                    }
+                    if (can_start_session){
+                        ui->cmbSessionType->addItem(ses_type_name, st.getId());
+                    }
+                }
+            }
+        }else{
+            // Existing, must update values
+            *m_ids_session_types[st.getId()] = st;
+            for (int i=0; i<ui->cmbSessionType->count(); i++){
+                if (ui->cmbSessionType->itemData(i).toInt() == st.getId()){
+                    ui->cmbSessionType->setItemText(i, st.getName());
+                }
+            }
+        }
+    }
+
+    // Query sessions for that participant
+    if (!m_data->isNew()){
+        // Select current session type based on last session type used with that participant
+        int last_session_type_id = TeraSettings::getUserSettingForProject(m_comManager->getCurrentUser().getUuid(),
+                                                                          m_data->getFieldValue("id_project").toInt(),
+                                                                          SETTINGS_LASTSESSIONTYPEID).toInt();
+
+        if (last_session_type_id > 0){
+            // We have a setting - try to select it from the list
+            for (int i=0; i<ui->cmbSessionType->count(); i++){
+                if (ui->cmbSessionType->itemData(i).toInt() == last_session_type_id){
+                    ui->cmbSessionType->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    // Hide new session frame if no session type
+    ui->frameNewSession->setVisible(!m_ids_session_types.isEmpty());
+}
+
 void GroupWidget::postResultReply(QString path)
 {
     // OK, data was saved!
@@ -279,12 +388,72 @@ void GroupWidget::deleteDataReply(QString path, int del_id)
     }
 }
 
+void GroupWidget::showSessionLobby(const int &id_session_type, const int &id_session)
+{
+    if (m_sessionLobby)
+        m_sessionLobby->deleteLater();
+    m_sessionLobby = new SessionLobbyDialog(m_comManager, *m_ids_session_types[id_session_type], m_data->getFieldValue("id_project").toInt(), id_session, this);
+
+
+    // Add current participants to session
+    //m_sessionLobby->addParticipantsToSession(QList<TeraData>() << *m_data, QList<int>() << m_data->getId());
+    for(int id_part:qAsConst(m_activeParticipants)){
+        TeraData part_data;
+        part_data.setDataType(TeraDataTypes::TERADATA_PARTICIPANT);
+        part_data.setId(id_part);
+        part_data.setName(m_tableParticipants_items[id_part]->text());
+        m_sessionLobby->addParticipantsToSession(QList<TeraData>() << part_data, QList<int>() << id_part);
+    }
+
+    // Add current user to session
+    m_sessionLobby->addUsersToSession(QList<TeraData>() << m_comManager->getCurrentUser(), QList<int>() <<m_comManager->getCurrentUser().getId());
+
+    connect(m_sessionLobby, &QDialog::accepted, this, &GroupWidget::sessionLobbyStartSessionRequested);
+    connect(m_sessionLobby, &QDialog::rejected, this, &GroupWidget::sessionLobbyStartSessionCancelled);
+    if (height()<800)
+        m_sessionLobby->showMaximized();
+
+    // Show Session Lobby
+    m_sessionLobby->exec();
+}
+
+void GroupWidget::sessionLobbyStartSessionRequested()
+{
+    int id_session_type = m_sessionLobby->getIdSessionType(); //ui->cmbSessionType->currentData().toInt();
+
+    // Save last session type for further use
+    TeraSettings::setUserSettingForProject(m_comManager->getCurrentUser().getUuid(),
+                                           m_data->getFieldValue("id_project").toInt(),
+                                           SETTINGS_LASTSESSIONTYPEID,
+                                           id_session_type);
+
+    // Start session
+    m_comManager->startSession(*m_ids_session_types[id_session_type],
+                               m_sessionLobby->getIdSession(),
+                               m_sessionLobby->getSessionParticipantsUuids(),
+                               m_sessionLobby->getSessionUsersUuids(),
+                               m_sessionLobby->getSessionDevicesUuids(),
+                               m_sessionLobby->getSessionConfig());
+
+    m_sessionLobby->deleteLater();
+    m_sessionLobby = nullptr;
+}
+
+void GroupWidget::sessionLobbyStartSessionCancelled()
+{
+    if (m_sessionLobby){
+        m_sessionLobby->deleteLater();
+        m_sessionLobby = nullptr;
+    }
+}
+
 void GroupWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &GroupWidget::processFormsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &GroupWidget::postResultReply);
     connect(m_comManager, &ComManager::statsReceived, this, &GroupWidget::processStatsReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &GroupWidget::deleteDataReply);
+    connect(m_comManager, &ComManager::sessionTypesReceived, this, &GroupWidget::processSessionTypesReply);
 }
 
 
@@ -320,5 +489,20 @@ void GroupWidget::on_btnDelete_clicked()
 void GroupWidget::on_tableSummary_itemSelectionChanged()
 {
     ui->btnDelete->setEnabled(!ui->tableSummary->selectedItems().isEmpty());
+}
+
+
+void GroupWidget::on_btnNewSession_clicked()
+{
+    if (ui->cmbSessionType->currentIndex() < 0)
+        return;
+
+    if (!m_data)
+        return;
+
+    int id_session_type = ui->cmbSessionType->currentData().toInt();
+    int id_session = 0;
+
+    showSessionLobby(id_session_type, id_session);
 }
 

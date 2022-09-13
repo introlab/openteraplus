@@ -280,6 +280,13 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
        </spacer>
       </item>
       <item>
+       <widget class="QLabel" name="lblInfos">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QComboBox" name="cmbSessionType">
         <property name="enabled">
          <bool>true</bool>
