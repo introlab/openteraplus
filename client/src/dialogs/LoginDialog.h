@@ -19,6 +19,7 @@ public:
 
     void setServerNames(QStringList servers);
     void showServers(bool show);
+    QString currentServerName();
 
     void setStatusMessage(QString message, bool error=false);
 

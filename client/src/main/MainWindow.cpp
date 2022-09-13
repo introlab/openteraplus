@@ -13,7 +13,7 @@
 #include "editors/UserSummaryWidget.h"
 
 
-MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
+MainWindow::MainWindow(ComManager *com_manager, const QString &current_server, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -31,6 +31,10 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_waiting_for_data_type = TERADATA_NONE;
     m_currentDataType = TERADATA_NONE;
     m_currentDataId = -1;
+
+    // Add current server name to window title
+    if (!current_server.isEmpty())
+        setWindowTitle(windowTitle() + " - " + current_server);
 
     // Initial UI state
     initUi();

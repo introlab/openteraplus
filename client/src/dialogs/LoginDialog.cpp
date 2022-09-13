@@ -73,6 +73,14 @@ void LoginDialog::showServers(bool show)
     ui->icoServer->setVisible(show);
 }
 
+QString LoginDialog::currentServerName()
+{
+    if (ui->cmbServers->currentIndex() >=0){
+        return ui->cmbServers->currentText();
+    }
+    return QString();
+}
+
 void LoginDialog::setStatusMessage(QString message, bool error)
 {
     if (message.isEmpty()){

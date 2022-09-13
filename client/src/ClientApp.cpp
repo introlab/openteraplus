@@ -142,7 +142,7 @@ void ClientApp::showMainWindow()
     if (m_mainWindow != nullptr){
         m_mainWindow->deleteLater();
     }
-    m_mainWindow = new MainWindow(m_comMan);
+    m_mainWindow = new MainWindow(m_comMan, m_loginDiag->currentServerName());
 
     // Delete login window, if present
     if (m_loginDiag){

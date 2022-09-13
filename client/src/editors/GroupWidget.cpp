@@ -2,6 +2,7 @@
 #include "ui_GroupWidget.h"
 
 #include "services/BaseServiceWidget.h"
+#include "widgets/SessionInviteWidget.h"
 #include "TeraSettings.h"
 
 GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
@@ -194,7 +195,7 @@ bool GroupWidget::canStartSession()
         return false;
     }
 
-    if (m_activeParticipants.count() > 6){
+    if (m_activeParticipants.count() > MAX_INVITEES_IN_SESSION){
         ui->lblInfos->setText(tr("Trop de participants actifs dans ce groupe"));
         return false;
     }

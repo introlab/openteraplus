@@ -39,7 +39,7 @@ class MainWindow : public QMainWindow
 
 public:
 
-    explicit MainWindow(ComManager* com_manager, QWidget *parent = nullptr);
+    explicit MainWindow(ComManager* com_manager, const QString& current_server, QWidget *parent = nullptr);
     ~MainWindow();
 
     bool isInSession();
