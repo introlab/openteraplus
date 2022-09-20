@@ -85,7 +85,7 @@
     </message>
     <message>
         <location filename="../../src/widgets/AssetsWidget.cpp" line="661"/>
-        <location filename="../../src/widgets/AssetsWidget.cpp" line="1075"/>
+        <location filename="../../src/widgets/AssetsWidget.cpp" line="1072"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_AssetsWidget.h" line="174"/>
         <source>Tout voir</source>
         <translation type="unfinished"></translation>
@@ -132,12 +132,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/AssetsWidget.cpp" line="1032"/>
+        <location filename="../../src/widgets/AssetsWidget.cpp" line="1029"/>
         <source>Affichage des données en cours...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/AssetsWidget.cpp" line="1072"/>
+        <location filename="../../src/widgets/AssetsWidget.cpp" line="1069"/>
         <source>Tout masquer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4478,120 +4478,155 @@ Vous devez associer au moins un site.</source>
 <context>
     <name>TestsWidget</name>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="86"/>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="111"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="94"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="119"/>
         <source>Chargement des données en cours...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="233"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="241"/>
         <source>Participant:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="235"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="243"/>
         <source>Appareil: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="237"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="245"/>
         <source>Utilisateur: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="239"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="247"/>
         <source>Service: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="241"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="249"/>
         <source>Inconnu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="309"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="317"/>
         <source>éléments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="311"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="319"/>
         <source>élément</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="525"/>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="527"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="535"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="537"/>
         <source>Suppression?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="525"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="535"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="527"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="537"/>
         <source>Êtes-vous sûrs de vouloir supprimer toutes les évaluations sélectionnées?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="161"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="592"/>
+        <source>Fichier à enregistrer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="699"/>
+        <source>Erreur d&apos;exportation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="699"/>
+        <source>Impossible d&apos;exporter les données dans le fichier.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="699"/>
+        <source>Le fichier est peut-être ouvert dans une autre application?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="703"/>
+        <source>Exportation terminée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="703"/>
+        <source>L&apos;exportation des données a été complétée avec succès.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="174"/>
         <source>Données</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="163"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="176"/>
         <source>Évaluation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="165"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="178"/>
         <source>Séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="167"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="180"/>
         <source>Type d&apos;évaluation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="169"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="182"/>
         <source>État</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="171"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="184"/>
         <source>Date / Heure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="173"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="186"/>
         <source>Répondant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="175"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="188"/>
         <source>Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="177"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="190"/>
         <source>Résultat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="178"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="191"/>
         <source>Ajouter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="179"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="192"/>
         <source>Supprimer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="180"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="193"/>
         <source>0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="194"/>
+        <source>Tout télécharger</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

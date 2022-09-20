@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTableWidgetItem>
 #include <QKeyEvent>
+#include <QFileDialog>
 
 #include "managers/ComManager.h"
 
@@ -64,6 +65,8 @@ private:
 
     QUrlQuery           m_dataQuery;
 
+    QFileDialog         m_fileDialog; // Defined here to remember last directory
+
     QMap<QString, QTableWidgetItem*>    m_tableTests;
 
     QMap<QString, TeraData*>            m_tests;
@@ -93,6 +96,8 @@ private slots:
     void on_btnDelete_clicked();
 
     void on_tableTests_itemSelectionChanged();
+
+    void on_btnDownloadAll_clicked();
 
 signals:
     void testCountChanged(int new_count);

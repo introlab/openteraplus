@@ -1329,7 +1329,7 @@ void ParticipantWidget::showSessionEditor(TeraData *session_info)
 
     m_diag_editor->setWindowTitle(tr("Séance"));
     //m_diag_editor->setMinimumSize(2*this->width()/3, 5*this->height()/6);
-    m_diag_editor->setMinimumSize(this->width(), this->height());
+    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
 
     connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
     connect(ses_widget, &SessionWidget::assetsCountChanged, this, &ParticipantWidget::sessionAssetsCountChanged);
@@ -1901,7 +1901,7 @@ void ParticipantWidget::on_btnAssetsBrowser_clicked()
     m_diag_editor->setCentralWidget(asset_widget);
 
     m_diag_editor->setWindowTitle(tr("Explorateur de données"));
-    m_diag_editor->setMinimumSize(this->width(), this->height());
+    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
 
     m_diag_editor->open();
 }
@@ -1963,7 +1963,7 @@ void ParticipantWidget::on_btnTestsBrowser_clicked()
     m_diag_editor->setCentralWidget(test_widget);
 
     m_diag_editor->setWindowTitle(tr("Explorateur d'évaluations"));
-    m_diag_editor->setMinimumSize(this->width(), this->height());
+    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
 
     m_diag_editor->open();
 }

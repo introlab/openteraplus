@@ -1,3 +1,5 @@
+#include <QStandardPaths>
+
 #include "TestsWidget.h"
 #include "ui_TestsWidget.h"
 
@@ -24,6 +26,12 @@ TestsWidget::TestsWidget(ComManager *comMan, QWidget *parent) :
     ui->tableTests->installEventFilter(this);
 
     ui->btnNew->hide();
+
+    // Initialize default directory for file dialog
+    QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+
+    if (!documents_path.isEmpty())
+        m_fileDialog.setDirectory(documents_path.first());
 
 
 }
@@ -311,6 +319,8 @@ void TestsWidget::updateTestsCountLabel()
         suffix = tr("élément");
     }
     ui->lblTestsCount->setText(QString::number(m_tests.count()) + " " + suffix);
+
+    ui->btnDownloadAll->setEnabled(m_tests.count()>0);
 }
 
 void TestsWidget::processTestsReply(QList<TeraData> tests, QUrlQuery reply_query)
@@ -551,3 +561,147 @@ void TestsWidget::on_tableTests_itemSelectionChanged()
         showTestSummary(test_uuid);
     }
 }
+
+void TestsWidget::on_btnDownloadAll_clicked()
+{
+    if (m_tests.isEmpty()) return; // Should not happen
+
+    GlobalMessageBox msg(this);
+
+    // Query for file to save
+    QString full_path;
+    QString filename = ""; // Generate default filename
+    if (m_tests.first()->hasFieldName("test_participant")){
+        QString clean_name = Utils::removeNonAlphanumerics(m_tests.first()->getFieldValue("test_participant").toString());
+        filename += clean_name;
+        if (!filename.endsWith("_"))
+            filename += "_";
+    }
+    if (m_viewMode == VIEWMODE_SESSION){
+        if (m_tests.first()->hasFieldName("test_session_name")){
+            QString clean_name = Utils::removeNonAlphanumerics(m_tests.first()->getFieldValue("test_session_name").toString());
+            filename += clean_name;
+            if (!filename.endsWith("_"))
+                filename += "_";
+        }
+    }
+    filename += "tests.csv";
+
+    m_fileDialog.selectFile(filename);
+    m_fileDialog.setFileMode(QFileDialog::AnyFile);
+    m_fileDialog.setWindowTitle(tr("Fichier à enregistrer"));
+    m_fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+
+    if (m_fileDialog.exec()){
+        QStringList selected_files = m_fileDialog.selectedFiles();
+        if (selected_files.isEmpty())
+            return;
+        full_path = selected_files.first();
+    }else{
+        return;
+    }
+
+    // Get all variables in the json fields
+    QStringList columns;
+    QStringList variables;
+    for (TeraData* test:qAsConst(m_tests)){
+        // Parse json result
+        if (test->hasFieldName("test_summary")){
+            QJsonDocument test_summary_doc = QJsonDocument::fromJson(test->getFieldValue("test_summary").toString().toUtf8());
+            if (!test_summary_doc.isNull()){
+                QVariantMap test_summary = test_summary_doc.object().toVariantMap();
+                QVariantMap::const_iterator test_result = test_summary.constBegin();
+                while (test_result != test_summary.constEnd()) {
+                    if (!variables.contains(test_result.key()))
+                        variables << test_result.key();
+                    ++test_result;
+                }
+            }
+        }
+
+    }
+
+    columns << "Participant" << "User" << "Device" << "Service" << "Session" << "TestType" << "Status" << "Name" << "Date"; // Basic columns
+
+    // Format and save to csv
+    QFile csv_file(full_path);
+
+    if (csv_file.open(QIODevice::WriteOnly| QIODevice::Text)){
+        QTextStream csv_writer(&csv_file);
+
+        for (const QString &col: qAsConst(columns))
+            csv_writer << col << '\t';
+
+        for (const QString &var: qAsConst(variables))
+            csv_writer << var << '\t';
+        csv_writer << Qt::endl;
+
+        for (int i=0; i<ui->tableTests->rowCount(); i++){
+            // Use the data in the table to keep received order of items
+            TeraData* test = m_tests[m_tableTests.key(ui->tableTests->item(i,0))];
+
+            // Creator
+            if (test->hasFieldName("test_participant")){
+                csv_writer << test->getFieldValue("test_participant").toString();
+            }
+            csv_writer << '\t';
+            if (test->hasFieldName("test_user")){
+                csv_writer << test->getFieldValue("test_user").toString();
+            }
+            csv_writer << '\t';
+            if (test->hasFieldName("test_device")){
+                csv_writer << test->getFieldValue("test_device").toString();
+            }
+            csv_writer << '\t';
+            if (test->hasFieldName("test_service")){
+                csv_writer << test->getFieldValue("test_service").toString();
+            }
+            csv_writer << '\t';
+
+            // Test infos
+            if (test->hasFieldName("test_session_name")){
+                csv_writer << test->getFieldValue("test_session_name").toString();
+            }
+            csv_writer << '\t';
+            if (test->hasFieldName("id_test_type")){
+                csv_writer << test->getFieldValue("id_test_type").toString();
+            }
+            csv_writer << '\t';
+            if (test->hasFieldName("test_status")){
+                csv_writer << test->getFieldValue("test_status").toString();
+            }
+            csv_writer << '\t';
+            if (test->hasFieldName("test_name")){
+                csv_writer << test->getFieldValue("test_name").toString();
+            }
+            csv_writer << '\t';
+            if (test->hasFieldName("test_datetime")){
+                csv_writer << test->getFieldValue("test_datetime").toDateTime().toString("dd-MM-yyyy hh:mm:ss");
+            }
+            csv_writer << '\t';
+            if (test->hasFieldName("test_summary")){
+                QJsonDocument test_summary_doc = QJsonDocument::fromJson(test->getFieldValue("test_summary").toString().toUtf8());
+                if (!test_summary_doc.isNull()){
+                   QVariantMap test_summary = test_summary_doc.object().toVariantMap();
+                   for (const QString &var: qAsConst(variables)){
+                       if (test_summary.contains(var)){
+                           csv_writer <<test_summary[var].toString();
+                       }
+                       csv_writer << '\t';
+                   }
+                }
+            }
+            csv_writer << Qt::endl;
+
+        }
+        csv_file.close();
+    }else{
+        msg.showError(tr("Erreur d'exportation"), tr("Impossible d'exporter les données dans le fichier.") + "\n\r" + tr("Le fichier est peut-être ouvert dans une autre application?"));
+        return;
+    }
+
+    msg.showInfo(tr("Exportation terminée"), tr("L'exportation des données a été complétée avec succès."));
+
+
+}
+
