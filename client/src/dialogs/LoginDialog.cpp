@@ -75,7 +75,7 @@ void LoginDialog::showServers(bool show)
 
 QString LoginDialog::currentServerName()
 {
-    if (ui->cmbServers->currentIndex() >=0){
+    if (ui->cmbServers->currentIndex() >=0 && ui->cmbServers->isVisible()){
         return ui->cmbServers->currentText();
     }
     return QString();
