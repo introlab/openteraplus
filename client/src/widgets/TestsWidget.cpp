@@ -621,7 +621,7 @@ void TestsWidget::on_btnDownloadAll_clicked()
 
     }
 
-    columns << "Participant" << "User" << "Device" << "Service" << "Session" << "TestType" << "Status" << "Name" << "Date"; // Basic columns
+    columns << "Participant" << "User" << "Device" << "Service" << "Session" << "TestType" << "Status" << "Name" << "Date" << "Time"; // Basic columns
 
     // Format and save to csv
     QFile csv_file(full_path);
@@ -676,7 +676,9 @@ void TestsWidget::on_btnDownloadAll_clicked()
             }
             csv_writer << '\t';
             if (test->hasFieldName("test_datetime")){
-                csv_writer << test->getFieldValue("test_datetime").toDateTime().toString("dd-MM-yyyy hh:mm:ss");
+                csv_writer << test->getFieldValue("test_datetime").toDateTime().toString("yyyy-MM-dd");
+                csv_writer << '\t';
+                csv_writer << test->getFieldValue("test_datetime").toDateTime().toString("hh:mm:ss");
             }
             csv_writer << '\t';
             if (test->hasFieldName("test_summary")){
