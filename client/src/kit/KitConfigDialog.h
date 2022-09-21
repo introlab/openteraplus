@@ -58,6 +58,12 @@ private slots:
 
     void on_txtTechSup_textChanged(const QString &arg1);
 
+    void on_chkOtherSoftware_stateChanged(int arg1);
+
+    void on_btnOtherSoftware_clicked();
+
+    void on_txtOtherSoftware_textChanged(const QString &arg1);
+
 private:
     void initUi();
     void connectSignals();

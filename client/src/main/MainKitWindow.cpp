@@ -14,6 +14,7 @@ MainKitWindow::MainKitWindow(ConfigManagerClient *config, QWidget *parent) :
     m_partComManager = nullptr;
     m_sessionDiag = nullptr;
     m_techSupProcess = nullptr;
+    //m_otherSoftProcess = nullptr;
 
     // Load config file
     loadConfig();
@@ -275,6 +276,19 @@ void MainKitWindow::connectParticipantCom(const QString &token)
         // Connect to server
         m_partComManager->connectToServer(token);
 }
+/*
+void MainKitWindow::launchOtherSoftware(const QString &path)
+{
+    if (m_otherSoftProcess)
+        m_otherSoftProcess->deleteLater();
+    m_otherSoftProcess = new QProcess(this);
+    m_otherSoftProcess->setProgram(path);
+    QFileInfo fi(path);
+    m_otherSoftProcess->setWorkingDirectory(fi.canonicalPath());
+    m_otherSoftProcess->start();
+
+    showMaximized();
+}*/
 
 void MainKitWindow::loadConfig()
 {
@@ -350,6 +364,9 @@ void MainKitWindow::showInSessionDialog()
 
     connect(m_sessionDiag, &KitInSessionDialog::finished, this, &MainKitWindow::inSessionDialog_closed);
 
+    /*if (m_otherSoftProcess)
+        m_sessionDiag->showMaximized();
+    else*/
     m_sessionDiag->showMaximized();
     m_sessionDiag->showFullScreen();
 }
@@ -386,6 +403,13 @@ void MainKitWindow::inSessionDialog_closed()
         m_sessionDiag->deleteLater();
         m_sessionDiag = nullptr;
     }
+   /* if (m_otherSoftProcess){
+        m_otherSoftProcess->kill();
+        m_otherSoftProcess->waitForFinished(10000);
+        m_otherSoftProcess->deleteLater();
+        m_otherSoftProcess = nullptr;
+        showFullScreen();
+    }*/
 }
 
 void MainKitWindow::on_btnExit_clicked()
@@ -434,6 +458,10 @@ void MainKitWindow::on_btnConfig_clicked()
 
 void MainKitWindow::on_btnOnOff_clicked()
 {
+    /*if (!m_kitConfig.getOtherSoftwarePath().isEmpty()){
+        // Must launch other software too
+        launchOtherSoftware(m_kitConfig.getOtherSoftwarePath());
+    }*/
     showInSessionDialog();
 }
 

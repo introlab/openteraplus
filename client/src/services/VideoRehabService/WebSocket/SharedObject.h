@@ -14,6 +14,8 @@
 #include "drivers/PTZ/Vivotek8111.h"
 #include "drivers/PTZ/CamImageSettingsDialog.h"
 
+#include "services/VideoRehabService/ScreenController.h"
+
 //#include "camsettings.h"
 
 class SharedObject : public QObject
@@ -80,6 +82,11 @@ public slots:
     Q_INVOKABLE void setPresetClicked(QString uuid, int preset);
     Q_INVOKABLE void imageClicked(QString uuid, int x, int y, int w, int h);
 
+    Q_INVOKABLE void screenClicked(QString uuid, int x, int y, int w, int h);
+    Q_INVOKABLE void mouseUpEvent(QString uuid, int x, int y, int w, int h);
+    Q_INVOKABLE void mouseDownEvent(QString uuid, int x, int y, int w, int h);
+    Q_INVOKABLE void mouseMoveEvent(QString uuid, int x, int y, int w, int h);
+
     Q_INVOKABLE void cameraChanged(QString name, int index);
     Q_INVOKABLE void setLocalMirror(const bool &mirror);
 
@@ -127,11 +134,10 @@ private slots:
     void camImageSettingsChanged();
 
 private:
-    ICameraDriver* m_ptzCameraDriver;
+    ICameraDriver*      m_ptzCameraDriver;
+    ScreenController*   m_screenController;
 
 protected:
-
-
 
     QString serializeContactInfo();
     QString serializeAudioSource();

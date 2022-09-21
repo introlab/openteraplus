@@ -1,7 +1,6 @@
 #include "ComManager.h"
 #include <sstream>
 #include <QLocale>
-#include "Utils.h"
 
 ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
     BaseComManager(serverUrl, parent),

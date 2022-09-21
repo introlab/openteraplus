@@ -266,34 +266,37 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
 
             // Get participants, users and devices list, and mark them as "required" and invited
             // Lock everyone that was initially in the session? Is that OK??
+            // SB - Only lock current user, allow for more flexibility...
             QVariantList item_list;
 
-           if (session.hasFieldName("session_participants")){
+           /*if (session.hasFieldName("session_participants")){
                 item_list = session.getFieldValue("session_participants").toList();
 
                 for(const QVariant &session_part:qAsConst(item_list)){
                     QVariantMap part_info = session_part.toMap();
                     ui->wdgInvitees->addRequiredParticipant(part_info["id_participant"].toInt());
                 }
-            }
+            }*/
 
             if (session.hasFieldName("session_users")){
                 item_list = session.getFieldValue("session_users").toList();
 
                 for(const QVariant &session_user:qAsConst(item_list)){
                     QVariantMap user_info = session_user.toMap();
-                    ui->wdgInvitees->addRequiredUser(user_info["id_user"].toInt());
+                    int id_user = user_info["id_user"].toInt();
+                    if (id_user == m_comManager->getCurrentUser().getId())
+                        ui->wdgInvitees->addRequiredUser(id_user);
                 }
             }
 
-            if (session.hasFieldName("session_devices")){
+            /*if (session.hasFieldName("session_devices")){
                 item_list = session.getFieldValue("session_devices").toList();
 
                 for(const QVariant &session_device:qAsConst(item_list)){
                     QVariantMap device_info = session_device.toMap();
                     ui->wdgInvitees->addRequiredDevice(device_info["id_device"].toInt());
                 }
-            }
+            }*/
             ui->wdgInvitees->selectDefaultFilter();
 
 

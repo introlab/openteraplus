@@ -2,6 +2,7 @@
 #define KITINSESSIONDIALOG_H
 
 #include <QDialog>
+#include <QProcess>
 
 #include "GlobalMessageBox.h"
 
@@ -25,9 +26,14 @@ public:
 private slots:
     void on_btnLogout_clicked();
 
+    void on_btnLauncher_clicked();
+
 private:
     void initUi();
     void setMainWidget(QWidget* wdg);
+
+    void startOtherSoftware();
+    void stopOtherSoftware();
 
 
     Ui::KitInSessionDialog *ui;
@@ -36,6 +42,8 @@ private:
     KitVideoRehabWidget*    m_serviceWidget;
 
     ParticipantComManager*  m_partComManager;
+
+    QProcess*               m_otherSoftProcess;
 };
 
 #endif // KITINSESSIONDIALOG_H

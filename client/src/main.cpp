@@ -5,7 +5,6 @@
 #include "ClientApp.h"
 #include <QWebEngineSettings>
 #include <QTranslator>
-#include "VirtualCamera.h"
 
 int main(int argc, char* argv[])
 {
@@ -28,6 +27,7 @@ int main(int argc, char* argv[])
 #else
     qputenv("QTWEBENGINE_CHROMIUM_FLAGS", "--autoplay-policy=no-user-gesture-required"); // Allow auto-play feature in webengine without any user interaction to test, for example, the microphone and play sounds
 #endif
+    //qputenv("QTWEBENGINE_CHROMIUM_FLAGS", "--autoplay-policy=no-user-gesture-required --remote-debugging-port=22222"); // Allow auto-play feature in webengine without any user interaction to test, for example, the microphone and play sounds
     ClientApp app(argc, argv);
 
 //Set application style
@@ -38,13 +38,6 @@ int main(int argc, char* argv[])
     /*QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
     QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
     QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);*/
-
-
-    //DL - Testing Virtual camera driver, should be put elsewhere
-    /*VirtualCamera cam;
-    cam.init("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov", "/akvcam/video0");
-    cam.start();*/
-
 
     return app.exec();
 }

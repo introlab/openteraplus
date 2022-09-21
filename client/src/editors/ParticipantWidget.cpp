@@ -6,7 +6,6 @@
 #include <QThread>
 #include <QStyledItemDelegate>
 
-#include "editors/DataListWidget.h"
 #include "editors/SessionWidget.h"
 
 #include "dialogs/GeneratePasswordDialog.h"
@@ -265,7 +264,11 @@ void ParticipantWidget::updateFieldsValue()
                 ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
             }
 
-            ui->frameNewSession->setVisible(canStartNewSession());
+            bool can_start = canStartNewSession();
+            //ui->frameNewSession->setVisible(canStartNewSession());
+            ui->btnNewSession->setEnabled(can_start);
+            ui->cmbSessionType->setVisible(can_start);
+            ui->lblInfos->setVisible(!can_start);
         }
 
         if (ui->wdgParticipant->formHasStructure())
@@ -318,7 +321,27 @@ bool ParticipantWidget::canStartNewSession(const int &id_session_type)
     if (!m_data)
         return false;
 
-    bool can_start = m_data->isEnabled() && !m_data->isNew() && !m_data->isBusy();
+    bool can_start = true;
+
+    if (!m_data->isEnabled()){
+        ui->lblInfos->setText(tr("Participant désactivé"));
+        can_start = false;
+    }
+
+    if (m_data->isBusy()){
+        ui->lblInfos->setText(tr("Participant en séance"));
+        can_start = false;
+    }
+
+    if (!m_data->getFieldValue("participant_login_enabled").toBool() && !m_data->getFieldValue("participant_token_enabled").toBool()){
+        ui->lblInfos->setText(tr("Le participant n'a pas d'accès (web ou identification)"));
+        can_start = false;
+    }
+
+    if (m_ids_session_types.isEmpty()){
+        ui->lblInfos->setText(tr("Aucun type de séance associé au projet"));
+        can_start = false;
+    }
 
     if (can_start && id_session_type>0){
         // Check if that session type is in the handled service keys for that version of OpenTeraPlus
@@ -327,10 +350,14 @@ bool ParticipantWidget::canStartNewSession(const int &id_session_type)
             if (session_type->hasFieldName("session_type_service_key")){
                 QString service_key = session_type->getFieldValue("service").toString();
                 can_start = BaseServiceWidget::getHandledServiceKeys().contains(service_key);
+            }else{
+                ui->lblInfos->setText(tr("Ce type de séance n'est pas supporté dans cette version"));
+                can_start = false;
             }
 
         }else{
             // Unknown session type - can't start!
+            ui->lblInfos->setText(tr("Type de séance inconnu"));
             can_start = false;
         }
     }
@@ -1302,7 +1329,7 @@ void ParticipantWidget::showSessionEditor(TeraData *session_info)
 
     m_diag_editor->setWindowTitle(tr("Séance"));
     //m_diag_editor->setMinimumSize(2*this->width()/3, 5*this->height()/6);
-    m_diag_editor->setMinimumSize(this->width(), this->height());
+    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
 
     connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
     connect(ses_widget, &SessionWidget::assetsCountChanged, this, &ParticipantWidget::sessionAssetsCountChanged);
@@ -1801,18 +1828,29 @@ void ParticipantWidget::on_cmbSessionType_currentIndexChanged(int index)
 
     // Online session - make sure that the participant can login to allow such a session
     int id_session_type = ui->cmbSessionType->currentData().toInt();
-    if (m_ids_session_types[id_session_type]->getFieldValue("session_type_online").toBool()){
+    bool can_start = canStartNewSession();
+    ui->btnNewSession->setEnabled(can_start);
+    ui->cmbSessionType->setVisible(can_start);
+
+    /*if (m_ids_session_types[id_session_type]->getFieldValue("session_type_online").toBool()){
         if (m_data->getFieldValue("participant_login_enabled").toBool() || m_data->getFieldValue("participant_token_enabled").toBool()){
             ui->btnNewSession->setEnabled(true);
+            ui->cmbSessionType->show();
             ui->btnNewSession->setToolTip(tr("Démarrer une nouvelle séance"));
+            ui->lblInfos->setText("");
         }else{
             ui->btnNewSession->setEnabled(false);
+            ui->cmbSessionType->hide();
             ui->btnNewSession->setToolTip(tr("Le participant n'a pas d'accès (web ou identification)."));
+            ui->lblInfos->setText(tr("Le participant n'a pas d'accès (web ou identification)."));
+            ui->lblInfos->show();
         }
     }else{
         ui->btnNewSession->setEnabled(true);
+        ui->cmbSessionType->show();
+        ui->lblInfos->setText("");
         ui->btnNewSession->setToolTip(tr("Démarrer une nouvelle séance"));
-    }
+    }*/
 
     // Session type related to a service: select the correct item in the link combo box to generate correct link
     if (m_ids_session_types[id_session_type]->hasFieldName("session_type_service_key")){
@@ -1863,7 +1901,7 @@ void ParticipantWidget::on_btnAssetsBrowser_clicked()
     m_diag_editor->setCentralWidget(asset_widget);
 
     m_diag_editor->setWindowTitle(tr("Explorateur de données"));
-    m_diag_editor->setMinimumSize(this->width(), this->height());
+    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
 
     m_diag_editor->open();
 }
@@ -1925,7 +1963,7 @@ void ParticipantWidget::on_btnTestsBrowser_clicked()
     m_diag_editor->setCentralWidget(test_widget);
 
     m_diag_editor->setWindowTitle(tr("Explorateur d'évaluations"));
-    m_diag_editor->setMinimumSize(this->width(), this->height());
+    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
 
     m_diag_editor->open();
 }

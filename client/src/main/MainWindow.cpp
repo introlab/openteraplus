@@ -13,7 +13,7 @@
 #include "editors/UserSummaryWidget.h"
 
 
-MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
+MainWindow::MainWindow(ComManager *com_manager, const QString &current_server, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -31,6 +31,10 @@ MainWindow::MainWindow(ComManager *com_manager, QWidget *parent) :
     m_waiting_for_data_type = TERADATA_NONE;
     m_currentDataType = TERADATA_NONE;
     m_currentDataId = -1;
+
+    // Add current server name to window title
+    if (!current_server.isEmpty())
+        setWindowTitle(windowTitle() + " - " + current_server);
 
     // Initial UI state
     initUi();
@@ -239,6 +243,12 @@ void MainWindow::showDashboard(const bool &show)
 
 void MainWindow::setInSession(bool in_session, const TeraData *session_type, const int &id_session, int id_project)
 {
+    if (!in_session && !isInSession())
+        return; // No current session, don't stop it!
+
+    if (in_session && isInSession())
+        return; // Already in a session, don't start another one
+
     if (m_data_editor){
         m_data_editor->disconnectSignals();
         ui->wdgMainTop->layout()->removeWidget(m_data_editor);
@@ -270,7 +280,6 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
         connect(m_inSessionWidget, &InSessionWidget::requestShowNotification, this, &MainWindow::addNotification);
         ui->wdgMainTop->layout()->addWidget(m_inSessionWidget);
     }else{
-
         // Loads back the "previous" data type
         dataDisplayRequested(m_currentDataType, m_currentDataId);
     }
@@ -397,19 +406,21 @@ void MainWindow::joinSessionDialogFinished()
         m_comManager->sendJoinSessionReply(QString::fromStdString(m_joinSession_dialog->getEvent()->session_uuid()),
                                            m_joinSession_dialog->getSelectedReply());
 
-        // Join session
-        TeraData* session = m_joinSession_dialog->getSession();
-        int id_project = -1;
-        // Find id project of the first participant in the project, if there
-        if (session->hasFieldName("session_participants")){
-            QVariantList participants = session->getFieldValue("session_participants").toList();
-            if (participants.count() > 0){
-                id_project = participants.first().toHash()["id_project"].toInt();
+        if (m_joinSession_dialog->getSelectedReply() == JoinSessionReplyEvent_ReplyType::JoinSessionReplyEvent_ReplyType_REPLY_ACCEPTED){
+            // Join session
+            TeraData* session = m_joinSession_dialog->getSession();
+            int id_project = -1;
+            // Find id project of the first participant in the project, if there
+            if (session->hasFieldName("session_participants")){
+                QVariantList participants = session->getFieldValue("session_participants").toList();
+                if (participants.count() > 0){
+                    id_project = participants.first().toHash()["id_project"].toInt();
+                }
             }
+            setInSession(true, m_joinSession_dialog->getSessionType(), m_joinSession_dialog->getSessionId(), id_project);
+            m_inSessionWidget->setPendingEvent(m_joinSession_dialog->getEvent());
+            m_comManager->joinSession(*m_joinSession_dialog->getSessionType(), m_joinSession_dialog->getSessionId());
         }
-        setInSession(true, m_joinSession_dialog->getSessionType(), m_joinSession_dialog->getSessionId(), id_project);
-        m_inSessionWidget->setPendingEvent(m_joinSession_dialog->getEvent());
-        m_comManager->joinSession(*m_joinSession_dialog->getSessionType(), m_joinSession_dialog->getSessionId());
     }else{
         // Rejected dialog (because closed manually, for example) always generate a refuse reply.
         m_comManager->sendJoinSessionReply(QString::fromStdString(m_joinSession_dialog->getEvent()->session_uuid()),
@@ -464,10 +475,10 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID, QString::number(data_id));
-    /*if (data_type == TERADATA_PARTICIPANT){
+    if (data_type == TERADATA_USER){
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
-    }*/
+    }
     m_comManager->doGet(TeraData::getPathForDataType(data_type), query);
 
 }

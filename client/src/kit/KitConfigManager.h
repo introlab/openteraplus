@@ -30,6 +30,9 @@ public:
     QString         getTechSupportClient();
     void            setTechSupportClient(const QString& client);
 
+    QString         getOtherSoftwarePath();
+    void            setOtherSoftwarePath(const QString& path);
+
 };
 
 #endif // KITCONFIGMANAGER_H

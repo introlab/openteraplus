@@ -13,7 +13,7 @@ KitConfigManager::KitConfigManager(QString filename, QObject *parent) : ConfigMa
 
 void KitConfigManager::initConfig()
 {
-    ConfigManager::initConfig(QStringList() << "Participant" << "KitConfig" << "TechSupport");
+    ConfigManager::initConfig(QStringList() << "Participant" << "KitConfig" << "TechSupport" << "OtherSoftware");
 }
 
 QString KitConfigManager::getParticipantToken()
@@ -129,6 +129,27 @@ void KitConfigManager::setTechSupportClient(const QString &client)
         QJsonObject tech_sup = config["TechSupport"].toObject();
         tech_sup.insert("client_path", client);
         config["TechSupport"] = tech_sup;
+        m_config.setObject(config);
+    }
+}
+
+QString KitConfigManager::getOtherSoftwarePath()
+{
+    QString rval = "";
+    if (!m_config.isNull()){
+        QHash<QString, QVariant> settings = m_config["OtherSoftware"].toObject().toVariantHash();
+        rval = settings["software_path"].toString();
+    }
+    return rval;
+}
+
+void KitConfigManager::setOtherSoftwarePath(const QString &path)
+{
+    if (!m_config.isNull()){
+        QJsonObject config = m_config.object();
+        QJsonObject tech_sup = config["OtherSoftware"].toObject();
+        tech_sup.insert("software_path", path);
+        config["OtherSoftware"] = tech_sup;
         m_config.setObject(config);
     }
 }

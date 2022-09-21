@@ -36,7 +36,7 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     ui->treeAssets->installEventFilter(this);
 
     // Initialize default directory for file dialog
-    QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation);
 
     if (!documents_path.isEmpty())
         m_fileDialog.setDirectory(documents_path.first());
@@ -984,9 +984,6 @@ void AssetsWidget::on_btnDelete_clicked()
         }
     }
 }
-
-
-
 
 void AssetsWidget::on_btnDownload_clicked()
 {

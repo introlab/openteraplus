@@ -183,7 +183,7 @@ QLabel {
 */
 QTreeWidget, QTableWidget{
     selection-background-color: rgba(255,255,255,50%);/*rgba(0,5,45,50%)*/;
-    selection-color: black;
+    selection-color: lightblue;
 }
 
 QTreeWidget#treeNavigator {
@@ -581,14 +581,14 @@ QPushButton#btnLogout:hover {
 }
 
 /* Green buttons */
-QPushButton#btnNewSession, QPushButton#btnStartSession {
+QPushButton#btnNewSession, QPushButton#btnStartSession, QPushButton#btnLauncher {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(0,45,5,100%), stop: 1 rgba(10,140,10,100%));/*qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(10,140,10,100%), stop: 0.2  rgba(0,45,5,100%), stop:1 rgba(10,140,10,100%));*/
     color: white;
     border: 1px solid rgb(0,150,0);
     min-height:36px;
 }
 
-QPushButton#btnNewSession:hover, QPushButton#btnStartSession:hover {
+QPushButton#btnNewSession:hover, QPushButton#btnStartSession:hover, QPushButton#btnLauncher:hover {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(10,140,10,100%), stop: 1 rgba(0,45,5,100%));/*qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,45,5,100%), stop: 0.2  rgba(10,140,10,100%), stop:1 rgba(0,45,5,100%));*/
     color: white;
     border: 1px solid rgb(0,150,0);

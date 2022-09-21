@@ -67,6 +67,8 @@ private:
     void initParticipantCom(const QString& token);
     void connectParticipantCom(const QString& token);
 
+    //void launchOtherSoftware(const QString& path);
+
     void loadConfig();
 
     void showLogin();
@@ -83,7 +85,9 @@ private:
     KitConfigDialog*        m_configDiag;
     KitConfigManager        m_kitConfig;
     KitInSessionDialog*     m_sessionDiag;
+
     QProcess*               m_techSupProcess;
+    //QProcess*               m_otherSoftProcess;
 
 };
 
