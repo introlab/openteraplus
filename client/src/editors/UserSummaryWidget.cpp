@@ -69,9 +69,11 @@ void UserSummaryWidget::updateFieldsValue()
             ui->icoOnline->setPixmap(QPixmap("://status/status_offline.png"));
         }
 
-
         ui->frameNewSession->setVisible(m_data->isEnabled() && !m_data->isNew() &&
                                         m_data->getUuid() != m_comManager->getCurrentUser().getUuid());
+
+        if (m_data->hasBusyStateField())
+            ui->btnNewSession->setEnabled(!m_data->isBusy());
     }
 }
 
@@ -99,7 +101,7 @@ void UserSummaryWidget::processSessionTypesReply(QList<TeraData> session_types)
 {
     ui->cmbSessionType->clear();
 
-    for (TeraData st:session_types){
+    for (const TeraData &st:session_types){
         if (!m_ids_session_types.contains(st.getId())){
             m_ids_session_types[st.getId()] = new TeraData(st);
             // New session ComboBox

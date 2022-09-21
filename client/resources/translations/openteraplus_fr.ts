@@ -2124,124 +2124,124 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="582"/>
+        <location filename="../../src/main/MainWindow.cpp" line="589"/>
         <source>Erreur HTTP </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="584"/>
+        <location filename="../../src/main/MainWindow.cpp" line="591"/>
         <source>Erreur </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="589"/>
+        <location filename="../../src/main/MainWindow.cpp" line="596"/>
         <source>Suppression impossible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="616"/>
+        <location filename="../../src/main/MainWindow.cpp" line="623"/>
         <source>Données sauvegardées.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="635"/>
+        <location filename="../../src/main/MainWindow.cpp" line="642"/>
         <source>Données supprimées.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="644"/>
+        <location filename="../../src/main/MainWindow.cpp" line="651"/>
         <source> - mise à jour...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="655"/>
+        <location filename="../../src/main/MainWindow.cpp" line="662"/>
         <source>Récupération de </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="665"/>
+        <location filename="../../src/main/MainWindow.cpp" line="672"/>
         <source> - suppression...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="729"/>
+        <location filename="../../src/main/MainWindow.cpp" line="736"/>
         <source>Erreur de séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="729"/>
+        <location filename="../../src/main/MainWindow.cpp" line="736"/>
         <source>Une erreur est survenue:
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="729"/>
+        <location filename="../../src/main/MainWindow.cpp" line="736"/>
         <source>
 
 La séance ne peut pas continuer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="739"/>
-        <location filename="../../src/main/MainWindow.cpp" line="768"/>
+        <location filename="../../src/main/MainWindow.cpp" line="746"/>
+        <location filename="../../src/main/MainWindow.cpp" line="775"/>
         <source> est en ligne.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="751"/>
-        <location filename="../../src/main/MainWindow.cpp" line="783"/>
+        <location filename="../../src/main/MainWindow.cpp" line="758"/>
+        <location filename="../../src/main/MainWindow.cpp" line="790"/>
         <source> est hors-ligne.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="824"/>
+        <location filename="../../src/main/MainWindow.cpp" line="831"/>
         <source>Erreur de serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="831"/>
-        <location filename="../../src/main/MainWindow.cpp" line="836"/>
+        <location filename="../../src/main/MainWindow.cpp" line="838"/>
+        <location filename="../../src/main/MainWindow.cpp" line="843"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_MainWindow.h" line="480"/>
         <source>Déconnexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="831"/>
+        <location filename="../../src/main/MainWindow.cpp" line="838"/>
         <source>Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="831"/>
+        <location filename="../../src/main/MainWindow.cpp" line="838"/>
         <source>Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="905"/>
+        <location filename="../../src/main/MainWindow.cpp" line="912"/>
         <source>Votre compte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="929"/>
+        <location filename="../../src/main/MainWindow.cpp" line="936"/>
         <source>Configuration Globale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="949"/>
+        <location filename="../../src/main/MainWindow.cpp" line="956"/>
         <source>Détails</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="696"/>
+        <location filename="../../src/main/MainWindow.cpp" line="703"/>
         <source>Changement de langue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="533"/>
+        <location filename="../../src/main/MainWindow.cpp" line="540"/>
         <source>En ligne (</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="696"/>
+        <location filename="../../src/main/MainWindow.cpp" line="703"/>
         <source>La langue a été modifiée.
 Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
         <translation type="unfinished"></translation>
@@ -4540,27 +4540,27 @@ Vous devez associer au moins un site.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="699"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="701"/>
         <source>Erreur d&apos;exportation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="699"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="701"/>
         <source>Impossible d&apos;exporter les données dans le fichier.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="699"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="701"/>
         <source>Le fichier est peut-être ouvert dans une autre application?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="703"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="705"/>
         <source>Exportation terminée</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/TestsWidget.cpp" line="703"/>
+        <location filename="../../src/widgets/TestsWidget.cpp" line="705"/>
         <source>L&apos;exportation des données a été complétée avec succès.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4626,7 +4626,7 @@ Vous devez associer au moins un site.</source>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_TestsWidget.h" line="194"/>
-        <source>Tout télécharger</source>
+        <source>Exporter</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
