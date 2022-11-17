@@ -52,6 +52,7 @@ void VideoRehabWidget::initUI()
     m_loadingIcon->start();
 
     QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
+    //QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
     QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PlaybackRequiresUserGesture, false);
 
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);

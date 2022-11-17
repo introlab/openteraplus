@@ -4234,7 +4234,7 @@ Souhaitez-vous continuer?</source>
 <context>
     <name>TeraForm</name>
     <message>
-        <location filename="../../src/editors/TeraForm.cpp" line="1287"/>
+        <location filename="../../src/editors/TeraForm.cpp" line="1295"/>
         <source>Choisir la couleur</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5335,37 +5335,37 @@ Vous devez spécifier au moins un groupe utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="215"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="216"/>
         <source>Fichier disponible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="215"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="216"/>
         <source>Le fichier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="216"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="217"/>
         <source>est disponible dans le répertoire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="225"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="226"/>
         <source>Impossible de charger la page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="239"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="240"/>
         <source>Problème vidéo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="244"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="245"/>
         <source>Problème audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="249"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="250"/>
         <source>Erreur</source>
         <translation type="unfinished"></translation>
     </message>

@@ -467,7 +467,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             else if (item_type == "checklist"){
                 item_widget = createListWidget(item_data);
             }
-            else if (item_type == "longtext"){
+            else if (item_type == "longtext" || item_type == "json"){ // Json here, for now...
                 item_widget = createLongTextWidget(item_data);
             }
             else if (item_type == "label"){
@@ -1051,7 +1051,6 @@ QVariant TeraForm::getWidgetValue(QWidget *widget)
 
 void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
 {
-
     widget->setProperty("last_value", value);
     if (QComboBox* combo = dynamic_cast<QComboBox*>(widget)){
         int index = combo->findText(value.toString());
@@ -1083,6 +1082,15 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QTextEdit* text = dynamic_cast<QTextEdit*>(widget)){
+        if (value.canConvert(QMetaType::QVariantMap) || value.canConvert(QMetaType::QVariantHash)){
+            QVariantHash data;
+            if (value.convert(QMetaType::QVariantHash, &data)){
+                QJsonDocument doc;
+                doc.setObject(QJsonObject::fromVariantHash(data));
+                text->setText(doc.toJson(QJsonDocument::Compact));
+                return;
+            }
+        }
         text->setText(value.toString());
         return;
     }
