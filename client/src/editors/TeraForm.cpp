@@ -1083,13 +1083,11 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
 
     if (QTextEdit* text = dynamic_cast<QTextEdit*>(widget)){
         if (value.canConvert(QMetaType::QVariantMap) || value.canConvert(QMetaType::QVariantHash)){
-            QVariantHash data;
-            if (value.convert(QMetaType::QVariantHash, &data)){
-                QJsonDocument doc;
-                doc.setObject(QJsonObject::fromVariantHash(data));
-                text->setText(doc.toJson(QJsonDocument::Compact));
-                return;
-            }
+            QVariantHash data = value.toHash();
+            QJsonDocument doc;
+            doc.setObject(QJsonObject::fromVariantHash(data));
+            text->setText(doc.toJson(QJsonDocument::Compact));
+            return;
         }
         text->setText(value.toString());
         return;
