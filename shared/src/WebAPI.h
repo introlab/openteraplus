@@ -49,6 +49,10 @@
 #define WEB_VERSIONSINFO_PATH               "/api/user/versions"
 
 #define WEB_FORMS_PATH                      "/api/user/forms"
+
+#define WEB_LOGS_LOGINS_PATH                "/log/api/logging/login_entries"
+#define WEB_LOGS_LOGS_PATH                  "/log/api/logging/log_entries"
+
 #define WEB_FORMS_QUERY_USER                "type=user"
 #define WEB_FORMS_QUERY_SITE                "type=site"
 #define WEB_FORMS_QUERY_DEVICE              "type=device"
@@ -84,6 +88,8 @@
 
 #define WEB_QUERY_UUID_PARTICIPANT  "participant_uuid"
 #define WEB_QUERY_UUID_ASSET        "asset_uuid"
+#define WEB_QUERY_UUID_USER         "user_uuid"
+#define WEB_QUERY_UUID_DEVICE       "device_uuid"
 
 #define WEB_QUERY_UUID              "uuid"
 #define WEB_QUERY_APPTAG            "app_tag"

@@ -710,9 +710,14 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_ASSET:
         emit assetsReceived(items, reply_query);
         break;
+    case TERADATA_LOG_LOG:
+        emit logsLogsReceived(items, reply_query);
+        break;
+    case TERADATA_LOG_LOGIN:
+        emit logsLoginReceived(items, reply_query);
+        break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/
-
     }
 
     // Always emit generic signal

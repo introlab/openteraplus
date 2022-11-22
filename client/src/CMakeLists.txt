@@ -102,6 +102,7 @@ set(headers
     widgets/ResultMessageWidget.h
     widgets/TestsWidget.h
     widgets/QRWidget.h
+    widgets/LogViewWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -200,7 +201,8 @@ set(srcs
     widgets/AssetsWidget.cpp
     widgets/ResultMessageWidget.cpp
     widgets/TestsWidget.cpp
-     widgets/QRWidget.cpp
+    widgets/QRWidget.cpp
+    widgets/LogViewWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -262,6 +264,7 @@ SET(uis
     widgets/AssetsWidget.ui
     widgets/ResultMessageWidget.ui
     widgets/TestsWidget.ui
+    widgets/LogViewWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui

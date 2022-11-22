@@ -450,17 +450,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="779"/>
+        <location filename="../../src/managers/ComManager.cpp" line="784"/>
         <source>Erreur inconnue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="880"/>
+        <location filename="../../src/managers/ComManager.cpp" line="885"/>
         <source>Utilisateur ou mot de passe invalide.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="890"/>
+        <location filename="../../src/managers/ComManager.cpp" line="895"/>
         <source>La communication avec le serveur n&apos;a pu être établie.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -468,58 +468,68 @@
 <context>
     <name>ConfigWidget</name>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="49"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="54"/>
         <source>Utilisateurs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="50"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="55"/>
         <source>Groupes utilisateurs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="51"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="56"/>
         <source>Sites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="52"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="57"/>
         <source>Appareils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="53"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="58"/>
         <source>Type appareils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="54"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="59"/>
         <source>Sous-types appareils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="55"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="60"/>
         <source>Types de séances</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="56"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="61"/>
         <source>Types évaluations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="58"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="63"/>
         <source>Services</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="95"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="99"/>
         <source>Erreur inconnue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="209"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="248"/>
         <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="249"/>
+        <source>Paramètres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="250"/>
+        <source>Journaux</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1922,6 +1932,97 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_KitVideoRehabWidget.h" line="163"/>
         <source>Démarrage en cours...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LogViewWidget</name>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="155"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="156"/>
+        <source>Début</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="157"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="159"/>
+        <source>dd-MM-yyyy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="158"/>
+        <source>Fin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="160"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="167"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="161"/>
+        <source>Filtrer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="163"/>
+        <source>Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="165"/>
+        <source>Heure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="169"/>
+        <source>Message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="170"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="194"/>
+        <source>Inconnu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="173"/>
+        <source>Trace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="176"/>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="179"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="182"/>
+        <source>Avertissement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="185"/>
+        <source>Critique</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="188"/>
+        <source>Erreur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="191"/>
+        <source>Fatal</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4060,181 +4161,191 @@ Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="315"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="319"/>
         <source>Utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="317"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="321"/>
         <source>Groupe utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="319"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="323"/>
         <source>Utilisateurs: Groupe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="321"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="325"/>
         <source>Utilisateurs: Préférences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="323"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="327"/>
         <source>Site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="325"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="329"/>
         <source>Type de séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="327"/>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="383"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="331"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="387"/>
         <source>Évaluation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="329"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="333"/>
         <source>Évaluation: projet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="331"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="335"/>
         <source>Évaluation: site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="333"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="337"/>
         <source>Projet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="335"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="339"/>
         <source>Appareil</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="337"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="341"/>
         <source>Participant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="339"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="343"/>
         <source>Groupe participant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="341"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="345"/>
         <source>Accès: site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="343"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="347"/>
         <source>Accès: projet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="345"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="349"/>
         <source>Séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="347"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="351"/>
         <source>Appareil: site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="349"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="353"/>
         <source>Appareil: projet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="351"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="355"/>
         <source>Appareil: participant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="353"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="357"/>
         <source>Appareil: sous-type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="355"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="359"/>
         <source>Appareil: type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="357"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="361"/>
         <source>Type de séance: projet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="359"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="363"/>
         <source>Type de séance: site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="361"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="365"/>
         <source>Séance: événement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="363"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="367"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="365"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="369"/>
         <source>Service: projet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="367"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="371"/>
         <source>Service: site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="369"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="373"/>
         <source>Service: Accès</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="371"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="375"/>
         <source>Service: Configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="373"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="377"/>
         <source>Statistiques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="375"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="379"/>
         <source>Appareil: état</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="377"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="381"/>
         <source>Participant: état</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="379"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="383"/>
         <source>Utilisateur: état</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../shared/src/data/TeraData.cpp" line="381"/>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="385"/>
         <source>Donnée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="389"/>
+        <source>Journal: Connexion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../shared/src/data/TeraData.cpp" line="391"/>
+        <source>Journal: Général</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>TeraForm</name>
     <message>
-        <location filename="../../src/editors/TeraForm.cpp" line="1295"/>
+        <location filename="../../src/editors/TeraForm.cpp" line="1293"/>
         <source>Choisir la couleur</source>
         <translation type="unfinished"></translation>
     </message>
