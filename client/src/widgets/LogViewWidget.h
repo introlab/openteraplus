@@ -55,6 +55,7 @@ private slots:
     void on_btnNextPage_clicked();
     void on_btnPrevPage_clicked();
     void on_spinPage_editingFinished();
+    void on_btnRefresh_clicked();
 };
 
 #endif // LOGVIEWWIDGET_H

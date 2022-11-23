@@ -251,3 +251,9 @@ void LogViewWidget::on_spinPage_editingFinished()
     refreshData(false);
 }
 
+
+void LogViewWidget::on_btnRefresh_clicked()
+{
+    refreshData(false);
+}
+
