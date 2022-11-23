@@ -107,6 +107,10 @@
 #define WEB_QUERY_DOWNLOAD          "download"
 #define WEB_QUERY_ENABLED           "enabled"
 #define WEB_QUERY_FULL              "full"
+#define WEB_QUERY_STATS             "stats"
+#define WEB_QUERY_START_DATE        "start_date"
+#define WEB_QUERY_END_DATE          "end_date"
+#define WEB_QUERY_LOG_LEVEL         "log_level"
 
 #define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
 #define WEB_QUERY_WITH_SITES        "with_sites"

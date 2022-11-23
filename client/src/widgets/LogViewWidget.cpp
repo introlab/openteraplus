@@ -11,9 +11,8 @@ LogViewWidget::LogViewWidget(QWidget *parent):
     ui->cmbLevel->setItemDelegate(new QStyledItemDelegate(ui->cmbLevel));
     m_currentMode = ViewMode::VIEW_LOGS_NONE;
     m_currentUuid = QString();
-
-    ui->dateEndDate->setDate(QDate::currentDate());
-    ui->dateStartDate->setDate(QDate::currentDate().addMonths(-6));
+    m_maxCount = 50; // 50 items at a time by default
+    m_filtering = false;
 
     // Init levels combo box
     int level_id = LogEvent::LogLevel_MIN;
@@ -51,100 +50,60 @@ void LogViewWidget::setViewMode(const ViewMode &mode, const QString &uuid, const
     m_currentUuid = uuid;
 
     if (autoload){
-        refreshData();
+        refreshData(true);
     }
 
 }
 
-void LogViewWidget::refreshData()
+void LogViewWidget::refreshData(const bool &stats_only)
 {
+    QUrlQuery args;
+    if (stats_only)
+        args.addQueryItem(WEB_QUERY_STATS, "1");
+    else{
+        // Set limiters and offset
+        int offset = (ui->spinPage->value()-1) * m_maxCount;
+        args.addQueryItem(WEB_QUERY_OFFSET, QString::number(offset));
+        args.addQueryItem(WEB_QUERY_LIMIT, QString::number(m_maxCount));
+    }
+
+    if (m_filtering){
+        // Set start and end date
+        args.addQueryItem(WEB_QUERY_START_DATE, ui->dateStartDate->date().toString(Qt::ISODate));
+        args.addQueryItem(WEB_QUERY_END_DATE, ui->dateEndDate->date().toString(Qt::ISODate));
+        // Log level
+        args.addQueryItem(WEB_QUERY_LOG_LEVEL, QString::number(ui->cmbLevel->currentIndex()));
+    }
+
+    // Set paths and UUIDs if required
+    QString path;
     switch(m_currentMode){
     case VIEW_LOGINS_ALL:
-        queryAllLogins();
+        path = WEB_LOGS_LOGINS_PATH;
         break;
     case VIEW_LOGINS_DEVICE:
-        queryLoginsForDevice();
+        path = WEB_LOGS_LOGINS_PATH;
+        args.addQueryItem(WEB_QUERY_UUID_DEVICE, m_currentUuid);
         break;
     case VIEW_LOGINS_PARTICIPANT:
-        queryLoginsForParticipant();
+        path = WEB_LOGS_LOGINS_PATH;
+        args.addQueryItem(WEB_QUERY_UUID_PARTICIPANT, m_currentUuid);
         break;
     case VIEW_LOGINS_USER:
-        queryLoginsForUser();
+        path = WEB_LOGS_LOGINS_PATH;
+        args.addQueryItem(WEB_QUERY_UUID_USER, m_currentUuid);
         break;
     case VIEW_LOGS_ALL:
-        queryAllLogs();
+        path = WEB_LOGS_LOGS_PATH;
         break;
     case VIEW_LOGS_NONE:
         LOG_WARNING("No view mode selected!", "LogViewWidget");
+        return;
         break;
     }
-}
+    setEnabled(false);
+    m_comManager->doGet(path, args);
 
-void LogViewWidget::queryLoginsForUser()
-{
-    if (m_currentUuid.isEmpty()){
-        LOG_WARNING("No UUID was set!", "LogViewWidget::queryLoginsForUser");
-        return;
-    }
-
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_UUID_USER, m_currentUuid);
-
-    if (m_comManager){
-        m_comManager->doGet(WEB_LOGS_LOGINS_PATH, args);
-    }else{
-        LOG_WARNING("No ComManager was set!", "LogViewWidget");
-    }
-}
-
-void LogViewWidget::queryLoginsForParticipant()
-{
-    if (m_currentUuid.isEmpty()){
-        LOG_WARNING("No UUID was set!", "LogViewWidget::queryLoginsForParticipant");
-        return;
-    }
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_UUID_PARTICIPANT, m_currentUuid);
-
-    if (m_comManager){
-        m_comManager->doGet(WEB_LOGS_LOGINS_PATH, args);
-    }else{
-        LOG_WARNING("No ComManager was set!", "LogViewWidget");
-    }
-}
-
-void LogViewWidget::queryLoginsForDevice()
-{
-    if (m_currentUuid.isEmpty()){
-        LOG_WARNING("No UUID was set!", "LogViewWidget::queryLoginsForDevice");
-        return;
-    }
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_UUID_DEVICE, m_currentUuid);
-
-    if (m_comManager){
-        m_comManager->doGet(WEB_LOGS_LOGINS_PATH, args);
-    }else{
-        LOG_WARNING("No ComManager was set!", "LogViewWidget");
-    }
-}
-
-void LogViewWidget::queryAllLogins()
-{
-    if (m_comManager){
-        m_comManager->doGet(WEB_LOGS_LOGINS_PATH);
-    }else{
-        LOG_WARNING("No ComManager was set!", "LogViewWidget");
-    }
-}
-
-void LogViewWidget::queryAllLogs()
-{
-    if (m_comManager){
-        m_comManager->doGet(WEB_LOGS_LOGS_PATH);
-    }else{
-        LOG_WARNING("No ComManager was set!", "LogViewWidget");
-    }
 }
 
 void LogViewWidget::connectSignals()
@@ -196,20 +155,51 @@ QString LogViewWidget::getLogLevelName(const LogEvent::LogLevel &level)
     }
 }
 
+void LogViewWidget::updateNavButtons()
+{
+    ui->btnPrevPage->setEnabled(ui->spinPage->value() > ui->spinPage->minimum());
+    ui->btnNextPage->setEnabled(ui->spinPage->value() < ui->spinPage->maximum());
+}
+
 void LogViewWidget::processLogsLogins(QList<TeraData> logins, QUrlQuery reply_data)
 {
-
+    setEnabled(true);
 }
 
 void LogViewWidget::processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data)
 {
+
+    if (reply_data.hasQueryItem(WEB_QUERY_STATS)){
+        // We received stats, update display
+        if (!logins.empty()){
+            int count = logins.first().getFieldValue("count").toInt();
+            int page_count = count / m_maxCount + 1;
+            ui->lblEntriesCount->setText(QString::number(count));
+            ui->frameNav->setVisible(count > m_maxCount);
+            ui->spinPage->setValue(1);
+            ui->spinPage->setMaximum(page_count);
+            ui->lblTotalPages->setText("/" + QString::number(page_count));
+            ui->btnPrevPage->setDisabled(true);
+            ui->btnNextPage->setEnabled(page_count>1);
+
+            if (ui->dateStartDate->date().year() <= 2000)
+                ui->dateStartDate->setDate(logins.first().getFieldValue("min_timestamp").toDate());
+            if (ui->dateEndDate->date().year() <= 2000)
+                ui->dateEndDate->setDate(logins.first().getFieldValue("max_timestamp").toDate());
+            refreshData(false);
+            return;
+        }else{
+            LOG_WARNING("Expected log stats. Received empty reply", "LogViewWidget::processLogsLogs");
+        }
+    }
+    setEnabled(true);
     ui->tableLogs->clearContents();
     ui->tableLogs->setRowCount(logins.count());
 
     int row = 0;
     for(const TeraData &login:logins){
         QTableWidgetItem* item = new QTableWidgetItem();
-        QDateTime log_date = QDateTime::fromMSecsSinceEpoch(login.getFieldValue("timestamp").toULongLong());
+        QDateTime log_date = login.getFieldValue("timestamp").toDateTime().toLocalTime();
         item->setText(log_date.toString("dd-MM-yyyy"));
         ui->tableLogs->setItem(row, 0, item);
 
@@ -218,7 +208,7 @@ void LogViewWidget::processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data
         ui->tableLogs->setItem(row, 1, item);
 
         item = new QTableWidgetItem();
-        item->setText(getLogLevelName(static_cast<LogEvent::LogLevel>(login.getFieldValue("level").toInt())));
+        item->setText(getLogLevelName(static_cast<LogEvent::LogLevel>(login.getFieldValue("log_level").toInt())));
         ui->tableLogs->setItem(row, 2, item);
 
         item = new QTableWidgetItem();
@@ -230,6 +220,34 @@ void LogViewWidget::processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data
 
 void LogViewWidget::on_btnFilter_clicked()
 {
-   refreshData();
+    m_filtering = true;
+    refreshData();
+}
+
+
+void LogViewWidget::on_btnNextPage_clicked()
+{
+    if (ui->spinPage->value() + 1 <= ui->spinPage->maximum()){
+        ui->spinPage->setValue(ui->spinPage->value() + 1);
+        updateNavButtons();
+        refreshData(false);
+    }
+}
+
+
+void LogViewWidget::on_btnPrevPage_clicked()
+{
+    if (ui->spinPage->value() - 1 >= ui->spinPage->minimum()){
+        ui->spinPage->setValue(ui->spinPage->value() - 1);
+        updateNavButtons();
+        refreshData(false);
+    }
+}
+
+
+void LogViewWidget::on_spinPage_editingFinished()
+{
+    updateNavButtons();
+    refreshData(false);
 }
 

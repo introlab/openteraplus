@@ -31,29 +31,30 @@ public:
     void setComManager(ComManager* comMan);
     void setViewMode(const ViewMode &mode, const QString& uuid = QString(), const bool& autoload=false);
 
-    void refreshData();
+    void refreshData(const bool &stats_only = true);
 
 private:
     Ui::LogViewWidget*  ui;
     ComManager*         m_comManager;
     ViewMode            m_currentMode;
     QString             m_currentUuid;
+    int                 m_maxCount;
+    bool                m_filtering; // Applying selected filters
 
     void connectSignals();
 
     QStringList getLogLevelNames();
     QString getLogLevelName(const LogEvent::LogLevel &level);
 
-    void queryLoginsForUser();
-    void queryLoginsForParticipant();
-    void queryLoginsForDevice();
-    void queryAllLogins();
-    void queryAllLogs();
+    void updateNavButtons();
 
 private slots:
     void processLogsLogins(QList<TeraData> logins, QUrlQuery reply_data);
     void processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data);
     void on_btnFilter_clicked();
+    void on_btnNextPage_clicked();
+    void on_btnPrevPage_clicked();
+    void on_spinPage_editingFinished();
 };
 
 #endif // LOGVIEWWIDGET_H

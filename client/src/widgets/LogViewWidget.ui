@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Log Viewer</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -57,9 +57,9 @@
        </property>
        <property name="date">
         <date>
-         <year>2020</year>
-         <month>10</month>
-         <day>27</day>
+         <year>1999</year>
+         <month>12</month>
+         <day>31</day>
         </date>
        </property>
       </widget>
@@ -94,16 +94,6 @@
        <property name="showGroupSeparator" stdset="0">
         <bool>false</bool>
        </property>
-       <property name="minimumDateTime">
-        <datetime>
-         <hour>0</hour>
-         <minute>0</minute>
-         <second>0</second>
-         <year>2020</year>
-         <month>9</month>
-         <day>14</day>
-        </datetime>
-       </property>
        <property name="displayFormat">
         <string>dd-MM-yyyy</string>
        </property>
@@ -115,7 +105,7 @@
        </property>
        <property name="date">
         <date>
-         <year>2022</year>
+         <year>1999</year>
          <month>12</month>
          <day>31</day>
         </date>
@@ -220,6 +210,116 @@
        <string>Message</string>
       </property>
      </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frameNav">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="lblEntriesCount">
+        <property name="font">
+         <font>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>xxx</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblEntries">
+        <property name="text">
+         <string>événements</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnPrevPage">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="text">
+         <string>&lt;&lt;&lt;</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources/TeraClient.qrc">
+          <normaloff>:/controls/branch_left.png</normaloff>:/controls/branch_left.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinPage">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="accelerated">
+         <bool>true</bool>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="stepType">
+         <enum>QAbstractSpinBox::DefaultStepType</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblTotalPages">
+        <property name="text">
+         <string>/ 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnNextPage">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="text">
+         <string>&gt;&gt;&gt;</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources/TeraClient.qrc">
+          <normaloff>:/controls/branch_closed.png</normaloff>:/controls/branch_closed.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
