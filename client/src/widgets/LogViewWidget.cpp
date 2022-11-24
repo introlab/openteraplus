@@ -19,10 +19,14 @@ LogViewWidget::LogViewWidget(QWidget *parent):
     QStringList names = getLogLevelNames();
     for(const QString &name:qAsConst(names)){
         ui->cmbLevel->addItem(name, level_id++);
-        if (level_id == LogEvent::LOGLEVEL_INFO){
+        /*if (level_id == LogEvent::LOGLEVEL_INFO){
             ui->cmbLevel->setCurrentIndex(ui->cmbLevel->count()-1);
-        }
+        }*/
     }
+    ui->cmbLevel->setProperty("last_value", 0);
+    ui->dateEndDate->setProperty("last_value", ui->dateEndDate->date());
+    ui->dateStartDate->setProperty("last_value", ui->dateStartDate->date());
+    ui->cmbLevel->setCurrentIndex(0);
 }
 
 LogViewWidget::LogViewWidget(ComManager* comMan, QWidget *parent) :
@@ -69,10 +73,10 @@ void LogViewWidget::refreshData(const bool &stats_only)
 
     if (m_filtering){
         // Set start and end date
-        args.addQueryItem(WEB_QUERY_START_DATE, ui->dateStartDate->date().toString(Qt::ISODate));
-        args.addQueryItem(WEB_QUERY_END_DATE, ui->dateEndDate->date().toString(Qt::ISODate));
+        args.addQueryItem(WEB_QUERY_START_DATE, ui->dateStartDate->property("last_value").toDate().toString(Qt::ISODate));
+        args.addQueryItem(WEB_QUERY_END_DATE, ui->dateEndDate->property("last_value").toDateTime().addSecs(23*3600 + 59*60 + 59).addMSecs(999).toString(Qt::ISODate)); // At 23:59:59
         // Log level
-        args.addQueryItem(WEB_QUERY_LOG_LEVEL, QString::number(ui->cmbLevel->currentIndex()));
+        args.addQueryItem(WEB_QUERY_LOG_LEVEL, QString::number(ui->cmbLevel->itemData(ui->cmbLevel->property("last_value").toInt()).toInt()));
     }
 
     // Set paths and UUIDs if required
@@ -127,7 +131,7 @@ QString LogViewWidget::getLogLevelName(const LogEvent::LogLevel &level)
 {
     switch(level){
         case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_UNKNOWN:
-            return tr("Inconnu");
+            return tr("Tous");
         break;
         case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_TRACE:
             return tr("Trace");
@@ -155,10 +159,45 @@ QString LogViewWidget::getLogLevelName(const LogEvent::LogLevel &level)
     }
 }
 
+QString LogViewWidget::getLogLevelIcon(const LogEvent::LogLevel &level)
+{
+    switch(level){
+        case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_UNKNOWN:
+            return "";
+        break;
+        case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_TRACE:
+        case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_DEBUG:
+            return "://icons/search.png";
+        break;
+        case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_INFO:
+            return "://icons/info.png";
+        break;
+        case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_WARNING:
+            return "://status/warning.png";
+        break;
+        case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_FATAL:
+        case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_CRITICAL:
+            return "://icons/error2.png";
+        break;
+        case opentera::protobuf::LogEvent_LogLevel_LOGLEVEL_ERROR:
+            return "://icons/error.png";
+        break;
+        default:
+            return "";
+    }
+}
+
 void LogViewWidget::updateNavButtons()
 {
     ui->btnPrevPage->setEnabled(ui->spinPage->value() > ui->spinPage->minimum());
     ui->btnNextPage->setEnabled(ui->spinPage->value() < ui->spinPage->maximum());
+}
+
+void LogViewWidget::updateFilterButton()
+{
+    ui->btnFilter->setEnabled(ui->cmbLevel->property("last_value").toInt() != ui->cmbLevel->currentIndex()
+            || ui->dateStartDate->property("last_value").toDate() != ui->dateStartDate->date()
+            || ui->dateEndDate->property("last_value").toDate() != ui->dateEndDate->date());
 }
 
 void LogViewWidget::processLogsLogins(QList<TeraData> logins, QUrlQuery reply_data)
@@ -182,10 +221,15 @@ void LogViewWidget::processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data
             ui->btnPrevPage->setDisabled(true);
             ui->btnNextPage->setEnabled(page_count>1);
 
-            if (ui->dateStartDate->date().year() <= 2000)
-                ui->dateStartDate->setDate(logins.first().getFieldValue("min_timestamp").toDate());
-            if (ui->dateEndDate->date().year() <= 2000)
-                ui->dateEndDate->setDate(logins.first().getFieldValue("max_timestamp").toDate());
+            QDate min_date = logins.first().getFieldValue("min_timestamp").toDate();
+            QDate max_date = logins.first().getFieldValue("max_timestamp").toDate();
+
+            if (ui->dateStartDate->date().year() <= 2000){
+                ui->dateStartDate->setProperty("last_value", min_date);
+                ui->dateStartDate->setDate(min_date);
+                ui->dateEndDate->setProperty("last_value", max_date);
+                ui->dateEndDate->setDate(max_date);
+            }
             refreshData(false);
             return;
         }else{
@@ -208,7 +252,9 @@ void LogViewWidget::processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data
         ui->tableLogs->setItem(row, 1, item);
 
         item = new QTableWidgetItem();
-        item->setText(getLogLevelName(static_cast<LogEvent::LogLevel>(login.getFieldValue("log_level").toInt())));
+        LogEvent::LogLevel level = static_cast<LogEvent::LogLevel>(login.getFieldValue("log_level").toInt());
+        item->setText(getLogLevelName(level));
+        item->setIcon(QIcon(getLogLevelIcon(level)));
         ui->tableLogs->setItem(row, 2, item);
 
         item = new QTableWidgetItem();
@@ -221,6 +267,10 @@ void LogViewWidget::processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data
 void LogViewWidget::on_btnFilter_clicked()
 {
     m_filtering = true;
+    ui->cmbLevel->setProperty("last_value", ui->cmbLevel->currentIndex());
+    ui->dateEndDate->setProperty("last_value", ui->dateEndDate->date());
+    ui->dateStartDate->setProperty("last_value", ui->dateStartDate->date());
+    updateFilterButton();
     refreshData();
 }
 
@@ -244,16 +294,33 @@ void LogViewWidget::on_btnPrevPage_clicked()
     }
 }
 
-
 void LogViewWidget::on_spinPage_editingFinished()
 {
     updateNavButtons();
     refreshData(false);
 }
 
-
 void LogViewWidget::on_btnRefresh_clicked()
 {
     refreshData(false);
+}
+
+
+void LogViewWidget::on_cmbLevel_currentIndexChanged(int index)
+{
+    updateFilterButton();
+}
+
+
+void LogViewWidget::on_dateStartDate_dateChanged(const QDate &date)
+{
+    ui->dateEndDate->setMinimumDate(date);
+    updateFilterButton();
+}
+
+
+void LogViewWidget::on_dateEndDate_dateChanged(const QDate &date)
+{
+    updateFilterButton();
 }
 

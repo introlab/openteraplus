@@ -45,8 +45,10 @@ private:
 
     QStringList getLogLevelNames();
     QString getLogLevelName(const LogEvent::LogLevel &level);
+    QString getLogLevelIcon(const LogEvent::LogLevel &level);
 
     void updateNavButtons();
+    void updateFilterButton();
 
 private slots:
     void processLogsLogins(QList<TeraData> logins, QUrlQuery reply_data);
@@ -56,6 +58,9 @@ private slots:
     void on_btnPrevPage_clicked();
     void on_spinPage_editingFinished();
     void on_btnRefresh_clicked();
+    void on_cmbLevel_currentIndexChanged(int index);
+    void on_dateStartDate_dateChanged(const QDate &date);
+    void on_dateEndDate_dateChanged(const QDate &date);
 };
 
 #endif // LOGVIEWWIDGET_H

@@ -270,7 +270,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <normaloff>:/icons/log_icon.png</normaloff>:/icons/log_icon.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Journaux</string>
+       <string>Événements</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="spacing">
