@@ -28,6 +28,8 @@ ConfigWidget::ConfigWidget(ComManager *comMan, QWidget *parent) :
     // Logs
     ui->logsWdg->setComManager(comMan);
     ui->logsWdg->setViewMode(LogViewWidget::VIEW_LOGS_ALL);
+    ui->loginsWdg->setComManager(comMan);
+    ui->loginsWdg->setViewMode(LogViewWidget::VIEW_LOGINS_ALL);
 
 }
 
@@ -115,6 +117,10 @@ void ConfigWidget::on_tabSectionsWidget_currentChanged(int index)
 {
     if (ui->tabSectionsWidget->currentWidget() == ui->tabLogs){
         ui->logsWdg->refreshData();
+    }
+
+    if (ui->tabSectionsWidget->currentWidget() == ui->tabLogins){
+        ui->loginsWdg->refreshData();
     }
 }
 

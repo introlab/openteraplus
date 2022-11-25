@@ -5,6 +5,7 @@
 #include "managers/ComManager.h"
 
 #include "LogEvent.pb.h"
+#include "LoginEvent.pb.h"
 
 namespace Ui {
 class LogViewWidget;
@@ -40,15 +41,28 @@ private:
     QString             m_currentUuid;
     int                 m_maxCount;
     bool                m_filtering; // Applying selected filters
+    bool                m_listening; // Listening for logs
 
     void connectSignals();
+    void disconnectSignals();
 
     QStringList getLogLevelNames();
     QString getLogLevelName(const LogEvent::LogLevel &level);
     QString getLogLevelIcon(const LogEvent::LogLevel &level);
 
+    QString getLoginTypeName(const LoginEvent::LoginType &login_type);
+    QString getLoginTypeIcon(const LoginEvent::LoginType &login_type);
+
+    QString getLoginStatusName(const LoginEvent::LoginStatus &status);
+    QString getLoginStatusIcon(const LoginEvent::LoginStatus &status);
+
+    QString getOSIcon(const QString &os);
+    QString getBrowserIcon(const QString &browser);
+
     void updateNavButtons();
     void updateFilterButton();
+
+    void processStats(const TeraData& stats);
 
 private slots:
     void processLogsLogins(QList<TeraData> logins, QUrlQuery reply_data);

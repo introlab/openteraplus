@@ -135,5 +135,17 @@
         <file>icons/test_type.png</file>
         <file>icons/qr.png</file>
         <file>icons/log_icon.png</file>
+        <file>icons/logs/certificate.png</file>
+        <file>icons/logs/password.png</file>
+        <file>icons/logs/token.png</file>
+        <file>icons/question.png</file>
+        <file>icons/logs/browser_chrome.png</file>
+        <file>icons/logs/browser_firefox.png</file>
+        <file>icons/logs/browser_safari.png</file>
+        <file>icons/logs/os_android.png</file>
+        <file>icons/logs/os_ios.png</file>
+        <file>icons/logs/os_linux.png</file>
+        <file>icons/logs/os_mac.png</file>
+        <file>icons/logs/os_windows.png</file>
     </qresource>
 </RCC>

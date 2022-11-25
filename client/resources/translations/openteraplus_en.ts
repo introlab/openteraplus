@@ -209,12 +209,12 @@
 <context>
     <name>BaseDialog</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_BaseDialog.h" line="80"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_BaseDialog.h" line="81"/>
         <source>Dialog</source>
         <translation>Dialogue</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_BaseDialog.h" line="81"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_BaseDialog.h" line="82"/>
         <source>Fermer</source>
         <translation>Close</translation>
     </message>
@@ -468,68 +468,73 @@
 <context>
     <name>ConfigWidget</name>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="54"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="56"/>
         <source>Utilisateurs</source>
         <translation>Users</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="55"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="57"/>
         <source>Groupes utilisateurs</source>
         <translation>Users Groups</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="56"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="58"/>
         <source>Sites</source>
         <translation>Sites</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="57"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="59"/>
         <source>Appareils</source>
         <translation>Devices</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="58"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="60"/>
         <source>Type appareils</source>
         <translation>Device Type</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="59"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="61"/>
         <source>Sous-types appareils</source>
         <translation>Devices Sub-Types</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="60"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="62"/>
         <source>Types de séances</source>
         <translation>Session Types</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="61"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="63"/>
         <source>Types évaluations</source>
         <translation>Test types</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="63"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="65"/>
         <source>Services</source>
         <translation>Services</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ConfigWidget.cpp" line="99"/>
+        <location filename="../../src/widgets/ConfigWidget.cpp" line="101"/>
         <source>Erreur inconnue</source>
         <translation>Unknown error</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="248"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="266"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="249"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="267"/>
         <source>Paramètres</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="250"/>
-        <source>Journaux</source>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="268"/>
+        <source>Événements</source>
+        <translation type="unfinished">Events</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="269"/>
+        <source>Journal d&apos;accès</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1970,90 +1975,166 @@ Please update the software or contribute to the development!</translation>
 <context>
     <name>LogViewWidget</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="155"/>
         <source>Form</source>
-        <translation type="unfinished">Form</translation>
+        <translation type="obsolete">Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="156"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="241"/>
+        <source>Log Viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="242"/>
         <source>Début</source>
         <translation type="unfinished">Start</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="157"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="159"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="243"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="245"/>
         <source>dd-MM-yyyy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="158"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="244"/>
         <source>Fin</source>
         <translation type="unfinished">End</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="160"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="167"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="257"/>
+        <source>xxx</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="258"/>
+        <source>événements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="259"/>
+        <source>&lt;&lt;&lt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="260"/>
+        <source>/ 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="261"/>
+        <source>&gt;&gt;&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="87"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="246"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="254"/>
         <source>Type</source>
         <translation type="unfinished">Type</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="161"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="247"/>
         <source>Filtrer</source>
         <translation type="unfinished">Filter</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="163"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="248"/>
+        <source>Rafraichir</source>
+        <translation type="unfinished">Refresh</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="250"/>
         <source>Date</source>
         <translation type="unfinished">Date</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="165"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="252"/>
         <source>Heure</source>
         <translation type="unfinished">Time</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="169"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="99"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="104"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="256"/>
         <source>Message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="170"/>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="194"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="215"/>
         <source>Inconnu</source>
         <translation type="unfinished">Unknown</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="173"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="194"/>
         <source>Trace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="176"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="71"/>
+        <source>Qui</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="75"/>
+        <source>Appareil</source>
+        <translation type="unfinished">Device</translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="79"/>
+        <source>Participant</source>
+        <translation type="unfinished">Participant</translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="83"/>
+        <source>Utilisateur</source>
+        <translation type="unfinished">User</translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="90"/>
+        <source>État</source>
+        <translation type="unfinished">State</translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="93"/>
+        <source>Système</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="96"/>
+        <source>Client</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="191"/>
+        <source>Tous</source>
+        <translation type="unfinished">All</translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="197"/>
         <source>Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="179"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="200"/>
         <source>Information</source>
         <translation type="unfinished">Information</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="182"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="203"/>
         <source>Avertissement</source>
         <translation type="unfinished">Warning</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="185"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="206"/>
         <source>Critique</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="188"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="209"/>
         <source>Erreur</source>
         <translation type="unfinished">Error</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="191"/>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="212"/>
         <source>Fatal</source>
         <translation type="unfinished"></translation>
     </message>

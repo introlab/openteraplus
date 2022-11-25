@@ -117,7 +117,13 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabSectionsWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
      </property>
      <widget class="QWidget" name="tabConfig">
       <attribute name="icon">
@@ -226,7 +232,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <x>0</x>
               <y>0</y>
               <width>551</width>
-              <height>417</height>
+              <height>413</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -290,6 +296,35 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </property>
        <item>
         <widget class="LogViewWidget" name="logsWdg" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabLogins">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/password.png</normaloff>:/icons/password.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Journal d'accès</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="LogViewWidget" name="loginsWdg" native="true"/>
        </item>
       </layout>
      </widget>
