@@ -177,6 +177,7 @@ private slots:
     void on_lstDevices_itemDoubleClicked(QListWidgetItem *item);
     void on_btnTestsBrowser_clicked();
     void on_btnQR_clicked();
+    void on_tabInfosDetails_currentChanged(int index);
 };
 
 #endif // PARTICIPANTWIDGET_H

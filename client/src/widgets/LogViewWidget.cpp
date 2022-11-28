@@ -121,6 +121,11 @@ void LogViewWidget::setViewMode(const ViewMode &mode, const QString &uuid, const
 
 }
 
+void LogViewWidget::setUuidName(const QString &uuid, const QString &name)
+{
+    m_uuidsNames[uuid] = name;
+}
+
 void LogViewWidget::refreshData(const bool &stats_only)
 {
     QUrlQuery args;
@@ -146,6 +151,7 @@ void LogViewWidget::refreshData(const bool &stats_only)
     switch(m_currentMode){
     case VIEW_LOGINS_ALL:
         path = WEB_LOGS_LOGINS_PATH;
+        args.addQueryItem(WEB_QUERY_WITH_NAMES, "1");
         break;
     case VIEW_LOGINS_DEVICE:
         path = WEB_LOGS_LOGINS_PATH;
@@ -465,22 +471,66 @@ void LogViewWidget::processLogsLogins(QList<TeraData> logins, QUrlQuery reply_da
         item->setIcon(QIcon(getLogLevelIcon(level)));
         ui->tableLogs->setItem(row, 2, item);
 
-        /*if (m_currentMode == VIEW_LOGINS_ALL){
-            ui->tableLogs->insertColumn(ui->tableLogs->columnCount());
-            ui->tableLogs->setHorizontalHeaderItem(ui->tableLogs->columnCount()-1, new QTableWidgetItem(tr("Qui")));
+        // Try to find the name associated to that log
+        QString login_name;
+        QString login_icon = "";
+        if (login.hasFieldName("login_user_name")){
+            QString name = login.getFieldValue("login_user_name").toString();
+            if (!name.isEmpty()){
+                login_name = /*tr("Utilisateur") + ": " +*/ name;
+                login_icon = TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_USER);
+            }
         }
-        if (m_currentMode == VIEW_LOGINS_DEVICE){
-            ui->tableLogs->insertColumn(ui->tableLogs->columnCount());
-            ui->tableLogs->setHorizontalHeaderItem(ui->tableLogs->columnCount()-1, new QTableWidgetItem(tr("Appareil")));
+        if (login.hasFieldName("login_participant_name") && login_name.isEmpty()){
+            QString name = login.getFieldValue("login_participant_name").toString();
+            if (!name.isEmpty()){
+                login_name = /*tr("Participant") + ": " +*/ name;
+                login_icon = TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_PARTICIPANT);
+            }
         }
-        if (m_currentMode == VIEW_LOGINS_PARTICIPANT){
-            ui->tableLogs->insertColumn(ui->tableLogs->columnCount());
-            ui->tableLogs->setHorizontalHeaderItem(ui->tableLogs->columnCount()-1, new QTableWidgetItem(tr("Participant")));
+        if (login.hasFieldName("login_device_name") && login_name.isEmpty()){
+            QString name = login.getFieldValue("login_device_name").toString();
+            if (!name.isEmpty()){
+                login_name = /*tr("Appareil") + ": " + */name;
+                login_icon = TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_DEVICE);
+            }
         }
-        if (m_currentMode == VIEW_LOGINS_USER){
-            ui->tableLogs->insertColumn(ui->tableLogs->columnCount());
-            ui->tableLogs->setHorizontalHeaderItem(ui->tableLogs->columnCount()-1, new QTableWidgetItem(tr("Utilisateur")));
-        }*/
+        if (login.hasFieldName("login_service_name") && login_name.isEmpty()){
+            QString name = login.getFieldValue("login_service_name").toString();
+            if (!name.isEmpty()){
+                login_name = /*tr("Service") + ": " +*/ name;
+                login_icon = TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_SERVICE);
+            }
+        }
+
+        if (login_name.isEmpty()){
+            QString user_login_uuid = login.getFieldValue("login_user_uuid").toString();
+            QString part_login_uuid = login.getFieldValue("login_participant_uuid").toString();
+            QString device_login_uuid = login.getFieldValue("login_device_uuid").toString();
+            QString service_login_uuid = login.getFieldValue("login_service_uuid").toString();
+
+            if (m_uuidsNames.contains(user_login_uuid)){
+                login_name = m_uuidsNames[user_login_uuid];
+                login_icon = TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_USER);
+            }
+            else if (m_uuidsNames.contains(part_login_uuid)){
+                login_name = m_uuidsNames[part_login_uuid];
+                login_icon = TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_PARTICIPANT);
+            }
+            else if (m_uuidsNames.contains(device_login_uuid)){
+                login_name = m_uuidsNames[device_login_uuid];
+                login_icon = TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_DEVICE);
+            }
+            else if (m_uuidsNames.contains(service_login_uuid)){
+                login_name = m_uuidsNames[service_login_uuid];
+                login_icon = TeraData::getIconFilenameForDataType(TeraDataTypes::TERADATA_SERVICE);
+            }
+        }
+
+        item = new QTableWidgetItem();
+        item->setText(login_name);
+        item->setIcon(QIcon(login_icon));
+        ui->tableLogs->setItem(row, 3, item);
 
         item = new QTableWidgetItem();
         LoginEvent::LoginType login_type = static_cast<LoginEvent::LoginType>(login.getFieldValue("login_type").toInt());

@@ -367,7 +367,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="iconSize">
       <size>
@@ -1754,117 +1754,170 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_17">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <item>
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>1</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnEdit">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
-           <property name="text">
-            <string>Éditer</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../resources/TeraClient.qrc">
-             <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="TeraForm" name="wdgParticipant" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="QTabWidget" name="tabInfosDetails">
+         <property name="tabPosition">
+          <enum>QTabWidget::West</enum>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="frameButtons">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="btnSave">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>32</height>
-             </size>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="text">
-             <string>Sauvegarder</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../../resources/TeraClient.qrc">
-              <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnUndo">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>32</height>
-             </size>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="text">
-             <string>Annuler</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../../resources/TeraClient.qrc">
-              <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <widget class="QWidget" name="tabParticipant">
+          <attribute name="icon">
+           <iconset resource="../../resources/TeraClient.qrc">
+            <normaloff>:/icons/patient.png</normaloff>:/icons/patient.png</iconset>
+          </attribute>
+          <attribute name="title">
+           <string>Participant</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_11">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>1</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnEdit">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="text">
+                <string>Éditer</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../resources/TeraClient.qrc">
+                 <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="TeraForm" name="wdgParticipant" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="frameButtons">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QPushButton" name="btnSave">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="text">
+                 <string>Sauvegarder</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../resources/TeraClient.qrc">
+                  <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnUndo">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="text">
+                 <string>Annuler</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../resources/TeraClient.qrc">
+                  <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tabLogins">
+          <attribute name="icon">
+           <iconset resource="../../resources/TeraClient.qrc">
+            <normaloff>:/icons/password.png</normaloff>:/icons/password.png</iconset>
+          </attribute>
+          <attribute name="title">
+           <string>Journal d'accès</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_16">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="LogViewWidget" name="wdgLogins" native="true"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -2063,10 +2116,10 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
      <widget class="QWidget" name="tabServices">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/service.png</normaloff>:/icons/service.png</iconset>
+        <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Services</string>
+       <string>Configuration</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_12">
        <item>
@@ -2106,6 +2159,12 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>LogViewWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/LogViewWidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>TeraForm</class>
    <extends>QWidget</extends>

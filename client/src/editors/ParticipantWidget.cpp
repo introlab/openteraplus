@@ -83,6 +83,7 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     // Default display
     ui->tabNav->setCurrentIndex(0);
     ui->tabServicesDetails->setCurrentIndex(0);
+    ui->tabInfosDetails->setCurrentIndex(0);
     ui->frameFilterSessionTypes->hide();
 
 }
@@ -313,6 +314,11 @@ void ParticipantWidget::initUI()
     m_downloadIcon = QIcon(":/icons/data.png");
     m_resumeIcon = QIcon(":/icons/play.png");
     m_testIcon = QIcon(":/icons/test.png");
+
+    // Configure log view
+    ui->wdgLogins->setComManager(m_comManager);
+    ui->wdgLogins->setViewMode(LogViewWidget::VIEW_LOGINS_PARTICIPANT, m_data->getUuid());
+    ui->wdgLogins->setUuidName(m_data->getUuid(), m_data->getName());
 
 }
 
@@ -1984,5 +1990,13 @@ void ParticipantWidget::on_btnQR_clicked()
     m_diag_editor->setFixedSize(this->height()/2-40, this->height()/2);
 
     m_diag_editor->open();
+}
+
+
+void ParticipantWidget::on_tabInfosDetails_currentChanged(int index)
+{
+    if (ui->tabInfosDetails->currentWidget() == ui->tabLogins){
+        ui->wdgLogins->refreshData();
+    }
 }
 

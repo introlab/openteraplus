@@ -31,17 +31,19 @@ public:
 
     void setComManager(ComManager* comMan);
     void setViewMode(const ViewMode &mode, const QString& uuid = QString(), const bool& autoload=false);
+    void setUuidName(const QString& uuid, const QString& name);
 
     void refreshData(const bool &stats_only = true);
 
 private:
-    Ui::LogViewWidget*  ui;
-    ComManager*         m_comManager;
-    ViewMode            m_currentMode;
-    QString             m_currentUuid;
-    int                 m_maxCount;
-    bool                m_filtering; // Applying selected filters
-    bool                m_listening; // Listening for logs
+    Ui::LogViewWidget*      ui;
+    ComManager*             m_comManager;
+    ViewMode                m_currentMode;
+    QString                 m_currentUuid;
+    int                     m_maxCount;
+    bool                    m_filtering; // Applying selected filters
+    bool                    m_listening; // Listening for logs
+    QHash<QString, QString> m_uuidsNames;
 
     void connectSignals();
     void disconnectSignals();
