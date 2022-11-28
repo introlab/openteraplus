@@ -379,6 +379,24 @@ QString LogViewWidget::getOSIcon(const QString &os)
 
 }
 
+QString LogViewWidget::getBrowserIcon(const QString &browser)
+{
+    QString compare_browser = browser.toLower();
+    if (compare_browser.contains("chrome") || compare_browser.contains("chromium"))
+        return "://icons/logs/browser_chrome.png";
+
+    if (compare_browser.contains("firefox"))
+        return "://icons/logs/browser_firefox.png";
+
+    if (compare_browser.contains("safari"))
+        return "://icons/logs/browser_safari.png";
+
+    if (compare_browser.contains("openteraplus"))
+        return "://icons/OpenTeraPlus.ico";
+
+    return "";
+}
+
 void LogViewWidget::updateNavButtons()
 {
     ui->btnPrevPage->setEnabled(ui->spinPage->value() > ui->spinPage->minimum());
@@ -478,10 +496,12 @@ void LogViewWidget::processLogsLogins(QList<TeraData> logins, QUrlQuery reply_da
 
         item = new QTableWidgetItem();
         item->setText(login.getFieldValue("login_os_name").toString() + " " + login.getFieldValue("login_os_version").toString());
+        item->setIcon(QIcon(getOSIcon(login.getFieldValue("login_os_name").toString())));
         ui->tableLogs->setItem(row, 6, item);
 
         item = new QTableWidgetItem();
         item->setText(login.getFieldValue("login_client_name").toString() + " " + login.getFieldValue("login_client_version").toString());
+        item->setIcon(QIcon(getBrowserIcon(login.getFieldValue("login_client_name").toString())));
         ui->tableLogs->setItem(row, 7, item);
 
         item = new QTableWidgetItem();
