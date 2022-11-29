@@ -996,7 +996,8 @@ void ParticipantWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
     m_totalSessions = stats.getFieldValue("sessions_total_count").toInt();
     ui->tableSessions->setRowCount(m_totalSessions);
     ui->progSessionsLoad->setMaximum(m_totalSessions);
-    ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
+    //ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
+    ui->grpSession->setTitle(tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
 
     // Query sessions types
     QUrlQuery args;
@@ -1025,7 +1026,8 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
             m_currentSessions--;
             m_totalSessions--;
 
-            ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
+            //ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
+            ui->grpSession->setTitle(tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
 
         }
     }

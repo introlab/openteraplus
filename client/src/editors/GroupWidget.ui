@@ -304,20 +304,23 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+          <widget class="TeraForm" name="wdgGroup" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="sizeHint" stdset="0">
+           <property name="minimumSize">
             <size>
-             <width>40</width>
-             <height>1</height>
+             <width>0</width>
+             <height>0</height>
             </size>
            </property>
-          </spacer>
+          </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="btnEdit">
+         <item alignment="Qt::AlignTop">
+          <widget class="QToolButton" name="btnEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -343,16 +346,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           </widget>
          </item>
         </layout>
-       </item>
-       <item>
-        <widget class="TeraForm" name="wdgGroup" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
        </item>
        <item alignment="Qt::AlignTop">
         <widget class="QFrame" name="frameButtons">
@@ -413,209 +406,196 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         </widget>
        </item>
        <item>
-        <widget class="QToolBox" name="grpSummary">
-         <property name="currentIndex">
-          <number>0</number>
+        <widget class="QGroupBox" name="grpSummary">
+         <property name="title">
+          <string>Résumé</string>
          </property>
-         <widget class="QWidget" name="grpSummaryPage1">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>710</width>
-            <height>264</height>
-           </rect>
-          </property>
-          <attribute name="label">
-           <string>Résumé</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <layout class="QGridLayout" name="gridLayout">
-             <property name="horizontalSpacing">
-              <number>45</number>
-             </property>
-             <property name="verticalSpacing">
-              <number>15</number>
-             </property>
-             <item row="1" column="1" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="icoSessions">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="../../resources/TeraClient.qrc">:/icons/session.png</pixmap>
-               </property>
-               <property name="scaledContents">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="lblSessions">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>XXXX Séances</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="lblParticipant">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>XXXX Participants</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="0" alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="icoParticipant">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
-               </property>
-               <property name="scaledContents">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QTableWidget" name="tableSummary">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>150</height>
-              </size>
-             </property>
-             <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
-             </property>
-             <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectRows</enum>
-             </property>
-             <property name="sortingEnabled">
-              <bool>true</bool>
-             </property>
-             <attribute name="horizontalHeaderDefaultSectionSize">
-              <number>125</number>
-             </attribute>
-             <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-              <bool>true</bool>
-             </attribute>
-             <attribute name="horizontalHeaderStretchLastSection">
-              <bool>false</bool>
-             </attribute>
-             <attribute name="verticalHeaderVisible">
-              <bool>false</bool>
-             </attribute>
-             <column>
-              <property name="text">
-               <string>Participant</string>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QGridLayout" name="gridLayout">
+            <property name="horizontalSpacing">
+             <number>45</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>15</number>
+            </property>
+            <item row="1" column="1" alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="icoSessions">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>État</string>
+              <property name="minimumSize">
+               <size>
+                <width>48</width>
+                <height>48</height>
+               </size>
               </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Séances</string>
+              <property name="maximumSize">
+               <size>
+                <width>48</width>
+                <height>48</height>
+               </size>
               </property>
-             </column>
-             <column>
               <property name="text">
-               <string>Première séance</string>
+               <string/>
               </property>
-             </column>
-             <column>
+              <property name="pixmap">
+               <pixmap resource="../../resources/TeraClient.qrc">:/icons/session.png</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="lblSessions">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Dernière séance</string>
+               <string>XXXX Séances</string>
               </property>
-             </column>
-             <column>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="lblParticipant">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Dernière connexion</string>
+               <string>XXXX Participants</string>
               </property>
-             </column>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="0" alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="icoParticipant">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>48</width>
+                <height>48</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>48</width>
+                <height>48</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../../resources/TeraClient.qrc">:/icons/patient.png</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="tableSummary">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <property name="sortingEnabled">
+             <bool>true</bool>
+            </property>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>125</number>
+            </attribute>
+            <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Participant</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>État</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Séances</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Première séance</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Dernière séance</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Dernière connexion</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>

@@ -190,7 +190,7 @@ ComManager *DataEditorWidget::getComManager()
     return m_comManager;
 }
 
-void DataEditorWidget::setEditorControls(TeraForm* mainForm, QPushButton *editToggle, QFrame *frameSave, QPushButton *saveButton, QPushButton *cancelButton)
+void DataEditorWidget::setEditorControls(TeraForm* mainForm, QAbstractButton *editToggle, QFrame *frameSave, QAbstractButton *saveButton, QAbstractButton *cancelButton)
 {
     m_mainForm = mainForm;
     m_editToggle = editToggle;
@@ -207,9 +207,9 @@ void DataEditorWidget::setEditorControls(TeraForm* mainForm, QPushButton *editTo
     }
 
     // Connect signals
-    if (m_cancelButton) connect(m_cancelButton, &QPushButton::clicked, this, &DataEditorWidget::undoButtonClicked);
-    if (m_saveButton) connect(m_saveButton, &QPushButton::clicked, this, &DataEditorWidget::saveButtonClicked);
-    if (m_editToggle) connect(m_editToggle, &QPushButton::clicked, this, &DataEditorWidget::editToggleClicked);
+    if (m_cancelButton) connect(m_cancelButton, &QAbstractButton::clicked, this, &DataEditorWidget::undoButtonClicked);
+    if (m_saveButton) connect(m_saveButton, &QAbstractButton::clicked, this, &DataEditorWidget::saveButtonClicked);
+    if (m_editToggle) connect(m_editToggle, &QAbstractButton::clicked, this, &DataEditorWidget::editToggleClicked);
 
 }
 
