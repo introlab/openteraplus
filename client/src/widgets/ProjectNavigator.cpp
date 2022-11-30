@@ -276,27 +276,6 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
                 m_participants_items.remove(id);
             }
         }
-        /*if (removed_item){
-            if (removed_item->parent()){
-                for (int i=0; i<removed_item->parent()->childCount(); i++){
-                    if (removed_item->parent()->child(i) == removed_item){
-                        if (removed_item == ui->treeNavigator->currentItem()){
-                            // Select parent item if current item was deleted
-                            selectParentItem();
-                        }
-                        removed_item->parent()->takeChild(i);
-                        if (data_type==TERADATA_GROUP)
-                            m_groups_items.remove(id);
-                        if (data_type==TERADATA_PARTICIPANT){
-                            //m_participants.remove(m_participants_items.key(item));
-                            m_participants_items.remove(id);
-                        }
-
-                        break;
-                    }
-                }
-            }
-        }*/
     }
         break;
     default: ;
@@ -309,40 +288,14 @@ void ProjectNavigator::removeItem(const TeraDataTypes &data_type, const int &id)
     if (removed_item){
         // Check to remove all childs from appropriate mappings
         for (int i=0; i<removed_item->childCount(); i++){
-            QTreeWidgetItem* child_item = removed_item->child(i);
-            TeraDataTypes child_type = getItemType(child_item);
-            // Items will be deleted when removed from TreeWidget
-            switch (child_type){
-                case TERADATA_PROJECT:
-                        m_projects_items.remove(m_projects_items.key(child_item));
-                    break;
-                case TERADATA_GROUP:
-                        m_groups_items.remove(m_groups_items.key(child_item));
-                    break;
-                case TERADATA_PARTICIPANT:
-                        m_participants_items.remove(m_participants_items.key(child_item));
-                    break;
-                default:
-                    break;
-
-            }
+            removeChildItemData(removed_item->child(i));
         }
+
         if (removed_item->parent()){
             if (removed_item == ui->treeNavigator->currentItem()){
                 // Select parent item if current item was deleted
                 selectParentItem();
             }
-            // Removed the item from the parent
-            /*for (int i=0; i<removed_item->parent()->childCount(); i++){
-                if (removed_item->parent()->child(i) == removed_item){
-                    if (removed_item == ui->treeNavigator->currentItem()){
-                        // Select parent item if current item was deleted
-                        selectParentItem();
-                    }
-                    removed_item->parent()->takeChild(i);
-                    break;
-                }
-            }*/
         }
         delete removed_item;
     }
@@ -374,6 +327,7 @@ void ProjectNavigator::connectSignals()
     connect(m_comManager, &ComManager::projectsReceived, this, &ProjectNavigator::processProjectsReply);
     connect(m_comManager, &ComManager::groupsReceived, this, &ProjectNavigator::processGroupsReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &ProjectNavigator::processParticipantsReply);
+    connect(m_comManager, &ComManager::statsReceived, this, &ProjectNavigator::processStatsReply);
     //connect(m_comManager, &ComManager::deleteResultsOK, this, &ProjectNavigator::processItemDeletedReply);
     connect(m_comManager, &ComManager::currentUserUpdated, this, &ProjectNavigator::processCurrentUserUpdated);
 
@@ -404,6 +358,29 @@ void ProjectNavigator::clearData(bool clear_state)
         m_currentParticipantUuid.clear();
     }
     ui->treeNavigator->clear();
+}
+
+void ProjectNavigator::removeChildItemData(QTreeWidgetItem *item)
+{
+    for (int i=0; i<item->childCount(); i++){
+        removeChildItemData(item->child(i));
+    }
+
+    TeraDataTypes child_type = getItemType(item);
+    // Items will be deleted when removed from TreeWidget
+    switch (child_type){
+        case TERADATA_PROJECT:
+                m_projects_items.remove(m_projects_items.key(item));
+            break;
+        case TERADATA_GROUP:
+                m_groups_items.remove(m_groups_items.key(item));
+            break;
+        case TERADATA_PARTICIPANT:
+                m_participants_items.remove(m_participants_items.key(item));
+            break;
+        default:
+            break;
+    }
 }
 
 void ProjectNavigator::updateSite(const TeraData *site)
@@ -443,15 +420,20 @@ void ProjectNavigator::updateProject(const TeraData *project)
         item = new QTreeWidgetItem();
         item->setData(0, Qt::UserRole, id_project);
         ui->treeNavigator->addTopLevelItem(item);
-        if (project->hasFieldName("project_participant_group_count")){
-            if (project->getFieldValue("project_participant_group_count").toInt() > 0){
-                item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        item->setData(1, Qt::UserRole, QVariantHash()); // Stats data - empty here.
+        if (!isAdvancedView()){
+            if (project->hasFieldName("project_participant_group_count")){
+                if (project->getFieldValue("project_participant_group_count").toInt() > 0){
+                    item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+                }
             }
-        }
-        if (project->hasFieldName("project_participant_count")){
-            if (project->getFieldValue("project_participant_count").toInt() > 0){
-                item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+            if (project->hasFieldName("project_participant_count")){
+                if (project->getFieldValue("project_participant_count").toInt() > 0){
+                    item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+                }
             }
+        }else{
+            item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator); // Always show indicator in advanced view
         }
         m_projects_items[id_project] = item;
     }
@@ -466,6 +448,88 @@ void ProjectNavigator::updateProject(const TeraData *project)
     }
 
     //updateAvailableActions(nullptr);
+}
+
+void ProjectNavigator::updateProjectAdvanced(QTreeWidgetItem *project_item)
+{
+    if (!isAdvancedView())
+        return; // Only in advanced view!
+
+    QVariantHash stats = project_item->data(1, Qt::UserRole).toHash();
+
+    // Advanced view projects always have 3 childs (some may be hidden): Participants, Users, Devices
+    // If not, we must add those items!
+    if (project_item->childCount() != 3){
+        qDeleteAll(project_item->takeChildren());
+
+        QTreeWidgetItem* static_item = new QTreeWidgetItem();
+        static_item->setText(0, tr("Participants"));
+        static_item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)));
+        static_item->setForeground(0, QColor(255, 255, 140));
+        static_item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        static_item->setData(0, Qt::UserRole, TERADATA_PARTICIPANT);
+        project_item->addChild(static_item);
+
+        static_item = new QTreeWidgetItem();
+        static_item->setText(0, tr("Utilisateurs"));
+        static_item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)));
+        static_item->setForeground(0, QColor(255, 255, 140));
+        static_item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        static_item->setData(0, Qt::UserRole, TERADATA_USER);
+        project_item->addChild(static_item);
+
+        static_item = new QTreeWidgetItem();
+        static_item->setText(0, tr("Appareils"));
+        static_item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)));
+        static_item->setForeground(0, QColor(255, 255, 140));
+        static_item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        static_item->setData(0, Qt::UserRole, TERADATA_DEVICE);
+        project_item->addChild(static_item);
+    }
+
+    // Check what stats we have
+    // Participants
+    int count = 0;
+    if (ui->btnFilterActive->isChecked()){ // We include only enabled participants
+        if (stats.contains("participants_enabled_count")){
+            count = stats["participants_enabled_count"].toInt();
+        }
+    }else{
+        if (stats.contains("participants_total_count")){
+           count = stats["participants_total_count"].toInt();
+        }
+    }
+    project_item->child(0)->setText(0, tr("Participants") + " (" + QString::number(count) + ")");
+    project_item->child(0)->setHidden(count <= 0);
+
+    // Users
+    count = 0;
+    if (ui->btnFilterActive->isChecked()){ // We include only enabled participants
+        if (stats.contains("users_enabled_count")){
+            count = stats["users_enabled_count"].toInt();
+        }
+    }else{
+        if (stats.contains("users_total_count")){
+           count = stats["users_total_count"].toInt();
+        }
+    }
+    project_item->child(1)->setText(0, tr("Utilisateurs") + " (" + QString::number(count) + ")");
+    project_item->child(1)->setHidden(count <= 0);
+
+    // Devices
+    count = 0;
+    if (ui->btnFilterActive->isChecked()){ // We include only enabled participants
+        if (stats.contains("devices_enabled_count")){
+            count = stats["devices_enabled_count"].toInt();
+        }
+    }else{
+        if (stats.contains("devices_total_count")){
+           count = stats["devices_total_count"].toInt();
+        }
+    }
+    project_item->child(2)->setText(0, tr("Appareils") + " (" + QString::number(count) + ")");
+    project_item->child(2)->setHidden(count <= 0);
+
 }
 
 void ProjectNavigator::updateGroup(const TeraData *group)
@@ -484,13 +548,23 @@ void ProjectNavigator::updateGroup(const TeraData *group)
         // Maybe that group changed project...
         if (m_groups_items.contains(id_group)){
             if (m_groups_items[id_group] != nullptr){
-                int current_group_project = m_projects_items.key(m_groups_items[id_group]->parent());
+                QTreeWidgetItem* project_item;
+                if (!isAdvancedView())
+                    project_item = m_groups_items[id_group]->parent();
+                else
+                    project_item = m_groups_items[id_group]->parent()->parent();
+                int current_group_project = m_projects_items.key(project_item);
                 if (current_group_project != id_project){
                     // It has - change group if available
                     if (m_projects_items.contains(id_project)){
                         m_groups_items[id_group]->parent()->removeChild(m_groups_items[id_group]);
                         //m_projects_items[id_project]->addChild(m_groups_items[id_group]);
-                        m_projects_items[id_project]->insertChild(0, m_groups_items[id_group]);
+                        getProjectItem(id_project, TERADATA_GROUP)->insertChild(0, m_groups_items[id_group]);
+                        if (isAdvancedView()){
+                            queryStatsForProject(id_project);
+                            queryStatsForProject(current_group_project);
+
+                        }
                     }else{
                         // Changed site also! Remove it completely from display
                         delete m_groups_items[id_group];
@@ -511,7 +585,7 @@ void ProjectNavigator::updateGroup(const TeraData *group)
         // New group - add it.
         item = new QTreeWidgetItem();
         item->setData(0, Qt::UserRole, id_group);
-        QTreeWidgetItem* project_item = m_projects_items[id_project];
+        QTreeWidgetItem* project_item = getProjectItem(id_project, TERADATA_GROUP);
         //project_item->addChild(item);
         project_item->insertChild(0, item); // Groups always first
         m_groups_items[id_group] = item;
@@ -547,16 +621,37 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
         // Check if we need to change its group
         int id_part_group = m_groups_items.key(item->parent());
         if (id_part_group != id_group){
+            // Participant changed group
             if (id_part_group > 0){
-                // Participant is not in the correct group, change it
+                // Was already in a group before
                 QTreeWidgetItem* old_group = m_groups_items[id_part_group];
-                if (old_group)
+                if (old_group){
                     old_group->removeChild(item);
+                    old_group->setChildIndicatorPolicy(QTreeWidgetItem::DontShowIndicatorWhenChildless);
+                }
+                if(isAdvancedView()){
+                    // Update counts
+                    int id_part_project = m_projects_items.key(item->parent()->parent()->parent());
+                    queryStatsForProject(id_part_project);
+                }
             }else{
-                // Participant was in a project before, find and remove it
-                QTreeWidgetItem* parent_project = m_projects_items[id_project];
-                if (parent_project)
+                // Participant was not in a group but now is - remove from original project
+                QTreeWidgetItem* parent_item;
+                if (!isAdvancedView()){
+                    parent_item = item->parent();
+                }else{
+                    parent_item = item->parent()->parent();
+                }
+                int id_part_project = m_projects_items.key(parent_item);
+                //QTreeWidgetItem* parent_project = m_projects_items[id_part_project];
+                QTreeWidgetItem* parent_project = getProjectItem(id_part_project, TERADATA_PARTICIPANT);
+                if (parent_project){
                     parent_project->removeChild(item);
+                    if(isAdvancedView()){
+                        // Update counts
+                        queryStatsForProject(id_part_project);
+                    }
+                }
             }
 
             if (id_group > 0){
@@ -569,44 +664,76 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
                         // Not an expanded group, delete it!
                         m_participants_items.remove(id_participant);
                         delete item;
+                        group_item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
                         return;
+                    }
+                    if(isAdvancedView()){
+                        // Update counts
+                        queryStatsForProject(id_project);
                     }
                 }else{
                     // Not in a displayed group, delete it
                     m_participants_items.remove(id_participant);
                     delete item;
+                    if(isAdvancedView()){
+                        // Update counts
+                        queryStatsForProject(id_project);
+                    }
                     return;
                 }
             }else{
                 // Participant doesn't have a group, attached to the project itself
-                QTreeWidgetItem* project_item = m_projects_items[id_project];
+                QTreeWidgetItem* project_item = getProjectItem(id_project, TERADATA_PARTICIPANT);//m_projects_items[id_project];
                 if (project_item){
                     if (project_item->isExpanded()){
                         project_item->addChild(item);
+                    }
+                    if(isAdvancedView()){
+                        // Update counts
+                        queryStatsForProject(id_project);
                     }
                 }else{
                     // Not an expanded project, delete it!
                     m_participants_items.remove(id_participant);
                     delete item;
+                    if(isAdvancedView()){
+                        // Update counts
+                        queryStatsForProject(id_project);
+                    }
                     return;
                 }
             }
         }else{
             // Check if we need to change its project
-            int id_part_project = m_projects_items.key(item->parent());
+            int id_part_project;
+            if (!isAdvancedView())
+                id_part_project = m_projects_items.key(item->parent());
+            else
+                id_part_project = m_projects_items.key(item->parent()->parent());
+
             if (id_part_project != id_project && id_part_project>0){
-                QTreeWidgetItem* project_item = m_projects_items[id_project];
+                QTreeWidgetItem* project_item = getProjectItem(id_project, TERADATA_PARTICIPANT);//m_projects_items[id_project];
                 if (project_item){
                     if (item->parent())
                         item->parent()->removeChild(item);
                     if (project_item->isExpanded()){
                         project_item->addChild(item);
+                        if(isAdvancedView()){
+                            // Update counts
+                            queryStatsForProject(id_part_project);
+                            queryStatsForProject(id_project);
+                        }
+                    }else{
+                        // Not an expanded project, delete it!
+                        m_participants_items.remove(id_participant);
+                        delete item;
+                        if(isAdvancedView()){
+                            // Update counts
+                            queryStatsForProject(id_part_project);
+                            queryStatsForProject(id_project);
+                        }
+                        return;
                     }
-                }else{
-                    // Not an expanded project, delete it!
-                    m_participants_items.remove(id_participant);
-                    delete item;
-                    return;
                 }
             }
         }
@@ -633,6 +760,10 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
                 if (project_item){
                     if (!project_item->isExpanded()){
                         project_item->setExpanded(true);
+                        if (isAdvancedView()){
+                            // Expand participants in advanced view
+                            getProjectItem(m_currentProjectId, TERADATA_PARTICIPANT)->setExpanded(true);
+                        }
                     }
                 }
 
@@ -645,13 +776,13 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
             if (project_item){
                 if (!project_item->isExpanded()){
                     project_item->setExpanded(true);
-                    /*project_item->addChild(item);
-                    m_participants_items[id_participant] = item;
-                }else{
-                    // No project expanded, add to the list, but also query for other participants in that project
-                    delete item;
-                    return;*/
+                    if (isAdvancedView()){
+                        project_item->child(0)->setExpanded(true);
+                    }
+
                 }
+                // Get item to attach to
+                project_item = getProjectItem(id_project, TERADATA_PARTICIPANT);
                 project_item->addChild(item);
                 m_participants_items[id_participant] = item;
                 /*if (m_currentParticipantUuid == participant->getUuid())
@@ -683,13 +814,35 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
 
 }
 
+void ProjectNavigator::queryParticipantsAndGroupsForProject(const int &id_project)
+{
+    // Project: load groups for that project
+    QUrlQuery query;
+    query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id_project));
+    query.addQueryItem(WEB_QUERY_LIST, "1");
+    m_comManager->doGet(WEB_GROUPINFO_PATH, query);
+
+    // Also loads participant not in a group
+    query.clear();
+    query.addQueryItem(WEB_QUERY_NO_GROUP,"1");
+    query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id_project));
+    //query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
+    m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
+}
+
+void ProjectNavigator::queryStatsForProject(const int &id_project)
+{
+    QUrlQuery query;
+    query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id_project));
+    m_comManager->doGet(WEB_STATS_PATH, query);
+}
+
 int ProjectNavigator::getParticipantProjectId(QTreeWidgetItem *part_item)
 {
     QTreeWidgetItem* current_item = part_item;
 
     while (current_item->parent()){
         current_item = current_item->parent();
-        //if (m_projects_items.values().contains(current_item))
         int current_key = m_projects_items.key(current_item, -1);
         if (current_key>=0)
             return current_key;
@@ -704,13 +857,30 @@ int ProjectNavigator::getParticipantGroupId(QTreeWidgetItem *part_item)
 
     while (current_item->parent()){
         current_item = current_item->parent();
-        //if (m_groups_items.values().contains(current_item))
         int current_key = m_groups_items.key(current_item, -1);
         if (current_key>=0)
-            //return m_groups_items.key(current_item);
             return current_key;
     }
     return -1;
+}
+
+QTreeWidgetItem *ProjectNavigator::getProjectItem(const int &id_project, const TeraDataTypes &data_type)
+{
+    QTreeWidgetItem* project_item = m_projects_items[id_project];
+    if (isAdvancedView()){
+        if (project_item->childCount()>=3){
+            if (data_type == TERADATA_PARTICIPANT || data_type == TERADATA_GROUP){
+                project_item = project_item->child(0);
+            }
+            if (data_type == TERADATA_USER){
+                project_item = project_item->child(1);
+            }
+            if (data_type == TERADATA_DEVICE){
+                project_item = project_item->child(2);
+            }
+        }
+    }
+    return project_item;
 }
 
 bool ProjectNavigator::isParticipantFiltered(const QString &part_uuid)
@@ -733,6 +903,11 @@ bool ProjectNavigator::isParticipantFiltered(const QString &part_uuid)
     }
 
     return filtered;
+}
+
+bool ProjectNavigator::isAdvancedView()
+{
+    return ui->btnAdvanced->isChecked();
 }
 
 void ProjectNavigator::setCurrentItem(QTreeWidgetItem *item)
@@ -833,17 +1008,14 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
 
 TeraDataTypes ProjectNavigator::getItemType(QTreeWidgetItem *item)
 {
-    //if (m_projects_items.values().contains(item)){
     if (std::find(m_projects_items.cbegin(), m_projects_items.cend(), item) != m_projects_items.cend()){
         return TERADATA_PROJECT;
     }
 
-    //if (m_groups_items.values().contains(item)){
     if (std::find(m_groups_items.cbegin(), m_groups_items.cend(), item) != m_groups_items.cend()){
         return TERADATA_GROUP;
     }
 
-    //if (m_participants_items.values().contains(item)){
     if (std::find(m_participants_items.cbegin(), m_participants_items.cend(), item) != m_participants_items.cend()){
         return TERADATA_PARTICIPANT;
     }
@@ -977,7 +1149,7 @@ void ProjectNavigator::processProjectsReply(const QList<TeraData> projects)
         m_siteJustChanged = false;
         if (m_projects_items.count() == 1){
             // Select the first project since the only one in the list
-            //navItemClicked(m_projects_items.first());
+            //navItemClicked(m_projects_items.first()); // Commented to display dashboard for that site instead
         }
     }
 }
@@ -996,6 +1168,28 @@ void ProjectNavigator::processParticipantsReply(const QList<TeraData> participan
 
     for (int i=0; i<participants.count(); i++){
         updateParticipant(&participants.at(i));
+    }
+}
+
+void ProjectNavigator::processStatsReply(TeraData stats, QUrlQuery reply_query)
+{
+    // Only process stats in "advanced" view
+    if (!isAdvancedView())
+        return;
+
+    // Projects stats
+    if (reply_query.hasQueryItem(WEB_QUERY_ID_PROJECT)){
+        // Find the associated project
+        int id_project = reply_query.queryItemValue(WEB_QUERY_ID_PROJECT).toInt();
+        if (m_projects_items.contains(id_project)){
+            QTreeWidgetItem* item = m_projects_items[id_project];
+
+            // Save stats in item
+            item->setData(1, Qt::UserRole, stats.getFieldValues());
+
+            // Update item stats
+            updateProjectAdvanced(item);
+        }
     }
 }
 
@@ -1184,20 +1378,13 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
 {
     // PROJECT
     if (std::find(m_projects_items.cbegin(), m_projects_items.cend(), item) != m_projects_items.cend()){
-        // Project: load groups for that project
         int id = m_projects_items.key(item);
-
-        QUrlQuery query;
-        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
-        query.addQueryItem(WEB_QUERY_LIST, "true");
-        m_comManager->doGet(WEB_GROUPINFO_PATH, query);
-
-        // Also loads participant not in a group
-        query.clear();
-        query.addQueryItem(WEB_QUERY_NO_GROUP,"true");
-        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(id));
-        //query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
-        m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
+        if (!isAdvancedView()){
+           queryParticipantsAndGroupsForProject(id);
+        }else{
+            // Query stats to display static items
+            queryStatsForProject(id);
+        }
 
     }
 
@@ -1213,6 +1400,29 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         //query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
         m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
 
+    }
+
+    if (isAdvancedView()){
+        if (item->parent()){
+            // Check if we have an aggregrator item, such as all users or participants
+            TeraDataTypes parent_type = getItemType(item->parent());
+            if (parent_type == TERADATA_PROJECT){
+                // Parent is project, decide what to do based on the data type
+                int id = m_projects_items.key(item->parent());
+                TeraDataTypes item_type = static_cast<TeraDataTypes>(item->data(0, Qt::UserRole).toInt());
+                switch (item_type){
+                case TERADATA_PARTICIPANT:
+                    queryParticipantsAndGroupsForProject(id);
+                    break;
+                case TERADATA_USER:
+                    break;
+                case TERADATA_DEVICE:
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
     }
 }
 
@@ -1264,7 +1474,7 @@ void ProjectNavigator::on_cmbSites_currentIndexChanged(int index)
 }
 
 
-void ProjectNavigator::on_toolButton_clicked()
+void ProjectNavigator::on_btnDashboard_clicked()
 {
     // Query to display dashboard (default view)
     emit dataDisplayRequest(TERADATA_NONE, 0);
@@ -1290,5 +1500,12 @@ void ProjectNavigator::on_treeNavigator_customContextMenuRequested(const QPoint 
     getActionForDataType(TERADATA_PARTICIPANT)->setVisible(true);
     updateAvailableActions(ui->treeNavigator->currentItem());
 
+}
+
+
+void ProjectNavigator::on_btnAdvanced_clicked()
+{
+    // Force a refresh of the data for that site
+    currentSiteChanged(true);
 }
 

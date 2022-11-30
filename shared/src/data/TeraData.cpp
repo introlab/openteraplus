@@ -224,7 +224,7 @@ QList<QString> TeraData::getFieldList() const
     return rval;
 }
 
-QVariantMap TeraData::getFieldValues()
+QVariantHash TeraData::getFieldValues()
 {
     return m_fieldsValue;
 }

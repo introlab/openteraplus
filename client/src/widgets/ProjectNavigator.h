@@ -68,13 +68,20 @@ private:
 
     void updateSite(const TeraData* site);
     void updateProject(const TeraData* project);
+    void updateProjectAdvanced(QTreeWidgetItem* project_item);
     void updateGroup(const TeraData* group);
     void updateParticipant(const TeraData* participant);
+
+    void queryParticipantsAndGroupsForProject(const int& id_project);
+    void queryStatsForProject(const int& id_project);
 
     int getParticipantProjectId(QTreeWidgetItem *part_item);
     int getParticipantGroupId(QTreeWidgetItem *part_item);
 
+    QTreeWidgetItem* getProjectItem(const int& id_project, const TeraDataTypes& data_type = TERADATA_NONE);
+
     bool isParticipantFiltered(const QString &part_uuid);
+    bool isAdvancedView();
 
     void setCurrentItem(QTreeWidgetItem* item);
     void selectItem(QTreeWidgetItem* item);
@@ -87,6 +94,8 @@ private:
     void connectSignals();
 
     void clearData(bool clear_state);
+
+    void removeChildItemData(QTreeWidgetItem* item);
 
     // Ui items
     QList<QAction*> m_newItemActions;
@@ -104,6 +113,7 @@ private slots:
      void processProjectsReply(const QList<TeraData> projects);
      void processGroupsReply(const QList<TeraData> groups);
      void processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_args);
+     void processStatsReply(TeraData stats, QUrlQuery reply_query);
      void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
 
      void processItemDeletedReply(QString path, int id);
@@ -121,9 +131,11 @@ private slots:
      void on_btnSearch_toggled(bool checked);
      void on_txtNavSearch_textChanged(const QString &search_text);
      void on_cmbSites_currentIndexChanged(int index);
-     void on_toolButton_clicked();
+     void on_btnDashboard_clicked();
 
      void on_treeNavigator_customContextMenuRequested(const QPoint &pos);
+
+     void on_btnAdvanced_clicked();
 
 signals:
      void dataDisplayRequest(TeraDataTypes data_type, int data_id);

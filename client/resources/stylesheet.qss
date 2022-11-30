@@ -202,7 +202,7 @@ QLabel {
 */
 QTreeWidget, QTableWidget{
     selection-background-color: rgba(255,255,255,50%);/*rgba(0,5,45,50%)*/;
-    selection-color: lightblue;
+    selection-color: black/*lightblue*/;
 }
 
 QTreeWidget#treeNavigator {

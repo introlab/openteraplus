@@ -110,7 +110,7 @@ public:
     QVariant        getFieldValue(const QString &fieldName) const;
     void            setFieldValue(const QString& fieldName, const QVariant& fieldValue);
     QList<QString>  getFieldList() const;
-    QVariantMap     getFieldValues();
+    QVariantHash     getFieldValues();
 
     static QString getDataTypeName(const TeraDataTypes& data_type);
     static QString getDataTypeNameText(const TeraDataTypes& data_type);
@@ -135,7 +135,7 @@ private:
     QString     m_busyField;
     QString     m_uuidField;
 
-    QVariantMap m_fieldsValue;
+    QVariantHash m_fieldsValue;
 
     //bool hasMetaProperty(const QString& fieldName) const;
 
