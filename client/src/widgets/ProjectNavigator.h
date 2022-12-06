@@ -74,6 +74,7 @@ private:
 
     void queryParticipantsAndGroupsForProject(const int& id_project);
     void queryStatsForProject(const int& id_project);
+    void updateCountsForProject(const int& id_project);
 
     int getParticipantProjectId(QTreeWidgetItem *part_item);
     int getParticipantGroupId(QTreeWidgetItem *part_item);
