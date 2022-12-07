@@ -475,7 +475,7 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID, QString::number(data_id));
-    if (data_type == TERADATA_USER){
+    if (data_type == TERADATA_USER || data_type == TERADATA_DEVICE){
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
     }

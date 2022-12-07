@@ -60,26 +60,35 @@ private:
     bool                        m_siteJustChanged;
     bool                        m_sitesLoaded;
 
-    QMap<int, QTreeWidgetItem*> m_projects_items;
-    QMap<int, QTreeWidgetItem*> m_groups_items;
-    QMap<int, QTreeWidgetItem*> m_participants_items;
+    QHash<int, QTreeWidgetItem*>        m_projects_items;
+    QHash<int, QTreeWidgetItem*>        m_groups_items;
+    QHash<int, QTreeWidgetItem*>        m_participants_items;
+    QMultiHash<int, QTreeWidgetItem*>   m_users_items;
+    QMultiHash<int, QTreeWidgetItem*>   m_devices_items;
 
-    QMap<QString, TeraData>     m_participants; // UUID - TeraData mapping for participants, required for online status
+    QHash<QString, TeraData>    m_participants; // UUID - TeraData mapping for participants, required for online status
+    QHash<QString, TeraData>    m_users;
+    QHash<QString, TeraData>    m_devices;
 
     void updateSite(const TeraData* site);
     void updateProject(const TeraData* project);
     void updateProjectAdvanced(QTreeWidgetItem* project_item);
     void updateGroup(const TeraData* group);
     void updateParticipant(const TeraData* participant);
+    void updateUser(const TeraData* user, const int &id_project = 0);
+    void updateDevice(const TeraData* device, const int &id_project = 0);
 
     void queryParticipantsAndGroupsForProject(const int& id_project);
+    void queryUsersForProject(const int& id_project);
+    void queryDevicesForProject(const int& id_project);
     void queryStatsForProject(const int& id_project);
-    void updateCountsForProject(const int& id_project);
+    //void updateCountsForProject(const int& id_project);
 
     int getParticipantProjectId(QTreeWidgetItem *part_item);
     int getParticipantGroupId(QTreeWidgetItem *part_item);
 
     QTreeWidgetItem* getProjectItem(const int& id_project, const TeraDataTypes& data_type = TERADATA_NONE);
+    QTreeWidgetItem* getProjectForItem(const QTreeWidgetItem *item);
 
     bool isParticipantFiltered(const QString &part_uuid);
     bool isAdvancedView();
@@ -114,8 +123,12 @@ private slots:
      void processProjectsReply(const QList<TeraData> projects);
      void processGroupsReply(const QList<TeraData> groups);
      void processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_args);
+     void processUsersReply(const QList<TeraData> users, const QUrlQuery reply_args);
+     void processDevicesReply(const QList<TeraData> devices, const QUrlQuery reply_args);
      void processStatsReply(TeraData stats, QUrlQuery reply_query);
      void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
+     void ws_userEvent(opentera::protobuf::UserEvent event);
+     void ws_deviceEvent(opentera::protobuf::DeviceEvent event);
 
      void processItemDeletedReply(QString path, int id);
      void moveItemRequested(QTreeWidgetItem* src, QTreeWidgetItem* target);
@@ -133,9 +146,7 @@ private slots:
      void on_txtNavSearch_textChanged(const QString &search_text);
      void on_cmbSites_currentIndexChanged(int index);
      void on_btnDashboard_clicked();
-
      void on_treeNavigator_customContextMenuRequested(const QPoint &pos);
-
      void on_btnAdvanced_clicked();
 
 signals:

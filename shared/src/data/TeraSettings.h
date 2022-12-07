@@ -3,6 +3,7 @@
 
 #include <QSettings>
 
+#define SETTINGS_UI_ADVANCEDVIEW                "ui_advancedView"
 #define SETTINGS_UI_FILTERINACTIVE              "ui_filterInactives"
 #define SETTINGS_UI_ONLINEFILTERPARTICIPANTS    "ui_filterOnlineParticipants"
 #define SETTINGS_UI_ONLINEFILTERUSERS           "ui_filterOnlineUsers"

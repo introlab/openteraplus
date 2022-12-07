@@ -369,7 +369,7 @@ QString LogViewWidget::getOSIcon(const QString &os)
     if (compare_os.contains("windows"))
         return "://icons/logs/os_windows.png";
 
-    if (compare_os.contains("apple"))
+    if (compare_os.contains("apple") || compare_os.contains("mac"))
         return "://icons/logs/os_apple.png";
 
     if (compare_os.contains("linux") || compare_os.contains("ubuntu"))
