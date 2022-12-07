@@ -46,7 +46,7 @@ void ConfigWidget::addSection(const QString &name, const QIcon &icon, const int 
     tmp->setText(name);
     tmp->setTextAlignment(Qt::AlignCenter);
     tmp->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    tmp->setSizeHint(QSize(ui->lstSections->width(), 64));
+    //tmp->setSizeHint(QSize(ui->lstSections->width(), 64));
     tmp->setToolTip(name);
     tmp->setData(Qt::UserRole, id);
 }

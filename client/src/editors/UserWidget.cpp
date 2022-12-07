@@ -27,7 +27,6 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     m_passwordJustGenerated = false;
 
     setLimited(false);
-    ui->tabMain->setCurrentIndex(0);
 
     // Use base class to manage editing, but manually manage save button
     setEditorControls(ui->wdgUser, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
@@ -38,9 +37,14 @@ UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_USER));
 
+    // Query roles (needed to check what is visible to the current user)
+    queryUserAccess();
+
     ui->wdgUser->setComManager(m_comManager);
     UserWidget::setData(data);
 
+    // Init UI
+    initUI();
 }
 
 UserWidget::~UserWidget()
@@ -150,6 +154,26 @@ void UserWidget::updateControlsState(){
         ui->mainWidget->layout()->addWidget(ui->frameButtons);
         while (ui->tabMain->count() > 1)
             ui->tabMain->removeTab(1);
+    }else{
+        if (ui->tabMain->indexOf(ui->tabLogins) < 0){
+            // Check if current user is site admin in at least a site of that user... or is self!
+            bool has_site_admin_access = m_comManager->getCurrentUser().getId() == m_data->getId() || m_comManager->isCurrentUserSuperAdmin();
+            if (!has_site_admin_access){
+                // Check if we are admin in a list one site
+                QList<int> id_sites = m_userSitesRole.keys();
+                for(int id_site:qAsConst(id_sites)){
+                    if (m_comManager->isCurrentUserSiteAdmin(id_site)){
+                        has_site_admin_access = true;
+                        break;
+                    }
+                }
+            }
+
+            if (has_site_admin_access){
+                ui->tabMain->addTab(ui->tabLogins, QIcon(":/icons/password.png"), tr("Journal d'accès"));
+            }
+        }
+
     }
 }
 
@@ -293,6 +317,8 @@ void UserWidget::updateSiteAccess(const TeraData *site_access)
     ui->tableSitesRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(getRoleName(site_access->getFieldValue("site_access_role").toString()));
     ui->tableSitesRoles->setItem(current_row,1,item);
+
+    m_userSitesRole[site_access->getFieldValue("id_site").toInt()] = site_access->getFieldValue("site_access_role").toString();
 }
 
 void UserWidget::updateProjectAccess(const TeraData *project_access)
@@ -307,6 +333,29 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
     ui->tableProjectsRoles->setItem(current_row,0,item);
     item = new QTableWidgetItem(getRoleName(project_access->getFieldValue("project_access_role").toString()));
     ui->tableProjectsRoles->setItem(current_row,2,item);
+}
+
+void UserWidget::queryUserAccess()
+{
+    // Roles
+    m_userSitesRole.clear();
+    ui->tableProjectsRoles->clearContents(); // Resets all elements in the tables
+    ui->tableProjectsRoles->setRowCount(0);
+    ui->tableProjectsRoles->sortItems(-1);
+    ui->tableSitesRoles->clearContents();
+    ui->tableSitesRoles->setRowCount(0);
+    ui->tableSitesRoles->sortItems(-1);
+
+    // Query sites and projects roles
+    if (!m_data->isNew()){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
+
+        queryDataRequest(WEB_SITEACCESS_PATH, args);
+        args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+        queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+
+    }
 }
 
 bool UserWidget::validateUserGroups()
@@ -469,6 +518,18 @@ void UserWidget::connectSignals()
 
 }
 
+void UserWidget::initUI()
+{
+    ui->tabMain->setCurrentIndex(0);
+
+    ui->tabMain->removeTab(ui->tabMain->indexOf(ui->tabLogins)); // Remove logs tab for now, will be readded if access is sufficient
+
+    // Configure log view
+    ui->wdgLogins->setComManager(m_comManager);
+    ui->wdgLogins->setViewMode(LogViewWidget::VIEW_LOGINS_USER, m_data->getUuid());
+    ui->wdgLogins->setUuidName(m_data->getUuid(), m_data->getName());
+}
+
 void UserWidget::on_tabMain_currentChanged(int index)
 {
     QUrlQuery args;
@@ -493,23 +554,7 @@ void UserWidget::on_tabMain_currentChanged(int index)
         ui->frameGroups->setVisible(!super_admin);
     }
     if (current_tab == ui->tabRoles){
-        // Roles
-        ui->tableProjectsRoles->clearContents(); // Resets all elements in the tables
-        ui->tableProjectsRoles->setRowCount(0);
-        ui->tableProjectsRoles->sortItems(-1);
-        ui->tableSitesRoles->clearContents();
-        ui->tableSitesRoles->setRowCount(0);
-        ui->tableSitesRoles->sortItems(-1);
-
-        // Query sites and projects roles
-        if (!m_data->isNew()){
-            args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
-
-            queryDataRequest(WEB_SITEACCESS_PATH, args);
-            args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
-            queryDataRequest(WEB_PROJECTACCESS_PATH, args);
-
-        }
+        queryUserAccess();
     }
 
     if (current_tab == ui->tabConfig){
@@ -536,6 +581,10 @@ void UserWidget::on_tabMain_currentChanged(int index)
             args.addQueryItem(WEB_QUERY_APPTAG, APPLICATION_TAG);
             queryDataRequest(WEB_USERPREFSINFO_PATH, args);
         }
+    }
+
+    if (current_tab == ui->tabLogins){
+        ui->wdgLogins->refreshData();
     }
 }
 

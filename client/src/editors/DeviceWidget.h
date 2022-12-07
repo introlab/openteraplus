@@ -25,9 +25,12 @@ public:
 private:
     Ui::DeviceWidget *ui;
 
-    QMap<int, QTreeWidgetItem*>  m_treeSites_items;
-    QMap<int, QTreeWidgetItem*>  m_treeProjects_items;
-    QMap<int, QListWidgetItem*>  m_listParticipants_items;
+    QHash<int, QTreeWidgetItem*>  m_treeSites_items;
+    QHash<int, QTreeWidgetItem*>  m_treeProjects_items;
+    QHash<int, QListWidgetItem*>  m_listParticipants_items;
+
+    QList<int> m_deviceSites;       // Sites that this device is part of
+    QList<int> m_devicesProjects;   // Projects that this device is part of
 
     void updateControlsState();
     void updateFieldsValue();
@@ -35,6 +38,7 @@ private:
     bool validateSitesProjects();
 
     void connectSignals();
+    void initUI();
 
     void updateSite(TeraData *site);
     void updateProject(TeraData * project);
@@ -47,6 +51,8 @@ private:
 
     QJsonArray getSelectedProjectsAsJsonArray();
     QJsonArray getSelectedSitesAsJsonArray();
+
+    void queryDeviceAccess();
 
 private slots:
     void processFormsReply(QString form_type, QString data);

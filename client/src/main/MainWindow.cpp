@@ -108,6 +108,8 @@ void MainWindow::connectSignals()
 
 void MainWindow::initUi()
 {
+    ui->btnConfig->hide();
+
     // Setup messages
     ui->wdgMessages->hide();
     ui->frameCentralBottom->hide();

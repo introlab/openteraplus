@@ -28,6 +28,8 @@ LogViewWidget::LogViewWidget(QWidget *parent):
     ui->dateEndDate->setProperty("last_value", ui->dateEndDate->date());
     ui->dateStartDate->setProperty("last_value", ui->dateStartDate->date());
     ui->cmbLevel->setCurrentIndex(0);
+    ui->lblWarning->hide();
+    ui->tableLogs->hide();
 }
 
 LogViewWidget::LogViewWidget(ComManager* comMan, QWidget *parent) :
@@ -422,6 +424,8 @@ void LogViewWidget::processStats(const TeraData &stats)
     int page_count = count / m_maxCount + 1;
     ui->lblEntriesCount->setText(QString::number(count));
     ui->frameNav->setVisible(count > m_maxCount);
+    ui->tableLogs->setVisible(count>0);
+    ui->lblWarning->setVisible(count==0);
     ui->spinPage->setValue(1);
     ui->spinPage->setMaximum(page_count);
     ui->lblTotalPages->setText("/" + QString::number(page_count));

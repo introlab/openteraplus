@@ -484,8 +484,10 @@ void ProjectNavigator::updateProject(const TeraData *project)
             }
         }else{
             item->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator); // Always show indicator in advanced view
+            updateProjectAdvanced(item);
         }
         m_projects_items[id_project] = item;
+
     }
 
     item->setText(0, project->getName());
@@ -536,6 +538,9 @@ void ProjectNavigator::updateProjectAdvanced(QTreeWidgetItem *project_item)
         static_item->setData(0, Qt::UserRole, TERADATA_DEVICE);
         project_item->addChild(static_item);
     }
+
+    if (stats.isEmpty())
+        return; // No stats, do nothing else
 
     // Check what stats we have
     // Participants
