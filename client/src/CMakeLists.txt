@@ -103,6 +103,7 @@ set(headers
     widgets/TestsWidget.h
     widgets/QRWidget.h
     widgets/LogViewWidget.h
+    widgets/SessionsListWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -203,6 +204,7 @@ set(srcs
     widgets/TestsWidget.cpp
     widgets/QRWidget.cpp
     widgets/LogViewWidget.cpp
+    widgets/SessionsListWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -265,6 +267,7 @@ SET(uis
     widgets/ResultMessageWidget.ui
     widgets/TestsWidget.ui
     widgets/LogViewWidget.ui
+    widgets/SessionsListWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui
