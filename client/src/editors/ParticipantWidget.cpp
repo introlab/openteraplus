@@ -210,7 +210,7 @@ void ParticipantWidget::updateFieldsValue()
 void ParticipantWidget::initUI()
 {
     ui->wdgSessions->setComManager(m_comManager);
-    ui->wdgSessions->setViewMode(SessionsListWidget::VIEW_PARTICIPANT_SESSIONS, m_data->getUuid(), m_data->getFieldValue("id_project").toInt());
+    ui->wdgSessions->setViewMode(SessionsListWidget::VIEW_PARTICIPANT_SESSIONS, m_data->getUuid(), m_data->getId(), m_data->getFieldValue("id_project").toInt());
 
     ui->frameParticipantLogin->hide();
     ui->frameActive->hide();
