@@ -44,6 +44,7 @@ private:
     bool                    m_filtering; // Applying selected filters
     bool                    m_listening; // Listening for logs
     QHash<QString, QString> m_uuidsNames;
+    QHash<QString, QIcon*>  m_iconsCache;
 
     void connectSignals();
     void disconnectSignals();
@@ -60,6 +61,8 @@ private:
 
     QString getOSIcon(const QString &os);
     QString getBrowserIcon(const QString &browser);
+
+    const QIcon* getIcon(const QString& path);
 
     void updateNavButtons();
     void updateFilterButton();

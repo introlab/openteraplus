@@ -11,7 +11,7 @@ LogViewWidget::LogViewWidget(QWidget *parent):
     ui->cmbLevel->setItemDelegate(new QStyledItemDelegate(ui->cmbLevel));
     m_currentMode = ViewMode::VIEW_LOGS_NONE;
     m_currentUuid = QString();
-    m_maxCount = 50; // 50 items at a time by default
+    m_maxCount = 50; // Number of items displayed by default
     m_filtering = false;
     m_listening = false;
 
@@ -43,6 +43,7 @@ LogViewWidget::LogViewWidget(ComManager* comMan, QWidget *parent) :
 LogViewWidget::~LogViewWidget()
 {
     delete ui;
+    qDeleteAll(m_iconsCache);
 }
 
 void LogViewWidget::setComManager(ComManager *comMan)
@@ -405,6 +406,16 @@ QString LogViewWidget::getBrowserIcon(const QString &browser)
     return "";
 }
 
+const QIcon *LogViewWidget::getIcon(const QString &path)
+{
+    if (m_iconsCache.contains(path))
+        return m_iconsCache[path];
+
+    QIcon* icon = new QIcon(path);
+    m_iconsCache.insert(path, icon);
+    return icon;
+}
+
 void LogViewWidget::updateNavButtons()
 {
     ui->btnPrevPage->setEnabled(ui->spinPage->value() > ui->spinPage->minimum());
@@ -472,7 +483,7 @@ void LogViewWidget::processLogsLogins(QList<TeraData> logins, QUrlQuery reply_da
         item = new QTableWidgetItem();
         LogEvent::LogLevel level = static_cast<LogEvent::LogLevel>(login.getFieldValue("login_log_level").toInt());
         item->setText(getLogLevelName(level));
-        item->setIcon(QIcon(getLogLevelIcon(level)));
+        item->setIcon(*getIcon((getLogLevelIcon(level))));
         ui->tableLogs->setItem(row, 2, item);
 
         // Try to find the name associated to that log
@@ -533,29 +544,29 @@ void LogViewWidget::processLogsLogins(QList<TeraData> logins, QUrlQuery reply_da
 
         item = new QTableWidgetItem();
         item->setText(login_name);
-        item->setIcon(QIcon(login_icon));
+        item->setIcon(*getIcon(login_icon));
         ui->tableLogs->setItem(row, 3, item);
 
         item = new QTableWidgetItem();
         LoginEvent::LoginType login_type = static_cast<LoginEvent::LoginType>(login.getFieldValue("login_type").toInt());
         item->setText(getLoginTypeName(login_type));
-        item->setIcon(QIcon(getLoginTypeIcon(login_type)));
+        item->setIcon(*getIcon(getLoginTypeIcon(login_type)));
         ui->tableLogs->setItem(row, 4, item);
 
         item = new QTableWidgetItem();
         LoginEvent::LoginStatus login_status = static_cast<LoginEvent::LoginStatus>(login.getFieldValue("login_status").toInt());
         item->setText(getLoginStatusName(login_status));
-        item->setIcon(QIcon(getLoginStatusIcon(login_status)));
+        item->setIcon(*getIcon(getLoginStatusIcon(login_status)));
         ui->tableLogs->setItem(row, 5, item);
 
         item = new QTableWidgetItem();
         item->setText(login.getFieldValue("login_os_name").toString() + " " + login.getFieldValue("login_os_version").toString());
-        item->setIcon(QIcon(getOSIcon(login.getFieldValue("login_os_name").toString())));
+        item->setIcon(*getIcon(getOSIcon(login.getFieldValue("login_os_name").toString())));
         ui->tableLogs->setItem(row, 6, item);
 
         item = new QTableWidgetItem();
         item->setText(login.getFieldValue("login_client_name").toString() + " " + login.getFieldValue("login_client_version").toString());
-        item->setIcon(QIcon(getBrowserIcon(login.getFieldValue("login_client_name").toString())));
+        item->setIcon(*getIcon(getBrowserIcon(login.getFieldValue("login_client_name").toString())));
         ui->tableLogs->setItem(row, 7, item);
 
         item = new QTableWidgetItem();
@@ -602,7 +613,7 @@ void LogViewWidget::processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data
         item = new QTableWidgetItem();
         LogEvent::LogLevel level = static_cast<LogEvent::LogLevel>(login.getFieldValue("log_level").toInt());
         item->setText(getLogLevelName(level));
-        item->setIcon(QIcon(getLogLevelIcon(level)));
+        item->setIcon(*getIcon(getLogLevelIcon(level)));
         ui->tableLogs->setItem(row, 2, item);
 
         item = new QTableWidgetItem();
