@@ -8,7 +8,6 @@
 
 #include <QtMultimedia/QAudioDeviceInfo>
 
-#include "dialogs/GeneratePasswordDialog.h"
 #include "dialogs/PasswordStrengthDialog.h"
 
 
@@ -481,11 +480,6 @@ void UserWidget::processFormsReply(QString form_type, QString data)
             }
 
             // Disable super admin field if not super admin itself!
-            /*QWidget* item = ui->wdgUser->getWidgetForField("user_superadmin");
-            if (item){
-                item->setVisible(m_comManager->isCurrentUserSuperAdmin());
-
-            }*/
             if (!m_comManager->isCurrentUserSuperAdmin())
                 ui->wdgUser->hideField("user_superadmin");
         }
@@ -513,8 +507,8 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::userUserGroupsReceived, this, &UserWidget::processUserUsersGroupsReply);
     connect(m_comManager, &ComManager::userPreferencesReceived, this, &UserWidget::processUserPrefsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserWidget::postResultReply);
-    connect(ui->wdgUser, &TeraForm::widgetValueHasChanged, this, &UserWidget::userFormValueChanged);
-    connect(ui->wdgUser, &TeraForm::widgetValueHasFocus, this, &UserWidget::userFormValueHasFocus);
+    connect(ui->wdgUser,  &TeraForm::widgetValueHasChanged, this, &UserWidget::userFormValueChanged);
+    connect(ui->wdgUser,  &TeraForm::widgetValueHasFocus, this, &UserWidget::userFormValueHasFocus);
 
 }
 

@@ -1104,24 +1104,6 @@ void ParticipantWidget::on_btnAddSession_clicked()
 
 }
 
-void ParticipantWidget::on_btnAssetsBrowser_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new BaseDialog(this);
-
-    AssetsWidget* asset_widget = new AssetsWidget(m_comManager, m_diag_editor);
-    asset_widget->displayAssetsForParticipant(m_data->getId());
-    m_diag_editor->setCentralWidget(asset_widget);
-
-    m_diag_editor->setWindowTitle(tr("Explorateur de données"));
-    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
-
-    m_diag_editor->open();
-}
-
-
 void ParticipantWidget::on_tabNav_currentChanged(int index)
 {
     QUrlQuery query;
@@ -1165,25 +1147,6 @@ void ParticipantWidget::on_lstDevices_itemDoubleClicked(QListWidgetItem *item)
     btnDelDevice_clicked();
 }
 
-
-void ParticipantWidget::on_btnTestsBrowser_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new BaseDialog(this);
-
-    TestsWidget* test_widget = new TestsWidget(m_comManager, m_diag_editor);
-    test_widget->displayTestsForParticipant(m_data->getId());
-    m_diag_editor->setCentralWidget(test_widget);
-
-    m_diag_editor->setWindowTitle(tr("Explorateur d'évaluations"));
-    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
-
-    m_diag_editor->open();
-}
-
-
 void ParticipantWidget::on_btnQR_clicked()
 {
     if (m_diag_editor){
@@ -1196,7 +1159,7 @@ void ParticipantWidget::on_btnQR_clicked()
     m_diag_editor->setCentralWidget(qr_widget);
 
     m_diag_editor->setWindowTitle(tr("Code QR du lien"));
-    m_diag_editor->setFixedSize(this->height()/2-40, this->height()/2);
+    m_diag_editor->setFixedSize(this->height()/2 - 40, this->height()/2);
 
     m_diag_editor->open();
 }

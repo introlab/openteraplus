@@ -7,6 +7,9 @@
 #include "editors/SessionWidget.h"
 #include "widgets/TableDateWidgetItem.h"
 
+#include "widgets/AssetsWidget.h"
+#include "widgets/TestsWidget.h"
+
 SessionsListWidget::SessionsListWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SessionsListWidget)
@@ -722,7 +725,7 @@ void SessionsListWidget::updateSession(const TeraData *session, const bool &auto
                 btnDownload->setIcon(m_downloadIcon);
             }
             m_totalAssets += asset_count;
-            ui->btnAssetsBrowser->setVisible(m_totalAssets>0);
+            ui->btnAssetsBrowser->setVisible(m_totalAssets>0 && m_viewMode == ViewMode::VIEW_PARTICIPANT_SESSIONS);
         }else{
             //btnDownload->hide();
             btnDownload->setEnabled(false);
@@ -742,7 +745,7 @@ void SessionsListWidget::updateSession(const TeraData *session, const bool &auto
                 btnTests->setIcon(m_testIcon);
             }
             m_totalTests += test_count;
-            ui->btnTestsBrowser->setVisible(m_totalTests>0);
+            ui->btnTestsBrowser->setVisible(m_totalTests>0 && m_viewMode == ViewMode::VIEW_PARTICIPANT_SESSIONS);
         }else{
             //btnTests->hide();
             btnTests->setEnabled(false);
@@ -904,5 +907,73 @@ void SessionsListWidget::on_btnFilterSessionsTypes_clicked()
 void SessionsListWidget::on_tableSessions_itemDoubleClicked(QTableWidgetItem *item)
 {
     displaySessionDetails(item);
+}
+
+void SessionsListWidget::on_btnAssetsBrowser_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+    m_diag_editor = new BaseDialog(this);
+
+    AssetsWidget* asset_widget = new AssetsWidget(m_comManager, m_diag_editor);
+
+    switch(m_viewMode){
+        case VIEW_NONE:
+            qWarning() << "None view selected - unable to display assets!";
+            break;
+        case VIEW_PARTICIPANT_SESSIONS:
+            asset_widget->displayAssetsForParticipant(m_currentId);
+            break;
+        case VIEW_USER_SESSIONS:
+            qWarning() << "Assets display for user not implemented yet!";
+            // asset_widget->displayAssetsForUser(m_currentId);
+            break;
+        case VIEW_DEVICE_SESSIONS:
+            qWarning() << "Assets display for device not implemented yet!";
+            // asset_widget->displayAssetsForDevice(m_currentId);
+            break;
+    }
+
+    m_diag_editor->setCentralWidget(asset_widget);
+
+    m_diag_editor->setWindowTitle(tr("Explorateur de données"));
+    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
+
+    m_diag_editor->open();
+}
+
+
+void SessionsListWidget::on_btnTestsBrowser_clicked()
+{
+    if (m_diag_editor){
+        m_diag_editor->deleteLater();
+    }
+    m_diag_editor = new BaseDialog(this);
+
+    TestsWidget* test_widget = new TestsWidget(m_comManager, m_diag_editor);
+    switch(m_viewMode){
+        case VIEW_NONE:
+            qWarning() << "None view selected - unable to display assets!";
+            break;
+        case VIEW_PARTICIPANT_SESSIONS:
+            test_widget->displayTestsForParticipant(m_currentId);
+            break;
+        case VIEW_USER_SESSIONS:
+            qWarning() << "Tests display for user not implemented yet!";
+            // test_widget->displayTestsForUser(m_currentId);
+            break;
+        case VIEW_DEVICE_SESSIONS:
+            qWarning() << "Tests display for device not implemented yet!";
+            // test_widget->displayTestsForDevice(m_currentId);
+            break;
+    }
+
+    m_diag_editor->setCentralWidget(test_widget);
+
+    m_diag_editor->setWindowTitle(tr("Explorateur d'évaluations"));
+    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
+
+    m_diag_editor->open();
 }
 

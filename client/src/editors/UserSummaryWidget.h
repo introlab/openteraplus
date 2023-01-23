@@ -21,7 +21,7 @@ class UserSummaryWidget : public DataEditorWidget
     Q_OBJECT
 
 public:
-    explicit UserSummaryWidget(ComManager* comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
+    explicit UserSummaryWidget(ComManager* comMan, const TeraData* data = nullptr, const int &id_project = -1, QWidget *parent = nullptr);
     ~UserSummaryWidget();
 
     void saveData(bool signal=true);
@@ -36,6 +36,11 @@ private:
     BaseDialog*                     m_diag_editor;
     SessionLobbyDialog*             m_sessionLobby;
 
+    int m_idProject;
+
+    bool    m_passwordJustGenerated;
+    bool    m_currentUserPasswordChanged;
+
     void updateControlsState();
     void updateFieldsValue();
     void initUI();
@@ -43,8 +48,16 @@ private:
     bool validateData();
 
 private slots:
+    void processFormsReply(QString form_type, QString data);
+    void processSiteAccessReply(QList<TeraData> access_list, QUrlQuery reply_query);
     void processSessionTypesReply(QList<TeraData> session_types);
-    void ws_userEvent(UserEvent event);
+    void processUsersReply(QList<TeraData> users);
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
+
+    void userFormValueChanged(QWidget* widget, QVariant value);
+    void userFormValueHasFocus(QWidget* widget);
+
+    void ws_userEvent(opentera::protobuf::UserEvent event);
 
     void sessionLobbyStartSessionRequested();
     void sessionLobbyStartSessionCancelled();

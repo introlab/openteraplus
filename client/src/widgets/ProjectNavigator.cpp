@@ -348,6 +348,48 @@ QTreeWidgetItem *ProjectNavigator::getCurrentItem()
     return ui->treeNavigator->currentItem();
 }
 
+TeraDataTypes ProjectNavigator::getCurrentItemType()
+{
+    QTreeWidgetItem* item = getCurrentItem();
+
+    if (item){
+        if (m_devices_items.key(item, -1) >= 0){
+            return TERADATA_DEVICE;
+        }
+        if (m_groups_items.key(item, -1) >= 0){
+            return TERADATA_GROUP;
+        }
+        if (m_participants_items.key(item, -1) >= 0){
+            return TERADATA_PARTICIPANT;
+        }
+        if (m_users_items.key(item, -1) >= 0){
+            return TERADATA_USER;
+        }
+    }
+    return TERADATA_NONE;
+}
+
+int ProjectNavigator::getCurrentItemId()
+{
+    QTreeWidgetItem* item = getCurrentItem();
+
+    if (item){
+        int id = -1;
+        id = m_devices_items.key(item, -1);
+        if (id == -1){
+            id = m_groups_items.key(item, -1);
+        }
+        if (id == -1){
+            id = m_participants_items.key(item, -1);
+        }
+        if (id == -1){
+            id = m_users_items.key(item, -1);
+        }
+        return id;
+    }
+    return -1;
+}
+
 void ProjectNavigator::setOnHold(const bool &hold)
 {
     m_selectionHold = hold;

@@ -42,6 +42,8 @@ public:
 
     void removeItem(const TeraDataTypes& data_type, const int& id);
     QTreeWidgetItem* getCurrentItem();
+    TeraDataTypes getCurrentItemType();
+    int getCurrentItemId();
 
     void setOnHold(const bool& hold);
     void refreshCurrentItem();

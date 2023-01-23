@@ -198,12 +198,14 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
             m_data_editor->setLimited(limited);
         */
 
-
-
     }
 
     if (data_type == TERADATA_USER){
-        m_data_editor = new UserSummaryWidget(m_comManager, data);
+        int id_project = -1;
+        if (ui->projNavigator->getCurrentItemType() == TERADATA_USER && ui->projNavigator->getCurrentItemId() == data->getId()){
+            id_project = ui->projNavigator->getCurrentProjectId();
+        }
+        m_data_editor = new UserSummaryWidget(m_comManager, data, id_project);
     }
 
     if (m_data_editor){
