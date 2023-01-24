@@ -11,6 +11,7 @@
 #include "editors/GroupWidget.h"
 #include "editors/ParticipantWidget.h"
 #include "editors/UserSummaryWidget.h"
+#include "editors/DeviceSummaryWidget.h"
 
 
 MainWindow::MainWindow(ComManager *com_manager, const QString &current_server, QWidget *parent) :
@@ -206,6 +207,14 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
             id_project = ui->projNavigator->getCurrentProjectId();
         }
         m_data_editor = new UserSummaryWidget(m_comManager, data, id_project);
+    }
+
+    if (data_type == TERADATA_DEVICE){
+        int id_project = -1;
+        if (ui->projNavigator->getCurrentItemType() == TERADATA_DEVICE && ui->projNavigator->getCurrentItemId() == data->getId()){
+            id_project = ui->projNavigator->getCurrentProjectId();
+        }
+        m_data_editor = new DeviceSummaryWidget(m_comManager, data, id_project);
     }
 
     if (m_data_editor){
