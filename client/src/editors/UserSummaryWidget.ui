@@ -382,6 +382,20 @@ color:cyan;
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabLogs">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/password.png</normaloff>:/icons/password.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Journal d'accès</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="LogViewWidget" name="wdgLogins" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -391,6 +405,12 @@ color:cyan;
    <class>TeraForm</class>
    <extends>QWidget</extends>
    <header>TeraForm.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LogViewWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/LogViewWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

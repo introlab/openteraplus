@@ -110,6 +110,11 @@ void UserSummaryWidget::initUI()
     ui->wdgUser->hideFields({"user_username", "user_notes", "user_superadmin"});
 
     ui->tabNav->setCurrentIndex(0);
+
+    // Access log widget init
+    ui->wdgLogins->setComManager(m_comManager);
+    ui->wdgLogins->setViewMode(LogViewWidget::VIEW_LOGINS_USER, m_data->getUuid());
+    ui->wdgLogins->setUuidName(m_data->getUuid(), m_data->getName());
 }
 
 bool UserSummaryWidget::validateData()
@@ -349,3 +354,12 @@ void UserSummaryWidget::on_btnNewSession_clicked()
     // Show Session Lobby
     m_sessionLobby->exec();
 }
+
+void UserSummaryWidget::on_tabNav_currentChanged(int index)
+{
+    Q_UNUSED(index)
+    if (ui->tabNav->currentWidget() == ui->tabLogs){
+        ui->wdgLogins->refreshData();
+    }
+}
+
