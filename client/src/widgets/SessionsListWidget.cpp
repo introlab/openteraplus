@@ -196,6 +196,7 @@ void SessionsListWidget::processSessionsReply(QList<TeraData> sessions, QUrlQuer
         }
         updateSession(&session, sessions.count()==1);
     }
+    //qDebug() << sessions.count();
 
     // Query next sessions if needed
     querySessions();
@@ -479,6 +480,7 @@ void SessionsListWidget::querySessions()
     }
     ui->tableSessions->setSortingEnabled(false);
     int sessions_left = m_totalSessions - m_currentSessions;
+    //qDebug() << m_totalSessions << m_currentSessions << sessions_left << m_currentIdSession;
     setSessionsLoading(sessions_left > 0);
 
     if (sessions_left>0){
@@ -551,7 +553,8 @@ void SessionsListWidget::updateSession(const TeraData *session, const bool &auto
     QToolButton* btnTests = nullptr;
 
     if (m_listSessions_items.contains(id_session)){
-        // Already there, get items
+       // Already there, get items
+       //qDebug() << "Updating session " << id_session;
        name_item = m_listSessions_items[id_session];
        date_item = dynamic_cast<TableDateWidgetItem*>(ui->tableSessions->item(name_item->row(), 1));
        type_item = ui->tableSessions->item(name_item->row(), 2);

@@ -18,7 +18,7 @@ public:
     explicit VideoRehabToolsWidget(ComManager* comMan, BaseServiceWidget *baseWidget, QWidget *parent = nullptr);
     ~VideoRehabToolsWidget();
 
-    bool sessionCanBeEnded() override;
+    bool sessionCanBeEnded(const bool &displayConfirmation = true) override;
 
 public slots:
     void setReadyState(bool ready_state) override;

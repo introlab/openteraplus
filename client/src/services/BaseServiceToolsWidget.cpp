@@ -8,8 +8,9 @@ BaseServiceToolsWidget::BaseServiceToolsWidget(ComManager *comMan, BaseServiceWi
 
 }
 
-bool BaseServiceToolsWidget::sessionCanBeEnded()
+bool BaseServiceToolsWidget::sessionCanBeEnded(const bool &displayConfirmation)
 {
+    Q_UNUSED(displayConfirmation)
     // By default, all sessions can be ended
     return true;
 }

@@ -11,6 +11,7 @@
 #define SETTINGS_LASTSITEID                     "lastSiteId"
 #define SETTINGS_LASTSESSIONTYPEID              "lastSessionTypeId"
 #define SETTINGS_LASTLANGUAGE                   "lastLanguage"
+#define SETTINGS_DATA_SAVEPATH                  "dataSavePath"
 
 class TeraSettings
 {

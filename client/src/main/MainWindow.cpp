@@ -1005,6 +1005,20 @@ void MainWindow::changeEvent(QEvent* event)
 
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    // About to close... check if we have something in progress that prevents it
+    if (m_inSessionWidget){
+        if (!m_inSessionWidget->sessionCanBeEnded()){
+            GlobalMessageBox msg;
+            msg.showWarning(tr("Séance en cours"), tr("La séance en cours empêche la fermeture du logiciel.") + "\n\n" + tr("Veuillez la terminer avant de poursuivre."));
+            event->ignore();
+            return;
+        }
+    }
+    event->accept();
+}
+
 
 void MainWindow::on_lblLogo_clicked()
 {

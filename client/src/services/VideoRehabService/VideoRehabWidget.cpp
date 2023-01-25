@@ -3,6 +3,8 @@
 #include "VideoRehabWidget.h"
 #include "ui_VideoRehabWidget.h"
 
+#include "TeraSettings.h"
+
 #include "GlobalMessageBox.h"
 
 VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
@@ -79,15 +81,8 @@ void VideoRehabWidget::initUI()
     QWebEngineProfile::defaultProfile()->setHttpCacheType(/*QWebEngineProfile::DiskHttpCache*/QWebEngineProfile::NoCache);
 
     // Set download path
-    QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
-    QString download_path = ""; // TODO: Other default download path?
-    if (!documents_path.empty())
-        download_path = documents_path.first();
-    download_path += "/OpenTeraPlus/downloads/";
-    QWebEngineProfile::defaultProfile()->setDownloadPath(download_path);
-
+    setDataSavePath();
     connect(QWebEngineProfile::defaultProfile(), &QWebEngineProfile::downloadRequested, this, &VideoRehabWidget::webEngineDownloadRequested);
-
 
     // Create layout for widget if missing
     if (!ui->wdgWebEngine->layout()){
@@ -143,6 +138,28 @@ void VideoRehabWidget::stopRecording()
     }
 }
 
+void VideoRehabWidget::setDataSavePath()
+{
+    QString current_user_uuid = m_comManager->getCurrentUser().getUuid();
+    QVariant path_setting = TeraSettings::getUserSetting(current_user_uuid, SETTINGS_DATA_SAVEPATH);
+    QString download_path = "";
+    if (path_setting.isValid())
+        download_path = path_setting.toString();
+    else{
+        QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+
+        if (!documents_path.empty())
+            download_path = documents_path.first();
+        download_path += "/OpenTeraPlus/downloads/";
+        // Save path as default
+        TeraSettings::setUserSetting(current_user_uuid, SETTINGS_DATA_SAVEPATH, download_path);
+    }
+
+    qDebug() << "Setting download path to " << download_path;
+    QWebEngineProfile::defaultProfile()->setDownloadPath(download_path);
+
+}
+
 void VideoRehabWidget::on_txtURL_returnPressed()
 {
     m_webEngine->setUrl(ui->txtURL->text());
@@ -193,7 +210,6 @@ void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
 
 void VideoRehabWidget::webEngineDownloadCompleted()
 {
-
     // Enable buttons
     emit widgetIsReady(true);
 

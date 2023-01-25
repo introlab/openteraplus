@@ -15,6 +15,8 @@ public:
 
     virtual bool handleJoinSessionEvent(const JoinSessionEvent &event);
 
+    virtual void setDataSavePath();
+
     static QStringList getHandledServiceKeys();
     static QList<TeraSessionCategory::SessionTypeCategories> getHandledSessionCategories();
 

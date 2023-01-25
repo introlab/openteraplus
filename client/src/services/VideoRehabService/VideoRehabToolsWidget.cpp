@@ -18,14 +18,21 @@ VideoRehabToolsWidget::~VideoRehabToolsWidget()
     delete ui;
 }
 
-bool VideoRehabToolsWidget::sessionCanBeEnded()
+bool VideoRehabToolsWidget::sessionCanBeEnded(const bool &displayConfirmation)
 {
-    if (m_isRecording){
-        GlobalMessageBox msg_box;
-        if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement pourrait être perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) != GlobalMessageBox::Yes){
+    if (m_isRecording || !ui->btnRecord->isEnabled()){ // Recording or downloading file
+        if (displayConfirmation){
+            GlobalMessageBox msg_box;
+            if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement pourrait être perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) == GlobalMessageBox::Yes){
+                if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Êtes-vous vraiment sûrs de vouloir arrêter l'enregistrement en cours?")) != GlobalMessageBox::Yes)
+                    return false;
+            }else{
+                return false;
+            }
+            on_btnRecord_clicked();
+        }else{
             return false;
         }
-        on_btnRecord_clicked();
     }
     return true;
 }
@@ -33,8 +40,12 @@ bool VideoRehabToolsWidget::sessionCanBeEnded()
 void VideoRehabToolsWidget::setReadyState(bool ready_state)
 {
     setEnabled(ready_state);
-    if (ui->frameRecord->isVisible())
+    if (ui->frameRecord->isVisible()){
         ui->frameRecord->setEnabled(ready_state);
+        if (ready_state){
+            ui->btnRecord->setText(tr("Enregistrer"));
+        }
+    }
 }
 
 void VideoRehabToolsWidget::on_btnReconnect_clicked()
@@ -75,7 +86,7 @@ void VideoRehabToolsWidget::on_btnRecord_clicked()
     if (m_isRecording){
         // Toggle button text and icon
         ui->btnRecord->setIcon(QIcon("://icons/record.png"));
-        ui->btnRecord->setText(tr("Enregistrer"));
+        ui->btnRecord->setText(tr("Sauvegarde du fichier..."));
 
         // Stop recording
         m_isRecording = false;

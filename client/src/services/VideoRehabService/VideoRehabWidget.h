@@ -38,6 +38,8 @@ public:
     void startRecording();
     void stopRecording();
 
+    void setDataSavePath() override; // Will update download path based on the user settings
+
 private slots:
     void on_txtURL_returnPressed();
     void webEngineURLChanged(QUrl url);

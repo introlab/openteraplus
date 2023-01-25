@@ -118,7 +118,6 @@ private:
 
     // Events
     QIcon getGlobalEventIcon(GlobalEvent &global_event);
-    void changeEvent(QEvent* event);
     QString m_currentLanguage;
 
     Ui::MainWindow *ui;
@@ -140,7 +139,10 @@ private:
     // UI items
     QMovie*         m_loadingIcon;
 
-
+    // QWidget interface
+protected:
+    void changeEvent(QEvent* event) override;
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // MAINWINDOW_H

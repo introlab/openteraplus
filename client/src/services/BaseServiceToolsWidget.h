@@ -12,7 +12,7 @@ public:
     explicit BaseServiceToolsWidget(ComManager* comMan, BaseServiceWidget* baseWidget, QWidget *parent = nullptr);
 
 
-    virtual bool sessionCanBeEnded();
+    virtual bool sessionCanBeEnded(const bool& displayConfirmation = true);
 
 public slots:
     virtual void setReadyState(bool ready_state);

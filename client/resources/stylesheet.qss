@@ -815,3 +815,8 @@ QTreeWidget#treeAssets {
     selection-color: lightblue;
 }
 
+/* Customizations for InSessionWidget */
+QPushButton#btnDefaultPath, QPushButton#btnBrowseSavePath{
+        max-width: 80px;
+        min-width: 80px;
+}

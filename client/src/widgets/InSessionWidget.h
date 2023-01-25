@@ -32,6 +32,8 @@ public:
     void setSessionId(int session_id);
     void setPendingEvent(JoinSessionEvent* event);
 
+    bool sessionCanBeEnded();
+
 
 private slots:
     void on_btnEndSession_clicked();
@@ -43,9 +45,9 @@ private slots:
     void processUsersReply(QList<TeraData> users);
     void processParticipantsReply(QList<TeraData> participants);
 
-    void ws_JoinSessionEvent(JoinSessionEvent event);
-    void ws_JoinSessionReplyEvent(JoinSessionReplyEvent event);
-    void ws_StopSessionEvent(StopSessionEvent event);
+    void ws_JoinSessionEvent(opentera::protobuf::JoinSessionEvent event);
+    void ws_JoinSessionReplyEvent(opentera::protobuf::JoinSessionReplyEvent event);
+    void ws_StopSessionEvent(opentera::protobuf::StopSessionEvent event);
 
     void showEvent(QShowEvent *event) override;
 
@@ -60,6 +62,9 @@ private slots:
     void sessionTimer();
 
     void setReadyState(bool state);
+
+    void on_btnDefaultPath_clicked();
+    void on_btnBrowseSavePath_clicked();
 
 private:
     void connectSignals();
