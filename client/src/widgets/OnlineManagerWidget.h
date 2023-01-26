@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTreeWidgetItem>
+#include <QMenu>
 
 #include "managers/ComManager.h"
 
@@ -27,6 +28,7 @@ private:
     ComManager                  *m_comManager;
     QString                     m_siteName;
     int                         m_siteId;
+    QMenu*                      m_actionsMenu;
 
     // Base tree items
     QTreeWidgetItem*            m_baseUsers;
@@ -56,21 +58,23 @@ private:
     void createOnlineDevice(const QString& uuid, const QString& name);
 
 private slots:
-    void ws_userEvent(UserEvent event);
-    void ws_participantEvent(ParticipantEvent event);
-    void ws_deviceEvent(DeviceEvent event);
+    void ws_userEvent(opentera::protobuf::UserEvent event);
+    void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
+    void ws_deviceEvent(opentera::protobuf::DeviceEvent event);
 
     void processOnlineUsers(QList<TeraData> users);
     void processOnlineParticipants(QList<TeraData> participants);
     void processOnlineDevices(QList<TeraData> devices);
 
+    void currentUserWasUpdated();
+
     void on_treeOnline_itemClicked(QTreeWidgetItem *item, int column);
-
     void on_btnFilterParticipants_clicked();
-
     void on_btnFilterUsers_clicked();
-
     void on_btnFilterDevices_clicked();
+
+    void on_treeOnline_customContextMenuRequested(const QPoint &pos);
+    void disconnectItemRequested();
 
 signals:
     void dataDisplayRequest(TeraDataTypes data_type, QString data_uuid);

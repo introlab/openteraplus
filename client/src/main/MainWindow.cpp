@@ -669,7 +669,7 @@ void MainWindow::com_posting(QString path, QString data)
 
 void MainWindow::com_querying(QString path)
 {
-    if (path != WEB_FORMS_PATH && path != WEB_LOGOUT_PATH && path != WEB_REFRESH_TOKEN_PATH){
+    if (path != WEB_FORMS_PATH && path != WEB_LOGOUT_PATH && path != WEB_REFRESH_TOKEN_PATH && path != WEB_DISCONNECT_PATH){
         QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
         if (!data_type.isEmpty()){
             GlobalEvent event(EVENT_DATA_QUERY, tr("Récupération de ") + data_type + "...");

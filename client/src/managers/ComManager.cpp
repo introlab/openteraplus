@@ -94,6 +94,9 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
             if (handled) emit queryResultsOK(reply_path, reply_query);
         }
 
+        if (reply_path == WEB_DISCONNECT_PATH)
+            handled = true;
+
         if (!handled){
             // General case
             handled=handleDataReply(reply_path, reply_data, reply_query);

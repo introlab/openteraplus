@@ -1,6 +1,7 @@
 #include "OnlineManagerWidget.h"
 #include "ui_OnlineManagerWidget.h"
 #include "TeraSettings.h"
+#include "GlobalMessageBox.h"
 
 // Must be reset each time a site is changed.
 // 1. Query online * using APIs
@@ -16,6 +17,7 @@ OnlineManagerWidget::OnlineManagerWidget(QWidget *parent) :
     m_baseDevices = nullptr;
     m_baseUsers = nullptr;
     m_baseParticipants = nullptr;
+    m_actionsMenu = nullptr;
     ui->setupUi(this);
 
 
@@ -55,8 +57,6 @@ void OnlineManagerWidget::setComManager(ComManager *comMan)
     on_btnFilterParticipants_clicked();
     on_btnFilterUsers_clicked();
     on_btnFilterDevices_clicked();
-
-
 }
 
 void OnlineManagerWidget::setCurrentSite(const QString &site_name, const int &site_id)
@@ -70,6 +70,7 @@ void OnlineManagerWidget::setCurrentSite(const QString &site_name, const int &si
 void OnlineManagerWidget::initUi()
 {
     ui->treeOnline->clear();
+    ui->treeOnline->setContextMenuPolicy(Qt::CustomContextMenu);
 
     m_baseParticipants = new QTreeWidgetItem();
     m_baseParticipants->setText(0, tr("Participants"));
@@ -102,6 +103,8 @@ void OnlineManagerWidget::connectSignals()
     connect(m_comManager, &ComManager::onlineDevicesReceived, this, &OnlineManagerWidget::processOnlineDevices);
     connect(m_comManager, &ComManager::onlineParticipantsReceived, this, &OnlineManagerWidget::processOnlineParticipants);
     connect(m_comManager, &ComManager::onlineUsersReceived, this, &OnlineManagerWidget::processOnlineUsers);
+
+    connect(m_comManager, &ComManager::currentUserUpdated, this, &OnlineManagerWidget::currentUserWasUpdated);
 }
 
 void OnlineManagerWidget::refreshOnlines()
@@ -417,10 +420,25 @@ void OnlineManagerWidget::processOnlineDevices(QList<TeraData> devices)
     updateCounts();
 }
 
+void OnlineManagerWidget::currentUserWasUpdated()
+{
+    if (m_comManager->isCurrentUserSuperAdmin()){
+        if (!m_actionsMenu){
+            m_actionsMenu = new QMenu(this);
+
+            QAction* disconnectAction = new QAction(QIcon(":/icons/delete_old.png"), tr("Déconnecter"), m_actionsMenu);
+            connect(disconnectAction, &QAction::triggered, this, &OnlineManagerWidget::disconnectItemRequested);
+            m_actionsMenu->addAction(disconnectAction);
+
+        }
+    }
+}
+
 void OnlineManagerWidget::on_treeOnline_itemClicked(QTreeWidgetItem *item, int column)
 {
-    if (!item || item == m_baseDevices || item == m_baseParticipants || item == m_baseUsers)
+    if (!item || item == m_baseDevices || item == m_baseParticipants || item == m_baseUsers){
         return;
+    }
 
     item->setSelected(false);
     QString uuid;
@@ -469,5 +487,63 @@ void OnlineManagerWidget::on_btnFilterDevices_clicked()
     // Save new setting
     if (m_comManager)
         TeraSettings::setUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_UI_ONLINEFILTERDEVICES, ui->btnFilterDevices->isChecked());
+}
+
+void OnlineManagerWidget::on_treeOnline_customContextMenuRequested(const QPoint &pos)
+{
+    if (!m_actionsMenu)
+        return;
+
+    QTreeWidgetItem* pointed_item = ui->treeOnline->itemAt(pos);
+    if (!pointed_item){
+        return;
+    }
+
+    if (!pointed_item->parent())
+        return; // Top level item = category = no action here.
+
+    // Get item uuid
+    QString uuid;
+    if (!m_onlineDevices.key(pointed_item).isEmpty()){
+        uuid = m_onlineDevices.key(pointed_item);
+    }
+    if (!m_onlineUsers.key(pointed_item).isEmpty()){
+        uuid = m_onlineUsers.key(pointed_item);
+    }
+    if (!m_onlineParticipants.key(pointed_item).isEmpty()){
+        uuid = m_onlineParticipants.key(pointed_item);
+    }
+
+    if (uuid == m_comManager->getCurrentUser().getUuid())
+        return; // Ourselves - can't disconnect!!
+
+    m_actionsMenu->setProperty("uuid", uuid);
+
+    m_actionsMenu->exec(ui->treeOnline->mapToGlobal(pos));
+}
+
+void OnlineManagerWidget::disconnectItemRequested()
+{
+    QString uuid = m_actionsMenu->property("uuid").toString();
+    QUrlQuery args;
+    QString name;
+
+    if (m_onlineDevices.contains(uuid)){
+        name = m_onlineDevices[uuid]->text(0);
+        args.addQueryItem(WEB_QUERY_UUID_DEVICE, uuid);
+    }
+    if (m_onlineParticipants.contains(uuid)){
+        name = m_onlineParticipants[uuid]->text(0);
+        args.addQueryItem(WEB_QUERY_UUID_PARTICIPANT, uuid);
+    }
+    if (m_onlineUsers.contains(uuid)){
+        name = m_onlineUsers[uuid]->text(0);
+        args.addQueryItem(WEB_QUERY_UUID_USER, uuid);
+    }
+
+    GlobalMessageBox msg;
+    if (msg.showYesNo(tr("Déconnecter?"), tr("Êtes-vous sûrs de vouloir déconnecter") + " " + name + "?") == GlobalMessageBox::Yes){
+        m_comManager->doGet(WEB_DISCONNECT_PATH, args);
+    }
 }
 
