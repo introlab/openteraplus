@@ -138,6 +138,13 @@ void VideoRehabWidget::stopRecording()
     }
 }
 
+void VideoRehabWidget::pauseRecording()
+{
+    if (m_webPage){
+        m_webPage->getSharedObject()->pauseRecording();
+    }
+}
+
 void VideoRehabWidget::setDataSavePath()
 {
     QString current_user_uuid = m_comManager->getCurrentUser().getUuid();

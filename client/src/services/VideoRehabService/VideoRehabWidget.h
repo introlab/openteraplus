@@ -37,6 +37,7 @@ public:
 
     void startRecording();
     void stopRecording();
+    void pauseRecording();
 
     void setDataSavePath() override; // Will update download path based on the user settings
 

@@ -457,6 +457,11 @@ void SharedObject::stopRecording()
     emit stopRecordingRequested();
 }
 
+void SharedObject::pauseRecording()
+{
+    emit pauseRecordingRequested();
+}
+
 bool SharedObject::getLocalMirror(){
     return m_localMirror;
     //emit setLocalMirrorSignal(m_localMirror);

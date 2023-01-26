@@ -65,6 +65,7 @@ void VideoRehabToolsWidget::setupTools()
 {
     // Recording features
     ui->frameRecord->hide();
+    ui->btnPause->hide();
     if (m_comManager->getCurrentSessionType()){
         QString session_type_config = m_comManager->getCurrentSessionType()->getFieldValue("session_type_config").toString();
         if (!session_type_config.isEmpty()){
@@ -87,6 +88,7 @@ void VideoRehabToolsWidget::on_btnRecord_clicked()
         // Toggle button text and icon
         ui->btnRecord->setIcon(QIcon("://icons/record.png"));
         ui->btnRecord->setText(tr("Sauvegarde du fichier..."));
+        ui->btnPause->hide();
 
         // Stop recording
         m_isRecording = false;
@@ -111,9 +113,16 @@ void VideoRehabToolsWidget::on_btnRecord_clicked()
         // Toggle button text and icon
         ui->btnRecord->setIcon(QIcon("://icons/record_stop.png"));
         ui->btnRecord->setText(tr("Arrêter l'enregistrement"));
+        ui->btnPause->show();
 
         // Start recording
         m_isRecording = true;
         dynamic_cast<VideoRehabWidget*>(m_baseWidget)->startRecording();
     }
 }
+
+void VideoRehabToolsWidget::on_btnPause_clicked()
+{
+    dynamic_cast<VideoRehabWidget*>(m_baseWidget)->pauseRecording();
+}
+

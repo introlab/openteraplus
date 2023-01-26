@@ -5820,14 +5820,19 @@ Vous devez spécifier au moins un groupe utilisateur</source>
 <context>
     <name>VideoRehabToolsWidget</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_VideoRehabToolsWidget.h" line="96"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_VideoRehabToolsWidget.h" line="112"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_VideoRehabToolsWidget.h" line="97"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_VideoRehabToolsWidget.h" line="113"/>
         <source>Reconnecter</source>
         <translation>Reconnect</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_VideoRehabToolsWidget.h" line="115"/>
+        <source>Pause</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="26"/>
@@ -5861,37 +5866,37 @@ Vous devez spécifier au moins un groupe utilisateur</source>
     </message>
     <message>
         <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="46"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_VideoRehabToolsWidget.h" line="98"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_VideoRehabToolsWidget.h" line="114"/>
         <source>Enregistrer</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="89"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="90"/>
         <source>Sauvegarde du fichier...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="101"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="103"/>
         <source>Vous vous apprêtez à enregistrer localement une séance vidéo.</source>
         <translation>You are about to locally record a video session.</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="102"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="104"/>
         <source>En acceptant de poursuivre avec cet enregistrement, vous acceptez la responsabilité professionnelle, légale et éthique en lien avec la conservation, la diffusion, l&apos;utilisation et la confidentialité requise avec ce type de média.</source>
         <translation>If you accept and proceed with this recording, you accept the professional, legal and ethic responsability related to the storage, distribution, use and confidentiality required with that kind of media.</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="103"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="105"/>
         <source>Souhaitez-vous toujours activer l&apos;enregistrement vidéo?</source>
         <translation>Do you still want to start video recording?</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="105"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="107"/>
         <source>Confirmation requise</source>
         <translation>Required confirmation</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="113"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="115"/>
         <source>Arrêter l&apos;enregistrement</source>
         <translation>Stop recording</translation>
     </message>
@@ -5983,37 +5988,37 @@ Vous devez spécifier au moins un groupe utilisateur</source>
         <translation>Connecting...</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="232"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="239"/>
         <source>Fichier disponible</source>
         <translation>File available</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="232"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="239"/>
         <source>Le fichier</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="233"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="240"/>
         <source>est disponible dans le répertoire</source>
         <translation>is available in the folder</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="242"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="249"/>
         <source>Impossible de charger la page</source>
         <translation>Unable to load page</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="256"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="263"/>
         <source>Problème vidéo</source>
         <translation>Video Problem</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="261"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="268"/>
         <source>Problème audio</source>
         <translation>Audio Problem</translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="266"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="273"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>

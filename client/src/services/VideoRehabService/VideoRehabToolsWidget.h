@@ -28,6 +28,8 @@ private slots:
 
     void on_btnRecord_clicked();
 
+    void on_btnPause_clicked();
+
 private:
     void setupTools();
 

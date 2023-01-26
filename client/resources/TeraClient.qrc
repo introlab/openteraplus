@@ -147,5 +147,6 @@
         <file>icons/logs/os_linux.png</file>
         <file>icons/logs/os_mac.png</file>
         <file>icons/logs/os_windows.png</file>
+        <file>icons/pause.png</file>
     </qresource>
 </RCC>
