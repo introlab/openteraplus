@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Résumé Utilisateur</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QLabel#lblFullNameValue, QLabel#lblLastOnlineValue, QLabel#lblEmailValue{

@@ -525,25 +525,21 @@
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="266"/>
         <source>Paramètres</source>
-        <translation type="unfinished"></translation>
+        <translation>Settings</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="267"/>
         <source>Événements</source>
-        <translation type="unfinished">Events</translation>
+        <translation>Events</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ConfigWidget.h" line="268"/>
         <source>Journal d&apos;accès</source>
-        <translation type="unfinished"></translation>
+        <translation>Access Log</translation>
     </message>
 </context>
 <context>
     <name>DanceConfigWidget</name>
-    <message>
-        <source>Vidéos (*.mp4 *.webm *.mkv *.avi)</source>
-        <translation type="vanished">Videos (*.mp4 *.webm *.mkv *.avi)</translation>
-    </message>
     <message>
         <location filename="../../src/services/DanceService/DanceConfigWidget.cpp" line="59"/>
         <source>Vidéos (*.mp4 *.m4v *.mpg *.webm *.mkv *.avi)</source>
@@ -1013,59 +1009,59 @@ dissociating</translation>
     <name>DeviceSummaryWidget</name>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="303"/>
-        <source>Form</source>
-        <translation type="unfinished">Form</translation>
+        <source>Résumé appareil</source>
+        <translation>Device Summary</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="305"/>
         <source>Appareil</source>
-        <translation type="unfinished">Device</translation>
+        <translation>Device</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="307"/>
         <source>Nouvelle Séance</source>
-        <translation type="unfinished">New Session</translation>
+        <translation>New Session</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="308"/>
         <source>Cet appareil ne peut être mis en ligne - impossible de réaliser une nouvelle séance avec celui-ci.</source>
-        <translation type="unfinished"></translation>
+        <translation>This device isn&apos;t onlineable - can&apos;t start a new session.</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="309"/>
         <source>Séances</source>
-        <translation type="unfinished">Sessions</translation>
+        <translation>Sessions</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="310"/>
         <source>Résumé</source>
-        <translation type="unfinished">Summary</translation>
+        <translation>Summary</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="311"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="315"/>
         <source>Informations</source>
-        <translation type="unfinished"></translation>
+        <translation>Informations</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="312"/>
         <source>Éditer</source>
-        <translation type="unfinished">Edit</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="313"/>
         <source>Sauvegarder</source>
-        <translation type="unfinished">Save</translation>
+        <translation>Save</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="314"/>
         <source>Annuler</source>
-        <translation type="unfinished">Cancel</translation>
+        <translation>Cancel</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="316"/>
         <source>Journal d&apos;accès</source>
-        <translation type="unfinished"></translation>
+        <translation>Access Log</translation>
     </message>
 </context>
 <context>
@@ -1118,7 +1114,7 @@ dissociating</translation>
         <location filename="../../src/editors/DeviceWidget.cpp" line="124"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceWidget.h" line="392"/>
         <source>Journal d&apos;accès</source>
-        <translation type="unfinished"></translation>
+        <translation>Access Log</translation>
     </message>
     <message>
         <location filename="../../src/editors/DeviceWidget.cpp" line="175"/>
@@ -1678,7 +1674,7 @@ Please update the software or contribute to the development!</translation>
     <message>
         <location filename="../../src/widgets/InSessionWidget.cpp" line="651"/>
         <source>Répertoire où les données seront enregistrées</source>
-        <translation type="unfinished"></translation>
+        <translation>Folder to save data</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_InSessionWidget.h" line="281"/>
@@ -1708,30 +1704,22 @@ Please update the software or contribute to the development!</translation>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_InSessionWidget.h" line="286"/>
         <source>Données</source>
-        <translation type="unfinished"></translation>
+        <translation>Data</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_InSessionWidget.h" line="287"/>
         <source>Répertoire d&apos;enregistrement</source>
-        <translation type="unfinished"></translation>
+        <translation>Data recording folder</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_InSessionWidget.h" line="288"/>
         <source>Défaut</source>
-        <translation type="unfinished"></translation>
+        <translation>Default</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_InSessionWidget.h" line="289"/>
         <source>Parcourir...</source>
-        <translation type="unfinished">Browse...</translation>
-    </message>
-    <message>
-        <source>Inivités</source>
-        <translation type="vanished">Attendees</translation>
-    </message>
-    <message>
-        <source>Paramètres - séance</source>
-        <translation type="vanished">Session - Parameters</translation>
+        <translation>Browse...</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_InSessionWidget.h" line="290"/>
@@ -2064,235 +2052,205 @@ Please update the software or contribute to the development!</translation>
 <context>
     <name>LogViewWidget</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">Form</translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="248"/>
-        <source>Log Viewer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="249"/>
-        <source>Début</source>
-        <translation type="unfinished">Start</translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="250"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="252"/>
-        <source>dd-MM-yyyy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="251"/>
-        <source>Fin</source>
-        <translation type="unfinished">End</translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="256"/>
-        <source>Aucun résultat n&apos;est disponible.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="265"/>
-        <source>xxx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="266"/>
-        <source>événements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="267"/>
-        <source>&lt;&lt;&lt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="268"/>
-        <source>/ 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="269"/>
-        <source>&gt;&gt;&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/widgets/LogViewWidget.cpp" line="91"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="253"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="262"/>
-        <source>Type</source>
-        <translation type="unfinished">Type</translation>
-    </message>
-    <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="254"/>
-        <source>Filtrer</source>
-        <translation type="unfinished">Filter</translation>
+        <source>Log Viewer</source>
+        <translation>Log Viewer</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="255"/>
-        <source>Rafraichir</source>
-        <translation type="unfinished">Refresh</translation>
+        <source>Début</source>
+        <translation>Start</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="258"/>
-        <source>Date</source>
-        <translation type="unfinished">Date</translation>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="256"/>
+        <source>Fin</source>
+        <translation>End</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="260"/>
+        <source>Aucun résultat n&apos;est disponible.</source>
+        <translation>No result available.</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="269"/>
+        <source>événements</source>
+        <translation>events</translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/LogViewWidget.cpp" line="91"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="257"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="266"/>
+        <source>Type</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="258"/>
+        <source>Filtrer</source>
+        <translation>Filter</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="259"/>
+        <source>Rafraichir</source>
+        <translation>Refresh</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="262"/>
+        <source>Date</source>
+        <translation>Date</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="264"/>
         <source>Heure</source>
-        <translation type="unfinished">Time</translation>
+        <translation>Time</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="106"/>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="111"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="264"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_LogViewWidget.h" line="268"/>
         <source>Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Message</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="241"/>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="287"/>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="340"/>
         <source>Inconnu</source>
-        <translation type="unfinished">Unknown</translation>
+        <translation>Unknown</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="220"/>
         <source>Trace</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="75"/>
         <source>Qui</source>
-        <translation type="unfinished"></translation>
+        <translation>Who</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="79"/>
         <source>Appareil</source>
-        <translation type="unfinished">Device</translation>
+        <translation>Device</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="83"/>
         <source>Participant</source>
-        <translation type="unfinished">Participant</translation>
+        <translation>Participant</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="87"/>
         <source>Utilisateur</source>
-        <translation type="unfinished">User</translation>
+        <translation>User</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="94"/>
         <source>État</source>
-        <translation type="unfinished">State</translation>
+        <translation>State</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="97"/>
         <source>Système</source>
-        <translation type="unfinished"></translation>
+        <translation>System</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="100"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Client</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="103"/>
         <source>Ressource</source>
-        <translation type="unfinished"></translation>
+        <translation>Resource</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="217"/>
         <source>Tous</source>
-        <translation type="unfinished">All</translation>
+        <translation>All</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="223"/>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Debug</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="226"/>
         <source>Information</source>
-        <translation type="unfinished">Information</translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="229"/>
         <source>Avertissement</source>
-        <translation type="unfinished">Warning</translation>
+        <translation>Warning</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="232"/>
         <source>Critique</source>
-        <translation type="unfinished"></translation>
+        <translation>Critical</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="235"/>
         <source>Erreur</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="238"/>
         <source>Fatal</source>
-        <translation type="unfinished"></translation>
+        <translation>Fatal</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="277"/>
         <source>Jeton</source>
-        <translation type="unfinished"></translation>
+        <translation>Token</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="280"/>
         <source>Mot de passe</source>
-        <translation type="unfinished">Password</translation>
+        <translation>Password</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="283"/>
         <source>Certificat</source>
-        <translation type="unfinished"></translation>
+        <translation>Certificate</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="315"/>
         <source>Succès</source>
-        <translation type="unfinished"></translation>
+        <translation>Success</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="318"/>
         <source>Mauvais mot de passe</source>
-        <translation type="unfinished"></translation>
+        <translation>Wrong password</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="321"/>
         <source>Mauvais code utilisateur</source>
-        <translation type="unfinished"></translation>
+        <translation>Wrong username</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="324"/>
         <source>Nombre maximum d&apos;essais atteint</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum number of trials reached</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="327"/>
         <source>Déjà connecté</source>
-        <translation type="unfinished"></translation>
+        <translation>Already connected</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="330"/>
         <source>Jeton invalide</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid token</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="333"/>
         <source>Compte désactivé</source>
-        <translation type="unfinished"></translation>
+        <translation>Disabled account</translation>
     </message>
     <message>
         <location filename="../../src/widgets/LogViewWidget.cpp" line="336"/>
         <source>Jeton expiré</source>
-        <translation type="unfinished"></translation>
+        <translation>Expired token</translation>
     </message>
 </context>
 <context>
@@ -2606,17 +2564,17 @@ The session cannot continue.</translation>
     <message>
         <location filename="../../src/main/MainWindow.cpp" line="1014"/>
         <source>Séance en cours</source>
-        <translation type="unfinished"></translation>
+        <translation>Current session</translation>
     </message>
     <message>
         <location filename="../../src/main/MainWindow.cpp" line="1014"/>
         <source>La séance en cours empêche la fermeture du logiciel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Current session is preventing software exit.</translation>
     </message>
     <message>
         <location filename="../../src/main/MainWindow.cpp" line="1014"/>
         <source>Veuillez la terminer avant de poursuivre.</source>
-        <translation type="unfinished"></translation>
+        <translation>Please end the session before continuing.</translation>
     </message>
     <message>
         <location filename="../../src/main/MainWindow.cpp" line="716"/>
@@ -2789,61 +2747,21 @@ Would you like to disconnect to apply the changes?</translation>
     <message>
         <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="429"/>
         <source>Déconnecter</source>
-        <translation type="unfinished"></translation>
+        <translation>Disconnect</translation>
     </message>
     <message>
         <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="545"/>
         <source>Déconnecter?</source>
-        <translation type="unfinished"></translation>
+        <translation>Disconnect?</translation>
     </message>
     <message>
         <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="545"/>
         <source>Êtes-vous sûrs de vouloir déconnecter</source>
-        <translation type="unfinished"></translation>
+        <translation>Are you sure you want to disconnect</translation>
     </message>
 </context>
 <context>
     <name>ParticipantWidget</name>
-    <message>
-        <source>Ouvrir</source>
-        <translation type="vanished">Open</translation>
-    </message>
-    <message>
-        <source>Supprimer</source>
-        <translation type="vanished">Delete</translation>
-    </message>
-    <message>
-        <source>Continuer la séance</source>
-        <translation type="vanished">Continue session</translation>
-    </message>
-    <message>
-        <source>Appareil: </source>
-        <translation type="vanished">Device: </translation>
-    </message>
-    <message>
-        <source>Participant: </source>
-        <translation type="vanished">Participant: </translation>
-    </message>
-    <message>
-        <source>Service: </source>
-        <translation type="vanished">Service: </translation>
-    </message>
-    <message>
-        <source>Inconnu</source>
-        <translation type="vanished">Unknown</translation>
-    </message>
-    <message>
-        <source>Suppression?</source>
-        <translation type="vanished">Delete?</translation>
-    </message>
-    <message>
-        <source>Êtes-vous sûrs de vouloir supprimer </source>
-        <translation type="vanished">Are you sure you want to delete </translation>
-    </message>
-    <message>
-        <source>Êtes-vous sûrs de vouloir supprimer toutes les séances sélectionnées?</source>
-        <translation type="vanished">Are you sure you want to delete all selected sessions ?</translation>
-    </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="709"/>
         <source>Déassignation?</source>
@@ -2853,10 +2771,6 @@ Would you like to disconnect to apply the changes?</translation>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="710"/>
         <source>Êtes-vous sûrs de vouloir désassigner </source>
         <translation>Are you sure you want to unassign </translation>
-    </message>
-    <message>
-        <source>Séance</source>
-        <translation type="vanished">Session</translation>
     </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="833"/>
@@ -2880,10 +2794,6 @@ Do you want to continue?</translation>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="930"/>
         <source>Code utilisateur manquant&lt;br/&gt;</source>
         <translation>Username missing&lt;br/&gt;</translation>
-    </message>
-    <message>
-        <source>Nouvelle séance</source>
-        <translation type="vanished">New session</translation>
     </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="248"/>
@@ -2916,22 +2826,14 @@ Do you want to continue?</translation>
         <translation>Unknown session type</translation>
     </message>
     <message>
-        <source>Voir les données</source>
-        <translation type="vanished">View assets</translation>
-    </message>
-    <message>
-        <source>Voir les évaluations</source>
-        <translation type="vanished">View tests</translation>
-    </message>
-    <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="729"/>
         <source>Impossible de démarrer cette séance</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to start this session</translation>
     </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="729"/>
         <source>Impossible de démarrer cette séance.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unable to start this session.</translation>
     </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="935"/>
@@ -2981,22 +2883,6 @@ Souhaitez-vous continuer cette séance?</source>
         <translation>
 
 Would you like to continue this session?</translation>
-    </message>
-    <message>
-        <source>Démarrer une nouvelle séance</source>
-        <translation type="vanished">Start a new session</translation>
-    </message>
-    <message>
-        <source>Le participant n&apos;a pas d&apos;accès (web ou identification).</source>
-        <translation type="vanished">Participant doesn&apos;t have any access (web or login).</translation>
-    </message>
-    <message>
-        <source>Explorateur de données</source>
-        <translation type="vanished">Assets explorer</translation>
-    </message>
-    <message>
-        <source>Explorateur d&apos;évaluations</source>
-        <translation type="vanished">Tests explorer</translation>
     </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="1161"/>
@@ -3098,65 +2984,13 @@ Would you like to continue this session?</translation>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="907"/>
         <source>Configuration</source>
-        <translation type="unfinished">Configuration</translation>
+        <translation>Configuration</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="863"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="900"/>
         <source>Informations</source>
         <translation>Informations</translation>
-    </message>
-    <message>
-        <source>Chargement des séances: %p%</source>
-        <translation type="vanished">Loading sessions: %p%</translation>
-    </message>
-    <message>
-        <source>Mois 1</source>
-        <translation type="vanished">Month 1</translation>
-    </message>
-    <message>
-        <source>Mois 2</source>
-        <translation type="vanished">Month 2</translation>
-    </message>
-    <message>
-        <source>Mois 3</source>
-        <translation type="vanished">Month 3</translation>
-    </message>
-    <message>
-        <source>Tout cocher</source>
-        <translation type="vanished">Select All</translation>
-    </message>
-    <message>
-        <source>Tout décocher</source>
-        <translation type="vanished">Deselect All</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="vanished">Date</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">Type</translation>
-    </message>
-    <message>
-        <source>État</source>
-        <translation type="vanished">State</translation>
-    </message>
-    <message>
-        <source>Durée</source>
-        <translation type="vanished">Duration</translation>
-    </message>
-    <message>
-        <source>Responsable</source>
-        <translation type="vanished">Owner</translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation type="vanished">Actions</translation>
-    </message>
-    <message>
-        <source>Nouvelle</source>
-        <translation type="vanished">New</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="894"/>
@@ -3167,10 +3001,6 @@ Would you like to continue this session?</translation>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="906"/>
         <source>Paramètres</source>
         <translation>Settings</translation>
-    </message>
-    <message>
-        <source>Services</source>
-        <translation type="vanished">Services</translation>
     </message>
     <message>
         <location filename="../../src/editors/ParticipantWidget.cpp" line="650"/>
@@ -3191,7 +3021,7 @@ Would you like to continue this session?</translation>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="899"/>
         <source>Journal d&apos;accès</source>
-        <translation type="unfinished"></translation>
+        <translation>Access Log</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="901"/>
@@ -3217,10 +3047,6 @@ Would you like to continue this session?</translation>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="905"/>
         <source>Appareils</source>
         <translation>Devices</translation>
-    </message>
-    <message>
-        <source>Filtrer les séances</source>
-        <translation type="vanished">Filter sessions</translation>
     </message>
 </context>
 <context>
@@ -3302,17 +3128,17 @@ Would you like to continue this session?</translation>
     <message>
         <location filename="../../src/widgets/ProjectNavigator.cpp" line="560"/>
         <source>Participants</source>
-        <translation type="unfinished">Participants</translation>
+        <translation>Participants</translation>
     </message>
     <message>
         <location filename="../../src/widgets/ProjectNavigator.cpp" line="568"/>
         <source>Utilisateurs</source>
-        <translation type="unfinished">Users</translation>
+        <translation>Users</translation>
     </message>
     <message>
         <location filename="../../src/widgets/ProjectNavigator.cpp" line="576"/>
         <source>Appareils</source>
-        <translation type="unfinished">Devices</translation>
+        <translation>Devices</translation>
     </message>
     <message>
         <location filename="../../src/widgets/ProjectNavigator.cpp" line="1337"/>
@@ -3364,12 +3190,12 @@ Would you like to continue this session?</translation>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ProjectNavigator.h" line="281"/>
         <source>Vue étendue</source>
-        <translation type="unfinished"></translation>
+        <translation>Advanced view</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ProjectNavigator.h" line="283"/>
         <source>Avancé</source>
-        <translation type="unfinished"></translation>
+        <translation>Advanced</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ProjectNavigator.h" line="286"/>
@@ -3928,14 +3754,6 @@ Do you want to continue?</translation>
         <translation>Remove from session</translation>
     </message>
     <message>
-        <source>Nombre d&apos;invités atteint</source>
-        <translation type="vanished">Maximum attendees reached</translation>
-    </message>
-    <message>
-        <source>Impossible d&apos;ajouter ces invités à la séance: le nombre maximal de participants (5) serait dépassé</source>
-        <translation type="vanished">Cannot add more than five (5) participants</translation>
-    </message>
-    <message>
         <location filename="../../src/widgets/SessionInviteWidget.cpp" line="934"/>
         <source>Nombre maximal d&apos;invités atteint</source>
         <translation>Maximum invitees number reached</translation>
@@ -4220,170 +4038,162 @@ You must select at least one site.</translation>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="329"/>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="331"/>
         <source>Suppression?</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete?</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="329"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
-        <translation type="unfinished">Are you sure you want to delete </translation>
+        <translation>Are you sure you want to delete </translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="331"/>
         <source>Êtes-vous sûrs de vouloir supprimer toutes les séances sélectionnées?</source>
-        <translation type="unfinished">Are you sure you want to delete all selected sessions ?</translation>
+        <translation>Are you sure you want to delete all selected sessions ?</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="441"/>
         <source>Nouvelle séance</source>
-        <translation type="unfinished">New session</translation>
+        <translation>New session</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="456"/>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="802"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="461"/>
         <source>Séance</source>
-        <translation type="unfinished">Session</translation>
+        <translation>Session</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="616"/>
         <source>Ouvrir</source>
-        <translation type="unfinished">Open</translation>
+        <translation>Open</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="626"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="476"/>
         <source>Supprimer</source>
-        <translation type="unfinished">Delete</translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="639"/>
         <source>Voir les données</source>
-        <translation type="unfinished">View assets</translation>
+        <translation>View assets</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="649"/>
         <source>Voir les évaluations</source>
-        <translation type="unfinished">View tests</translation>
+        <translation>View tests</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="660"/>
         <source>Continuer la séance</source>
-        <translation type="unfinished">Continue session</translation>
+        <translation>Continue session</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="709"/>
         <source>Appareil: </source>
-        <translation type="unfinished">Device: </translation>
+        <translation>Device: </translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="711"/>
         <source>Participant: </source>
-        <translation type="unfinished">Participant: </translation>
+        <translation>Participant: </translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="713"/>
         <source>Service: </source>
-        <translation type="unfinished">Service: </translation>
+        <translation>Service: </translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="715"/>
         <source>Inconnu</source>
-        <translation type="unfinished">Unknown</translation>
+        <translation>Unknown</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="943"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="477"/>
         <source>Explorateur de données</source>
-        <translation type="unfinished">Assets explorer</translation>
+        <translation>Assets explorer</translation>
     </message>
     <message>
         <location filename="../../src/widgets/SessionsListWidget.cpp" line="977"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="478"/>
         <source>Explorateur d&apos;évaluations</source>
-        <translation type="unfinished">Tests explorer</translation>
+        <translation>Tests explorer</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="442"/>
-        <source>Form</source>
-        <translation type="unfinished">Form</translation>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="446"/>
+        <source>Liste des séances</source>
+        <translation>Sessions list</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="443"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="447"/>
         <source>Chargement des séances: %p%</source>
-        <translation type="unfinished">Loading sessions: %p%</translation>
+        <translation>Loading sessions: %p%</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="444"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="451"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="455"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="459"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="445"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="448"/>
         <source>Mois 1</source>
-        <translation type="unfinished">Month 1</translation>
+        <translation>Month 1</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="449"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="452"/>
         <source>Mois 2</source>
-        <translation type="unfinished">Month 2</translation>
-    </message>
-    <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="450"/>
-        <source>Mois 3</source>
-        <translation type="unfinished">Month 3</translation>
+        <translation>Month 2</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="453"/>
-        <source>Tout cocher</source>
-        <translation type="unfinished">Select All</translation>
+        <source>Mois 3</source>
+        <translation>Month 3</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="457"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="455"/>
+        <source>Tout cocher</source>
+        <translation>Select All</translation>
+    </message>
+    <message>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="458"/>
         <source>Tout décocher</source>
-        <translation type="unfinished">Deselect All</translation>
+        <translation>Deselect All</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="463"/>
         <source>Date</source>
-        <translation type="unfinished">Date</translation>
+        <translation>Date</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="465"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="467"/>
         <source>État</source>
-        <translation type="unfinished">State</translation>
+        <translation>State</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="469"/>
         <source>Durée</source>
-        <translation type="unfinished">Duration</translation>
+        <translation>Duration</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="471"/>
         <source>Responsable</source>
-        <translation type="unfinished">Owner</translation>
+        <translation>Owner</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="473"/>
         <source>Actions</source>
-        <translation type="unfinished">Actions</translation>
+        <translation>Actions</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="474"/>
         <source>Filtrer les séances</source>
-        <translation type="unfinished">Filter sessions</translation>
+        <translation>Filter sessions</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_SessionsListWidget.h" line="475"/>
         <source>Nouvelle</source>
-        <translation type="unfinished">New</translation>
+        <translation>New</translation>
     </message>
 </context>
 <context>
@@ -4701,10 +4511,6 @@ realized sessions</translation>
         <translation>Session type</translation>
     </message>
     <message>
-        <source>Type d&apos;évaluation</source>
-        <translation type="vanished">Test type</translation>
-    </message>
-    <message>
         <location filename="../../../shared/src/data/TeraData.cpp" line="331"/>
         <location filename="../../../shared/src/data/TeraData.cpp" line="387"/>
         <source>Évaluation</source>
@@ -4848,12 +4654,12 @@ realized sessions</translation>
     <message>
         <location filename="../../../shared/src/data/TeraData.cpp" line="389"/>
         <source>Journal: Connexion</source>
-        <translation type="unfinished"></translation>
+        <translation>Log: Access</translation>
     </message>
     <message>
         <location filename="../../../shared/src/data/TeraData.cpp" line="391"/>
         <source>Journal: Général</source>
-        <translation type="unfinished"></translation>
+        <translation>Log: General</translation>
     </message>
 </context>
 <context>
@@ -5255,10 +5061,6 @@ You must select at least one site.</translation>
         <source>Exporter</source>
         <translation>Export</translation>
     </message>
-    <message>
-        <source>Tout télécharger</source>
-        <translation type="obsolete">Download all</translation>
-    </message>
 </context>
 <context>
     <name>TransferProgressDialog</name>
@@ -5446,13 +5248,9 @@ You must select at least one site.</translation>
 <context>
     <name>UserSummaryWidget</name>
     <message>
-        <source>N/D</source>
-        <translation type="vanished">N/A</translation>
-    </message>
-    <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="296"/>
-        <source>Form</source>
-        <translation>Form</translation>
+        <source>Résumé Utilisateur</source>
+        <translation>User Summary</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="298"/>
@@ -5467,63 +5265,27 @@ You must select at least one site.</translation>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="301"/>
         <source>Séances</source>
-        <translation type="unfinished">Sessions</translation>
+        <translation>Sessions</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="302"/>
         <source>Résumé</source>
-        <translation type="unfinished">Summary</translation>
+        <translation>Summary</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="305"/>
         <source>Sauvegarder</source>
-        <translation type="unfinished">Save</translation>
+        <translation>Save</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="306"/>
         <source>Annuler</source>
-        <translation type="unfinished">Cancel</translation>
+        <translation>Cancel</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="308"/>
         <source>Journal d&apos;accès</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Général</source>
-        <translation type="vanished">General</translation>
-    </message>
-    <message>
-        <source>(Dernière connexion)</source>
-        <translation type="vanished">(Last connection)</translation>
-    </message>
-    <message>
-        <source>(Nom complet)</source>
-        <translation type="vanished">(Complete name)</translation>
-    </message>
-    <message>
-        <source>Dernière connexion:</source>
-        <translation type="vanished">Last connection:</translation>
-    </message>
-    <message>
-        <source>Nom:</source>
-        <translation type="vanished">Name:</translation>
-    </message>
-    <message>
-        <source>Actif</source>
-        <translation type="vanished">Active</translation>
-    </message>
-    <message>
-        <source>Contact</source>
-        <translation type="vanished">Contact</translation>
-    </message>
-    <message>
-        <source>Courriel:</source>
-        <translation type="vanished">Email:</translation>
-    </message>
-    <message>
-        <source>(Courriel)</source>
-        <translation type="vanished">(Email)</translation>
+        <translation>Access Log</translation>
     </message>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="304"/>
@@ -5548,7 +5310,7 @@ You must select at least one site.</translation>
         <location filename="../../src/editors/UserWidget.cpp" line="172"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserWidget.h" line="458"/>
         <source>Journal d&apos;accès</source>
-        <translation type="unfinished"></translation>
+        <translation>Access Log</translation>
     </message>
     <message>
         <location filename="../../src/editors/UserWidget.cpp" line="256"/>
@@ -5847,7 +5609,7 @@ Vous devez spécifier au moins un groupe utilisateur</source>
     <message>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_VideoRehabToolsWidget.h" line="115"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Pause</translation>
     </message>
     <message>
         <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="26"/>
@@ -5877,7 +5639,7 @@ Vous devez spécifier au moins un groupe utilisateur</source>
     <message>
         <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="27"/>
         <source>Êtes-vous vraiment sûrs de vouloir arrêter l&apos;enregistrement en cours?</source>
-        <translation type="unfinished"></translation>
+        <translation>Are you sure you want to stop the current recording?</translation>
     </message>
     <message>
         <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="46"/>
@@ -5888,7 +5650,7 @@ Vous devez spécifier au moins un groupe utilisateur</source>
     <message>
         <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="90"/>
         <source>Sauvegarde du fichier...</source>
-        <translation type="unfinished"></translation>
+        <translation>Saving file...</translation>
     </message>
     <message>
         <location filename="../../src/services/VideoRehabService/VideoRehabToolsWidget.cpp" line="103"/>

@@ -47,7 +47,7 @@
         <bool>true</bool>
        </property>
        <property name="displayFormat">
-        <string>dd-MM-yyyy</string>
+        <string notr="true">dd-MM-yyyy</string>
        </property>
        <property name="calendarPopup">
         <bool>true</bool>
@@ -95,7 +95,7 @@
         <bool>false</bool>
        </property>
        <property name="displayFormat">
-        <string>dd-MM-yyyy</string>
+        <string notr="true">dd-MM-yyyy</string>
        </property>
        <property name="calendarPopup">
         <bool>true</bool>
@@ -265,7 +265,7 @@
          </font>
         </property>
         <property name="text">
-         <string>xxx</string>
+         <string notr="true">xxx</string>
         </property>
        </widget>
       </item>
@@ -295,7 +295,7 @@
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="text">
-         <string>&lt;&lt;&lt;</string>
+         <string notr="true">&lt;&lt;&lt;</string>
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
@@ -337,7 +337,7 @@
       <item>
        <widget class="QLabel" name="lblTotalPages">
         <property name="text">
-         <string>/ 1</string>
+         <string notr="true">/ 1</string>
         </property>
        </widget>
       </item>
@@ -347,7 +347,7 @@
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="text">
-         <string>&gt;&gt;&gt;</string>
+         <string notr="true">&gt;&gt;&gt;</string>
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
