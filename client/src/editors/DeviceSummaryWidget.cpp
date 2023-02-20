@@ -61,6 +61,8 @@ void DeviceSummaryWidget::connectSignals()
 
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::deviceEventReceived, this, &DeviceSummaryWidget::ws_deviceEvent);
 
+    connect(ui->wdgSessions, &SessionsListWidget::sessionsCountUpdated, this, &DeviceSummaryWidget::sessionTotalCountUpdated);
+
 }
 
 void DeviceSummaryWidget::updateControlsState()
@@ -286,5 +288,10 @@ void DeviceSummaryWidget::on_tabNav_currentChanged(int index)
     if (ui->tabNav->currentWidget() == ui->tabLogs){
         ui->wdgLogins->refreshData();
     }
+}
+
+void DeviceSummaryWidget::sessionTotalCountUpdated(int new_count)
+{
+    ui->grpSessions->setTitle(tr("Séances") + " ( " + QString::number(new_count) + " )");
 }
 

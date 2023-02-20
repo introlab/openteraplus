@@ -132,6 +132,7 @@ void ParticipantWidget::connectSignals()
     connect(ui->lstDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentDeviceChanged);
 
     connect(ui->wdgSessions, &SessionsListWidget::startSessionRequested, this, &ParticipantWidget::showSessionLobby);
+    connect(ui->wdgSessions, &SessionsListWidget::sessionsCountUpdated, this, &ParticipantWidget::sessionTotalCountUpdated);
 }
 
 void ParticipantWidget::updateControlsState()

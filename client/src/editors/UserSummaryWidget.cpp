@@ -67,6 +67,8 @@ void UserSummaryWidget::connectSignals()
     connect(ui->wdgUser,  &TeraForm::widgetValueHasChanged, this, &UserSummaryWidget::userFormValueChanged);
     connect(ui->wdgUser,  &TeraForm::widgetValueHasFocus, this, &UserSummaryWidget::userFormValueHasFocus);
 
+    connect(ui->wdgSessions, &SessionsListWidget::sessionsCountUpdated, this, &UserSummaryWidget::sessionTotalCountUpdated);
+
 }
 
 void UserSummaryWidget::updateControlsState()
@@ -361,5 +363,10 @@ void UserSummaryWidget::on_tabNav_currentChanged(int index)
     if (ui->tabNav->currentWidget() == ui->tabLogs){
         ui->wdgLogins->refreshData();
     }
+}
+
+void UserSummaryWidget::sessionTotalCountUpdated(int new_count)
+{
+    ui->grpSessions->setTitle(tr("Séances") + " ( " + QString::number(new_count) + " )");
 }
 

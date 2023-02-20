@@ -1028,6 +1028,7 @@ dissociating</translation>
         <translation>This device isn&apos;t onlineable - can&apos;t start a new session.</translation>
     </message>
     <message>
+        <location filename="../../src/editors/DeviceSummaryWidget.cpp" line="295"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_DeviceSummaryWidget.h" line="309"/>
         <source>Séances</source>
         <translation>Sessions</translation>
@@ -2763,22 +2764,22 @@ Would you like to disconnect to apply the changes?</translation>
 <context>
     <name>ParticipantWidget</name>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="709"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="710"/>
         <source>Déassignation?</source>
         <translation>Unassign?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="710"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="711"/>
         <source>Êtes-vous sûrs de vouloir désassigner </source>
         <translation>Are you sure you want to unassign </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="833"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="834"/>
         <source>Confirmation</source>
         <translation>Confirmation</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="833"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="834"/>
         <source>En désactivant l&apos;accès web, le lien sera supprimé.
 
 Si un accès est à nouveau créé, le lien sera différent et il faudra envoyer à nouveau le lien au participant.
@@ -2791,92 +2792,92 @@ If a the link is re-activated, you will need the newly generated URL to the part
 Do you want to continue?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="930"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="931"/>
         <source>Code utilisateur manquant&lt;br/&gt;</source>
         <translation>Username missing&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="248"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="249"/>
         <source>Participant désactivé</source>
         <translation>Participant disabled</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="253"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="254"/>
         <source>Participant en séance</source>
         <translation>Participant already in session</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="258"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="259"/>
         <source>Le participant n&apos;a pas d&apos;accès (web ou identification)</source>
         <translation>Participant doesn&apos;t have any access (web or by identification)</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="263"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="264"/>
         <source>Aucun type de séance associé au projet</source>
         <translation>No session type associated to project</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="275"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="276"/>
         <source>Ce type de séance n&apos;est pas supporté dans cette version</source>
         <translation>Unsupported session type in that version</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="281"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="282"/>
         <source>Type de séance inconnu</source>
         <translation>Unknown session type</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="729"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="730"/>
         <source>Impossible de démarrer cette séance</source>
         <translation>Unable to start this session</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="729"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="730"/>
         <source>Impossible de démarrer cette séance.</source>
         <translation>Unable to start this session.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="935"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="936"/>
         <source>Aucun mot de passe spécifié.</source>
         <translation>No specified password.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="940"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="941"/>
         <source>Informations manquantes</source>
         <translation>Missing information</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="940"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="941"/>
         <source>Les informations suivantes sont incorrectes:</source>
         <translation>The following information is missing:</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1015"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1016"/>
         <source>existe déjà.</source>
         <translation>already exists.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1017"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1018"/>
         <source>a été réalisée récemment et n&apos;a pas été terminée.</source>
         <translation>has been realised lately but not finished.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1020"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1021"/>
         <source>a été planifiée.</source>
         <translation>has been planned.</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1022"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1023"/>
         <source>Reprendre une séance?</source>
         <translation>Resume session?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1022"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1023"/>
         <source>Un séance de ce type, </source>
         <translation>A session of the type, </translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1023"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1024"/>
         <source>
 
 Souhaitez-vous continuer cette séance?</source>
@@ -2885,7 +2886,7 @@ Souhaitez-vous continuer cette séance?</source>
 Would you like to continue this session?</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="1161"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="1162"/>
         <source>Code QR du lien</source>
         <translation>QR code for the link</translation>
     </message>
@@ -3003,7 +3004,7 @@ Would you like to continue this session?</translation>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="../../src/editors/ParticipantWidget.cpp" line="650"/>
+        <location filename="../../src/editors/ParticipantWidget.cpp" line="651"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_ParticipantWidget.h" line="893"/>
         <source>Séances</source>
         <translation>Sessions</translation>
@@ -5263,6 +5264,7 @@ You must select at least one site.</translation>
         <translation>New Session</translation>
     </message>
     <message>
+        <location filename="../../src/editors/UserSummaryWidget.cpp" line="370"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_UserSummaryWidget.h" line="301"/>
         <source>Séances</source>
         <translation>Sessions</translation>

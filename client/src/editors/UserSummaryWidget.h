@@ -65,6 +65,8 @@ private slots:
     void on_btnNewSession_clicked();
 
     void on_tabNav_currentChanged(int index);
+
+    void sessionTotalCountUpdated(int new_count);
 };
 
 #endif // USERSUMMARYWIDGET_H
