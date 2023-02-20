@@ -445,22 +445,22 @@
 <context>
     <name>ComManager</name>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="471"/>
+        <location filename="../../src/managers/ComManager.cpp" line="474"/>
         <source>L&apos;utilisateur est déjà connecté.</source>
         <translation>User is already logged on.</translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="784"/>
+        <location filename="../../src/managers/ComManager.cpp" line="787"/>
         <source>Erreur inconnue</source>
         <translation>Unknown error</translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="885"/>
+        <location filename="../../src/managers/ComManager.cpp" line="888"/>
         <source>Utilisateur ou mot de passe invalide.</source>
         <translation>Invalid username or password.</translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="895"/>
+        <location filename="../../src/managers/ComManager.cpp" line="898"/>
         <source>La communication avec le serveur n&apos;a pu être établie.</source>
         <translation>Communication with the server couldn&apos;t be established.</translation>
     </message>
@@ -842,27 +842,27 @@
 <context>
     <name>DataEditorWidget</name>
     <message>
-        <location filename="../../src/editors/DataEditorWidget.cpp" line="253"/>
+        <location filename="../../src/editors/DataEditorWidget.cpp" line="256"/>
         <source>Administrateur</source>
         <translation>Administrator</translation>
     </message>
     <message>
-        <location filename="../../src/editors/DataEditorWidget.cpp" line="255"/>
+        <location filename="../../src/editors/DataEditorWidget.cpp" line="258"/>
         <source>Utilisateur</source>
         <translation>User</translation>
     </message>
     <message>
-        <location filename="../../src/editors/DataEditorWidget.cpp" line="257"/>
+        <location filename="../../src/editors/DataEditorWidget.cpp" line="260"/>
         <source>Aucun rôle</source>
         <translation>No Role</translation>
     </message>
     <message>
-        <location filename="../../src/editors/DataEditorWidget.cpp" line="357"/>
+        <location filename="../../src/editors/DataEditorWidget.cpp" line="360"/>
         <source>Les champs suivants doivent être complétés:</source>
         <translation>The following fields must be entered:</translation>
     </message>
     <message>
-        <location filename="../../src/editors/DataEditorWidget.cpp" line="363"/>
+        <location filename="../../src/editors/DataEditorWidget.cpp" line="366"/>
         <source>Champs invalides</source>
         <translation>Invalid fields</translation>
     </message>
@@ -1637,18 +1637,18 @@ or Completed</translation>
         <translation>Reason: </translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="520"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="523"/>
         <source>Service non-supporté</source>
         <translation>Unsupported service</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="520"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="523"/>
         <source>Le service &quot;</source>
         <translation>The service &quot;</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="520"/>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="530"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="523"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="533"/>
         <source>&quot; n&apos;est pas gérée par cette version du logiciel.
 
 Veuillez vérifier si une mise à jour existe ou contribuez au développement du logiciel!</source>
@@ -1656,27 +1656,27 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
 Please update the software or contribute to the development!</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="530"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="533"/>
         <source>Catégorie de séance non-supportée</source>
         <translation>Session category is not supported</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="530"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="533"/>
         <source>La catégorie de séance &quot;</source>
         <translation>The session category &quot;</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="619"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="622"/>
         <source>Quitter la séance?</source>
         <translation>Quit session?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="619"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="622"/>
         <source>Désirez-vous quitter la séance?</source>
         <translation>Do you want to qui the session?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="648"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="651"/>
         <source>Répertoire où les données seront enregistrées</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2733,58 +2733,73 @@ Would you like to disconnect to apply the changes?</translation>
 <context>
     <name>OnlineManagerWidget</name>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="151"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="150"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="152"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="151"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="164"/>
         <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="165"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="166"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="154"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="153"/>
         <source>Filtrer appareils</source>
         <translation>Filter devices</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="156"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="160"/>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="164"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="155"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="159"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="163"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="158"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="157"/>
         <source>Filtrer utilisateurs</source>
         <translation>Filter users</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="162"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="161"/>
         <source>Filtrer participants</source>
         <translation>Filter Participants</translation>
     </message>
     <message>
-        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="168"/>
+        <location filename="../../../../build-openteraplus-Desktop_Qt_5_15_2_MSVC2019_64bit-Release/client/src/ui_OnlineManagerWidget.h" line="167"/>
         <source>Items</source>
         <translation>Items</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="75"/>
+        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="76"/>
         <source>Participants</source>
         <translation>Participants</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="81"/>
+        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="82"/>
         <source>Utilisateurs</source>
         <translation>Users</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="87"/>
+        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="88"/>
         <source>Appareils</source>
         <translation>Devices</translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="429"/>
+        <source>Déconnecter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="545"/>
+        <source>Déconnecter?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/widgets/OnlineManagerWidget.cpp" line="545"/>
+        <source>Êtes-vous sûrs de vouloir déconnecter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3300,12 +3315,12 @@ Would you like to continue this session?</translation>
         <translation type="unfinished">Devices</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1339"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1337"/>
         <source>Suppression?</source>
         <translation>Delete?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1340"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1338"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation>Are you sure you want to delete </translation>
     </message>

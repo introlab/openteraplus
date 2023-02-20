@@ -11,11 +11,8 @@
 #include "VideoRehabWebPage.h"
 
 #include "Utils.h"
-
 #include "VirtualCameraThread.h"
-
 #include "JoinSessionEvent.pb.h"
-
 
 namespace Ui {
 class VideoRehabWidget;
@@ -75,6 +72,9 @@ private:
     VideoRehabWebPage*      m_webPage;
     QMovie*                 m_loadingIcon;
     VirtualCameraThread*    m_virtualCamThread;
+
+ signals:
+    void fileDownloading(bool downloading);
 };
 
 #endif // VIDEOREHABWIDGET_H

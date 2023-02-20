@@ -489,6 +489,9 @@ void InSessionWidget::initUI()
             setMainWidget(m_serviceWidget);
             m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
             setToolsWidget(m_serviceToolsWidget);
+            connect(dynamic_cast<VideoRehabWidget*>(m_serviceWidget), &VideoRehabWidget::fileDownloading,
+                    dynamic_cast<VideoRehabToolsWidget*>(m_serviceToolsWidget), &VideoRehabToolsWidget::setFileDownloading);
+
             QString service_config = m_sessionType.getFieldValue("session_type_config").toString();
             QJsonDocument doc = QJsonDocument::fromJson(service_config.toUtf8());
             if (!doc.isNull()){

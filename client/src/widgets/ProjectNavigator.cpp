@@ -908,8 +908,6 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
          // Select current participant
         setCurrentItem(item);
      }
-
-
 }
 
 void ProjectNavigator::updateUser(const TeraData *user, const int& id_project)
@@ -1426,8 +1424,8 @@ void ProjectNavigator::processParticipantsReply(const QList<TeraData> participan
 
 void ProjectNavigator::processUsersReply(const QList<TeraData> users, const QUrlQuery reply_args)
 {
-    /*if (!reply_args.hasQueryItem(WEB_QUERY_ID_PROJECT))
-        return;*/
+    if (!isAdvancedView())
+        return;
 
     int id_project = 0;
     if (reply_args.hasQueryItem(WEB_QUERY_ID_PROJECT)){
@@ -1440,6 +1438,9 @@ void ProjectNavigator::processUsersReply(const QList<TeraData> users, const QUrl
 
 void ProjectNavigator::processDevicesReply(const QList<TeraData> devices, const QUrlQuery reply_args)
 {
+    if (!isAdvancedView())
+        return;
+
     int id_project = 0;
     if (reply_args.hasQueryItem(WEB_QUERY_ID_PROJECT)){
         id_project = reply_args.queryItemValue(WEB_QUERY_ID_PROJECT).toInt();

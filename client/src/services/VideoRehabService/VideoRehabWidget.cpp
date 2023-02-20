@@ -180,7 +180,7 @@ void VideoRehabWidget::webEngineURLChanged(QUrl url)
 void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
 {
     //qDebug() << "WebEngine: about to download " << item->suggestedFileName();
-    emit widgetIsReady(false);
+    emit fileDownloading(true);
 
     // Rework filename
     QString file_name = item->suggestedFileName();
@@ -218,7 +218,7 @@ void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
 void VideoRehabWidget::webEngineDownloadCompleted()
 {
     // Enable buttons
-    emit widgetIsReady(true);
+    emit fileDownloading(false);
 
     QWebEngineDownloadItem* item = dynamic_cast<QWebEngineDownloadItem*>(sender());
     if (item){

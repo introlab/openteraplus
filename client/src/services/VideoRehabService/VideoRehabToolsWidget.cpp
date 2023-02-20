@@ -20,7 +20,7 @@ VideoRehabToolsWidget::~VideoRehabToolsWidget()
 
 bool VideoRehabToolsWidget::sessionCanBeEnded(const bool &displayConfirmation)
 {
-    if (m_isRecording || !ui->btnRecord->isEnabled()){ // Recording or downloading file
+    if (m_isRecording || m_isDownloading/*!ui->btnRecord->isEnabled()*/){ // Recording or downloading file
         if (displayConfirmation){
             GlobalMessageBox msg_box;
             if (msg_box.showYesNo(tr("Enregistrement en cours"), tr("Un enregistrement de la séance est en cours.") + "\n\n" + tr("Si vous continuez, l'enregistrement pourrait être perdu.") + "\n\n" + tr("Êtes-vous sûrs de vouloir continuer?")) == GlobalMessageBox::Yes){
@@ -124,5 +124,11 @@ void VideoRehabToolsWidget::on_btnRecord_clicked()
 void VideoRehabToolsWidget::on_btnPause_clicked()
 {
     dynamic_cast<VideoRehabWidget*>(m_baseWidget)->pauseRecording();
+}
+
+void VideoRehabToolsWidget::setFileDownloading(bool downloading)
+{
+    m_isDownloading = downloading;
+    setReadyState(!downloading);
 }
 

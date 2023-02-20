@@ -1,5 +1,7 @@
 #include "DataEditorWidget.h"
 #include <QApplication>
+#include <QStyledItemDelegate>
+
 #include "GlobalMessageBox.h"
 
 DataEditorWidget::DataEditorWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
@@ -229,6 +231,7 @@ QComboBox *DataEditorWidget::buildRolesComboBox()
     item_roles->addItem(getRoleName("admin"), "admin");
     item_roles->addItem(getRoleName("user"), "user");
     item_roles->setCurrentIndex(0);
+    item_roles->setItemDelegate(new QStyledItemDelegate(item_roles));
 
     return item_roles;
 

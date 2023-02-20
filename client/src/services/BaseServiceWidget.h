@@ -22,11 +22,9 @@ public:
 
 protected:
     ComManager*     m_comManager;
-
     TeraData*       m_session;
 
 signals:
-
     void widgetIsReady(bool ready_state);
 };
 
