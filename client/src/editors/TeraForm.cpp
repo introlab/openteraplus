@@ -124,6 +124,7 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
             m_initialValues.insert(field, value);
         }
     }
+    // qDebug() << m_initialValues;
 
     validateFormData(false);
     emit formIsNowDirty(false);
@@ -209,8 +210,16 @@ bool TeraForm::getFieldDirty(const QString &field)
 
 bool TeraForm::getFieldDirty(QWidget *widget)
 {
-    //if (m_widgets.values().contains(widget)){
+    // Read only fields are never dirty
+    if (widget->property("readonly").isValid()){
+        if (widget->property("readonly").toBool()){
+            //qDebug() << "Readonly widget never dirty!";
+            return false;
+        }
+    }
+
     if (std::find(m_widgets.cbegin(), m_widgets.cend(), widget) != m_widgets.cend()){
+
         QString widget_id = m_widgets.key(widget);
         if (dynamic_cast<QLabel*>(widget)){
             return false; // QLabel are never dirty
@@ -220,8 +229,17 @@ bool TeraForm::getFieldDirty(QWidget *widget)
         if (!id.isNull())
             value = id;
 
+        if (dynamic_cast<QDateTimeEdit*>(widget)){
+            // Datetime must be checked as string as they are stored as such...
+            value = value.toDateTime().toString(Qt::DateFormat::ISODateWithMs);
+            if (m_initialValues.contains(widget_id)){
+                return !m_initialValues[m_widgets.key(widget)].toString().startsWith(value.toString());
+            }
+        }
+
         if (m_initialValues.contains(widget_id))
             return m_initialValues[m_widgets.key(widget)] != value;
+
         // No initial value. So dirty if not empty!
         return !value.toString().isEmpty();
     }

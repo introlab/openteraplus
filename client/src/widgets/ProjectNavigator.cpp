@@ -1895,7 +1895,6 @@ void ProjectNavigator::on_treeNavigator_customContextMenuRequested(const QPoint 
 {
     QTreeWidgetItem* pointed_item = ui->treeNavigator->itemAt(pos);
     TeraDataTypes pointed_item_type = getItemType(pointed_item);
-    qDebug() << pointed_item_type;
 
     if (!pointed_item){
         // No item clicked - remove everything except projects
