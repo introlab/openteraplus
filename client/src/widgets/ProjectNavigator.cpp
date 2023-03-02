@@ -596,6 +596,10 @@ void ProjectNavigator::updateProjectAdvanced(QTreeWidgetItem *project_item)
            count = stats["participants_total_count"].toInt();
         }
     }
+    if (stats.contains("participants_groups_count")){
+        count += stats["participants_groups_count"].toInt();
+    }
+
     //project_item->child(0)->setText(0, tr("Participants") + " (" + QString::number(count) + ")");*/
     project_item->child(0)->setHidden(count <= 0);
 
@@ -656,11 +660,8 @@ void ProjectNavigator::updateGroup(const TeraData *group)
                     if (m_projects_items.contains(id_project)){
                         m_groups_items[id_group]->parent()->removeChild(m_groups_items[id_group]);
                         //m_projects_items[id_project]->addChild(m_groups_items[id_group]);
-                        getProjectItem(id_project, TERADATA_GROUP)->insertChild(0, m_groups_items[id_group]);
-                        /*if (isAdvancedView()){
-                            updateCountsForProject(id_project);
-                            updateCountsForProject(current_group_project);
-                        }*/
+                        QTreeWidgetItem* parent_item = getProjectItem(id_project, TERADATA_GROUP);
+                        parent_item->insertChild(0, m_groups_items[id_group]);
                     }else{
                         // Changed site also! Remove it completely from display
                         delete m_groups_items[id_group];
@@ -701,6 +702,11 @@ void ProjectNavigator::updateGroup(const TeraData *group)
        setCurrentItem(item);
        item->setExpanded(true);
     }
+    QTreeWidgetItem* parent_item = getProjectItem(id_project, TERADATA_GROUP);
+    parent_item->insertChild(0, m_groups_items[id_group]);
+    if (parent_item->isHidden())
+        parent_item->setHidden(false);  // This can happens on new group without any participants in the project yet
+
 }
 
 void ProjectNavigator::updateParticipant(const TeraData *participant)
