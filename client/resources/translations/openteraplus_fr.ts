@@ -3108,12 +3108,12 @@ Souhaitez-vous continuer cette séance?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1337"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1343"/>
         <source>Suppression?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1338"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1344"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation type="unfinished"></translation>
     </message>

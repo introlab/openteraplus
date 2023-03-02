@@ -115,6 +115,7 @@ private:
 
     QAction* addNewItemAction(const TeraDataTypes &data_type, const QString& label);
     QAction* getActionForDataType(const TeraDataTypes &data_type);
+    QAction* getMenuActionForDataType(const TeraDataTypes &data_type);
 
 private slots:
      void newItemRequested();

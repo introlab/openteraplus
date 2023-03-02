@@ -3142,12 +3142,12 @@ Would you like to continue this session?</translation>
         <translation>Devices</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1337"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1343"/>
         <source>Suppression?</source>
         <translation>Delete?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1338"/>
+        <location filename="../../src/widgets/ProjectNavigator.cpp" line="1344"/>
         <source>Êtes-vous sûrs de vouloir supprimer </source>
         <translation>Are you sure you want to delete </translation>
     </message>

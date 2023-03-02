@@ -61,6 +61,7 @@ void ProjectNavigator::initUi()
     new_action->setDisabled(true);
     new_action = addNewItemAction(TERADATA_GROUP, tr("Groupe"));
     new_action->setDisabled(true);
+
     new_action = addNewItemAction(TERADATA_PARTICIPANT, tr("Participant"));
     new_action->setDisabled(true);
     ui->btnNewItem->setMenu(m_newItemMenu);
@@ -1147,6 +1148,7 @@ bool ProjectNavigator::isParticipantFiltered(const QString &part_uuid)
     }
 
     // Check for text filtering
+
     if (ui->btnSearch->isChecked() && !filtered){
         filtered = !m_participants[part_uuid].getName().contains(ui->txtNavSearch->text(), Qt::CaseInsensitive);
     }
@@ -1202,15 +1204,14 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
     bool is_project_admin = m_comManager->isCurrentUserProjectAdmin(project_id);
     bool at_least_one_enabled = false;
 
-
     // New project
     //ui->btnEditSite->setVisible(is_site_admin);
     QAction* new_project = getActionForDataType(TERADATA_PROJECT);
     if (new_project){
         new_project->setEnabled(is_site_admin);
-        //if (new_project->isEnabled()) at_least_one_enabled = true;
         new_project->setVisible(is_site_admin);
-        if (new_project->isVisible()) at_least_one_enabled = true;
+        if (new_project->isVisible())
+            at_least_one_enabled = true;
     }
 
     // New group
@@ -1225,7 +1226,7 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
     // New participant
     QAction* new_part = getActionForDataType(TERADATA_PARTICIPANT);
     if (new_part){
-        bool allowed = /*is_project_admin &&*/project_id > 0 && (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT);
+        bool allowed = /*is_project_admin &&*/project_id > 0 && (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT || item_type == TERADATA_PROJECT || item_type == TERADATA_ONLINE_PARTICIPANT);
         new_part->setEnabled(allowed);
         //if (new_part->isEnabled()) at_least_one_enabled = true;
         new_part->setVisible(allowed);
@@ -1277,6 +1278,15 @@ TeraDataTypes ProjectNavigator::getItemType(QTreeWidgetItem *item)
         return TERADATA_DEVICE;
     }
 
+    if (isAdvancedView() && item){
+        if (item->data(0, Qt::UserRole).toInt() == TERADATA_PARTICIPANT)
+            return TERADATA_ONLINE_PARTICIPANT;
+        if (item->data(0, Qt::UserRole).toInt() == TERADATA_DEVICE)
+            return TERADATA_ONLINE_DEVICE;
+        if (item->data(0, Qt::UserRole).toInt() == TERADATA_USER)
+            return TERADATA_ONLINE_USER;
+    }
+
     return TERADATA_NONE;
 }
 
@@ -1319,6 +1329,22 @@ QAction *ProjectNavigator::getActionForDataType(const TeraDataTypes &data_type)
         if (static_cast<TeraDataTypes>(m_newItemActions.at(i)->data().toInt()) == data_type){
             action = m_newItemActions.at(i);
             break;
+        }
+    }
+
+    return action;
+}
+
+QAction *ProjectNavigator::getMenuActionForDataType(const TeraDataTypes &data_type)
+{
+    QAction* action = nullptr;
+
+    if (m_newItemMenu){
+        for (int i=0; i<m_newItemMenu->actions().count(); i++){
+            if (static_cast<TeraDataTypes>(m_newItemMenu->actions().at(i)->data().toInt()) == data_type){
+                action = m_newItemMenu->actions().at(i);
+                break;
+            }
         }
     }
 
@@ -1761,7 +1787,6 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
             // Query stats to display static items
             queryStatsForProject(id);
         }
-
     }
 
     // PARTICIPANT GROUP
@@ -1775,7 +1800,6 @@ void ProjectNavigator::navItemExpanded(QTreeWidgetItem *item)
         query.addQueryItem(WEB_QUERY_LIST, "true");
         //query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
         m_comManager->doGet(WEB_PARTICIPANTINFO_PATH, query);
-
     }
 
     if (isAdvancedView()){
@@ -1870,6 +1894,8 @@ void ProjectNavigator::on_btnDashboard_clicked()
 void ProjectNavigator::on_treeNavigator_customContextMenuRequested(const QPoint &pos)
 {
     QTreeWidgetItem* pointed_item = ui->treeNavigator->itemAt(pos);
+    TeraDataTypes pointed_item_type = getItemType(pointed_item);
+    qDebug() << pointed_item_type;
 
     if (!pointed_item){
         // No item clicked - remove everything except projects
@@ -1879,13 +1905,32 @@ void ProjectNavigator::on_treeNavigator_customContextMenuRequested(const QPoint 
         selectItem(pointed_item);
     }
 
-    if (m_newItemMenu)
-            m_newItemMenu->exec(ui->treeNavigator->mapToGlobal(pos));
+    //getActionForDataType(TERADATA_GROUP)->setVisible(true);
+    //getActionForDataType(TERADATA_PARTICIPANT)->setVisible(true);
 
-    getActionForDataType(TERADATA_GROUP)->setVisible(true);
-    getActionForDataType(TERADATA_PARTICIPANT)->setVisible(true);
-    updateAvailableActions(ui->treeNavigator->currentItem());
+    //updateAvailableActions(ui->treeNavigator->currentItem());
 
+    if (m_newItemMenu){
+            bool at_least_one = false;
+            QAction* project_action = getMenuActionForDataType(TERADATA_PROJECT);
+            if (project_action){
+                project_action->setVisible(pointed_item_type == TERADATA_NONE);
+                if (!at_least_one && project_action->isVisible()) at_least_one = true;
+            }
+
+            QAction* participant_action = getMenuActionForDataType(TERADATA_PARTICIPANT);
+            if (participant_action){
+                participant_action->setVisible(pointed_item_type == TERADATA_PROJECT || pointed_item_type == TERADATA_GROUP || pointed_item_type == TERADATA_ONLINE_PARTICIPANT);
+                if (!at_least_one && participant_action->isVisible()) at_least_one = true;
+            }
+            QAction* group_action = getMenuActionForDataType(TERADATA_GROUP);
+            if (group_action){
+                group_action->setVisible(pointed_item_type == TERADATA_PROJECT || pointed_item_type == TERADATA_ONLINE_PARTICIPANT);
+                if (!at_least_one && group_action->isVisible()) at_least_one = true;
+            }
+            if (at_least_one)
+                m_newItemMenu->exec(ui->treeNavigator->mapToGlobal(pos));
+    }
 }
 
 
