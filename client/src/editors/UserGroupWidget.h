@@ -32,6 +32,7 @@ private slots:
     void processProjectsReply(QList<TeraData> projects);
     void processUserUserGroupsReply(QList<TeraData> users_user_groups);
     void processPostOKReply(QString path);
+    void processDeleteReply(QString path, int id);
 
     void btnUpdateSiteAccess_clicked();
     void btnUpdateProjectAccess_clicked();
@@ -56,7 +57,6 @@ private:
     void updateProjectAccess(const TeraData* access);
     void updateUserUserGroup(const TeraData* uug);
 
-    
     void updateControlsState();
     void updateFieldsValue();
     bool validateData();
