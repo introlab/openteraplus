@@ -46,6 +46,7 @@ set(headers
     dialogs/DeviceAssignDialog.h
     dialogs/CleanUpDialog.h
     dialogs/FileUploaderDialog.h
+    dialogs/QRCodeDialog.h
     # Editors
     editors/DataEditorWidget.h    
     editors/DataListWidget.h
@@ -149,6 +150,7 @@ set(srcs
     dialogs/PasswordStrengthDialog.cpp
     dialogs/CleanUpDialog.cpp
     dialogs/FileUploaderDialog.cpp
+     dialogs/QRCodeDialog.cpp
     # Editors
     editors/DataEditorWidget.cpp
     editors/DataListWidget.cpp    
@@ -233,6 +235,7 @@ SET(uis
     dialogs/PasswordStrengthDialog.ui
     dialogs/CleanUpDialog.ui
     dialogs/FileUploaderDialog.ui
+    dialogs/QRCodeDialog.ui
     # Editors
     editors/DataListWidget.ui
     editors/DeviceSubTypeWidget.ui

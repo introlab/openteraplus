@@ -20,11 +20,10 @@
 #include "dialogs/SessionLobbyDialog.h"
 #include "dialogs/EmailInviteDialog.h"
 #include "dialogs/DeviceAssignDialog.h"
-#include "dialogs/BaseDialog.h"
+#include "dialogs/QRCodeDialog.h"
 
 #include "widgets/AssetsWidget.h"
 #include "widgets/TestsWidget.h"
-#include "widgets/QRWidget.h"
 
 #include "services/BaseServiceWidget.h"
 
@@ -56,7 +55,7 @@ private:
     QMap<int, QWidget*>             m_services_tabs;
     bool                            m_allowFileTransfers;   // Allow to attach files to a session?
 
-    BaseDialog*                     m_diag_editor;
+    QRCodeDialog*                   m_diag_qr = nullptr;
     SessionLobbyDialog*             m_sessionLobby;
 
     QHash<int, TeraData*>           m_ids_session_types;

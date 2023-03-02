@@ -16,7 +16,6 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     ui(new Ui::ParticipantWidget)
 {
 
-    m_diag_editor = nullptr;
     m_sessionLobby = nullptr;
 
     m_allowFileTransfers = false;
@@ -79,6 +78,9 @@ ParticipantWidget::~ParticipantWidget()
 
     if (m_sessionLobby)
         m_sessionLobby->deleteLater();
+
+    if (m_diag_qr)
+        m_diag_qr->deleteLater();
 }
 
 
@@ -1150,7 +1152,15 @@ void ParticipantWidget::on_lstDevices_itemDoubleClicked(QListWidgetItem *item)
 
 void ParticipantWidget::on_btnQR_clicked()
 {
-    if (m_diag_editor){
+    if (m_diag_qr){
+        m_diag_qr->deleteLater();
+    }
+
+    m_diag_qr = new QRCodeDialog(ui->txtWeb->text(), this);
+    m_diag_qr->setContext(m_data->getName());
+    m_diag_qr->open();
+
+    /*if (m_diag_editor){
         m_diag_editor->deleteLater();
     }
     m_diag_editor = new BaseDialog(this);
@@ -1162,7 +1172,7 @@ void ParticipantWidget::on_btnQR_clicked()
     m_diag_editor->setWindowTitle(tr("Code QR du lien"));
     m_diag_editor->setFixedSize(this->height()/2 - 40, this->height()/2);
 
-    m_diag_editor->open();
+    m_diag_editor->open();*/
 }
 
 
