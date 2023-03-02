@@ -57,6 +57,7 @@ void OnlineManagerWidget::setComManager(ComManager *comMan)
     on_btnFilterParticipants_clicked();
     on_btnFilterUsers_clicked();
     on_btnFilterDevices_clicked();
+    currentUserWasUpdated();
 }
 
 void OnlineManagerWidget::setCurrentSite(const QString &site_name, const int &site_id)
