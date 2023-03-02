@@ -120,7 +120,7 @@ void DeviceWidget::updateControlsState()
                }
            }
 
-           if (has_project_admin_access){
+           if (has_project_admin_access && !dataIsNew()){
                ui->tabNav->addTab(ui->tabLogins, QIcon(":/icons/password.png"), tr("Journal d'accès"));
            }
        }

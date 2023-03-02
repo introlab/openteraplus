@@ -466,6 +466,10 @@ void SiteWidget::processPostOKReply(QString path)
         // Refresh roles
         queryUserGroupsSiteAccess();
     }
+    if (path == WEB_SESSIONTYPEPROJECT_PATH || path == WEB_TESTTYPEPROJECT_PATH){
+        // Update associated services
+        queryServiceSiteAccess();
+    }
 }
 
 void SiteWidget::btnUpdateAccess_clicked()

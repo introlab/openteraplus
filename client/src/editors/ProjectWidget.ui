@@ -1069,9 +1069,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <height>20</height>
           </size>
          </property>
-         <property name="indentation">
-          <number>40</number>
-         </property>
          <attribute name="headerVisible">
           <bool>false</bool>
          </attribute>

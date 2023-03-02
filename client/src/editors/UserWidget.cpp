@@ -178,11 +178,11 @@ void UserWidget::updateControlsState(){
 
 void UserWidget::updateFieldsValue(){
     if (m_data && !hasPendingDataRequests()){
-        if (!ui->wdgUser->formHasData())
+        //if (!ui->wdgUser->formHasData())
             ui->wdgUser->fillFormFromData(m_data->toJson());
-        else {
+        /*else {
             ui->wdgUser->resetFormValues();
-        }
+        }*/
 
         ui->lblTitle->setText(m_data->getName());
 
@@ -392,7 +392,7 @@ void UserWidget::processUsersReply(QList<TeraData> users)
             // We found "ourself" in the list - update data.
             //*m_data = users.at(i);
             m_data->updateFrom(users.at(i));
-            updateFieldsValue();
+            //updateFieldsValue();
             break;
         }
     }

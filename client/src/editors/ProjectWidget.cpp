@@ -766,6 +766,10 @@ void ProjectWidget::processPostOKReply(QString path)
         // Update current user access list for the newly created project
         m_comManager->doUpdateCurrentUser();
     }
+    if (path == WEB_SESSIONTYPEPROJECT_PATH || path == WEB_TESTTYPEPROJECT_PATH){
+        // Also update associated services
+        queryServicesProject();
+    }
 }
 
 void ProjectWidget::deleteDataReply(QString path, int del_id)

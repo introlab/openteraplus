@@ -99,7 +99,6 @@ void UserGroupWidget::saveData(bool signal)
 void UserGroupWidget::setData(const TeraData *data)
 {
     DataEditorWidget::setData(data);
-
 }
 
 void UserGroupWidget::connectSignals()
