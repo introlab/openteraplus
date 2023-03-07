@@ -46,8 +46,8 @@ void ProjectNavigatorTree::dragMoveEvent(QDragMoveEvent *event)
     QTreeWidgetItem* dragged_item = currentItem();
     TeraDataTypes dragged_item_type = m_projNav->getItemType(dragged_item);
 
-    if (dragged_item_type == TERADATA_PROJECT){
-        // Projects can't be dragged!
+    if (dragged_item_type == TERADATA_PROJECT || dragged_item_type == TERADATA_GROUP){
+        // Projects and participants groups can't be dragged!
         event->ignore();
         return;
     }
@@ -61,17 +61,28 @@ void ProjectNavigatorTree::dragMoveEvent(QDragMoveEvent *event)
         }
 
         TeraDataTypes target_item_type = m_projNav->getItemType(target_item);
-        if (dragged_item_type == TERADATA_GROUP){
+        /*if (dragged_item_type == TERADATA_GROUP){
             if (target_item_type == TERADATA_PROJECT){
                 event->accept();
                 return;
             }
-        }
+        }*/
 
         if (dragged_item_type == TERADATA_PARTICIPANT){
             if (target_item_type == TERADATA_PROJECT || target_item_type == TERADATA_GROUP){
-                event->accept();
-                return;
+                // Check if target item is in the same project
+                QTreeWidgetItem* target_project;
+                if (target_item_type == TERADATA_PROJECT){
+                    // We are already dragging over a project
+                    target_project = target_item;
+                }else{
+                    target_project = m_projNav->getProjectForItem(target_item);
+                }
+                QTreeWidgetItem* dragged_project = m_projNav->getProjectForItem(dragged_item);
+                if (target_project == dragged_project){
+                    event->accept();
+                    return;
+                }
             }
         }
     }
