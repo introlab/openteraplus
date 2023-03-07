@@ -5,6 +5,8 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 
+#include "Utils.h"
+
 QRCodeDialog::QRCodeDialog(QString text, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::QRCodeDialog)
@@ -51,7 +53,9 @@ void QRCodeDialog::on_btnSave_clicked()
     QString base_path;
     if (!suggested_paths.isEmpty())
         base_path = suggested_paths.first();
-    QString save_file = QFileDialog::getSaveFileName(this, tr("Enregistrer le code QR"),  base_path + "/" + m_context, tr("Images") + " (*.png)");
+
+    QString default_name = Utils::removeNonAlphanumerics(Utils::removeAccents(m_context));
+    QString save_file = QFileDialog::getSaveFileName(this, tr("Enregistrer le code QR"),  base_path + "/" + default_name, tr("Images") + " (*.png)");
     if (!save_file.isEmpty()){
         ui->wdgCode->grab().save(save_file, "PNG");
     }
