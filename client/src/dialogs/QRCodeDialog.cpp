@@ -14,7 +14,7 @@ QRCodeDialog::QRCodeDialog(QString text, QWidget *parent) :
     ui->setupUi(this);
     setFixedSize(size());
 
-    ui->wdgCode->setFixedSize(this->height() - 60, this->height() - 60);
+    ui->wdgCode->setFixedSize(this->height() - 80, this->height() - 80);
 
     connect(ui->btnClose, &QPushButton::clicked, this, &QDialog::accept);
 
