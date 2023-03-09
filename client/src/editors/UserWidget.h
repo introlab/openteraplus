@@ -41,8 +41,11 @@ public:
 private:
     Ui::UserWidget* ui;
 
-    QMap<int, QListWidgetItem*>     m_listUserGroups_items;
-    QMap<int, QListWidgetItem*>     m_listUserUserGroups_items;
+    QHash<int, QListWidgetItem*>    m_listUserGroups_items;
+    QHash<int, QListWidgetItem*>    m_listUserUserGroups_items;
+    QHash<int, QString>             m_userSitesRole;
+
+    void initUI();
 
     bool m_currentUserPasswordChanged;
     bool m_passwordJustGenerated;
@@ -61,6 +64,8 @@ private:
     void updateUserGroup(const TeraData* group);
     void updateSiteAccess(const TeraData* site_access);
     void updateProjectAccess(const TeraData* project_access);
+
+    void queryUserAccess();
 
     bool validateUserGroups();
 

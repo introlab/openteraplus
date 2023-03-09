@@ -48,7 +48,9 @@ enum TeraDataTypes {
     TERADATA_ONLINE_PARTICIPANT,
     TERADATA_ONLINE_DEVICE,
     TERADATA_ASSET,
-    TERADATA_TEST
+    TERADATA_TEST,
+    TERADATA_LOG_LOG,
+    TERADATA_LOG_LOGIN
 };
 
 Q_DECLARE_METATYPE(TeraDataTypes)
@@ -108,7 +110,7 @@ public:
     QVariant        getFieldValue(const QString &fieldName) const;
     void            setFieldValue(const QString& fieldName, const QVariant& fieldValue);
     QList<QString>  getFieldList() const;
-    QVariantMap     getFieldValues();
+    QVariantHash     getFieldValues();
 
     static QString getDataTypeName(const TeraDataTypes& data_type);
     static QString getDataTypeNameText(const TeraDataTypes& data_type);
@@ -133,7 +135,7 @@ private:
     QString     m_busyField;
     QString     m_uuidField;
 
-    QVariantMap m_fieldsValue;
+    QVariantHash m_fieldsValue;
 
     //bool hasMetaProperty(const QString& fieldName) const;
 

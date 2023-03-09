@@ -58,6 +58,9 @@ private:
     QString                 m_password;
     QString                 m_token;
 
+    QString                 m_osName;
+    QString                 m_osVersion;
+
     bool                    m_settedCredentials;
 
 

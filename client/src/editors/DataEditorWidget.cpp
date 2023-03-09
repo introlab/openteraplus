@@ -1,5 +1,7 @@
 #include "DataEditorWidget.h"
 #include <QApplication>
+#include <QStyledItemDelegate>
+
 #include "GlobalMessageBox.h"
 
 DataEditorWidget::DataEditorWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
@@ -190,7 +192,7 @@ ComManager *DataEditorWidget::getComManager()
     return m_comManager;
 }
 
-void DataEditorWidget::setEditorControls(TeraForm* mainForm, QPushButton *editToggle, QFrame *frameSave, QPushButton *saveButton, QPushButton *cancelButton)
+void DataEditorWidget::setEditorControls(TeraForm* mainForm, QAbstractButton *editToggle, QFrame *frameSave, QAbstractButton *saveButton, QAbstractButton *cancelButton)
 {
     m_mainForm = mainForm;
     m_editToggle = editToggle;
@@ -207,9 +209,9 @@ void DataEditorWidget::setEditorControls(TeraForm* mainForm, QPushButton *editTo
     }
 
     // Connect signals
-    if (m_cancelButton) connect(m_cancelButton, &QPushButton::clicked, this, &DataEditorWidget::undoButtonClicked);
-    if (m_saveButton) connect(m_saveButton, &QPushButton::clicked, this, &DataEditorWidget::saveButtonClicked);
-    if (m_editToggle) connect(m_editToggle, &QPushButton::clicked, this, &DataEditorWidget::editToggleClicked);
+    if (m_cancelButton) connect(m_cancelButton, &QAbstractButton::clicked, this, &DataEditorWidget::undoButtonClicked);
+    if (m_saveButton) connect(m_saveButton, &QAbstractButton::clicked, this, &DataEditorWidget::saveButtonClicked);
+    if (m_editToggle) connect(m_editToggle, &QAbstractButton::clicked, this, &DataEditorWidget::editToggleClicked);
 
 }
 
@@ -229,6 +231,7 @@ QComboBox *DataEditorWidget::buildRolesComboBox()
     item_roles->addItem(getRoleName("admin"), "admin");
     item_roles->addItem(getRoleName("user"), "user");
     item_roles->setCurrentIndex(0);
+    item_roles->setItemDelegate(new QStyledItemDelegate(item_roles));
 
     return item_roles;
 

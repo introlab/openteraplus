@@ -94,6 +94,9 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
             if (handled) emit queryResultsOK(reply_path, reply_query);
         }
 
+        if (reply_path == WEB_DISCONNECT_PATH)
+            handled = true;
+
         if (!handled){
             // General case
             handled=handleDataReply(reply_path, reply_data, reply_query);
@@ -710,9 +713,14 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_ASSET:
         emit assetsReceived(items, reply_query);
         break;
+    case TERADATA_LOG_LOG:
+        emit logsLogsReceived(items, reply_query);
+        break;
+    case TERADATA_LOG_LOGIN:
+        emit logsLoginReceived(items, reply_query);
+        break;
 /*    default:
         emit getSignalFunctionForDataType(items_type);*/
-
     }
 
     // Always emit generic signal

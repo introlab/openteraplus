@@ -54,6 +54,7 @@ public:
 
     void startRecording();
     void stopRecording();
+    void pauseRecording();
 
 
 public slots:
@@ -129,6 +130,7 @@ signals:
 
     void startRecordingRequested();
     void stopRecordingRequested();
+    void pauseRecordingRequested();
 
 private slots:
     void camImageSettingsChanged();

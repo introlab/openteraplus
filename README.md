@@ -7,6 +7,8 @@ OpenTeraPlus is a client that works with [OpenTera Server](https://github.com/in
 
 * Simon Brière, ing. M.Sc.A., Research Center on Aging, CIUSSS de l'Estrie-CHUS (@sbriere)
 * Dominic Létourneau, ing. M.Sc.A., IntRoLab, Université de Sherbrooke (@doumdi)
+* François Michaud, ing. Ph.D., IntRoLab, Université de Sherbrooke
+* Michel Tousignant, pht, Ph.D., CDRV, Université de Sherbrooke
 
 ## Publication(s)
 

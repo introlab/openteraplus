@@ -29,6 +29,11 @@ bool BaseServiceWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
     return true; // Accept by default
 }
 
+void BaseServiceWidget::setDataSavePath()
+{
+    // Don't do anything here by default
+}
+
 QStringList BaseServiceWidget::getHandledServiceKeys()
 {
     // Get all handled service keys by that software

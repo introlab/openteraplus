@@ -12,6 +12,7 @@ TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
 {
     ui->setupUi(this);
 
+    m_mainWidget = ui->toolboxMain;
     m_highlightConditionals = true;
 
     // TODO: Find out why the global stylesheet isn't correctly used by TeraForm
@@ -29,7 +30,10 @@ TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
 
 TeraForm::~TeraForm()
 {
+    /*if (m_mainWidget != ui->toolboxMain)
+        m_mainWidget->deleteLater();*/
     delete ui;
+
 }
 
 void TeraForm::buildUiFromStructure(const QString &structure)
@@ -56,23 +60,40 @@ void TeraForm::buildUiFromStructure(const QString &structure)
     // Sections
     if (struct_object.contains("sections")){
         QVariantList struct_data =struct_object["sections"].toArray().toVariantList();
-        int page_index = 0;
-        for (const QVariant &section:qAsConst(struct_data)){
-            if (section.canConvert(QMetaType::QVariantHash)){
-                QVariantHash section_data = section.toHash();
-                //if (page_index>0){
-                    QWidget* new_page = new QWidget(ui->toolboxMain);
-                    new_page->setObjectName("pageSection" + QString::number(page_index+1));
-                    new_page->setStyleSheet("QWidget#" + new_page->objectName() + "{border: 1px solid white; border-radius: 5px;}");
-                    ui->toolboxMain->addItem(new_page,"");
-                //}
-                ui->toolboxMain->setItemText(page_index, section_data["label"].toString());
+        if (struct_data.count() > 1){
+            int page_index = 0;
+            m_mainWidget = ui->toolboxMain;
+            for (const QVariant &section:qAsConst(struct_data)){
+                if (section.canConvert(QMetaType::QVariantHash)){
+                    QVariantHash section_data = section.toHash();
+                    //if (page_index>0){
+                        QWidget* new_page = new QWidget(ui->toolboxMain);
+                        new_page->setObjectName("pageSection" + QString::number(page_index+1));
+                        new_page->setStyleSheet("QWidget#" + new_page->objectName() + "{border: 1px solid white; border-radius: 5px;}");
+                        ui->toolboxMain->addItem(new_page,"");
+                    //}
+                    ui->toolboxMain->setItemText(page_index, section_data["label"].toString());
+                    if (section_data.contains("items")){
+                        if (section_data["items"].canConvert(QMetaType::QVariantList)){
+                            buildFormFromStructure(ui->toolboxMain->widget(page_index), section_data["items"].toList());
+                        }
+                    }
+                    page_index++;
+                }
+            }
+        }else{
+            if (struct_data.count() == 1){
+                // Only one section - hides the header and don't use QToolBox
+                ui->mainLayout->removeWidget(ui->toolboxMain);
+                m_mainWidget = new QFrame(this);
+                ui->mainLayout->addWidget(m_mainWidget);
+                QVariantHash section_data = struct_data.first().toHash();
                 if (section_data.contains("items")){
                     if (section_data["items"].canConvert(QMetaType::QVariantList)){
-                        buildFormFromStructure(ui->toolboxMain->widget(page_index), section_data["items"].toList());
+                        buildFormFromStructure(m_mainWidget, section_data["items"].toList());
                     }
                 }
-                page_index++;
+
             }
         }
     }
@@ -103,6 +124,7 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
             m_initialValues.insert(field, value);
         }
     }
+    // qDebug() << m_initialValues;
 
     validateFormData(false);
     emit formIsNowDirty(false);
@@ -188,8 +210,16 @@ bool TeraForm::getFieldDirty(const QString &field)
 
 bool TeraForm::getFieldDirty(QWidget *widget)
 {
-    //if (m_widgets.values().contains(widget)){
+    // Read only fields are never dirty
+    if (widget->property("readonly").isValid()){
+        if (widget->property("readonly").toBool()){
+            //qDebug() << "Readonly widget never dirty!";
+            return false;
+        }
+    }
+
     if (std::find(m_widgets.cbegin(), m_widgets.cend(), widget) != m_widgets.cend()){
+
         QString widget_id = m_widgets.key(widget);
         if (dynamic_cast<QLabel*>(widget)){
             return false; // QLabel are never dirty
@@ -199,8 +229,17 @@ bool TeraForm::getFieldDirty(QWidget *widget)
         if (!id.isNull())
             value = id;
 
+        if (dynamic_cast<QDateTimeEdit*>(widget)){
+            // Datetime must be checked as string as they are stored as such...
+            value = value.toDateTime().toString(Qt::DateFormat::ISODateWithMs);
+            if (m_initialValues.contains(widget_id)){
+                return !m_initialValues[m_widgets.key(widget)].toString().startsWith(value.toString());
+            }
+        }
+
         if (m_initialValues.contains(widget_id))
             return m_initialValues[m_widgets.key(widget)] != value;
+
         // No initial value. So dirty if not empty!
         return !value.toString().isEmpty();
     }
@@ -430,6 +469,9 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             QString item_id = item_data["id"].toString();
             QWidget* item_widget = nullptr;
             QLabel* item_label = new QLabel(item_data["label"].toString());
+            item_label->setAlignment(Qt::AlignVCenter);
+            item_label->setStyleSheet("QLabel{min-height: 25px;}");
+
             /*QFrame* item_frame = new QFrame();
             QHBoxLayout* item_frame_layout = new QHBoxLayout();
             item_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
@@ -467,7 +509,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             else if (item_type == "checklist"){
                 item_widget = createListWidget(item_data);
             }
-            else if (item_type == "longtext"){
+            else if (item_type == "longtext" || item_type == "json"){ // Json here, for now...
                 item_widget = createLongTextWidget(item_data);
             }
             else if (item_type == "label"){
@@ -653,6 +695,8 @@ QWidget *TeraForm::createTextWidget(const QVariantHash &structure, bool is_maske
     if (structure.contains("max_length")){
         item_text->setMaxLength(structure["max_length"].toInt());
     }
+
+    item_text->setAlignment(Qt::AlignVCenter);
 
     connect(item_text, &QLineEdit::textChanged, this, &TeraForm::widgetValueChanged);
     return item_text;
@@ -910,7 +954,8 @@ void TeraForm::setWidgetVisibility(QWidget *widget, QWidget *linked_widget, bool
                     if (linked_widget){
                         form_layout->getWidgetPosition(linked_widget, &parent_row, nullptr);
                     }else {
-                        form_layout->getWidgetPosition(ui->toolboxMain, &parent_row, nullptr);
+                        //form_layout->getWidgetPosition(ui->toolboxMain, &parent_row, nullptr);
+                        form_layout->getWidgetPosition(m_mainWidget, &parent_row, nullptr);
                      }
 
                     // Ensure the item is at the correct row order
@@ -1051,7 +1096,6 @@ QVariant TeraForm::getWidgetValue(QWidget *widget)
 
 void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
 {
-
     widget->setProperty("last_value", value);
     if (QComboBox* combo = dynamic_cast<QComboBox*>(widget)){
         int index = combo->findText(value.toString());
@@ -1083,6 +1127,13 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QTextEdit* text = dynamic_cast<QTextEdit*>(widget)){
+        if (value.canConvert(QMetaType::QVariantMap) || value.canConvert(QMetaType::QVariantHash)){
+            QVariantHash data = value.toHash();
+            QJsonDocument doc;
+            doc.setObject(QJsonObject::fromVariantHash(data));
+            text->setText(doc.toJson(QJsonDocument::Compact));
+            return;
+        }
         text->setText(value.toString());
         return;
     }
@@ -1316,8 +1367,13 @@ void TeraForm::hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas)
 void TeraForm::setDisabled(bool disable)
 {
     // Disable only the contents of pages, not the toolbox itself
-    for (int i=0; i<ui->toolboxMain->count(); i++){
-        ui->toolboxMain->widget(i)->setDisabled(disable);
+    if (m_mainWidget == ui->toolboxMain){
+        for (int i=0; i<ui->toolboxMain->count(); i++){
+            ui->toolboxMain->widget(i)->setDisabled(disable);
+        }
+    }else{
+        if (m_mainWidget)
+            m_mainWidget->setDisabled(disable);
     }
     m_disabled = disable;
     //QWidget::setDisabled(disable);
@@ -1328,8 +1384,13 @@ void TeraForm::setDisabled(bool disable)
 void TeraForm::setEnabled(bool enable)
 {
     // Enable only the contents of pages, not the toolbox itself
-    for (int i=0; i<ui->toolboxMain->count(); i++){
-        ui->toolboxMain->widget(i)->setEnabled(enable);
+    if (m_mainWidget == ui->toolboxMain){
+        for (int i=0; i<ui->toolboxMain->count(); i++){
+            ui->toolboxMain->widget(i)->setEnabled(enable);
+        }
+    }else{
+        if (m_mainWidget)
+            m_mainWidget->setEnabled(enable);
     }
     m_disabled = !enable;
     //QWidget::setEnabled(enable);

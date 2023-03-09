@@ -84,6 +84,7 @@ public:
 
 private:
     Ui::TeraForm*                                   ui;
+    QWidget*                                        m_mainWidget; // The main widget that holds the form
     QMap<QString, QWidget*>                         m_widgets;
     QHash<QWidget*, QLabel*>                        m_widgetsLabels;
     QHash<QWidget*, QFormLayout::TakeRowResult>     m_hidden_rows;

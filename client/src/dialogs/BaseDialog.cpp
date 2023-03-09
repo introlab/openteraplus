@@ -33,5 +33,3 @@ void BaseDialog::showEvent(QShowEvent * event)
         move(parentWidget()->width()/2 - width()/2, parentWidget()->height()/2 - height()/2);
     }*/
 }
-
-

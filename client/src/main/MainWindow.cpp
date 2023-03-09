@@ -11,6 +11,7 @@
 #include "editors/GroupWidget.h"
 #include "editors/ParticipantWidget.h"
 #include "editors/UserSummaryWidget.h"
+#include "editors/DeviceSummaryWidget.h"
 
 
 MainWindow::MainWindow(ComManager *com_manager, const QString &current_server, QWidget *parent) :
@@ -108,6 +109,8 @@ void MainWindow::connectSignals()
 
 void MainWindow::initUi()
 {
+    ui->btnConfig->hide();
+
     // Setup messages
     ui->wdgMessages->hide();
     ui->frameCentralBottom->hide();
@@ -196,12 +199,22 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
             m_data_editor->setLimited(limited);
         */
 
-
-
     }
 
     if (data_type == TERADATA_USER){
-        m_data_editor = new UserSummaryWidget(m_comManager, data);
+        int id_project = -1;
+        if (ui->projNavigator->getCurrentItemType() == TERADATA_USER && ui->projNavigator->getCurrentItemId() == data->getId()){
+            id_project = ui->projNavigator->getCurrentProjectId();
+        }
+        m_data_editor = new UserSummaryWidget(m_comManager, data, id_project);
+    }
+
+    if (data_type == TERADATA_DEVICE){
+        int id_project = -1;
+        if (ui->projNavigator->getCurrentItemType() == TERADATA_DEVICE && ui->projNavigator->getCurrentItemId() == data->getId()){
+            id_project = ui->projNavigator->getCurrentProjectId();
+        }
+        m_data_editor = new DeviceSummaryWidget(m_comManager, data, id_project);
     }
 
     if (m_data_editor){
@@ -475,7 +488,7 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID, QString::number(data_id));
-    if (data_type == TERADATA_USER){
+    if (data_type == TERADATA_USER || data_type == TERADATA_DEVICE){
         // Also query for status
         query.addQueryItem(WEB_QUERY_WITH_STATUS, "1");
     }
@@ -656,7 +669,7 @@ void MainWindow::com_posting(QString path, QString data)
 
 void MainWindow::com_querying(QString path)
 {
-    if (path != WEB_FORMS_PATH && path != WEB_LOGOUT_PATH && path != WEB_REFRESH_TOKEN_PATH){
+    if (path != WEB_FORMS_PATH && path != WEB_LOGOUT_PATH && path != WEB_REFRESH_TOKEN_PATH && path != WEB_DISCONNECT_PATH){
         QString data_type = TeraData::getDataTypeNameText(TeraData::getDataTypeFromPath(path));
         if (!data_type.isEmpty()){
             GlobalEvent event(EVENT_DATA_QUERY, tr("Récupération de ") + data_type + "...");
@@ -990,6 +1003,20 @@ void MainWindow::changeEvent(QEvent* event)
     //Base class
     QMainWindow::changeEvent(event);
 
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    // About to close... check if we have something in progress that prevents it
+    if (m_inSessionWidget){
+        if (!m_inSessionWidget->sessionCanBeEnded()){
+            GlobalMessageBox msg;
+            msg.showWarning(tr("Séance en cours"), tr("La séance en cours empêche la fermeture du logiciel.") + "\n\n" + tr("Veuillez la terminer avant de poursuivre."));
+            event->ignore();
+            return;
+        }
+    }
+    event->accept();
 }
 
 

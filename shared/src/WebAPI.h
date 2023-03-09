@@ -39,6 +39,7 @@
 #define WEB_TESTTYPESITE_PATH               "/api/user/testtypes/sites"
 #define WEB_TESTTYPEPROJECT_PATH            "/api/user/testtypes/projects"
 #define WEB_TESTINFO_PATH                   "/api/user/tests"
+#define WEB_DISCONNECT_PATH                 "/api/user/disconnect"
 
 #define WEB_SESSIONMANAGER_PATH             "/api/user/sessions/manager"
 
@@ -49,6 +50,10 @@
 #define WEB_VERSIONSINFO_PATH               "/api/user/versions"
 
 #define WEB_FORMS_PATH                      "/api/user/forms"
+
+#define WEB_LOGS_LOGINS_PATH                "/log/api/logging/login_entries"
+#define WEB_LOGS_LOGS_PATH                  "/log/api/logging/log_entries"
+
 #define WEB_FORMS_QUERY_USER                "type=user"
 #define WEB_FORMS_QUERY_SITE                "type=site"
 #define WEB_FORMS_QUERY_DEVICE              "type=device"
@@ -84,6 +89,8 @@
 
 #define WEB_QUERY_UUID_PARTICIPANT  "participant_uuid"
 #define WEB_QUERY_UUID_ASSET        "asset_uuid"
+#define WEB_QUERY_UUID_USER         "user_uuid"
+#define WEB_QUERY_UUID_DEVICE       "device_uuid"
 
 #define WEB_QUERY_UUID              "uuid"
 #define WEB_QUERY_APPTAG            "app_tag"
@@ -101,6 +108,10 @@
 #define WEB_QUERY_DOWNLOAD          "download"
 #define WEB_QUERY_ENABLED           "enabled"
 #define WEB_QUERY_FULL              "full"
+#define WEB_QUERY_STATS             "stats"
+#define WEB_QUERY_START_DATE        "start_date"
+#define WEB_QUERY_END_DATE          "end_date"
+#define WEB_QUERY_LOG_LEVEL         "log_level"
 
 #define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
 #define WEB_QUERY_WITH_SITES        "with_sites"
@@ -117,6 +128,7 @@
 #define WEB_QUERY_WITH_ONLY_TOKEN   "with_only_token"
 #define WEB_QUERY_WITH_SESSIONTYPE  "with_session_type"
 #define WEB_QUERY_WITH_DEVICES      "with_devices"
+#define WEB_QUERY_WITH_NAMES        "with_names"
 
 #define WEB_QUERY_ORDERBY_RECENTS   "orderby_recents"
 

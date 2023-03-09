@@ -224,7 +224,7 @@ QList<QString> TeraData::getFieldList() const
     return rval;
 }
 
-QVariantMap TeraData::getFieldValues()
+QVariantHash TeraData::getFieldValues()
 {
     return m_fieldsValue;
 }
@@ -301,6 +301,10 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "asset";
     case TERADATA_TEST:
         return "test";
+    case TERADATA_LOG_LOGIN:
+        return "log_login";
+    case TERADATA_LOG_LOG:
+        return "log_log";
     }
 
     return "";
@@ -381,6 +385,10 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Donnée");
     case TERADATA_TEST:
         return tr("Évaluation");
+    case TERADATA_LOG_LOGIN:
+        return tr("Journal: Connexion");
+    case TERADATA_LOG_LOG:
+        return tr("Journal: Général");
     }
 
     return "";
@@ -423,6 +431,8 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_TESTTYPEPROJECT_PATH)         return TERADATA_TESTTYPEPROJECT;
     if (path==WEB_TESTTYPESITE_PATH)            return TERADATA_TESTTYPESITE;
     if (path==WEB_TESTINFO_PATH)                return TERADATA_TEST;
+    if (path==WEB_LOGS_LOGINS_PATH)             return TERADATA_LOG_LOGIN;
+    if (path==WEB_LOGS_LOGS_PATH)               return TERADATA_LOG_LOG;
 
     LOG_ERROR("Unknown data type for path: " + path, "TeraData::getDataTypeFromPath");
 
@@ -450,6 +460,8 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_ASSET)              return WEB_ASSETINFO_PATH;
     if (data_type==TERADATA_TESTTYPE)           return WEB_TESTTYPEINFO_PATH;
     if (data_type==TERADATA_TEST)               return WEB_TESTINFO_PATH;
+    if (data_type==TERADATA_LOG_LOGIN)          return WEB_LOGS_LOGINS_PATH;
+    if (data_type==TERADATA_LOG_LOG)            return WEB_LOGS_LOGS_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 
@@ -493,6 +505,9 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
         return "://icons/service.png";
     case TERADATA_ASSET:
         return "://icons/data.png";
+    case TERADATA_LOG_LOGIN:
+    case TERADATA_LOG_LOG:
+        return "://icons/log_icon.png";
     default:
         return "://icons/error.png";
     }

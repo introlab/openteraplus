@@ -93,7 +93,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButton">
+       <widget class="QToolButton" name="btnDashboard">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
@@ -361,6 +361,38 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnAdvanced">
+        <property name="minimumSize">
+         <size>
+          <width>32</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>Vue étendue</string>
+        </property>
+        <property name="text">
+         <string>Avancé</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources/TeraClient.qrc">
+          <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer_2">

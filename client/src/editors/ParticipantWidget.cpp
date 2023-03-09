@@ -6,31 +6,19 @@
 #include <QThread>
 #include <QStyledItemDelegate>
 
-#include "editors/SessionWidget.h"
-
 #include "dialogs/GeneratePasswordDialog.h"
 #include "dialogs/PasswordStrengthDialog.h"
 
 #include "services/DanceService/DanceConfigWidget.h"
-
-#define QUERY_SESSION_LIMIT_PER_QUERY 50
 
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::ParticipantWidget)
 {
 
-    m_diag_editor = nullptr;
     m_sessionLobby = nullptr;
-    m_totalSessions = 0;
-    m_totalAssets = 0;
-    m_totalTests = 0;
-    m_currentIdSession = -1;
-    m_currentSessions = 0;
-    m_sessionsLoading = false;
+
     m_allowFileTransfers = false;
-    m_currentSessionShowAssets = false;
-    m_currentSessionShowTests = false;
 
     ui->setupUi(this);
 
@@ -39,7 +27,6 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
     setLimited(false);
-    setSessionsLoading(false);
 
     // Use base class to manage editing
     setEditorControls(ui->wdgParticipant, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
@@ -75,26 +62,25 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
         queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
 
-    }else{
-        // Set default calendar view for new participants
-        updateCalendars(QDate::currentDate());
     }
 
     // Default display
     ui->tabNav->setCurrentIndex(0);
     ui->tabServicesDetails->setCurrentIndex(0);
-    ui->frameFilterSessionTypes->hide();
+    ui->tabInfosDetails->setCurrentIndex(0);
 
 }
 
 ParticipantWidget::~ParticipantWidget()
 {
-    delete ui;
     qDeleteAll(m_ids_session_types);
-    qDeleteAll(m_ids_sessions);
+    delete ui;
 
     if (m_sessionLobby)
         m_sessionLobby->deleteLater();
+
+    if (m_diag_qr)
+        m_diag_qr->deleteLater();
 }
 
 
@@ -131,7 +117,6 @@ void ParticipantWidget::setData(const TeraData *data)
 void ParticipantWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &ParticipantWidget::processFormsReply);
-    connect(m_comManager, &ComManager::sessionsReceived, this, &ParticipantWidget::processSessionsReply);
     connect(m_comManager, &ComManager::sessionTypesReceived, this, &ParticipantWidget::processSessionTypesReply);
     connect(m_comManager, &ComManager::deviceProjectsReceived, this, &ParticipantWidget::processDeviceProjectsReply);
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &ParticipantWidget::processDeviceParticipantsReply);
@@ -142,67 +127,14 @@ void ParticipantWidget::connectSignals()
 
 
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &ParticipantWidget::ws_participantEvent);
-
-    connect(ui->btnDelSession, &QPushButton::clicked, this, &ParticipantWidget::btnDeleteSession_clicked);
     connect(ui->btnAddDevice, &QPushButton::clicked, this, &ParticipantWidget::btnAddDevice_clicked);
     connect(ui->btnDelDevice, &QPushButton::clicked, this, &ParticipantWidget::btnDelDevice_clicked);
 
-    connect(ui->tableSessions, &QTableWidget::currentItemChanged, this, &ParticipantWidget::currentSelectedSessionChanged);
-
-    connect(ui->lstFilters, &QListWidget::itemChanged, this, &ParticipantWidget::currentTypeFiltersChanged);
-    connect(ui->btnNextCal, &QPushButton::clicked, this, &ParticipantWidget::displayNextMonth);
-    connect(ui->btnPrevCal, &QPushButton::clicked, this, &ParticipantWidget::displayPreviousMonth);
-    connect(ui->calMonth1, &HistoryCalendarWidget::clicked, this, &ParticipantWidget::currentCalendarDateChanged);
-    connect(ui->calMonth2, &HistoryCalendarWidget::clicked, this, &ParticipantWidget::currentCalendarDateChanged);
-    connect(ui->calMonth3, &HistoryCalendarWidget::clicked, this, &ParticipantWidget::currentCalendarDateChanged);
-    connect(ui->calMonth1, &HistoryCalendarWidget::activated, this, &ParticipantWidget::currentCalendarDateActivated);
-    connect(ui->calMonth2, &HistoryCalendarWidget::activated, this, &ParticipantWidget::currentCalendarDateActivated);
-    connect(ui->calMonth3, &HistoryCalendarWidget::activated, this, &ParticipantWidget::currentCalendarDateActivated);
-
     connect(ui->lstAvailDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentAvailDeviceChanged);
     connect(ui->lstDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentDeviceChanged);
-}
 
-void ParticipantWidget::setSessionsLoading(const bool &loading)
-{
-    ui->progSessionsLoad->setVisible(loading);
-    ui->frameCalendar->setVisible(!loading);
-    ui->tableSessions->setVisible(!loading);
-    ui->frameSessionsControls->setVisible(!loading);
-    m_sessionsLoading = loading;
-}
-
-void ParticipantWidget::querySessions()
-{
-    ui->tableSessions->setSortingEnabled(false);
-    int sessions_left = m_totalSessions - m_currentSessions;
-    setSessionsLoading(sessions_left > 0);
-
-    if (sessions_left>0){
-        ui->progSessionsLoad->setValue(m_currentSessions);
-        QUrlQuery query;
-        query.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(m_data->getId()));
-        query.addQueryItem(WEB_QUERY_OFFSET, QString::number(m_currentSessions));
-        query.addQueryItem(WEB_QUERY_LIMIT, QString::number(QUERY_SESSION_LIMIT_PER_QUERY)); // Limit number of sessions per query
-        query.addQueryItem(WEB_QUERY_WITH_SESSIONTYPE, "1");
-        query.addQueryItem(WEB_QUERY_LIST, "1");
-        //queryDataRequest(WEB_SESSIONINFO_PATH, query);
-        m_comManager->doGet(WEB_SESSIONINFO_PATH, query);
-    }else{
-        // No more session to query
-
-        // Update calendar view
-        currentTypeFiltersChanged(nullptr);
-        updateCalendars(getMaximumSessionDate().addMonths(-2));
-        //updateCalendars(getMinimumSessionDate());
-        ui->calMonth1->setData(m_ids_sessions.values());
-        ui->calMonth2->setData(m_ids_sessions.values());
-        ui->calMonth3->setData(m_ids_sessions.values());
-
-        ui->tableSessions->setSortingEnabled(true);
-        ui->tableSessions->resizeColumnsToContents();
-    }
-
+    connect(ui->wdgSessions, &SessionsListWidget::startSessionRequested, this, &ParticipantWidget::showSessionLobby);
+    connect(ui->wdgSessions, &SessionsListWidget::sessionsCountUpdated, this, &ParticipantWidget::sessionTotalCountUpdated);
 }
 
 void ParticipantWidget::updateControlsState()
@@ -219,10 +151,10 @@ void ParticipantWidget::updateControlsState()
             ui->frameNewSession->hide();
         }
     }else{
-        if (!isProjectAdmin()){
-            // Not admin in current project - disable deleting
-            ui->btnDelSession->hide();
-
+        bool is_admin = isProjectAdmin();
+        // Not admin in current project - disable deleting, enable it otherwise
+        ui->wdgSessions->enableDeletion(is_admin);
+        if (!is_admin){
             // Also disable device assignation
             ui->frameAssignDevicesButtons->hide();
             ui->frameAvailDevices->hide();
@@ -280,13 +212,13 @@ void ParticipantWidget::updateFieldsValue()
 
 void ParticipantWidget::initUI()
 {
-    ui->btnAssetsBrowser->hide();
-    ui->btnTestsBrowser->hide();
+    ui->wdgSessions->setComManager(m_comManager);
+    ui->wdgSessions->setViewMode(SessionsListWidget::VIEW_PARTICIPANT_SESSIONS, m_data->getUuid(), m_data->getId(), m_data->getFieldValue("id_project").toInt());
+
     ui->frameParticipantLogin->hide();
     ui->frameActive->hide();
     ui->frameWeb->hide();
     ui->txtWeb->hide();
-    ui->btnCheckSessionTypes->hide();
 
     // Disable random password button, handled in the PasswordStrengthDialog now!
     ui->btnRandomPass->hide();
@@ -301,18 +233,10 @@ void ParticipantWidget::initUI()
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), false);
     ui->tabServicesDetails->setTabVisible(ui->tabServicesDetails->indexOf(ui->tabServiceParams), false);
 
-    // Intercepts some events
-    ui->tableSessions->installEventFilter(this);
-
-    // Set default session sorting
-    ui->tableSessions->sortItems(1, Qt::DescendingOrder);
-
-    // Load table icons
-    m_deleteIcon = QIcon(":/icons/delete_old.png");
-    m_viewIcon = QIcon(":/icons/search.png");
-    m_downloadIcon = QIcon(":/icons/data.png");
-    m_resumeIcon = QIcon(":/icons/play.png");
-    m_testIcon = QIcon(":/icons/test.png");
+    // Configure log view
+    ui->wdgLogins->setComManager(m_comManager);
+    ui->wdgLogins->setViewMode(LogViewWidget::VIEW_LOGINS_PARTICIPANT, m_data->getUuid());
+    ui->wdgLogins->setUuidName(m_data->getUuid(), m_data->getName());
 
 }
 
@@ -348,7 +272,7 @@ bool ParticipantWidget::canStartNewSession(const int &id_session_type)
         if (m_ids_session_types.contains(id_session_type)){
             TeraData* session_type = m_ids_session_types[id_session_type];
             if (session_type->hasFieldName("session_type_service_key")){
-                QString service_key = session_type->getFieldValue("service").toString();
+                QString service_key = session_type->getFieldValue("session_type_service_key").toString();
                 can_start = BaseServiceWidget::getHandledServiceKeys().contains(service_key);
             }else{
                 ui->lblInfos->setText(tr("Ce type de séance n'est pas supporté dans cette version"));
@@ -364,39 +288,6 @@ bool ParticipantWidget::canStartNewSession(const int &id_session_type)
     return can_start;
 }
 
-void ParticipantWidget::newSessionRequest(const QDateTime &session_datetime)
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new BaseDialog(this);
-
-    TeraData* new_session = new TeraData(TERADATA_SESSION);
-    new_session->setFieldValue("session_name", tr("Nouvelle séance"));
-    /*QDateTime session_datetime = QDateTime::currentDateTime();
-    QTime session_time = QTime::currentTime();
-    int minutes = (session_time.minute() / 15) * 15;
-    session_time.setHMS(session_datetime.time().addSecs(3600).hour(), minutes, 0);
-    session_datetime.setTime(session_time);*/
-    new_session->setFieldValue("session_start_datetime", session_datetime);
-    new_session->setFieldValue("session_status", TeraSessionStatus::STATUS_NOTSTARTED);
-    new_session->setFieldValue("id_project", m_data->getFieldValue("id_project"));
-    new_session->setFieldValue("id_creator_user", m_comManager->getCurrentUser().getId());
-    new_session->setFieldValue("participant_uuid", m_data->getUuid());
-
-    SessionWidget* ses_widget = new SessionWidget(m_comManager, new_session, m_diag_editor);
-    m_diag_editor->setCentralWidget(ses_widget);
-
-    m_diag_editor->setWindowTitle(tr("Séance"));
-    m_diag_editor->setMinimumSize(this->width(), this->height());
-
-    connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
-    connect(ses_widget, &SessionWidget::dataWasChanged, m_diag_editor, &QDialog::accept);
-    connect(ses_widget, &SessionWidget::dataWasDeleted, m_diag_editor, &QDialog::accept);
-
-    m_diag_editor->open();
-}
-
 bool ParticipantWidget::validateData()
 {
     bool valid = false;
@@ -404,245 +295,6 @@ bool ParticipantWidget::validateData()
     valid = ui->wdgParticipant->validateFormData();
 
     return valid;
-}
-
-void ParticipantWidget::updateSession(const TeraData *session, const bool &auto_position)
-{
-    int id_session = session->getId();
-
-    QTableWidgetItem* name_item;
-    TableDateWidgetItem* date_item;
-    QTableWidgetItem* type_item;
-    QTableWidgetItem* duration_item;
-    QTableWidgetItem* user_item;
-    QTableWidgetItem* status_item;
-    QToolButton* btnDownload = nullptr;
-    QToolButton* btnResume = nullptr;
-    QToolButton* btnTests = nullptr;
-
-    if (m_listSessions_items.contains(id_session)){
-        // Already there, get items
-       name_item = m_listSessions_items[id_session];
-       date_item = dynamic_cast<TableDateWidgetItem*>(ui->tableSessions->item(name_item->row(), 1));
-       type_item = ui->tableSessions->item(name_item->row(), 2);
-       status_item = ui->tableSessions->item(name_item->row(), 3);
-       duration_item = ui->tableSessions->item(name_item->row(), 4);
-       user_item = ui->tableSessions->item(name_item->row(), 5);
-       if (ui->tableSessions->cellWidget(name_item->row(), 6))
-           if (ui->tableSessions->cellWidget(name_item->row(), 6)->layout()){
-               if (ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(2))
-                  btnDownload = dynamic_cast<QToolButton*>(ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(2)->widget());
-               if (ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(3))
-                  btnTests = dynamic_cast<QToolButton*>(ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(3)->widget());
-               if (ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(4))
-                  btnResume = dynamic_cast<QToolButton*>(ui->tableSessions->cellWidget(name_item->row(), 6)->layout()->itemAt(4)->widget());
-           }
-
-       if (m_ids_sessions[id_session]->hasFieldName("session_assets_count")){
-           m_totalAssets -= m_ids_sessions[id_session]->getFieldValue("session_assets_count").toInt();
-       }
-       if (m_ids_sessions[id_session]->hasFieldName("session_tests_count")){
-           m_totalTests -= m_ids_sessions[id_session]->getFieldValue("session_tests_count").toInt();
-       }
-       delete m_ids_sessions[id_session];
-    }else{
-        //ui->tableSessions->setSortingEnabled(false); // Disable sorting so we know the correct inserted row
-
-        if (ui->tableSessions->rowCount() < m_currentSessions+1){
-            ui->tableSessions->setRowCount(ui->tableSessions->rowCount()+1);
-        }
-        int current_row = m_currentSessions;
-        name_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSION)),"");
-        ui->tableSessions->setItem(current_row, 0, name_item);
-        date_item = new TableDateWidgetItem("");
-        ui->tableSessions->setItem(current_row, 1, date_item);
-        type_item = new QTableWidgetItem("");
-        ui->tableSessions->setItem(current_row, 2, type_item);
-        status_item = new QTableWidgetItem("");
-        ui->tableSessions->setItem(current_row, 3, status_item);
-        duration_item = new QTableWidgetItem("");
-        duration_item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        ui->tableSessions->setItem(current_row, 4, duration_item);
-        user_item = new QTableWidgetItem("");
-        ui->tableSessions->setItem(current_row, 5, user_item);
-
-        // Create action buttons
-        QFrame* action_frame = new QFrame();
-        QHBoxLayout* layout = new QHBoxLayout();
-        layout->setContentsMargins(0,0,0,0);
-        layout->setSpacing(1);
-        layout->setAlignment(Qt::AlignLeft);
-        action_frame->setLayout(layout);
-
-        // View session
-        QToolButton* btnView = new QToolButton(action_frame);
-        btnView->setIcon(m_viewIcon);
-        btnView->setProperty("id_session", session->getId());
-        btnView->setCursor(Qt::PointingHandCursor);
-        btnView->setMaximumWidth(32);
-        btnView->setToolTip(tr("Ouvrir"));
-        connect(btnView, &QToolButton::clicked, this, &ParticipantWidget::btnViewSession_clicked);
-        layout->addWidget(btnView);
-
-        // Delete
-        QToolButton* btnDelete = new QToolButton(action_frame);
-        btnDelete->setIcon(m_deleteIcon);
-        btnDelete->setProperty("id_session", session->getId());
-        btnDelete->setCursor(Qt::PointingHandCursor);
-        btnDelete->setMaximumWidth(32);
-        btnDelete->setToolTip(tr("Supprimer"));
-        connect(btnDelete, &QToolButton::clicked, this, &ParticipantWidget::btnDeleteSession_clicked);
-        if (!isProjectAdmin())
-            btnDelete->setVisible(false);
-        layout->addWidget(btnDelete);
-
-        // Download data
-        btnDownload = new QToolButton(action_frame);
-        btnDownload->setIcon(m_downloadIcon);
-        btnDownload->setProperty("id_session", session->getId());
-        btnDownload->setCursor(Qt::PointingHandCursor);
-        btnDownload->setMaximumWidth(32);
-        btnDownload->setToolTip(tr("Voir les données"));
-        connect(btnDownload, &QToolButton::clicked, this, &ParticipantWidget::btnDownloadSession_clicked);
-        layout->addWidget(btnDownload);
-
-        // Tests display
-        btnTests = new QToolButton(action_frame);
-        btnTests->setIcon(m_testIcon);
-        btnTests->setProperty("id_session", session->getId());
-        btnTests->setCursor(Qt::PointingHandCursor);
-        btnTests->setMaximumWidth(32);
-        btnTests->setToolTip(tr("Voir les évaluations"));
-        connect(btnTests, &QToolButton::clicked, this, &ParticipantWidget::btnViewTests_clicked);
-        layout->addWidget(btnTests);
-
-        // Resume session
-        btnResume = new QToolButton(action_frame);
-        btnResume->setIcon(m_resumeIcon);
-        btnResume->setProperty("id_session", session->getId());
-        btnResume->setProperty("id_session_type", session->getFieldValue("id_session_type").toInt());
-        btnResume->setCursor(Qt::PointingHandCursor);
-        btnResume->setMaximumWidth(32);
-        btnResume->setToolTip(tr("Continuer la séance"));
-        connect(btnResume, &QToolButton::clicked, this, &ParticipantWidget::btnResumeSession_clicked);
-        layout->addWidget(btnResume);
-
-        ui->tableSessions->setCellWidget(current_row, 6, action_frame);
-
-        m_listSessions_items[id_session] = name_item;
-
-        m_currentSessions++;
-
-        //ui->tableSessions->setSortingEnabled(true); // Reenable sorting
-
-    }
-    m_ids_sessions[id_session] = new TeraData(*session);
-
-    // Update values
-    name_item->setText(session->getName());
-    date_item->setDate(session->getFieldValue("session_start_datetime"));
-
-    if (session->hasFieldName("session_type_name")){
-        type_item->setText(session->getFieldValue("session_type_name").toString());
-        if (session->hasFieldName("session_type_color"))
-            type_item->setForeground(QColor(session->getFieldValue("session_type_color").toString()));
-    }else{
-        // No session type in that structure - old API - use previous stored values
-        int session_type = session->getFieldValue("id_session_type").toInt();
-        if (m_ids_session_types.contains(session_type)){
-            type_item->setText(m_ids_session_types[session_type]->getFieldValue("session_type_name").toString());
-            type_item->setForeground(QColor(m_ids_session_types[session_type]->getFieldValue("session_type_color").toString()));
-        }else{
-            type_item->setText("Inconnu");
-        }
-    }
-
-    duration_item->setText(QTime(0,0).addSecs(session->getFieldValue("session_duration").toInt()).toString("hh:mm:ss"));
-    TeraSessionStatus::SessionStatus session_status = static_cast<TeraSessionStatus::SessionStatus>(session->getFieldValue("session_status").toInt());
-    status_item->setText(TeraSessionStatus::getStatusName(session_status));
-    // Set color depending on status_item
-    //status_item->setTextColor(QColor(TeraSessionStatus::getStatusColor(session_status)));
-    status_item->setForeground(Qt::black);
-    status_item->setBackground(QColor(TeraSessionStatus::getStatusColor(session_status)));
-    //QColor back_color = TeraForm::getGradientColor(3, 18, 33, static_cast<int>(session_date.daysTo(QDateTime::currentDateTime())));
-    //back_color.setAlphaF(0.5);
-    //date_item->setBackgroundColor(back_color);
-
-    // Session creator
-    if (session->hasFieldName("session_creator_user"))
-        user_item->setText(session->getFieldValue("session_creator_user").toString());
-    else if(session->hasFieldName("session_creator_device"))
-        user_item->setText(tr("Appareil: ") + session->getFieldValue("session_creator_device").toString());
-    else if(session->hasFieldName("session_creator_participant"))
-        user_item->setText(tr("Participant: ") + session->getFieldValue("session_creator_participant").toString());
-    else if(session->hasFieldName("session_creator_service"))
-        user_item->setText(tr("Service: ") + session->getFieldValue("session_creator_service").toString());
-    else {
-        user_item->setText(tr("Inconnu"));
-    }
-
-    // Download data
-    if (btnDownload){
-        if (session->hasFieldName("session_assets_count")){
-            int asset_count = session->getFieldValue("session_assets_count").toInt();
-            bool has_assets = asset_count>0;
-            //btnDownload->setVisible(has_assets);
-            btnDownload->setEnabled(has_assets);
-            if (!has_assets){
-                btnDownload->setIcon(QIcon());
-            }else{
-                btnDownload->setIcon(m_downloadIcon);
-            }
-            m_totalAssets += asset_count;
-            ui->btnAssetsBrowser->setVisible(m_totalAssets>0);
-        }else{
-            //btnDownload->hide();
-            btnDownload->setEnabled(false);
-        }
-    }
-
-    // Show Tests
-    if (btnTests){
-        if (session->hasFieldName("session_tests_count")){
-            int test_count = session->getFieldValue("session_tests_count").toInt();
-            bool has_tests = test_count>0;
-            //btnTests->setVisible(has_tests);
-            btnTests->setEnabled(has_tests);
-            if (!has_tests){
-                btnTests->setIcon(QIcon());
-            }else{
-                btnTests->setIcon(m_testIcon);
-            }
-            m_totalTests += test_count;
-            ui->btnTestsBrowser->setVisible(m_totalTests>0);
-        }else{
-            //btnTests->hide();
-            btnTests->setEnabled(false);
-        }
-    }
-
-    // Resume session
-    if (btnResume){
-        if (session->hasFieldName("session_start_datetime")){
-            QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
-            btnResume->setVisible(session_date.date() == QDate::currentDate() && canStartNewSession(session->getFieldValue("id_session_type").toInt()));
-        }else{
-            btnResume->hide();
-        }
-    }
-
-    // If only 1 session added, check to put it at the right place in the table
-    if (m_currentSessions > 1 && auto_position){
-        // Check if we have a sorting or not
-        /*int sort_column = ui->tableSessions->horizontalHeader()->sortIndicatorSection();
-        Qt::SortOrder sort_order = ui->tableSessions->horizontalHeader()->sortIndicatorOrder();
-        // Reapply sorting
-        ui->tableSessions->sortByColumn(sort_column, sort_order);*/
-
-        // Select added item
-        ui->tableSessions->selectRow(name_item->row());
-        ui->tableSessions->scrollToItem(name_item, QAbstractItemView::PositionAtCenter);
-    }
 }
 
 void ParticipantWidget::updateDeviceProject(TeraData *device_project)
@@ -758,16 +410,6 @@ void ParticipantWidget::refreshWebAccessUrl()
     if (index >= m_services.count() || index <0 || dataIsNew())
         return;
 
-    /*TeraData* current_service = &m_services[index];
-    QUrl server_url = m_comManager->getServerUrl();
-    QString participant_endpoint = "";
-    if (current_service->hasFieldName("service_endpoint_participant"))
-        participant_endpoint = current_service->getFieldValue("service_endpoint_participant").toString();
-    QString service_url = "https://" + server_url.host() + ":" + QString::number(server_url.port()) +
-    //QString service_url = "https://" + current_service->getFieldValue("service_hostname").toString() + ":" + QString::number(server_url.port()) +
-            current_service->getFieldValue("service_clientendpoint").toString() +
-            participant_endpoint + "?token=" +
-            m_data->getFieldValue("participant_token").toString();*/
     QString service_url = TeraData::getServiceParticipantUrl(m_services[index],
                                                              m_comManager->getServerUrl(),
                                                              m_data->getFieldValue("participant_token").toString());
@@ -784,38 +426,6 @@ void ParticipantWidget::processFormsReply(QString form_type, QString data)
     }
 }
 
-void ParticipantWidget::processSessionsReply(QList<TeraData> sessions)
-{
-
-    for(TeraData &session:sessions){
-        if (session.getId() == m_currentIdSession && sessions.count() == 1){
-            // This is a session we requested info on
-            showSessionEditor(&session);
-            m_currentIdSession = -1;
-            return;
-        }
-        updateSession(&session, sessions.count()==1);
-        /*QVariantList session_parts_list = session.getFieldValue("session_participants").toList();
-
-        for(const QVariant &session_part:qAsConst(session_parts_list)){
-            QVariantMap part_info = session_part.toMap();
-
-            // Is that session for the current participant?
-            if (part_info["id_participant"].toInt() == m_data->getId()){
-                // Add session in table or update it
-                updateSession(&session, sessions.count()==1);
-            }else{
-                // Session is not for us - ignore it.
-                continue;
-            }
-        }*/
-    }
-
-    // Query next sessions if needed
-    querySessions();
-
-}
-
 void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
 {
     // ui->cmbSessionType->clear();
@@ -823,13 +433,6 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
     for (const TeraData &st:session_types){
         if (!m_ids_session_types.contains(st.getId())){
             m_ids_session_types[st.getId()] = new TeraData(st);
-            // Add to session list
-            QListWidgetItem* s = new QListWidgetItem(st.getName());
-            s->setData(Qt::UserRole,st.getId());
-            s->setCheckState(Qt::Checked);
-            s->setForeground(QColor(st.getFieldValue("session_type_color").toString()));
-            s->setFont(QFont("Arial",10));
-            ui->lstFilters->addItem(s);
 
             // New session ComboBox
             QString ses_type_name = st.getName();
@@ -856,15 +459,6 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
 
 
         }else{
-            // Existing, must update values
-            *m_ids_session_types[st.getId()] = st;
-            for (int i=0; i<ui->lstFilters->count(); i++){
-                QListWidgetItem* item = ui->lstFilters->item(i);
-                if (item->data(Qt::UserRole).toInt() == st.getId()){
-                    item->setText(st.getName());
-                }
-            }
-
             for (int i=0; i<ui->cmbSessionType->count(); i++){
                 if (ui->cmbSessionType->itemData(i).toInt() == st.getId()){
                     ui->cmbSessionType->setItemText(i, st.getName());
@@ -873,12 +467,8 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
         }
     }
 
-    ui->calMonth1->setSessionTypes(m_ids_session_types.values());
-    ui->calMonth2->setSessionTypes(m_ids_session_types.values());
-    ui->calMonth3->setSessionTypes(m_ids_session_types.values());
-
     // Query sessions for that participant
-    if (!m_data->isNew() && m_currentSessions == 0 && !m_sessionsLoading){
+    if (!m_data->isNew()){
         // Select current session type based on last session type used with that participant
         int last_session_type_id = TeraSettings::getUserSettingForProject(m_comManager->getCurrentUser().getUuid(),
                                                                           m_data->getFieldValue("id_project").toInt(),
@@ -895,7 +485,7 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
         }
 
         // Query sessions
-        querySessions();
+        ui->wdgSessions->setSessionTypes(session_types);
     }
 }
 
@@ -953,6 +543,7 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
             ui->cmbServices->addItem(service.getName(), service_key);
         }else{
             m_allowFileTransfers = true; // We have a file transfer service with that project - allow uploads!
+            ui->wdgSessions->enableFileTransfers(true);
         }
 
         if (service.hasFieldName("service_editable_config")){
@@ -987,10 +578,8 @@ void ParticipantWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
         return;
 
     // Fill stats information
-    m_totalSessions = stats.getFieldValue("sessions_total_count").toInt();
-    ui->tableSessions->setRowCount(m_totalSessions);
-    ui->progSessionsLoad->setMaximum(m_totalSessions);
-    ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
+    int total_sessions = stats.getFieldValue("sessions_total_count").toInt();
+    ui->wdgSessions->setSessionsCount(total_sessions);
 
     // Query sessions types
     QUrlQuery args;
@@ -1004,24 +593,7 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
         return;
 
     if (path == WEB_SESSIONINFO_PATH){
-        // A session got deleted - check if it affects the current display
-        if (m_listSessions_items.contains(id)){
-            ui->tableSessions->removeRow(m_listSessions_items[id]->row());
-            delete m_ids_sessions[id];
-            m_ids_sessions.remove(id);
-            m_listSessions_items.remove(id);
-
-            // Update calendars
-            ui->calMonth1->setData(m_ids_sessions.values());
-            ui->calMonth2->setData(m_ids_sessions.values());
-            ui->calMonth3->setData(m_ids_sessions.values());
-
-            m_currentSessions--;
-            m_totalSessions--;
-
-            ui->grpSession->setItemText(0, tr("Séances") + " ( " + QString::number(m_totalSessions) + " )");
-
-        }
+        // Nothing to do here - all managed in SessionsListWidget
     }
 
     if (path == WEB_DEVICEPARTICIPANTINFO_PATH){
@@ -1066,58 +638,9 @@ void ParticipantWidget::ws_participantEvent(opentera::protobuf::ParticipantEvent
     updateFieldsValue();
 }
 
-void ParticipantWidget::sessionAssetsCountChanged(int id_session, int new_count)
+void ParticipantWidget::sessionTotalCountUpdated(int new_count)
 {
-    if (m_ids_sessions.contains(id_session)){
-        // Check if we need to toggle the "asset download" icon
-        TeraData session_data(*m_ids_sessions[id_session]); // Local copy to prevent deletion when calling updateSession
-        session_data.setFieldValue("session_assets_count", new_count);
-        updateSession(&session_data, false);
-    }
-}
-
-void ParticipantWidget::sessionTestsCountChanged(int id_session, int new_count)
-{
-    if (m_ids_sessions.contains(id_session)){
-        // Check if we need to toggle the "test" icon
-        TeraData session_data(*m_ids_sessions[id_session]); // Local copy to prevent deletion when calling updateSession
-        session_data.setFieldValue("session_tests_count", new_count);
-        updateSession(&session_data, false);
-    }
-}
-
-void ParticipantWidget::btnDeleteSession_clicked()
-{
-    // Check if the sender is a QToolButton (from the action column)
-    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
-    if (action_btn && action_btn != ui->btnDelSession){
-        // Select row according to the session id of that button
-        int id_session = action_btn->property("id_session").toInt();
-        QTableWidgetItem* session_item = m_listSessions_items[id_session];
-        if (session_item)
-            ui->tableSessions->selectRow(session_item->row());
-    }
-
-    if (ui->tableSessions->selectedItems().count()==0)
-        return;
-
-    GlobalMessageBox diag;
-    QMessageBox::StandardButton answer = QMessageBox::No;
-    if (ui->tableSessions->selectionModel()->selectedRows().count() == 1){
-        QTableWidgetItem* base_item = ui->tableSessions->item(ui->tableSessions->currentRow(),0);
-        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer """) + base_item->text() + """?");
-    }else{
-        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer toutes les séances sélectionnées?"));
-    }
-
-    if (answer == QMessageBox::Yes){
-        // We must delete!
-        foreach(QModelIndex selected_row, ui->tableSessions->selectionModel()->selectedRows()){
-            QTableWidgetItem* base_item = ui->tableSessions->item(selected_row.row(),0); // Get item at index 0 which is linked to session id
-            //m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_SESSION), m_listSessions_items.key(base_item));
-            m_comManager->doDelete(TeraData::getPathForDataType(TERADATA_SESSION), m_listSessions_items.key(base_item));
-        }
-    }
+    ui->grpSession->setTitle(tr("Séances") + " ( " + QString::number(new_count) + " )");
 }
 
 void ParticipantWidget::btnAddDevice_clicked()
@@ -1184,161 +707,6 @@ void ParticipantWidget::btnDelDevice_clicked()
     }
 }
 
-void ParticipantWidget::btnDownloadSession_clicked()
-{
-    QToolButton* button = dynamic_cast<QToolButton*>(sender());
-    QTableWidgetItem* session_item = nullptr;
-    if (button){
-        int id_session = button->property("id_session").toInt();
-        session_item = m_listSessions_items[id_session];
-        if (session_item){
-            displaySessionDetails(session_item, true);
-        }
-    }
-}
-
-void ParticipantWidget::btnViewSession_clicked()
-{
-    // Check if the sender is a QToolButton (from the action column)
-    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
-    QTableWidgetItem* session_item = nullptr;
-    if (action_btn){
-        // Select row according to the session id of that button
-        int id_session = action_btn->property("id_session").toInt();
-        session_item = m_listSessions_items[id_session];
-    }
-
-    if (session_item){
-        displaySessionDetails(session_item);
-    }
-
-
-}
-
-void ParticipantWidget::btnResumeSession_clicked()
-{
-    // Check if the sender is a QToolButton (from the action column)
-    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
-
-    if (action_btn){
-        // Select row according to the session id of that button
-        int id_session = action_btn->property("id_session").toInt();
-        int id_session_type = action_btn->property("id_session_type").toInt();
-        showSessionLobby(id_session_type, id_session);
-    }
-
-
-}
-
-void ParticipantWidget::btnViewTests_clicked()
-{
-    QToolButton* button = dynamic_cast<QToolButton*>(sender());
-    QTableWidgetItem* session_item = nullptr;
-    if (button){
-        int id_session = button->property("id_session").toInt();
-        session_item = m_listSessions_items[id_session];
-        if (session_item){
-            displaySessionDetails(session_item, false, true);
-        }
-    }
-}
-
-void ParticipantWidget::currentSelectedSessionChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
-{
-    Q_UNUSED(previous)
-    ui->btnDelSession->setEnabled(current);
-}
-
-void ParticipantWidget::currentCalendarDateChanged(QDate current_date)
-{
-    // Clear current selection
-    ui->tableSessions->clearSelection();
-
-    // Temporarly set multi-selection
-    QAbstractItemView::SelectionMode current_mode = ui->tableSessions->selectionMode();
-    ui->tableSessions->setSelectionMode(QAbstractItemView::MultiSelection);
-
-    // Select all the sessions in the list that fits with that date
-    QTableWidgetItem* first_item = nullptr;
-    //foreach(TeraData* session, m_ids_sessions){
-    for(TeraData* session: qAsConst(m_ids_sessions)){
-        if (session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date() == current_date){
-            QTableWidgetItem* session_item = m_listSessions_items.value(session->getId());
-            if (session_item){
-                ui->tableSessions->selectRow(session_item->row());
-                if (!first_item)
-                    first_item = session_item;
-            }
-        }
-    }
-
-    // Resets selection mode
-    ui->tableSessions->setSelectionMode(current_mode);
-
-    // Ensure first session is visible
-    if (first_item){
-        ui->tableSessions->scrollToItem(first_item);
-    }
-}
-
-void ParticipantWidget::currentCalendarDateActivated(QDate current_date)
-{
-    // Add a new session
-    QDateTime session_datetime;
-    session_datetime.setDate(current_date);
-    QTime session_time = QTime::currentTime();
-    int minutes = (session_time.minute() / 15) * 15;
-    session_time.setHMS(session_datetime.time().addSecs(3600).hour(), minutes, 0);
-    session_datetime.setTime(session_time);
-
-    newSessionRequest(session_datetime);
-}
-
-void ParticipantWidget::displaySessionDetails(QTableWidgetItem *session_item, bool show_assets, bool show_tests)
-{
-    // Query full session information
-    m_currentIdSession = m_listSessions_items.key(ui->tableSessions->item(session_item->row(),0));
-    m_currentSessionShowAssets = show_assets;
-    m_currentSessionShowTests = show_tests;
-
-    QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_currentIdSession));
-    queryDataRequest(WEB_SESSIONINFO_PATH, args);
-
-}
-
-void ParticipantWidget::showSessionEditor(TeraData *session_info)
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new BaseDialog(this);
-
-    //int id_session = m_listSessions_items.key(ui->tableSessions->item(session_item->row(),0));
-    //TeraData* ses_data = m_ids_sessions[id_session];
-    //if (ses_data){
-    session_info->setFieldValue("id_project", m_data->getFieldValue("id_project"));
-    SessionWidget* ses_widget = new SessionWidget(m_comManager, session_info, m_diag_editor);
-    ses_widget->alwaysShowAssets(m_allowFileTransfers);
-    if (m_currentSessionShowAssets)
-        ses_widget->showAssets();
-    if (m_currentSessionShowTests)
-        ses_widget->showTests();
-
-    m_diag_editor->setCentralWidget(ses_widget);
-
-    m_diag_editor->setWindowTitle(tr("Séance"));
-    //m_diag_editor->setMinimumSize(2*this->width()/3, 5*this->height()/6);
-    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
-
-    connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
-    connect(ses_widget, &SessionWidget::assetsCountChanged, this, &ParticipantWidget::sessionAssetsCountChanged);
-    connect(ses_widget, &SessionWidget::testsCountChanged, this, &ParticipantWidget::sessionTestsCountChanged);
-
-    m_diag_editor->open();
-    //}
-}
-
 bool ParticipantWidget::isProjectAdmin()
 {
     if (!m_comManager)
@@ -1347,112 +715,13 @@ bool ParticipantWidget::isProjectAdmin()
     return m_comManager->getCurrentUserProjectRole(m_data->getFieldValue("id_project").toInt()) == "admin";
 }
 
-void ParticipantWidget::currentTypeFiltersChanged(QListWidgetItem *changed)
-{
-    QList<int> ids;
-
-    for (int i=0; i<ui->lstFilters->count(); i++){
-        if (ui->lstFilters->item(i)->checkState() == Qt::Checked){
-            ids.append(ui->lstFilters->item(i)->data(Qt::UserRole).toInt());
-        }
-    }
-
-    ui->calMonth1->setFilters(ids);
-    ui->calMonth2->setFilters(ids);
-    ui->calMonth3->setFilters(ids);
-
-    if (!changed)
-        return;
-    // Update session tables
-    QString current_ses_type = changed->text();
-    for (int i=0; i<ui->tableSessions->rowCount(); i++){
-        if (ui->tableSessions->item(i,2)->text() == current_ses_type){
-            ui->tableSessions->setRowHidden(i, changed->checkState()==Qt::Unchecked);
-        }
-    }
-}
-
-void ParticipantWidget::updateCalendars(QDate left_date){
-    ui->calMonth1->setCurrentPage(left_date.year(),left_date.month());
-    ui->lblMonth1->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
-
-    left_date = left_date.addMonths(1);
-    ui->calMonth2->setCurrentPage(left_date.year(),left_date.month());
-    ui->lblMonth2->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
-
-    left_date = left_date.addMonths(1);
-    ui->calMonth3->setCurrentPage(left_date.year(),left_date.month());
-    ui->lblMonth3->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
-
-    // Check if we must enable the previous month button
-    QDate min_date = getMinimumSessionDate();
-
-    if (ui->calMonth1->yearShown()<=min_date.year() && ui->calMonth1->monthShown()<=min_date.month())
-        ui->btnPrevCal->setEnabled(false);
-    else
-        ui->btnPrevCal->setEnabled(true);
-
-}
-
-QDate ParticipantWidget::getMinimumSessionDate()
-{
-    QDate min_date = QDate::currentDate();
-    for (TeraData* session:qAsConst(m_ids_sessions)){
-        QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
-        if (session_date < min_date)
-            min_date = session_date;
-    }
-
-    return min_date;
-}
-
-QDate ParticipantWidget::getMaximumSessionDate()
-{
-    QDate max_date = QDate::currentDate();
-    for (TeraData* session:qAsConst(m_ids_sessions)){
-        QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
-        if (session_date > max_date)
-            max_date = session_date;
-    }
-
-    return max_date;
-}
-
-bool ParticipantWidget::eventFilter(QObject *o, QEvent *e)
-{
-    if( o == ui->tableSessions && e->type() == QEvent::KeyRelease )
-    {
-        QKeyEvent* key_event = dynamic_cast<QKeyEvent*>(e);
-        if (key_event){
-            if (key_event->key() == Qt::Key_Delete){
-                btnDeleteSession_clicked();
-            }
-        }
-    }
-
-     return QWidget::eventFilter(o,e);
-}
-
-
-
-void ParticipantWidget::displayNextMonth(){
-    QDate new_date;
-    new_date.setDate(ui->calMonth1->yearShown(), ui->calMonth1->monthShown(), 1);
-    new_date = new_date.addMonths(1);
-
-    updateCalendars(new_date);
-}
-
-void ParticipantWidget::displayPreviousMonth(){
-    QDate new_date;
-    new_date.setDate(ui->calMonth1->yearShown(), ui->calMonth1->monthShown(), 1);
-    new_date = new_date.addMonths(-1);
-
-    updateCalendars(new_date);
-}
-
 void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &id_session)
 {
+    if (!canStartNewSession(id_session_type)){
+        GlobalMessageBox msg;
+        msg.showError(tr("Impossible de démarrer cette séance"), tr("Impossible de démarrer cette séance."));
+        return;
+    }
 
     if (m_sessionLobby)
         m_sessionLobby->deleteLater();
@@ -1732,54 +1001,25 @@ void ParticipantWidget::on_btnNewSession_clicked()
     int id_session = 0;
 
     // Check if we have a recent session (started in the last hour) of the same type we might want to continue
-    foreach(TeraData* session, m_ids_sessions){
-        if (id_session_type == session->getFieldValue("id_session_type").toInt()){
-            int session_status = session->getFieldValue("session_status").toInt();
-            if (session_status == TeraSessionStatus::STATUS_INPROGRESS || session_status == TeraSessionStatus::STATUS_NOTSTARTED){
-                QDateTime session_start_time = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
-
-                if (session_start_time.date() == QDate::currentDate()){
-                    // Adds duration to have 1h since it was ended
-                    session_start_time = session_start_time.addSecs(session->getFieldValue("session_duration").toInt());
-                    // Allow for +/- 1h30 around the time of the session, in case of planned session
-                    if(qAbs(session_start_time.secsTo(QDateTime::currentDateTime())) <= 5400){
-                        GlobalMessageBox msg;
-                        QString status_msg = tr("existe déjà.");
-                        if (session_status == TeraSessionStatus::STATUS_INPROGRESS){
-                            status_msg = tr("a été réalisée récemment et n'a pas été terminée.");
-                        }
-                        if (session_status == TeraSessionStatus::STATUS_NOTSTARTED){
-                            status_msg = tr("a été planifiée.");
-                        }
-                        if (msg.showYesNo(tr("Reprendre une séance?"), tr("Un séance de ce type, ") + session->getFieldValue("session_name").toString() + ", "
-                                      + status_msg + tr("\n\nSouhaitez-vous continuer cette séance?")) == QMessageBox::Yes){
-                            id_session = session->getId();
-                        }
-                        break;
-                    }
-                }
-            }
+    const TeraData* session = ui->wdgSessions->hasResumableSession(id_session_type, QDate::currentDate());
+    if (session){
+        int session_status = session->getFieldValue("session_status").toInt();
+        GlobalMessageBox msg;
+        QString status_msg = tr("existe déjà.");
+        if (session_status == TeraSessionStatus::STATUS_INPROGRESS){
+            status_msg = tr("a été réalisée récemment et n'a pas été terminée.");
+        }
+        if (session_status == TeraSessionStatus::STATUS_NOTSTARTED){
+            status_msg = tr("a été planifiée.");
+        }
+        if (msg.showYesNo(tr("Reprendre une séance?"), tr("Un séance de ce type, ") + session->getFieldValue("session_name").toString() + ", "
+                      + status_msg + tr("\n\nSouhaitez-vous continuer cette séance?")) == QMessageBox::Yes){
+            id_session = session->getId(); // Will resume that session
         }
     }
+
+    // If id_session == 0, will start a new session. Otherwise, will resume that session with id_session
     showSessionLobby(id_session_type, id_session);
-}
-
-void ParticipantWidget::on_btnCheckSessionTypes_clicked()
-{
-    for (int i=0; i<ui->lstFilters->count(); i++){
-        ui->lstFilters->item(i)->setCheckState(Qt::Checked);
-    }
-    ui->btnUnchekSessionTypes->show();
-    ui->btnCheckSessionTypes->hide();
-}
-
-void ParticipantWidget::on_btnUnchekSessionTypes_clicked()
-{
-    for (int i=0; i<ui->lstFilters->count(); i++){
-        ui->lstFilters->item(i)->setCheckState(Qt::Unchecked);
-    }
-    ui->btnUnchekSessionTypes->hide();
-    ui->btnCheckSessionTypes->show();
 }
 
 void ParticipantWidget::on_btnViewLink_clicked()
@@ -1832,26 +1072,6 @@ void ParticipantWidget::on_cmbSessionType_currentIndexChanged(int index)
     ui->btnNewSession->setEnabled(can_start);
     ui->cmbSessionType->setVisible(can_start);
 
-    /*if (m_ids_session_types[id_session_type]->getFieldValue("session_type_online").toBool()){
-        if (m_data->getFieldValue("participant_login_enabled").toBool() || m_data->getFieldValue("participant_token_enabled").toBool()){
-            ui->btnNewSession->setEnabled(true);
-            ui->cmbSessionType->show();
-            ui->btnNewSession->setToolTip(tr("Démarrer une nouvelle séance"));
-            ui->lblInfos->setText("");
-        }else{
-            ui->btnNewSession->setEnabled(false);
-            ui->cmbSessionType->hide();
-            ui->btnNewSession->setToolTip(tr("Le participant n'a pas d'accès (web ou identification)."));
-            ui->lblInfos->setText(tr("Le participant n'a pas d'accès (web ou identification)."));
-            ui->lblInfos->show();
-        }
-    }else{
-        ui->btnNewSession->setEnabled(true);
-        ui->cmbSessionType->show();
-        ui->lblInfos->setText("");
-        ui->btnNewSession->setToolTip(tr("Démarrer une nouvelle séance"));
-    }*/
-
     // Session type related to a service: select the correct item in the link combo box to generate correct link
     if (m_ids_session_types[id_session_type]->hasFieldName("session_type_service_key")){
         QString service_key = m_ids_session_types[id_session_type]->getFieldValue("session_type_service_key").toString();
@@ -1865,11 +1085,6 @@ void ParticipantWidget::on_cmbSessionType_currentIndexChanged(int index)
 
 }
 
-void ParticipantWidget::on_btnFilterSessionsTypes_clicked()
-{
-    ui->frameFilterSessionTypes->setVisible(ui->btnFilterSessionsTypes->isChecked());
-}
-
 void ParticipantWidget::on_btnAddSession_clicked()
 {
     QDateTime session_datetime = QDateTime::currentDateTime();
@@ -1878,34 +1093,9 @@ void ParticipantWidget::on_btnAddSession_clicked()
     session_time.setHMS(session_datetime.time().addSecs(3600).hour(), minutes, 0);
     session_datetime.setTime(session_time);
 
-    newSessionRequest(session_datetime);
+    ui->wdgSessions->newSessionRequest(session_datetime);
 
 }
-
-
-void ParticipantWidget::on_tableSessions_itemDoubleClicked(QTableWidgetItem *item)
-{
-    displaySessionDetails(item);
-}
-
-
-void ParticipantWidget::on_btnAssetsBrowser_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new BaseDialog(this);
-
-    AssetsWidget* asset_widget = new AssetsWidget(m_comManager, m_diag_editor);
-    asset_widget->displayAssetsForParticipant(m_data->getId());
-    m_diag_editor->setCentralWidget(asset_widget);
-
-    m_diag_editor->setWindowTitle(tr("Explorateur de données"));
-    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
-
-    m_diag_editor->open();
-}
-
 
 void ParticipantWidget::on_tabNav_currentChanged(int index)
 {
@@ -1950,28 +1140,17 @@ void ParticipantWidget::on_lstDevices_itemDoubleClicked(QListWidgetItem *item)
     btnDelDevice_clicked();
 }
 
-
-void ParticipantWidget::on_btnTestsBrowser_clicked()
-{
-    if (m_diag_editor){
-        m_diag_editor->deleteLater();
-    }
-    m_diag_editor = new BaseDialog(this);
-
-    TestsWidget* test_widget = new TestsWidget(m_comManager, m_diag_editor);
-    test_widget->displayTestsForParticipant(m_data->getId());
-    m_diag_editor->setCentralWidget(test_widget);
-
-    m_diag_editor->setWindowTitle(tr("Explorateur d'évaluations"));
-    m_diag_editor->setMinimumSize(3*this->width()/4, 3*this->height()/4);
-
-    m_diag_editor->open();
-}
-
-
 void ParticipantWidget::on_btnQR_clicked()
 {
-    if (m_diag_editor){
+    if (m_diag_qr){
+        m_diag_qr->deleteLater();
+    }
+
+    m_diag_qr = new QRCodeDialog(ui->txtWeb->text(), this);
+    m_diag_qr->setContext(m_data->getName());
+    m_diag_qr->open();
+
+    /*if (m_diag_editor){
         m_diag_editor->deleteLater();
     }
     m_diag_editor = new BaseDialog(this);
@@ -1981,8 +1160,16 @@ void ParticipantWidget::on_btnQR_clicked()
     m_diag_editor->setCentralWidget(qr_widget);
 
     m_diag_editor->setWindowTitle(tr("Code QR du lien"));
-    m_diag_editor->setFixedSize(this->height()/2-40, this->height()/2);
+    m_diag_editor->setFixedSize(this->height()/2 - 40, this->height()/2);
 
-    m_diag_editor->open();
+    m_diag_editor->open();*/
+}
+
+
+void ParticipantWidget::on_tabInfosDetails_currentChanged(int index)
+{
+    if (ui->tabInfosDetails->currentWidget() == ui->tabLogins){
+        ui->wdgLogins->refreshData();
+    }
 }
 

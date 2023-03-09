@@ -69,10 +69,10 @@ private:
     EditorState     m_editState;
 
     // Common controls to toggle editing state
-    QPushButton*    m_editToggle;
+    QAbstractButton*    m_editToggle;
     QFrame*         m_frameSave;
-    QPushButton*    m_saveButton;
-    QPushButton*    m_cancelButton;
+    QAbstractButton*    m_saveButton;
+    QAbstractButton*    m_cancelButton;
     TeraForm*       m_mainForm;
 
 
@@ -86,7 +86,7 @@ protected:
     QComboBox*      buildRolesComboBox(const QMap<int, QString> &roles);
     QString         getRoleName(const QString& role);
 
-    virtual void setEditorControls(TeraForm* mainForm, QPushButton* editToggle, QFrame* frameSave, QPushButton* saveButton, QPushButton* cancelButton);
+    virtual void setEditorControls(TeraForm* mainForm, QAbstractButton* editToggle, QFrame* frameSave, QAbstractButton* saveButton, QAbstractButton* cancelButton);
 
 signals:
     void dataWasChanged();

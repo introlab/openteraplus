@@ -99,7 +99,6 @@ void UserGroupWidget::saveData(bool signal)
 void UserGroupWidget::setData(const TeraData *data)
 {
     DataEditorWidget::setData(data);
-
 }
 
 void UserGroupWidget::connectSignals()
@@ -111,6 +110,7 @@ void UserGroupWidget::connectSignals()
     connect(m_comManager, &ComManager::projectsReceived, this, &UserGroupWidget::processProjectsReply);
     connect(m_comManager, &ComManager::userUserGroupsReceived, this, &UserGroupWidget::processUserUserGroupsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserGroupWidget::processPostOKReply);
+    connect(m_comManager, &ComManager::deleteResultsOK, this, &UserGroupWidget::processDeleteReply);
 
     connect(ui->btnUpdateSitesRoles, &QPushButton::clicked, this, &UserGroupWidget::btnUpdateSiteAccess_clicked);
     connect(ui->btnUpdateProjectsRoles, &QPushButton::clicked, this, &UserGroupWidget::btnUpdateProjectAccess_clicked);
@@ -403,6 +403,15 @@ void UserGroupWidget::processPostOKReply(QString path)
            if (combo_roles){
                combo_roles->setProperty("original_index", combo_roles->currentIndex());
            }
+        }
+    }
+}
+
+void UserGroupWidget::processDeleteReply(QString path, int id)
+{
+    if(path == WEB_USERUSERGROUPINFO_PATH){
+        if (m_listUsersUserGroups_items.contains(id)){
+            m_listUsersUserGroups_items.remove(id);
         }
     }
 }

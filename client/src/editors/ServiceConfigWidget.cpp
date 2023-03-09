@@ -247,10 +247,15 @@ void ServiceConfigWidget::connectSignals()
 
 void ServiceConfigWidget::on_lstServiceConfig_itemClicked(QListWidgetItem *item)
 {
+    int id_service = m_listServices_items.key(item);
+    if (id_service == m_currentIdService)
+        return;
+
+    m_currentIdService = id_service;
+
     ui->cmbSpecific->clear();
     ui->frameSpecific->hide();
 
-    int id_service = m_listServices_items.key(item);
     m_gotServiceForm = false;
 
     // Query form for that service

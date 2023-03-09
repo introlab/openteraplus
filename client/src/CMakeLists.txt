@@ -46,28 +46,30 @@ set(headers
     dialogs/DeviceAssignDialog.h
     dialogs/CleanUpDialog.h
     dialogs/FileUploaderDialog.h
+    dialogs/QRCodeDialog.h
     # Editors
-    editors/DataEditorWidget.h
-    editors/UserWidget.h
-    editors/UserSummaryWidget.h
-    editors/TeraForm.h
+    editors/DataEditorWidget.h    
     editors/DataListWidget.h
-    editors/SiteWidget.h
+    editors/DeviceSubTypeWidget.h
+    editors/DeviceSummaryWidget.h
+    editors/DeviceTypeWidget.h
     editors/DeviceWidget.h
     editors/ProjectWidget.h
     editors/GroupWidget.h
     editors/ParticipantWidget.h
     editors/SessionTypeWidget.h
     editors/SessionWidget.h
-    editors/DeviceSubTypeWidget.h
-    editors/DeviceTypeWidget.h
-    editors/UserGroupWidget.h
     editors/ServiceWidget.h
     editors/ServiceConfigWidget.h
+    editors/SiteWidget.h
+    editors/TeraForm.h
     editors/TestTypeWidget.h
+    editors/UserGroupWidget.h
+    editors/UserSummaryWidget.h
+    editors/UserWidget.h
     # Wizards
-    wizards/UserWizard.h
     wizards/BaseWizard.h
+    wizards/UserWizard.h
     # Services
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
@@ -102,6 +104,8 @@ set(headers
     widgets/ResultMessageWidget.h
     widgets/TestsWidget.h
     widgets/QRWidget.h
+    widgets/LogViewWidget.h
+    widgets/SessionsListWidget.h
     # Kits
     kit/KitConfigDialog.h
     kit/KitConfigManager.h
@@ -146,25 +150,28 @@ set(srcs
     dialogs/PasswordStrengthDialog.cpp
     dialogs/CleanUpDialog.cpp
     dialogs/FileUploaderDialog.cpp
+     dialogs/QRCodeDialog.cpp
     # Editors
     editors/DataEditorWidget.cpp
-    editors/UserWidget.cpp
-    editors/UserSummaryWidget.cpp
-    editors/TeraForm.cpp
-    editors/DataListWidget.cpp
-    editors/SiteWidget.cpp
+    editors/DataListWidget.cpp    
     editors/DeviceWidget.cpp
-    editors/ProjectWidget.cpp
+    editors/DeviceSubTypeWidget.cpp
+    editors/DeviceSummaryWidget.cpp
+    editors/DeviceTypeWidget.cpp
     editors/GroupWidget.cpp
     editors/ParticipantWidget.cpp
+    editors/ProjectWidget.cpp
     editors/SessionTypeWidget.cpp
     editors/SessionWidget.cpp
-    editors/DeviceSubTypeWidget.cpp
-    editors/DeviceTypeWidget.cpp
-    editors/UserGroupWidget.cpp
     editors/ServiceWidget.cpp
     editors/ServiceConfigWidget.cpp
+    editors/SiteWidget.cpp
+    editors/TeraForm.cpp
     editors/TestTypeWidget.cpp
+    editors/UserGroupWidget.cpp
+    editors/UserSummaryWidget.cpp
+    editors/UserWidget.cpp
+
     # Wizards
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
@@ -200,7 +207,9 @@ set(srcs
     widgets/AssetsWidget.cpp
     widgets/ResultMessageWidget.cpp
     widgets/TestsWidget.cpp
-     widgets/QRWidget.cpp
+    widgets/QRWidget.cpp
+    widgets/LogViewWidget.cpp
+    widgets/SessionsListWidget.cpp
     # Kits
     kit/KitConfigDialog.cpp
     kit/KitConfigManager.cpp
@@ -226,24 +235,26 @@ SET(uis
     dialogs/PasswordStrengthDialog.ui
     dialogs/CleanUpDialog.ui
     dialogs/FileUploaderDialog.ui
+    dialogs/QRCodeDialog.ui
     # Editors
-    editors/UserWidget.ui
-    editors/UserSummaryWidget.ui
-    editors/TeraForm.ui
     editors/DataListWidget.ui
-    editors/SiteWidget.ui
+    editors/DeviceSubTypeWidget.ui
+    editors/DeviceSummaryWidget.ui
+    editors/DeviceTypeWidget.ui
     editors/DeviceWidget.ui
-    editors/ProjectWidget.ui
     editors/GroupWidget.ui
     editors/ParticipantWidget.ui
+    editors/ProjectWidget.ui    
     editors/SessionTypeWidget.ui
     editors/SessionWidget.ui
-    editors/DeviceSubTypeWidget.ui
-    editors/DeviceTypeWidget.ui
-    editors/UserGroupWidget.ui
     editors/ServiceWidget.ui
     editors/ServiceConfigWidget.ui
+    editors/SiteWidget.ui
+    editors/TeraForm.ui
     editors/TestTypeWidget.ui
+    editors/UserGroupWidget.ui
+    editors/UserSummaryWidget.ui
+    editors/UserWidget.ui
     # Services
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
@@ -262,6 +273,8 @@ SET(uis
     widgets/AssetsWidget.ui
     widgets/ResultMessageWidget.ui
     widgets/TestsWidget.ui
+    widgets/LogViewWidget.ui
+    widgets/SessionsListWidget.ui
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui

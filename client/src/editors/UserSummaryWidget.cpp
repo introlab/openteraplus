@@ -1,20 +1,27 @@
 #include "UserSummaryWidget.h"
 #include "ui_UserSummaryWidget.h"
 
+#include "dialogs/PasswordStrengthDialog.h"
+
 #include <QLocale>
 
-UserSummaryWidget::UserSummaryWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
+UserSummaryWidget::UserSummaryWidget(ComManager *comMan, const TeraData *data, const int &id_project, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::UserSummaryWidget)
 {
 
     m_diag_editor = nullptr;
     m_sessionLobby = nullptr;
+    m_passwordJustGenerated = false;
+    m_idProject = id_project;
 
     ui->setupUi(this);
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
     setLimited(true);
+
+    // Use base class to manage editing
+    setEditorControls(ui->wdgUser, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
 
     // Initialize user interface
     initUI();
@@ -22,8 +29,22 @@ UserSummaryWidget::UserSummaryWidget(ComManager *comMan, const TeraData *data, Q
     // Connect signals and slots
     connectSignals();
 
-    // Query sessions types
-    queryDataRequest(WEB_SESSIONTYPE_PATH);
+    // Query form definition
+    QUrlQuery args(WEB_FORMS_QUERY_USER);
+    if (!dataIsNew())
+        args.addQueryItem(WEB_QUERY_ID, QString::number(m_data->getId()));
+
+    queryDataRequest(WEB_FORMS_PATH, args);
+
+    // Query sites related to that user (to check for edit access)
+    args.clear();
+    args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
+    queryDataRequest(WEB_SITEACCESS_PATH, args);
+
+    // Query stats
+    queryDataRequest(WEB_STATS_PATH, args); // args already contains id_user
+
+    ui->wdgUser->setComManager(m_comManager);
 }
 
 UserSummaryWidget::~UserSummaryWidget()
@@ -36,28 +57,30 @@ UserSummaryWidget::~UserSummaryWidget()
 
 void UserSummaryWidget::connectSignals()
 {
+    connect(m_comManager, &ComManager::formReceived, this, &UserSummaryWidget::processFormsReply);
     connect(m_comManager, &ComManager::sessionTypesReceived, this, &UserSummaryWidget::processSessionTypesReply);
+    connect(m_comManager, &ComManager::siteAccessReceived, this, &UserSummaryWidget::processSiteAccessReply);
+    connect(m_comManager, &ComManager::statsReceived, this, &UserSummaryWidget::processStatsReply);
 
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::userEventReceived, this, &UserSummaryWidget::ws_userEvent);
+
+    connect(ui->wdgUser,  &TeraForm::widgetValueHasChanged, this, &UserSummaryWidget::userFormValueChanged);
+    connect(ui->wdgUser,  &TeraForm::widgetValueHasFocus, this, &UserSummaryWidget::userFormValueHasFocus);
+
+    connect(ui->wdgSessions, &SessionsListWidget::sessionsCountUpdated, this, &UserSummaryWidget::sessionTotalCountUpdated);
 
 }
 
 void UserSummaryWidget::updateControlsState()
 {
-    ui->btnEditUser->setVisible(!m_limited);
+    ui->frameEdit->setVisible(!m_limited);
+    ui->wdgSessions->enableDeletion(!m_limited);
 }
 
 void UserSummaryWidget::updateFieldsValue()
 {
     if (m_data){
         ui->lblTitle->setText(m_data->getName());
-        QString email = m_data->getFieldValue("user_email").toString();
-        if (email.isEmpty())
-            email = tr("N/D");
-        ui->lblEmailValue->setText(email);
-        ui->lblFullNameValue->setText(m_data->getName());
-        ui->lblLastOnlineValue->setText(m_data->getFieldValue("user_lastonline").toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
-        ui->chkEnabled->setChecked(m_data->isEnabled());
 
         // Status
         ui->icoOnline->setVisible(m_data->isEnabled());
@@ -74,27 +97,86 @@ void UserSummaryWidget::updateFieldsValue()
 
         if (m_data->hasBusyStateField())
             ui->btnNewSession->setEnabled(!m_data->isBusy());
+
+        if (ui->wdgUser->formHasStructure())
+            ui->wdgUser->fillFormFromData(m_data->toJson());
     }
 }
 
 void UserSummaryWidget::initUI()
 {
-    ui->btnEditUser->hide(); // For now
+    ui->wdgSessions->setComManager(m_comManager);
+    ui->wdgSessions->setViewMode(SessionsListWidget::VIEW_USER_SESSIONS, m_data->getUuid(), m_data->getId());
 
     ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate(ui->cmbSessionType));
+    ui->wdgUser->hideFields({"user_username", "user_notes", "user_superadmin"});
+
+    ui->tabNav->setCurrentIndex(0);
+
+    // Access log widget init
+    ui->wdgLogins->setComManager(m_comManager);
+    ui->wdgLogins->setViewMode(LogViewWidget::VIEW_LOGINS_USER, m_data->getUuid());
+    ui->wdgLogins->setUuidName(m_data->getUuid(), m_data->getName());
 }
 
 bool UserSummaryWidget::validateData()
 {
-    bool valid = false;
+    return ui->wdgUser->validateFormData();
+}
 
-    return valid;
+void UserSummaryWidget::processFormsReply(QString form_type, QString data)
+{
+    if (form_type.startsWith(WEB_FORMS_QUERY_USER)){
+        if (!ui->wdgUser->formHasStructure()){
+            ui->wdgUser->buildUiFromStructure(data);
+            if (m_data){
+                if (m_data->getId() == m_comManager->getCurrentUser().getId()){
+                    // Editing self - disable "enable" button
+                    ui->wdgUser->hideField("user_enabled");
+                }
+            }
+        }
+        return;
+    }
+}
+
+void UserSummaryWidget::processSiteAccessReply(QList<TeraData> access_list, QUrlQuery reply_query)
+{
+    // Check if the current logged user is admin in at least one of the user site
+    bool is_admin = false;
+    for(const TeraData &access: access_list){
+        if(m_comManager->isCurrentUserSiteAdmin(access.getFieldValue("id_site").toInt())){
+            is_admin = true;
+            break;
+        }
+    }
+
+    setLimited(!is_admin);
 }
 
 void UserSummaryWidget::saveData(bool signal)
 {
-    Q_UNUSED(signal)
-    return; // Nothing to save here!
+    QJsonDocument user_data = ui->wdgUser->getFormDataJson(m_data->isNew());
+
+    if (*m_data == m_comManager->getCurrentUser()){
+        m_currentUserPasswordChanged = ui->wdgUser->getFieldDirty("user_password");
+    }else{
+        m_currentUserPasswordChanged = false;
+    }
+
+    //qDebug() << user_data.toJson();
+    postDataRequest(WEB_USERINFO_PATH, user_data.toJson());
+
+
+    if (signal){
+        TeraData* new_data = ui->wdgUser->getFormDataObject(TERADATA_USER);
+        new_data->setName(new_data->getFieldValue("user_firstname").toString() + " " + new_data->getFieldValue("user_lastname").toString());
+        *m_data = *new_data;
+        delete new_data;
+        if (!m_currentUserPasswordChanged)
+            // If current password was changed, we will process it in the user replies
+            emit dataWasChanged();
+    }
 }
 
 void UserSummaryWidget::processSessionTypesReply(QList<TeraData> session_types)
@@ -111,6 +193,97 @@ void UserSummaryWidget::processSessionTypesReply(QList<TeraData> session_types)
         }
     }
 
+    // Query sessions
+    ui->wdgSessions->setSessionTypes(session_types);
+
+}
+
+void UserSummaryWidget::processUsersReply(QList<TeraData> users)
+{
+    for (int i=0; i<users.count(); i++){
+        if (users.at(i) == *m_data){
+            // Update password if it was changed
+            if (m_currentUserPasswordChanged){
+                m_comManager->setCredentials(m_data->getFieldValue("user_username").toString(),
+                                             ui->wdgUser->getFieldValue("user_password").toString());
+                m_currentUserPasswordChanged = false;
+                emit dataWasChanged();
+            }
+            // We found "ourself" in the list - update data.
+            //*m_data = users.at(i);
+            m_data->updateFrom(users.at(i));
+            updateFieldsValue();
+            break;
+        }
+    }
+}
+
+void UserSummaryWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
+{
+
+    // Check if stats are for us
+    if (!reply_query.hasQueryItem("id_user"))
+        return;
+
+    if (reply_query.queryItemValue("id_user").toInt() != m_data->getId())
+        return;
+
+    // Fill stats information
+    int total_sessions = stats.getFieldValue("sessions_total_count").toInt();
+    ui->wdgSessions->setSessionsCount(total_sessions);
+
+    // Query sessions types
+    QUrlQuery args;
+   /* if (m_idProject > 0)
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));*/
+    queryDataRequest(WEB_SESSIONTYPE_PATH, args);
+}
+
+void UserSummaryWidget::userFormValueChanged(QWidget *widget, QVariant value)
+{
+    if (widget == ui->wdgUser->getWidgetForField("user_password")){
+        QString current_pass = value.toString();
+        if (!current_pass.isEmpty() && !m_passwordJustGenerated){
+            // Show password dialog
+            PasswordStrengthDialog dlg(current_pass);
+
+            if (dlg.exec() == QDialog::Accepted){
+                m_passwordJustGenerated = true;
+                ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
+            }else{
+                ui->wdgUser->setFieldValue("user_password", "");
+            }
+
+        }else{
+            if (m_passwordJustGenerated)
+                m_passwordJustGenerated = false;
+        }
+    }
+}
+
+void UserSummaryWidget::userFormValueHasFocus(QWidget *widget)
+{
+    if (widget == ui->wdgUser->getWidgetForField("user_password")){
+        if (!m_passwordJustGenerated){
+            // Show password dialog
+            QString current_pass = ui->wdgUser->getFieldValue("user_password").toString();
+            PasswordStrengthDialog dlg(current_pass);
+            //QLineEdit* wdg_editor = dynamic_cast<QLineEdit*>(ui->wdgUser->getWidgetForField("user_password"));
+            //dlg.setCursorPosition(wdg_editor->cursorPosition());
+
+            if (dlg.exec() == QDialog::Accepted){
+                m_passwordJustGenerated = true;
+                ui->wdgUser->setFieldValue("user_password", dlg.getCurrentPassword());
+            }else{
+                ui->wdgUser->setFieldValue("user_password", "");
+                //wdg_editor->undo();
+            }
+
+        }else{
+            if (m_passwordJustGenerated)
+                m_passwordJustGenerated = false;
+        }
+    }
 }
 
 void UserSummaryWidget::ws_userEvent(UserEvent event)
@@ -183,3 +356,17 @@ void UserSummaryWidget::on_btnNewSession_clicked()
     // Show Session Lobby
     m_sessionLobby->exec();
 }
+
+void UserSummaryWidget::on_tabNav_currentChanged(int index)
+{
+    Q_UNUSED(index)
+    if (ui->tabNav->currentWidget() == ui->tabLogs){
+        ui->wdgLogins->refreshData();
+    }
+}
+
+void UserSummaryWidget::sessionTotalCountUpdated(int new_count)
+{
+    ui->grpSessions->setTitle(tr("Séances") + " ( " + QString::number(new_count) + " )");
+}
+

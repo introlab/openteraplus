@@ -22,7 +22,14 @@ ConfigWidget::ConfigWidget(ComManager *comMan, QWidget *parent) :
     connectSignals();
 
     ui->lstSections->setCurrentRow(0);
+    ui->tabSectionsWidget->setCurrentIndex(0);
     ui->lstSections->setItemDelegate(new IconMenuDelegate(ui->lstSections->gridSize().height(), this));
+
+    // Logs
+    ui->logsWdg->setComManager(comMan);
+    ui->logsWdg->setViewMode(LogViewWidget::VIEW_LOGS_ALL);
+    ui->loginsWdg->setComManager(comMan);
+    ui->loginsWdg->setViewMode(LogViewWidget::VIEW_LOGINS_ALL);
 
 }
 
@@ -39,7 +46,7 @@ void ConfigWidget::addSection(const QString &name, const QIcon &icon, const int 
     tmp->setText(name);
     tmp->setTextAlignment(Qt::AlignCenter);
     tmp->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    tmp->setSizeHint(QSize(ui->lstSections->width(), 64));
+    //tmp->setSizeHint(QSize(ui->lstSections->width(), 64));
     tmp->setToolTip(name);
     tmp->setData(Qt::UserRole, id);
 }
@@ -57,7 +64,6 @@ void ConfigWidget::setupSections()
     if (m_comManager->isCurrentUserSuperAdmin()){
         addSection(tr("Services"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE)), TERADATA_SERVICE);
     }
-
 
     //ui->lstSections->setItemSelected(ui->lstSections->item(0),true);
     //ui->lstSections->item(0)->setSelected(true);
@@ -106,3 +112,15 @@ void ConfigWidget::connectSignals()
 
     //connect(ui->btnClose, &QPushButton::clicked, this, &ConfigWidget::closeRequest);
 }
+
+void ConfigWidget::on_tabSectionsWidget_currentChanged(int index)
+{
+    if (ui->tabSectionsWidget->currentWidget() == ui->tabLogs){
+        ui->logsWdg->refreshData();
+    }
+
+    if (ui->tabSectionsWidget->currentWidget() == ui->tabLogins){
+        ui->loginsWdg->refreshData();
+    }
+}
+

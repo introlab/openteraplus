@@ -104,71 +104,6 @@ void GroupWidget::updateFieldsValue(){
 
     }
 }
-/*
-void GroupWidget::updateParticipant(TeraData *participant)
-{
-    int id_participant = participant->getId();
-    QTableWidgetItem* item;
-    if (m_listParticipants_items.contains(id_participant)){
-        item = m_listParticipants_items[id_participant];
-
-    }else{
-        ui->tableParticipants->setRowCount(ui->tableParticipants->rowCount()+1);
-        item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)),"");
-        ui->tableParticipants->setItem(ui->tableParticipants->rowCount()-1, 0, item);
-        m_listParticipants_items[id_participant] = item;
-
-        QTableWidgetItem* item2 = new QTableWidgetItem("");
-        item2->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        ui->tableParticipants->setItem(ui->tableParticipants->rowCount()-1, 1, item2);
-        item2 = new QTableWidgetItem("");
-        item2->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        ui->tableParticipants->setItem(ui->tableParticipants->rowCount()-1, 2, item2);
-        item2 = new QTableWidgetItem("");
-        item2->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        ui->tableParticipants->setItem(ui->tableParticipants->rowCount()-1, 3, item2);
-    }
-
-    // Update values
-    item->setText(participant->getName());
-    if (participant->isEnabled()){
-       ui->tableParticipants->item(item->row(), 1)->setText(tr("Actif"));
-       ui->tableParticipants->item(item->row(), 1)->setForeground(Qt::green);
-    }else{
-       ui->tableParticipants->item(item->row(), 1)->setText(tr("Inactif"));
-       ui->tableParticipants->item(item->row(), 1)->setForeground(Qt::red);
-    }
-    QString date_val_str = tr("Aucune connexion");
-    if (participant->hasFieldName("participant_lastonline")){
-        if (!participant->getFieldValue("participant_lastonline").isNull()){
-            date_val_str = participant->getFieldValue("participant_lastonline").toDateTime().toLocalTime().toString("dd MMMM yyyy - hh:mm");
-        }
-    }
-    ui->tableParticipants->item(item->row(), 2)->setText(date_val_str);
-    date_val_str = tr("Aucune séance");
-    if (participant->hasFieldName("participant_lastsession")){
-        if (!participant->getFieldValue("participant_lastsession").isNull()){
-            QDateTime date_val = participant->getFieldValue("participant_lastsession").toDateTime().toLocalTime();
-            date_val_str = date_val.toString("dd MMMM yyyy - hh:mm");
-            if (participant->isEnabled()){
-                // Set background color for last session date
-                QColor back_color = TeraForm::getGradientColor(0, 3, 7, static_cast<int>(date_val.daysTo(QDateTime::currentDateTime())));
-                back_color.setAlphaF(0.5);
-                ui->tableParticipants->item(item->row(), 3)->setBackground(back_color);
-            }
-        }
-    }
-    ui->tableParticipants->item(item->row(), 3)->setText(date_val_str);
-}*/
-/*
-void GroupWidget::updateStats()
-{
-
-
-    ui->lblParticipant->setText(QString::number(ui->tableParticipants->rowCount()) + tr(" participant(s)"));
-
-
-}*/
 
 void GroupWidget::setData(const TeraData *data)
 {
@@ -195,8 +130,10 @@ bool GroupWidget::canStartSession()
         return false;
     }
 
-    if (m_activeParticipants.count() > MAX_INVITEES_IN_SESSION){
-        ui->lblInfos->setText(tr("Trop de participants actifs dans ce groupe"));
+    if (m_activeParticipants.count() + 1 > MAX_INVITEES_IN_SESSION){ // +1 since including the current user!
+        int max_participants = int(MAX_INVITEES_IN_SESSION) - 1;
+        ui->lblInfos->setText(tr("Trop de participants actifs dans ce groupe pour démarrer une séance (max ") +
+                              QString::number(max_participants) + " " + tr("participants") + ")");
         return false;
     }
 

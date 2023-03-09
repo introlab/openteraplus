@@ -455,6 +455,32 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabLogins">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/password.png</normaloff>:/icons/password.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Journal d'accès</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="LogViewWidget" name="wdgLogins" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -464,6 +490,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <class>TeraForm</class>
    <extends>QWidget</extends>
    <header>TeraForm.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LogViewWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/LogViewWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

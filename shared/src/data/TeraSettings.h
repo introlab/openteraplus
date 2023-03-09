@@ -3,6 +3,7 @@
 
 #include <QSettings>
 
+#define SETTINGS_UI_ADVANCEDVIEW                "ui_advancedView"
 #define SETTINGS_UI_FILTERINACTIVE              "ui_filterInactives"
 #define SETTINGS_UI_ONLINEFILTERPARTICIPANTS    "ui_filterOnlineParticipants"
 #define SETTINGS_UI_ONLINEFILTERUSERS           "ui_filterOnlineUsers"
@@ -10,6 +11,7 @@
 #define SETTINGS_LASTSITEID                     "lastSiteId"
 #define SETTINGS_LASTSESSIONTYPEID              "lastSessionTypeId"
 #define SETTINGS_LASTLANGUAGE                   "lastLanguage"
+#define SETTINGS_DATA_SAVEPATH                  "dataSavePath"
 
 class TeraSettings
 {

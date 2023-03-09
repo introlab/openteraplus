@@ -32,13 +32,14 @@ private slots:
     void com_Waiting(bool waiting);
     void com_NetworkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation op);
 
+    void on_tabSectionsWidget_currentChanged(int index);
+
 private:
 
     Ui::ConfigWidget *ui;
 
     ComManager*         m_comManager;
     DataListWidget*     m_dataListEditor;
-
 
     void connectSignals();
 

@@ -15,16 +15,16 @@ public:
 
     virtual bool handleJoinSessionEvent(const JoinSessionEvent &event);
 
+    virtual void setDataSavePath();
+
     static QStringList getHandledServiceKeys();
     static QList<TeraSessionCategory::SessionTypeCategories> getHandledSessionCategories();
 
 protected:
     ComManager*     m_comManager;
-
     TeraData*       m_session;
 
 signals:
-
     void widgetIsReady(bool ready_state);
 };
 

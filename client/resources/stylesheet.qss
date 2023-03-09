@@ -121,7 +121,7 @@ QGroupBox {
     border-color: gray;
     margin-top: 27px;
     font-size: 12px;
-        font-weight: bold;
+    font-weight: bold;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
 }
@@ -131,9 +131,11 @@ QGroupBox::title {
     subcontrol-position: top left;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    padding: 5px 150px;
+    padding: 5px; /* 150px;*/
     background-color: #FF17365D;
     color: rgb(255, 255, 255);
+    text-align: center;
+    min-width: 250px;
 }
 
 /*
@@ -145,10 +147,17 @@ QToolBox{
 }
 
 QToolBox::tab {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,5,45,50%), stop: 0.2 rgba(0,64,128,50%), stop:1 rgba(0,5,45,50%));
+    /*background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,5,45,50%), stop: 0.2 rgba(0,64,128,50%), stop:1 rgba(0,5,45,50%));
     border-radius: 5px;
-    color: darkgray;
+    color: darkgray;*/
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 5px;
+    background-color: #FF17365D;
+    color: rgb(255, 255, 255);
     height: 40px;
+    font-size: 12px;
+    text-align: center;
 }
 
 QToolBox::tab:selected {
@@ -157,9 +166,19 @@ QToolBox::tab:selected {
 }
 
 QToolBox::tab:!selected {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,64,128,50%), stop: 0.2 rgba(0,5,45,50%), stop:1 rgba(0,64,128,50%));
+    /*background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0,64,128,50%), stop: 0.2 rgba(0,5,45,50%), stop:1 rgba(0,64,128,50%));*/
+    background-color: rgba(0,64,128,50%);
     color: white;
 }
+
+/*QToolBox::tab:only-one {
+    background-color: transparent;
+    color: transparent;
+    height: 0px;
+    icon-size: 0px;
+    margin: 0px;
+    padding: 0px;
+}*/
 
 /*
     QDialog.
@@ -183,7 +202,7 @@ QLabel {
 */
 QTreeWidget, QTableWidget{
     selection-background-color: rgba(255,255,255,50%);/*rgba(0,5,45,50%)*/;
-    selection-color: lightblue;
+    selection-color: black/*lightblue*/;
 }
 
 QTreeWidget#treeNavigator {
@@ -617,13 +636,13 @@ QToolButton#btnVideo:!checked, QToolButton#btnLog:!checked, QToolButton#btnFilte
     border-radius: 5px;
 }
 
-QToolButton#btnLog:!checked, QToolButton#btnInSessionInfos:!checked{
+QToolButton#btnLog:!checked, QToolButton#btnInSessionInfos:!checked, QToolButton#btnPause:!checked{
     color:white;
     background-color: transparent;
     border: 0px;
 }
 
-QToolButton#btnVideo:checked, QToolButton#btnLog:checked, QToolButton#btnInSessionInfos:checked, QToolButton#btnSearch:checked, QToolButton#btnFilterActive:checked{
+QToolButton#btnVideo:checked, QToolButton#btnLog:checked, QToolButton#btnInSessionInfos:checked, QToolButton#btnSearch:checked, QToolButton#btnFilterActive:checked, QToolButton#btnPause:checked{
     color:black;
     background-color: gray;
     /*border: 2px solid white;*/
@@ -796,3 +815,8 @@ QTreeWidget#treeAssets {
     selection-color: lightblue;
 }
 
+/* Customizations for InSessionWidget */
+QPushButton#btnDefaultPath, QPushButton#btnBrowseSavePath{
+        max-width: 80px;
+        min-width: 80px;
+}

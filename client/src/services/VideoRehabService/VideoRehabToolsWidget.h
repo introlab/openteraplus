@@ -18,15 +18,18 @@ public:
     explicit VideoRehabToolsWidget(ComManager* comMan, BaseServiceWidget *baseWidget, QWidget *parent = nullptr);
     ~VideoRehabToolsWidget();
 
-    bool sessionCanBeEnded() override;
+    bool sessionCanBeEnded(const bool &displayConfirmation = true) override;
 
 public slots:
     void setReadyState(bool ready_state) override;
 
 private slots:
     void on_btnReconnect_clicked();
-
     void on_btnRecord_clicked();
+    void on_btnPause_clicked();
+
+public slots:
+    void setFileDownloading(bool downloading);
 
 private:
     void setupTools();
@@ -35,6 +38,7 @@ private:
 
     bool m_isRecording;
     bool m_recordWarningShown;
+    bool m_isDownloading = false;
 
 
 };

@@ -32,6 +32,7 @@ private:
 
     QString m_idFieldName;
     int     m_idFieldValue;
+    int     m_currentIdService = -1;
     QMap<int, QListWidgetItem*>     m_listServices_items;
     bool    m_gotServiceForm;
     //QMap<int, TeraData>             m_servicesIdsData;

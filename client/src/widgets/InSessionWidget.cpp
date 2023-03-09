@@ -2,6 +2,9 @@
 #include "widgets/SessionInviteWidget.h"
 #include "ui_InSessionWidget.h"
 
+#include "TeraSettings.h"
+#include <QStandardPaths>
+#include <QFileDialog>
 
 InSessionWidget::InSessionWidget(ComManager *comMan, const TeraData* session_type, const int id_session, const int id_project, JoinSessionEvent* initial_event, QWidget *parent) :
     QWidget(parent),
@@ -72,6 +75,14 @@ void InSessionWidget::setPendingEvent(JoinSessionEvent *event)
     }else{
         m_pendingEvent = nullptr;
     }
+}
+
+bool InSessionWidget::sessionCanBeEnded()
+{
+    if (m_serviceToolsWidget){
+        return m_serviceToolsWidget->sessionCanBeEnded(false);
+    }
+    return true;
 }
 
 void InSessionWidget::showEvent(QShowEvent *event)
@@ -227,14 +238,13 @@ void InSessionWidget::setReadyState(bool state)
 
 void InSessionWidget::on_btnEndSession_clicked()
 {
-    if (m_serviceToolsWidget){
-        if (!m_serviceToolsWidget->sessionCanBeEnded()){
-            return;
-        }
-    }
-
     GlobalMessageBox msg_box;
     if (msg_box.showYesNo(tr("Terminer la séance?"), tr("Mettre fin à la séance?")) == QMessageBox::Yes){
+        if (m_serviceToolsWidget){
+            if (!m_serviceToolsWidget->sessionCanBeEnded()){
+                return;
+            }
+        }
         int id_service = 0;
         if (getSessionTypeCategory() == TeraSessionCategory::SESSION_TYPE_SERVICE){
             id_service = m_sessionType.getFieldValue("id_service").toInt();
@@ -454,9 +464,10 @@ void InSessionWidget::initUI()
     //ui->wdgInvitees->showAvailableInvitees(true);
 
     ui->btnInSessionInfos->setChecked(true);
-    //ui->tabInfos->hide();
+    ui->tabInfos->setCurrentIndex(0);
 
     ui->btnEndSession->hide();
+    ui->grpSavePath->hide();
 
     // Clean up, if needed
     if (m_serviceWidget){
@@ -477,7 +488,23 @@ void InSessionWidget::initUI()
             m_serviceWidget = new VideoRehabWidget(m_comManager, this);
             setMainWidget(m_serviceWidget);
             m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
-            setToolsWidget(m_serviceToolsWidget);           
+            setToolsWidget(m_serviceToolsWidget);
+            connect(dynamic_cast<VideoRehabWidget*>(m_serviceWidget), &VideoRehabWidget::fileDownloading,
+                    dynamic_cast<VideoRehabToolsWidget*>(m_serviceToolsWidget), &VideoRehabToolsWidget::setFileDownloading);
+
+            QString service_config = m_sessionType.getFieldValue("session_type_config").toString();
+            QJsonDocument doc = QJsonDocument::fromJson(service_config.toUtf8());
+            if (!doc.isNull()){
+                if (doc.object().contains("session_recordable")){
+                    if (doc.object()["session_recordable"].toBool()){
+                        QString path = TeraSettings::getUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_DATA_SAVEPATH).toString();
+                        ui->txtSavePath->setText(path);
+                        ui->grpSavePath->show();
+                    }else{
+                        ui->grpSavePath->hide();
+                    }
+                }
+            }
             handled = true;
         }
 
@@ -490,16 +517,6 @@ void InSessionWidget::initUI()
             setToolsWidget(m_serviceToolsWidget);
             handled = true;
         }
-
-        //SB - Even more lazy programmer reusing VideoRehabService widget!
-        /*if (service_key == "DanceService") {
-            // Main widget = QWebEngine
-            m_serviceWidget = new VideoRehabWidget(m_comManager, this);
-            setMainWidget(m_serviceWidget);
-            m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
-            setToolsWidget(m_serviceToolsWidget);
-            handled = true;
-        }*/
 
         if (!handled){
             GlobalMessageBox msg_box;
@@ -610,3 +627,37 @@ void InSessionWidget::on_btnLeaveSession_clicked()
         }
     }
 }
+
+void InSessionWidget::on_btnDefaultPath_clicked()
+{
+    QStringList documents_path = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    QString download_path = "";
+    if (!documents_path.empty())
+        download_path = documents_path.first();
+    download_path += "/OpenTeraPlus/downloads/";
+    // Save path as default
+    TeraSettings::setUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_DATA_SAVEPATH, download_path);
+
+    ui->txtSavePath->setText(download_path);
+
+    if (m_serviceWidget)
+        m_serviceWidget->setDataSavePath();
+}
+
+
+void InSessionWidget::on_btnBrowseSavePath_clicked()
+{
+    QFileDialog diag;
+    QString full_path = diag.getExistingDirectory(this, tr("Répertoire où les données seront enregistrées"));
+
+    if (!full_path.isEmpty()){
+        TeraSettings::setUserSetting(m_comManager->getCurrentUser().getUuid(), SETTINGS_DATA_SAVEPATH, full_path);
+
+        ui->txtSavePath->setText(full_path);
+
+        if (m_serviceWidget)
+            m_serviceWidget->setDataSavePath();
+    }
+
+}
+

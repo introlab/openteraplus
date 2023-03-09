@@ -11,11 +11,8 @@
 #include "VideoRehabWebPage.h"
 
 #include "Utils.h"
-
 #include "VirtualCameraThread.h"
-
 #include "JoinSessionEvent.pb.h"
-
 
 namespace Ui {
 class VideoRehabWidget;
@@ -37,6 +34,9 @@ public:
 
     void startRecording();
     void stopRecording();
+    void pauseRecording();
+
+    void setDataSavePath() override; // Will update download path based on the user settings
 
 private slots:
     void on_txtURL_returnPressed();
@@ -72,6 +72,9 @@ private:
     VideoRehabWebPage*      m_webPage;
     QMovie*                 m_loadingIcon;
     VirtualCameraThread*    m_virtualCamThread;
+
+ signals:
+    void fileDownloading(bool downloading);
 };
 
 #endif // VIDEOREHABWIDGET_H

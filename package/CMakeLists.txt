@@ -21,6 +21,7 @@ if (APPLE)
     set(CPACK_DMG_BACKGROUND_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/../client/resources/logos/LogoOpenTeraPlus.png)
     set(CPACK_DMG_FORMAT UDZO)
     set(CPACK_MONOLITHIC_INSTALL 1)
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 #    add_custom_target(mac_deploy_qt
 #        COMMAND ${qt5_install_prefix}/bin/macdeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/../.." -always-overwrite -codesign=""
@@ -28,7 +29,7 @@ if (APPLE)
 #        DEPENDS OpenTeraPlus
 #    )
 
-    set(MACSIGNID "S636XF5A8U")
+    set(MACSIGNID "")
     set(MACQTDEPLOY_COMMAND "${qt5_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:OpenTeraPlus>/../.. -always-overwrite -verbose=1")
 
     # message(STATUS "********** ${MACQTDEPLOY_COMMAND}")

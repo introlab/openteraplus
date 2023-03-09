@@ -12,7 +12,8 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
 
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
-    ui->tabNav->setCurrentIndex(0);
+    // Initialize User Interface
+    initUI();
 
     // Use base class to manage editing
     setEditorControls(ui->wdgDevice, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
@@ -23,8 +24,8 @@ DeviceWidget::DeviceWidget(ComManager *comMan, const TeraData *data, QWidget *pa
     // Query forms definition
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_DEVICE));
 
-    ui->wdgDevice->setHighlightConditions(false);
-    ui->wdgDevice->setComManager(m_comManager);
+    // Query device access to sites and projects
+    queryDeviceAccess();
 
     setData(data);
 
@@ -105,6 +106,24 @@ void DeviceWidget::updateControlsState()
            }
            queryDataRequest(WEB_SITEINFO_PATH, args);
        }
+   }else{
+       if (ui->tabNav->indexOf(ui->tabLogins) < 0){
+           // Check if current user is project admin in at least a project of that device
+           bool has_project_admin_access = m_comManager->isCurrentUserSuperAdmin();
+           if (!has_project_admin_access){
+               // Check if we are admin in a list one site
+               for(int id_project:qAsConst(m_devicesProjects)){
+                   if (m_comManager->isCurrentUserProjectAdmin(id_project)){
+                       has_project_admin_access = true;
+                       break;
+                   }
+               }
+           }
+
+           if (has_project_admin_access && !dataIsNew()){
+               ui->tabNav->addTab(ui->tabLogins, QIcon(":/icons/password.png"), tr("Journal d'accès"));
+           }
+       }
    }
 }
 
@@ -174,6 +193,20 @@ void DeviceWidget::connectSignals()
     connect(ui->btnSites, &QPushButton::clicked, this, &DeviceWidget::btnSaveSites_clicked);
 
     connect(ui->treeSites, &QTreeWidget::itemChanged, this, &DeviceWidget::lstSites_itemChanged);
+}
+
+void DeviceWidget::initUI()
+{
+    ui->tabNav->setCurrentIndex(0);
+    ui->wdgDevice->setHighlightConditions(false);
+    ui->wdgDevice->setComManager(m_comManager);
+
+    // Configure log view
+    ui->tabNav->removeTab(ui->tabNav->indexOf(ui->tabLogins)); // Remove logs tab for now, will be readded if access is sufficient
+
+    ui->wdgLogins->setComManager(m_comManager);
+    ui->wdgLogins->setViewMode(LogViewWidget::VIEW_LOGINS_DEVICE, m_data->getUuid());
+    ui->wdgLogins->setUuidName(m_data->getUuid(), m_data->getName());
 }
 
 void DeviceWidget::updateSite(TeraData *site)
@@ -246,6 +279,8 @@ void DeviceWidget::updateDeviceProject(TeraData *device_project)
     int device_id = device_project->getFieldValue("id_device").toInt();
     if (device_id > 0){
         item->setCheckState(0, Qt::Checked);
+        if (!m_devicesProjects.contains(id_project))
+            m_devicesProjects.append(id_project);
     }else{
         item->setCheckState(0, Qt::Unchecked);
     }
@@ -271,6 +306,10 @@ void DeviceWidget::updateDeviceSite(TeraData *device_site)
     if (!site_name.isEmpty())
         item->setText(0, site_name);
 
+    if (device_site->getId() > 0){
+        if (!m_deviceSites.contains(id_site))
+            m_deviceSites.append(id_site);
+    }
     if (m_comManager->isCurrentUserSuperAdmin()){
         if (device_site->getId() > 0){
             item->setCheckState(0, Qt::Checked);
@@ -372,6 +411,14 @@ QJsonArray DeviceWidget::getSelectedSitesAsJsonArray()
         }
     }
     return sites;
+}
+
+void DeviceWidget::queryDeviceAccess()
+{
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
+    args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+    queryDataRequest(WEB_DEVICESITEINFO_PATH, args);
 }
 
 void DeviceWidget::processFormsReply(QString form_type, QString data)
@@ -581,9 +628,7 @@ void DeviceWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabSites){
         // Sites / Projects
         if (m_treeSites_items.isEmpty() || m_treeSites_items.isEmpty()){
-            args.addQueryItem(WEB_QUERY_ID_DEVICE, QString::number(m_data->getId()));
-            args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
-            queryDataRequest(WEB_DEVICESITEINFO_PATH, args);
+            queryDeviceAccess();
         }
     }
 
@@ -608,6 +653,9 @@ void DeviceWidget::on_tabNav_currentChanged(int index)
         }
     }
 
+    if (current_tab == ui->tabLogins){
+        ui->wdgLogins->refreshData();
+    }
 
 }
 

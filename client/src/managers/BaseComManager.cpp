@@ -1,4 +1,5 @@
 #include "BaseComManager.h"
+#include <QOperatingSystemVersion>
 
 BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
     : QObject{parent},
@@ -7,6 +8,11 @@ BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
 
     m_settedCredentials = false;
     m_loggingInProgress = false;
+
+    // Get Operating system information to send to server for logging
+    QOperatingSystemVersion os = QOperatingSystemVersion::current();
+    m_osName = os.name();
+    m_osVersion = QString::number(os.majorVersion()) + "." + QString::number(os.minorVersion()) + "." + QString::number(os.microVersion());
 
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
@@ -140,8 +146,7 @@ void BaseComManager::doDownload(const QUrl &full_url, const QString &save_path, 
 
 void BaseComManager::doUpload(const QString &path, const QString &file_name, const QVariantMap extra_headers, const QString &label, const bool &use_token)
 {
-    QUrl query = m_serverUrl;
-    query.setPath(path);
+    QUrl query = m_serverUrl;    query.setPath(path);
 
     // Prepare request
     QNetworkRequest* request = new QNetworkRequest(query);
@@ -509,6 +514,9 @@ void BaseComManager::setRequestVersions(QNetworkRequest &request)
 {
     request.setRawHeader("X-Client-Name", QByteArray(OPENTERAPLUS_CLIENT_NAME));
     request.setRawHeader("X-Client-Version", QByteArray(OPENTERAPLUS_VERSION));
+    request.setRawHeader("X-OS-Name", m_osName.toUtf8());
+    request.setRawHeader("X-OS-Version", m_osVersion.toUtf8());
+
 }
 
 void BaseComManager::setCredentials(const QString &username, const QString &password){
