@@ -110,7 +110,7 @@ private slots:
     void queryDataReplyOK(const QString &path, const QUrlQuery &query_args);
     void postDataReplyOK(const QString &path);
     void deleteDataReplyOK(const QString &path, const int &id);
-    void comDataError(QNetworkReply::NetworkError error, QString error_str);
+    void comDataError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation op, int status_code, QString path, QUrlQuery url_query);
 
 protected slots:
     virtual void editToggleClicked();

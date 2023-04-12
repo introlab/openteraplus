@@ -20,6 +20,7 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
     connectSignals();
 
     // Query form definition
+    ui->wdgSessionType->setComManager(m_comManager);
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION_TYPE));
     if (!data->isNew()){
         QUrlQuery args(WEB_FORMS_QUERY_SESSION_TYPE_CONFIG);
@@ -27,7 +28,6 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
         queryDataRequest(WEB_FORMS_PATH, args);
     }
 
-    ui->wdgSessionType->setComManager(m_comManager);
     setData(data);
 
 }

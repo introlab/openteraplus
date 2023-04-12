@@ -331,11 +331,15 @@ void DataEditorWidget::deleteDataReplyOK(const QString &path, const int &id)
         setReady();
 }
 
-void DataEditorWidget::comDataError(QNetworkReply::NetworkError error, QString error_str)
+void DataEditorWidget::comDataError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation op, int status_code, QString path, QUrlQuery url_query)
 {
     Q_UNUSED(error)
     Q_UNUSED(error_str)
+    QString query_name = getQueryDataName(path, url_query);
+    m_requests.removeOne(query_name);
     setReady();
+    if (!hasPendingDataRequests())
+        updateFieldsValue();
 }
 
 void DataEditorWidget::editToggleClicked()

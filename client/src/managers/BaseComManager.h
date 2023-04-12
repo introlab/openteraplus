@@ -101,7 +101,7 @@ protected slots:
 
 signals:
     void waitingForReply(bool waiting);
-    void networkError(QNetworkReply::NetworkError, QString, QNetworkAccessManager::Operation op, int status_code);
+    void networkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation op, int status_code, QString path, QUrlQuery url_query);
 
     void networkAuthFailed();
 

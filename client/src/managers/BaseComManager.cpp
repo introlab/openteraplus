@@ -367,7 +367,7 @@ void BaseComManager::onNetworkFinished(QNetworkReply *reply){
             m_currentDownloads[reply]->abortTransfer();
         }
 
-        emit networkError(reply->error(), reply_msg, reply->operation(), status_code);
+        emit networkError(reply->error(), reply_msg, reply->operation(), status_code, reply->url().path(), QUrlQuery(reply->url().query()));
     }
 
     reply->deleteLater();
