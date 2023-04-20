@@ -7,8 +7,7 @@
 #include <QSysInfo>
 #include <QSettings>
 #include <QUuid>
-#include <QAudioDeviceInfo>
-#include <QCameraInfo>
+#include <QMediaDevices>
 #include <QTime>
 
 class Utils : public QObject

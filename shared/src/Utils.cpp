@@ -1,4 +1,7 @@
 #include "Utils.h"
+#include <QRegExp>
+#include <QCameraDevice>
+#include <QAudioDevice>
 
 Utils::Utils(QObject *parent) : QObject(parent)
 {
@@ -16,7 +19,7 @@ QString Utils::generatePassword(const int &len)
        password.clear();
        for(int i=0; i<len; ++i)
        {
-           quint32 index = QRandomGenerator::global()->bounded(possibleCharacters.length());
+           auto index = QRandomGenerator::global()->bounded(possibleCharacters.length());
            QChar nextChar = possibleCharacters.at(index);
            password.append(nextChar);
        }
@@ -34,6 +37,7 @@ QList<Utils::PasswordValidationErrors> Utils::validatePassword(const QString &pa
     }
 
     QRegExp validator("[A-Z]");
+
     if (validator.indexIn(password) == -1){
         errors.append(PASSWORD_NOCAPS);
     }
@@ -82,8 +86,12 @@ QString Utils::getMachineUniqueId()
 QStringList Utils::getAudioDeviceNames()
 {
     QStringList names;
-    QList<QAudioDeviceInfo> audio_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-    foreach(QAudioDeviceInfo input, audio_devices){
+
+
+    auto audio_devices = QMediaDevices::audioInputs();
+    //QList<QAudioDeviceInfo> audio_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    foreach(const QAudioDevice &input, audio_devices){
+//TODO FIX LINUX
 #ifdef Q_OS_LINUX
         // On linux, since Qt use ALSA API, we must filter the returned device list...
         if (input.deviceName().startsWith("alsa_input") || input.deviceName() == "default"){
@@ -115,7 +123,8 @@ QStringList Utils::getAudioDeviceNames()
             names.append(filtered_name);
         }
 #else
-        names.append(input.deviceName());
+        //TODO Not sure!
+        names.append(input.description());
 #endif
     }
     return names;
@@ -124,9 +133,10 @@ QStringList Utils::getAudioDeviceNames()
 QStringList Utils::getVideoDeviceNames()
 {
     QStringList names;
-    QList<QCameraInfo> video_devices = QCameraInfo::availableCameras();
-    for (const QCameraInfo &camera:qAsConst(video_devices)){
-        names.append(camera.description());
+    auto inputs = QMediaDevices::videoInputs();
+    foreach (const QCameraDevice &info, inputs)
+    {
+        names.append(info.description());
     }
     return names;
 }
@@ -135,10 +145,10 @@ void Utils::inStringUnicodeConverter(QString *str)
 {
     if (str->contains("\\u")) {
        do {
-          int idx = str->indexOf("\\u");
+          auto idx = str->indexOf("\\u");
           QString strHex = str->mid(idx, 6);
           strHex = strHex.replace("\\u", QString());
-          int nHex = strHex.toInt(0, 16);
+          auto nHex = strHex.toInt(nullptr, 16);
           str->replace(idx, 6, QChar(nHex));
        } while (str->indexOf("\\u") != -1);
     }
@@ -151,7 +161,7 @@ QString Utils::removeAccents(const QString &s) {
     QString output = "";
     for (int i = 0; i < s.length(); i++) {
         QChar c = s[i];
-        int dIndex = diacriticLetters_.indexOf(c);
+        auto dIndex = diacriticLetters_.indexOf(c);
         if (dIndex < 0) {
             output.append(c);
         } else {

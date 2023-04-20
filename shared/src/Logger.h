@@ -165,7 +165,7 @@ private:
 	///The file where to log
 	QFile m_file;
 	///Mutex for thread safety
-	static QMutex m_mutex;
+    static QRecursiveMutex m_mutex;
 	///Msg Priority
 	static ActivationPriority m_active_priority;
 

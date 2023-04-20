@@ -1,5 +1,6 @@
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Multimedia  REQUIRED)
+find_package(Qt6Core REQUIRED)
+find_package(Qt6Multimedia  REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
 
 add_definitions(-DSHAREDLIB_LIBRARY)
 if (MSVC)
@@ -52,16 +53,16 @@ include_directories(
 )
 
 #This will generate moc_* for Qt
-qt5_wrap_cpp(sharedlib_moc_srcs ${sharedlib_headers})
+qt6_wrap_cpp(sharedlib_moc_srcs ${sharedlib_headers})
 
 #compile library
 add_library(opentera_shared SHARED ${sharedlib_headers} ${sharedlib_srcs} ${sharedlib_moc_srcs})
-# qt5_use_modules(opentera_shared Core Network)
+# qt6_use_modules(opentera_shared Core Network)
 
 set_target_properties(opentera_shared PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
-target_link_libraries(opentera_shared Qt5::Core Qt5::Multimedia)
+target_link_libraries(opentera_shared Qt6::Core Qt6::Multimedia Qt6::Core5Compat)
 if (MSVC)
 target_compile_definitions(opentera_shared PUBLIC OPENTERAMESSAGES_EXPORT=__declspec\(dllimport\))
 endif(MSVC)

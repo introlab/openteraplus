@@ -1,13 +1,13 @@
-find_package(Qt5Core REQUIRED)
-find_package(Qt5WebEngine REQUIRED)
-find_package(Qt5WebEngineWidgets REQUIRED)
-find_package(Qt5Multimedia  REQUIRED)
-find_package(Qt5WebSockets REQUIRED)
-find_package(Qt5Network REQUIRED)
-find_package(Qt5LinguistTools REQUIRED)
+find_package(Q65Core REQUIRED)
+find_package(Qt6WebEngine REQUIRED)
+find_package(Qt6WebEngineWidgets REQUIRED)
+find_package(Qt6Multimedia  REQUIRED)
+find_package(Qt6WebSockets REQUIRED)
+find_package(Qt6Network REQUIRED)
+find_package(Qt6LinguistTools REQUIRED)
 
 # Drivers first
-add_subdirectory(drivers)
+# add_subdirectory(drivers)
 
 
 set(headers
@@ -287,13 +287,13 @@ SET(qrcs
 )
 
 #Generate .h files from the .ui files
-QT5_WRAP_UI(moc_uis ${uis})
+QT6_WRAP_UI(moc_uis ${uis})
 
 #This will generate moc_* for Qt
-QT5_WRAP_CPP(moc_srcs ${headers})
+QT6_WRAP_CPP(moc_srcs ${headers})
 
 # generate rules for building source files from the resources
-QT5_ADD_RESOURCES(client_qrc ${qrcs})
+QT6_ADD_RESOURCES(client_qrc ${qrcs})
 
 set(translation_files_srcs
     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
@@ -303,13 +303,13 @@ set(translation_files_srcs
 #Translation files, this is done manually to avoid removing the file when doing make clean
 # Add -noobsolete parameter to remove obsoleted translations
 add_custom_target(openteraplus_en_ts
-    COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+    COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${moc_uis}
 )
 
 add_custom_target(openteraplus_fr_ts
-    COMMAND ${Qt5_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+    COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${moc_uis}
 )
@@ -323,7 +323,7 @@ add_custom_target(translation_files SOURCES ${translation_files_srcs})
 
 
 #Generate qm files from .ts files
-qt5_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+qt6_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
 
 message(STATUS "qm_files : ${qm_files}")
 
@@ -358,10 +358,10 @@ set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 # create an executable file named "OpenTeraPlus" from the source files
 # Put qrc files after qm files
 add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
-# qt5_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
+# qt6_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
 
 # Linking with Qt libraries and others
-target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt5::Core Qt5::Network Qt5::Multimedia Qt5::WebSockets Qt5::WebEngine Qt5::WebEngineWidgets)
+target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets Qt6::WebEngine Qt6::WebEngineWidgets)
 target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
 target_link_libraries(OpenTeraPlus ${PTZ_DRIVERS_LIBS})
 
