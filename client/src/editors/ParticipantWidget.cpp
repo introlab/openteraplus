@@ -1118,7 +1118,8 @@ void ParticipantWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabServices){ // Services
         if (!ui->wdgServiceConfig->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
+
+            //layout->setMargin(0);
             ui->wdgServiceConfig->setLayout(layout);
         }
         if (ui->wdgServiceConfig->layout()->count() == 0){

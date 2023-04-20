@@ -14,7 +14,7 @@
 
 #include "Utils.h"
 
-#include "VirtualCameraThread.h"
+//#include "VirtualCameraThread.h"
 
 #include "Logger.h"
 
@@ -64,7 +64,7 @@ private:
     QWebEngineView*         m_webEngine;
     VideoRehabWebPage*      m_webPage;
     QMovie*                 m_loadingIcon;
-    VirtualCameraThread*    m_virtualCamThread;
+    //VirtualCameraThread*    m_virtualCamThread;
     KitConfigManager*       m_kitConfig;
     ParticipantComManager*  m_partComManager;
 };

@@ -58,13 +58,13 @@ message(STATUS "Using QMAKE: ${QT_QMAKE_EXECUTABLE}")
 # SET (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 # External dependencies first
-#add_subdirectory(external)
+add_subdirectory(external)
 
 # Shared data
 add_subdirectory(shared)
 
 # Client
-#add_subdirectory(client)
+add_subdirectory(client)
 
 # Tests
 #add_subdirectory(tests)

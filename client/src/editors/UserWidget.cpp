@@ -2,11 +2,11 @@
 #include "ui_UserWidget.h"
 
 #include <QtSerialPort/QSerialPortInfo>
-#include <QtMultimedia/QCameraInfo>
+#include <QtMultimedia/QCameraDevice>
 #include <QtMultimedia/QCamera>
 #include <QInputDialog>
 
-#include <QtMultimedia/QAudioDeviceInfo>
+#include <QtMultimedia/QAudioDevice>
 
 #include "dialogs/PasswordStrengthDialog.h"
 
@@ -555,7 +555,7 @@ void UserWidget::on_tabMain_currentChanged(int index)
         // Service config
         if (!ui->wdgServiceConfig->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
+            layout->setContentsMargins(0,0,0,0);
             ui->wdgServiceConfig->setLayout(layout);
         }
         if (ui->wdgServiceConfig->layout()->count() == 0){

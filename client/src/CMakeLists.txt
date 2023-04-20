@@ -1,5 +1,5 @@
-find_package(Q65Core REQUIRED)
-find_package(Qt6WebEngine REQUIRED)
+find_package(Qt6Core REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS WebEngineCore)
 find_package(Qt6WebEngineWidgets REQUIRED)
 find_package(Qt6Multimedia  REQUIRED)
 find_package(Qt6WebSockets REQUIRED)
@@ -361,7 +361,7 @@ add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc
 # qt6_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
 
 # Linking with Qt libraries and others
-target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets Qt6::WebEngine Qt6::WebEngineWidgets)
+target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets Qt6::WebEngineCore Qt6::WebEngineWidgets)
 target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
 target_link_libraries(OpenTeraPlus ${PTZ_DRIVERS_LIBS})
 

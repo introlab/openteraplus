@@ -146,7 +146,8 @@ void NotificationWindow::paintEvent(QPaintEvent *)
 {
     //this is mandatory for the style sheet to take effect
      QStyleOption opt;
-     opt.init(this);
+    //TODO Verify
+     //opt.init(this);
      QPainter p(this);
      style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }

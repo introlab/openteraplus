@@ -1,8 +1,8 @@
 #include "MainWindow.h"
 #include <QNetworkReply>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QApplication>
-#include <QSound>
+//#include <QSound>
 
 #include "ui_MainWindow.h"
 
@@ -897,8 +897,9 @@ void MainWindow::addNotification(const NotificationWindow::NotificationType noti
     connect(notify, &NotificationWindow::notificationClosed, this, &MainWindow::notificationCompleted);
 
     if (m_comManager->getCurrentPreferences().isNotifySounds() && !soundPath.isEmpty()){
-        if (!m_inSessionWidget) // Don't play sounds when in session!
-            QSound::play(soundPath);
+        //if (!m_inSessionWidget) // Don't play sounds when in session!
+            //TODO PLAY SOUND
+            //QSound::play(soundPath);
     }
 }
 

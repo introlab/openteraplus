@@ -16,15 +16,16 @@ class VideoRehabWebPage : public QWebEnginePage
     Q_OBJECT
 public:
     VideoRehabWebPage(QObject *parent = nullptr);
-    ~VideoRehabWebPage();
+    ~VideoRehabWebPage() override;
 
     SharedObject* getSharedObject() const;
 
 protected:
-    virtual bool certificateError(const QWebEngineCertificateError &certificateError) override;
+
 
 private slots:
     void featurePermissionHandler(const QUrl &securityOrigin, QWebEnginePage::Feature feature);
+    void onCertificateError(const QWebEngineCertificateError &certificateError);
 
 private:
     SharedObject            *m_sharedObject;           // Shared object for communication with page itself

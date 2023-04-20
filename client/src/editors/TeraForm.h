@@ -25,9 +25,8 @@
 #include <QTimeEdit>
 
 #include <QFocusEvent>
-
-#include <QtMultimedia/QCameraInfo>
-#include <QtMultimedia/QAudioDeviceInfo>
+#include <QAudioDevice>
+#include <QCameraDevice>
 
 #include "TeraData.h"
 #include "managers/ComManager.h"

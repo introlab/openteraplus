@@ -5,7 +5,7 @@
 #include <QPropertyAnimation>
 #include <QPainter>
 #include <QStyleOption>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QDebug>
 
 #include "ui_notification.h"

@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 #ifdef WIN32
     //QApplication::setAttribute(Qt::AA_UseOpenGLES, true); // Force use of ANGLE instead of Desktop OpenGL - some memory leak may happen with WebRTC on Intel Graphics Cards otherwise.
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
-    QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton, true);
+    //QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton, true);
 #endif
 
 #ifdef __APPLE__

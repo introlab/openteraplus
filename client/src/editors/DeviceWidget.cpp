@@ -644,7 +644,7 @@ void DeviceWidget::on_tabNav_currentChanged(int index)
         // Service configuration
         if (!ui->wdgServiceConfig->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
+            layout->setContentsMargins(0,0,0,0);
             ui->wdgServiceConfig->setLayout(layout);
         }
         if (ui->wdgServiceConfig->layout()->count() == 0){

@@ -11,7 +11,7 @@
 #include "VideoRehabWebPage.h"
 
 #include "Utils.h"
-#include "VirtualCameraThread.h"
+//#include "VirtualCameraThread.h"
 #include "JoinSessionEvent.pb.h"
 
 namespace Ui {
@@ -41,7 +41,7 @@ public:
 private slots:
     void on_txtURL_returnPressed();
     void webEngineURLChanged(QUrl url);
-    void webEngineDownloadRequested(QWebEngineDownloadItem* item);
+    void webEngineDownloadRequested(QWebEngineDownloadRequest* item);
     void webEngineDownloadCompleted();
 
     void webPageLoaded(bool ok);
@@ -71,7 +71,7 @@ private:
     QWebEngineView*         m_webEngine;
     VideoRehabWebPage*      m_webPage;
     QMovie*                 m_loadingIcon;
-    VirtualCameraThread*    m_virtualCamThread;
+   // VirtualCameraThread*    m_virtualCamThread;
 
  signals:
     void fileDownloading(bool downloading);

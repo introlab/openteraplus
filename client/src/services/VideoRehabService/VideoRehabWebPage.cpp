@@ -34,21 +34,16 @@ SharedObject *VideoRehabWebPage::getSharedObject() const
     return m_sharedObject;
 }
 
-bool VideoRehabWebPage::certificateError(const QWebEngineCertificateError &certificateError)
+void VideoRehabWebPage::onCertificateError(const QWebEngineCertificateError &certificateError)
 {
-//#ifdef QT_DEBUG
 
-    qDebug() << "Certificate error: " << certificateError.errorDescription();
+    //TODO do Something about certificates
+    qDebug() << "Certificate error: " << certificateError.description();
     /*
     The certificateError parameter contains information about the certificate and details of the error.
     Return true to ignore the error and complete the request. Return false to stop loading the request.
     */
 
-    return true; // Accept all certificates in debug
-/*#else
-    // Refuse invalid certificates
-    return false;
-#endif*/
 }
 
 void VideoRehabWebPage::featurePermissionHandler(const QUrl &securityOrigin, QWebEnginePage::Feature feature)

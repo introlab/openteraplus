@@ -12,7 +12,7 @@ VideoRehabSetupWidget::VideoRehabSetupWidget(ComManager *comManager, QWidget *pa
     setLoading(true); // Disable until page is fully loaded
 
     m_valueJustChanged = false;
-    m_virtualCamThread = nullptr;
+    //m_virtualCamThread = nullptr;
 
     initUI();
     connectSignals();
@@ -30,12 +30,13 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
 
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
-
+/*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
      }
+*/
 }
 
 QJsonDocument VideoRehabSetupWidget::getSetupConfig()
@@ -121,6 +122,7 @@ void VideoRehabSetupWidget::showError(const QString &title, const QString &conte
 
 void VideoRehabSetupWidget::startVirtualCamera(const QString &src)
 {
+    /*
     if (m_virtualCamThread){
         stopVirtualCamera();
     }
@@ -128,16 +130,19 @@ void VideoRehabSetupWidget::startVirtualCamera(const QString &src)
     m_virtualCamThread = new VirtualCameraThread(src);
     connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &VideoRehabSetupWidget::virtualCameraDisconnected);
     m_virtualCamThread->start();
+*/
 }
 
 void VideoRehabSetupWidget::stopVirtualCamera()
 {
+    /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
         m_virtualCamThread = nullptr;
     }
+*/
 }
 
 void VideoRehabSetupWidget::showPTZDialog()
@@ -166,6 +171,7 @@ void VideoRehabSetupWidget::showPTZDialog()
 
 void VideoRehabSetupWidget::startPTZCamera()
 {
+/*
     int camera_src = ui->widgetSetup->getFieldValue("camera_ptz_type").toInt();
 
     if (camera_src == 0){ // TODO: Better manage camera sources
@@ -186,19 +192,21 @@ void VideoRehabSetupWidget::startPTZCamera()
 
         return;
     }
-
+*/
     showError(tr("Caméra PTZ"), "VideoRehabSetupWidget::startPTZCamera", tr("Type de caméra PTZ non-supporté"), true);
 
 }
 
 void VideoRehabSetupWidget::stopPTZCamera()
 {
+/*
     if (m_webPage){
         SharedObject* shared = m_webPage->getSharedObject();
         if (shared){
             shared->stopPTZCameraDriver();
         }
     }
+*/
 }
 
 void VideoRehabSetupWidget::refreshWebpageSettings()
@@ -220,9 +228,11 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
     m_webPage->getSharedObject()->setCurrentCameraName(video_src);
     m_webPage->getSharedObject()->sendCurrentVideoSource();
     if (video_src.contains("OpenTeraCam")){
+        /*
         if (!m_virtualCamThread){
             startVirtualCamera(ui->widgetSetup->getFieldValue("teracam_src").toString());
         }
+        */
     }
 
     // Update audio source
@@ -403,8 +413,12 @@ void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
                 startVirtualCamera(src);
             }
         }else{
+            /*
             if (m_virtualCamThread)
+            {
                 stopVirtualCamera();
+            }
+            */
         }
     }
 
@@ -445,7 +459,6 @@ void VideoRehabSetupWidget::ptzCameraError(CameraInfo infos)
         break;
     case CameraInfo::CIE_NO_ERROR:
         // Shouldn't get here, but managed in case
-        return;
         break;
 
     }
