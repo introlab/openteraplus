@@ -2,8 +2,9 @@
 #define TERATEST_H
 
 #include <QObject>
+#include "SharedLib.h"
 
-class TeraTest : public QObject
+class SHAREDLIB_EXPORT TeraTest : public QObject
 {
     Q_OBJECT
 public:

@@ -1,6 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "SharedLib.h"
 #include <QObject>
 #include <QRandomGenerator>
 #include <QRegularExpression>
@@ -10,7 +11,7 @@
 #include <QMediaDevices>
 #include <QTime>
 
-class Utils : public QObject
+class SHAREDLIB_EXPORT Utils : public QObject
 {
     Q_OBJECT
 public:

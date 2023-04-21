@@ -16,7 +16,7 @@ class DataEditorWidget : public QWidget
     Q_OBJECT
 public:
     explicit DataEditorWidget(ComManager *comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
-    ~DataEditorWidget();
+    ~DataEditorWidget() override;
 
     enum EditorState{
         STATE_READY=0,

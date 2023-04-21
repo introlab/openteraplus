@@ -2,6 +2,7 @@
 #define TERASETTINGS_H
 
 #include <QSettings>
+#include "SharedLib.h"
 
 #define SETTINGS_UI_ADVANCEDVIEW                "ui_advancedView"
 #define SETTINGS_UI_FILTERINACTIVE              "ui_filterInactives"
@@ -13,7 +14,7 @@
 #define SETTINGS_LASTLANGUAGE                   "lastLanguage"
 #define SETTINGS_DATA_SAVEPATH                  "dataSavePath"
 
-class TeraSettings
+class SHAREDLIB_EXPORT TeraSettings
 {
 public:
     TeraSettings();

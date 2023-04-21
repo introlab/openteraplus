@@ -11,6 +11,7 @@
 
 #include "WebAPI.h"
 #include "ParticipantWebAPI.h"
+#include "SharedLib.h"
 
 enum TeraDataTypes {
     TERADATA_NONE,
@@ -55,7 +56,7 @@ enum TeraDataTypes {
 
 Q_DECLARE_METATYPE(TeraDataTypes)
 
-class TeraData : public QObject
+class SHAREDLIB_EXPORT TeraData : public QObject
 {
     Q_OBJECT
 

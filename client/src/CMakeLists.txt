@@ -335,9 +335,9 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/editors
     ${CMAKE_CURRENT_BINARY_DIR}
     # DL Temporary test for virtual cameras
-    ${VIRTUAL_CAMERA_INCLUDES}
+    # ${VIRTUAL_CAMERA_INCLUDES}
     ${PTZ_DRIVERS_INCLUDES}
-    ${AVKYS_INCLUDES}
+    # ${AVKYS_INCLUDES}
     )
 
 # Application icon
@@ -362,7 +362,7 @@ add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc
 
 # Linking with Qt libraries and others
 target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets Qt6::WebEngineCore Qt6::WebEngineWidgets)
-target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
+#target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
 target_link_libraries(OpenTeraPlus ${PTZ_DRIVERS_LIBS})
 
 

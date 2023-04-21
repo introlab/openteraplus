@@ -1050,6 +1050,6 @@ void SessionInviteWidget::on_txtSearchInvitees_textChanged(const QString &arg1)
 {
     Q_UNUSED(arg1)
     // Check if search field is empty
-    setSearching(ui->txtSearchInvitees->text().count()>0);
+    setSearching(ui->txtSearchInvitees->text().size()>0);
     updateFilters();
 }
