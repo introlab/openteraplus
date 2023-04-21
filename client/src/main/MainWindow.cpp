@@ -2,7 +2,7 @@
 #include <QNetworkReply>
 //#include <QDesktopWidget>
 #include <QApplication>
-//#include <QSound>
+#include <QSoundEffect>
 
 #include "ui_MainWindow.h"
 
@@ -897,9 +897,12 @@ void MainWindow::addNotification(const NotificationWindow::NotificationType noti
     connect(notify, &NotificationWindow::notificationClosed, this, &MainWindow::notificationCompleted);
 
     if (m_comManager->getCurrentPreferences().isNotifySounds() && !soundPath.isEmpty()){
-        //if (!m_inSessionWidget) // Don't play sounds when in session!
-            //TODO PLAY SOUND
-            //QSound::play(soundPath);
+        if (!m_inSessionWidget) {// Don't play sounds when in session!
+            QSoundEffect effect(this);
+            effect.setSource(QUrl::fromLocalFile(soundPath));
+            effect.setVolume(0.25f);
+            effect.play();
+        }
     }
 }
 
