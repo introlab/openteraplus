@@ -10,6 +10,7 @@ VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
     settings->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
     settings->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
     settings->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
+    settings->setAttribute(QWebEngineSettings::PlaybackRequiresUserGesture, true);
 
 
     // Create shared object for communication with webpage

@@ -57,15 +57,12 @@ void VideoRehabWidget::initUI()
     ui->icoLoading->setMovie(m_loadingIcon);
     m_loadingIcon->start();
 
-    //TODO Update settings
-    //QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
-    //QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
-    //QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PlaybackRequiresUserGesture, false);
 
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &VideoRehabWidget::webPageLoaded);
 
     // Create a new page
+    // DL new Settings are set in the page constructor
     m_webPage = new VideoRehabWebPage(m_webEngine);
     connect(m_webPage->getSharedObject(), &SharedObject::pageIsReady, this, &VideoRehabWidget::webPageReady);
     connect(m_webPage->getSharedObject(), &SharedObject::videoErrorOccured, this, &VideoRehabWidget::webPageVideoError);
