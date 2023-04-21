@@ -1,2 +1,3 @@
 /client/resources/translations/*.qm
 deploy
+/CMakeLists.txt.user

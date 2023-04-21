@@ -7,7 +7,7 @@ find_package(Qt6Network REQUIRED)
 find_package(Qt6LinguistTools REQUIRED)
 
 # Drivers first
-# add_subdirectory(drivers)
+add_subdirectory(drivers)
 
 
 set(headers
