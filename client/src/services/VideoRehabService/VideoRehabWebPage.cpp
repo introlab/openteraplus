@@ -40,10 +40,6 @@ void VideoRehabWebPage::onCertificateError(const QWebEngineCertificateError &cer
 
     //TODO do Something about certificates
     qDebug() << "Certificate error: " << certificateError.description();
-    /*
-    The certificateError parameter contains information about the certificate and details of the error.
-    Return true to ignore the error and complete the request. Return false to stop loading the request.
-    */
 
     //TODO Do not accept certificates in production ?
     auto mutableError = const_cast<QWebEngineCertificateError&>(certificateError);
