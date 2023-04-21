@@ -1,8 +1,17 @@
 #include "VideoRehabWebPage.h"
 #include "Logger.h"
+#include <QWebEngineSettings>
 
 VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
 {
+    //Set page Settings
+    auto settings = this->settings();
+    settings->setAttribute(QWebEngineSettings::PluginsEnabled, true);
+    settings->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
+    settings->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
+    settings->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
+
+
     // Create shared object for communication with webpage
     m_sharedObject = new SharedObject(this);
 
@@ -50,6 +59,7 @@ void VideoRehabWebPage::onCertificateError(const QWebEngineCertificateError &cer
 void VideoRehabWebPage::featurePermissionHandler(const QUrl &securityOrigin, QWebEnginePage::Feature feature)
 {
     // TODO: Only allow specific features like webcam, micro, screenshare?
+    qDebug() << securityOrigin << " requesting: " << feature;
 
     //Grant all features!
     this->setFeaturePermission(securityOrigin,feature,QWebEnginePage::PermissionGrantedByUser);
