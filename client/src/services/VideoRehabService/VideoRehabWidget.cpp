@@ -30,6 +30,7 @@ VideoRehabWidget::~VideoRehabWidget()
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
 
+    //TODO Fix Virtual Camera
     /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
@@ -381,6 +382,8 @@ void VideoRehabWidget::showError(const QString &title, const QString &context, c
 
 void VideoRehabWidget::startVirtualCamera(const QString &src)
 {
+    //TODO Fix Virtual Camera
+    qDebug() << "VideoRehabWidget::startVirtualCamera not implemented.";
     /*
     if (m_virtualCamThread){
         stopVirtualCamera();
@@ -394,6 +397,8 @@ void VideoRehabWidget::startVirtualCamera(const QString &src)
 
 void VideoRehabWidget::stopVirtualCamera()
 {
+    //TODO Fix Virtual Camera
+    qDebug() << "VideoRehabWidget::stopVirtualCamera not implemented.";
     /*
     qDebug() << "VideoRehabWidget::stopVirtualCamera";
     if (m_virtualCamThread){

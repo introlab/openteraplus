@@ -290,6 +290,7 @@ void KitVideoRehabWidget::showError(const QString &title, const QString &context
 
 void KitVideoRehabWidget::startVirtualCamera(const QString &src)
 {
+    qDebug() << "KitVideoRehabWidget::startVirtualCamera not implemented.";
     /*
     if (m_virtualCamThread){
         stopVirtualCamera();
@@ -303,7 +304,7 @@ void KitVideoRehabWidget::startVirtualCamera(const QString &src)
 
 void KitVideoRehabWidget::stopVirtualCamera()
 {
-    qDebug() << "KitVideoRehabWidget::stopVirtualCamera";
+    qDebug() << "KitVideoRehabWidget::stopVirtualCamera not implemented.";
     /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();

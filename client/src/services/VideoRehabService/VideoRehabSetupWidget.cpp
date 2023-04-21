@@ -122,6 +122,7 @@ void VideoRehabSetupWidget::showError(const QString &title, const QString &conte
 
 void VideoRehabSetupWidget::startVirtualCamera(const QString &src)
 {
+    qDebug() << "VideoRehabSetupWidget::startVirtualCamera not implemented.";
     /*
     if (m_virtualCamThread){
         stopVirtualCamera();
@@ -135,6 +136,7 @@ void VideoRehabSetupWidget::startVirtualCamera(const QString &src)
 
 void VideoRehabSetupWidget::stopVirtualCamera()
 {
+    qDebug() << "VideoRehabSetupWidget::stopVirtualCamera not implemented.";
     /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
@@ -171,7 +173,6 @@ void VideoRehabSetupWidget::showPTZDialog()
 
 void VideoRehabSetupWidget::startPTZCamera()
 {
-/*
     int camera_src = ui->widgetSetup->getFieldValue("camera_ptz_type").toInt();
 
     if (camera_src == 0){ // TODO: Better manage camera sources
@@ -192,21 +193,18 @@ void VideoRehabSetupWidget::startPTZCamera()
 
         return;
     }
-*/
     showError(tr("Caméra PTZ"), "VideoRehabSetupWidget::startPTZCamera", tr("Type de caméra PTZ non-supporté"), true);
 
 }
 
 void VideoRehabSetupWidget::stopPTZCamera()
 {
-/*
     if (m_webPage){
         SharedObject* shared = m_webPage->getSharedObject();
         if (shared){
             shared->stopPTZCameraDriver();
         }
     }
-*/
 }
 
 void VideoRehabSetupWidget::refreshWebpageSettings()
@@ -219,8 +217,9 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
     bool ptz = ui->widgetSetup->getFieldValue("camera_ptz").toBool();
     m_webPage->getSharedObject()->setPTZCapabilities(ptz, ptz, ptz);
     m_webPage->getSharedObject()->sendPTZCapabilities();
-    if (ptz)
+    if (ptz) {
         startPTZCamera();
+    }
 
     // Update video source
     QString video_src = ui->widgetSetup->getFieldValue("camera").toString();
@@ -228,6 +227,7 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
     m_webPage->getSharedObject()->setCurrentCameraName(video_src);
     m_webPage->getSharedObject()->sendCurrentVideoSource();
     if (video_src.contains("OpenTeraCam")){
+        //TODO Fix virtual camera
         /*
         if (!m_virtualCamThread){
             startVirtualCamera(ui->widgetSetup->getFieldValue("teracam_src").toString());
