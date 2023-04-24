@@ -74,7 +74,10 @@ private slots:
     void onSocketConnected();
     void onSocketDisconnected();
     void onSocketError(QAbstractSocket::SocketError error);
+
+#ifndef OPENTERA_WEBASSEMBLY
     void onSocketSslErrors(const QList<QSslError> &errors);
+#endif
     void onSocketTextMessageReceived(const QString &message);
     void onSocketBinaryMessageReceived(const QByteArray &message);
 

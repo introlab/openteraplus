@@ -41,6 +41,7 @@ endif()
 # No protoc, will download native
 file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_BINARY_DIR}/${protoc_archive_name} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/protoc)
 
+set(ABSL_PROPAGATE_CXX_STD OFF)
 set(protobuf_PROTOC_EXE ${CMAKE_CURRENT_BINARY_DIR}/protoc/bin/protoc.exe)
 set(protobuf_BUILD_EXAMPLES OFF)
 set(protobuf_BUILD_PROTOC_BINARIES OFF) 
