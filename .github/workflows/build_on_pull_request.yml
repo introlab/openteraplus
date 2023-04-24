@@ -15,15 +15,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
- 
+
     - name: Install System Dependencies
       run: | 
-        sudo apt-get install cmake build-essential
-    
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
-      with:
-          target: 'desktop'
-          version: '6.5.0'
-          modules: 'qtcharts qtwebengine qtnetworkauth qtwebglplugin qtscript debug_info'
- 
+        sudo apt-get install cmake build-essential libgl1-mesa-dev
