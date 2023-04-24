@@ -77,4 +77,4 @@ add_custom_target(readme SOURCES README.md LICENSE.TXT)
 install(FILES README.md LICENSE.TXT DESTINATION .)
 
 # Package
-#add_subdirectory(package)
+add_subdirectory(package)
