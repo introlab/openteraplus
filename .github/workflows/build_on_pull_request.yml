@@ -9,7 +9,7 @@ on:
     
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -19,3 +19,23 @@ jobs:
     - name: Install System Dependencies
       run: | 
         sudo apt-get install cmake build-essential libgl1-mesa-dev
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.0'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        dir: '${{ github.workspace }}/Qt/'
+        install-deps: 'true'
+        modules: 'qtcharts qtwebengine'
+        archives: 'qtbase qtsvg'
+        cache: 'false'
+        cache-key-prefix: 'install-qt-action'
+        setup-python: 'false'
+        tools: 'tools_ifw tools_qtcreator,qt.tools.qtcreator'
+        set-env: 'true'
+        tools-only: 'false'
+        aqtversion: '==2.1.*'
+        py7zrversion: '==0.19.*'
+        extra: '--external 7z'
