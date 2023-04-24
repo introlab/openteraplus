@@ -55,6 +55,6 @@ jobs:
         CMAKE_MODULE_PATH : ${{env.Qt6_Dir}}/lib/cmake/Qt6
       working-directory: build
       run: |
-        cmake ../ -DCMAKE_BUILD_TYPE=Release -DQT6_DIR=${{env.Qt6_Dir}} -G ninja
+        cmake ../ -DCMAKE_BUILD_TYPE=Release -DQT6_DIR=${{env.Qt6_Dir}} -G Ninja
         cmake --build .
 
