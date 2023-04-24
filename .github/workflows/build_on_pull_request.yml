@@ -42,11 +42,16 @@ jobs:
       run: |
         dir
         
+    - name: List Qt directory from workspace
+      working-directory: ${{ github.workspace }}/Qt
+      run: |
+        dir
+        
     - name: Create build directory
       run: mkdir build
       
     - name: List Qt directory
-      working-directory: ${{env.Qt6_Dir}}
+      working-directory: ${{env.Qt6_DIR}}
       run: |
         dir
       
