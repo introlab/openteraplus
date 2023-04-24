@@ -8,6 +8,7 @@ if (MSVC)
       /wd4910 # Ignore export warnings (C4910) with MSVC
       /wd4661 # Ignore no suitable definition for explicit template (C4661)
       /wd4251 # Ignore needs to have dll-interface
+      /wd4146 # Ignore unary minus operator applied to unsigned type, result still unsigned
     )
 endif (MSVC)
 
@@ -23,12 +24,17 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #Disable tests for now...
 option(protobuf_BUILD_TESTS "" OFF)
 
+set(protobuf_BUILD_EXAMPLES OFF)
+set(protobuf_BUILD_LIBPROTOC OFF)
+set(protobuf_BUILD_TESTS OFF)
+
+
 #Use dynamic MSVC runtime
 if (MSVC)
     option(protobuf_MSVC_STATIC_RUNTIME "" OFF)
 endif(MSVC)
 
-add_subdirectory(protobuf/cmake)
+add_subdirectory(protobuf)
 
 #Generate messages
 add_subdirectory(messages/cpp)

@@ -2,3 +2,4 @@
 deploy
 /CMakeLists.txt.user
 /build-wasm-WebAssembly_Qt_6_5_0_multi_threaded-Release
+*.user

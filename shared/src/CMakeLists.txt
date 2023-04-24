@@ -9,6 +9,7 @@ if (MSVC)
       /wd4910 # Ignore export warnings (C4910) with MSVC
       /wd4661 # Ignore no suitable definition for explicit template (C4661)
       /wd4251 # Ignore needs to have dll-interface
+      /wd4146 # Ignore unary minus operator applied to unsigned type, result still unsigned
     )
 endif(MSVC)
 
