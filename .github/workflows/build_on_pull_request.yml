@@ -26,7 +26,7 @@ jobs:
         cache: 'false'
         cache-key-prefix: 'install-qt-action'
         setup-python: 'false'
-        tools: 'tools_ifw'
+        tools: 'tools_ifw tools_qtcreator,qt.tools.qtcreator'
         set-env: 'true'
         tools-only: 'false'
         aqtversion: '==2.1.*'
@@ -43,7 +43,7 @@ jobs:
         dir
         
     - name: List Qt directory from workspace
-      working-directory: ${{ github.workspace }}/Qt
+      working-directory: /
       run: |
         dir
         
