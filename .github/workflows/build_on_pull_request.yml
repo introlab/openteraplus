@@ -44,6 +44,12 @@ jobs:
         
     - name: Create build directory
       run: mkdir build
+      
+    - name: List Qt directory
+      working-directory: ${{env.Qt6_Dir}}
+      run: |
+        dir
+      
         
     - name: Build
       env:
