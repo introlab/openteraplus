@@ -49,7 +49,11 @@ jobs:
       working-directory: ${{env.Qt6_DIR}}
       run: |
         dir
-     
+    
+    - uses: TheMrMilchmann/setup-msvc-dev@v2
+      with:
+        arch: x64
+      
     - name: Build
       env:
         CMAKE_MODULE_PATH : ${{env.Qt6_Dir}}/lib/cmake/Qt6
