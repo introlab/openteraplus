@@ -44,5 +44,5 @@ jobs:
         
     - name: Build
       run: |
-        cmake --build
+        cmake --build build -DCMAKE_BUILD_TYPE=Release
 
