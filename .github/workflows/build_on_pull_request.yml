@@ -33,7 +33,8 @@ jobs:
         py7zrversion: '==0.19.*'
         extra: '--external 7z'
         
-    - uses: actions/checkout@v2
+    - name: Checkout files
+      uses: actions/checkout@v3
       with:
         submodules: recursive
     
