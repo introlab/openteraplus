@@ -116,3 +116,12 @@ message (STATUS "includes : ${all_includes}")
 
 set(OPENTERA_MESSAGES_INCLUDES ${all_includes} CACHE INTERNAL "doc string")
 set(OPENTERA_MESSAGES_LIBS "opentera_messages" CACHE INTERNAL "doc string")
+
+add_definitions(-DOPENTERA_WEBASSEMBLY=1)
+set(OPENTERA_WEBASSEMBLY ON)
+
+# Shared data
+add_subdirectory(../shared shared)
+
+# Client
+add_subdirectory(../client client)
