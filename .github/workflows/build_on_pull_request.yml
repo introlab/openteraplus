@@ -10,12 +10,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-
+    
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
@@ -36,6 +32,13 @@ jobs:
         aqtversion: '==2.1.*'
         py7zrversion: '==0.19.*'
         extra: '--external 7z'
+        
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    
+    -name: List current files
+      run: dir
 
     - name: Build
       run:  cmake --build '${{github.workspace}}'/build
