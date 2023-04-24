@@ -48,6 +48,6 @@ jobs:
     - name: Build
       working-directory: build
       run: |
-        cmake ../ -DCMAKE_BUILD_TYPE=Release 
+        cmake ../ -DCMAKE_BUILD_TYPE=Release -DQt6_DIR='${{ github.workspace }}/Qt/6.5.0/win64_msvc2019_64'
         cmake --build .
 
