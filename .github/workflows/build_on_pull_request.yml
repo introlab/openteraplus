@@ -46,8 +46,10 @@ jobs:
       run: mkdir build
         
     - name: Build
+      env:
+        CMAKE_PREFIX_PATH: ${{env.Qt6_Dir}} 
       working-directory: build
       run: |
-        cmake ../ -DCMAKE_BUILD_TYPE=Release -DQt6_DIR='${{ github.workspace }}/Qt/6.5.0/win64_msvc2019_64'
-        cmake --build .
+        cmake ../ -DCMAKE_BUILD_TYPE=Release
+        ninja --build
 
