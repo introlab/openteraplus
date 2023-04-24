@@ -16,9 +16,6 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install System Dependencies
-      run: | 
-        sudo apt-get install cmake build-essential libgl1-mesa-dev
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
