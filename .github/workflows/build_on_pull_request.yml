@@ -21,7 +21,7 @@ jobs:
         arch: 'win64_msvc2019_64'
         dir: 'D:\'
         install-deps: 'true'
-        modules: 'qt3d qtactiveqt qtcharts qtimageformats qtmultimedia qtnetworkauth  qtremoteobjects qtscxml qtsensors qtserialport qtwebchannel qtwebsockets debug_info qt5compat'
+        modules: 'qt3d qtactiveqt qtcharts qtimageformats qtmultimedia qtnetworkauth  qtremoteobjects qtscxml qtsensors qtserialport qtwebengine qtwebchannel qtwebsockets debug_info qt5compat'
         archives: 'qtbase qtsvg'
         cache: 'false'
         cache-key-prefix: 'install-qt-action'
