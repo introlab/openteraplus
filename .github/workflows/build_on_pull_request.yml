@@ -38,6 +38,5 @@ jobs:
         extra: '--external 7z'
 
     - name: Build
-      run: |
-        cmake .
-        make
+      run:  cmake --build '${{github.workspace}}'/build
+
