@@ -19,14 +19,14 @@ jobs:
         host: 'windows'
         target: 'desktop'
         arch: 'win64_msvc2019_64'
-        dir: 'D:\'
+        dir: 'C:\'
         install-deps: 'true'
         modules: 'all'
         #archives: 'qtbase qtsvg'
         cache: 'false'
         cache-key-prefix: 'install-qt-action'
         setup-python: 'false'
-        tools: 'tools_ifw tools_qtcreator,qt.tools.qtcreator'
+        tools: 'tools_openssl_x64 tools_ninja'
         set-env: 'true'
         tools-only: 'false'
         aqtversion: '==2.1.*'
@@ -55,6 +55,6 @@ jobs:
         CMAKE_MODULE_PATH : ${{env.Qt6_Dir}}/lib/cmake/Qt6
       working-directory: build
       run: |
-        cmake ../ -DCMAKE_BUILD_TYPE=Release -DQT6_DIR=${{env.Qt6_Dir}}
+        cmake ../ -DCMAKE_BUILD_TYPE=Release -DQT6_DIR=${{env.Qt6_Dir}} -G ninja
         cmake --build .
 
