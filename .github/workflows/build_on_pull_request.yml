@@ -43,7 +43,7 @@ jobs:
         dir
         
     - name: List Qt directory from workspace
-      working-directory: /
+      working-directory: 'D:\'
       run: |
         dir
         
