@@ -38,10 +38,10 @@ jobs:
       with:
         submodules: recursive
     
-    -name: List current files
-     run: |
+    - name: List current files
+      run: |
         dir
-
+        
     - name: Build
       run: |
         cmake --build '${{github.workspace}}'/build
