@@ -1,0 +1,29 @@
+# This workflow will run on pull requests
+name: Build on Pull Requests
+on:
+  workflow_dispatch:
+    branches: [main, dev]
+    
+  pull_request:
+    branches: [dev, main]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+ 
+    - name: Install System Dependencies
+      run: | 
+        sudo apt-get install cmake build-essential
+    
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+          target: 'desktop'
+          version: '6.5.0'
+          modules: 'qtcharts qtwebengine qtnetworkauth qtwebglplugin qtscript debug_info'
+ 
