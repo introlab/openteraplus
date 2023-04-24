@@ -39,7 +39,7 @@ jobs:
         submodules: recursive
     
     -name: List current files
-      run: |
+     run: |
         dir
 
     - name: Build
