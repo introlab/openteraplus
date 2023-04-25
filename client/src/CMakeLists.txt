@@ -1,14 +1,10 @@
 find_package(Qt6Core REQUIRED)
 
 if(NOT OPENTERA_WEBASSEMBLY)
-    find_package(Qt6 REQUIRED COMPONENTS WebEngineCore)
-    find_package(Qt6WebEngineWidgets REQUIRED)
-    find_package(Qt6LinguistTools REQUIRED)
+    find_package(Qt6 REQUIRED COMPONENTS WebEngineCore WebEngineWidgets)
 endif()
 
-find_package(Qt6Multimedia  REQUIRED)
-find_package(Qt6WebSockets REQUIRED)
-find_package(Qt6Network REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS LinguistTools Multimedia WebSockets Network)
 
 # Drivers first
 add_subdirectory(drivers)
@@ -325,31 +321,31 @@ set(translation_files_srcs
         ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
 )
 
-if(NOT OPENTERA_WEBASSEMBLY)
-    #Translation files, this is done manually to avoid removing the file when doing make clean
-    # Add -noobsolete parameter to remove obsoleted translations
-    add_custom_target(openteraplus_en_ts
-            COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            DEPENDS ${moc_uis}
-    )
 
-    add_custom_target(openteraplus_fr_ts
-            COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            DEPENDS ${moc_uis}
-    )
+#Translation files, this is done manually to avoid removing the file when doing make clean
+# Add -noobsolete parameter to remove obsoleted translations
+add_custom_target(openteraplus_en_ts
+        COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DEPENDS ${moc_uis}
+)
 
-    #set qm files output directory
-    set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
+add_custom_target(openteraplus_fr_ts
+        COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DEPENDS ${moc_uis}
+)
 
-    #Build this target to update translations
-    add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
-    add_custom_target(translation_files SOURCES ${translation_files_srcs})
+#set qm files output directory
+set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
 
-    #Generate qm files from .ts files
-    qt6_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
-endif()
+#Build this target to update translations
+add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
+add_custom_target(translation_files SOURCES ${translation_files_srcs})
+
+#Generate qm files from .ts files
+qt6_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+
 
 message(STATUS "qm_files : ${qm_files}")
 
@@ -383,18 +379,22 @@ set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 
 # create an executable file named "OpenTeraPlus" from the source files
 # Put qrc files after qm files
-add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
-# qt6_use_modules(TeraClient Core Network Multimedia WebSockets WebEngine WebEngineWidgets WebSockets)
+if(NOT OPENTERA_WEBASSEMBLY)
+    add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
+else()
+    qt_add_executable(OpenTeraPlus ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
+endif()
+
 
 # Linking with Qt libraries and others
-target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets)
+target_link_libraries(OpenTeraPlus PRIVATE ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets)
 
 if(NOT OPENTERA_WEBASSEMBLY)
         target_link_libraries(OpenTeraPlus Qt6::WebEngineCore Qt6::WebEngineWidgets)
 endif()
 
-#target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
-target_link_libraries(OpenTeraPlus ${PTZ_DRIVERS_LIBS})
+#target_link_libraries(OpenTeraPlus PRIVATE ${VIRTUAL_CAMERA_LIBS})
+target_link_libraries(OpenTeraPlus PRIVATE ${PTZ_DRIVERS_LIBS})
 
 
 set_target_properties(OpenTeraPlus PROPERTIES
@@ -425,6 +425,5 @@ else(APPLE)
     install(TARGETS OpenTeraPlus DESTINATION bin)
     install(TARGETS opentera_messages DESTINATION bin)
 endif(APPLE)
-
 
 
