@@ -57,7 +57,7 @@ include_directories(
 qt6_wrap_cpp(sharedlib_moc_srcs ${sharedlib_headers})
 
 #compile library
-if(NOT OPENTERA_WEBASSEMBLY)
+if(NOT DEFINED OPENTERA_WEBASSEMBLY)
     add_library(opentera_shared SHARED ${sharedlib_headers} ${sharedlib_srcs} ${sharedlib_moc_srcs})
 else()
     add_library(opentera_shared STATIC ${sharedlib_headers} ${sharedlib_srcs} ${sharedlib_moc_srcs})

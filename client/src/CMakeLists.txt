@@ -1,6 +1,6 @@
 find_package(Qt6Core REQUIRED)
 
-if(NOT OPENTERA_WEBASSEMBLY)
+if(NOT DEFINED OPENTERA_WEBASSEMBLY)
     find_package(Qt6 REQUIRED COMPONENTS WebEngineCore WebEngineWidgets)
 endif()
 
@@ -93,7 +93,7 @@ set(headers
 )
 
 #Additional headers not for WebAssembly
-if(NOT OPENTERA_WEBASSEMBLY)
+if(NOT DEFINED OPENTERA_WEBASSEMBLY)
     set(headers ${headers}
         # Dialogs
         dialogs/StartSessionDialog.h
@@ -154,7 +154,7 @@ set(srcs
     dialogs/PasswordStrengthDialog.cpp
     dialogs/CleanUpDialog.cpp
     dialogs/FileUploaderDialog.cpp
-     dialogs/QRCodeDialog.cpp
+    dialogs/QRCodeDialog.cpp
     # Editors
     editors/DataEditorWidget.cpp
     editors/DataListWidget.cpp    
@@ -202,12 +202,11 @@ set(srcs
     widgets/QRWidget.cpp
     widgets/LogViewWidget.cpp
     widgets/SessionsListWidget.cpp
-
 )
 
 #Additional srcs not for WebAssembly
-if(NOT OPENTERA_WEBASSEMBLY)
-    set(src {$src}
+if(NOT DEFINED OPENTERA_WEBASSEMBLY)
+    set(srcs ${srcs}
         # Dialogs
         dialogs/StartSessionDialog.cpp
         dialogs/SessionLobbyDialog.cpp
@@ -235,6 +234,7 @@ if(NOT OPENTERA_WEBASSEMBLY)
         main/MainKitWindow.cpp
     )
 endif()
+
 
 SET(uis
     # Main Windows
@@ -379,7 +379,7 @@ set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 
 # create an executable file named "OpenTeraPlus" from the source files
 # Put qrc files after qm files
-if(NOT OPENTERA_WEBASSEMBLY)
+if(NOT DEFINED OPENTERA_WEBASSEMBLY)
     add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
 else()
     qt_add_executable(OpenTeraPlus ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
@@ -389,7 +389,7 @@ endif()
 # Linking with Qt libraries and others
 target_link_libraries(OpenTeraPlus PRIVATE ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets)
 
-if(NOT OPENTERA_WEBASSEMBLY)
+if(NOT DEFINED OPENTERA_WEBASSEMBLY)
     target_link_libraries(OpenTeraPlus PRIVATE Qt6::WebEngineCore Qt6::WebEngineWidgets)
 endif()
 

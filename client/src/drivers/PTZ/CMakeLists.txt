@@ -1,10 +1,5 @@
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
-
-if(NOT OPENTERA_WEBASSEMBLY)
-    find_package(Qt6LinguistTools REQUIRED)
-endif()
-
 find_package(Qt6Xml REQUIRED)
 find_package(Qt6Network REQUIRED)
 
