@@ -390,7 +390,7 @@ endif()
 target_link_libraries(OpenTeraPlus PRIVATE ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets)
 
 if(NOT OPENTERA_WEBASSEMBLY)
-        target_link_libraries(OpenTeraPlus Qt6::WebEngineCore Qt6::WebEngineWidgets)
+    target_link_libraries(OpenTeraPlus PRIVATE Qt6::WebEngineCore Qt6::WebEngineWidgets)
 endif()
 
 #target_link_libraries(OpenTeraPlus PRIVATE ${VIRTUAL_CAMERA_LIBS})
