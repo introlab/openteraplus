@@ -11,7 +11,9 @@
 #include <QLibraryInfo>
 
 #include "main/MainWindow.h"
+#ifndef OPENTERA_WEBASSEMBLY
 #include "main/MainKitWindow.h"
+#endif
 
 #include "dialogs/LoginDialog.h"
 #include "GlobalMessageBox.h"
@@ -24,8 +26,7 @@ class ClientApp : public QApplication
     Q_OBJECT
 public:
     ClientApp(int &argc, char** argv);
-    ~ClientApp();
-
+    virtual ~ClientApp() override;
     ComManager *getComManager();
 
 protected:
@@ -33,7 +34,9 @@ protected:
     void connectSignals();
     void showLogin();
     void showMainWindow();
+#ifndef OPENTERA_WEBASSEMBLY
     void showMainKitWindow();
+#endif
     void setupLogger();
 
     void processQueuedEvents();
@@ -43,7 +46,9 @@ protected:
     ConfigManagerClient m_config;
     LoginDialog*        m_loginDiag;
     MainWindow*         m_mainWindow;
+#ifndef OPENTERA_WEBASSEMBLY
     MainKitWindow*      m_mainKitWindow;
+#endif
 
     QList<TeraEvent>  m_eventQueue; // Queue to stack missed events when just connected, but no MainWindow yet.
 

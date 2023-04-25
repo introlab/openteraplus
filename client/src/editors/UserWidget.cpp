@@ -1,7 +1,6 @@
 #include "UserWidget.h"
 #include "ui_UserWidget.h"
 
-#include <QtSerialPort/QSerialPortInfo>
 #include <QtMultimedia/QCameraDevice>
 #include <QtMultimedia/QCamera>
 #include <QInputDialog>

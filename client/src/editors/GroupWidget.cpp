@@ -15,9 +15,9 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
     setLimited(false);
-
+#ifndef OPENTERA_WEBASSEMBLY
     m_sessionLobby = nullptr;
-
+#endif
     // Use base class to manage editing
     setEditorControls(ui->wdgGroup, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
 
@@ -60,13 +60,16 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
 
 GroupWidget::~GroupWidget()
 {
-    if (ui)
+    if (ui) {
         delete ui;
+    }
 
     qDeleteAll(m_ids_session_types);
-
-    if (m_sessionLobby)
+#ifndef OPENTERA_WEBASSEMBLY
+    if (m_sessionLobby) {
         m_sessionLobby->deleteLater();
+    }
+#endif
 }
 
 void GroupWidget::saveData(bool signal){
@@ -325,7 +328,7 @@ void GroupWidget::deleteDataReply(QString path, int del_id)
         }
     }
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void GroupWidget::showSessionLobby(const int &id_session_type, const int &id_session)
 {
     if (m_sessionLobby)
@@ -385,6 +388,7 @@ void GroupWidget::sessionLobbyStartSessionCancelled()
     }
 }
 
+#endif
 void GroupWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &GroupWidget::processFormsReply);
@@ -429,7 +433,7 @@ void GroupWidget::on_tableSummary_itemSelectionChanged()
     ui->btnDelete->setEnabled(!ui->tableSummary->selectedItems().isEmpty());
 }
 
-
+#ifndef OPENTERA_WEBASSEMBLY
 void GroupWidget::on_btnNewSession_clicked()
 {
     if (ui->cmbSessionType->currentIndex() < 0)
@@ -443,4 +447,4 @@ void GroupWidget::on_btnNewSession_clicked()
 
     showSessionLobby(id_session_type, id_session);
 }
-
+#endif

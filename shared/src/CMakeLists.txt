@@ -57,7 +57,11 @@ include_directories(
 qt6_wrap_cpp(sharedlib_moc_srcs ${sharedlib_headers})
 
 #compile library
-add_library(opentera_shared SHARED ${sharedlib_headers} ${sharedlib_srcs} ${sharedlib_moc_srcs})
+if(NOT OPENTERA_WEBASSEMBLY)
+    add_library(opentera_shared SHARED ${sharedlib_headers} ${sharedlib_srcs} ${sharedlib_moc_srcs})
+else()
+    add_library(opentera_shared STATIC ${sharedlib_headers} ${sharedlib_srcs} ${sharedlib_moc_srcs})
+endif()
 # qt6_use_modules(opentera_shared Core Network)
 
 set_target_properties(opentera_shared PROPERTIES

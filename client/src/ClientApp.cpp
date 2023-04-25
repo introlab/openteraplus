@@ -13,7 +13,9 @@ ClientApp::ClientApp(int &argc, char **argv)
     m_comMan = nullptr;
     m_loginDiag = nullptr;
     m_mainWindow = nullptr;
+#ifndef OPENTERA_WEBASSEMBLY
     m_mainKitWindow = nullptr;
+#endif
 
     m_translator = new QTranslator();
     m_qt_translator = new QTranslator();
@@ -43,8 +45,10 @@ ClientApp::ClientApp(int &argc, char **argv)
         // Show login dialog
         showLogin();
     }else{
+#ifndef OPENTERA_WEBASSEMBLY
         // Show main participant UI
         showMainKitWindow();
+#endif
     }
 
 }
@@ -162,7 +166,7 @@ void ClientApp::showMainWindow()
     if (m_comMan->getCurrentUser().hasNameField())
         processQueuedEvents();
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void ClientApp::showMainKitWindow()
 {
     if (m_mainKitWindow != nullptr){
@@ -171,7 +175,7 @@ void ClientApp::showMainKitWindow()
     m_mainKitWindow = new MainKitWindow(&m_config);
 
 }
-
+#endif
 void ClientApp::setupLogger()
 {
 

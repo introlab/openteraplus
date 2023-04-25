@@ -154,7 +154,7 @@ void WebSocketManager::onSocketSslErrors(const QList<QSslError> &errors)
 void WebSocketManager::onSocketTextMessageReceived(const QString &message)
 {
     LOG_DEBUG(message, "WebSocketManager::onSocketTextMessageReceived");
-
+#ifndef OPENTERA_WEBASSEMBLY
     // Handle received message depending on type
     TeraMessage tera_msg;
     if (google::protobuf::util::JsonStringToMessage(message.toStdString(), &tera_msg).ok()){
@@ -257,7 +257,7 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
     }else{
         LOG_ERROR("Unable to decode received protobuf message", "WebSocketManager::onSocketTextMessageReceived");
     }
-
+#endif
 }
 
 void WebSocketManager::onSocketBinaryMessageReceived(const QByteArray &message)

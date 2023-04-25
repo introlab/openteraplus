@@ -11,7 +11,9 @@ UserSummaryWidget::UserSummaryWidget(ComManager *comMan, const TeraData *data, c
 {
 
     m_diag_editor = nullptr;
+#ifndef OPENTERA_WEBASSEMBLY
     m_sessionLobby = nullptr;
+#endif
     m_passwordJustGenerated = false;
     m_idProject = id_project;
 
@@ -50,9 +52,11 @@ UserSummaryWidget::UserSummaryWidget(ComManager *comMan, const TeraData *data, c
 UserSummaryWidget::~UserSummaryWidget()
 {
     delete ui;
-
-    if (m_sessionLobby)
+#ifndef OPENTERA_WEBASSEMBLY
+    if (m_sessionLobby) {
         m_sessionLobby->deleteLater();
+    }
+#endif
 }
 
 void UserSummaryWidget::connectSignals()
@@ -309,6 +313,7 @@ void UserSummaryWidget::ws_userEvent(UserEvent event)
     updateFieldsValue();
 }
 
+#ifndef OPENTERA_WEBASSEMBLY
 void UserSummaryWidget::sessionLobbyStartSessionRequested()
 {
     int id_session_type = ui->cmbSessionType->currentData().toInt();
@@ -356,6 +361,7 @@ void UserSummaryWidget::on_btnNewSession_clicked()
     // Show Session Lobby
     m_sessionLobby->exec();
 }
+#endif
 
 void UserSummaryWidget::on_tabNav_currentChanged(int index)
 {

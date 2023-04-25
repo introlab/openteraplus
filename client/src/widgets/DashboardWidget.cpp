@@ -7,8 +7,9 @@ DashboardWidget::DashboardWidget(ComManager *comMan, int id_site, QWidget *paren
     m_comManager(comMan)
 {
     ui->setupUi(this);
-
+#ifndef OPENTERA_WEBASSEMBLY
     m_sessionLobby = nullptr;
+#endif
     m_cleanupDiag = nullptr;
     ui->tableUpcomingSessions->hide();
     ui->tableRecentParticipants->hide();
@@ -28,10 +29,15 @@ DashboardWidget::~DashboardWidget()
     qDeleteAll(m_sessions);
     qDeleteAll(m_session_types);
 
-    if (m_cleanupDiag)
+    if (m_cleanupDiag) {
         m_cleanupDiag->deleteLater();
-    if (m_sessionLobby)
+    }
+
+#ifndef OPENTERA_WEBASSEMBLY
+    if (m_sessionLobby) {
         m_sessionLobby->deleteLater();
+    }
+#endif
 
     delete ui;
 }
@@ -486,7 +492,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
     ui->btnAttention->setText(tr("Attention requise") + " (" + QString::number(total_warnings) + ")");
 
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void DashboardWidget::sessionLobbyStartSessionCancelled()
 {
     if (m_sessionLobby){
@@ -509,6 +515,7 @@ void DashboardWidget::sessionLobbyStartSessionRequested()
     m_sessionLobby->deleteLater();
     m_sessionLobby = nullptr;
 }
+#endif
 
 void DashboardWidget::cleanupDialogCompleted()
 {
@@ -567,6 +574,7 @@ void DashboardWidget::updateUiSpacing()
     }
 }
 
+#ifndef OPENTERA_WEBASSEMBLY
 void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id_session)
 {
     if (m_sessionLobby)
@@ -644,6 +652,7 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     // Show Session Lobby
     m_sessionLobby->exec();
 }
+#endif
 
 QToolButton *DashboardWidget::createManageWarningButton()
 {
@@ -663,13 +672,14 @@ QToolButton *DashboardWidget::createManageWarningButton()
 
 void DashboardWidget::on_tableUpcomingSessions_itemDoubleClicked(QTableWidgetItem *item)
 {
+#ifndef OPENTERA_WEBASSEMBLY
     int current_row = item->row();
     QTableWidgetItem* base_item = ui->tableUpcomingSessions->item(current_row, 1);
-
     if (m_listSessions_items.contains(base_item)){
         int id_session = m_listSessions_items.value(base_item);
         showSessionLobby(m_sessions[id_session]->getFieldValue("id_session_type").toInt(), id_session);
     }
+#endif
 }
 
 

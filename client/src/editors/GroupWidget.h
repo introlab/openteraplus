@@ -11,7 +11,9 @@
 #include "widgets/TableDateWidgetItem.h"
 #include "widgets/TableNumberWidgetItem.h"
 
+#ifndef OPENTERA_WEBASSEMBLY
 #include "dialogs/SessionLobbyDialog.h"
+#endif
 
 namespace Ui {
 class GroupWidget;
@@ -23,9 +25,9 @@ class GroupWidget : public DataEditorWidget
 
 public:
     explicit GroupWidget(ComManager* comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
-    ~GroupWidget();
+    ~GroupWidget() override;
 
-    void saveData(bool signal=true);
+    void saveData(bool signal=true) override;
 
     void connectSignals();
 
@@ -36,17 +38,17 @@ private:
     QList<int>            m_activeParticipants;
 
     QMap<int, TeraData*>            m_ids_session_types;
-
+#ifndef OPENTERA_WEBASSEMBLY
     SessionLobbyDialog*             m_sessionLobby;
+#endif
+    void updateControlsState() override;
+    void updateFieldsValue() override;
 
-    void updateControlsState();
-    void updateFieldsValue();
-
-    void setData(const TeraData* data);
+    void setData(const TeraData* data) override;
 
     bool canStartSession();
 
-    bool validateData();
+    bool validateData() override;
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -55,15 +57,16 @@ private slots:
     void postResultReply(QString path);
 
     void deleteDataReply(QString path, int del_id);
-
+#ifndef OPENTERA_WEBASSEMBLY
     void showSessionLobby(const int& id_session_type, const int& id_session);
     void sessionLobbyStartSessionRequested();
     void sessionLobbyStartSessionCancelled();
-
+    void on_btnNewSession_clicked();
+#endif
     void on_btnNewParticipant_clicked();
     void on_btnDelete_clicked();
     void on_tableSummary_itemSelectionChanged();
-    void on_btnNewSession_clicked();
+
 };
 
 #endif // GROUPWIDGET_H

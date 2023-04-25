@@ -3,7 +3,7 @@
  *
  */
 #include "ClientApp.h"
-#include <QWebEngineSettings>
+//#include <QWebEngineSettings>
 #include <QTranslator>
 
 int main(int argc, char* argv[])

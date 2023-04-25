@@ -11,7 +11,10 @@
 
 #include "widgets/TableDateWidgetItem.h"
 
+#ifndef OPENTERA_WEBASSEMBLY
 #include "dialogs/SessionLobbyDialog.h"
+#endif
+
 #include "dialogs/CleanUpDialog.h"
 
 #include "GlobalMessageBox.h"
@@ -43,9 +46,10 @@ private slots:
     void processSessionTypesReply(const QList<TeraData> session_types);
     void processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_query);
     void processStatsReply(const TeraData stats, const QUrlQuery reply_query);
-
+#ifndef OPENTERA_WEBASSEMBLY
     void sessionLobbyStartSessionCancelled();
     void sessionLobbyStartSessionRequested();
+#endif
     void cleanupDialogCompleted();
 
     void on_tableUpcomingSessions_itemDoubleClicked(QTableWidgetItem *item);
@@ -62,7 +66,9 @@ private:
 
     ComManager*                     m_comManager;
     int                             m_siteId;
+#ifndef OPENTERA_WEBASSEMBLY
     SessionLobbyDialog*             m_sessionLobby;
+#endif
     CleanUpDialog*                  m_cleanupDiag;
 
     QHash<QTableWidgetItem*, int>   m_listSessions_items;
@@ -76,9 +82,9 @@ private:
     void refreshData();
 
     void updateUiSpacing();
-
+#ifndef OPENTERA_WEBASSEMBLY
     void showSessionLobby(const int &id_session_type, const int &id_session);
-
+#endif
     QToolButton *createManageWarningButton();
 
 };

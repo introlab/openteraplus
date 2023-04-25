@@ -15,9 +15,9 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::ParticipantWidget)
 {
-
+#ifndef OPENTERA_WEBASSEMBLY
     m_sessionLobby = nullptr;
-
+#endif
     m_allowFileTransfers = false;
 
     ui->setupUi(this);
@@ -76,11 +76,15 @@ ParticipantWidget::~ParticipantWidget()
     qDeleteAll(m_ids_session_types);
     delete ui;
 
-    if (m_sessionLobby)
+#ifndef OPENTERA_WEBASSEMBLY
+    if (m_sessionLobby) {
         m_sessionLobby->deleteLater();
+    }
+#endif
 
-    if (m_diag_qr)
+    if (m_diag_qr) {
         m_diag_qr->deleteLater();
+    }
 }
 
 
@@ -132,8 +136,9 @@ void ParticipantWidget::connectSignals()
 
     connect(ui->lstAvailDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentAvailDeviceChanged);
     connect(ui->lstDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentDeviceChanged);
-
+#ifndef OPENTERA_WEBASSEMBLY
     connect(ui->wdgSessions, &SessionsListWidget::startSessionRequested, this, &ParticipantWidget::showSessionLobby);
+#endif
     connect(ui->wdgSessions, &SessionsListWidget::sessionsCountUpdated, this, &ParticipantWidget::sessionTotalCountUpdated);
 }
 
@@ -714,7 +719,7 @@ bool ParticipantWidget::isProjectAdmin()
 
     return m_comManager->getCurrentUserProjectRole(m_data->getFieldValue("id_project").toInt()) == "admin";
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &id_session)
 {
     if (!canStartNewSession(id_session_type)){
@@ -773,7 +778,7 @@ void ParticipantWidget::sessionLobbyStartSessionCancelled()
         m_sessionLobby = nullptr;
     }
 }
-
+#endif
 void ParticipantWidget::currentAvailDeviceChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     Q_UNUSED(previous)
@@ -1019,7 +1024,9 @@ void ParticipantWidget::on_btnNewSession_clicked()
     }
 
     // If id_session == 0, will start a new session. Otherwise, will resume that session with id_session
+#ifndef OPENTERA_WEBASSEMBLY
     showSessionLobby(id_session_type, id_session);
+#endif
 }
 
 void ParticipantWidget::on_btnViewLink_clicked()
@@ -1132,12 +1139,14 @@ void ParticipantWidget::on_tabNav_currentChanged(int index)
 
 void ParticipantWidget::on_lstAvailDevices_itemDoubleClicked(QListWidgetItem *item)
 {
+    Q_UNUSED(item)
     btnAddDevice_clicked();
 }
 
 
 void ParticipantWidget::on_lstDevices_itemDoubleClicked(QListWidgetItem *item)
 {
+    Q_UNUSED(item)
     btnDelDevice_clicked();
 }
 

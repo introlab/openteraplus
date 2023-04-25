@@ -50,7 +50,7 @@ set(protobuf_BUILD_SHARED_LIBS_DEFAULT OFF)
 set(protobuf_BUILD_TESTS OFF)
 set(protobuf_INSTALL OFF)
 
-
+add_compile_options(-pthread)
 add_subdirectory(../external/protobuf protobuf)
 
 #Generate messages
@@ -111,6 +111,7 @@ add_library(opentera_messages STATIC ${generated_headers} ${generated_srcs})
 #Link with protobuf
 target_link_libraries(opentera_messages libprotobuf)
 target_compile_definitions(opentera_messages PUBLIC OPENTERA_PROTOCOL_VERSION=1)
+target_compile_options(opentera_messages PUBLIC -pthread)
 get_target_property(all_includes opentera_messages INCLUDE_DIRECTORIES)
 
 message (STATUS "includes : ${all_includes}")

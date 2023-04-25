@@ -1,9 +1,9 @@
 find_package(Qt6Core REQUIRED)
 
 if(NOT OPENTERA_WEBASSEMBLY)
-	find_package(Qt6 REQUIRED COMPONENTS WebEngineCore)
-	find_package(Qt6WebEngineWidgets REQUIRED)
-	find_package(Qt6LinguistTools REQUIRED)
+    find_package(Qt6 REQUIRED COMPONENTS WebEngineCore)
+    find_package(Qt6WebEngineWidgets REQUIRED)
+    find_package(Qt6LinguistTools REQUIRED)
 endif()
 
 find_package(Qt6Multimedia  REQUIRED)
@@ -27,7 +27,6 @@ set(headers
     data/IconMenuDelegate.h
     # Main Windows
     main/MainWindow.h
-    main/MainKitWindow.h
     # Managers
     managers/ConfigManagerClient.h
     managers/ComManager.h
@@ -37,12 +36,7 @@ set(headers
     managers/AssetComManager.h
     # Dialogs
     dialogs/LoginDialog.h
-    dialogs/StartSessionDialog.h
-    dialogs/SessionLobbyDialog.h
-    dialogs/JoinSessionDialog.h
     dialogs/EmailInviteDialog.h
-    dialogs/AboutDialog.h
-    dialogs/AboutDialogPage.h
     dialogs/GeneratePasswordDialog.h
     dialogs/PasswordStrengthDialog.h
     dialogs/TransferProgressDialog.h
@@ -78,21 +72,10 @@ set(headers
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
     services/BaseServiceSetupWidget.h
-    services/VideoRehabService/ScreenController.h
-    services/VideoRehabService/VideoRehabWidget.h
-    services/VideoRehabService/VideoRehabWebPage.h
-    services/VideoRehabService/VideoRehabSetupWidget.h
-    services/VideoRehabService/VideoRehabToolsWidget.h
-    services/VideoRehabService/VideoRehabVirtualCamSetupDialog.h
-    services/VideoRehabService/VideoRehabPTZDialog.h
-    services/VideoRehabService/WebSocket/SharedObject.h
-    services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
-    services/VideoRehabService/WebSocket/WebSocketTransport.h
     services/DanceService/DanceConfigWidget.h
     services/DanceService/DanceWebAPI.h
     services/DanceService/DanceComManager.h
     # Widgets
-    widgets/InSessionWidget.h
     widgets/SessionInviteWidget.h
     widgets/OnlineManagerWidget.h
     widgets/ClickableLabel.h
@@ -110,12 +93,39 @@ set(headers
     widgets/QRWidget.h
     widgets/LogViewWidget.h
     widgets/SessionsListWidget.h
-    # Kits
-    kit/KitConfigDialog.h
-    kit/KitConfigManager.h
-    kit/KitInSessionDialog.h
-    kit/KitVideoRehabWidget.h
+
 )
+
+#Additional headers not for WebAssembly
+if(NOT OPENTERA_WEBASSEMBLY)
+    set(headers ${headers}
+        # Dialogs
+        dialogs/StartSessionDialog.h
+        dialogs/SessionLobbyDialog.h
+        dialogs/JoinSessionDialog.h
+        dialogs/AboutDialog.h
+        dialogs/AboutDialogPage.h
+        # Widgets
+        widgets/InSessionWidget.h
+        # Services
+        services/VideoRehabService/ScreenController.h
+        services/VideoRehabService/VideoRehabWidget.h
+        services/VideoRehabService/VideoRehabWebPage.h
+        services/VideoRehabService/VideoRehabSetupWidget.h
+        services/VideoRehabService/VideoRehabToolsWidget.h
+        services/VideoRehabService/VideoRehabVirtualCamSetupDialog.h
+        services/VideoRehabService/VideoRehabPTZDialog.h
+        services/VideoRehabService/WebSocket/SharedObject.h
+        services/VideoRehabService/WebSocket/WebSocketClientWrapper.h
+        services/VideoRehabService/WebSocket/WebSocketTransport.h
+        # Kits
+        kit/KitConfigDialog.h
+        kit/KitConfigManager.h
+        kit/KitInSessionDialog.h
+        kit/KitVideoRehabWidget.h
+        main/MainKitWindow.h
+    )
+endif()
 
 set(srcs
     main.cpp
@@ -131,7 +141,6 @@ set(srcs
     data/IconMenuDelegate.cpp
     # Main Windows
     main/MainWindow.cpp
-    main/MainKitWindow.cpp
     # Managers
     managers/ConfigManagerClient.cpp
     managers/ComManager.cpp
@@ -144,12 +153,7 @@ set(srcs
     dialogs/DeviceAssignDialog.cpp
     dialogs/TransferProgressDialog.cpp
     dialogs/BaseDialog.cpp
-    dialogs/StartSessionDialog.cpp
-    dialogs/SessionLobbyDialog.cpp
-    dialogs/JoinSessionDialog.cpp
     dialogs/EmailInviteDialog.cpp
-    dialogs/AboutDialog.cpp
-    dialogs/AboutDialogPage.cpp
     dialogs/GeneratePasswordDialog.cpp
     dialogs/PasswordStrengthDialog.cpp
     dialogs/CleanUpDialog.cpp
@@ -175,7 +179,6 @@ set(srcs
     editors/UserGroupWidget.cpp
     editors/UserSummaryWidget.cpp
     editors/UserWidget.cpp
-
     # Wizards
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
@@ -183,16 +186,6 @@ set(srcs
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
     services/BaseServiceSetupWidget.cpp
-    services/VideoRehabService/ScreenController.cpp
-    services/VideoRehabService/VideoRehabWidget.cpp
-    services/VideoRehabService/VideoRehabWebPage.cpp
-    services/VideoRehabService/VideoRehabSetupWidget.cpp
-    services/VideoRehabService/VideoRehabToolsWidget.cpp
-    services/VideoRehabService/VideoRehabVirtualCamSetupDialog.cpp
-    services/VideoRehabService/VideoRehabPTZDialog.cpp
-    services/VideoRehabService/WebSocket/SharedObject.cpp
-    services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
-    services/VideoRehabService/WebSocket/WebSocketTransport.cpp
     services/DanceService/DanceConfigWidget.cpp
     services/DanceService/DanceComManager.cpp
     # Widgets
@@ -201,7 +194,6 @@ set(srcs
     widgets/NotificationWindow.cpp
     widgets/ConfigWidget.cpp
     widgets/HistoryCalendarWidget.cpp
-    widgets/InSessionWidget.cpp
     widgets/SessionInviteWidget.cpp
     widgets/OnlineManagerWidget.cpp
     widgets/ClickableLabel.cpp
@@ -214,12 +206,39 @@ set(srcs
     widgets/QRWidget.cpp
     widgets/LogViewWidget.cpp
     widgets/SessionsListWidget.cpp
-    # Kits
-    kit/KitConfigDialog.cpp
-    kit/KitConfigManager.cpp
-    kit/KitInSessionDialog.cpp
-    kit/KitVideoRehabWidget.cpp
+
 )
+
+#Additional srcs not for WebAssembly
+if(NOT OPENTERA_WEBASSEMBLY)
+    set(src {$src}
+        # Dialogs
+        dialogs/StartSessionDialog.cpp
+        dialogs/SessionLobbyDialog.cpp
+        dialogs/JoinSessionDialog.cpp
+        dialogs/AboutDialog.cpp
+        dialogs/AboutDialogPage.cpp
+        # Widgets
+        widgets/InSessionWidget.cpp
+        # Services
+        services/VideoRehabService/ScreenController.cpp
+        services/VideoRehabService/VideoRehabWidget.cpp
+        services/VideoRehabService/VideoRehabWebPage.cpp
+        services/VideoRehabService/VideoRehabSetupWidget.cpp
+        services/VideoRehabService/VideoRehabToolsWidget.cpp
+        services/VideoRehabService/VideoRehabVirtualCamSetupDialog.cpp
+        services/VideoRehabService/VideoRehabPTZDialog.cpp
+        services/VideoRehabService/WebSocket/SharedObject.cpp
+        services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
+        services/VideoRehabService/WebSocket/WebSocketTransport.cpp
+        # Kits
+        kit/KitConfigDialog.cpp
+        kit/KitConfigManager.cpp
+        kit/KitInSessionDialog.cpp
+        kit/KitVideoRehabWidget.cpp
+        main/MainKitWindow.cpp
+    )
+endif()
 
 SET(uis
     # Main Windows
@@ -300,37 +319,36 @@ QT6_WRAP_CPP(moc_srcs ${headers})
 QT6_ADD_RESOURCES(client_qrc ${qrcs})
 
 
+
+set(translation_files_srcs
+        ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+        ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+)
+
 if(NOT OPENTERA_WEBASSEMBLY)
-	set(translation_files_srcs
-		${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
-		${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
-	)
+    #Translation files, this is done manually to avoid removing the file when doing make clean
+    # Add -noobsolete parameter to remove obsoleted translations
+    add_custom_target(openteraplus_en_ts
+            COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            DEPENDS ${moc_uis}
+    )
 
-	#Translation files, this is done manually to avoid removing the file when doing make clean
-	# Add -noobsolete parameter to remove obsoleted translations
-	add_custom_target(openteraplus_en_ts
-		COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		DEPENDS ${moc_uis}
-	)
+    add_custom_target(openteraplus_fr_ts
+            COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            DEPENDS ${moc_uis}
+    )
 
-	add_custom_target(openteraplus_fr_ts
-		COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		DEPENDS ${moc_uis}
-	)
+    #set qm files output directory
+    set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
 
-	#set qm files output directory
-	set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
+    #Build this target to update translations
+    add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
+    add_custom_target(translation_files SOURCES ${translation_files_srcs})
 
-	#Build this target to update translations
-	add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
-	add_custom_target(translation_files SOURCES ${translation_files_srcs})
-
-
-	#Generate qm files from .ts files
-	qt6_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
-
+    #Generate qm files from .ts files
+    qt6_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
 endif()
 
 message(STATUS "qm_files : ${qm_files}")
@@ -372,7 +390,7 @@ add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc
 target_link_libraries(OpenTeraPlus ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets)
 
 if(NOT OPENTERA_WEBASSEMBLY)
-	target_link_libraries(OpenTeraPlus Qt6::WebEngineCore Qt6::WebEngineWidgets)
+        target_link_libraries(OpenTeraPlus Qt6::WebEngineCore Qt6::WebEngineWidgets)
 endif()
 
 #target_link_libraries(OpenTeraPlus ${VIRTUAL_CAMERA_LIBS})
