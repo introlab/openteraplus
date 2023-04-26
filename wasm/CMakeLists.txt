@@ -25,7 +25,15 @@ endif(NOT CMAKE_BUILD_TYPE)
 # Building protobuf webasm
 # https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-win64.zip
 
-set(protoc_archive_name protoc-22.3-win64.zip)
+if (APPLE)
+    set(protoc_archive_name protoc-22.3-osx-x86_64.zip)
+elseif(WIN32)
+    set(protoc_archive_name protoc-22.3-win64.zip)
+else()
+    set(protoc_archive_name protoc-22.3-linux-x86_64.zip)
+endif()
+
+
 set(protc_binaries_url https://github.com/protocolbuffers/protobuf/releases/download/v22.3/${protoc_archive_name})
 
 # Download Archive
