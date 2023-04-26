@@ -15,6 +15,7 @@ add_definitions(-DOPENTERAPLUS_VERSION_MINOR="${CPACK_PACKAGE_VERSION_MINOR}" )
 add_definitions(-DOPENTERAPLUS_VERSION_PATCH="${CPACK_PACKAGE_VERSION_PATCH}" )
 add_definitions(-DOPENTERAPLUS_CLIENT_NAME="${CMAKE_PROJECT_NAME}")
 
+set(CMAKE_CXX_STANDARD 17)
 
 # Compile in debug or release mode
 if(NOT CMAKE_BUILD_TYPE)
@@ -27,10 +28,13 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 if (APPLE)
     set(protoc_archive_name protoc-22.3-osx-x86_64.zip)
+    set(protobuf_PROTOC_EXE ${CMAKE_CURRENT_BINARY_DIR}/protoc/bin/protoc)
 elseif(WIN32)
     set(protoc_archive_name protoc-22.3-win64.zip)
+    set(protobuf_PROTOC_EXE ${CMAKE_CURRENT_BINARY_DIR}/protoc/bin/protoc.exe)
 else()
     set(protoc_archive_name protoc-22.3-linux-x86_64.zip)
+    set(protobuf_PROTOC_EXE ${CMAKE_CURRENT_BINARY_DIR}/protoc/bin/protoc)
 endif()
 
 
@@ -51,7 +55,6 @@ endif()
 file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_BINARY_DIR}/${protoc_archive_name} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/protoc)
 
 set(ABSL_PROPAGATE_CXX_STD OFF)
-set(protobuf_PROTOC_EXE ${CMAKE_CURRENT_BINARY_DIR}/protoc/bin/protoc.exe)
 set(protobuf_BUILD_EXAMPLES OFF)
 set(protobuf_BUILD_PROTOC_BINARIES OFF) 
 set(protobuf_BUILD_LIBPROTOC OFF)
