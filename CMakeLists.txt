@@ -48,7 +48,7 @@ endif(UNIX AND NOT APPLE)
 
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 message(STATUS "Using QMAKE: ${QT_QMAKE_EXECUTABLE}")
@@ -76,4 +76,4 @@ add_custom_target(readme SOURCES README.md LICENSE.TXT)
 install(FILES README.md LICENSE.TXT DESTINATION .)
 
 # Package
-add_subdirectory(package)
+# add_subdirectory(package)
