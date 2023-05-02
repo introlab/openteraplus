@@ -1,11 +1,12 @@
 #ifndef TERAASSET_H
 #define TERAASSET_H
 
+#include "SharedLib.h"
 #include <QObject>
 // #include <QMimeType>
 // #include <QMimeDatabase>
 
-class TeraAsset : public QObject
+class SHAREDLIB_EXPORT TeraAsset : public QObject
 {
     Q_OBJECT
 public:

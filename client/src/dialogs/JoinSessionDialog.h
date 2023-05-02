@@ -2,8 +2,6 @@
 #define JOINSESSIONDIALOG_H
 
 #include <QDialog>
-#include <QSound>
-
 #include "managers/ComManager.h"
 
 // Protobuf
@@ -30,7 +28,7 @@ public:
 
     int getSessionId();
 
-    ~JoinSessionDialog();
+    virtual ~JoinSessionDialog() override;
 
 private slots:
     void on_btnJoinSession_clicked();

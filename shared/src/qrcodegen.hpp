@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include "SharedLib.h"
 #include <array>
 #include <cstdint>
 #include <stdexcept>

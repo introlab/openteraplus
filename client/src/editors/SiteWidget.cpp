@@ -618,7 +618,7 @@ void SiteWidget::on_tabNav_currentChanged(int index)
         // Users
         if (!ui->wdgUsers->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
+            layout->setContentsMargins(0,0,0,0);
             ui->wdgUsers->setLayout(layout);
         }
         if (ui->wdgUsers->layout()->count() == 0){

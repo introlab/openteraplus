@@ -10,7 +10,10 @@
 #include "TeraSessionStatus.h"
 #include "Utils.h"
 #include "ServiceConfigWidget.h"
+
+#ifndef OPENTERA_WEBASSEMBLY
 #include "dialogs/SessionLobbyDialog.h"
+#endif
 
 namespace Ui {
 class DeviceSummaryWidget;
@@ -22,9 +25,9 @@ class DeviceSummaryWidget : public DataEditorWidget
 
 public:
     explicit DeviceSummaryWidget(ComManager* comMan, const TeraData* data = nullptr, const int &id_project = -1, QWidget *parent = nullptr);
-    ~DeviceSummaryWidget();
+    ~DeviceSummaryWidget() override;
 
-    void saveData(bool signal=true);
+    void saveData(bool signal=true) override;
     void connectSignals();
 
 private:
@@ -33,15 +36,17 @@ private:
     QMap<int, TeraData*>            m_ids_session_types;
 
     BaseDialog*                     m_diag_editor;
+#ifndef OPENTERA_WEBASSEMBLY
     SessionLobbyDialog*             m_sessionLobby;
+#endif
 
     int 	m_idProject;
 
-    void updateControlsState();
-    void updateFieldsValue();
+    void updateControlsState() override;
+    void updateFieldsValue() override;
     void initUI();
 
-    bool validateData();
+    bool validateData() override;
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -51,11 +56,11 @@ private slots:
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
 
     void ws_deviceEvent(opentera::protobuf::DeviceEvent event);
-
+#ifndef OPENTERA_WEBASSEMBLY
     void sessionLobbyStartSessionRequested();
     void sessionLobbyStartSessionCancelled();
-
     void on_btnNewSession_clicked();
+#endif
     void on_tabNav_currentChanged(int index);
 
     void sessionTotalCountUpdated(int new_count);

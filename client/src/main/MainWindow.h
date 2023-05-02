@@ -20,10 +20,16 @@
 #include "data/GlobalEvent.h"
 #include "data/DownloadingFile.h"
 #include "TeraSessionCategory.h"
+
+#ifndef OPENTERA_WEBASSEMBLY
 #include "widgets/InSessionWidget.h"
+#endif
+
 #include "dialogs/JoinSessionDialog.h"
 
+#ifndef OPENTERA_WEBASSEMBLY
 #include "dialogs/AboutDialog.h"
+#endif
 
 // Protobuf
 #include "UserEvent.pb.h"
@@ -88,7 +94,10 @@ private slots:
     void addGlobalEvent(GlobalEvent event);
 
     void editorDialogFinished();
+#ifndef OPENTERA_WEBASSEMBLY
     void joinSessionDialogFinished();
+#endif
+
     void dataDisplayRequested(TeraDataTypes data_type, int data_id);
     void dataDisplayRequestedByUuid(TeraDataTypes data_type, QString data_uuid);
     void dataDeleteRequested(TeraDataTypes data_type, int data_id);   
@@ -109,8 +118,9 @@ private:
     void initUi();
     void showDataEditor(const TeraDataTypes &data_type, const TeraData *data);
     void showDashboard(const bool &show);
+#ifndef OPENTERA_WEBASSEMBLY
     void setInSession(bool in_session, const TeraData *session_type, const int& id_session, int id_project=0);
-
+#endif
     // Messages and notifications
     void addMessage(Message::MessageType msg_type, QString msg);
     void addMessage(Message &msg);
@@ -126,7 +136,9 @@ private:
     BaseDialog*             m_diag_editor;
     DataEditorWidget*       m_data_editor;
     DashboardWidget*        m_dashboard;
+#ifndef OPENTERA_WEBASSEMBLY
     InSessionWidget*        m_inSessionWidget;
+#endif
     TransferProgressDialog* m_download_dialog;
     JoinSessionDialog*      m_joinSession_dialog;
     TeraDataTypes           m_waiting_for_data_type;

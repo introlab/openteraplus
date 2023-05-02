@@ -23,8 +23,10 @@ BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
 
     // Connect base signals
     connect(m_netManager, &QNetworkAccessManager::finished, this, &BaseComManager::onNetworkFinished);
+#ifndef OPENTERA_WEBASSEMBLY
     connect(m_netManager, &QNetworkAccessManager::sslErrors, this, &BaseComManager::onNetworkSslErrors);
     connect(m_netManager, &QNetworkAccessManager::encrypted, this, &BaseComManager::onNetworkEncrypted);
+#endif
     connect(m_netManager, &QNetworkAccessManager::authenticationRequired, this, &BaseComManager::onNetworkAuthenticationRequired);
 
 }
@@ -374,6 +376,7 @@ void BaseComManager::onNetworkFinished(QNetworkReply *reply){
 
 }
 
+#ifndef OPENTERA_WEBASSEMBLY
 void BaseComManager::onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors){
     Q_UNUSED(reply)
     Q_UNUSED(errors)
@@ -389,6 +392,8 @@ void BaseComManager::onNetworkEncrypted(QNetworkReply *reply){
     Q_UNUSED(reply)
     //qDebug() << QString(this->metaObject()->className()) + "::onNetworkEncrypted";
 }
+#endif
+
 
 void BaseComManager::onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {

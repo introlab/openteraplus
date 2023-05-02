@@ -2,8 +2,9 @@
 #define TERASESSIONCATEGORY_H
 
 #include <QObject>
+#include "SharedLib.h"
 
-class TeraSessionCategory : public QObject
+class SHAREDLIB_EXPORT TeraSessionCategory : public QObject
 {
     Q_OBJECT
 public:

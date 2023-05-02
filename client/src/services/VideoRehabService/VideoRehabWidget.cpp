@@ -13,7 +13,7 @@ VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_virtualCamThread = nullptr;
+    //m_virtualCamThread = nullptr;
 
     initUI();
     connectSignals();
@@ -29,11 +29,15 @@ VideoRehabWidget::~VideoRehabWidget()
     m_loadingIcon->deleteLater();
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
+
+    //TODO Fix Virtual Camera
+    /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
      }
+    */
 
     delete ui;
 
@@ -53,14 +57,12 @@ void VideoRehabWidget::initUI()
     ui->icoLoading->setMovie(m_loadingIcon);
     m_loadingIcon->start();
 
-    QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
-    //QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
-    QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PlaybackRequiresUserGesture, false);
 
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &VideoRehabWidget::webPageLoaded);
 
     // Create a new page
+    // DL new Settings are set in the page constructor
     m_webPage = new VideoRehabWebPage(m_webEngine);
     connect(m_webPage->getSharedObject(), &SharedObject::pageIsReady, this, &VideoRehabWidget::webPageReady);
     connect(m_webPage->getSharedObject(), &SharedObject::videoErrorOccured, this, &VideoRehabWidget::webPageVideoError);
@@ -177,7 +179,7 @@ void VideoRehabWidget::webEngineURLChanged(QUrl url)
     ui->txtURL->setText(url.toString());
 }
 
-void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
+void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadRequest *item)
 {
     //qDebug() << "WebEngine: about to download " << item->suggestedFileName();
     emit fileDownloading(true);
@@ -210,7 +212,7 @@ void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
         item->setDownloadFileName(file_name);
     }
 
-    connect(item, &QWebEngineDownloadItem::finished, this, &VideoRehabWidget::webEngineDownloadCompleted);
+    connect(item, &QWebEngineDownloadRequest::isFinishedChanged, this, &VideoRehabWidget::webEngineDownloadCompleted);
     item->accept();
 
 }
@@ -220,7 +222,7 @@ void VideoRehabWidget::webEngineDownloadCompleted()
     // Enable buttons
     emit fileDownloading(false);
 
-    QWebEngineDownloadItem* item = dynamic_cast<QWebEngineDownloadItem*>(sender());
+    QWebEngineDownloadRequest* item = dynamic_cast<QWebEngineDownloadRequest*>(sender());
     if (item){
         if (item->receivedBytes() == 0)
             return;
@@ -377,6 +379,9 @@ void VideoRehabWidget::showError(const QString &title, const QString &context, c
 
 void VideoRehabWidget::startVirtualCamera(const QString &src)
 {
+    //TODO Fix Virtual Camera
+    qDebug() << "VideoRehabWidget::startVirtualCamera not implemented.";
+    /*
     if (m_virtualCamThread){
         stopVirtualCamera();
     }
@@ -384,10 +389,14 @@ void VideoRehabWidget::startVirtualCamera(const QString &src)
     m_virtualCamThread = new VirtualCameraThread(src);
     connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &VideoRehabWidget::virtualCameraDisconnected);
     m_virtualCamThread->start();
+    */
 }
 
 void VideoRehabWidget::stopVirtualCamera()
 {
+    //TODO Fix Virtual Camera
+    qDebug() << "VideoRehabWidget::stopVirtualCamera not implemented.";
+    /*
     qDebug() << "VideoRehabWidget::stopVirtualCamera";
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
@@ -395,6 +404,7 @@ void VideoRehabWidget::stopVirtualCamera()
         m_virtualCamThread->deleteLater();
         m_virtualCamThread = nullptr;
     }
+    */
 }
 
 void VideoRehabWidget::on_btnRefresh_clicked()

@@ -8,6 +8,7 @@
 #include "Logger.h"
 
 // Protobuf includes
+
 #include "UserRegisterToEvent.pb.h"
 #include "UserEvent.pb.h"
 #include "DeviceEvent.pb.h"
@@ -20,18 +21,18 @@
 #include "TeraMessage.pb.h"
 #include "TeraModuleMessage.pb.h"
 #include "DatabaseEvent.pb.h"
-
 #include "google/protobuf/any.h"
 #include "google/protobuf/util/json_util.h"
 
 using namespace opentera::protobuf;
+
 
 class WebSocketManager : public QObject
 {
     Q_OBJECT
 public:
     explicit WebSocketManager(QObject *parent = nullptr);
-    ~WebSocketManager();
+    ~WebSocketManager() override;
 
     void connectWebSocket(QString &socketUrl, QString &user_uuid);
     void disconnectWebSocket();
@@ -57,7 +58,6 @@ signals:
     void serverDisconnected();
     void websocketError(QAbstractSocket::SocketError, QString);
     void loginResult(bool logged_in);
-
     void userEventReceived(UserEvent event);
     void participantEventReceived(ParticipantEvent event);
     void deviceEventReceived(DeviceEvent event);
@@ -66,7 +66,6 @@ signals:
     void stopSessionEventReceived(StopSessionEvent event);
     void databaseEventReceived(DatabaseEvent event);
     void joinSessionReplyEventReceived(JoinSessionReplyEvent event);
-
     void genericEventReceived(TeraEvent event);
 
 
@@ -74,7 +73,10 @@ private slots:
     void onSocketConnected();
     void onSocketDisconnected();
     void onSocketError(QAbstractSocket::SocketError error);
+
+#ifndef OPENTERA_WEBASSEMBLY
     void onSocketSslErrors(const QList<QSslError> &errors);
+#endif
     void onSocketTextMessageReceived(const QString &message);
     void onSocketBinaryMessageReceived(const QByteArray &message);
 

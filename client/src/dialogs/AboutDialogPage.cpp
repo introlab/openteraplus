@@ -1,13 +1,17 @@
 #include "AboutDialogPage.h"
+#include <QWebEngineCertificateError>
 
 AboutDialogPage::AboutDialogPage()
 {
-
+    //TODO Do something about certificate errors.
+    connect(this, &QWebEnginePage::certificateError, this, &AboutDialogPage::onCertificateError);
 }
 
-bool AboutDialogPage::certificateError(const QWebEngineCertificateError &certificateError)
+void AboutDialogPage::onCertificateError(const QWebEngineCertificateError &certificateError)
 {
-    Q_UNUSED(certificateError)
-
-    return true; // Accept all certificates
+    //TODO do Something about certificates
+    qDebug() << "Certificate error: " << certificateError.description();
+    //TODO Do not accept certificates in production ?
+    auto mutableError = const_cast<QWebEngineCertificateError&>(certificateError);
+    mutableError.acceptCertificate();
 }

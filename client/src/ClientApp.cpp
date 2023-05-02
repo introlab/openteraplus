@@ -8,12 +8,14 @@
 #include "data/GlobalEvent.h"
 
 ClientApp::ClientApp(int &argc, char **argv)
- :   QApplication(argc, argv)
+    :   QApplication(argc, argv)
 {
     m_comMan = nullptr;
     m_loginDiag = nullptr;
     m_mainWindow = nullptr;
+#ifndef OPENTERA_WEBASSEMBLY
     m_mainKitWindow = nullptr;
+#endif
 
     m_translator = new QTranslator();
     m_qt_translator = new QTranslator();
@@ -43,8 +45,10 @@ ClientApp::ClientApp(int &argc, char **argv)
         // Show login dialog
         showLogin();
     }else{
+#ifndef OPENTERA_WEBASSEMBLY
         // Show main participant UI
         showMainKitWindow();
+#endif
     }
 
 }
@@ -55,8 +59,8 @@ ClientApp::~ClientApp()
         delete m_loginDiag;
 
     if (m_comMan){
-       m_comMan->disconnectFromServer();
-       m_comMan->deleteLater();
+        m_comMan->disconnectFromServer();
+        m_comMan->deleteLater();
     }
 
     delete m_translator;
@@ -162,7 +166,7 @@ void ClientApp::showMainWindow()
     if (m_comMan->getCurrentUser().hasNameField())
         processQueuedEvents();
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void ClientApp::showMainKitWindow()
 {
     if (m_mainKitWindow != nullptr){
@@ -171,7 +175,7 @@ void ClientApp::showMainKitWindow()
     m_mainKitWindow = new MainKitWindow(&m_config);
 
 }
-
+#endif
 void ClientApp::setupLogger()
 {
 
@@ -206,46 +210,48 @@ void ClientApp::processQueuedEvents()
 
 void ClientApp::setTranslation(QString language)
 {
-   bool lang_changed = false;
-   QStringList supported_languages = {"fr", "en"};
+    bool lang_changed = false;
+    QStringList supported_languages = {"fr", "en"};
 
-   if (language.isEmpty() || !supported_languages.contains(language.toLower())){
-       //Set French as default
-       //m_currentLocale = QLocale(QLocale::French);
-       m_currentLocale = QLocale(); // Use system locale by default
-       lang_changed = true;
-   }
-   if (language.toLower() == "en" && m_currentLocale != QLocale::English){
-       m_currentLocale = QLocale(QLocale::English);
-       lang_changed = true;
-   }
+    if (language.isEmpty() || !supported_languages.contains(language.toLower())){
+        //Set French as default
+        //m_currentLocale = QLocale(QLocale::French);
+        m_currentLocale = QLocale(); // Use system locale by default
+        lang_changed = true;
+    }
+    if (language.toLower() == "en" && m_currentLocale != QLocale::English){
+        m_currentLocale = QLocale(QLocale::English);
+        lang_changed = true;
+    }
 
-   if (language.toLower() == "fr" && m_currentLocale != QLocale::French){
-       m_currentLocale = QLocale(QLocale::French);
-       lang_changed = true;
-   }
+    if (language.toLower() == "fr" && m_currentLocale != QLocale::French){
+        m_currentLocale = QLocale(QLocale::French);
+        lang_changed = true;
+    }
 
-   //QLocale english = QLocale(QLocale::English);
-   //QLocale french = QLocale(QLocale::French);
-   //QLocale::setDefault(english);
-   //qDebug() << QLocale();
+    //QLocale english = QLocale(QLocale::English);
+    //QLocale french = QLocale(QLocale::French);
+    //QLocale::setDefault(english);
+    //qDebug() << QLocale();
 
-   if (lang_changed){
-       QLocale::setDefault(m_currentLocale);
+    if (lang_changed){
+        QLocale::setDefault(m_currentLocale);
 
-       // Install Qt translator for default widgets
-       m_qt_translator->load("qt_" + m_currentLocale.name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-       this->installTranslator(m_qt_translator);
+        // Install Qt translator for default widgets
+        if (m_qt_translator->load("qt_" + m_currentLocale.name(), QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
+        {
+            this->installTranslator(m_qt_translator);
+        }
 
-       // Install app specific translator
-       if (m_translator->load(m_currentLocale, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
-           this->installTranslator(m_translator);
-           //qDebug() << "Installed translator";
-       }
+        // Install app specific translator
+        if (m_translator->load(m_currentLocale, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
+            this->installTranslator(m_translator);
+            //qDebug() << "Installed translator";
+        }
 
-       // Save last used language
-       TeraSettings::setGlobalSetting(SETTINGS_LASTLANGUAGE, language.toLower());
-   }
+        // Save last used language
+        TeraSettings::setGlobalSetting(SETTINGS_LASTLANGUAGE, language.toLower());
+    }
 
 }
 
@@ -327,21 +333,21 @@ void ClientApp::on_networkError(QNetworkReply::NetworkError error, QString error
 
     if (m_loginDiag){
         switch(error){
-            case QNetworkReply::ConnectionRefusedError:
-                error_str = tr("La connexion a été refusée par le serveur.");
+        case QNetworkReply::ConnectionRefusedError:
+            error_str = tr("La connexion a été refusée par le serveur.");
             break;
-            case QNetworkReply::AuthenticationRequiredError:
-                //error_str = tr("Impossible de négocier l'authentification avec le serveur");
-                return;
+        case QNetworkReply::AuthenticationRequiredError:
+            //error_str = tr("Impossible de négocier l'authentification avec le serveur");
+            return;
             break;
-            case QNetworkReply::TimeoutError:
-                error_str = tr("Impossible de rejoindre le serveur.");
+        case QNetworkReply::TimeoutError:
+            error_str = tr("Impossible de rejoindre le serveur.");
             break;
-            case QNetworkReply::HostNotFoundError:
-                error_str = tr("Le serveur est introuvable.");
+        case QNetworkReply::HostNotFoundError:
+            error_str = tr("Le serveur est introuvable.");
             break;
-            default:
-                error_str = tr("Impossible de se connecter (Code erreur: ") + QString::number(status_code) + " " + error_str + ")";
+        default:
+            error_str = tr("Impossible de se connecter (Code erreur: ") + QString::number(status_code) + " " + error_str + ")";
         }
 
         //Remove \n from error_str

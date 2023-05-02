@@ -13,7 +13,7 @@ KitVideoRehabWidget::KitVideoRehabWidget(KitConfigManager *kitConfig, Participan
 {
     ui->setupUi(this);
 
-    m_virtualCamThread = nullptr;
+    //m_virtualCamThread = nullptr;
 
     initUi();
     connectSignals();
@@ -31,11 +31,13 @@ KitVideoRehabWidget::~KitVideoRehabWidget()
     m_loadingIcon->deleteLater();
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
+    /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
      }
+    */
 
     delete ui;
 
@@ -53,13 +55,11 @@ void KitVideoRehabWidget::initUi()
     ui->icoLoading->setMovie(m_loadingIcon);
     m_loadingIcon->start();
 
-    QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
-    QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PlaybackRequiresUserGesture, false);
-
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &KitVideoRehabWidget::webPageLoaded);
 
     // Create a new page
+    // DL 21/04/2023 settings are now in VideoRehabWebPage constructor
     m_webPage = new VideoRehabWebPage(m_webEngine);
     connect(m_webPage->getSharedObject(), &SharedObject::pageIsReady, this, &KitVideoRehabWidget::webPageReady);
     connect(m_webPage->getSharedObject(), &SharedObject::videoErrorOccured, this, &KitVideoRehabWidget::webPageVideoError);
@@ -287,6 +287,8 @@ void KitVideoRehabWidget::showError(const QString &title, const QString &context
 
 void KitVideoRehabWidget::startVirtualCamera(const QString &src)
 {
+    qDebug() << "KitVideoRehabWidget::startVirtualCamera not implemented.";
+    /*
     if (m_virtualCamThread){
         stopVirtualCamera();
     }
@@ -294,17 +296,20 @@ void KitVideoRehabWidget::startVirtualCamera(const QString &src)
     m_virtualCamThread = new VirtualCameraThread(src);
     connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &KitVideoRehabWidget::virtualCameraDisconnected);
     m_virtualCamThread->start();
+    */
 }
 
 void KitVideoRehabWidget::stopVirtualCamera()
 {
-    qDebug() << "KitVideoRehabWidget::stopVirtualCamera";
+    qDebug() << "KitVideoRehabWidget::stopVirtualCamera not implemented.";
+    /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
         m_virtualCamThread = nullptr;
     }
+    */
 }
 
 void KitVideoRehabWidget::on_btnRefresh_clicked()

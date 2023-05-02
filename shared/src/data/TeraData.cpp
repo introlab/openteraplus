@@ -53,7 +53,7 @@ QString TeraData::getUuid() const
 {
     QVariant raw_uuid = getFieldValue(m_uuidField);
 
-    if (raw_uuid.isValid() && raw_uuid.canConvert(QMetaType::QString)){
+    if (raw_uuid.isValid() && raw_uuid.canConvert<QString>()){
         return raw_uuid.toString();
     }
     return "";
@@ -634,14 +634,14 @@ QJsonObject TeraData::toJson(const QString specific_fieldName)
         }
         // Ignore "metaObject" properties
         QVariant fieldData = getFieldValue(fieldName);
-        if (fieldData.canConvert(QMetaType::QString)){
+        if (fieldData.canConvert<QString>()){
             QDateTime date_tester = QDateTime::fromString(fieldData.toString(), Qt::ISODateWithMs);
             if (date_tester.isValid()){
                 object[fieldName] = fieldData.toDateTime().toString(Qt::ISODateWithMs);
             }else{
                 object[fieldName] = fieldData.toString();
             }
-        }else if (fieldData.canConvert(QMetaType::QJsonValue)){
+        }else if (fieldData.canConvert<QJsonValue>()){
             object[fieldName] = fieldData.toJsonValue();
         }else{
             LOG_WARNING("Field " + fieldName + " can't be 'jsonized'", "TeraData::toJson");

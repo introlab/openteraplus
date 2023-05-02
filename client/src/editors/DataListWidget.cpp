@@ -121,14 +121,14 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
                     extra_field += ", ";
                 QVariant field_value = data->getFieldValue(field);
 
-                if (field_value.canConvert(QMetaType::QVariantList)){
+                if (field_value.canConvert<QVariantList>()){
                     QVariantList field_values = field_value.toList();
                     QString merged_list;
                     for (QVariant field_value:qAsConst(field_values)){
                         if (!merged_list.isEmpty())
                             merged_list += ", ";
                         // Search for subfield?
-                        if (field_value.canConvert(QMetaType::QVariantMap)){
+                        if (field_value.canConvert<QVariantMap>()){
                             QVariantMap field_map = field_value.toMap();
                             field_value = field_map[subfield];
                         }
@@ -464,7 +464,7 @@ void DataListWidget::editor_dataChanged()
 void DataListWidget::searchChanged(QString new_search){
     Q_UNUSED(new_search)
     // Check if search field is empty
-    if (ui->txtSearch->text().count()==0){
+    if (ui->txtSearch->text().size()==0){
         setSearching(false);
         // Display back all items
         for (int i=0; i<ui->lstData->count();i++){

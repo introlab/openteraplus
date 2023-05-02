@@ -91,8 +91,12 @@ protected:
 
 protected slots:
     virtual void onNetworkFinished(QNetworkReply *reply);
+
+#ifndef OPENTERA_WEBASSEMBLY
     virtual void onNetworkSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
     void onNetworkEncrypted(QNetworkReply *reply);
+#endif
+
     void onNetworkAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
     void onTransferProgress(TransferringFile* file);

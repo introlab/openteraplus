@@ -1,8 +1,8 @@
 #include "MainWindow.h"
 #include <QNetworkReply>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QApplication>
-#include <QSound>
+#include <QSoundEffect>
 
 #include "ui_MainWindow.h"
 
@@ -25,7 +25,9 @@ MainWindow::MainWindow(ComManager *com_manager, const QString &current_server, Q
     m_diag_editor = nullptr;
     m_data_editor = nullptr;
     m_dashboard = nullptr;
+#ifndef OPENTERA_WEBASSEMBLY
     m_inSessionWidget = nullptr;
+#endif
     m_download_dialog = nullptr;
     m_joinSession_dialog = nullptr;
     m_currentLanguage = m_comManager->getCurrentPreferences().getLanguage();
@@ -64,7 +66,11 @@ MainWindow::~MainWindow()
 
 bool MainWindow::isInSession()
 {
+#ifndef OPENTERA_WEBASSEMBLY
     return m_inSessionWidget != nullptr;
+#else
+    return false;
+#endif
 }
 
 void MainWindow::connectSignals()
@@ -253,7 +259,7 @@ void MainWindow::showDashboard(const bool &show)
     }
 
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void MainWindow::setInSession(bool in_session, const TeraData *session_type, const int &id_session, int id_project)
 {
     if (!in_session && !isInSession())
@@ -297,7 +303,7 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
         dataDisplayRequested(m_currentDataType, m_currentDataId);
     }
 }
-
+#endif
 QIcon MainWindow::getGlobalEventIcon(GlobalEvent &global_event)
 {
     switch(global_event.getEventType()){
@@ -413,6 +419,7 @@ void MainWindow::editorDialogFinished()
     ui->projNavigator->setOnHold(false);
 }
 
+#ifndef OPENTERA_WEBASSEMBLY
 void MainWindow::joinSessionDialogFinished()
 {
     if (m_joinSession_dialog->result() == JoinSessionDialog::Accepted){
@@ -443,6 +450,7 @@ void MainWindow::joinSessionDialogFinished()
     m_joinSession_dialog->deleteLater();
     m_joinSession_dialog = nullptr;
 }
+#endif
 
 void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 {
@@ -722,6 +730,7 @@ void MainWindow::com_preferencesUpdated()
 
 void MainWindow::com_sessionStarted(TeraData session_type, int id_session)
 {
+#ifndef OPENTERA_WEBASSEMBLY
     if (!m_inSessionWidget){
         // Loads the in-session widget since none loaded yet!
         setInSession(true, &session_type, id_session);
@@ -729,22 +738,29 @@ void MainWindow::com_sessionStarted(TeraData session_type, int id_session)
         // Update session id in InSessionWidget
         m_inSessionWidget->setSessionId(id_session);
     }
+#endif
 }
 
 void MainWindow::com_sessionStartRequested(TeraData session_type)
 {
+#ifndef OPENTERA_WEBASSEMBLY
     // Loads the in-session widget
     setInSession(true, &session_type, -1);
+#endif
 }
 
 void MainWindow::com_sessionStopped(int id_session)
 {
+#ifndef OPENTERA_WEBASSEMBLY
     setInSession(false, nullptr, id_session);
+#endif
 }
 
 void MainWindow::com_sessionError(QString error)
 {
+#ifndef OPENTERA_WEBASSEMBLY
     setInSession(false, nullptr, -1);
+#endif
     GlobalMessageBox msg;
     msg.showError(tr("Erreur de séance"), tr("Une erreur est survenue:\n") + error + tr("\n\nLa séance ne peut pas continuer."));
 }
@@ -814,6 +830,7 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
 
 void MainWindow::ws_joinSessionEvent(JoinSessionEvent event)
 {
+#ifndef OPENTERA_WEBASSEMBLY
     if (isInSession()){
         // If we are in a session, the InSession Widget will handle that event for us.
         return;
@@ -837,6 +854,7 @@ void MainWindow::ws_joinSessionEvent(JoinSessionEvent event)
             return;
         }
     }
+#endif
 }
 
 void MainWindow::inSession_sessionEndedWithError()
@@ -897,8 +915,12 @@ void MainWindow::addNotification(const NotificationWindow::NotificationType noti
     connect(notify, &NotificationWindow::notificationClosed, this, &MainWindow::notificationCompleted);
 
     if (m_comManager->getCurrentPreferences().isNotifySounds() && !soundPath.isEmpty()){
-        if (!m_inSessionWidget) // Don't play sounds when in session!
-            QSound::play(soundPath);
+        if (!isInSession()) {// Don't play sounds when in session!
+            QSoundEffect effect(this);
+            effect.setSource(QUrl::fromLocalFile(soundPath));
+            effect.setVolume(0.25f);
+            effect.play();
+        }
     }
 }
 
@@ -1008,6 +1030,7 @@ void MainWindow::changeEvent(QEvent* event)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     // About to close... check if we have something in progress that prevents it
+#ifndef OPENTERA_WEBASSEMBLY
     if (m_inSessionWidget){
         if (!m_inSessionWidget->sessionCanBeEnded()){
             GlobalMessageBox msg;
@@ -1016,16 +1039,17 @@ void MainWindow::closeEvent(QCloseEvent *event)
             return;
         }
     }
+#endif
     event->accept();
 }
 
 
 void MainWindow::on_lblLogo_clicked()
 {
+#ifndef OPENTERA_WEBASSEMBLY
     AboutDialog about(m_comManager->getServerUrl(), this);
-
     about.setFixedSize(size().width()-50, size().height()-150);
     about.move(this->x()+25, this->y()+75);
-
     about.exec();
+#endif
 }

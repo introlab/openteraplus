@@ -64,7 +64,7 @@ void TeraForm::buildUiFromStructure(const QString &structure)
             int page_index = 0;
             m_mainWidget = ui->toolboxMain;
             for (const QVariant &section:qAsConst(struct_data)){
-                if (section.canConvert(QMetaType::QVariantHash)){
+                if (section.canConvert<QVariantHash>()){
                     QVariantHash section_data = section.toHash();
                     //if (page_index>0){
                         QWidget* new_page = new QWidget(ui->toolboxMain);
@@ -74,7 +74,7 @@ void TeraForm::buildUiFromStructure(const QString &structure)
                     //}
                     ui->toolboxMain->setItemText(page_index, section_data["label"].toString());
                     if (section_data.contains("items")){
-                        if (section_data["items"].canConvert(QMetaType::QVariantList)){
+                        if (section_data["items"].canConvert<QVariantList>()){
                             buildFormFromStructure(ui->toolboxMain->widget(page_index), section_data["items"].toList());
                         }
                     }
@@ -89,7 +89,7 @@ void TeraForm::buildUiFromStructure(const QString &structure)
                 ui->mainLayout->addWidget(m_mainWidget);
                 QVariantHash section_data = struct_data.first().toHash();
                 if (section_data.contains("items")){
-                    if (section_data["items"].canConvert(QMetaType::QVariantList)){
+                    if (section_data["items"].canConvert<QVariantList>()){
                         buildFormFromStructure(m_mainWidget, section_data["items"].toList());
                     }
                 }
@@ -464,7 +464,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
     }
 
     for (const QVariant &item:structure){
-        if (item.canConvert(QMetaType::QVariantHash)){
+        if (item.canConvert<QVariantHash>()){
             QVariantHash item_data = item.toHash();
             QString item_id = item_data["id"].toString();
             QWidget* item_widget = nullptr;
@@ -663,7 +663,7 @@ QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
         if (structure["values"].canConvert(QMetaType::QVariantList)){
             QVariantList list = structure["values"].toList();
             for (const QVariant &value:qAsConst(list)){
-                if (value.canConvert(QMetaType::QVariantHash)){
+                if (value.canConvert<QVariantHash>()){
                     QVariantHash item_data = value.toHash();
                     item_combo->addItem(item_data["value"].toString(), item_data["id"].toString());
                 }
@@ -846,7 +846,7 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
 {
     if (item->property("condition").isValid()){
         // Item has a condition
-        if (item->property("condition").canConvert(QMetaType::QVariantHash)){
+        if (item->property("condition").canConvert<QVariantHash>()){
             QVariantHash condition = item->property("condition").toHash();
             QString check_id = condition["item"].toString();
             if (!check_id.isNull()){
@@ -931,7 +931,7 @@ bool TeraForm::hasHookCondition(QWidget *item)
     // Check if any item a hook condition on it
     if (item->property("condition").isValid()){
         // Item has a condition
-        if (item->property("condition").canConvert(QMetaType::QVariantHash)){
+        if (item->property("condition").canConvert<QVariantHash>()){
             QVariantHash condition = item->property("condition").toHash();
             if (condition.contains("hook"))
                 return true;
@@ -1057,7 +1057,7 @@ bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
     }
 
 
-    if (value->canConvert(QMetaType::QString)){
+    if (value->canConvert<QString>()){
         bool ok;
         QString string_val = value->toString();
         string_val.toInt(&ok);
@@ -1108,7 +1108,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
                 combo->setCurrentIndex(index);
             }else{
                 // Check if we have a number, if so, suppose it is the index
-                if (value.canConvert(QMetaType::Int)){
+                if (value.canConvert<int>()){
                     index = value.toInt();
                     if (index>=0 && index+1<combo->count()){
                         combo->setCurrentIndex(index+1);
@@ -1127,7 +1127,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QTextEdit* text = dynamic_cast<QTextEdit*>(widget)){
-        if (value.canConvert(QMetaType::QVariantMap) || value.canConvert(QMetaType::QVariantHash)){
+        if (value.canConvert<QVariantMap>() || value.canConvert<QVariantHash>()){
             QVariantHash data = value.toHash();
             QJsonDocument doc;
             doc.setObject(QJsonObject::fromVariantHash(data));
@@ -1174,7 +1174,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
-        if (value.canConvert(QVariant::String)){
+        if (value.canConvert<QString>()){
             if (value.toString().isEmpty()){
                 widget->hide();
                 return;

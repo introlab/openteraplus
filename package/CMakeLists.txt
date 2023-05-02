@@ -1,17 +1,17 @@
-find_package(Qt5Core REQUIRED)
+find_package(Qt6Core REQUIRED)
 message(STATUS "Entering package directory.")
 
 include(InstallRequiredSystemLibraries)
-get_target_property(_qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
+get_target_property(_qt6_qmake_location Qt6::qmake IMPORTED_LOCATION)
 
 execute_process(
-    COMMAND "${_qt5_qmake_location}" -query QT_INSTALL_PREFIX
+    COMMAND "${_qt6_qmake_location}" -query QT_INSTALL_PREFIX
     RESULT_VARIABLE return_code
-    OUTPUT_VARIABLE qt5_install_prefix
+    OUTPUT_VARIABLE qt6_install_prefix
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-message(STATUS "Testing package ${_qt5_qmake_location} ${qt5_install_prefix}")
+message(STATUS "Testing package ${_qt6_qmake_location} ${qt6_install_prefix}")
 
 if (APPLE)
     cmake_policy(SET CMP0087 NEW) # Enable generator expressions in INSTALL(CODE
@@ -24,13 +24,13 @@ if (APPLE)
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 #    add_custom_target(mac_deploy_qt
-#        COMMAND ${qt5_install_prefix}/bin/macdeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/../.." -always-overwrite -codesign=""
+#        COMMAND ${qt6_install_prefix}/bin/macdeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/../.." -always-overwrite -codesign=""
 #        COMMENT "Running macdeployqt ..."
 #        DEPENDS OpenTeraPlus
 #    )
 
     set(MACSIGNID "")
-    set(MACQTDEPLOY_COMMAND "${qt5_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:OpenTeraPlus>/../.. -always-overwrite -verbose=1")
+    set(MACQTDEPLOY_COMMAND "${qt6_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:OpenTeraPlus>/../.. -always-overwrite -verbose=1")
 
     # message(STATUS "********** ${MACQTDEPLOY_COMMAND}")
 
@@ -67,8 +67,9 @@ if (WIN32)
     # Create files for installation
     add_custom_target(windows_deploy_qt
         # Collect and copy required dependencies
-        COMMAND ${qt5_install_prefix}/bin/windeployqt "$<TARGET_FILE_DIR:OpenTeraPlus>/OpenTeraPlus.exe" --release --dir "${CMAKE_INSTALL_PREFIX}/qtdeploy"
-        COMMENT "Running windeployqt ..."
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_PREFIX}/qtdeploy
+        COMMAND ${qt6_install_prefix}/bin/windeployqt6 "$<TARGET_FILE_DIR:OpenTeraPlus>/OpenTeraPlus.exe" --release --dir "${CMAKE_INSTALL_PREFIX}/qtdeploy"
+        COMMENT "Running windeployqt6 ..."
     )
 
     set(CPACK_PACKAGE_NAME "OpenTeraPlus")
@@ -109,9 +110,9 @@ if (WIN32)
 
 
     # add SSL librariesOpenSSL\Win_x64\bin
-    # file(GLOB OPENSSL_LIBRARIES "${qt5_install_prefix}/../../Tools/OpenSSL/Win_x64/bin/*.dll")
+    # file(GLOB OPENSSL_LIBRARIES "${qt6_install_prefix}/../../Tools/OpenSSL/Win_x64/bin/*.dll")
     file(GLOB OPENSSL_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/openssl/64bits/*.dll")
-    message(STATUS "******************* ${OPENSSL_LIBRARIES} ${qt5_install_prefix} ${CPACK_PACKAGING_INSTALL_PREFIX}")
+    message(STATUS "******************* ${OPENSSL_LIBRARIES} ${qt6_install_prefix} ${CPACK_PACKAGING_INSTALL_PREFIX}")
     install(FILES ${OPENSSL_LIBRARIES} DESTINATION bin COMPONENT openssl)
 
 
