@@ -12,6 +12,8 @@ SessionLobbyDialog::SessionLobbyDialog(ComManager* comManager, TeraData &session
     ui->setupUi(this);
     m_setupWdg = nullptr;
 
+    setModal(true);
+
     ui->lblTitle->setText(m_sessionType.getFieldValue("session_type_name").toString());
 
     connectSignals();
@@ -43,37 +45,16 @@ void SessionLobbyDialog::addDevicesToSession(const QList<TeraData> &devices, con
 
 QStringList SessionLobbyDialog::getSessionParticipantsUuids()
 {
-    /*QStringList uuids;
-    QList<TeraData> participants = ui->wdgSessionInvite->getParticipantsInSession();
-
-    foreach(TeraData part, participants){
-        uuids.append(part.getUuid());
-    }
-    return uuids;*/
     return ui->wdgSessionInvite->getParticipantsUuidsInSession();
 }
 
 QStringList SessionLobbyDialog::getSessionUsersUuids()
 {
-    /*QStringList uuids;
-    QList<TeraData> users = ui->wdgSessionInvite->getUsersInSession();
-
-    foreach(TeraData user, users){
-        uuids.append(user.getUuid());
-    }
-    return uuids;*/
     return ui->wdgSessionInvite->getUsersUuidsInSession();
 }
 
 QStringList SessionLobbyDialog::getSessionDevicesUuids()
 {
-    /*QStringList uuids;
-    QList<TeraData> devices = ui->wdgSessionInvite->getDevicesInSession();
-
-    foreach(TeraData device, devices){
-        uuids.append(device.getUuid());
-    }
-    return uuids;*/
     return ui->wdgSessionInvite->getDevicesUuidsInSession();
 }
 

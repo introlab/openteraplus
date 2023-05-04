@@ -456,6 +456,7 @@ void SessionsListWidget::newSessionRequest(const QDateTime &session_datetime)
     m_diag_editor->setWindowTitle(tr("Séance"));
     m_diag_editor->setMinimumSize(this->width(), this->height());
 
+
     connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
     connect(ses_widget, &SessionWidget::dataWasChanged, m_diag_editor, &QDialog::accept);
     connect(ses_widget, &SessionWidget::dataWasDeleted, m_diag_editor, &QDialog::accept);
@@ -475,7 +476,7 @@ void SessionsListWidget::setSessionsLoading(const bool &loading)
 void SessionsListWidget::querySessions()
 {
     if (m_totalSessions == 0){
-        qWarning() << "SessionsListWidget::querySessions(): No sessions to query - aborting!";
+        //qWarning() << "SessionsListWidget::querySessions(): No sessions to query - aborting!";
         return;
     }
     ui->tableSessions->setSortingEnabled(false);

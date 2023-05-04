@@ -79,8 +79,8 @@ void VideoRehabWidget::initUI()
     //Set page to view
     m_webEngine->setPage(m_webPage);
 
-    QWebEngineProfile::defaultProfile()->setPersistentCookiesPolicy(/*QWebEngineProfile::AllowPersistentCookies*/QWebEngineProfile::NoPersistentCookies);
-    QWebEngineProfile::defaultProfile()->setHttpCacheType(/*QWebEngineProfile::DiskHttpCache*/QWebEngineProfile::NoCache);
+    QWebEngineProfile::defaultProfile()->setPersistentCookiesPolicy(QWebEngineProfile::NoPersistentCookies);
+    QWebEngineProfile::defaultProfile()->setHttpCacheType(QWebEngineProfile::NoCache);
 
     // Set download path
     setDataSavePath();

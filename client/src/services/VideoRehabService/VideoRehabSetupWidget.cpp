@@ -47,6 +47,7 @@ QJsonDocument VideoRehabSetupWidget::getSetupConfig()
 void VideoRehabSetupWidget::initUI()
 {
     ui->frameError->hide();
+    ui->widgetSetup->setComManager(m_comManager);
 
     //// Web engine setup
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
@@ -76,8 +77,8 @@ void VideoRehabSetupWidget::initUI()
     m_webEngine->setSizePolicy(sizePolicy);
     ui->wdgWebEngine->layout()->addWidget(m_webEngine);
 
-    // Wait for service configuration before setting url
-    //m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
+    // Load url - will set correct camera when service config form will be loaded
+    m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
 
     // Hide PTZ fields in setup widget
     //ui->widgetSetup->hideFields(QStringList() << "camera_ptz_type" << "camera_ptz_ip" << "camera_ptz_port" << "camera_ptz_username" << "camera_ptz_password");
@@ -316,7 +317,7 @@ void VideoRehabSetupWidget::processServiceConfigsReply(QList<TeraData> configs, 
             m_webPage->getSharedObject()->setCurrentCameraName(ui->widgetSetup->getFieldValue("camera").toString());
 
             // Load page
-            m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
+            //m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
         }
     }
 

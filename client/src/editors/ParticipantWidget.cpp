@@ -743,6 +743,10 @@ void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &
     connect(m_sessionLobby, &QDialog::rejected, this, &ParticipantWidget::sessionLobbyStartSessionCancelled);
     if (height()<800)
         m_sessionLobby->showMaximized();
+    else{
+        m_sessionLobby->setMinimumSize(3*QGuiApplication::primaryScreen()->availableGeometry().width() / 4,
+                                       2*QGuiApplication::primaryScreen()->availableGeometry().height() / 3);
+    }
 
     // Show Session Lobby
     m_sessionLobby->exec();

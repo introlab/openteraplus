@@ -2,7 +2,6 @@
 #include "ui_TeraForm.h"
 
 #include "Logger.h"
-#include "DataEditorWidget.h"
 #include <QDebug>
 #include <QStyledItemDelegate>
 
@@ -15,15 +14,7 @@ TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
     m_mainWidget = ui->toolboxMain;
     m_highlightConditionals = true;
 
-    // TODO: Find out why the global stylesheet isn't correctly used by TeraForm
-    /*QFile file(":/stylesheet.qss");
-    file.open(QFile::ReadOnly);
-    QString stylesheet = QLatin1String(file.readAll());
-    setStyleSheet(stylesheet);*/
-
     // Automatically sets comManager
-    /*DataEditorWidget* parent_editor = dynamic_cast<DataEditorWidget*>(parent);
-    if (parent_editor){*/
     setComManager(com_man);
     //}
 }
@@ -226,7 +217,7 @@ bool TeraForm::getFieldDirty(QWidget *widget)
         }
         QVariant value, id;
         getWidgetValues(widget, &id, &value);
-        if (!id.isNull())
+        if (!id.isNull() && id.isValid())
             value = id;
 
         if (dynamic_cast<QDateTimeEdit*>(widget)){
@@ -255,7 +246,7 @@ void TeraForm::hideField(const QString &field)
         // Disable condition
         if (widget->property("condition").isValid() && !hasHookCondition(widget)){
             widget->setProperty("_condition", widget->property("condition"));
-            widget->setProperty("condition", QVariant::Invalid);
+            widget->setProperty("condition", QVariant());
         }
     }
 }
@@ -268,7 +259,7 @@ void TeraForm::showField(const QString &field)
         // Enable condition
         if (widget->property("_condition").isValid()){
             widget->setProperty("condition", widget->property("_condition"));
-            widget->setProperty("_condition", QVariant::Invalid);
+            widget->setProperty("_condition", QVariant());
         }
         checkConditions(widget);
     }
@@ -340,7 +331,7 @@ QJsonDocument TeraForm::getFormDataJson(bool include_unmodified_data)
         QString field = m_widgets.key(wdg);
         QVariant value, id;
         getWidgetValues(wdg, &id, &value);
-        if (!id.isNull())
+        if (!id.isNull() && id.isValid())
             value = id;
         // Include only modified fields or ids
         if ((!include_unmodified_data && getFieldDirty(field))
@@ -369,7 +360,7 @@ TeraData* TeraForm::getFormDataObject(const TeraDataTypes data_type)
         QString field = m_widgets.key(wdg);
         QVariant value, id;
         if (getWidgetValues(wdg, &id, &value)){
-            if (!id.isNull())
+            if (!id.isNull() && id.isValid())
                 value = id;
             rval->setFieldValue(field, value);
         }
@@ -440,7 +431,7 @@ void TeraForm::resetFormValues()
             setWidgetValue(m_widgets[field], m_initialValues[field]);
             checkConditions(m_widgets[field]);
         } else{
-           LOG_WARNING("No widget for field: " + field, "TeraForm::resetFormValues");
+           //LOG_WARNING("No widget for field: " + field, "TeraForm::resetFormValues");
         }
     }
 
@@ -660,7 +651,7 @@ QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
     item_combo->addItem("", "");
 
     if (structure.contains("values")){
-        if (structure["values"].canConvert(QMetaType::QVariantList)){
+        if (structure["values"].canConvert<QVariantList>()){
             QVariantList list = structure["values"].toList();
             for (const QVariant &value:qAsConst(list)){
                 if (value.canConvert<QVariantHash>()){
@@ -885,8 +876,9 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
                         }
                     }
                     if (op.toUpper() == "NOT NULL"){
-                        if (!sender_index.isNull() || !sender_value.isNull())
+                        if ((!sender_index.isValid() && !sender_value.isValid()) || (!sender_value.isValid() || (sender_value.typeId() == QMetaType::QString && !sender_value.toString().isEmpty()))){
                             condition_met = true;
+                        }
                     }
                     if (op.toUpper() == "CONTAINS"){
                         if (sender_index == value || sender_value.toString().contains(value.toString())){
@@ -898,7 +890,7 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
                     setWidgetVisibility(item, check_item, condition_met);
 
                     // We have a hook requesting data for that specific widget...
-                    if (!hook.isNull()){
+                    if (!hook.isNull() || hook.isValid()){
                         if (item_triggering == check_item){
                             if (sender_index.toString() != ""){
                                 if (m_comManager){
@@ -1087,7 +1079,7 @@ QVariant TeraForm::getWidgetValue(QWidget *widget)
 
     getWidgetValues(widget, &id, &value);
 
-    if (!id.isNull())
+    if (!id.isNull() || id.isValid())
         value = id;
 
     return value;
@@ -1258,7 +1250,7 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
                 QVariant id, value;
                 getWidgetValues(widget, &id, &value);
                 //qDebug() << widget->metaObject()->className() << " - " << m_widgets.key(widget) << " - " << value;
-                if (value.isNull() || value.toInt()==-1 || value.toString().isEmpty()){
+                if (value.isNull() || !value.isValid() || value.toInt()==-1 || value.toString().isEmpty()){
                     rval = false;
                 }
             }

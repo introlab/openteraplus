@@ -18,7 +18,7 @@ void ProjectNavigatorTree::dropEvent(QDropEvent *event)
     }
 
     QTreeWidgetItem* dropped_item = currentItem();
-    QTreeWidgetItem* target_item = itemAt(event->pos());
+    QTreeWidgetItem* target_item = itemAt(event->position().toPoint());
 
     if (!target_item){
         event->ignore();
@@ -53,7 +53,7 @@ void ProjectNavigatorTree::dragMoveEvent(QDragMoveEvent *event)
     }
 
     // Check allowed types
-    QTreeWidgetItem* target_item = itemAt(event->pos());
+    QTreeWidgetItem* target_item = itemAt(event->position().toPoint());
     if (target_item){
         if (dragged_item->parent() == target_item){
             event->ignore();
