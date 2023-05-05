@@ -19,8 +19,6 @@ VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
     connectSignals();
 
     emit widgetIsReady(false); // We wait until webpage is fully loaded...
-
-
 }
 
 VideoRehabWidget::~VideoRehabWidget()
@@ -51,7 +49,7 @@ void VideoRehabWidget::initUI()
     // Set and start loading
     ui->frameError->hide();
     setLoading(true);
-    ui->wdgWebEngine->hide();
+    //ui->wdgWebEngine->hide();
 
     m_loadingIcon = new QMovie("://status/calling.gif");
     ui->icoLoading->setMovie(m_loadingIcon);
@@ -95,6 +93,7 @@ void VideoRehabWidget::initUI()
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_webEngine->setSizePolicy(sizePolicy);
     ui->wdgWebEngine->layout()->addWidget(m_webEngine);
+
 }
 
 bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
@@ -359,7 +358,13 @@ void VideoRehabWidget::setLoading(const bool &loading)
 {
     ui->frameLoading->setVisible(loading);
     if (!ui->frameError->isVisible()){
-        ui->wdgWebEngine->setVisible(!loading);
+        // SB Qt6 WebEngine seems to force refresh of the whole window when showing / hiding once in a while.
+        //    So instead of fully hiding, we just set its maximum height.
+        if (loading)
+            ui->wdgWebEngine->setMaximumHeight(0);
+        else
+            ui->wdgWebEngine->setMaximumHeight(65535);
+        //ui->wdgWebEngine->setVisible(!loading);
     }
 }
 
