@@ -49,7 +49,6 @@ void VideoRehabWidget::initUI()
     // Set and start loading
     ui->frameError->hide();
     setLoading(true);
-    //ui->wdgWebEngine->hide();
 
     m_loadingIcon = new QMovie("://status/calling.gif");
     ui->icoLoading->setMovie(m_loadingIcon);

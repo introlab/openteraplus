@@ -2,7 +2,6 @@
 #include <QNetworkReply>
 //#include <QDesktopWidget>
 #include <QApplication>
-#include <QSoundEffect>
 
 #include "ui_MainWindow.h"
 
@@ -98,6 +97,7 @@ void MainWindow::connectSignals()
 
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::userEventReceived, this, &MainWindow::ws_userEvent);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::participantEventReceived, this, &MainWindow::ws_participantEvent);
+    connect(m_comManager->getWebSocketManager(), &WebSocketManager::deviceEventReceived, this, &MainWindow::ws_deviceEvent);
     connect(m_comManager->getWebSocketManager(), &WebSocketManager::joinSessionEventReceived, this, &MainWindow::ws_joinSessionEvent);
 
     connect(ui->projNavigator, &ProjectNavigator::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
@@ -294,7 +294,7 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
     if (in_session){
         if (id_project == 0)
             id_project = ui->projNavigator->getCurrentProjectId();
-        m_inSessionWidget = new InSessionWidget(m_comManager, session_type, id_session, id_project);
+        m_inSessionWidget = new InSessionWidget(m_comManager, session_type, id_session, id_project, nullptr, this);
         connect(m_inSessionWidget, &InSessionWidget::sessionEndedWithError, this, &MainWindow::inSession_sessionEndedWithError);
         connect(m_inSessionWidget, &InSessionWidget::requestShowNotification, this, &MainWindow::addNotification);
         ui->wdgMainTop->layout()->addWidget(m_inSessionWidget);
@@ -767,7 +767,6 @@ void MainWindow::com_sessionError(QString error)
 
 void MainWindow::ws_userEvent(UserEvent event)
 {
-
     if (event.type() == UserEvent_EventType_USER_CONNECTED){
         // Don't do anything for current user!
         if (event.user_uuid() == m_comManager->getCurrentUser().getUuid().toStdString())
@@ -778,9 +777,6 @@ void MainWindow::ws_userEvent(UserEvent event)
         // Add a trace in events also
         GlobalEvent g_event(EVENT_LOGIN, msg_text);
         addGlobalEvent(g_event);
-
-        // Update online users list
-        //updateOnlineUser(QString::fromStdString(event.user_uuid()), true, QString::fromStdString(event.user_fullname()));
     }
 
     if (event.type() == UserEvent_EventType_USER_DISCONNECTED){
@@ -789,9 +785,6 @@ void MainWindow::ws_userEvent(UserEvent event)
 
         GlobalEvent g_event(EVENT_LOGOUT, msg_text);
         addGlobalEvent(g_event);
-
-        // Update online users list
-        //updateOnlineUser(QString::fromStdString(event.user_uuid()), false);
     }
 }
 
@@ -806,9 +799,6 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
             // Add a trace in events also
             GlobalEvent g_event(EVENT_LOGIN, msg_text);
             addGlobalEvent(g_event);
-
-            // Update online users list
-            //updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), true, QString::fromStdString(event.participant_name()));
         }
     }
 
@@ -821,10 +811,27 @@ void MainWindow::ws_participantEvent(ParticipantEvent event)
             // Add a trace in events also
             GlobalEvent g_event(EVENT_LOGOUT, msg_text);
             addGlobalEvent(g_event);
-
-            // Update online participants list
-            //updateOnlineParticipant(QString::fromStdString(event.participant_uuid()), false);
         }
+    }
+}
+
+void MainWindow::ws_deviceEvent(DeviceEvent event)
+{
+    if (event.type() == opentera::protobuf::DeviceEvent_EventType_DEVICE_CONNECTED){
+        QString msg_text = "<font color=yellow>" + QString::fromStdString(event.device_name()) + "</font>" + tr(" est en ligne.");
+        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/device_online.png", "://sounds/notify_online.wav");
+
+        // Add a trace in events also
+        GlobalEvent g_event(EVENT_LOGIN, msg_text);
+        addGlobalEvent(g_event);
+    }
+
+    if (event.type() == opentera::protobuf::DeviceEvent_EventType_DEVICE_DISCONNECTED){
+        QString msg_text = "<font color=yellow>" + QString::fromStdString(event.device_name()) + "</font>" +  tr(" est hors-ligne.");
+        addNotification(NotificationWindow::TYPE_MESSAGE, msg_text, "://icons/device_offline.png", "://sounds/notify_offline.wav");
+
+        GlobalEvent g_event(EVENT_LOGOUT, msg_text);
+        addGlobalEvent(g_event);
     }
 }
 
@@ -916,10 +923,9 @@ void MainWindow::addNotification(const NotificationWindow::NotificationType noti
 
     if (m_comManager->getCurrentPreferences().isNotifySounds() && !soundPath.isEmpty()){
         if (!isInSession()) {// Don't play sounds when in session!
-            QSoundEffect effect(this);
-            effect.setSource(QUrl::fromLocalFile(soundPath));
-            effect.setVolume(0.25f);
-            effect.play();
+            m_soundPlayer.setSource(QUrl::fromLocalFile(soundPath));
+            m_soundPlayer.setVolume(0.25f);
+            m_soundPlayer.play();
         }
     }
 }

@@ -5,6 +5,7 @@
 #include <QPropertyAnimation>
 #include <QMovie>
 #include <QDialog>
+#include <QSoundEffect>
 
 #include "editors/UserWidget.h"
 #include "dialogs/BaseDialog.h"
@@ -56,6 +57,7 @@ signals:
 public slots:
     void ws_userEvent(opentera::protobuf::UserEvent event);
     void ws_participantEvent(opentera::protobuf::ParticipantEvent event);
+    void ws_deviceEvent(opentera::protobuf::DeviceEvent event);
     void ws_joinSessionEvent(opentera::protobuf::JoinSessionEvent event);
 
 private slots:
@@ -108,9 +110,7 @@ private slots:
     void on_btnConfig_clicked();
 
     void on_btnLog_toggled(bool checked);
-
     void on_tableHistory_itemDoubleClicked(QTableWidgetItem *item);
-
     void on_lblLogo_clicked();
 
 private:
@@ -147,6 +147,7 @@ private:
 
     // Message & notification system
     QList<NotificationWindow*>  m_notifications;
+    QSoundEffect            m_soundPlayer;
 
     // UI items
     QMovie*         m_loadingIcon;

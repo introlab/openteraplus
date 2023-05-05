@@ -367,6 +367,17 @@ void InSessionWidget::ws_JoinSessionEvent(JoinSessionEvent event)
 
     // Forward to widget
     if (m_serviceWidget){
+        // SB Qt6 WebEngineView seems to cause issue when loading / displaying... Bug?
+        //    This patch this behaviour and ensures that the session always starts in maximized mode
+        QWidget* parent = parentWidget();
+        while(parent){
+            parent = parent->parentWidget();
+            if (QString::fromStdString(parent->metaObject()->className()) == "MainWindow"){
+                parent->showNormal();
+                parent->showMaximized();
+                break;
+            }
+        }
         bool result = m_serviceWidget->handleJoinSessionEvent(event);
         if (result){
             // If we have a result here, it's that the join was accepted for the first time.
@@ -458,16 +469,16 @@ void InSessionWidget::connectSignals()
 
 void InSessionWidget::initUI()
 {
+    ui->btnEndSession->hide();
+    ui->grpSavePath->hide();
 
     ui->wdgInvitees->setConfirmOnRemove(true);
     ui->wdgInvitees->setComManager(m_comManager);
     //ui->wdgInvitees->showAvailableInvitees(true);
 
-    ui->btnInSessionInfos->setChecked(true);
+    ui->btnInSessionInfos->setChecked(false);
+    ui->tabInfos->hide();
     ui->tabInfos->setCurrentIndex(0);
-
-    ui->btnEndSession->hide();
-    ui->grpSavePath->hide();
 
     // Clean up, if needed
     if (m_serviceWidget){
@@ -485,7 +496,7 @@ void InSessionWidget::initUI()
         bool handled = false;
         if (service_key == "VideoRehabService"){
             // Main widget = QWebEngine
-            m_serviceWidget = new VideoRehabWidget(m_comManager, this);
+            m_serviceWidget = new VideoRehabWidget(m_comManager);
             setMainWidget(m_serviceWidget);
             m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
             setToolsWidget(m_serviceToolsWidget);

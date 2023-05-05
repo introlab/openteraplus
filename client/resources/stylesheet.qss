@@ -234,7 +234,6 @@ QLineEdit:!enabled, QSpinBox:!enabled, QTextEdit:!enabled, QDateTimeEdit:!enable
     background-color: rgba(0,0,0,0%);
     color:rgba(255,255,255,80%);
     padding-left: 0px;
-    color: white;
 }
 
 

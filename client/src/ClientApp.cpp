@@ -150,6 +150,7 @@ void ClientApp::showMainWindow()
 
     // Delete login window, if present
     if (m_loginDiag){
+        m_loginDiag->hide();
         m_loginDiag->deleteLater();
         m_loginDiag = nullptr;
     }

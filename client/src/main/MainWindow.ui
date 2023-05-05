@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1689</width>
-    <height>897</height>
+    <width>950</width>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,8 +40,8 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1069</width>
-         <height>759</height>
+         <width>330</width>
+         <height>376</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -758,7 +758,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1689</width>
+     <width>950</width>
      <height>21</height>
     </rect>
    </property>

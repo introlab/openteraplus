@@ -2,6 +2,7 @@
 #define JOINSESSIONDIALOG_H
 
 #include <QDialog>
+#include <QSoundEffect>
 #include "managers/ComManager.h"
 
 // Protobuf
@@ -49,6 +50,7 @@ private:
     TeraData m_session;
     TeraData m_sessionType;
 
+    QSoundEffect m_soundPlayer;
 
     void initUi();
     void connectSignals();

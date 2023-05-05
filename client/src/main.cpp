@@ -11,7 +11,6 @@ int main(int argc, char* argv[])
     // Global settings
     QCoreApplication::setOrganizationName("INTER");
     QCoreApplication::setApplicationName("OpenTeraPlus");
-
 #ifdef QT_DEBUG
     qputenv("QTWEBENGINE_CHROMIUM_FLAGS", "--autoplay-policy=no-user-gesture-required --remote-debugging-port=22222"); // Allow auto-play feature in webengine without any user interaction to test, for example, the microphone and play sounds
 #else
