@@ -165,6 +165,7 @@ void MainWindow::showDataEditor(const TeraDataTypes &data_type, const TeraData*d
 
     showDashboard(false);
 
+
     // Save values to display them again if needed
     m_currentDataType = data_type;
     m_currentDataId = data->getId();

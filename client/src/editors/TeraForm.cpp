@@ -2,6 +2,9 @@
 #include "ui_TeraForm.h"
 
 #include "Logger.h"
+#include "GlobalMessageBox.h"
+#include "Utils.h"
+
 #include <QDebug>
 #include <QStyledItemDelegate>
 
@@ -39,8 +42,10 @@ void TeraForm::buildUiFromStructure(const QString &structure)
 
     while (ui->toolboxMain->count() > 0){
         ui->toolboxMain->widget(0)->deleteLater();
-        ui->toolboxMain->removeItem(0);
+        //ui->toolboxMain->removeItem(0);
+        ui->toolboxMain->removeTab(0);
     }
+    ui->toolboxMain->show();
 
 
     QJsonObject struct_object = struct_info.object();
@@ -61,9 +66,10 @@ void TeraForm::buildUiFromStructure(const QString &structure)
                         QWidget* new_page = new QWidget(ui->toolboxMain);
                         new_page->setObjectName("pageSection" + QString::number(page_index+1));
                         new_page->setStyleSheet("QWidget#" + new_page->objectName() + "{border: 1px solid white; border-radius: 5px;}");
-                        ui->toolboxMain->addItem(new_page,"");
+                        //ui->toolboxMain->addItem(new_page,"");
+                        ui->toolboxMain->addTab(new_page, section_data["label"].toString());
                     //}
-                    ui->toolboxMain->setItemText(page_index, section_data["label"].toString());
+                    //ui->toolboxMain->setItemText(page_index, section_data["label"].toString());
                     if (section_data.contains("items")){
                         if (section_data["items"].canConvert<QVariantList>()){
                             buildFormFromStructure(ui->toolboxMain->widget(page_index), section_data["items"].toList());
@@ -76,6 +82,7 @@ void TeraForm::buildUiFromStructure(const QString &structure)
             if (struct_data.count() == 1){
                 // Only one section - hides the header and don't use QToolBox
                 ui->mainLayout->removeWidget(ui->toolboxMain);
+                ui->toolboxMain->hide();
                 m_mainWidget = new QFrame(this);
                 ui->mainLayout->addWidget(m_mainWidget);
                 QVariantHash section_data = struct_data.first().toHash();
@@ -139,6 +146,13 @@ void TeraForm::fillFormFromData(const QString &structure)
     QJsonObject struct_object = struct_info.object();
     fillFormFromData(struct_object);
 
+}
+
+void TeraForm::setSectionsPosition(const QTabWidget::TabPosition &position)
+{
+    if (dynamic_cast<QTabWidget*>(ui->toolboxMain)){
+        ui->toolboxMain->setTabPosition(position);
+    }
 }
 
 bool TeraForm::validateFormData(bool include_hidden)
@@ -449,7 +463,11 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
         layout = new QFormLayout(page);
         //layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+        //layout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
+        layout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
+        layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         layout->setVerticalSpacing(3);
+
     }else{
         layout = static_cast<QFormLayout*>(page->layout());
     }
@@ -462,14 +480,6 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             QLabel* item_label = new QLabel(item_data["label"].toString());
             item_label->setAlignment(Qt::AlignVCenter);
             item_label->setStyleSheet("QLabel{min-height: 25px;}");
-
-            /*QFrame* item_frame = new QFrame();
-            QHBoxLayout* item_frame_layout = new QHBoxLayout();
-            item_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-            item_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-            item_frame_layout->addWidget(item_label);
-            item_frame->setLayout(item_frame_layout);*/
-
 
             // Build widget according to item type
             QString item_type = item_data["type"].toString().toLower();
@@ -505,6 +515,9 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             }
             else if (item_type == "label"){
                 item_widget = createLabelWidget(item_data);
+            }
+            else if (item_type == "longlabel"){
+                item_widget = createLongLabelWidget(item_data);
             }
             else if (item_type == "color"){
                 item_widget = createColorWidget(item_data);
@@ -571,6 +584,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
 
     // Set layout alignement
     layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    layout->update();
     page->setLayout(layout);
 
     // Set default values
@@ -736,10 +750,25 @@ QWidget *TeraForm::createLabelWidget(const QVariantHash &structure)
     QLabel* item_label = new QLabel();
 
     item_label->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+    item_label->setWordWrap(true);
 
     //item_label->setHidden(is_hidden);
 
     return item_label;
+}
+
+QWidget *TeraForm::createLongLabelWidget(const QVariantHash &structure)
+{
+    QPushButton* item_button = new QPushButton();
+    item_button->setText(tr("Afficher"));
+    item_button->setIcon(QIcon(":/icons/view_on.png"));
+    item_button->setCursor(Qt::PointingHandCursor);
+
+    // Connect signal
+    connect(item_button, &QPushButton::clicked, this, &TeraForm::longLabelButtonClicked);
+
+    return item_button;
+
 }
 
 QWidget *TeraForm::createListWidget(const QVariantHash &structure)
@@ -757,6 +786,10 @@ QWidget *TeraForm::createLongTextWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QTextEdit* item_text = new QTextEdit();
+
+    QFontMetrics metrics(item_text->font());
+    int row_height = metrics.lineSpacing();
+    item_text->setFixedHeight(4.5 * row_height);
 
     //item_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 
@@ -1028,6 +1061,9 @@ bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
         if (btn->property("color").isValid()){
             *value = btn->property("color").toString();
         }
+        if (btn->property("display_text").isValid()){
+            *value = btn->property("display_text").toString();
+        }
     }
 
     if (QTimeEdit* te = dynamic_cast<QTimeEdit*>(widget)){
@@ -1150,6 +1186,9 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
             btn->setProperty("color", value.toString());
             btn->setStyleSheet(QString("background-color: " + value.toString() + ";min-width: 32px;"));
             return;
+        }else{
+            btn->setProperty("display_text", value.toString());
+            return;
         }
 
     }
@@ -1174,7 +1213,6 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
         }
 
         QDateTime time_value = value.toDateTime().toLocalTime();
-
         if (!time_value.isValid()){
             unsigned int time_s = value.toUInt();
             // Consider we have a UNIX timestamp
@@ -1333,6 +1371,21 @@ void TeraForm::colorWidgetClicked()
         sender_widget->setProperty("color", color.name());
         // Display current color
         sender_widget->setStyleSheet(QString("background-color: " + color.name() + ";"));
+    }
+}
+
+void TeraForm::longLabelButtonClicked()
+{
+    QObject* sender = QObject::sender();
+    if (!sender)
+        return;
+
+    QPushButton* sender_widget = dynamic_cast<QPushButton*>(sender);
+    QString text = sender_widget->property("display_text").toString();
+
+    if (!text.isEmpty()){
+        GlobalMessageBox msgbox(this);
+        msgbox.showInfo(m_widgetsLabels.value(sender_widget)->text(), text);
     }
 }
 

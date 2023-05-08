@@ -17,6 +17,7 @@ GlobalMessageBox::GlobalMessageBox(QWidget *parent) :
                          "QPushButton:hover{background-color:  rgba(255,255,255,75%);color:black;}");*/
 
     m_xPressed=false;
+    setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 }
 
 GlobalMessageBox::~GlobalMessageBox()

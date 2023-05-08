@@ -30,7 +30,6 @@
 
 #include "TeraData.h"
 #include "managers/ComManager.h"
-#include "Utils.h"
 
 namespace Ui {
 class TeraForm;
@@ -44,9 +43,13 @@ public:
     explicit TeraForm(QWidget *parent = nullptr, ComManager* com_man = nullptr);
     ~TeraForm();
 
+
     void buildUiFromStructure(const QString& structure);
     void fillFormFromData(const QJsonObject& data);
     void fillFormFromData(const QString& structure);
+
+    void setSectionsPosition(const QTabWidget::TabPosition &position);
+
     bool formHasData();
     bool formHasStructure();
     void resetFormValues();
@@ -112,6 +115,7 @@ private:
     QWidget* createBooleanWidget(const QVariantHash& structure);
     QWidget* createNumericWidget(const QVariantHash& structure);
     QWidget* createLabelWidget(const QVariantHash& structure);
+    QWidget* createLongLabelWidget(const QVariantHash& structure);
     QWidget* createListWidget(const QVariantHash& structure);
     QWidget* createLongTextWidget(const QVariantHash& structure);
     QWidget* createColorWidget(const QVariantHash& structure);
@@ -128,11 +132,8 @@ private:
     bool getWidgetValues(QWidget *widget, QVariant *id, QVariant* value);
     QVariant getWidgetValue(QWidget* widget);
     void setWidgetValue(QWidget* widget, const QVariant& value);
-
     void setWidgetRequired(QWidget* item_widget, QLabel* item_label, const bool& required);
-
     void updateWidgetChoices(QWidget* widget, const QList<TeraData> values);
-
     bool validateWidget(QWidget* widget, bool include_hidden=false);
 
     static qreal doLinearInterpolation(const qreal &p1, const qreal &p2, const qreal &value);
@@ -142,6 +143,7 @@ private:
 private slots:
     void widgetValueChanged();
     void colorWidgetClicked();
+    void longLabelButtonClicked();
 
     // Hooks
     void hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas);

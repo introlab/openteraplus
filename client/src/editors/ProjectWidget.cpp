@@ -29,6 +29,7 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_PROJECT));
 
     ui->wdgProject->setComManager(m_comManager);
+    ui->wdgProject->setSectionsPosition(QTabWidget::North);
 
     if (data->isNew()){
         // Connect session-type site for new project

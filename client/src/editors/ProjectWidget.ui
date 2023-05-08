@@ -195,6 +195,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <height>0</height>
             </size>
            </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>200</height>
+            </size>
+           </property>
           </widget>
          </item>
          <item alignment="Qt::AlignTop">
@@ -227,6 +233,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
        <item alignment="Qt::AlignTop">
         <widget class="QFrame" name="frameButtons">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QPushButton" name="btnSave">
@@ -285,6 +297,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
        <item>
         <widget class="QGroupBox" name="grpSummary">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Résumé</string>
          </property>

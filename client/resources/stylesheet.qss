@@ -20,6 +20,9 @@ QDockWidget{titlebar-close-icon: url(:/pictures/close-red.png);font:bold large A
 QDockWidget::title{border: darkgray solid 2px;text-align:left;background:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 rgb(64,64,64), stop: 1.0 rgb(40,40,40));padding-left:5px}
 QDockWidget::close-button {icon-size:14px;background: rgba(0,0,0,0);}
 
+QWidget#dockWidgetContents{
+    border: 0px solid transparent;
+}
 
 /*
     QStatusBar
@@ -30,9 +33,19 @@ QStatusBar::item{border: 1px transparent black;}
 /*
     QMainWindow
 */
-QMainWindow::separator { background: rgb(29,29,29);width: 5px;height: 5px;}
-QMainWindow::separator:hover {background: black;}
-QMainWindow{background: #2c3338; }
+QMainWindow::separator {
+    background: rgb(60,60,60);
+    width: 2px;
+    height: 5px;
+}
+
+QMainWindow::separator:hover {
+    background: rgb(120,120,120);
+}
+
+QMainWindow{
+    background: #2c3338;
+}
 
 /*
     QFrame
@@ -78,29 +91,51 @@ QHeaderView::up-arrow {
 }
 
 QTabBar::tab{
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));
-    border: 2px solid  rgba(128,128,140,50%);
-    padding: 2px;
-    min-height:25px;
+    /*background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));*/
+    border: 1px solid rgba(10, 100, 174, 50%);
+    background-color: #FF17365D;
+    padding: 5px;
+    min-height: 25px;
     color: white;
+    margin: 1px;
+}
+
+QMainWindow QTabBar::tab:left{
+    min-height: 120px;
+}
+
+TeraForm QTabBar::tab{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));
+    min-height: 15px;
+    border: 1px solid rgba(128,128,140,50%);
+}
+
+TeraForm QTabBar::tab:top{
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+TeraForm QTabBar::tab:selected{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(220,220,220,70%),  stop: 1.0  rgba(255,255,255,50%));
+    color: black;
 }
 
 QTabBar::tab:top{
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     border-bottom: 0px;
 }
 
 QTabBar::tab:left{
-    min-height:120px;
-    border-bottom-left-radius: 4px;
-    border-top-left-radius: 4px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    /*min-height:120px;*/
     border-right: 0px;
 }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(220,220,220,70%),  stop: 1.0  rgba(255,255,255,50%));
-    color: black;
+    background-color: rgba(10, 100, 174, 100%);
+    color: white;
 }
 
 QTabBar::tab:selected {
@@ -108,9 +143,9 @@ QTabBar::tab:selected {
     border-bottom-color:rgba(128,128,140,60%);
 }
 
-QTabBar::tab:!selected {
+/*QTabBar::tab:!selected {
     margin-top: 2px;
-}
+}*/
 
 /*
     QGroupBox
@@ -583,10 +618,18 @@ QFrame#frameMessage{background-color: transparent;}
 /* Customizations for MainWindow */
 QMainWindow{background-image: url(://TeRA_Background.png); background-color: #2c3338;}
 QWidget#toolsWidget,QWidget#InToolsWidget{background-color:rgba(0,128,200,20%);}
-QWidget#docketTopWidget{background-color: #2c3338;}
-QFrame#frameMenu,QFrame#frameVideo{border: 1px solid rgba(150,150,150,50%);}
+QWidget#dockerTopWidget{background-color: #2c3338;}
+
+QFrame#frameMenu, QFrame#frameVideo{
+    border: 1px solid rgba(150,150,150,50%);
+}
+QWidget#tabProjectNavigator{
+    border: 1px solid rgba(150,150,150,50%);
+    border-radius: 1px;
+}
 QFrame#frameMessages{background-color:rgba(255,0,0,50%); border-radius:5px;}
 QToolButton#btnVideoSwitch, QToolButton#btnLog {color: white; min-height: 35px; background-color: qlineargradient(spread:reflect, x1:0.220183, y1:0.745192, x2:1, y2:0, stop:0.201835 rgba(0, 0, 0, 255), stop:0.880734 rgba(255, 255, 255, 255), stop:1 rgba(189, 189, 189, 255)); border-radius: 5px;}
+
 
 /* Red buttons */
 QPushButton#btnLogout {

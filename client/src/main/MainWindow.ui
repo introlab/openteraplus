@@ -516,7 +516,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <property name="leftMargin">
-           <number>4</number>
+           <number>1</number>
           </property>
           <property name="topMargin">
            <number>4</number>
@@ -546,6 +546,12 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>200</height>
+          </size>
+         </property>
          <attribute name="icon">
           <iconset resource="../../resources/TeraClient.qrc">
            <normaloff>:/status/status_ok.png</normaloff>:/status/status_ok.png</iconset>
@@ -558,7 +564,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
            <enum>QLayout::SetMinAndMaxSize</enum>
           </property>
           <property name="leftMargin">
-           <number>4</number>
+           <number>0</number>
           </property>
           <property name="topMargin">
            <number>4</number>
