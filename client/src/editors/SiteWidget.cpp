@@ -3,12 +3,13 @@
 
 #include "editors/DataListWidget.h"
 
-SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
+SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, const bool configMode, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::SiteWidget)
 {
     m_diag_editor = nullptr;
     m_devicesCount = 0;
+    m_configMode = configMode;
 
     ui->setupUi(this);
 
@@ -153,9 +154,10 @@ void SiteWidget::updateControlsState()
 
     ui->btnUpdateServices->setVisible(is_super_admin);
     ui->btnUpdateDevices->setVisible(is_super_admin);
-    ui->btnEditDevices->setVisible(is_site_admin);
-    /*ui->btnUpdateRoles->setVisible(is_site_admin);
-    ui->btnUserGroups->setVisible(is_site_admin);*/
+    ui->btnEditDevices->setVisible(is_site_admin && !m_configMode);
+
+    ui->btnEditSessionTypes->setVisible(!m_configMode);
+    ui->btnUserGroups->setVisible(!m_configMode);
 
     ui->grpSummary->setVisible(!dataIsNew());
     if (dataIsNew()){

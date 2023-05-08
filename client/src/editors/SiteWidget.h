@@ -18,11 +18,10 @@ class SiteWidget : public DataEditorWidget
     Q_OBJECT
 
 public:
-    explicit SiteWidget(ComManager* comMan, const TeraData* data = nullptr, QWidget *parent = nullptr);
+    explicit SiteWidget(ComManager* comMan, const TeraData* data = nullptr, const bool configMode = false, QWidget *parent = nullptr);
     ~SiteWidget();
 
     void saveData(bool signal=true);
-
     void setData(const TeraData* data);
 
 private slots:
@@ -77,6 +76,7 @@ private:
     BaseDialog*                  m_diag_editor;
 
     int                          m_devicesCount;
+    bool                         m_configMode;
 
     void connectSignals();
 

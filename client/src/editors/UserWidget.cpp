@@ -404,7 +404,7 @@ void UserWidget::processSitesAccessReply(QList<TeraData> sites)
     foreach (TeraData site, sites){
         updateSiteAccess(&site);
     }
-    ui->tableSitesRoles->resizeColumnsToContents();
+    //ui->tableSitesRoles->resizeColumnsToContents();
 }
 
 void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
@@ -412,7 +412,7 @@ void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
     foreach (TeraData project, projects){
         updateProjectAccess(&project);
     }
-    ui->tableProjectsRoles->resizeColumnsToContents();
+    //ui->tableProjectsRoles->resizeColumnsToContents();
 }
 
 void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query)

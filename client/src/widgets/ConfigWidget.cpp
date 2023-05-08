@@ -46,13 +46,14 @@ void ConfigWidget::addSection(const QString &name, const QIcon &icon, const int 
     tmp->setText(name);
     tmp->setTextAlignment(Qt::AlignCenter);
     tmp->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    //tmp->setSizeHint(QSize(ui->lstSections->width(), 64));
     tmp->setToolTip(name);
+    //tmp->setSizeHint(ui->lstSections->gridSize());
     tmp->setData(Qt::UserRole, id);
 }
 
 void ConfigWidget::setupSections()
 {
+    ui->lstSections->setGridSize(QSize(ui->lstSections->width()-20, ui->lstSections->gridSize().height()));
     addSection(tr("Utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)), TERADATA_USER);
     addSection(tr("Groupes utilisateurs"), QIcon(TeraData::getIconFilenameForDataType(TERADATA_USERGROUP)), TERADATA_USERGROUP);
     addSection(tr("Sites"), QIcon("://icons/site-icon.png"), TERADATA_SITE);
