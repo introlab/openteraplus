@@ -9,6 +9,7 @@ if (MSVC)
       /wd4661 # Ignore no suitable definition for explicit template (C4661)
       /wd4251 # Ignore needs to have dll-interface
       /wd4146 # Ignore unary minus operator applied to unsigned type, result still unsigned
+      /wd4267 # Ignore size_t to uint32_t conversion warnings
     )
 endif (MSVC)
 

@@ -198,7 +198,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>200</height>
+             <height>150</height>
             </size>
            </property>
           </widget>
@@ -1205,12 +1205,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TeraForm</class>
-   <extends>QWidget</extends>
-   <header>TeraForm.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>widgets/ClickableLabel.h</header>
@@ -1218,6 +1212,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
     <signal>clicked()</signal>
     <slot>clicked()</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>TeraForm</class>
+   <extends>QWidget</extends>
+   <header>TeraForm.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

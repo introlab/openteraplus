@@ -1,3 +1,4 @@
 <a href="https://www.flaticon.com/free-icons/logos" title="logos icons">Logos icons created by Pixel perfect - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/logotype" title="logotype icons">Logotype icons created by Freepik - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/chrome" title="chrome icons">Chrome icons created by Pixel perfect - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/book" title="book icons">Book icons created by max.icons - Flaticon</a>

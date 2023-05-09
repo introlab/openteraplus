@@ -116,6 +116,7 @@ void MainWindow::connectSignals()
 void MainWindow::initUi()
 {
     ui->btnConfig->hide();
+    ui->lblVersion->hide();
 
     // Setup messages
     ui->wdgMessages->hide();

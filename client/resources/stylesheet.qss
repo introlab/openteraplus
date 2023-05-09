@@ -10,15 +10,29 @@ QWidget{
 /*
     QToolBar
 */
-QToolBar {background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 rgb(125,125,125), stop: 1.0 rgb(80,80,80)); spacing: 5px;}
+QToolBar {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 rgb(125,125,125), stop: 1.0 rgb(80,80,80));
+    spacing: 5px;
+}
 
 /*
     QDockWidget
 */
 
-QDockWidget{titlebar-close-icon: url(:/pictures/close-red.png);font:bold large Arial; color:rgb(200,200,198);}
-QDockWidget::title{border: darkgray solid 2px;text-align:left;background:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 rgb(64,64,64), stop: 1.0 rgb(40,40,40));padding-left:5px}
-QDockWidget::close-button {icon-size:14px;background: rgba(0,0,0,0);}
+QDockWidget{
+    titlebar-close-icon: url(:/pictures/close-red.png);
+    font:bold large Arial;
+    color:rgb(200,200,198);
+}
+QDockWidget::title{
+    text-align:left;
+    background:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 rgb(64,64,64), stop: 1.0 rgb(40,40,40));
+    padding-left:5px
+}
+QDockWidget::close-button {
+    icon-size:14px;
+    background: rgba(0,0,0,0);
+}
 
 QWidget#dockWidgetContents{
     border: 0px solid transparent;
@@ -28,7 +42,9 @@ QWidget#dockWidgetContents{
     QStatusBar
 */
 
-QStatusBar::item{border: 1px transparent black;}
+QStatusBar::item{
+    border: 1px transparent black;
+}
 
 /*
     QMainWindow
@@ -50,8 +66,9 @@ QMainWindow{
 /*
     QFrame
 */
-QFrame{background-color:rgba(29,29,29,50%);}
-
+QFrame{
+    background-color:rgba(0,0,0,50%);
+}
 
 /*
     TabWidget
@@ -68,11 +85,18 @@ QTabWidget::tab-bar {
 
 QTableWidget::tab, QHeaderView::section {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));
-    border: 2px solid  rgba(128,128,140,50%);
+    border: 2px solid rgba(128,128,140,50%);
     padding: 2px;
     min-height:25px;
 }
 
+QTableWidget {
+    gridline-color: rgba(128,128,140,50%);
+}
+
+QHeaderView{
+    background-color: transparent;
+}
 
 QTableWidget QTableCornerButton::section {
     background-color: rgb(64, 65, 74);
@@ -90,8 +114,11 @@ QHeaderView::up-arrow {
     width: 12px;
 }
 
+QTabBar{
+    qproperty-drawBase: 0;
+}
+
 QTabBar::tab{
-    /*background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));*/
     border: 1px solid rgba(10, 100, 174, 50%);
     background-color: #FF17365D;
     padding: 5px;
@@ -236,8 +263,12 @@ QLabel {
     QTreeWidget
 */
 QTreeWidget, QTableWidget{
-    selection-background-color: rgba(255,255,255,50%);/*rgba(0,5,45,50%)*/;
-    selection-color: black/*lightblue*/;
+    selection-background-color: rgba(23,54,93,70%);/*rgba(255,255,255,50%);*//*rgba(0,5,45,50%)*/;
+    selection-color: white/*lightblue*/;
+}
+
+QTreeWidget::item::selected{
+    background-color: rgba(23,54,93,70%);
 }
 
 QTreeWidget#treeNavigator {
@@ -546,11 +577,11 @@ QCalendarWidget QWidget { alternate-background-color: #0d5ca6; }
 
 QCalendarWidget QAbstractItemView:enabled
 {
-font-size:12px;
-color: rgb(180, 180, 180);
-background-color: black;
-selection-background-color: rgb(0,0,0);
-selection-color: rgb(0, 255, 0);
+    font-size:12px;
+    color: rgb(180, 180, 180);
+    background-color: black;
+    selection-background-color: rgb(0,0,0);
+    selection-color: rgb(0, 255, 0);
 }
 
 
@@ -614,6 +645,7 @@ QLabel#lblWarning{
 QFrame#frameLogos{background-color:rgba(200,200,200,100%);}
 QLabel#lblMessage{color:white;}
 QFrame#frameMessage{background-color: transparent;}
+QFrame#frameButtons{background-color:rgba(29,29,29,50%);}
 
 /* Customizations for MainWindow */
 QMainWindow{background-image: url(://TeRA_Background.png); background-color: #2c3338;}
@@ -623,7 +655,7 @@ QWidget#dockerTopWidget{background-color: #2c3338;}
 QFrame#frameMenu, QFrame#frameVideo{
     border: 1px solid rgba(150,150,150,50%);
 }
-QWidget#tabProjectNavigator{
+QWidget#tabProjectNavigator, QWidget#tabOnline, QWidget#tabSearch{
     border: 1px solid rgba(150,150,150,50%);
     border-radius: 1px;
 }
@@ -666,12 +698,13 @@ QPushButton#btnNewSession:disabled, QPushButton#btnStartSession:disabled {
 }
 
 QPushButton#btnEditUser,QPushButton#btnConfig {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(100,100,100,100%), stop: 1 rgba(148,148,148,100%)); /*rgba(100,100,100,50%); */
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 rgba(100,100,100,100%), stop: 1 rgba(148,148,148,100%));
     border: 1px solid rgba(148,148,148,100%);
     min-width: 0px;
 }
-QPushButton#btnEditUser::hover, QPushButton#btnConfig::hover{
-    color:black;
+
+QPushButton#btnEditUser:hover,QPushButton#btnConfig:hover{
+    color: black;
 }
 
 QToolButton#btnVideo:!checked, QToolButton#btnLog:!checked, QToolButton#btnFilterActive:!checked, QToolButton#btnSearch:!checked{
@@ -836,7 +869,7 @@ QTreeWidget#treeOnline{
 
 /* Customizations for DashboardWidget */
 QFrame#frameAttention, QFrame#frameRecent, QFrame#frameUpcomingSessions{
-    background-color: rgba(100,100,100, 50%);
+    /*background-color: rgba(100,100,100, 50%);*/
 }
 
 QLabel#lblNoUpcomingSessions, QLabel#lblNoRecentParticipants, QLabel#lblAttention{
@@ -844,6 +877,7 @@ QLabel#lblNoUpcomingSessions, QLabel#lblNoRecentParticipants, QLabel#lblAttentio
     font-size: 12px;
     color: orange;
     background-color: black;
+    border-radius: 15px;
 }
 
 /* Customizations for ResultMessageWidget */

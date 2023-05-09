@@ -787,9 +787,9 @@ QWidget *TeraForm::createLongTextWidget(const QVariantHash &structure)
     Q_UNUSED(structure)
     QTextEdit* item_text = new QTextEdit();
 
-    QFontMetrics metrics(item_text->font());
+    /*QFontMetrics metrics(item_text->font());
     int row_height = metrics.lineSpacing();
-    item_text->setFixedHeight(4.5 * row_height);
+    item_text->setFixedHeight(4.5 * row_height);*/
 
     //item_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 

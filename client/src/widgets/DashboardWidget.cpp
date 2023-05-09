@@ -352,6 +352,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
     ui->treeWarnings->clear();
     int warnings = 0;
     int total_warnings = 0;
+    ui->treeWarnings->setColumnWidth(0, 48);
     if (stats.hasFieldName("warning_participants_count")){
         warnings = stats.getFieldValue("warning_participants_count").toInt();
         if (warnings > 0){
@@ -363,7 +364,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
             QToolButton* manage_btn = createManageWarningButton();
             manage_btn->setProperty("data", stats.getFieldValue("warning_participants"));
             manage_btn->setProperty("data_type", TERADATA_PARTICIPANT);
-            ui->treeWarnings->setItemWidget(item, 0, manage_btn);
+            ui->treeWarnings->setItemWidget(item, 0, manage_btn);  
 
             // Participants details
             QVariantList participants = stats.getFieldValue("warning_participants").toList();
@@ -659,7 +660,8 @@ QToolButton *DashboardWidget::createManageWarningButton()
     QToolButton* manage_btn = new QToolButton();
     manage_btn->setIcon(QIcon("://icons/config.png"));
     manage_btn->setIconSize(QSize(20,20));
-    manage_btn->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    manage_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    manage_btn->setFixedSize(28, 28);
     manage_btn->setToolTip(tr("Gérer"));
     manage_btn->setCursor(Qt::PointingHandCursor);
     manage_btn->setStyleSheet("QToolButton::hover{background-color:transparent;}");

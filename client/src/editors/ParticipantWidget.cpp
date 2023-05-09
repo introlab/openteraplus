@@ -191,7 +191,7 @@ void ParticipantWidget::updateFieldsValue()
             on_txtPassword_textEdited("");
 
             // Status
-            ui->icoOnline->setVisible(m_data->isEnabled());
+            //ui->icoOnline->setVisible(m_data->isEnabled());
             ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
             if (m_data->isBusy()){
                 ui->icoOnline->setPixmap(QPixmap("://status/status_busy.png"));
@@ -224,6 +224,7 @@ void ParticipantWidget::initUI()
     ui->frameActive->hide();
     ui->frameWeb->hide();
     ui->txtWeb->hide();
+    ui->icoOnline->hide();
 
     // Disable random password button, handled in the PasswordStrengthDialog now!
     ui->btnRandomPass->hide();
