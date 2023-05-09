@@ -40,9 +40,7 @@ private slots:
     void processSessionTypeProjectReply(QList<TeraData> stp_list, QUrlQuery reply_query);
     void processSessionTypeSiteReply(QList<TeraData> sts_list, QUrlQuery reply_query);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
-
     void processPostOKReply(QString path);
-
     void deleteDataReply(QString path, int del_id);
 
     void btnUpdateAccess_clicked();
@@ -51,33 +49,24 @@ private slots:
     void on_icoUsers_clicked();
     void on_icoSessions_clicked();
     void on_btnUserGroups_clicked();
-    void userGroupsEditor_finished();
 
+    void userGroupsEditor_finished();
     void usersEditor_finished();
 
     void on_tableSummary_itemDoubleClicked(QTableWidgetItem *item);
-
     void on_lstServices_itemChanged(QListWidgetItem *item);
-
     void on_tabNav_currentChanged(int index);
     void on_tabManageUsers_currentChanged(int index);
     void on_tabManageServices_currentChanged(int index);
 
     void on_btnUpdateSessionTypes_clicked();
-
     void on_lstSessionTypes_itemChanged(QListWidgetItem *item);
-
-
     void on_treeDevices_itemChanged(QTreeWidgetItem *item, int column);
-
     void on_btnUpdateDevices_clicked();
-
     void on_btnNewParticipant_clicked();
     void on_btnNewGroup_clicked();
     void on_btnDelete_clicked();
-
     void on_tableSummary_itemSelectionChanged();
-
     void on_btnManageUsers_clicked();
 
 private:
@@ -101,6 +90,8 @@ private:
     QMap<int, QWidget*>           m_services_tabs;
 
     BaseDialog*                   m_diag_editor;
+
+    bool                          m_refreshProjectParticipants;
 
     void connectSignals();
     void initUI();

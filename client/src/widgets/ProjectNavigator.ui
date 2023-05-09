@@ -455,8 +455,8 @@
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
-          <normaloff>:/icons/patient.png</normaloff>
-          <normalon>:/icons/patient_installed.png</normalon>:/icons/patient.png</iconset>
+          <normaloff>:/status/status_offline.png</normaloff>
+          <normalon>:/status/status_online.png</normalon>:/status/status_offline.png</iconset>
         </property>
         <property name="iconSize">
          <size>

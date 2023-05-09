@@ -534,7 +534,12 @@ void ProjectNavigator::updateProject(const TeraData *project)
     }
 
     item->setText(0, project->getName());
-    item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
+    item->setIcon(0, QIcon(project->getIconStateFilename()));
+    if (project->isEnabled()){
+        item->setForeground(0, Qt::white);
+    }else{
+        item->setForeground(0, Qt::gray);
+    }
 
     if (m_currentProjectId == id_project && m_currentProjectId >0 && !m_selectionHold){
         // Load details
@@ -696,6 +701,7 @@ void ProjectNavigator::updateGroup(const TeraData *group)
     }
 
     item->setText(0, group->getName());
+    item->setForeground(0, m_projects_items[id_project]->foreground(0));
     item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_GROUP)));
 
    if (m_currentGroupId == id_group && m_currentGroupId >0 && !item->isExpanded()){
@@ -900,6 +906,12 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     }
 
     item->setText(0, participant->getName());
+    if (participant->isEnabled()){
+        item->setForeground(0, Qt::white);
+    }else{
+        item->setForeground(0, Qt::gray);
+    }
+
     if (participant->hasBusyStateField() || participant->hasOnlineStateField())
         item->setIcon(0, QIcon(participant->getIconStateFilename()));
     m_participants[participant->getUuid()] = *participant;
@@ -1842,6 +1854,7 @@ void ProjectNavigator::on_btnFilterActive_toggled(bool checked)
             item->setHidden(filtered);
         }
     }
+
     // Update counts for all projects
     /*if (isAdvancedView()){
         for(QTreeWidgetItem* item_project:qAsConst(m_projects_items)){

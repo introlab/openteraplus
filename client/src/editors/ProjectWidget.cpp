@@ -9,6 +9,7 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
     ui(new Ui::ProjectWidget)
 {
     m_diag_editor = nullptr;
+    m_refreshProjectParticipants = false;
 
     ui->setupUi(this);
 
@@ -81,6 +82,10 @@ void ProjectWidget::saveData(bool signal)
 
     if (signal){
         TeraData* new_data = ui->wdgProject->getFormDataObject(TERADATA_PROJECT);
+        if (m_data->isEnabled() && !new_data->isEnabled()){
+            // Project was disabled. Also forces participants from that project refresh when we get the "Post" reply
+            m_refreshProjectParticipants = true;
+        }
         *m_data = *new_data;
         delete new_data;
         emit dataWasChanged();
@@ -478,6 +483,19 @@ void ProjectWidget::updateFieldsValue()
 
 bool ProjectWidget::validateData()
 {
+    bool editedProjectEnabled = ui->wdgProject->getFieldValue("project_enabled").toBool();
+
+    if (!editedProjectEnabled && m_data->getFieldValue("project_enabled").toBool()){
+        // We changed from "enabled" to "disabled". User confirmation required before proceeding.
+        GlobalMessageBox msg;
+        GlobalMessageBox::StandardButton rval = msg.showYesNo(tr("Confirmation - désactivation"), tr("Le project sera désactivé.") + "\n\r" +
+                                                              tr("Tous les participants seront aussi désactivés et les appareils associés à ceux-ci seront désassociés.") + "\n\r" +
+                                                              tr("Êtes-vous sûrs de vouloir continuer?"));
+        if (rval != GlobalMessageBox::Yes){
+            undoButtonClicked();
+            return false;
+        }
+    }
     return ui->wdgProject->validateFormData();
 }
 
@@ -766,6 +784,13 @@ void ProjectWidget::processPostOKReply(QString path)
     if (path == WEB_PROJECTINFO_PATH){
         // Update current user access list for the newly created project
         m_comManager->doUpdateCurrentUser();
+        if (m_refreshProjectParticipants){
+            // Also refresh participants list to show disabled participants
+            m_refreshProjectParticipants = false;
+            QUrlQuery args;
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
+            queryDataRequest(WEB_PARTICIPANTINFO_PATH, args);
+        }
     }
     if (path == WEB_SESSIONTYPEPROJECT_PATH || path == WEB_TESTTYPEPROJECT_PATH){
         // Also update associated services

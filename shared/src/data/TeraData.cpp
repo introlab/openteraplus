@@ -550,6 +550,13 @@ QString TeraData::getIconStateFilename() const
         if (isEnabled())
             return "://icons/patient_installed.png";
         return "://icons/patient.png";
+    case TERADATA_PROJECT:
+        if (isEnabled()){
+            return "://icons/project.png";
+        }else{
+            return "://icons/project_disabled.png";
+        }
+        break;
     default:
         return "://icons/error.png";
     }
