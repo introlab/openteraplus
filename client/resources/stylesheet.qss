@@ -545,15 +545,19 @@ QMenu::item:selected{
     QCalendarWidget
 */
 
-QCalendarWidget QWidget#qt_calendar_navigationbar { background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #cccccc, stop: 1 #333333); }
-    QCalendarWidget QToolButton {
+QCalendarWidget QWidget#qt_calendar_navigationbar {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #cccccc, stop: 1 #333333);
+}
+
+QCalendarWidget QToolButton {
     height: 20px;
     color: white;
     font-size: 12px;
-        font-weight: bold;
-    icon-size: 20px, 20px;
+    font-weight: bold;
+    /*icon-size: 20px, 20px;*/
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #cccccc, stop: 1 #333333);
-    }
+}
+
 QCalendarWidget QMenu {
     left: 20px;
     color: white;
@@ -567,14 +571,31 @@ QCalendarWidget QSpinBox {
     selection-background-color: rgb(136, 136, 136);
     selection-color: rgb(255, 255, 255);
 }
-QCalendarWidget QSpinBox::up-button { subcontrol-origin: border; subcontrol-position: top right;  }
-QCalendarWidget QSpinBox::down-button {subcontrol-origin: border; subcontrol-position: bottom right; }
-QCalendarWidget QSpinBox::up-arrow { width:16px; height:16px; }
-QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
+
+QCalendarWidget QSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+}
+
+QCalendarWidget QSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+}
+
+QCalendarWidget QSpinBox::up-arrow {
+    width:16px;
+    height:16px;
+}
+
+QCalendarWidget QSpinBox::down-arrow {
+    width:16px;
+    height:16px;
+}
 
 
-QCalendarWidget QWidget { alternate-background-color: #0d5ca6; }
-
+QCalendarWidget QWidget {
+    alternate-background-color: #0d5ca6;
+}
 
 QCalendarWidget QAbstractItemView:enabled
 {
@@ -585,8 +606,9 @@ QCalendarWidget QAbstractItemView:enabled
     selection-color: rgb(0, 255, 0);
 }
 
-
-QCalendarWidget QAbstractItemView:disabled { color: rgb(64, 64, 64); }
+QCalendarWidget QAbstractItemView:disabled {
+    color: rgb(64, 64, 64);
+}
 
 /* QProgressBar */
 QProgressBar{

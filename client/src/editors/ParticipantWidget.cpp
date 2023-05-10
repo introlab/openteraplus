@@ -174,6 +174,9 @@ void ParticipantWidget::updateFieldsValue()
         if (!dataIsNew()){
             ui->lblTitle->setText(m_data->getName());
             ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
+            if (m_data->hasFieldName("participant_project_enabled")){
+                ui->chkEnabled->setEnabled(m_data->getFieldValue("participant_project_enabled").toBool());
+            }
             ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
             if (ui->chkLogin->isChecked()){
                 ui->btnSaveLogin->setEnabled(false); // Disable save login infos on already enabled participants
