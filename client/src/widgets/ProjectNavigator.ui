@@ -381,7 +381,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
-          <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
+          <normaloff>:/icons/navtree.png</normaloff>:/icons/navtree.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -448,15 +448,14 @@
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="toolTip">
-         <string>Afficher / masquer les participants inactifs</string>
+         <string>Afficher / masquer les éléments inactifs</string>
         </property>
         <property name="text">
          <string>...</string>
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
-          <normaloff>:/status/status_offline.png</normaloff>
-          <normalon>:/status/status_online.png</normalon>:/status/status_offline.png</iconset>
+          <normaloff>:/icons/filter.png</normaloff>:/icons/filter.png</iconset>
         </property>
         <property name="iconSize">
          <size>

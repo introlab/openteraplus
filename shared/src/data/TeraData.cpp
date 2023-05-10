@@ -478,7 +478,7 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     case TERADATA_SITE:
     case TERADATA_SERVICE_SITE:
     case TERADATA_SESSIONTYPESITE:
-        return "://icons/site.png";
+        return "://icons/site-icon.png";
     case TERADATA_SESSIONTYPE:
         return "://icons/session_type.png";
     case TERADATA_SESSION:
@@ -496,7 +496,7 @@ QString TeraData::getIconFilenameForDataType(const TeraDataTypes &data_type)
     case TERADATA_PROJECT:
     case TERADATA_SERVICE_PROJECT:
     case TERADATA_SESSIONTYPEPROJECT:
-        return "://icons/project.png";
+        return "://icons/project-icon.png";
     case TERADATA_DEVICESUBTYPE:
     case TERADATA_DEVICETYPE:
         return "://icons/kit.png";
@@ -551,7 +551,7 @@ QString TeraData::getIconStateFilename() const
             return "://icons/patient_installed.png";
         return "://icons/patient.png";
     case TERADATA_PROJECT:
-        if (isEnabled()){
+        if (isEnabled() || !hasEnabledField()){
             return "://icons/project.png";
         }else{
             return "://icons/project_disabled.png";

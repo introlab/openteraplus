@@ -2,3 +2,12 @@
 <a href="https://www.flaticon.com/free-icons/logotype" title="logotype icons">Logotype icons created by Freepik - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/chrome" title="chrome icons">Chrome icons created by Pixel perfect - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/book" title="book icons">Book icons created by max.icons - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/search" title="search icons">Search icons created by Vector Stall - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/filter" title="filter icons">Filter icons created by designhub - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/loading-arrow" title="loading arrow icons">Loading arrow icons created by Laisa Islam Ani - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/files-and-folders" title="files and folders icons">Files and folders icons created by riajulislam - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/ui" title="ui icons">Ui icons created by berkahicon - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/output" title="output icons">Output icons created by Laisa Islam Ani - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/company" title="company icons">Company icons created by Dragon Icons - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/work" title="work icons">Work icons created by Pixel perfect - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/folder" title="folder icons">Folder icons created by Freepik - Flaticon</a>

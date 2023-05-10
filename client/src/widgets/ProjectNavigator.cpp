@@ -535,10 +535,12 @@ void ProjectNavigator::updateProject(const TeraData *project)
 
     item->setText(0, project->getName());
     item->setIcon(0, QIcon(project->getIconStateFilename()));
-    if (project->isEnabled()){
+    if (project->isEnabled() || !project->hasEnabledField()){
         item->setForeground(0, Qt::white);
+        item->setData(0, Qt::UserRole, true); // Enabled status
     }else{
         item->setForeground(0, Qt::gray);
+        item->setData(0, Qt::UserRole, false);  // Disabled status
     }
 
     if (m_currentProjectId == id_project && m_currentProjectId >0 && !m_selectionHold){
@@ -1160,7 +1162,6 @@ bool ProjectNavigator::isParticipantFiltered(const QString &part_uuid)
     }
 
     // Check for text filtering
-
     if (ui->btnSearch->isChecked() && !filtered){
         filtered = !m_participants[part_uuid].getName().contains(ui->txtNavSearch->text(), Qt::CaseInsensitive);
     }
@@ -1853,6 +1854,12 @@ void ProjectNavigator::on_btnFilterActive_toggled(bool checked)
         if (item){
             item->setHidden(filtered);
         }
+    }
+
+    // Filter disabled projects
+    foreach(QTreeWidgetItem* item, m_projects_items){
+        bool enabled = item->data(0, Qt::UserRole).toBool();
+        item->setHidden(!enabled && checked);
     }
 
     // Update counts for all projects

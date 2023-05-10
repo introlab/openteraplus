@@ -2,7 +2,6 @@
 #include "ui_ProjectWidget.h"
 
 #include "editors/DataListWidget.h"
-#include "Logger.h"
 
 ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -473,6 +472,7 @@ void ProjectWidget::updateFieldsValue()
     if (m_data){
         ui->wdgProject->fillFormFromData(m_data->toJson());
         ui->lblTitle->setText(m_data->getName());
+        ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
 
         if (dataIsNew() && m_data->hasFieldName("id_site")){
             // New project - locked to that site

@@ -492,7 +492,7 @@ QLabel#lblLogo, QLabel#lblVersion, QLabel#lblUser{background-color:transparent;}
         <widget class="QWidget" name="tabProjectNavigator">
          <attribute name="icon">
           <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/project-icon.png</normaloff>:/icons/project-icon.png</iconset>
+           <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
          </attribute>
          <attribute name="title">
           <string>Navigateur</string>

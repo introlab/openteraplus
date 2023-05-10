@@ -230,7 +230,8 @@ void SiteWidget::querySessionTypeSiteAccess()
 void SiteWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_SITE){
-        ui->wdgSite->buildUiFromStructure(data);
+        if (!ui->wdgSite->formHasStructure())
+            ui->wdgSite->buildUiFromStructure(data);
         return;
     }
 }
