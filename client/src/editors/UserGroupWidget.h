@@ -5,9 +5,8 @@
 #include <QListWidgetItem>
 #include <QTableWidgetItem>
 
+#include "editors/DataListWidget.h"
 #include "DataEditorWidget.h"
-#include "GlobalMessageBox.h"
-#include "dialogs/BaseDialog.h"
 
 namespace Ui {
 class UserGroupWidget;
@@ -30,6 +29,8 @@ private slots:
     void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processSitesReply(QList<TeraData> sites);
     void processProjectsReply(QList<TeraData> projects);
+    void processServiceRolesReply(QList<TeraData> roles, QUrlQuery reply_query);
+    void processServiceAccessReply(QList<TeraData> access, QUrlQuery reply_query);
     void processUserUserGroupsReply(QList<TeraData> users_user_groups);
     void processPostOKReply(QString path);
     void processDeleteReply(QString path, int id);
@@ -38,23 +39,30 @@ private slots:
     void btnUpdateProjectAccess_clicked();
 
     void comboSiteRole_changed(int index);
+    void comboProjectRole_changed(int index);
+    void comboServiceRole_changed(int index);
+
     void on_tabNav_currentChanged(int index);
     void on_btnUpdateUsers_clicked();
+
+    void on_btnUpdateServicesRoles_clicked();
 
 private:
     Ui::UserGroupWidget *ui;
 
-    QMap<int, QTableWidgetItem*> m_tableProjects_items;
-    QMultiMap<int, QTableWidgetItem*> m_tableProjectSite_items; // Map: id_site, project item
-    QMap<int, QTableWidgetItem*> m_tableSites_items;
+    QMap<int, QTableWidgetItem*>        m_tableProjects_items;
+    QMultiMap<int, QTableWidgetItem*>   m_tableProjectSite_items; // Map: id_site, project item
+    QMap<int, QTableWidgetItem*>        m_tableSites_items;
+    QMap<int, QTableWidgetItem*>        m_tableServices_items;
 
-    QMap<int, QListWidgetItem*>  m_listUsersUserGroups_items;
-    QMap<int, QListWidgetItem*>  m_listUsers_items;
+    QMap<int, QListWidgetItem*>         m_listUsersUserGroups_items;
+    QMap<int, QListWidgetItem*>         m_listUsers_items;
 
     void connectSignals();
 
     void updateSiteAccess(const TeraData* access);
     void updateProjectAccess(const TeraData* access);
+    void updateServiceRole(const TeraData* access);
     void updateUserUserGroup(const TeraData* uug);
 
     void updateControlsState();

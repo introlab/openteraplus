@@ -293,6 +293,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "service_access";
     case TERADATA_SERVICE_CONFIG:
         return "service_config";
+    case TERADATA_SERVICE_ROLE:
+        return "service_role";
     case TERADATA_STATS:
         return "stats";
     case TERADATA_USERPREFERENCE:
@@ -370,9 +372,11 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
     case TERADATA_SERVICE_SITE:
         return tr("Service: site");
     case TERADATA_SERVICE_ACCESS:
-        return tr("Service: Accès");
+        return tr("Service: accès");
     case TERADATA_SERVICE_CONFIG:
-        return tr("Service: Configuration");
+        return tr("Service: configuration");
+    case TERADATA_SERVICE_ROLE:
+        return tr("Service: rôle");
     case TERADATA_STATS:
         return tr("Statistiques");
     case TERADATA_ONLINE_DEVICE:
@@ -420,6 +424,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_SERVICESITEINFO_PATH)         return TERADATA_SERVICE_SITE;
     if (path==WEB_SERVICEACCESSINFO_PATH)       return TERADATA_SERVICE_ACCESS;
     if (path==WEB_SERVICECONFIGINFO_PATH)       return TERADATA_SERVICE_CONFIG;
+    if (path==WEB_SERVICEROLEINFO_PATH)         return TERADATA_SERVICE_ROLE;
     if (path==WEB_USERUSERGROUPINFO_PATH)       return TERADATA_USERUSERGROUP;
     if (path==WEB_USERPREFSINFO_PATH)           return TERADATA_USERPREFERENCE;
     if (path==WEB_STATS_PATH)                   return TERADATA_STATS;
@@ -455,6 +460,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_DEVICESUBTYPE)      return WEB_DEVICESUBTYPE_PATH;
     if (data_type==TERADATA_DEVICETYPE)         return WEB_DEVICETYPE_PATH;
     if (data_type==TERADATA_SERVICE)            return WEB_SERVICEINFO_PATH;
+    if (data_type==TERADATA_SERVICE_ACCESS)     return WEB_SERVICEACCESSINFO_PATH;
     if (data_type==TERADATA_SITEACCESS)         return WEB_SITEACCESS_PATH;
     if (data_type==TERADATA_SERVICE_CONFIG)     return WEB_SERVICECONFIGINFO_PATH;
     if (data_type==TERADATA_ASSET)              return WEB_ASSETINFO_PATH;

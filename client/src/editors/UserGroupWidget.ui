@@ -79,7 +79,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
@@ -299,6 +299,9 @@
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Site</string>
@@ -313,6 +316,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="btnUpdateSitesRoles">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -404,6 +410,9 @@
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Site</string>
@@ -423,6 +432,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="btnUpdateProjectsRoles">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -434,6 +446,93 @@
          </property>
          <property name="text">
           <string>Mettre à jour les rôles des projets</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabServices">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/service.png</normaloff>:/icons/service.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Accès - Services</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QTableWidget" name="tableServices">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="dragDropOverwriteMode">
+          <bool>false</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::NoSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="columnCount">
+          <number>2</number>
+         </property>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>250</number>
+         </attribute>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Service</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Rôle</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateServicesRoles">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les rôles des services</string>
          </property>
          <property name="icon">
           <iconset resource="../../resources/TeraClient.qrc">

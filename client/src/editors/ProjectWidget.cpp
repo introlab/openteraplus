@@ -631,35 +631,6 @@ void ProjectWidget::processServiceProjectsReply(QList<TeraData> services_project
             }
         }
     }
-
-    // Remove service tabs not present anymore
-    /*if (!dataIsNew()){
-        QList<QWidget*> tabs_to_del;
-        for(QWidget* tab: qAsConst(m_services_tabs)){
-            if (!ids_service.contains(m_services_tabs.key(tab))){
-                tabs_to_del.append(tab);
-            }
-        }
-        for(QWidget *tab: tabs_to_del){
-            ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
-            tab->deleteLater();
-            m_services_tabs.remove(m_services_tabs.key(tab));
-        }
-    }*/
-
-    /*bool services_empty = m_services.isEmpty();
-    foreach(TeraData service, services){
-        if(service.getFieldValue("id_project").toInt() ==  m_data->getId()){
-            updateService(&service);
-        }
-    }
-
-    if (services_empty){
-        QUrlQuery args;
-        args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
-        args.addQueryItem(WEB_QUERY_WITH_USERGROUPS, "1"); // Includes user groups without any access
-        queryDataRequest(WEB_SERVICEACCESSINFO_PATH, args);
-    }*/
 }
 
 void ProjectWidget::processSessionTypeProjectReply(QList<TeraData> stp_list, QUrlQuery reply_query)

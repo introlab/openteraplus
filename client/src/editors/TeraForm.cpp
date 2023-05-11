@@ -750,7 +750,7 @@ QWidget *TeraForm::createLabelWidget(const QVariantHash &structure)
     QLabel* item_label = new QLabel();
 
     item_label->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
-    item_label->setWordWrap(true);
+    //item_label->setWordWrap(true);
 
     //item_label->setHidden(is_hidden);
 

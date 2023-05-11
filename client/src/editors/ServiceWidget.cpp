@@ -152,9 +152,6 @@ void ServiceWidget::postServiceRoles()
 
     for (const QString &role_name:qAsConst(m_serviceRoles)){
         int role_id = m_serviceRoles.key(role_name);
-/*    for (int i=0; i<m_serviceRoles.count(); i++){
-        int role_id = m_serviceRoles.keys().at(i);
-        QString role_name = m_serviceRoles.values().at(i);*/
         QJsonObject data_obj;
         data_obj.insert("id_service_role", role_id);
         data_obj.insert("service_role_name", role_name);
