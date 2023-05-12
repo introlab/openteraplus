@@ -333,6 +333,19 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
     ui->tableProjectsRoles->setItem(current_row,2,item);
 }
 
+void UserWidget::updateServiceAccess(const TeraData *service_access)
+{
+    // We assume the table is cleared beforehand and that item isn't already present.
+    int current_row = ui->tableServicesRoles->rowCount();
+    ui->tableServicesRoles->setRowCount(ui->tableServicesRoles->rowCount()+1);
+    QTableWidgetItem* item = new QTableWidgetItem(service_access->getFieldValue("service_name").toString());
+    item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE)));
+    ui->tableServicesRoles->setItem(current_row,0,item);
+    item = new QTableWidgetItem(getRoleName(service_access->getFieldValue("service_access_role_name").toString()));
+    ui->tableServicesRoles->setItem(current_row,1,item);
+
+}
+
 void UserWidget::queryUserAccess()
 {
     // Roles
@@ -343,6 +356,9 @@ void UserWidget::queryUserAccess()
     ui->tableSitesRoles->clearContents();
     ui->tableSitesRoles->setRowCount(0);
     ui->tableSitesRoles->sortItems(-1);
+    ui->tableServicesRoles->clearContents();
+    ui->tableServicesRoles->setRowCount(0);
+    ui->tableServicesRoles->sortItems(-1);
 
     // Query sites and projects roles
     if (!m_data->isNew()){
@@ -350,6 +366,9 @@ void UserWidget::queryUserAccess()
         args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
 
         queryDataRequest(WEB_SITEACCESS_PATH, args);
+
+        queryDataRequest(WEB_SERVICEACCESSINFO_PATH, args);
+
         args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
         queryDataRequest(WEB_PROJECTACCESS_PATH, args);
 
@@ -413,6 +432,16 @@ void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
         updateProjectAccess(&project);
     }
     //ui->tableProjectsRoles->resizeColumnsToContents();
+}
+
+void UserWidget::processServicesAccessReply(QList<TeraData> services_access)
+{
+    foreach (TeraData access, services_access){
+        // Ignore "OpenTera" service
+        if (access.getFieldValue("service_key").toString() == "OpenTeraServer")
+            continue;
+        updateServiceAccess(&access);
+    }
 }
 
 void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query)
@@ -501,6 +530,7 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::usersReceived, this, &UserWidget::processUsersReply);
     connect(m_comManager, &ComManager::siteAccessReceived, this, &UserWidget::processSitesAccessReply);
     connect(m_comManager, &ComManager::projectAccessReceived, this, &UserWidget::processProjectsAccessReply);
+    connect(m_comManager, &ComManager::servicesAccessReceived, this, &UserWidget::processServicesAccessReply);
     connect(m_comManager, &ComManager::formReceived, this, &UserWidget::processFormsReply);
     connect(m_comManager, &ComManager::userGroupsReceived, this, &UserWidget::processUserGroupsReply);
     connect(m_comManager, &ComManager::userUserGroupsReceived, this, &UserWidget::processUserUsersGroupsReply);
@@ -526,6 +556,7 @@ void UserWidget::initUI()
 void UserWidget::on_tabMain_currentChanged(int index)
 {
     QUrlQuery args;
+    bool super_admin = m_data->getFieldValue("user_superadmin").toBool();
 
     if (!ui->tabMain->currentWidget()->isEnabled())
         return;
@@ -542,12 +573,14 @@ void UserWidget::on_tabMain_currentChanged(int index)
         //}
 
         // If user is super admin, disable groups
-        bool super_admin = m_data->getFieldValue("user_superadmin").toBool();
         ui->lblWarning->setVisible(super_admin);
         ui->frameGroups->setVisible(!super_admin);
     }
     if (current_tab == ui->tabRoles){
         queryUserAccess();
+        // If user is super admin, disable services
+        ui->lblWarning2->setVisible(super_admin);
+        ui->tableServicesRoles->setVisible(!super_admin);
     }
 
     if (current_tab == ui->tabConfig){

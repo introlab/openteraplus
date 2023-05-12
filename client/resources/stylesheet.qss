@@ -657,7 +657,7 @@ QLabel#lblTitle{
     color: cyan;
 }
 
-QLabel#lblWarning{
+QLabel#lblWarning, QLabel#lblWarning2{
     font-weight: bold;
     font-size: 14px;
     color: orange;
