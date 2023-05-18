@@ -256,6 +256,10 @@ QString DataEditorWidget::getRoleName(const QString &role)
         return tr("Administrateur");
     if (role == "user")
         return tr("Utilisateur");
+    if (role == "manager")
+        return tr("Gestionnaire");
+    if (role == "editor")
+        return tr("Éditeur");
     if (role == "")
         return tr("Aucun rôle");
     return role;

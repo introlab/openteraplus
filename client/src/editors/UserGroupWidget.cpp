@@ -188,10 +188,10 @@ void UserGroupWidget::updateProjectAccess(const TeraData *access)
         item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_SITE)),
                                                       access->getFieldValue("site_name").toString());
 
-        ui->tableProjects->setItem(current_row, 0, item);
+        ui->tableProjects->setItem(current_row, 1, item);
         item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_PROJECT)),
                                                       access->getFieldValue("project_name").toString());
-        ui->tableProjects->setItem(current_row, 1, item);
+        ui->tableProjects->setItem(current_row, 0, item);
         combo_roles = buildRolesComboBox();
         connect(combo_roles, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
                 this, &UserGroupWidget::comboProjectRole_changed);

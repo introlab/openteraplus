@@ -327,7 +327,7 @@ QListView::item{
 
 QListView::item:selected {
     color: cyan;
-    background-color: rgba(0,5,45,50%);
+    background-color: rgba(0,5,145,50%);
 }
 
 QListView::item:hover {
