@@ -92,7 +92,8 @@ QStringList Utils::getAudioDeviceNames()
     //QList<QAudioDeviceInfo> audio_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
     foreach(const QAudioDevice &input, audio_devices){
 //TODO FIX LINUX
-#ifdef Q_OS_LINUX
+#if 0
+//#ifdef Q_OS_LINUX
         // On linux, since Qt use ALSA API, we must filter the returned device list...
         if (input.deviceName().startsWith("alsa_input") || input.deviceName() == "default"){
             QString filtered_name = input.deviceName();
