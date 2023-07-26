@@ -259,6 +259,9 @@ void DashboardWidget::processSessionTypesReply(const QList<TeraData> session_typ
 
     // Refresh data
     refreshData();
+
+    // Disconnect signal since we don't need it anymore
+    disconnect(m_comManager, &ComManager::sessionTypesReceived, this, &DashboardWidget::processSessionTypesReply);
 }
 
 void DashboardWidget::processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_query)

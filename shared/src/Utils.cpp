@@ -1,5 +1,5 @@
 #include "Utils.h"
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QCameraDevice>
 #include <QAudioDevice>
 
@@ -36,24 +36,24 @@ QList<Utils::PasswordValidationErrors> Utils::validatePassword(const QString &pa
         errors.append(PASSWORD_LENGTH);
     }
 
-    QRegExp validator("[A-Z]");
+    QRegularExpression validator("[A-Z]");
 
-    if (validator.indexIn(password) == -1){
+    if (!validator.match(password).hasMatch()){
         errors.append(PASSWORD_NOCAPS);
     }
 
     validator.setPattern("[a-z]");
-    if (validator.indexIn(password) == -1){
+    if (!validator.match(password).hasMatch()){
         errors.append(PASSWORD_NONOCAPS);
     }
 
     validator.setPattern("[0-9]");
-    if (validator.indexIn(password) == -1){
+    if (!validator.match(password).hasMatch()){
         errors.append(PASSWORD_NODIGITS);
     }
 
     validator.setPattern("[^A-Za-z0-9]");
-    if (validator.indexIn(password) == -1){
+    if (!validator.match(password).hasMatch()){
         errors.append(PASSWORD_NOCHAR);
     }
 

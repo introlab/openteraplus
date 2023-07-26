@@ -1,6 +1,5 @@
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Multimedia  REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
 
 add_definitions(-DSHAREDLIB_LIBRARY)
 if (MSVC)
@@ -67,7 +66,7 @@ endif()
 set_target_properties(opentera_shared PROPERTIES
         INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/bin
         INSTALL_RPATH_USE_LINK_PATH TRUE)
-target_link_libraries(opentera_shared Qt6::Core Qt6::Multimedia Qt6::Core5Compat)
+    target_link_libraries(opentera_shared Qt6::Core Qt6::Multimedia)
 if (MSVC)
 target_compile_definitions(opentera_shared PUBLIC OPENTERAMESSAGES_EXPORT=__declspec\(dllimport\))
 endif(MSVC)
