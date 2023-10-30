@@ -3,3 +3,6 @@ deploy
 /build-*
 *.user
 
+html
+venv
+doctrees
