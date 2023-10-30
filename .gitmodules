@@ -1,6 +1,0 @@
-[submodule "external/protobuf"]
-	path = external/protobuf
-	url = https://github.com/protocolbuffers/protobuf.git
-[submodule "external/messages"]
-	path = external/messages
-	url = https://github.com/introlab/opentera_messages.git
