@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenTeraPlus &mdash; Documentation OpenTeraPlus 1.1.3</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=43f71b09"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d99ca74e"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="Problèmes et solutions" href="users/Troubleshooting.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            OpenTeraPlus
+              <img src="_static/LogoOpenTeraPlus.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Manuel d'utilisation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="users/Troubleshooting.html">Problèmes et solutions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">OpenTeraPlus</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">OpenTeraPlus</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<section id="openteraplus">
+<h1>OpenTeraPlus<a class="headerlink" href="#openteraplus" title="Link to this heading"></a></h1>
+<p>OpenTeraPlus est un client pour le <a class="reference external" href="https://github.com/introlab/opentera">Serveur OpenTera</a>. Son rôle est d’agir comme un outil général pour gérer une instance d’OpenTera et de fournir certaines fonctionnalités spécifiques à certains services, telles que la Téléréadaptation.</p>
+<section id="auteurs">
+<h2>Auteurs<a class="headerlink" href="#auteurs" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Simon Brière, ing. M.Sc.A., Centre de recherche sur le Vieillissement (CDRV), CIUSSS de l’Estrie-CHUS (&#64;sbriere)</p></li>
+<li><p>Dominic Létourneau, ing. M.Sc.A., IntRoLab, Université de Sherbrooke (&#64;doumdi)</p></li>
+<li><p>François Michaud, ing. Ph.D., IntRoLab, Université de Sherbrooke</p></li>
+<li><p>Michel Tousignant, pht, Ph.D., CDRV, Université de Sherbrooke</p></li>
+</ul>
+</section>
+<section id="publication-s">
+<h2>Publication(s)<a class="headerlink" href="#publication-s" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Panchea, A.M., Létourneau, D., Brière, S. et al., <a class="reference external" href="https://rdcu.be/cHzmf">OpenTera: A microservice architecture solution for rapid prototyping of robotic solutions to COVID-19 challenges in care facilities</a>,  Health Technol. 12, 583–596 (2022)</p></li>
+</ul>
+</section>
+<section id="fonctionnalites-actuelles">
+<h2>Fonctionnalités actuelles<a class="headerlink" href="#fonctionnalites-actuelles" title="Link to this heading"></a></h2>
+<section id="apercu-des-fonctionnalites">
+<h3>Aperçu des fonctionnalités<a class="headerlink" href="#apercu-des-fonctionnalites" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Gestion globale du système, incluant les accès utilisateurs - rôles pour sites, projets, appareils, types de séances et services</p></li>
+<li><p>Gestion des participants (patients), incluant l’activation/désactivation, regroupements et tableaux de bord des séances</p></li>
+<li><p>Intégration spécifique pour les services de téléréadaptation et toutes les activités cliniques demandant une séance audio-vidéo adaptée au contexte</p></li>
+<li><p>Gestion des séances, incluant fichiers / données attachées et tests / questionnaires</p></li>
+</ul>
+</section>
+<section id="fonctionnalites-detaillees">
+<h3>Fonctionnalités détaillées<a class="headerlink" href="#fonctionnalites-detaillees" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Connexion en tant qu’utilisateur</p>
+<ul>
+<li><p>Implémentation de l’accès selon les groupes utilisateurs</p></li>
+</ul>
+</li>
+<li><p>Gestion des projets et sites</p>
+<ul>
+<li><p>Accès des groupes utilisateurs</p></li>
+<li><p>Appareils, types de séances et évaluations liées</p></li>
+<li><p>Services associés</p></li>
+</ul>
+</li>
+<li><p>Gestion des participants (patients)</p>
+<ul>
+<li><p>Regroupement des participants</p></li>
+<li><p>Activation / désactivation des participants, liens webs et connexion traditionnelle</p></li>
+<li><p>Ajout / suppression</p></li>
+</ul>
+</li>
+<li><p>Gestion des séances</p>
+<ul>
+<li><p>Création de nouvelle séance et édition de séances existantes</p></li>
+<li><p>Vue calendrier des séances réalisées et planifiées</p></li>
+<li><p>Affichage des événements de séance</p></li>
+<li><p>Téléchargement et gestion des fichiers attachés aux séances</p></li>
+<li><p>Affichage des évaluations attachées aux séances</p></li>
+</ul>
+</li>
+<li><p>Gestion des appareils</p>
+<ul>
+<li><p>Association d’appareils aux participants</p></li>
+<li><p>Activation / désactivation d’appareils</p></li>
+<li><p>Configuration des appareils</p></li>
+</ul>
+</li>
+<li><p>Gestion des services OpenTera</p>
+<ul>
+<li><p>Édition de la configuration</p></li>
+</ul>
+</li>
+<li><p>Séances de téléréadaptation</p>
+<ul>
+<li><p>Création et gestion de séances vidéos axées sur la télésanté</p></li>
+</ul>
+</li>
+<li><p>… et plus!</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="captures-d-ecran">
+<h1>Captures d’écran<a class="headerlink" href="#captures-d-ecran" title="Link to this heading"></a></h1>
+<table><tr>
+<td><img src="docs/screenshots/LoginScreen.png" width="100" alt="Login Screen" title="Login Screen"></td>
+<td><img src="docs/screenshots/ProjectNavigator.png" width="100" alt="Project Navigator" title="Project Navigator"></td>
+<td><img src="docs/screenshots/Participant.png" width="100" alt="Participant Viewer" title="Participant Viewer"></td>
+<td><img src="docs/screenshots/SessionLobby.png" width="100" alt="Session Lobby" title="Session Lobby"></td>
+<td><img src="docs/screenshots/AdminConfig.png" width="100" alt="Admin configuration" title="Admin configuration"></td>
+</tr></table>
+</section>
+<section id="video">
+<h1>Vidéo<a class="headerlink" href="#video" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://youtu.be/FathjoDGlZ0"><img alt="OpenTera+ Logiciel Clinique de Télésanté" src="https://img.youtube.com/vi/FathjoDGlZ0/maxresdefault.jpg" /></a></p>
+</section>
+<section id="licence">
+<h1>Licence<a class="headerlink" href="#licence" title="Link to this heading"></a></h1>
+<p>OpenTeraPlus est licencé sous <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="users/Troubleshooting.html" class="btn btn-neutral float-right" title="Problèmes et solutions" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2023, Simon Brière, Dominic Létourneau.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

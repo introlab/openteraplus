@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Problèmes et solutions &mdash; Documentation OpenTeraPlus 1.1.3</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=43f71b09"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=d99ca74e"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="prev" title="OpenTeraPlus" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OpenTeraPlus
+              <img src="../_static/LogoOpenTeraPlus.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Manuel d'utilisation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Problèmes et solutions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#demarrage-du-logiciel">Démarrage du logiciel</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#connexion">Connexion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utilisateur-ou-mot-de-passe-invalide">1. <em>Utilisateur ou mot de passe invalide</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#impossible-de-rejoindre-le-serveur">2. <em>Impossible de rejoindre le serveur</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#message-derreur-deja-connecte-au-logiciel">3. <em>Message d’erreur : « Déjà connecté au logiciel »</em></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#seance-de-telesante">Séance de télésanté</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#demarrage-de-seance">Démarrage de séance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pas-dimage-video-dans-le-vestibule-de-la-seance">1. <em>Pas d’image vidéo dans le vestibule de la séance</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pas-de-son-dans-le-vestibule-de-seance">2. <em>Pas de son dans le vestibule de séance</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mauvaise-camera">3. <em>Mauvaise caméra</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#participant-ne-se-joint-jamais-a-la-seance">4. <em>Participant ne se joint jamais à la séance</em></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pendant-la-seance">Pendant la séance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#le-participant-nentend-pas-ce-que-vous-dites">1. <em>Le participant n’entend pas ce que vous dites</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vous-nentendez-pas-le-participant">2. <em>Vous n’entendez pas le participant</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#le-participant-ne-vous-voit-pas">3. <em>Le participant ne vous voit pas</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vous-ne-voyez-pas-limage-du-participant-mais-vous-lentendez">4. <em>Vous ne voyez pas l’image du participant, mais vous l’entendez</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coupures-de-son-qualite-video-degradee">5. <em>Coupures de son / qualité vidéo dégradée</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tout-autre-probleme">6. <em>Tout autre problème</em></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#problemes-du-cote-du-participant">Problèmes du côté du participant</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#message-derreur-navigateur-non-supporte">1. <em>Message d’erreur : « Navigateur non-supporté »</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pas-dimage-video-en-cliquant-sur-le-lien">2. <em>Pas d’image vidéo en cliquant sur le lien</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#meme-si-le-professionnel-demarre-la-seance-celle-ci-ne-demarre-pas-pour-le-participant">3. <em>Même si le professionnel démarre la séance, celle-ci ne démarre pas pour le participant</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#le-son-est-faible">4. <em>Le son est faible</em></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OpenTeraPlus</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Problèmes et solutions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/users/Troubleshooting.md.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="problemes-et-solutions">
+<h1>Problèmes et solutions<a class="headerlink" href="#problemes-et-solutions" title="Link to this heading"></a></h1>
+<section id="demarrage-du-logiciel">
+<h2>Démarrage du logiciel<a class="headerlink" href="#demarrage-du-logiciel" title="Link to this heading"></a></h2>
+<section id="connexion">
+<h3>Connexion<a class="headerlink" href="#connexion" title="Link to this heading"></a></h3>
+<section id="utilisateur-ou-mot-de-passe-invalide">
+<h4>1. <em>Utilisateur ou mot de passe invalide</em><a class="headerlink" href="#utilisateur-ou-mot-de-passe-invalide" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Vérifiez votre code utilisateur et votre mot de passe</p></li>
+<li><p>Validez auprès de votre administrateur si votre compte est toujours actif</p></li>
+</ul>
+</section>
+<section id="impossible-de-rejoindre-le-serveur">
+<h4>2. <em>Impossible de rejoindre le serveur</em><a class="headerlink" href="#impossible-de-rejoindre-le-serveur" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Vérifiez que votre ordinateur est bien connecté à Internet (en ouvrant un navigateur et en effectuant une recherche, par exemple)</p></li>
+<li><p>Assurez-vous que votre ordinateur est bien connecté sur le bon réseau Internet</p></li>
+<li><p>Si nécessaire, assurez-vous que les politiques en place dans votre établissement permettent bien l’utilisation du logiciel (i.e. aucun port bloqué, aucun anti-virus qui empêche l’exécution adéquate du logiciel)</p></li>
+</ul>
+</section>
+<section id="message-derreur-deja-connecte-au-logiciel">
+<h4>3. <em>Message d’erreur : « Déjà connecté au logiciel »</em><a class="headerlink" href="#message-derreur-deja-connecte-au-logiciel" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Vérifiez que le logiciel n’est pas déjà ouvert sur votre poste de travail</p></li>
+<li><p>Si vous utilisez plusieurs postes, assurez-vous que vous n’êtes pas connecté sur un autre poste</p></li>
+<li><p>Assurez-vous que personne d’autre n’utilise votre compte utilisateur</p></li>
+<li><p>Si vous ne savez pas où vous êtes connecté, contactez votre administrateur qui pourra désactiver votre compte, changer le mot de passe et le réactiver</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="seance-de-telesante">
+<h2>Séance de télésanté<a class="headerlink" href="#seance-de-telesante" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>Téléréadaptation ou autre, basée sur le service de <em>VideoRehab</em>.</p>
+</div></blockquote>
+<section id="demarrage-de-seance">
+<h3>Démarrage de séance<a class="headerlink" href="#demarrage-de-seance" title="Link to this heading"></a></h3>
+<section id="pas-dimage-video-dans-le-vestibule-de-la-seance">
+<h4>1. <em>Pas d’image vidéo dans le vestibule de la séance</em><a class="headerlink" href="#pas-dimage-video-dans-le-vestibule-de-la-seance" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Vérifiez qu’il n’y a pas de cache-caméra sur votre caméra</p></li>
+<li><p>Vérifiez que votre caméra est bien branchée sur votre appareil s’il s’agit d’une caméra externe</p></li>
+<li><p>Assurez-vous qu’aucun autre logiciel présentement ouvert n’utilise votre caméra (comme Microsoft Teams, Zoom ou autres)</p></li>
+<li><p>Assurez-vous que la bonne source vidéo est sélectionnée (en bas de la zone d’image)</p></li>
+</ul>
+</section>
+<section id="pas-de-son-dans-le-vestibule-de-seance">
+<h4>2. <em>Pas de son dans le vestibule de séance</em><a class="headerlink" href="#pas-de-son-dans-le-vestibule-de-seance" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>La barre de son à gauche ne s’affiche ou ne bouge pas lorsque vous parlez.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Si vous utilisez un microphone externe, assurez-vous qu’il est bien branché</p></li>
+<li><p>S’il y a lieu, assurez-vous que le bouton « mute » n’est pas activé sur votre microphone</p></li>
+<li><p>Assurez-vous que le bon microphone est sélectionné (en bas de la zone d’image)</p></li>
+</ul>
+</section>
+<section id="mauvaise-camera">
+<h4>3. <em>Mauvaise caméra</em><a class="headerlink" href="#mauvaise-camera" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Dans le vestibule, sous l’image de la caméra, sélectionnez la bonne caméra. N’oubliez pas d’enregistrer les paramètres par défaut si vous souhaitez toujours utiliser cette caméra !</p></li>
+</ul>
+</section>
+<section id="participant-ne-se-joint-jamais-a-la-seance">
+<h4>4. <em>Participant ne se joint jamais à la séance</em><a class="headerlink" href="#participant-ne-se-joint-jamais-a-la-seance" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Assurez-vous que le participant était bien en ligne (icône verte) au démarrage de la séance.</p></li>
+<li><p>Contactez le participant et vérifiez :</p>
+<ul>
+<li><p>Qu’il a bien ouvert le lien fourni et qu’il se voit sur son écran</p></li>
+<li><p>Qu’il ait bien accepté de partager son microphone et sa caméra lorsque la question lui sera demandée</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="pendant-la-seance">
+<h3>Pendant la séance<a class="headerlink" href="#pendant-la-seance" title="Link to this heading"></a></h3>
+<section id="le-participant-nentend-pas-ce-que-vous-dites">
+<h4>1. <em>Le participant n’entend pas ce que vous dites</em><a class="headerlink" href="#le-participant-nentend-pas-ce-que-vous-dites" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Assurez-vous que votre microphone est bien allumé et pas en « mute » (voir « Pas de son dans le vestibule de séance ») plus haut</p></li>
+<li><p>Assurez-vous que vous n’avez pas activé l’icône pour désactiver le microphone dans le logiciel</p></li>
+<li><p>Assurez-vous que la bonne source audio est sélectionnée dans les paramètres (icône « engrenage » sous votre image).</p></li>
+<li><p>Cliquez sur le bouton « Reconnecter » en haut</p></li>
+</ul>
+</section>
+<section id="vous-nentendez-pas-le-participant">
+<h4>2. <em>Vous n’entendez pas le participant</em><a class="headerlink" href="#vous-nentendez-pas-le-participant" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Assurez-vous que le volume de votre poste est bien allumé et à une valeur plus grande que 0</p></li>
+<li><p>Assurez-vous que votre icône « haut-parleur » dans le logiciel est bien active</p></li>
+<li><p>Si le participant utilise un microphone externe (tel un casque d’écoute), assurez-vous :</p>
+<ul>
+<li><p>Qu’il est bien allumé</p></li>
+<li><p>Qu’il ne soit pas à « mute »</p></li>
+<li><p>Bien connecté à l’appareil</p></li>
+</ul>
+</li>
+<li><p>Assurez-vous que le participant a bien la bonne source de microphone en cliquant sur l’icône « engrenage » sous son image et en changeant sa source audio principale</p></li>
+</ul>
+</section>
+<section id="le-participant-ne-vous-voit-pas">
+<h4>3. <em>Le participant ne vous voit pas</em><a class="headerlink" href="#le-participant-ne-vous-voit-pas" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Assurez-vous que vous voyez votre propre image</p>
+<ul>
+<li><p>Si ce n’est pas le cas, validez les étapes identifiées plus haut sous « Pas d’image vidéo dans le vestibule de la séance »)</p></li>
+<li><p>Assurez-vous que le bouton « caméra » est bien activé dans le logiciel</p></li>
+</ul>
+</li>
+<li><p>Cliquez sur le bouton « Reconnecter » en haut</p></li>
+<li><p>Demandez au participant de rafraichir sa page de son côté (la façon de faire variera selon l’appareil et le navigateur utilisé) ou de cliquer sur le bouton « Déconnecter » en haut à droite et de suivre à nouveau le lien que vous lui avez envoyé</p></li>
+</ul>
+</section>
+<section id="vous-ne-voyez-pas-limage-du-participant-mais-vous-lentendez">
+<h4>4. <em>Vous ne voyez pas l’image du participant, mais vous l’entendez</em><a class="headerlink" href="#vous-ne-voyez-pas-limage-du-participant-mais-vous-lentendez" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Si le participant vous entend, validez qu’il se voit</p>
+<ul>
+<li><p>S’il ne se voit pas, assurez-vous que l’icône « caméra » sous son image est bien activée</p></li>
+<li><p>Dans les paramètres du participant (icône « engrenage » sous son image), assurez-vous que la bonne caméra est sélectionnée</p></li>
+</ul>
+</li>
+<li><p>Cliquez sur le bouton « Reconnecter » en haut</p></li>
+<li><p>Demandez au participant de rafraichir sa page de son côté (la façon de faire variera selon l’appareil et le navigateur utilisé) ou de cliquer sur le bouton « Déconnecter » en haut à droite et de suivre à nouveau le lien que vous lui avez envoyé</p></li>
+</ul>
+</section>
+<section id="coupures-de-son-qualite-video-degradee">
+<h4>5. <em>Coupures de son / qualité vidéo dégradée</em><a class="headerlink" href="#coupures-de-son-qualite-video-degradee" title="Link to this heading"></a></h4>
+<p>Ces problèmes sont dus à une mauvaise qualité de connexion Internet, que ce soit du côté du professionnel ou du participant. Quelques ajustements et validations pouvant être faites :</p>
+<ul class="simple">
+<li><p>Si vous êtes sur un réseau sans fil et qu’un réseau filaire est disponible, tentez de brancher votre appareil sur ce réseau</p></li>
+<li><p>Assurez-vous que personne d’autre au domicile du participant n’utilise la connexion Internet en même temps que la séance pour y faire du téléchargement, du visionnement en ligne (« streaming ») ou jouer à des jeux vidéo en ligne</p></li>
+<li><p>Si le participant se connecte à Internet via une connexion de type « cellulaire », demandez-lui, si possible de se connecter avec une connexion de type sans-fil (non-cellulaire) ou filaire</p></li>
+<li><p>Si possible, demandez au participant de changer de pièce. Idéalement, s’il sait où se trouve son point d’accès Internet (routeur et/ou modem), demandez-lui de s’y rapprocher.</p></li>
+<li><p>En dernier recours, activez et désactivez les caméras dans le logiciel et activez-les uniquement si nécessaire</p></li>
+<li><p>Si le problème persiste :</p>
+<ul>
+<li><p>Si le problème revient constamment avec tous les participants, il faudra peut-être vérifier la connexion Internet du poste clinicien</p></li>
+<li><p>Si le problème revient constamment avec un participant donné, le problème se trouve probablement de son côté et vérifier la connexion Internet de celui-ci. Un redémarrage du modem / routeur peut parfois résoudre les problèmes.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="tout-autre-probleme">
+<h4>6. <em>Tout autre problème</em><a class="headerlink" href="#tout-autre-probleme" title="Link to this heading"></a></h4>
+<p>La plupart des autres problèmes pouvant survenir peuvent être réglés avec ces étapes :</p>
+<ul class="simple">
+<li><p>Cliquez sur le bouton « Reconnecter » en haut à gauche</p></li>
+<li><p>Demandez au participant de rafraichir sa page de son côté (la façon de faire variera selon l’appareil et le navigateur utilisé) ou de cliquer sur le bouton « Déconnecter » en haut à droite et de suivre à nouveau le lien que vous lui avez envoyé</p></li>
+<li><p>Terminez la séance et démarrez une nouvelle séance</p></li>
+</ul>
+</section>
+</section>
+<section id="problemes-du-cote-du-participant">
+<h3>Problèmes du côté du participant<a class="headerlink" href="#problemes-du-cote-du-participant" title="Link to this heading"></a></h3>
+<section id="message-derreur-navigateur-non-supporte">
+<h4>1. <em>Message d’erreur : « Navigateur non-supporté »</em><a class="headerlink" href="#message-derreur-navigateur-non-supporte" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Demandez au participant d’utiliser un autre navigateur (tels que Firefox, Chrome ou Safari)</p></li>
+<li><p>Si le participant est sur un appareil mobile:</p>
+<ul>
+<li><p>Demandez-lui de faire les mises à jour logicielles, s’il y a lieu</p></li>
+<li><p>S’il est sur un appareil de type Apple, demandez-lui d’utiliser le navigateur <em>Safari</em> pour ouvrir le lien. Sur ces appareils, aucun autre navigateur n’est supporté.</p></li>
+<li><p>S’il n’y a pas de mise à jour disponible et que son appareil date de plusieurs années, il est possible qu’il ne soit plus supporté. Demandez-lui d’utilisateur un autre appareil si possible.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="pas-dimage-video-en-cliquant-sur-le-lien">
+<h4>2. <em>Pas d’image vidéo en cliquant sur le lien</em><a class="headerlink" href="#pas-dimage-video-en-cliquant-sur-le-lien" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Assurez-vous qu’il n’a pas de cache-caméra devant sa caméra</p></li>
+<li><p>Validez, avec le participant, qu’il a bien répondu « Oui » à la question qui demandait l’accès à sa caméra</p>
+<ul>
+<li><p>S’il a répondu non:</p>
+<ul>
+<li><p>Tentez de rafraichir la page du navigateur</p></li>
+<li><p>Si la question ne réapparait pas, la procédure variera selon les navigateurs. Il faut généralement cliquer sur l’icône « Caméra » en haut près de l’adresse et activer celle-ci.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Assurez-vous qu’il utilise un navigateur compatible (voir ci-dessus)</p></li>
+</ul>
+</section>
+<section id="meme-si-le-professionnel-demarre-la-seance-celle-ci-ne-demarre-pas-pour-le-participant">
+<h4>3. <em>Même si le professionnel démarre la séance, celle-ci ne démarre pas pour le participant</em><a class="headerlink" href="#meme-si-le-professionnel-demarre-la-seance-celle-ci-ne-demarre-pas-pour-le-participant" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Demandez au participant de rafraichir sa page de son côté (la façon de faire variera selon l’appareil et le navigateur utilisé) ou de cliquer sur le bouton « Déconnecter » en haut à droite et de suivre à nouveau le lien que vous lui avez envoyé</p></li>
+<li><p>En dernier recours, demandez au participant de redémarrer son appareil et de suivre à nouveau le lien.</p></li>
+</ul>
+</section>
+<section id="le-son-est-faible">
+<h4>4. <em>Le son est faible</em><a class="headerlink" href="#le-son-est-faible" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Vérifiez le volume de l’appareil du participant</p></li>
+<li><p>Même si le volume est au maximum, il se pourrait que le son soit faible. Vérifiez ces éléments:</p>
+<ul>
+<li><p>Assurez-vous de minimiser le bruit de fond de votre côté (personnes qui parlent, musique, bruit constant)</p></li>
+<li><p>Assurez-vous de minimiser le bruit de font du participant</p></li>
+</ul>
+</li>
+<li><p>Branchez un haut-parleur externe ou utilisez un casque d’écoute</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../index.html" class="btn btn-neutral float-left" title="OpenTeraPlus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2023, Simon Brière, Dominic Létourneau.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
