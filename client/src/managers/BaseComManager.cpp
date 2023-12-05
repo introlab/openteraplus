@@ -258,7 +258,7 @@ bool BaseComManager::hasDownloadsWaiting()
 
 void BaseComManager::updateWaitingDownloadsQueryParameter(const QString &parameter, const QString &new_value)
 {
-    for(DownloadingFile* file: qAsConst(m_waitingDownloads)){
+    for(DownloadingFile* file: std::as_const(m_waitingDownloads)){
         QNetworkRequest* request = m_waitingDownloads.key(file);
         QUrlQuery query(request->url());
         if (query.hasQueryItem(parameter)){
@@ -273,7 +273,7 @@ void BaseComManager::updateWaitingDownloadsQueryParameter(const QString &paramet
 
 void BaseComManager::updateWaitingDownloadsQueryParameter(const QString &download_uuid, const QString &parameter, const QString &new_value)
 {
-    for(DownloadingFile* file: qAsConst(m_waitingDownloads)){
+    for(DownloadingFile* file: std::as_const(m_waitingDownloads)){
         if (file->getAssociatedUuid() == download_uuid){
             QNetworkRequest* request = m_waitingDownloads.key(file);
             QUrlQuery query(request->url());
@@ -290,28 +290,28 @@ void BaseComManager::updateWaitingDownloadsQueryParameter(const QString &downloa
 
 void BaseComManager::abortDownloads()
 {
-    for(DownloadingFile* file:qAsConst(m_waitingDownloads)){
+    for(DownloadingFile* file:std::as_const(m_waitingDownloads)){
         delete m_waitingDownloads.key(file);
         file->deleteLater();
     }
     m_waitingDownloads.clear();
 
     QList<DownloadingFile*> files = m_currentDownloads.values();
-    for(DownloadingFile* file:qAsConst(files)){
+    for(DownloadingFile* file:std::as_const(files)){
         file->abortTransfer(); // Should cascade and be deleted on_Transfer_abort
     }
 }
 
 void BaseComManager::abortUploads()
 {
-    for(UploadingFile* file:qAsConst(m_waitingUploads)){
+    for(UploadingFile* file:std::as_const(m_waitingUploads)){
         delete m_waitingUploads.key(file);
         file->deleteLater();
     }
     m_waitingUploads.clear();
 
     QList<UploadingFile*> files = m_currentUploads.values();
-    for(UploadingFile* file:qAsConst(files)){
+    for(UploadingFile* file:std::as_const(files)){
         file->abortTransfer(); // Should cascade and be deleted on_Transfer_abort
     }
 }

@@ -105,7 +105,7 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
     //qDebug() << date.toString() << ": Count = " << QString::number(count) << ", Total = " << QString::number(total);
 
     //for (int i=0; i<display_colors.count(); i++){
-    for(const QString &color_str:qAsConst(display_colors)){
+    for(const QString &color_str:std::as_const(display_colors)){
         //QColor color(display_colors.values().at(i));
         QColor color(color_str);
 

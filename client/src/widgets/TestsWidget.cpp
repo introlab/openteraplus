@@ -368,7 +368,7 @@ void TestsWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply
            // Check if project is in service_fields
            if (service.hasFieldName("service_projects")){
                QVariantList projects = service.getFieldValue("service_projects").toList();
-               for (const QVariant &project:qAsConst(projects)){
+               for (const QVariant &project:std::as_const(projects)){
                    QVariantMap project_info = project.toMap();
                    if (project_info["id_project"].toInt() == m_idProject){
                        // Ok, we are allowed to use file transfer service
@@ -388,7 +388,7 @@ void TestsWidget::comDeleteDataReply(QString path, int id)
 {
     if (path == WEB_TESTINFO_PATH){
         // Remove test from list
-        for(TeraData* test_info:qAsConst(m_tests)){
+        for(TeraData* test_info:std::as_const(m_tests)){
             if (test_info->getId() == id){
                 QString test_uuid = test_info->getUuid();
                 ui->tableTests->removeRow(m_tableTests[test_uuid]->row());
@@ -415,7 +415,7 @@ void TestsWidget::nextMessageWasShown(Message current_message)
 
 /*void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path)
 {
-    for (const QJsonObject &asset_info:qAsConst(infos)){
+    for (const QJsonObject &asset_info:std::as_const(infos)){
         QString asset_uuid = asset_info["asset_uuid"].toString();
 
         if (!m_treeAssets.contains(asset_uuid)){
@@ -604,7 +604,7 @@ void TestsWidget::on_btnDownloadAll_clicked()
     // Get all variables in the json fields
     QStringList columns;
     QStringList variables;
-    for (TeraData* test:qAsConst(m_tests)){
+    for (TeraData* test:std::as_const(m_tests)){
         // Parse json result
         if (test->hasFieldName("test_summary")){
             QJsonDocument test_summary_doc = QJsonDocument::fromJson(test->getFieldValue("test_summary").toString().toUtf8());
@@ -629,10 +629,10 @@ void TestsWidget::on_btnDownloadAll_clicked()
     if (csv_file.open(QIODevice::WriteOnly| QIODevice::Text)){
         QTextStream csv_writer(&csv_file);
 
-        for (const QString &col: qAsConst(columns))
+        for (const QString &col: std::as_const(columns))
             csv_writer << col << '\t';
 
-        for (const QString &var: qAsConst(variables))
+        for (const QString &var: std::as_const(variables))
             csv_writer << var << '\t';
         csv_writer << Qt::endl;
 
@@ -685,7 +685,7 @@ void TestsWidget::on_btnDownloadAll_clicked()
                 QJsonDocument test_summary_doc = QJsonDocument::fromJson(test->getFieldValue("test_summary").toString().toUtf8());
                 if (!test_summary_doc.isNull()){
                    QVariantMap test_summary = test_summary_doc.object().toVariantMap();
-                   for (const QString &var: qAsConst(variables)){
+                   for (const QString &var: std::as_const(variables)){
                        if (test_summary.contains(var)){
                            csv_writer <<test_summary[var].toString();
                        }

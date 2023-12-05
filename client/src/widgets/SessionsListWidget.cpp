@@ -164,7 +164,7 @@ const TeraData *SessionsListWidget::hasResumableSession(const int &id_session_ty
 {
     TeraData *rval = nullptr;
     // Check if we have a session that can be resumed for that date
-    for(TeraData* session:qAsConst(m_ids_sessions)){
+    for(TeraData* session:std::as_const(m_ids_sessions)){
         if (id_session_type == session->getFieldValue("id_session_type").toInt()){
             int session_status = session->getFieldValue("session_status").toInt();
             if (session_status == TeraSessionStatus::STATUS_INPROGRESS || session_status == TeraSessionStatus::STATUS_NOTSTARTED){
@@ -409,7 +409,7 @@ void SessionsListWidget::updateCalendars(QDate left_date)
 QDate SessionsListWidget::getMinimumSessionDate()
 {
     QDate min_date = QDate::currentDate();
-    for (TeraData* session:qAsConst(m_ids_sessions)){
+    for (TeraData* session:std::as_const(m_ids_sessions)){
         QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date < min_date)
             min_date = session_date;
@@ -421,7 +421,7 @@ QDate SessionsListWidget::getMinimumSessionDate()
 QDate SessionsListWidget::getMaximumSessionDate()
 {
     QDate max_date = QDate::currentDate();
-    for (TeraData* session:qAsConst(m_ids_sessions)){
+    for (TeraData* session:std::as_const(m_ids_sessions)){
         QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date > max_date)
             max_date = session_date;
@@ -848,7 +848,7 @@ void SessionsListWidget::currentCalendarDateChanged(QDate current_date)
     // Select all the sessions in the list that fits with that date
     QTableWidgetItem* first_item = nullptr;
     //foreach(TeraData* session, m_ids_sessions){
-    for(TeraData* session: qAsConst(m_ids_sessions)){
+    for(TeraData* session: std::as_const(m_ids_sessions)){
         if (session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date() == current_date){
             QTableWidgetItem* session_item = m_listSessions_items.value(session->getId());
             if (session_item){

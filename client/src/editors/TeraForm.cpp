@@ -59,7 +59,7 @@ void TeraForm::buildUiFromStructure(const QString &structure)
         if (struct_data.count() > 1){
             int page_index = 0;
             m_mainWidget = ui->toolboxMain;
-            for (const QVariant &section:qAsConst(struct_data)){
+            for (const QVariant &section:std::as_const(struct_data)){
                 if (section.canConvert<QVariantHash>()){
                     QVariantHash section_data = section.toHash();
                     //if (page_index>0){
@@ -114,7 +114,7 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
     resetFormValues();
 
     // Set initial values for missing fields
-    for (QWidget* widget:qAsConst(m_widgets)){
+    for (QWidget* widget:std::as_const(m_widgets)){
         QString field = m_widgets.key(widget);
         if (!m_initialValues.contains(field)){
             QVariant value;
@@ -158,7 +158,7 @@ void TeraForm::setSectionsPosition(const QTabWidget::TabPosition &position)
 bool TeraForm::validateFormData(bool include_hidden)
 {
     bool rval = true;
-    for (QWidget* item:qAsConst(m_widgets)){
+    for (QWidget* item:std::as_const(m_widgets)){
        rval &= validateWidget(item, include_hidden);
     }
     return rval;
@@ -167,7 +167,7 @@ bool TeraForm::validateFormData(bool include_hidden)
 QStringList TeraForm::getInvalidFormDataLabels(bool include_hidden)
 {
     QStringList rval;
-    for (QWidget* item:qAsConst(m_widgets)){
+    for (QWidget* item:std::as_const(m_widgets)){
         if (!validateWidget(item, include_hidden)){
             rval.append(item->property("label").toString());
         }
@@ -318,7 +318,7 @@ void TeraForm::setFieldsEnabled(const QStringList &fields, const bool &enabled)
 bool TeraForm::isDirty()
 {
     bool dirty = false;
-    for(QWidget* wdg: qAsConst(m_widgets)){
+    for(QWidget* wdg: std::as_const(m_widgets)){
         if (getFieldDirty(wdg)){
             dirty = true;
             break;
@@ -341,7 +341,7 @@ QJsonDocument TeraForm::getFormDataJson(bool include_unmodified_data)
     QJsonObject data_obj;
     QJsonObject base_obj;
 
-    for(QWidget* wdg:qAsConst(m_widgets)){
+    for(QWidget* wdg:std::as_const(m_widgets)){
         QString field = m_widgets.key(wdg);
         QVariant value, id;
         getWidgetValues(wdg, &id, &value);
@@ -370,7 +370,7 @@ QJsonDocument TeraForm::getFormDataJson(bool include_unmodified_data)
 TeraData* TeraForm::getFormDataObject(const TeraDataTypes data_type)
 {
     TeraData* rval = new TeraData(data_type);
-    for(QWidget* wdg:qAsConst(m_widgets)){
+    for(QWidget* wdg:std::as_const(m_widgets)){
         QString field = m_widgets.key(wdg);
         QVariant value, id;
         if (getWidgetValues(wdg, &id, &value)){
@@ -440,7 +440,7 @@ bool TeraForm::formHasStructure()
 void TeraForm::resetFormValues()
 {
     QStringList keys = m_initialValues.keys();
-    for (const QString& field:qAsConst(keys)){
+    for (const QString& field:std::as_const(keys)){
         if (m_widgets.contains(field)){
             setWidgetValue(m_widgets[field], m_initialValues[field]);
             checkConditions(m_widgets[field]);
@@ -598,7 +598,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
 
 void TeraForm::setDefaultValues()
 {
-    for (QWidget* item:qAsConst(m_widgets)){
+    for (QWidget* item:std::as_const(m_widgets)){
         if (QComboBox* combo = dynamic_cast<QComboBox*>(item)){
             combo->setCurrentIndex(0);
         }
@@ -621,7 +621,7 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
         //item_combo->addItem(camera.description(), camera.deviceName());
         item_combo->addItem(camera.description(), camera.description());
     }*/
-    for (const QString &camera:qAsConst(m_videoInputs)){
+    for (const QString &camera:std::as_const(m_videoInputs)){
         item_combo->addItem(camera, camera);
     }
 
@@ -646,7 +646,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
     /*for (QAudioDeviceInfo input:m_audioInputs){
         item_combo->addItem(input.deviceName(), input.deviceName());
     }*/
-    for (const QString &input:qAsConst(m_audioInputs)){
+    for (const QString &input:std::as_const(m_audioInputs)){
         item_combo->addItem(input, input);
     }
 
@@ -667,7 +667,7 @@ QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
     if (structure.contains("values")){
         if (structure["values"].canConvert<QVariantList>()){
             QVariantList list = structure["values"].toList();
-            for (const QVariant &value:qAsConst(list)){
+            for (const QVariant &value:std::as_const(list)){
                 if (value.canConvert<QVariantHash>()){
                     QVariantHash item_data = value.toHash();
                     item_combo->addItem(item_data["value"].toString(), item_data["id"].toString());
@@ -857,7 +857,7 @@ void TeraForm::loadVideoInputs()
 
 void TeraForm::checkConditions(QWidget *item_triggering)
 {
-    for (QWidget* item:qAsConst(m_widgets)){
+    for (QWidget* item:std::as_const(m_widgets)){
         if (!item)
             continue;
         if (item == item_triggering)

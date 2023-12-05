@@ -282,7 +282,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
            /*if (session.hasFieldName("session_participants")){
                 item_list = session.getFieldValue("session_participants").toList();
 
-                for(const QVariant &session_part:qAsConst(item_list)){
+                for(const QVariant &session_part:std::as_const(item_list)){
                     QVariantMap part_info = session_part.toMap();
                     ui->wdgInvitees->addRequiredParticipant(part_info["id_participant"].toInt());
                 }
@@ -291,7 +291,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
             if (session.hasFieldName("session_users")){
                 item_list = session.getFieldValue("session_users").toList();
 
-                for(const QVariant &session_user:qAsConst(item_list)){
+                for(const QVariant &session_user:std::as_const(item_list)){
                     QVariantMap user_info = session_user.toMap();
                     int id_user = user_info["id_user"].toInt();
                     if (id_user == m_comManager->getCurrentUser().getId())
@@ -302,7 +302,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
             /*if (session.hasFieldName("session_devices")){
                 item_list = session.getFieldValue("session_devices").toList();
 
-                for(const QVariant &session_device:qAsConst(item_list)){
+                for(const QVariant &session_device:std::as_const(item_list)){
                     QVariantMap device_info = session_device.toMap();
                     ui->wdgInvitees->addRequiredDevice(device_info["id_device"].toInt());
                 }

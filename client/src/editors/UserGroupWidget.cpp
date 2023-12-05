@@ -43,7 +43,7 @@ void UserGroupWidget::saveData(bool signal)
 
         // Sites
         QJsonArray sites;
-        for(QTableWidgetItem* site: qAsConst(m_tableSites_items)){
+        for(QTableWidgetItem* site: std::as_const(m_tableSites_items)){
         //for (int i=0; i<m_tableSites_items.count(); i++){
             int site_id = m_tableSites_items.key(site);
             int row = m_tableSites_items[site_id]->row();
@@ -60,7 +60,7 @@ void UserGroupWidget::saveData(bool signal)
         // Projects
         QJsonArray projects;
         //for (int i=0; i<m_tableProjects_items.count(); i++){
-        for(QTableWidgetItem* project: qAsConst(m_tableProjects_items)){
+        for(QTableWidgetItem* project: std::as_const(m_tableProjects_items)){
             int project_id = m_tableProjects_items.key(project);
             int row = m_tableProjects_items[project_id]->row();
             QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
@@ -468,7 +468,7 @@ void UserGroupWidget::processPostOKReply(QString path)
     if (path == TeraData::getPathForDataType(TERADATA_SITEACCESS)){
         // Reset "dirty" flag on each combo box role
         //for (int i=0; i<m_tableSites_items.count(); i++){
-        for(QTableWidgetItem* site: qAsConst(m_tableSites_items)){
+        for(QTableWidgetItem* site: std::as_const(m_tableSites_items)){
            int site_id = m_tableSites_items.key(site);
            int row = m_tableSites_items[site_id]->row();
            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(row,1));
@@ -482,7 +482,7 @@ void UserGroupWidget::processPostOKReply(QString path)
     if (path == TeraData::getPathForDataType(TERADATA_PROJECTACCESS)){
         // Reset "dirty" flag on each combo box role
         //for (int i=0; i<m_tableProjects_items.count(); i++){
-        for(QTableWidgetItem* project: qAsConst(m_tableProjects_items)){
+        for(QTableWidgetItem* project: std::as_const(m_tableProjects_items)){
            int project_id = m_tableProjects_items.key(project);
            int row = m_tableProjects_items[project_id]->row();
            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
@@ -494,7 +494,7 @@ void UserGroupWidget::processPostOKReply(QString path)
     }
 
     if (path == TeraData::getPathForDataType(TERADATA_SERVICE_ACCESS)){
-        for(QTableWidgetItem* service: qAsConst(m_tableServices_items)){
+        for(QTableWidgetItem* service: std::as_const(m_tableServices_items)){
            int service_id = m_tableServices_items.key(service);
            int row = m_tableServices_items[service_id]->row();
            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableServices->cellWidget(row,1));
@@ -525,7 +525,7 @@ void UserGroupWidget::btnUpdateSiteAccess_clicked()
     QJsonArray roles;
 
     //for (int i=0; i<m_tableSites_items.count(); i++){
-    for(QTableWidgetItem* site: qAsConst(m_tableSites_items)){
+    for(QTableWidgetItem* site: std::as_const(m_tableSites_items)){
         int site_id = m_tableSites_items.key(site);
         int row = m_tableSites_items[site_id]->row();
         QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(row,1));
@@ -555,7 +555,7 @@ void UserGroupWidget::btnUpdateProjectAccess_clicked()
     QJsonArray roles;
 
     //for (int i=0; i<m_tableProjects_items.count(); i++){
-    for(QTableWidgetItem* project: qAsConst(m_tableProjects_items)){
+    for(QTableWidgetItem* project: std::as_const(m_tableProjects_items)){
         int project_id = m_tableProjects_items.key(project);
         int row = m_tableProjects_items[project_id]->row();
         QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
@@ -600,7 +600,7 @@ void UserGroupWidget::comboSiteRole_changed(int index)
                 // Find all related project items
                 QList<QTableWidgetItem*> project_items = m_tableProjectSite_items.values(id_site);
                 bool is_site_admin = combo->currentData() == "admin";
-                for(QTableWidgetItem* project_item: qAsConst(project_items)){
+                for(QTableWidgetItem* project_item: std::as_const(project_items)){
                     // Get combo box
                     QComboBox* combo_role = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(project_item->row(), 2));
                     if (combo_role){
@@ -751,7 +751,7 @@ void UserGroupWidget::on_btnUpdateServicesRoles_clicked()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for(QTableWidgetItem* service: qAsConst(m_tableServices_items)){
+    for(QTableWidgetItem* service: std::as_const(m_tableServices_items)){
         int service_id = m_tableServices_items.key(service);
         int row = m_tableServices_items[service_id]->row();
         QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableServices->cellWidget(row,1));

@@ -170,7 +170,7 @@ void TeraData::updateFrom(const TeraData &other)
 void TeraData::updateFrom(const QJsonObject &object)
 {
     QVariantHash fields = object.toVariantHash();
-    for(const QVariant &field_value:qAsConst(fields)){
+    for(const QVariant &field_value:std::as_const(fields)){
         m_fieldsValue[fields.key(field_value)] = field_value;
     }
 }

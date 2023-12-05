@@ -159,7 +159,7 @@ void UserWidget::updateControlsState(){
             if (!has_site_admin_access){
                 // Check if we are admin in a list one site
                 QList<int> id_sites = m_userSitesRole.keys();
-                for(int id_site:qAsConst(id_sites)){
+                for(int id_site:std::as_const(id_sites)){
                     if (m_comManager->isCurrentUserSiteAdmin(id_site)){
                         has_site_admin_access = true;
                         break;
@@ -206,7 +206,7 @@ bool UserWidget::validateData(){
 
 void UserWidget::refreshUsersUserGroups()
 {
-    for(QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+    for(QListWidgetItem* item: std::as_const(m_listUserGroups_items)){
         if (std::find(m_listUserUserGroups_items.cbegin(), m_listUserUserGroups_items.cend(), item) != m_listUserUserGroups_items.cend()){
         //if (m_listUserUserGroups_items.contains(item)){
             item->setCheckState(Qt::Checked);
@@ -228,7 +228,7 @@ void UserWidget::refreshUsersUserGroups()
 QJsonArray UserWidget::getSelectedGroupsAsJsonArray()
 {
     QJsonArray user_groups;
-    for(QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+    for(QListWidgetItem* item: std::as_const(m_listUserGroups_items)){
         int user_group_id = m_listUserGroups_items.key(item);
         if (item->checkState() == Qt::Checked){
             QJsonObject data_obj;
@@ -380,7 +380,7 @@ bool UserWidget::validateUserGroups()
     //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
         //for (int i=0; i<m_listUserGroups_items.count(); i++){
-        for (QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+        for (QListWidgetItem* item: std::as_const(m_listUserGroups_items)){
             if (item->checkState() == Qt::Checked){
                 at_least_one_selected = true;
                 break;
@@ -637,7 +637,7 @@ void UserWidget::on_btnUpdateGroups_clicked()
     QList<int> user_user_group_to_delete;
 
     //for (int i=0; i<m_listUserGroups_items.count(); i++){
-    for (QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+    for (QListWidgetItem* item: std::as_const(m_listUserGroups_items)){
         // Build json list of user and groups
         if (item->checkState()==Qt::Checked){
             QJsonObject item_obj;

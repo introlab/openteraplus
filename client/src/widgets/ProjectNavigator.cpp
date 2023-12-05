@@ -940,7 +940,7 @@ void ProjectNavigator::updateUser(const TeraData *user, const int& id_project)
     if (id_project >=0){
         // Check if already exists for that project
         bool exists = false;
-        for (QTreeWidgetItem* item:qAsConst(items)){
+        for (QTreeWidgetItem* item:std::as_const(items)){
             QTreeWidgetItem* project = getProjectForItem(item);
             if (project){
                 if (m_projects_items.key(project) == id_project){
@@ -978,7 +978,7 @@ void ProjectNavigator::updateUser(const TeraData *user, const int& id_project)
         }
     }
 
-    for (QTreeWidgetItem* item:qAsConst(items)){
+    for (QTreeWidgetItem* item:std::as_const(items)){
         item->setText(0, user->getName());
         item->setIcon(0, QIcon(user->getIconStateFilename()));
     }
@@ -996,7 +996,7 @@ void ProjectNavigator::updateDevice(const TeraData *device, const int &id_projec
     if (id_project >=0){
         // Check if already exists for that project
         bool exists = false;
-        for (QTreeWidgetItem* item:qAsConst(items)){
+        for (QTreeWidgetItem* item:std::as_const(items)){
             QTreeWidgetItem* project = getProjectForItem(item);
             if (project){
                 if (m_projects_items.key(project) == id_project){
@@ -1033,7 +1033,7 @@ void ProjectNavigator::updateDevice(const TeraData *device, const int &id_projec
         }
     }
 
-    for (QTreeWidgetItem* item:qAsConst(items)){
+    for (QTreeWidgetItem* item:std::as_const(items)){
         item->setText(0, device->getName());
         item->setIcon(0, QIcon(device->getIconStateFilename()));
     }
@@ -1864,7 +1864,7 @@ void ProjectNavigator::on_btnFilterActive_toggled(bool checked)
 
     // Update counts for all projects
     /*if (isAdvancedView()){
-        for(QTreeWidgetItem* item_project:qAsConst(m_projects_items)){
+        for(QTreeWidgetItem* item_project:std::as_const(m_projects_items)){
             if (item_project->isExpanded()){
                 updateCountsForProject(m_projects_items.key(item_project));
             }

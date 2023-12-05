@@ -181,7 +181,7 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
-        for(const QVariant &part:qAsConst(parts_list)){
+        for(const QVariant &part:std::as_const(parts_list)){
             QVariantMap part_info = part.toMap();
             int part_id = part_info["id_participant"].toInt();
 
@@ -338,7 +338,7 @@ void GroupWidget::showSessionLobby(const int &id_session_type, const int &id_ses
 
     // Add current participants to session
     //m_sessionLobby->addParticipantsToSession(QList<TeraData>() << *m_data, QList<int>() << m_data->getId());
-    for(int id_part:qAsConst(m_activeParticipants)){
+    for(int id_part:std::as_const(m_activeParticipants)){
         TeraData part_data;
         part_data.setDataType(TeraDataTypes::TERADATA_PARTICIPANT);
         part_data.setId(id_part);

@@ -186,7 +186,7 @@ void DashboardWidget::processSessionsReply(const QList<TeraData> sessions)
         QString project_name;
         if (session.hasFieldName("session_participants")){
             QVariantList participants = session.getFieldValue("session_participants").toList();
-            for(const QVariant &participant: qAsConst(participants)){
+            for(const QVariant &participant: std::as_const(participants)){
                 QVariantHash part_data = participant.toHash();
                 if (project_name.isEmpty() && part_data.contains("project_name")){
 
@@ -201,14 +201,14 @@ void DashboardWidget::processSessionsReply(const QList<TeraData> sessions)
         }
         if (session.hasFieldName("session_users")){
             QVariantList users = session.getFieldValue("session_users").toList();
-            for(const QVariant &user: qAsConst(users)){
+            for(const QVariant &user: std::as_const(users)){
                 QVariantHash user_data = user.toHash();
                 invitees.append(user_data["user_name"].toString());
             }
         }
         if (session.hasFieldName("session_devices")){
             QVariantList devices = session.getFieldValue("session_devices").toList();
-            for(const QVariant &device: qAsConst(devices)){
+            for(const QVariant &device: std::as_const(devices)){
                 QVariantHash device_data = device.toHash();
                 invitees.append(device_data["device_name"].toString());
             }
@@ -371,7 +371,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
 
             // Participants details
             QVariantList participants = stats.getFieldValue("warning_participants").toList();
-            for (const QVariant &part: qAsConst(participants)){
+            for (const QVariant &part: std::as_const(participants)){
                 QVariantHash part_data = part.toHash();
                 QString data_str;
                 data_str = part_data["participant_name"].toString();
@@ -403,7 +403,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
 
             // Participants details
             QVariantList participants = stats.getFieldValue("warning_nosession_participants").toList();
-            for (const QVariant &part: qAsConst(participants)){
+            for (const QVariant &part: std::as_const(participants)){
                 QVariantHash part_data = part.toHash();
                 QString data_str;
                 data_str = part_data["participant_name"].toString();
@@ -436,7 +436,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
 
                 // Users details
                 QVariantList users = stats.getFieldValue("warning_users").toList();
-                for (const QVariant &user: qAsConst(users)){
+                for (const QVariant &user: std::as_const(users)){
                     QVariantHash user_data = user.toHash();
                     QString data_str;
                     data_str = user_data["user_fullname"].toString();
@@ -465,7 +465,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
 
                 // Users details
                 QVariantList users = stats.getFieldValue("warning_neverlogged_users").toList();
-                for (const QVariant &user: qAsConst(users)){
+                for (const QVariant &user: std::as_const(users)){
                     QVariantHash user_data = user.toHash();
                     QString data_str;
                     data_str = user_data["user_fullname"].toString();
@@ -610,7 +610,7 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     QList<int> ids;
     if (session->hasFieldName("session_participants")){
         QVariantList session_participants = session->getFieldValue("session_participants").toList();
-        for(const QVariant &participant: qAsConst(session_participants)){
+        for(const QVariant &participant: std::as_const(session_participants)){
             TeraData part_data(TERADATA_PARTICIPANT, participant.toJsonValue());
             participants.append(part_data);
             ids.append(part_data.getId());
@@ -624,7 +624,7 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     QList<TeraData> users;
     if (session->hasFieldName("session_users")){
         QVariantList session_users = session->getFieldValue("session_users").toList();
-        for(const QVariant &user: qAsConst(session_users)){
+        for(const QVariant &user: std::as_const(session_users)){
             TeraData user_data(TERADATA_USER, user.toJsonValue());
             users.append(user_data);
             ids.append(user_data.getId());
@@ -638,7 +638,7 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     QList<TeraData> devices;
     if (session->hasFieldName("session_devices")){
         QVariantList session_devices = session->getFieldValue("session_devices").toList();
-        for(const QVariant &device: qAsConst(session_devices)){
+        for(const QVariant &device: std::as_const(session_devices)){
             TeraData device_data(TERADATA_DEVICE, device.toJsonValue());
             devices.append(device_data);
             ids.append(device_data.getId());

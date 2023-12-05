@@ -60,7 +60,7 @@ void ProjectWidget::saveData(bool signal)
         QJsonObject base_st = base_obj["project"].toObject();
         QJsonArray session_types;
 
-        for(QListWidgetItem* item:qAsConst(m_listSessionTypes_items)){
+        for(QListWidgetItem* item:std::as_const(m_listSessionTypes_items)){
             if (item->checkState() == Qt::Checked){
                 int session_type_id = m_listSessionTypes_items.key(item);
                 QJsonObject data_obj;
@@ -211,7 +211,7 @@ void ProjectWidget::updateDevice(const TeraData *device)
     // Add participants to devices
     if (device->hasFieldName("device_participants")){
         QVariantList participants = device->getFieldValue("device_participants").toList();
-        for(const QVariant &participant: qAsConst(participants)){
+        for(const QVariant &participant: std::as_const(participants)){
             QVariantHash part_info = participant.toHash();
             if (part_info.contains("id_project")){
                 if (part_info["id_project"].toInt() != m_data->getId())
@@ -684,7 +684,7 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
-        for(const QVariant &part:qAsConst(parts_list)){
+        for(const QVariant &part:std::as_const(parts_list)){
             QVariantMap part_info = part.toMap();
             int part_id = part_info["id_participant"].toInt();
 

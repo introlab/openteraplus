@@ -54,7 +54,7 @@ void FileUploaderDialog::on_btnAddFile_clicked()
 
     QStringList files_to_upload = dlg.getOpenFileNames(this, tr("Choisir le(s) fichier(s) à envoyer"), m_current_base_path, m_file_pattern);
 
-    for (const QString &file:qAsConst(files_to_upload)){
+    for (const QString &file:std::as_const(files_to_upload)){
         QFileInfo file_info(file);
         QString filename = file_info.fileName();
         QString default_label = filename.left(filename.length() - filename.split(".").last().length() - 1);

@@ -373,7 +373,7 @@ void ParticipantWidget::updateServiceTabs()
 
     QList<int> ids_service;
 
-    for(const TeraData &service: qAsConst(m_services)){
+    for(const TeraData &service: std::as_const(m_services)){
         ids_service.append(service.getId());
 
         // Create specific tabs for services
@@ -381,7 +381,7 @@ void ParticipantWidget::updateServiceTabs()
     }
 
     // Remove tabs not anymore present
-    /*for(QWidget* tab: qAsConst(m_services_tabs)){
+    /*for(QWidget* tab: std::as_const(m_services_tabs)){
         if (!ids_service.contains(m_services_tabs.key(tab))){
             ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
             tab->deleteLater();
@@ -607,7 +607,7 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
 
     if (path == WEB_DEVICEPARTICIPANTINFO_PATH){
         // A participant device association was deleted
-        for (QListWidgetItem* item: qAsConst(m_listDevices_items)){
+        for (QListWidgetItem* item: std::as_const(m_listDevices_items)){
             // Check for id_device_participant, which is stored in "data" of the item
             if (item->data(Qt::UserRole).toInt() == id){
                 // We found it - remove it and request update
@@ -674,7 +674,7 @@ void ParticipantWidget::btnAddDevice_clicked()
         if (diag->result() == DeviceAssignDialog::DEVICEASSIGN_DEASSIGN){
             // Delete all associated participants
             QList<int> ids = diag->getDeviceParticipantsIds();
-            for (int id:qAsConst(ids)){
+            for (int id:std::as_const(ids)){
                 deleteDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, id);
             }
         }

@@ -43,7 +43,7 @@ bool ResultMessageWidget::hasMessagesWaiting(const Message::MessageType &msg_typ
         return m_messages.isEmpty();
 
     // Otherwise, we look for message of that type in the queue
-    for (Message msg:qAsConst(m_messages)){
+    for (Message msg:std::as_const(m_messages)){
         if (msg.getMessageType() == msg_type)
             return true;
     }

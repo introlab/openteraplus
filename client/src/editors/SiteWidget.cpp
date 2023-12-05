@@ -482,7 +482,7 @@ void SiteWidget::btnUpdateAccess_clicked()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for (QTableWidgetItem* item: qAsConst(m_tableUserGroups_items)){
+    for (QTableWidgetItem* item: std::as_const(m_tableUserGroups_items)){
         int user_group_id = m_tableUserGroups_items.key(item);
         int row = item->row();
 //    }
@@ -809,7 +809,7 @@ void SiteWidget::on_btnUpdateDevices_clicked()
 
 void SiteWidget::on_txtSearchDevices_textChanged(const QString &search_text)
 {
-    for(QListWidgetItem* item: qAsConst(m_listDevices_items)){
+    for(QListWidgetItem* item: std::as_const(m_listDevices_items)){
         item->setHidden(!item->text().contains(search_text, Qt::CaseInsensitive));
     }
 }

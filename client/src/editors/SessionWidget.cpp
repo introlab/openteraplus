@@ -98,7 +98,7 @@ void SessionWidget::saveData(bool signal){
         if (ui->wdgSessionInvitees->getDevicesInSessionCount() > 0){
             QJsonArray data_list;
             QList<int> ids = ui->wdgSessionInvitees->getDevicesIdsInSession();
-            for(const int &data_id:qAsConst(ids)){
+            for(const int &data_id:std::as_const(ids)){
                 data_list.append(QJsonValue(data_id));
             }
             session_data.insert("session_devices_ids", data_list);
@@ -107,7 +107,7 @@ void SessionWidget::saveData(bool signal){
         if (ui->wdgSessionInvitees->getParticipantsInSessionCount() > 0){
             QJsonArray data_list;
             QList<int> ids = ui->wdgSessionInvitees->getParticipantsIdsInSession();
-            for(const int &data_id:qAsConst(ids)){
+            for(const int &data_id:std::as_const(ids)){
                 data_list.append(QJsonValue(data_id));
             }
             session_data.insert("session_participants_ids", data_list);
@@ -116,7 +116,7 @@ void SessionWidget::saveData(bool signal){
         if (ui->wdgSessionInvitees->getUsersInSessionCount() > 0){
             QJsonArray data_list;
             QList<int> ids = ui->wdgSessionInvitees->getUsersIdsInSession();
-            for(const int &data_id:qAsConst(ids)){
+            for(const int &data_id:std::as_const(ids)){
                 data_list.append(QJsonValue(data_id));
             }
             session_data.insert("session_users_ids", data_list);
@@ -248,7 +248,7 @@ void SessionWidget::updateSessionParticipants()
     if (m_data->hasFieldName("session_participants")){
         QVariantList session_parts_list = m_data->getFieldValue("session_participants").toList();
         QList<TeraData> participants;
-        for(const QVariant &session_part:qAsConst(session_parts_list)){
+        for(const QVariant &session_part:std::as_const(session_parts_list)){
             QVariantMap part_info = session_part.toMap();
             TeraData part(TERADATA_PARTICIPANT);
             part.fromMap(part_info);
@@ -291,7 +291,7 @@ void SessionWidget::updateSessionUsers()
         QVariantList session_users_list = m_data->getFieldValue("session_users").toList();
 
         QList<TeraData> users;
-        for(const QVariant &session_user:qAsConst(session_users_list)){
+        for(const QVariant &session_user:std::as_const(session_users_list)){
             QVariantMap user_info = session_user.toMap();
             TeraData user(TERADATA_USER);
             user.fromMap(user_info);
@@ -330,7 +330,7 @@ void SessionWidget::updateSessionDevices()
         QVariantList session_devices_list = m_data->getFieldValue("session_devices").toList();
 
         QList<TeraData> devices;
-        for(const QVariant &session_device:qAsConst(session_devices_list)){
+        for(const QVariant &session_device:std::as_const(session_devices_list)){
             QVariantMap device_info = session_device.toMap();
             TeraData device(TERADATA_DEVICE);
             device.fromMap(device_info);
@@ -560,7 +560,7 @@ void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList p
     if (ui->wdgSessionInvitees->getDevicesInSessionCount() > 0){
 
         QList<int> ids = ui->wdgSessionInvitees->getDevicesIdsInSession();
-        for(const int &data_id:qAsConst(ids)){
+        for(const int &data_id:std::as_const(ids)){
             data_list.append(QJsonValue(data_id));
         }
     }
@@ -573,7 +573,7 @@ void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList p
     if (ui->wdgSessionInvitees->getParticipantsInSessionCount() > 0){
 
         QList<int> ids = ui->wdgSessionInvitees->getParticipantsIdsInSession();
-        for(const int &data_id:qAsConst(ids)){
+        for(const int &data_id:std::as_const(ids)){
             data_list.append(QJsonValue(data_id));
         }
     }
@@ -584,7 +584,7 @@ void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList p
     }
     if (ui->wdgSessionInvitees->getUsersInSessionCount() > 0){
         QList<int> ids = ui->wdgSessionInvitees->getUsersIdsInSession();
-        for(const int &data_id:qAsConst(ids)){
+        for(const int &data_id:std::as_const(ids)){
             data_list.append(QJsonValue(data_id));
         }
     }

@@ -118,7 +118,7 @@ void ServiceConfigWidget::updateFieldsValue(){
         QVariantList specifics = m_data->getFieldValue("service_config_specifics").toList();
         if (!specifics.isEmpty()){
             ui->cmbSpecific->addItem(tr("Globale"));
-            for (const QVariant &specific_id:qAsConst(specifics)){
+            for (const QVariant &specific_id:std::as_const(specifics)){
                 ui->cmbSpecific->addItem(specific_id.toString());
             }
             ui->frameSpecific->show();
@@ -288,7 +288,7 @@ void ServiceConfigWidget::on_btnSave_clicked()
 
         if (!invalids.isEmpty()){
             QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-            for (const QString &field:qAsConst(invalids)){
+            for (const QString &field:std::as_const(invalids)){
                 msg += "<li>" + field + "</li>";
             }
             msg += "</ul>";

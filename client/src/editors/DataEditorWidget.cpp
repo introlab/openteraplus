@@ -366,7 +366,7 @@ void DataEditorWidget::saveButtonClicked()
 
         if (!invalids.isEmpty()){
             QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-            for (const QString &field:qAsConst(invalids)){
+            for (const QString &field:std::as_const(invalids)){
                 msg += "<li>" + field + "</li>";
             }
             msg += "</ul>";
