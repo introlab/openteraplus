@@ -84,8 +84,8 @@ QTabWidget::tab-bar {
 }
 
 QTableWidget::tab, QHeaderView::section {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));
-    border: 2px solid rgba(128,128,140,50%);
+    background: rgba(128,128,140,50%); /*qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(100,100,140,25%));*/
+    border: 1px solid rgba(128,128,140,50%);
     padding: 2px;
     min-height:25px;
 }
@@ -260,8 +260,8 @@ QLabel {
     QTreeWidget
 */
 QTreeWidget, QTableWidget{
-    selection-background-color: rgba(23,54,93,70%);/*rgba(255,255,255,50%);*//*rgba(0,5,45,50%)*/;
-    selection-color: white/*lightblue*/;
+    selection-background-color: rgba(23,54,93,70%);
+    selection-color: white;
 }
 
 QTreeWidget::item::selected{
@@ -320,7 +320,7 @@ QPlainTextEdit {
 QListView {
     color: white;
 }
-
+/*
 QListView::item{
     min-height: 24px;
 }
@@ -333,7 +333,7 @@ QListView::item:selected {
 QListView::item:hover {
     color: white;
     background-color: rgba(23,54,93,50%);
-}
+}*/
 
 /*
     QTextEdit, See QLineEdit
@@ -920,6 +920,10 @@ QTreeWidget#treeAssets {
 
 /* Customizations for InSessionWidget */
 QPushButton#btnDefaultPath, QPushButton#btnBrowseSavePath{
-        max-width: 80px;
-        min-width: 80px;
+    max-width: 80px;
+    min-width: 80px;
+}
+
+QWidget#line{
+    background-color: #808080;
 }

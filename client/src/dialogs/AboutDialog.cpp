@@ -25,6 +25,7 @@ AboutDialog::AboutDialog(QUrl server_url, QWidget *parent) :
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_webEngine->setSizePolicy(sizePolicy);
     ui->wdgWebView->layout()->addWidget(m_webEngine);
+    ui->wdgWebView->setFocus();
 }
 
 AboutDialog::~AboutDialog()
@@ -42,6 +43,8 @@ void AboutDialog::on_btnOk_clicked()
 void AboutDialog::on_lblAbout_clicked()
 {
     if (m_webEngine){
-       m_webEngine->setUrl(QUrl("chrome://dino"));
+        m_webEngine->setUrl(QUrl("chrome://dino"));
+        ui->wdgWebView->setFocus();
+
     }
 }

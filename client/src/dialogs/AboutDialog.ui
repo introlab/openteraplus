@@ -33,6 +33,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
     </widget>
    </item>
    <item>
@@ -74,6 +77,9 @@
          <height>24</height>
         </size>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
     </layout>
@@ -86,6 +92,7 @@
    <extends>QLabel</extends>
    <header>widgets/ClickableLabel.h</header>
    <slots>
+    <signal>clicked()</signal>
     <slot>clicked()</slot>
    </slots>
   </customwidget>

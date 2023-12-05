@@ -163,7 +163,7 @@ void CleanUpDialog::refreshData()
         QFrame* action_frame = new QFrame();
         QHBoxLayout* layout = new QHBoxLayout();
         layout->setContentsMargins(0,0,0,0);
-        layout->setAlignment(Qt::AlignLeft);
+        layout->setAlignment(Qt::AlignHCenter);
         action_frame->setLayout(layout);
 
         // Delete button
@@ -172,7 +172,7 @@ void CleanUpDialog::refreshData()
             btnDisable->setIcon(QIcon("://controls/check_off.png"));
             btnDisable->setProperty("id", m_itemsMap[ui->tableItems->item(current_row,0)]);
             btnDisable->setCursor(Qt::PointingHandCursor);
-            btnDisable->setMaximumWidth(32);
+            btnDisable->setMaximumWidth(48);
             btnDisable->setToolTip(tr("Désactiver"));
             connect(btnDisable, &QToolButton::clicked, this, &CleanUpDialog::btnDisable_clicked);
             layout->addWidget(btnDisable);
@@ -184,7 +184,7 @@ void CleanUpDialog::refreshData()
             btnDelete->setIcon(QIcon(":/icons/delete_old.png"));
             btnDelete->setProperty("id", m_itemsMap[ui->tableItems->item(current_row,0)]);
             btnDelete->setCursor(Qt::PointingHandCursor);
-            btnDelete->setMaximumWidth(32);
+            btnDelete->setMaximumWidth(48);
             btnDelete->setToolTip(tr("Supprimer"));
             connect(btnDelete, &QToolButton::clicked, this, &CleanUpDialog::btnDelete_clicked);
             layout->addWidget(btnDelete);

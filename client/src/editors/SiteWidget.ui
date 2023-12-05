@@ -314,7 +314,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             </property>
             <layout class="QGridLayout" name="gridLayout">
              <property name="verticalSpacing">
-              <number>10</number>
+              <number>15</number>
              </property>
              <item row="3" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
               <widget class="QLabel" name="lblDevices">
@@ -776,6 +776,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <property name="columnCount">
               <number>3</number>
              </property>
+             <attribute name="horizontalHeaderVisible">
+              <bool>true</bool>
+             </attribute>
              <attribute name="horizontalHeaderDefaultSectionSize">
               <number>200</number>
              </attribute>
@@ -784,6 +787,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
              </attribute>
              <column>
               <property name="text">
@@ -888,14 +894,23 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
        <item>
         <widget class="QListWidget" name="lstSessionTypes">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
          </property>
          <property name="iconSize">
           <size>
            <width>24</width>
            <height>24</height>
           </size>
+         </property>
+         <property name="selectionRectVisible">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -1021,7 +1036,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <bool>false</bool>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
@@ -1074,7 +1089,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <item>
         <widget class="QListWidget" name="lstServices">
          <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
          <property name="iconSize">
           <size>

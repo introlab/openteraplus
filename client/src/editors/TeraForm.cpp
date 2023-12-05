@@ -479,7 +479,8 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             QWidget* item_widget = nullptr;
             QLabel* item_label = new QLabel(item_data["label"].toString());
             item_label->setAlignment(Qt::AlignVCenter);
-            item_label->setStyleSheet("QLabel{min-height: 25px;}");
+            item_label->setStyleSheet("QLabel{color: #b6ddf8;}");
+            //item_label->setStyleSheet("QLabel{min-height: 25px;}");
 
             // Build widget according to item type
             QString item_type = item_data["type"].toString().toLower();
@@ -593,6 +594,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
     validateFormData(true);
 
     page->setDisabled(m_disabled);
+    updateRequiredWidgetsLabel();
 
 }
 
@@ -1239,12 +1241,13 @@ void TeraForm::setWidgetRequired(QWidget *item_widget, QLabel *item_label, const
         return;
 
     item_widget->setProperty("required", required);
-    if (required){
+    item_label->setProperty("required", required);
+    item_label->setProperty("label", item_label->text());
+    /*if (required){
         item_label->setText("<font color=red>*</font> " + item_label->text());
     }else{
-
         item_label->setText("  " + item_label->text());
-    }
+    }*/
 }
 
 void TeraForm::updateWidgetChoices(QWidget *widget, const QList<TeraData> values)
@@ -1311,6 +1314,25 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
 qreal TeraForm::doLinearInterpolation(const qreal &p1, const qreal &p2, const qreal &value)
 {
     return (p1 + (p2-p1)*value);
+}
+
+void TeraForm::updateRequiredWidgetsLabel()
+{
+    for (QLabel* label: m_widgetsLabels){
+        if (m_disabled){
+            if (label->property("label").isValid()){
+                label->setText(label->property("label").toString());
+            }
+        }else{
+            for (QLabel* label: m_widgetsLabels){
+                if (label->property("required").toBool()){
+                    label->setText("<font color=red>*</font> " + label->property("label").toString());
+                }else{
+                    label->setText("  " + label->property("label").toString());
+                }
+            }
+        }
+    }
 }
 
 bool TeraForm::eventFilter(QObject *object, QEvent *event)
@@ -1421,8 +1443,12 @@ void TeraForm::setDisabled(bool disable)
             m_mainWidget->setDisabled(disable);
     }
     m_disabled = disable;
-    //QWidget::setDisabled(disable);
 
+    // Hide "required" labels indicators
+    updateRequiredWidgetsLabel();
+
+    //QLabel* widget_label = m_widgetsLabels[widget];
+    //QWidget::setDisabled(disable);
 
 }
 
@@ -1439,4 +1465,6 @@ void TeraForm::setEnabled(bool enable)
     }
     m_disabled = !enable;
     //QWidget::setEnabled(enable);
+    // Show "required" labels indicators
+    updateRequiredWidgetsLabel();
 }

@@ -92,7 +92,7 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
      </property>
      <layout class="QVBoxLayout" name="listZone">
       <property name="spacing">
-       <number>3</number>
+       <number>6</number>
       </property>
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
@@ -165,6 +165,9 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
            <property name="text">
             <string>Seuls les ... ayant un lien avec  ce ... sont présentement affichés.</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
            <property name="wordWrap">
             <bool>true</bool>
            </property>
@@ -172,8 +175,26 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
            <item>
             <widget class="QRadioButton" name="radBtnFilter">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
              </property>
@@ -187,6 +208,12 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
            </item>
            <item>
             <widget class="QRadioButton" name="radBtnAll">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
              </property>
@@ -222,7 +249,7 @@ QTreeWidget::branch:closed:has-children:has-siblings  {
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="spacing">
-          <number>0</number>
+          <number>6</number>
          </property>
          <property name="leftMargin">
           <number>0</number>

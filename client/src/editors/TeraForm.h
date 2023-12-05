@@ -138,6 +138,8 @@ private:
 
     static qreal doLinearInterpolation(const qreal &p1, const qreal &p2, const qreal &value);
 
+    void updateRequiredWidgetsLabel();
+
     bool eventFilter(QObject* object, QEvent* event);
 
 private slots:
@@ -149,7 +151,6 @@ private slots:
     void hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas);
 
 public slots:
-
     void setDisabled(bool disable);
     void setEnabled(bool enable);
 
