@@ -4,16 +4,22 @@
 #include <QTableWidgetItem>
 #include <QDateTime>
 #include <QObject>
+#include <QDateTime>
 
 class TableDateWidgetItem : public QTableWidgetItem
 {
-public:
+    public:
 
-  using QTableWidgetItem::QTableWidgetItem; // Use base class constructors
+        using QTableWidgetItem::QTableWidgetItem; // Use base class constructors
+        explicit TableDateWidgetItem(const QDateTime& date);
 
-  bool operator<(const QTableWidgetItem &other) const override;
+        bool operator<(const QTableWidgetItem &other) const override;
 
-  void setDate(const QVariant &date_var);
+        void setDate(const QVariant &date_var);
+
+    private:
+        QDateTime m_date;
 };
+
 
 #endif // TABLEDATEWIDGETITEM_H

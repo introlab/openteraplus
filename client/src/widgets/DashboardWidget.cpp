@@ -158,7 +158,7 @@ void DashboardWidget::processSessionsReply(const QList<TeraData> sessions)
         // Update values
         name_item->setText(session.getName());
         QDateTime session_date = session.getFieldValue("session_start_datetime").toDateTime().toLocalTime();
-        date_item->setText(session_date.toString("dd-MM-yyyy hh:mm:ss"));
+        date_item->setDate(session_date);
 
         // Type
         int id_session_type = session.getFieldValue("id_session_type").toInt();

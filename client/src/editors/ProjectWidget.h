@@ -34,6 +34,7 @@ public:
 private slots:
     void processFormsReply(QString form_type, QString data);
     void processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query);
+    void processParticipantsReply(QList<TeraData> participants, QUrlQuery reply_query);
     void processDevicesReply(QList<TeraData> devices);
     void processDevicesProjectsReply(QList<TeraData> devices_projects);
     void processServiceProjectsReply(QList<TeraData> services);
@@ -69,6 +70,8 @@ private slots:
     void on_tableSummary_itemSelectionChanged();
     void on_btnManageUsers_clicked();
 
+    void on_chkShowInactive_stateChanged(int state);
+
 private:
     Ui::ProjectWidget *ui;
 
@@ -103,6 +106,7 @@ private:
     void updateServiceProject(const TeraData* sp);
     void updateSessionTypeProject(const TeraData* stp);
     void updateSessionTypeSite(const TeraData* sts);
+    void updateParticipant(const TeraData* participant);
 
     void queryServicesProject();
     void querySessionTypesProject();

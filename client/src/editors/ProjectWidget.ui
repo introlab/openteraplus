@@ -162,7 +162,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -307,9 +307,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <string>Résumé</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
-          <property name="spacing">
-           <number>10</number>
-          </property>
           <item>
            <layout class="QGridLayout" name="gridLayout">
             <property name="horizontalSpacing">
@@ -589,6 +586,13 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chkShowInactive">
+            <property name="text">
+             <string>Afficher les participants inactifs</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

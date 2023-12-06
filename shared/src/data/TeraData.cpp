@@ -666,8 +666,10 @@ QJsonObject TeraData::toJson(const QString specific_fieldName)
 
 bool TeraData::fromMap(const QVariantMap &map)
 {
-    foreach(QVariant value, map){
-        QString key = map.key(value);
+    QStringList keys = map.keys();
+
+    foreach(QString key, keys){
+        QVariant value = map.value(key);
         setFieldValue(key, value);
     }
 

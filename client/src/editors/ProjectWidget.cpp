@@ -101,7 +101,6 @@ void ProjectWidget::setData(const TeraData *data)
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
         args.addQueryItem(WEB_QUERY_WITH_PARTICIPANTS, "1");
         queryDataRequest(WEB_STATS_PATH, args);
-
     }
 }
 
@@ -391,6 +390,97 @@ void ProjectWidget::updateSessionTypeSite(const TeraData *sts)
         item->setText(st_name);
 }
 
+void ProjectWidget::updateParticipant(const TeraData *participant)
+{
+    QTableWidgetItem* item_name;
+    QTableWidgetItem* item_state;
+    TableNumberWidgetItem* item_sessions;
+    TableDateWidgetItem* item_first_session;
+    TableDateWidgetItem* item_last_session;
+    TableDateWidgetItem* item_last_online;
+
+    if (m_tableParticipants_items.contains(participant->getId())){
+        item_name = m_tableParticipants_items[participant->getId()];
+        int row = item_name->row();
+        item_state = ui->tableSummary->item(row, 1);
+        item_sessions = dynamic_cast<TableNumberWidgetItem*>(ui->tableSummary->item(row, 2));
+        item_first_session = dynamic_cast<TableDateWidgetItem*>(ui->tableSummary->item(row, 3));
+        item_last_session = dynamic_cast<TableDateWidgetItem*>(ui->tableSummary->item(row, 4));
+        item_last_online = dynamic_cast<TableDateWidgetItem*>(ui->tableSummary->item(row, 5));
+    }else{
+        // Create new widget items
+        item_name = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant->getName());
+        m_tableParticipants_items[participant->getId()] = item_name;
+
+        ui->tableSummary->setRowCount(ui->tableSummary->rowCount()+1);
+        int current_row = ui->tableSummary->rowCount()-1;
+
+        ui->tableSummary->setItem(current_row, 0, item_name);
+
+        item_state = new QTableWidgetItem();
+        item_state->setTextAlignment(Qt::AlignCenter);
+        ui->tableSummary->setItem(current_row, 1, item_state);
+
+        item_sessions = new TableNumberWidgetItem();
+        item_sessions->setTextAlignment(Qt::AlignCenter);
+        ui->tableSummary->setItem(current_row, 2, item_sessions);
+
+        item_first_session = new TableDateWidgetItem();
+        item_first_session->setTextAlignment(Qt::AlignCenter);
+        ui->tableSummary->setItem(current_row, 3, item_first_session);
+        item_last_session = new TableDateWidgetItem();
+        item_last_session->setTextAlignment(Qt::AlignCenter);
+        ui->tableSummary->setItem(current_row, 4, item_last_session);
+
+        item_last_online = new TableDateWidgetItem();
+        item_last_online->setTextAlignment(Qt::AlignCenter);
+        ui->tableSummary->setItem(current_row, 5, item_last_online);
+    }
+
+    // Set current values
+    item_name->setText(participant->getName());
+    QString status;
+    if (participant->isEnabled()){
+        status = tr("Actif");
+        item_state->setForeground(Qt::green);
+        ui->tableSummary->showRow(item_state->row());
+    }else{
+        status = tr("Inactif");
+        item_state->setForeground(Qt::red);
+        if (!ui->chkShowInactive->isChecked())
+            ui->tableSummary->hideRow(item_state->row());
+    }
+    item_state->setText(status);
+    if (participant->hasFieldName("participant_sessions_count")){
+        item_sessions->setText(participant->getFieldValue("participant_sessions_count").toString());
+    }
+    if (participant->hasFieldName("participant_first_session")){
+        item_first_session->setDate(participant->getFieldValue("participant_first_session").toDateTime().toLocalTime());
+    }
+    if (participant->hasFieldName("participant_last_session")){
+        QDateTime last_session_datetime = participant->getFieldValue("participant_last_session").toDateTime().toLocalTime();
+        item_last_session->setDate(last_session_datetime);
+        if (participant->isEnabled() && last_session_datetime.isValid()){
+            // Set background color
+            QColor back_color = TeraForm::getGradientColor(0, 7, 14, static_cast<int>(last_session_datetime.daysTo(QDateTime::currentDateTime())));
+            back_color.setAlphaF(0.5);
+            item_last_session->setBackground(back_color);
+        }
+    }
+    if (participant->hasFieldName("participant_last_online")){
+        QDateTime last_connect_datetime = participant->getFieldValue("participant_last_online").toDateTime().toLocalTime();
+        item_last_online->setDate(last_connect_datetime);
+        if (participant->isEnabled() && last_connect_datetime.isValid()){
+            // Set background color
+            QColor back_color = TeraForm::getGradientColor(0, 7, 14, static_cast<int>(last_connect_datetime.daysTo(QDateTime::currentDateTime())));
+            back_color.setAlphaF(0.5);
+            item_last_online->setBackground(back_color);
+        }
+    }
+
+
+}
+
 void ProjectWidget::queryServicesProject()
 {
     // Query services for this project
@@ -559,6 +649,25 @@ void ProjectWidget::processProjectAccessReply(QList<TeraData> access, QUrlQuery 
     }
 }
 
+void ProjectWidget::processParticipantsReply(QList<TeraData> participants, QUrlQuery reply_query)
+{
+    if (!m_data)
+        return;
+
+    // Check if that reply is for us or not.
+    if (!reply_query.hasQueryItem(WEB_QUERY_ID_PROJECT))
+        return;
+
+    if (reply_query.queryItemValue(WEB_QUERY_ID_PROJECT).toInt() != m_data->getId())
+        return;
+
+    // Only update state for now...
+    for (int i=0; i<participants.count(); i++){
+        updateParticipant(&participants.at(i));
+
+    }
+}
+
 void ProjectWidget::processDevicesReply(QList<TeraData> devices)
 {
     if (!m_data)
@@ -684,70 +793,20 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
+        /*ui->tableSummary->setRowCount(parts_list.count());
+        int current_row = 0;*/
         for(const QVariant &part:std::as_const(parts_list)){
             QVariantMap part_info = part.toMap();
-            int part_id = part_info["id_participant"].toInt();
-
-            ui->tableSummary->setRowCount(ui->tableSummary->rowCount()+1);
-            int current_row = ui->tableSummary->rowCount()-1;
-            QTableWidgetItem* item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)),
-                                                                part_info["participant_name"].toString());
-            m_tableParticipants_items[part_id] = item;
-            ui->tableSummary->setItem(current_row, 0, item);
-
-            item = new QTableWidgetItem();
-            QString status;
-            if (part_info["participant_enabled"].toBool() == true){
-                status = tr("Actif");
-                item->setForeground(Qt::green);
-            }else{
-                status = tr("Inactif");
-                item->setForeground(Qt::red);
-            }
-            item->setText(status);
-            item->setTextAlignment(Qt::AlignCenter);
-            ui->tableSummary->setItem(current_row, 1, item);
-
-            item = new TableNumberWidgetItem(part_info["participant_sessions_count"].toString());
-            item->setTextAlignment(Qt::AlignCenter);
-            ui->tableSummary->setItem(current_row, 2, item);
-
-            item = new TableDateWidgetItem(part_info["participant_first_session"].toDateTime().toLocalTime().toString("dd-MM-yyyy hh:mm:ss"));
-            item->setTextAlignment(Qt::AlignCenter);
-            ui->tableSummary->setItem(current_row, 3, item);
-
-            QDateTime last_session_datetime = part_info["participant_last_session"].toDateTime().toLocalTime();
-            item = new TableDateWidgetItem(last_session_datetime.toString("dd-MM-yyyy hh:mm:ss"));
-            if (part_info["participant_enabled"].toBool() == true && last_session_datetime.isValid()){
-                // Set background color
-                QColor back_color = TeraForm::getGradientColor(0, 7, 14, static_cast<int>(last_session_datetime.daysTo(QDateTime::currentDateTime())));
-                back_color.setAlphaF(0.5);
-                item->setBackground(back_color);
-            }
-            item->setTextAlignment(Qt::AlignCenter);
-            ui->tableSummary->setItem(current_row, 4, item);
-
-            QString last_connect;
-            QDateTime last_connect_datetime;
-            if (part_info.contains("participant_last_online")){
-                last_connect_datetime =  part_info["participant_last_online"].toDateTime().toLocalTime();
-                if (last_connect_datetime.isValid())
-                    last_connect = last_connect_datetime.toString("dd-MM-yyyy hh:mm:ss");
-            }
-            item = new TableDateWidgetItem(last_connect);
-            item->setTextAlignment(Qt::AlignCenter);
-
-            if (part_info["participant_enabled"].toBool() == true && last_connect_datetime.isValid()){
-                // Set background color
-                QColor back_color = TeraForm::getGradientColor(0, 5, 10, static_cast<int>(last_connect_datetime.daysTo(QDateTime::currentDateTime())));
-                back_color.setAlphaF(0.5);
-                item->setBackground(back_color);
-            }
-            ui->tableSummary->setItem(current_row, 5, item);
+            TeraData data(TeraDataTypes::TERADATA_PARTICIPANT);
+            data.fromMap(part_info);
+            updateParticipant(&data);
         }
-        ui->tableSummary->resizeColumnsToContents();
         ui->tableSummary->sortByColumn(4, Qt::DescendingOrder); // Sort by last session date
+        ui->tableSummary->resizeColumnsToContents();
     }
+
+    // Connect signal to receive participants updates from now on
+    connect(m_comManager, &ComManager::participantsReceived, this, &ProjectWidget::processParticipantsReply);
 }
 
 void ProjectWidget::processPostOKReply(QString path)
@@ -1266,5 +1325,23 @@ void ProjectWidget::on_btnManageUsers_clicked()
 
     connect(m_diag_editor, &BaseDialog::finished, this, &ProjectWidget::usersEditor_finished);
     m_diag_editor->open();
+}
+
+
+void ProjectWidget::on_chkShowInactive_stateChanged(int state)
+{
+    for(QTableWidgetItem* item: m_tableParticipants_items){
+        int row = item->row();
+        if (ui->chkShowInactive->isChecked()){
+            if (ui->tableSummary->isRowHidden(row))
+                ui->tableSummary->showRow(row);
+        }else{
+            bool active = ui->tableSummary->item(row, 1)->foreground() != Qt::red;
+            if (!active){
+                ui->tableSummary->hideRow(row);
+            }
+        }
+    }
+    ui->tableSummary->resizeColumnsToContents();
 }
 
