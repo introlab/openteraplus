@@ -387,14 +387,20 @@ void SessionsListWidget::on_btnNextCal_clicked()
 void SessionsListWidget::updateCalendars(QDate left_date)
 {
     ui->calMonth1->setCurrentPage(left_date.year(),left_date.month());
+    ui->calMonth1->setMinimumDate(QDate(left_date.year(),left_date.month(), 1));
+    ui->calMonth1->setMaximumDate(QDate(left_date.year(),left_date.month(), left_date.daysInMonth()));
     ui->lblMonth1->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     left_date = left_date.addMonths(1);
     ui->calMonth2->setCurrentPage(left_date.year(),left_date.month());
+    ui->calMonth2->setMinimumDate(QDate(left_date.year(),left_date.month(), 1));
+    ui->calMonth2->setMaximumDate(QDate(left_date.year(),left_date.month(), left_date.daysInMonth()));
     ui->lblMonth2->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     left_date = left_date.addMonths(1);
     ui->calMonth3->setCurrentPage(left_date.year(),left_date.month());
+    ui->calMonth3->setMinimumDate(QDate(left_date.year(),left_date.month(), 1));
+    ui->calMonth3->setMaximumDate(QDate(left_date.year(),left_date.month(), left_date.daysInMonth()));
     ui->lblMonth3->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     // Check if we must enable the previous month button
@@ -420,13 +426,12 @@ QDate SessionsListWidget::getMinimumSessionDate()
 
 QDate SessionsListWidget::getMaximumSessionDate()
 {
-    QDate max_date = QDate::currentDate();
+    QDate max_date;
     for (TeraData* session:std::as_const(m_ids_sessions)){
         QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date > max_date)
             max_date = session_date;
     }
-
     return max_date;
 }
 

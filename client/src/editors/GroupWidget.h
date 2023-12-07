@@ -67,6 +67,7 @@ private slots:
     void on_btnDelete_clicked();
     void on_tableSummary_itemSelectionChanged();
 
+    void on_chkShowInactive_stateChanged(int checked);
 };
 
 #endif // GROUPWIDGET_H

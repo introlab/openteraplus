@@ -15,7 +15,7 @@ public:
     explicit HistoryCalendarWidget(QWidget *parent=nullptr);
     ~HistoryCalendarWidget();
 
-    void paintCell(QPainter *painter, const QRect &rect, const QDate &date) const;
+    void paintCell(QPainter *painter, const QRect &rect, QDate date) const override;
 
     //void setEvents1(QList<QDate>* events);
     //void setEvents2(QList<QDate>* events);

@@ -307,6 +307,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <string>Résumé</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <property name="spacing">
+           <number>15</number>
+          </property>
           <item>
            <layout class="QGridLayout" name="gridLayout">
             <property name="horizontalSpacing">

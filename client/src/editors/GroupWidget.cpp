@@ -199,9 +199,12 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
                 item->setForeground(Qt::green);
                 if (!m_activeParticipants.contains(part_id))
                     m_activeParticipants.append(part_id);
+                ui->tableSummary->showRow(current_row);
             }else{
                 status = tr("Inactif");
                 item->setForeground(Qt::red);
+                if (!ui->chkShowInactive->isChecked())
+                    ui->tableSummary->hideRow(current_row);
             }
             item->setText(status);
             item->setTextAlignment(Qt::AlignCenter);
@@ -448,3 +451,21 @@ void GroupWidget::on_btnNewSession_clicked()
     showSessionLobby(id_session_type, id_session);
 }
 #endif
+
+void GroupWidget::on_chkShowInactive_stateChanged(int checked)
+{
+    for(QTableWidgetItem* item: m_tableParticipants_items){
+        int row = item->row();
+        if (ui->chkShowInactive->isChecked()){
+            if (ui->tableSummary->isRowHidden(row))
+                ui->tableSummary->showRow(row);
+        }else{
+            bool active = ui->tableSummary->item(row, 1)->foreground() != Qt::red;
+            if (!active){
+                ui->tableSummary->hideRow(row);
+            }
+        }
+    }
+    ui->tableSummary->resizeColumnsToContents();
+}
+

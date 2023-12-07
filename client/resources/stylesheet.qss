@@ -545,16 +545,11 @@ QMenu::item:selected{
     QCalendarWidget
 */
 
-QCalendarWidget QWidget#qt_calendar_navigationbar {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #cccccc, stop: 1 #333333);
-}
-
-QCalendarWidget QToolButton {
+/*QCalendarWidget QToolButton {
     height: 20px;
     color: white;
     font-size: 12px;
     font-weight: bold;
-    /*icon-size: 20px, 20px;*/
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #cccccc, stop: 1 #333333);
 }
 
@@ -591,7 +586,7 @@ QCalendarWidget QSpinBox::down-arrow {
     width:16px;
     height:16px;
 }
-
+*/
 
 QCalendarWidget QWidget {
     alternate-background-color: #0d5ca6;

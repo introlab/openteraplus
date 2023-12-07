@@ -889,7 +889,7 @@ void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
                 ui->btnSaveLogin->setEnabled(false);
             }else{
                 ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
-                ui->btnSaveLogin->setEnabled(true);
+                ui->btnSaveLogin->setEnabled(false);
             }
         }
     }

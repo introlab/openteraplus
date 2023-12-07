@@ -411,6 +411,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <string>Résumé</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>15</number>
+          </property>
           <item>
            <layout class="QGridLayout" name="gridLayout">
             <property name="horizontalSpacing">
@@ -529,6 +532,13 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            </layout>
           </item>
           <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QTableWidget" name="tableSummary">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -593,6 +603,13 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <string>Dernière connexion</string>
              </property>
             </column>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chkShowInactive">
+            <property name="text">
+             <string>Afficher les participants inactifs</string>
+            </property>
            </widget>
           </item>
          </layout>
