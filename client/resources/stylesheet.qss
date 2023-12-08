@@ -319,10 +319,11 @@ QPlainTextEdit {
 
 QListView {
     color: white;
+    outline: 0;
 }
-/*
+
 QListView::item{
-    min-height: 24px;
+    /*min-height: 24px;*/
 }
 
 QListView::item:selected {
@@ -333,7 +334,7 @@ QListView::item:selected {
 QListView::item:hover {
     color: white;
     background-color: rgba(23,54,93,50%);
-}*/
+}
 
 /*
     QTextEdit, See QLineEdit

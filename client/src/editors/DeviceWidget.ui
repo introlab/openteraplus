@@ -338,6 +338,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -401,6 +404,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <widget class="QListWidget" name="lstParticipants">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="iconSize">
           <size>
@@ -487,15 +493,15 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LogViewWidget</class>
-   <extends>QWidget</extends>
-   <header>widgets/LogViewWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>TeraForm</class>
    <extends>QWidget</extends>
    <header>TeraForm.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LogViewWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/LogViewWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

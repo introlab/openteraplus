@@ -384,6 +384,9 @@ QString LogViewWidget::getOSIcon(const QString &os)
     if (compare_os.contains("android"))
         return "://icons/logs/os_android.png";
 
+    if (compare_os.contains("chrome"))
+        return "://icons/logs/browser_chrome.png";
+
     return "";
 
 }

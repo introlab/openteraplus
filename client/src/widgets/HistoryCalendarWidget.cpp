@@ -140,13 +140,6 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, QDat
         count++;
     }
 
-    // Check if we need to display any indicator warning for that session
-    /*for (int i=0; i<sessions->count(); i++){
-        if (sessions->at(i)->hasTechAlert()){
-            painter->drawImage(rect.adjusted((float)rect.width()/2,2,-2,-(float)rect.height()/2),QImage(":/pictures/icons/warning.png"));
-        }
-    }*/
-
     pen.setColor(Qt::black);
     painter->setPen(pen);
     painter->drawText(rect, Qt::AlignCenter, QString::number(date.day()));

@@ -300,10 +300,15 @@ void MainWindow::setInSession(bool in_session, const TeraData *session_type, con
         connect(m_inSessionWidget, &InSessionWidget::sessionEndedWithError, this, &MainWindow::inSession_sessionEndedWithError);
         connect(m_inSessionWidget, &InSessionWidget::requestShowNotification, this, &MainWindow::addNotification);
         ui->wdgMainTop->layout()->addWidget(m_inSessionWidget);
+        ui->btnEditUser->hide();
     }else{
         // Loads back the "previous" data type
         dataDisplayRequested(m_currentDataType, m_currentDataId);
+        ui->btnEditUser->show();
     }
+
+    // Refresh user information - hiding config button at the same time
+    updateCurrentUser();
 }
 #endif
 QIcon MainWindow::getGlobalEventIcon(GlobalEvent &global_event)
@@ -509,8 +514,12 @@ void MainWindow::dataDisplayRequested(TeraDataTypes data_type, int data_id)
 void MainWindow::dataDisplayRequestedByUuid(TeraDataTypes data_type, QString data_uuid)
 {
     // Try to select in project navigator
-    if (data_type == TERADATA_PROJECT || data_type == TERADATA_PARTICIPANT || data_type == TERADATA_GROUP)
-        ui->projNavigator->selectItemByUuid(data_type, data_uuid);
+    if (data_type == TERADATA_PROJECT || data_type == TERADATA_PARTICIPANT || data_type == TERADATA_GROUP){
+        if (ui->projNavigator->selectItemByUuid(data_type, data_uuid)){
+            // Selected in the project navigator - will do its query from there!
+            return;
+        }
+    }
 
     // Request to display a specific item by uuid.
     QUrlQuery query;
@@ -553,7 +562,7 @@ void MainWindow::updateCurrentUser()
     if (m_comManager->getCurrentUser().hasFieldName("user_name")){
         // Ok, we have a user to update.
         ui->lblUser->setText(m_comManager->getCurrentUser().getName());
-        ui->btnConfig->setVisible(m_comManager->getCurrentUser().getFieldValue("user_superadmin").toBool());
+        ui->btnConfig->setVisible(m_comManager->getCurrentUser().getFieldValue("user_superadmin").toBool() && !isInSession());
     }
 }
 

@@ -75,6 +75,10 @@ private:
 
  signals:
     void fileDownloading(bool downloading);
+
+     // QWidget interface
+ protected:
+     void resizeEvent(QResizeEvent *event) override;
 };
 
 #endif // VIDEOREHABWIDGET_H

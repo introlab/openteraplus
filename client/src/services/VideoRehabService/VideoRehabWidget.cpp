@@ -54,8 +54,7 @@ void VideoRehabWidget::initUI()
     ui->icoLoading->setMovie(m_loadingIcon);
     m_loadingIcon->start();
 
-
-    m_webEngine = new QWebEngineView(ui->wdgWebEngine);
+    m_webEngine = new QWebEngineView(/*ui->wdgWebEngine*/);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &VideoRehabWidget::webPageLoaded);
 
     // Create a new page
@@ -89,7 +88,7 @@ void VideoRehabWidget::initUI()
         layout->setContentsMargins(0,0,0,0);
         ui->wdgWebEngine->setLayout(layout);
     }
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_webEngine->setSizePolicy(sizePolicy);
     ui->wdgWebEngine->layout()->addWidget(m_webEngine);
 
@@ -409,6 +408,16 @@ void VideoRehabWidget::stopVirtualCamera()
         m_virtualCamThread = nullptr;
     }
     */
+}
+
+void VideoRehabWidget::resizeEvent(QResizeEvent *event)
+{
+    // Webpage will set its content size to its initial size, thus webengine will stay at that size.
+    // This resizes the view to force a resize of the underlying page.
+    // Not perfect as multiple calls could be performed, but working for now.
+    ui->wdgWebEngine->setMaximumWidth(event->size().width()-50);
+
+    BaseServiceWidget::resizeEvent(event);
 }
 
 void VideoRehabWidget::on_btnRefresh_clicked()

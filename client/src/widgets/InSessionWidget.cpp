@@ -260,8 +260,13 @@ void InSessionWidget::on_btnEndSession_clicked()
 
 void InSessionWidget::on_btnInSessionInfos_toggled(bool checked)
 {
+    int mainWidth = ui->widgetMain->width();
     ui->tabInfos->setVisible(checked);
-
+    if (checked){
+        ui->widgetMain->setMaximumWidth(mainWidth - ui->tabInfos->width());
+    }else{
+        ui->widgetMain->setMaximumWidth(mainWidth + ui->tabInfos->width());
+    }
 }
 
 void InSessionWidget::processSessionsReply(QList<TeraData> sessions)

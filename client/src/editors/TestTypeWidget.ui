@@ -331,6 +331,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>

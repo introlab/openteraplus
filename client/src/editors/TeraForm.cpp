@@ -15,7 +15,7 @@ TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
     ui->setupUi(this);
 
     m_mainWidget = ui->toolboxMain;
-    m_highlightConditionals = true;
+    m_highlightConditionals = false;
 
     // Automatically sets comManager
     setComManager(com_man);
