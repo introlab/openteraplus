@@ -417,7 +417,7 @@ void VideoRehabWidget::resizeEvent(QResizeEvent *event)
     // Not perfect as multiple calls could be performed, but working for now.
     ui->wdgWebEngine->setMaximumWidth(event->size().width()-50);
 
-    BaseServiceWidget::resizeEvent(event);
+    //BaseServiceWidget::resizeEvent(event);
 }
 
 void VideoRehabWidget::on_btnRefresh_clicked()

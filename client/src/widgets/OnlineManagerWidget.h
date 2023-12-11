@@ -54,7 +54,7 @@ private:
     void updateOnlineDevice(const TeraData *online_device);
 
     void createOnlineUser(const QString& uuid, const QString& name);
-    void createOnlineParticipant(const QString& uuid, const QString& name);
+    void createOnlineParticipant(const QString& uuid, const QString& name, const QString& site, const QString& project);
     void createOnlineDevice(const QString& uuid, const QString& name);
 
 private slots:
