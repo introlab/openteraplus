@@ -30,6 +30,7 @@ private slots:
     void processServiceSiteAccessReply(QList<TeraData> service_sites, QUrlQuery reply_query);
     void processDeviceSiteAccessReply(QList<TeraData>device_sites, QUrlQuery reply_query);
     void processSessionTypeSiteAccessReply(QList<TeraData>st_sites, QUrlQuery reply_query);
+    void processTestTypeSiteAccessReply(QList<TeraData>tt_sites, QUrlQuery reply_query);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);   
 
     void processPostOKReply(QString path);
@@ -54,10 +55,12 @@ private slots:
     void on_btnEditDevices_clicked();
 
     void on_lstSessionTypes_itemChanged(QListWidgetItem *item);
-
     void on_btnUpdateSessionTypes_clicked();
-
     void on_btnEditSessionTypes_clicked();
+
+    void on_lstTestTypes_itemChanged(QListWidgetItem *item);
+
+    void on_btnUpdateTestTypes_clicked();
 
 private:
     Ui::SiteWidget *ui;
@@ -73,6 +76,9 @@ private:
     QMap<int, QListWidgetItem*>  m_listSessionTypeSites_items;
     QMap<int, QListWidgetItem*>  m_listSessionTypes_items;
 
+    QMap<int, QListWidgetItem*>  m_listTestTypeSites_items;
+    QMap<int, QListWidgetItem*>  m_listTestTypes_items;
+
     BaseDialog*                  m_diag_editor;
 
     int                          m_devicesCount;
@@ -84,6 +90,7 @@ private:
     void updateServiceSite(const TeraData* service_site);
     void updateDeviceSite(const TeraData* device_site);
     void updateSessionTypeSite(const TeraData* st_site);
+    void updateTestTypeSite(const TeraData* tt_site);
 
     void updateControlsState();
     void updateFieldsValue();
@@ -95,6 +102,7 @@ private:
     void queryServiceSiteAccess();
     void queryDeviceSiteAccess();
     void querySessionTypeSiteAccess();
+    void queryTestTypeSiteAccess();
 };
 
 #endif // SITEWIDGET_H

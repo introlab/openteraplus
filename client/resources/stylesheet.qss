@@ -796,7 +796,7 @@ QToolButton#btnRandomPass{
 }
 
 /* Customizations for SiteWidget */
-QLabel#lblInherited{
+QLabel#lblInherited, QLabel#lblAdminTestTypes, QLabel#lblAdminSessionTypes{
     font-weight: bold;
     font-size: 12px;
     color: orange;
