@@ -283,8 +283,9 @@ void SiteWidget::processServiceSiteAccessReply(QList<TeraData> service_sites, QU
     for (int i=0; i<ui->lstServices->count(); i++){
         QListWidgetItem* item = ui->lstServices->item(i);
         if (item->checkState() == Qt::Unchecked){
-            if (std::find(m_listServicesSites_items.cbegin(), m_listServicesSites_items.cend(), item) != m_listServicesSites_items.cend()){
-                m_listServicesSites_items.remove(m_listServicesSites_items.key(item));
+            int item_key = m_listServicesSites_items.key(item, -1);
+            if (item_key > 0){
+                m_listServicesSites_items.remove(item_key);
             }
         }
     }
@@ -303,8 +304,9 @@ void SiteWidget::processDeviceSiteAccessReply(QList<TeraData> device_sites, QUrl
     for (int i=0; i<ui->lstDevices->count(); i++){
         QListWidgetItem* item = ui->lstDevices->item(i);
         if (item->checkState() == Qt::Unchecked){
-            if (std::find(m_listDevicesSites_items.cbegin(), m_listDevicesSites_items.cend(), item) != m_listDevicesSites_items.cend()){
-                m_listDevicesSites_items.remove(m_listDevicesSites_items.key(item));
+            int item_key = m_listDevicesSites_items.key(item, -1);
+            if (item_key > 0){
+                m_listDevicesSites_items.remove(item_key);
             }
         }
     }
@@ -323,8 +325,9 @@ void SiteWidget::processSessionTypeSiteAccessReply(QList<TeraData> st_sites, QUr
     for (int i=0; i<ui->lstSessionTypes->count(); i++){
         QListWidgetItem* item = ui->lstSessionTypes->item(i);
         if (item->checkState() == Qt::Unchecked){
-            if (std::find(m_listSessionTypeSites_items.cbegin(), m_listSessionTypeSites_items.cend(), item) != m_listSessionTypeSites_items.cend()){
-                m_listSessionTypeSites_items.remove(m_listSessionTypeSites_items.key(item));
+            int item_key = m_listSessionTypeSites_items.key(item, -1);
+            if (item_key > 0){
+                m_listSessionTypeSites_items.remove(item_key);
             }
         }
     }
@@ -343,8 +346,9 @@ void SiteWidget::processTestTypeSiteAccessReply(QList<TeraData> tt_sites, QUrlQu
     for (int i=0; i<ui->lstTestTypes->count(); i++){
         QListWidgetItem* item = ui->lstTestTypes->item(i);
         if (item->checkState() == Qt::Unchecked){
-            if (std::find(m_listTestTypeSites_items.cbegin(), m_listTestTypeSites_items.cend(), item) != m_listTestTypeSites_items.cend()){
-                m_listTestTypeSites_items.remove(m_listTestTypeSites_items.key(item));
+            int item_key = m_listTestTypeSites_items.key(item, -1);
+            if (item_key > 0){
+                m_listTestTypeSites_items.remove(item_key);
             }
         }
     }

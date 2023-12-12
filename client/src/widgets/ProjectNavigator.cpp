@@ -353,21 +353,7 @@ TeraDataTypes ProjectNavigator::getCurrentItemType()
 {
     QTreeWidgetItem* item = getCurrentItem();
 
-    if (item){
-        if (m_devices_items.key(item, -1) >= 0){
-            return TERADATA_DEVICE;
-        }
-        if (m_groups_items.key(item, -1) >= 0){
-            return TERADATA_GROUP;
-        }
-        if (m_participants_items.key(item, -1) >= 0){
-            return TERADATA_PARTICIPANT;
-        }
-        if (m_users_items.key(item, -1) >= 0){
-            return TERADATA_USER;
-        }
-    }
-    return TERADATA_NONE;
+    return getItemType(item);
 }
 
 int ProjectNavigator::getCurrentItemId()
@@ -385,6 +371,9 @@ int ProjectNavigator::getCurrentItemId()
         }
         if (id == -1){
             id = m_users_items.key(item, -1);
+        }
+        if (id == -1){
+            id = m_projects_items.key(item, -1);
         }
         return id;
     }
@@ -1308,24 +1297,20 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
 
 TeraDataTypes ProjectNavigator::getItemType(QTreeWidgetItem *item)
 {
-    if (std::find(m_projects_items.cbegin(), m_projects_items.cend(), item) != m_projects_items.cend()){
-        return TERADATA_PROJECT;
+    if (m_devices_items.key(item, -1) >= 0){
+        return TERADATA_DEVICE;
     }
-
-    if (std::find(m_groups_items.cbegin(), m_groups_items.cend(), item) != m_groups_items.cend()){
+    if (m_groups_items.key(item, -1) >= 0){
         return TERADATA_GROUP;
     }
-
-    if (std::find(m_participants_items.cbegin(), m_participants_items.cend(), item) != m_participants_items.cend()){
+    if (m_participants_items.key(item, -1) >= 0){
         return TERADATA_PARTICIPANT;
     }
-
-    if (std::find(m_users_items.cbegin(), m_users_items.cend(), item) != m_users_items.cend()){
+    if (m_users_items.key(item, -1) >= 0){
         return TERADATA_USER;
     }
-
-    if (std::find(m_devices_items.cbegin(), m_devices_items.cend(), item) != m_devices_items.cend()){
-        return TERADATA_DEVICE;
+    if (m_projects_items.key(item, -1) >= 0){
+        return TERADATA_PROJECT;
     }
 
     if (isAdvancedView() && item){
@@ -1420,8 +1405,8 @@ void ProjectNavigator::deleteItemRequested()
                                                         tr("Êtes-vous sûrs de vouloir supprimer """) + ui->treeNavigator->currentItem()->text(0) + """?");
     if (answer == QMessageBox::Yes){
         // We must delete!
-        TeraDataTypes item_type = getItemType(ui->treeNavigator->currentItem());
-        int id_todel = ui->treeNavigator->currentItem()->data(0, Qt::UserRole).toInt();
+        TeraDataTypes item_type = getCurrentItemType(); //getItemType(ui->treeNavigator->currentItem());
+        int id_todel = getCurrentItemId();
         emit dataDeleteRequest(item_type, id_todel);
     }
 }
