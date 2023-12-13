@@ -18,8 +18,8 @@
  */
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QThread>
+#include <QScreen>
 
 #include "mediasourceffmpeg.h"
 #include "videostream.h"
@@ -509,9 +509,8 @@ bool MediaSourceFFmpeg::setState(AkElement::ElementState state)
             this->m_globalClock.setClock(0.);
             this->m_run = true;
             this->m_readPacketsLoopResult =
-                    QtConcurrent::run(&this->m_threadPool,
-                                      this,
-                                      &MediaSourceFFmpeg::readPackets);
+                QtConcurrent::run(&this->m_threadPool,[=]{MediaSourceFFmpeg::readPackets();});
+                                     // &MediaSourceFFmpeg::readPackets, this);
             this->m_curState = state;
 
             return true;
@@ -631,9 +630,8 @@ void MediaSourceFFmpeg::reconnectStream(){
 
 void MediaSourceFFmpeg::packetConsumed()
 {
-    QtConcurrent::run(&this->m_threadPool,
-                      this,
-                      &MediaSourceFFmpeg::unlockQueue);
+    QtConcurrent::run(&this->m_threadPool,[=]{MediaSourceFFmpeg::unlockQueue();});
+                      //&MediaSourceFFmpeg::unlockQueue, this);
 }
 
 bool MediaSourceFFmpeg::initContext()
@@ -646,13 +644,13 @@ bool MediaSourceFFmpeg::initContext()
     AVInputFormat *inputFormat = nullptr;
     AVDictionary *inputOptions = nullptr;
 
-    if (QRegExp("/dev/video\\d*").exactMatch(uri))
+    if (QRegularExpression("/dev/video\\d*").match(uri).hasMatch())
         inputFormat = av_find_input_format("v4l2");
-    else if (QRegExp(":\\d+\\.\\d+(?:\\+\\d+,\\d+)?").exactMatch(uri)) {
+    else if (QRegularExpression(":\\d+\\.\\d+(?:\\+\\d+,\\d+)?").match(uri).hasMatch()) {
         inputFormat = av_find_input_format("x11grab");
 
-        int width = this->roundDown(QApplication::desktop()->width(), 4);
-        int height = this->roundDown(QApplication::desktop()->height(), 4);
+        int width = this->roundDown(QGuiApplication::primaryScreen()->size().width(), 4);
+        int height = this->roundDown(QGuiApplication::primaryScreen()->size().height(), 4);
 
         av_dict_set(&inputOptions,
                     "video_size",
@@ -664,7 +662,7 @@ bool MediaSourceFFmpeg::initContext()
         // draw_mouse (int)
     }
     else if (uri == "pulse" ||
-             QRegExp("hw:\\d+").exactMatch(uri))
+             QRegularExpression("hw:\\d+").match(uri).hasMatch())
         inputFormat = av_find_input_format("alsa");
     else if (uri == "/dev/dsp")
         inputFormat = av_find_input_format("oss");
@@ -687,7 +685,7 @@ bool MediaSourceFFmpeg::initContext()
         QString uriCopy = uri;
 
         for (const QString &schemer: mmsSchemes)
-            uriCopy.replace(QRegExp(QString("^%1").arg(schemer)),
+            uriCopy.replace(QRegularExpression(QString("^%1").arg(schemer)),
                             scheme);
 
         inputContext = nullptr;

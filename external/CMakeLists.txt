@@ -41,6 +41,6 @@ add_subdirectory(protobuf)
 add_subdirectory(messages/cpp)
 
 #Webcamoid
-#add_subdirectory(webcamoid)
+add_subdirectory(webcamoid)
 
 

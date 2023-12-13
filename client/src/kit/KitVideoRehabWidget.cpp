@@ -13,7 +13,7 @@ KitVideoRehabWidget::KitVideoRehabWidget(KitConfigManager *kitConfig, Participan
 {
     ui->setupUi(this);
 
-    //m_virtualCamThread = nullptr;
+    m_virtualCamThread = nullptr;
 
     initUi();
     connectSignals();
@@ -31,13 +31,11 @@ KitVideoRehabWidget::~KitVideoRehabWidget()
     m_loadingIcon->deleteLater();
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
-    /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
      }
-    */
 
     delete ui;
 
@@ -287,8 +285,6 @@ void KitVideoRehabWidget::showError(const QString &title, const QString &context
 
 void KitVideoRehabWidget::startVirtualCamera(const QString &src)
 {
-    qDebug() << "KitVideoRehabWidget::startVirtualCamera not implemented.";
-    /*
     if (m_virtualCamThread){
         stopVirtualCamera();
     }
@@ -296,20 +292,17 @@ void KitVideoRehabWidget::startVirtualCamera(const QString &src)
     m_virtualCamThread = new VirtualCameraThread(src);
     connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &KitVideoRehabWidget::virtualCameraDisconnected);
     m_virtualCamThread->start();
-    */
+
 }
 
 void KitVideoRehabWidget::stopVirtualCamera()
 {
-    qDebug() << "KitVideoRehabWidget::stopVirtualCamera not implemented.";
-    /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
         m_virtualCamThread = nullptr;
     }
-    */
 }
 
 void KitVideoRehabWidget::on_btnRefresh_clicked()

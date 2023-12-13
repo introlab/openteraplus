@@ -24,7 +24,7 @@
 #include <QThreadPool>
 #include <QtConcurrent>
 #include <QMutex>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <ak.h>
 #include <akvideopacket.h>
 

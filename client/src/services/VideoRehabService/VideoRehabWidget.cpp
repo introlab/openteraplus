@@ -13,7 +13,7 @@ VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //m_virtualCamThread = nullptr;
+    m_virtualCamThread = nullptr;
 
     initUI();
     connectSignals();
@@ -28,14 +28,11 @@ VideoRehabWidget::~VideoRehabWidget()
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
 
-    //TODO Fix Virtual Camera
-    /*
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
      }
-    */
 
     delete ui;
 
@@ -382,24 +379,18 @@ void VideoRehabWidget::showError(const QString &title, const QString &context, c
 
 void VideoRehabWidget::startVirtualCamera(const QString &src)
 {
-    //TODO Fix Virtual Camera
-    qDebug() << "VideoRehabWidget::startVirtualCamera not implemented.";
-    /*
     if (m_virtualCamThread){
         stopVirtualCamera();
     }
     ui->frameError->hide();
     m_virtualCamThread = new VirtualCameraThread(src);
     connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &VideoRehabWidget::virtualCameraDisconnected);
-    m_virtualCamThread->start();
-    */
+    m_virtualCamThread->start();    
 }
 
 void VideoRehabWidget::stopVirtualCamera()
 {
-    //TODO Fix Virtual Camera
-    qDebug() << "VideoRehabWidget::stopVirtualCamera not implemented.";
-    /*
+
     qDebug() << "VideoRehabWidget::stopVirtualCamera";
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
@@ -407,7 +398,6 @@ void VideoRehabWidget::stopVirtualCamera()
         m_virtualCamThread->deleteLater();
         m_virtualCamThread = nullptr;
     }
-    */
 }
 
 void VideoRehabWidget::resizeEvent(QResizeEvent *event)

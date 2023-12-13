@@ -25,13 +25,14 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-message(STATUS "PLUGIN_DIRECTORY: ${AVKYS_PLUGIN_DIRECTORY}")
+message(STATUS "Virtual Camera AVKYS PLUGIN_DIRECTORY: ${AVKYS_PLUGIN_DIRECTORY}")
+message(STATUS "Virtual Camera AVKYS INCLUDE_DIRECTORY: ${AVKYS_INCLUDES}")
 
 # generate rules for building source files from the resources
 QT6_ADD_RESOURCES(virtual_camera_qrc ${VirtualCamera_qrcs})
 
 #This will generate moc_* for Qt
-qt6_wrap_cpp(virtual_camera_moc_srcs ${VirtualCamera_headers})
+qt_wrap_cpp(virtual_camera_moc_srcs ${VirtualCamera_headers})
 add_definitions(-DAVKYS_PLUGIN_DIRECTORY="${AVKYS_PLUGIN_DIRECTORY}")
 
 add_library(VirtualCameraDriver STATIC ${VirtualCamera_headers} ${VirtualCamera_srcs} ${virtual_camera_qrc} ${virtual_camera_moc_srcs})

@@ -19,7 +19,7 @@
 #include "managers/ComManager.h"
 #include "Utils.h"
 
-//#include "VirtualCameraThread.h"
+#include "VirtualCameraThread.h"
 
 #include "drivers/PTZ/ICameraDriver.h"
 #include "drivers/PTZ/Vivotek8111.h"
@@ -45,7 +45,7 @@ private:
     QWebEngineView*         m_webEngine;
     VideoRehabWebPage*      m_webPage;
 
-    //VirtualCameraThread*    m_virtualCamThread;
+    VirtualCameraThread*    m_virtualCamThread;
 
     int                     m_id_service_config;
 

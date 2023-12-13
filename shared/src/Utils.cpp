@@ -137,8 +137,13 @@ QStringList Utils::getVideoDeviceNames()
     auto inputs = QMediaDevices::videoInputs();
     foreach (const QCameraDevice &info, inputs)
     {
-        names.append(info.description());
+        QString name = info.description();
+        if (!name.contains(" IR ")) // Remove infrared cameras.
+            names.append(info.description());
     }
+#ifdef Q_OS_WINDOWS
+    names.append("OpenTeraCam"); // Qt6 doesn't support directshow filters anymore, so manually append it...
+#endif
     return names;
 }
 

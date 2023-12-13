@@ -18,6 +18,7 @@
  */
 
 #include "akutils.h"
+#include <QVariant>
 
 typedef QMap<QImage::Format, AkVideoCaps::PixelFormat> ImageToPixelFormatMap;
 

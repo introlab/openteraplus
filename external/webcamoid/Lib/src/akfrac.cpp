@@ -17,7 +17,7 @@
  * Web-Site: http://webcamoid.github.io/
  */
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QStringList>
 #include <QDataStream>
 
@@ -235,8 +235,8 @@ void AkFrac::setNumDen(qint64 num, qint64 den)
 void AkFrac::setNumDen(const QString &fracString)
 {
 
-    bool match = QRegExp("(\\s*-)?\\s*\\d+\\s*/"
-                              "\\s*\\d+\\s*").exactMatch(fracString);
+    bool match = QRegularExpression("(\\s*-)?\\s*\\d+\\s*/"
+                              "\\s*\\d+\\s*").match(fracString).hasMatch();
 
     if (!match) {
         this->setNumDen(0, 0);
@@ -244,7 +244,7 @@ void AkFrac::setNumDen(const QString &fracString)
         return;
     }
 
-    QStringList fracChunks = fracString.split(QRegExp("\\s*/\\s*"),
+    QStringList fracChunks = fracString.split(QRegularExpression("\\s*/\\s*"),
                                               Qt::SkipEmptyParts);
 
     qint64 num = fracChunks[0].trimmed().toInt();

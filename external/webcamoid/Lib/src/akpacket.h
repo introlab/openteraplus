@@ -21,6 +21,7 @@
 #define AKPACKET_H
 
 #include <QSharedPointer>
+#include <QVariant>
 
 #include "akcaps.h"
 #include "akfrac.h"

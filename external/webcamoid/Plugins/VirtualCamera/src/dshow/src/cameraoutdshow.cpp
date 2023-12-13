@@ -211,7 +211,7 @@ void CameraOutDShow::writeFrame(const AkPacket &frame)
                                 DWORD(videoFrame.caps().height()),
                                 reinterpret_cast<const BYTE *>(videoFrame.buffer().constData())) < 1)
     {
-        qDebug() << "Error writing frame  " << videoFrame.caps();
+        //qDebug() << "Error writing frame  " << videoFrame.caps();
     }
 }
 

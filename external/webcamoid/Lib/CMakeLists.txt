@@ -1,9 +1,9 @@
 MESSAGE ( STATUS "Buiding AkCommons...")
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Concurrent REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Qml REQUIRED)
+find_package(Qt6Core REQUIRED)
+find_package(Qt6Concurrent REQUIRED)
+find_package(Qt6Gui REQUIRED)
+find_package(Qt6Qml REQUIRED)
 
 
 add_definitions(-DQT_DEPRECATED_WARNINGS -DAKCOMMONS_LIBRARY)
@@ -42,12 +42,12 @@ set (libavkys_srcs
 )
 
 #This will generate moc_* for Qt
-QT5_WRAP_CPP(libavkys_moc_srcs ${libavkys_headers})
+QT_WRAP_CPP(libavkys_moc_srcs ${libavkys_headers})
 
 
 add_library(AvKys SHARED ${libavkys_srcs} ${libavkys_headers} ${libavkys_moc_srcs})
 # qt5_use_modules(AvKys Core Concurrent Gui Qml)
-target_link_libraries(AvKys Qt5::Core Qt5::Concurrent Qt5::Gui Qt5::Qml)
+target_link_libraries(AvKys Qt6::Core Qt6::Concurrent Qt6::Gui Qt6::Qml)
 
 set(AVKYS_LIBS AvKys CACHE INTERNAL "doc string")
 set(AVKYS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src CACHE INTERNAL "doc string")
