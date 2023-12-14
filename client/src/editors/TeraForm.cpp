@@ -3,7 +3,7 @@
 
 #include "Logger.h"
 #include "GlobalMessageBox.h"
-#include "Utils.h"
+#include "libs/AudioVideoUtils.h"
 
 #include <QDebug>
 #include <QStyledItemDelegate>
@@ -849,12 +849,12 @@ QWidget *TeraForm::createDurationWidget(const QVariantHash &structure)
 
 void TeraForm::loadAudioInputs()
 {
-    m_audioInputs = Utils::getAudioDeviceNames();// QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    m_audioInputs = AudioVideoUtils::getAudioDeviceNames();// QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
 }
 
 void TeraForm::loadVideoInputs()
 {
-    m_videoInputs = Utils::getVideoDeviceNames(); //QCameraInfo::availableCameras();
+    m_videoInputs = AudioVideoUtils::getVideoDeviceNames(); //QCameraInfo::availableCameras();
 }
 
 void TeraForm::checkConditions(QWidget *item_triggering)

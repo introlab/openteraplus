@@ -31,6 +31,8 @@ set(headers
     data/TransferringFile.h
     data/UploadingFile.h
     data/IconMenuDelegate.h
+    # Librairies
+    libs/AudioVideoUtils.h
     # Main Windows
     main/MainWindow.h
     # Managers
@@ -145,6 +147,8 @@ set(srcs
     data/TransferringFile.cpp
     data/UploadingFile.cpp
     data/IconMenuDelegate.cpp
+    # Librairies
+    libs/AudioVideoUtils.cpp
     # Main Windows
     main/MainWindow.cpp
     # Managers
@@ -370,6 +374,18 @@ include_directories(
     ${PTZ_DRIVERS_INCLUDES}
     ${AVKYS_INCLUDES}
     )
+if(WIN32)
+    set (OPENTERA_OS_LIBS
+        strmiids
+        uuid
+        ole32
+        oleaut32
+        shell32
+    )
+else()
+    set (OPENTERA_OS_LIBS
+    )
+endif()
 
 # Application icon
 SET(icon openteraico.rc)
@@ -396,7 +412,7 @@ endif()
 
 
 # Linking with Qt libraries and others
-target_link_libraries(OpenTeraPlus PRIVATE ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets)
+target_link_libraries(OpenTeraPlus PRIVATE ${OPENTERA_SHARED_LIBS} ${OPENTERA_MESSAGES_LIBS} ${OPENTERA_OS_LIBS} Qt6::Core Qt6::Network Qt6::Multimedia Qt6::WebSockets)
 
 if(NOT DEFINED OPENTERA_WEBASSEMBLY)
     target_link_libraries(OpenTeraPlus PRIVATE Qt6::WebEngineCore Qt6::WebEngineWidgets)

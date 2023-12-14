@@ -1,7 +1,5 @@
 #include "Utils.h"
 #include <QRegularExpression>
-#include <QCameraDevice>
-#include <QAudioDevice>
 
 Utils::Utils(QObject *parent) : QObject(parent)
 {
@@ -81,70 +79,6 @@ QString Utils::getMachineUniqueId()
     }
 
     return machine_id;
-}
-
-QStringList Utils::getAudioDeviceNames()
-{
-    QStringList names;
-
-
-    auto audio_devices = QMediaDevices::audioInputs();
-    //QList<QAudioDeviceInfo> audio_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-    foreach(const QAudioDevice &input, audio_devices){
-//TODO FIX LINUX
-#if 0
-//#ifdef Q_OS_LINUX
-        // On linux, since Qt use ALSA API, we must filter the returned device list...
-        if (input.deviceName().startsWith("alsa_input") || input.deviceName() == "default"){
-            QString filtered_name = input.deviceName();
-            if (input.deviceName() != "default"){
-                QStringList name_parts = filtered_name.split(".");
-                // Removes first part - usually is "alsa_input"
-                if (name_parts.count()>1)
-                    filtered_name = name_parts[1];
-
-                // Split using "_" to remove first and last part, and replace others with spaces
-                name_parts = filtered_name.split("_");
-                if (name_parts.count()>2){
-                    filtered_name = "";
-                    for (int i=1; i<name_parts.count()-1; i++){
-                        if (i>1)
-                            filtered_name += " ";
-                        filtered_name += name_parts[i];
-                    }
-                }else{
-                    // No audio name...
-                    name_parts = filtered_name.split("-");
-                    if (name_parts.count()>2){
-                        filtered_name = name_parts[1].replace("_", ":");
-                    }
-                }
-
-            }
-            names.append(filtered_name);
-        }
-#else
-        //TODO Not sure!
-        names.append(input.description());
-#endif
-    }
-    return names;
-}
-
-QStringList Utils::getVideoDeviceNames()
-{
-    QStringList names;
-    auto inputs = QMediaDevices::videoInputs();
-    foreach (const QCameraDevice &info, inputs)
-    {
-        QString name = info.description();
-        if (!name.contains(" IR ")) // Remove infrared cameras.
-            names.append(info.description());
-    }
-#ifdef Q_OS_WINDOWS
-    names.append("OpenTeraCam"); // Qt6 doesn't support directshow filters anymore, so manually append it...
-#endif
-    return names;
 }
 
 void Utils::inStringUnicodeConverter(QString *str)
@@ -233,4 +167,3 @@ QString Utils::formatDuration(const QString &duration)
     }
     return video_duration.toString("hh:mm:ss");
 }
-

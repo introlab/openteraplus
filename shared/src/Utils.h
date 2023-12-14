@@ -8,7 +8,6 @@
 #include <QSysInfo>
 #include <QSettings>
 #include <QUuid>
-#include <QMediaDevices>
 #include <QTime>
 
 class SHAREDLIB_EXPORT Utils : public QObject
@@ -29,9 +28,6 @@ public:
     static QList<PasswordValidationErrors> validatePassword(const QString& password);
 
     static QString getMachineUniqueId();
-
-    static QStringList getAudioDeviceNames();
-    static QStringList getVideoDeviceNames();
 
     static void inStringUnicodeConverter(QString* str);
 
