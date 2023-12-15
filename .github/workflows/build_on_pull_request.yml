@@ -29,8 +29,8 @@ jobs:
         tools: 'tools_ninja'
         set-env: 'true'
         tools-only: 'false'
-        aqtversion: '==2.1.*'
-        py7zrversion: '==0.19.*'
+        aqtversion: '==3.1.*'
+        py7zrversion: '==0.20.*'
         extra: '--external 7z'
         
     - name: Checkout files
