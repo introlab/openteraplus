@@ -50,7 +50,7 @@ jobs:
       run: |
         dir
     
-    - uses: TheMrMilchmann/setup-msvc-dev@v2
+    - uses: TheMrMilchmann/setup-msvc-dev@v3
       with:
         arch: x64
       
