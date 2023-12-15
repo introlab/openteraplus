@@ -6,3 +6,4 @@ deploy
 html
 venv
 doctrees
+CMakeLists.txt.user
