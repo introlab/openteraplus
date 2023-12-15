@@ -133,7 +133,7 @@ class AkElementPrivate
             return pluginId;
                                               ;
 #else
-            return pluginId.remove(QRegExp("^lib"));
+            return pluginId.remove(QRegularExpression("^lib"));
 #endif
         }
 
