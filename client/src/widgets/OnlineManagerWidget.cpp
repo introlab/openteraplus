@@ -209,7 +209,7 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData *online_partici
             if (!site.isEmpty() && !project.isEmpty())
                 tooltip += "\n" + site + "\n" + project;
             participant_item->setToolTip(0, tooltip);
-#elif
+#else
             if (!site.isEmpty() && !project.isEmpty())
                 participant_item->setToolTip(0, site + "\n" + project);
 #endif
