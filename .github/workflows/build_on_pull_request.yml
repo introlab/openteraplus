@@ -26,7 +26,7 @@ jobs:
         cache: 'false'
         cache-key-prefix: 'install-qt-action'
         setup-python: 'false'
-        tools: 'tools_openssl_x64 tools_ninja'
+        tools: 'tools_ninja'
         set-env: 'true'
         tools-only: 'false'
         aqtversion: '==2.1.*'
