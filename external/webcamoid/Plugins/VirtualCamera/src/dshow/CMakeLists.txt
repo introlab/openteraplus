@@ -62,4 +62,4 @@ add_library(${SUBMMODULE_NAME} SHARED ${submodule_srcs} ${submodule_headers} ${s
 # qt5_use_modules(${SUBMMODULE_NAME} Core Concurrent Widgets Gui Qml)
 target_link_libraries(${SUBMMODULE_NAME} Qt6::Core Qt6::Concurrent Qt6::Widgets Qt6::Gui Qt6::Qml)
 target_link_libraries(${SUBMMODULE_NAME} ${AVKYS_PLUGIN_LIBRARIES} ${dshow_additional_libs} ipc)
-install(TARGETS ${SUBMMODULE_NAME} DESTINATION ${AVKYS_LIBRARY_INSTALL_PATH}/submodules/${PLUGIN_NAME})
+install(TARGETS ${SUBMMODULE_NAME} RUNTIME DESTINATION ${AVKYS_LIBRARY_INSTALL_PATH}/submodules/${PLUGIN_NAME})

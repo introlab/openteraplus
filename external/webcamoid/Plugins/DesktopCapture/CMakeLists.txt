@@ -42,9 +42,7 @@ add_library(${PLUGIN_NAME} SHARED ${plugin_srcs} ${plugin_headers} ${plugin_moc_
 # qt5_use_modules(${PLUGIN_NAME} Core Concurrent Gui Qml)
 target_link_libraries(${PLUGIN_NAME} Qt6::Core Qt6::Concurrent Qt6::Gui Qt6::Qml)
 target_link_libraries(${PLUGIN_NAME} ${AVKYS_PLUGIN_LIBRARIES})
-install(TARGETS ${PLUGIN_NAME} DESTINATION ${AVKYS_LIBRARY_INSTALL_PATH})
-
-
+install(TARGETS ${PLUGIN_NAME} RUNTIME DESTINATION ${AVKYS_LIBRARY_INSTALL_PATH})
 
 #submodule(s)
 FILE(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH}/submodules/${PLUGIN_NAME})

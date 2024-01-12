@@ -441,14 +441,14 @@ set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION "Res
 if (APPLE)
     # Mac bundles...
     # Install targets
-    install(TARGETS OpenTeraPlus DESTINATION .)
+    install(TARGETS OpenTeraPlus RUNTIME DESTINATION .)
     # install(TARGETS opentera_messages DESTINATION .)
 
 else(APPLE)
     # Every other systems
     # Install target to bin
-    install(TARGETS OpenTeraPlus DESTINATION bin)
-    install(TARGETS opentera_messages DESTINATION bin)
+    install(TARGETS OpenTeraPlus RUNTIME DESTINATION bin)
+    install(TARGETS opentera_messages RUNTIME DESTINATION bin)
 endif(APPLE)
 
 

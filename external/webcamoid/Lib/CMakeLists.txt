@@ -52,5 +52,5 @@ target_link_libraries(AvKys Qt6::Core Qt6::Concurrent Qt6::Gui Qt6::Qml)
 set(AVKYS_LIBS AvKys CACHE INTERNAL "doc string")
 set(AVKYS_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src CACHE INTERNAL "doc string")
 
-install(TARGETS AvKys DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS AvKys RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
