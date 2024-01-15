@@ -33,6 +33,7 @@
 #define WEB_SERVICESITEINFO_PATH            "/api/user/services/sites"
 #define WEB_SERVICEACCESSINFO_PATH          "/api/user/services/access"
 #define WEB_SERVICECONFIGINFO_PATH          "/api/user/services/configs"
+#define WEB_SERVICEROLEINFO_PATH            "/api/user/services/roles"
 #define WEB_STATS_PATH                      "/api/user/stats"
 #define WEB_ASSETINFO_PATH                  "/api/user/assets"
 #define WEB_TESTTYPEINFO_PATH               "/api/user/testtypes"
@@ -112,6 +113,7 @@
 #define WEB_QUERY_START_DATE        "start_date"
 #define WEB_QUERY_END_DATE          "end_date"
 #define WEB_QUERY_LOG_LEVEL         "log_level"
+#define WEB_QUERY_GLOBALS           "globals"
 
 #define WEB_QUERY_WITH_USERGROUPS   "with_usergroups"
 #define WEB_QUERY_WITH_SITES        "with_sites"
@@ -127,6 +129,7 @@
 #define WEB_QUERY_WITH_URLS         "with_urls"
 #define WEB_QUERY_WITH_ONLY_TOKEN   "with_only_token"
 #define WEB_QUERY_WITH_SESSIONTYPE  "with_session_type"
+#define WEB_QUERY_WITH_TESTTYPES    "with_test_types"
 #define WEB_QUERY_WITH_DEVICES      "with_devices"
 #define WEB_QUERY_WITH_NAMES        "with_names"
 

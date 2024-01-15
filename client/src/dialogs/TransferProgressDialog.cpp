@@ -177,10 +177,10 @@ void TransferProgressDialog::on_btnCancel_clicked()
             // Set aborting flag to prevent further updates
             m_aborting = true;
 
-            /*for(QTableWidgetItem* item:qAsConst(m_files)){
+            /*for(QTableWidgetItem* item:std::as_const(m_files)){
                 m_files.key(item)->abortTransfer();
             }
-            for(TransferringFile* file:qAsConst(m_waitingFiles)){
+            for(TransferringFile* file:std::as_const(m_waitingFiles)){
                 file->abortTransfer();
             }*/
             emit transferAbortRequested();

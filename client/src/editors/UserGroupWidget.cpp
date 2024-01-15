@@ -1,14 +1,12 @@
 #include "UserGroupWidget.h"
 #include "ui_UserGroupWidget.h"
 
-#include "editors/DataListWidget.h"
-
 UserGroupWidget::UserGroupWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::UserGroupWidget)
 {
-    ui->setupUi(this);
 
+    ui->setupUi(this);
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
     // Use base class to manage editing
@@ -45,7 +43,7 @@ void UserGroupWidget::saveData(bool signal)
 
         // Sites
         QJsonArray sites;
-        for(QTableWidgetItem* site: qAsConst(m_tableSites_items)){
+        for(QTableWidgetItem* site: std::as_const(m_tableSites_items)){
         //for (int i=0; i<m_tableSites_items.count(); i++){
             int site_id = m_tableSites_items.key(site);
             int row = m_tableSites_items[site_id]->row();
@@ -62,7 +60,7 @@ void UserGroupWidget::saveData(bool signal)
         // Projects
         QJsonArray projects;
         //for (int i=0; i<m_tableProjects_items.count(); i++){
-        for(QTableWidgetItem* project: qAsConst(m_tableProjects_items)){
+        for(QTableWidgetItem* project: std::as_const(m_tableProjects_items)){
             int project_id = m_tableProjects_items.key(project);
             int row = m_tableProjects_items[project_id]->row();
             QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
@@ -106,8 +104,10 @@ void UserGroupWidget::connectSignals()
     connect(m_comManager, &ComManager::formReceived, this, &UserGroupWidget::processFormsReply);
     connect(m_comManager, &ComManager::siteAccessReceived, this, &UserGroupWidget::processSiteAccessReply);
     connect(m_comManager, &ComManager::projectAccessReceived, this, &UserGroupWidget::processProjectAccessReply);
+    connect(m_comManager, &ComManager::servicesAccessReceived, this, &UserGroupWidget::processServiceAccessReply);
     connect(m_comManager, &ComManager::sitesReceived, this, &UserGroupWidget::processSitesReply);
     connect(m_comManager, &ComManager::projectsReceived, this, &UserGroupWidget::processProjectsReply);
+    connect(m_comManager, &ComManager::servicesRolesReceived, this, &UserGroupWidget::processServiceRolesReply);
     connect(m_comManager, &ComManager::userUserGroupsReceived, this, &UserGroupWidget::processUserUserGroupsReply);
     connect(m_comManager, &ComManager::postResultsOK, this, &UserGroupWidget::processPostOKReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &UserGroupWidget::processDeleteReply);
@@ -188,11 +188,13 @@ void UserGroupWidget::updateProjectAccess(const TeraData *access)
         item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_SITE)),
                                                       access->getFieldValue("site_name").toString());
 
-        ui->tableProjects->setItem(current_row, 0, item);
+        ui->tableProjects->setItem(current_row, 1, item);
         item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_PROJECT)),
                                                       access->getFieldValue("project_name").toString());
-        ui->tableProjects->setItem(current_row, 1, item);
+        ui->tableProjects->setItem(current_row, 0, item);
         combo_roles = buildRolesComboBox();
+        connect(combo_roles, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                this, &UserGroupWidget::comboProjectRole_changed);
         ui->tableProjects->setCellWidget(current_row, 2, combo_roles);
         m_tableProjects_items.insert(id_project, item);
         m_tableProjectSite_items.insert(id_site, item);
@@ -221,6 +223,47 @@ void UserGroupWidget::updateProjectAccess(const TeraData *access)
             combo_roles->setDisabled(true);
     }
 
+}
+
+void UserGroupWidget::updateServiceRole(const TeraData *access)
+{
+    QTableWidgetItem* item;
+    int id_service = access->getFieldValue("id_service").toInt();
+    QString service_role;
+    if (access->hasFieldName("service_role_name"))
+        service_role = access->getFieldValue("service_role_name").toString();
+    QComboBox* combo_roles;
+    if (m_tableServices_items.contains(id_service)){
+        item = m_tableServices_items[id_service];
+        combo_roles = dynamic_cast<QComboBox*>(ui->tableServices->cellWidget(item->row(), 1));
+    }else{
+        // Not there - must add the service and role
+        int current_row = ui->tableServices->rowCount();
+        ui->tableServices->setRowCount(ui->tableServices->rowCount()+1);
+        item = new QTableWidgetItem(QIcon(access->getIconFilenameForDataType(TERADATA_SERVICE)),
+                                    access->getFieldValue("service_name").toString());
+
+        ui->tableServices->setItem(current_row, 0, item);
+        QMap<int, QString> current_role;
+        current_role.insert(access->getId(), access->getName());
+        combo_roles = buildRolesComboBox(current_role);
+        connect(combo_roles, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                this, &UserGroupWidget::comboServiceRole_changed);
+        combo_roles->setProperty("id_service_access", 0);
+        ui->tableServices->setCellWidget(current_row, 1, combo_roles);
+        m_tableServices_items.insert(id_service, item);
+    }
+
+    if (combo_roles){
+        // Check if the role is already in the list
+        int index = combo_roles->findData(access->getId());
+        if (index == -1){
+            // Insert value in combo
+            combo_roles->addItem(getRoleName(access->getName()), access->getId());
+        }
+        /*combo_roles->setProperty("original_index", index);
+        combo_roles->setDisabled(false);*/
+    }
 }
 
 void UserGroupWidget::updateUserUserGroup(const TeraData *uug)
@@ -305,6 +348,12 @@ void UserGroupWidget::updateFieldsValue()
         ui->lblTitle->setText(m_data->getName());
     }
 
+    if (m_tableServices_items.isEmpty()){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_GLOBALS, "1");
+        queryDataRequest(WEB_SERVICEROLEINFO_PATH, args);
+    }
+
 
 }
 
@@ -337,6 +386,8 @@ void UserGroupWidget::processSiteAccessReply(QList<TeraData> access, QUrlQuery r
        updateSiteAccess(&access.at(i));
     }
 
+    ui->btnUpdateSitesRoles->setEnabled(false);
+
 }
 
 void UserGroupWidget::processProjectAccessReply(QList<TeraData> access, QUrlQuery reply_query)
@@ -355,6 +406,8 @@ void UserGroupWidget::processProjectAccessReply(QList<TeraData> access, QUrlQuer
        updateProjectAccess(&access.at(i));
     }
 
+    ui->btnUpdateProjectsRoles->setEnabled(false);
+
 }
 
 void UserGroupWidget::processSitesReply(QList<TeraData> sites)
@@ -371,6 +424,38 @@ void UserGroupWidget::processProjectsReply(QList<TeraData> projects)
     }
 }
 
+void UserGroupWidget::processServiceRolesReply(QList<TeraData> roles, QUrlQuery reply_query)
+{
+    for (int i=0; i<roles.count(); i++){
+       updateServiceRole(&roles.at(i));
+    }
+}
+
+void UserGroupWidget::processServiceAccessReply(QList<TeraData> access, QUrlQuery reply_query)
+{
+    for (int i=0; i<access.count(); i++){
+       TeraData* current_access = &access[i];
+       if (current_access->hasFieldName("id_service")){
+            // Find service item
+            QTableWidgetItem* service_row = m_tableServices_items.value(current_access->getFieldValue("id_service").toInt(), nullptr);
+            if (service_row){
+                // Get related combo box and check if id_service_role present
+                QComboBox* combo = dynamic_cast<QComboBox*>(ui->tableServices->cellWidget(service_row->row(), 1));
+                if (combo){
+                    int role_index = combo->findData(current_access->getFieldValue("id_service_role").toInt());
+                    if (role_index != -1){ // Found
+                        combo->setCurrentIndex(role_index);
+                    }
+                    combo->setProperty("original_index", role_index);
+                    combo->setProperty("id_service_access", current_access->getId());
+                }
+            }
+       }
+    }
+
+    ui->btnUpdateServicesRoles->setEnabled(false);
+}
+
 void UserGroupWidget::processUserUserGroupsReply(QList<TeraData> users_user_groups)
 {
     for (int i=0; i<users_user_groups.count(); i++){
@@ -383,7 +468,7 @@ void UserGroupWidget::processPostOKReply(QString path)
     if (path == TeraData::getPathForDataType(TERADATA_SITEACCESS)){
         // Reset "dirty" flag on each combo box role
         //for (int i=0; i<m_tableSites_items.count(); i++){
-        for(QTableWidgetItem* site: qAsConst(m_tableSites_items)){
+        for(QTableWidgetItem* site: std::as_const(m_tableSites_items)){
            int site_id = m_tableSites_items.key(site);
            int row = m_tableSites_items[site_id]->row();
            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(row,1));
@@ -391,12 +476,13 @@ void UserGroupWidget::processPostOKReply(QString path)
                combo_roles->setProperty("original_index", combo_roles->currentIndex());
            }
         }
+        ui->btnUpdateSitesRoles->setEnabled(false);
     }
 
     if (path == TeraData::getPathForDataType(TERADATA_PROJECTACCESS)){
         // Reset "dirty" flag on each combo box role
         //for (int i=0; i<m_tableProjects_items.count(); i++){
-        for(QTableWidgetItem* project: qAsConst(m_tableProjects_items)){
+        for(QTableWidgetItem* project: std::as_const(m_tableProjects_items)){
            int project_id = m_tableProjects_items.key(project);
            int row = m_tableProjects_items[project_id]->row();
            QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
@@ -404,6 +490,22 @@ void UserGroupWidget::processPostOKReply(QString path)
                combo_roles->setProperty("original_index", combo_roles->currentIndex());
            }
         }
+        ui->btnUpdateProjectsRoles->setEnabled(false);
+    }
+
+    if (path == TeraData::getPathForDataType(TERADATA_SERVICE_ACCESS)){
+        for(QTableWidgetItem* service: std::as_const(m_tableServices_items)){
+           int service_id = m_tableServices_items.key(service);
+           int row = m_tableServices_items[service_id]->row();
+           QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableServices->cellWidget(row,1));
+           if (combo_roles){
+               combo_roles->setProperty("original_index", combo_roles->currentIndex());
+               if (combo_roles->currentIndex() == 0){
+                    combo_roles->setProperty("id_service_access", 0);
+               }
+           }
+        }
+        ui->btnUpdateServicesRoles->setEnabled(false);
     }
 }
 
@@ -418,13 +520,12 @@ void UserGroupWidget::processDeleteReply(QString path, int id)
 
 void UserGroupWidget::btnUpdateSiteAccess_clicked()
 {
-
     QJsonDocument document;
     QJsonObject base_obj;
     QJsonArray roles;
 
     //for (int i=0; i<m_tableSites_items.count(); i++){
-    for(QTableWidgetItem* site: qAsConst(m_tableSites_items)){
+    for(QTableWidgetItem* site: std::as_const(m_tableSites_items)){
         int site_id = m_tableSites_items.key(site);
         int row = m_tableSites_items[site_id]->row();
         QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(row,1));
@@ -449,13 +550,12 @@ void UserGroupWidget::btnUpdateSiteAccess_clicked()
 
 void UserGroupWidget::btnUpdateProjectAccess_clicked()
 {
-
     QJsonDocument document;
     QJsonObject base_obj;
     QJsonArray roles;
 
     //for (int i=0; i<m_tableProjects_items.count(); i++){
-    for(QTableWidgetItem* project: qAsConst(m_tableProjects_items)){
+    for(QTableWidgetItem* project: std::as_const(m_tableProjects_items)){
         int project_id = m_tableProjects_items.key(project);
         int row = m_tableProjects_items[project_id]->row();
         QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(row,2));
@@ -500,7 +600,7 @@ void UserGroupWidget::comboSiteRole_changed(int index)
                 // Find all related project items
                 QList<QTableWidgetItem*> project_items = m_tableProjectSite_items.values(id_site);
                 bool is_site_admin = combo->currentData() == "admin";
-                for(QTableWidgetItem* project_item: qAsConst(project_items)){
+                for(QTableWidgetItem* project_item: std::as_const(project_items)){
                     // Get combo box
                     QComboBox* combo_role = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(project_item->row(), 2));
                     if (combo_role){
@@ -520,6 +620,55 @@ void UserGroupWidget::comboSiteRole_changed(int index)
                 }
             }
         }
+    }else{
+        // Enable save button if changes
+        bool has_changes = false;
+        for (QTableWidgetItem* item: m_tableSites_items){
+            QComboBox* combo = dynamic_cast<QComboBox*>(ui->tableSites->cellWidget(item->row(), 1));
+            if (combo){
+                if (combo->currentIndex() != combo->property("original_index").toInt()){
+                    has_changes = true;
+                    break;
+                }
+            }
+        }
+        ui->btnUpdateSitesRoles->setEnabled(has_changes);
+    }
+}
+
+void UserGroupWidget::comboProjectRole_changed(int index)
+{
+    if (!dataIsNew()){
+        // Enable save button if changes
+        bool has_changes = false;
+        for (QTableWidgetItem* item: m_tableProjects_items){
+            QComboBox* combo = dynamic_cast<QComboBox*>(ui->tableProjects->cellWidget(item->row(), 2));
+            if (combo){
+                if (combo->currentIndex() != combo->property("original_index").toInt()){
+                    has_changes = true;
+                    break;
+                }
+            }
+        }
+        ui->btnUpdateProjectsRoles->setEnabled(has_changes);
+    }
+}
+
+void UserGroupWidget::comboServiceRole_changed(int index)
+{
+    if (!dataIsNew()){
+        // Enable save button if changes
+        bool has_changes = false;
+        for (QTableWidgetItem* item: m_tableServices_items){
+            QComboBox* combo = dynamic_cast<QComboBox*>(ui->tableServices->cellWidget(item->row(), 1));
+            if (combo){
+                if (combo->currentIndex() != combo->property("original_index").toInt()){
+                    has_changes = true;
+                    break;
+                }
+            }
+        }
+        ui->btnUpdateServicesRoles->setEnabled(has_changes);
     }
 }
 
@@ -538,6 +687,7 @@ void UserGroupWidget::on_tabNav_currentChanged(int index)
     }
 
     if (current_tab == ui->tabSites){
+        // Sites
         args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1");
         queryDataRequest(WEB_SITEACCESS_PATH, args);
     }
@@ -548,6 +698,11 @@ void UserGroupWidget::on_tabNav_currentChanged(int index)
             args.addQueryItem(WEB_QUERY_WITH_EMPTY, "1");
             queryDataRequest(WEB_USERUSERGROUPINFO_PATH, args);
         }
+    }
+
+    if (current_tab == ui->tabServices){
+        // Global service access
+        queryDataRequest(WEB_SERVICEACCESSINFO_PATH, args);
     }
 }
 
@@ -587,6 +742,38 @@ void UserGroupWidget::on_btnUpdateUsers_clicked()
         base_obj.insert("user_user_group", user_usergroups);
         document.setObject(base_obj);
         postDataRequest(WEB_USERUSERGROUPINFO_PATH, document.toJson());
+    }
+}
+
+void UserGroupWidget::on_btnUpdateServicesRoles_clicked()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray roles;
+
+    for(QTableWidgetItem* service: std::as_const(m_tableServices_items)){
+        int service_id = m_tableServices_items.key(service);
+        int row = m_tableServices_items[service_id]->row();
+        QComboBox* combo_roles = dynamic_cast<QComboBox*>(ui->tableServices->cellWidget(row,1));
+        if (combo_roles->property("original_index").toInt() != combo_roles->currentIndex()){
+            int id_service_access = combo_roles->property("id_service_access").toInt();
+            QJsonObject data_obj;
+            // Ok, value was modified - must add!
+            QJsonValue role = combo_roles->currentData().toString();
+            data_obj.insert("id_user_group", m_data->getId());
+            if ((id_service_access > 0 && combo_roles->currentIndex() != 0) || (id_service_access == 0 && combo_roles->currentIndex()>0)){
+                // Only add "id_service_role" if the item is selected. When no role is selected, don't include any id_service_role
+                data_obj.insert("id_service_role", role);
+            }
+            data_obj.insert("id_service_access", id_service_access);
+            roles.append(data_obj);
+        }
+    }
+
+    if (!roles.isEmpty()){
+        base_obj.insert("service_access", roles);
+        document.setObject(base_obj);
+        postDataRequest(WEB_SERVICEACCESSINFO_PATH, document.toJson());
     }
 }
 

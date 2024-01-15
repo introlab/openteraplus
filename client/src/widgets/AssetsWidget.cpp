@@ -214,7 +214,7 @@ void AssetsWidget::queryAssetsInfos()
     QMultiMap<QString, QString> services_assets_tokens;
 
     // Group each assets by access url
-    for(TeraData* asset: qAsConst(m_assets)){
+    for(TeraData* asset: std::as_const(m_assets)){
         if (asset->hasFieldName("asset_infos_url")){
             QString asset_info_str = asset->getFieldValue("asset_infos_url").toString();
             if (!asset_info_str.isEmpty()){
@@ -227,7 +227,7 @@ void AssetsWidget::queryAssetsInfos()
 
     // Query each service for their assets
     QStringList service_urls = services_assets.uniqueKeys();
-    for(const QString &service_url: qAsConst(service_urls)){
+    for(const QString &service_url: std::as_const(service_urls)){
         QStringList asset_uuids = services_assets.values(service_url);
         QStringList asset_tokens = services_assets_tokens.values(service_url);
         QJsonDocument document;
@@ -677,7 +677,7 @@ void AssetsWidget::processServicesReply(QList<TeraData> services, QUrlQuery repl
            // Check if project is in service_fields
            if (service.hasFieldName("service_projects")){
                QVariantList projects = service.getFieldValue("service_projects").toList();
-               for (const QVariant &project:qAsConst(projects)){
+               for (const QVariant &project:std::as_const(projects)){
                    QVariantMap project_info = project.toMap();
                    if (project_info["id_project"].toInt() == m_idProject){
                        // Ok, we are allowed to use file transfer service
@@ -837,7 +837,7 @@ void AssetsWidget::assetComPostOK(QString path)
 
 void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path)
 {
-    for (const QJsonObject &asset_info:qAsConst(infos)){
+    for (const QJsonObject &asset_info:std::as_const(infos)){
         QString asset_uuid = asset_info["asset_uuid"].toString();
 
         if (!m_treeAssets.contains(asset_uuid)){
@@ -1011,7 +1011,7 @@ void AssetsWidget::on_btnDownloadAll_clicked()
     QStringList assets_to_download;
 
     // Download all assets
-    for(TeraData* asset:qAsConst(m_assets)){
+    for(TeraData* asset:std::as_const(m_assets)){
         assets_to_download.append(asset->getUuid());
     }
 
@@ -1029,7 +1029,7 @@ void AssetsWidget::on_treeAssets_itemExpanded(QTreeWidgetItem *item)
             setLoading(true, tr("Affichage des données en cours..."));
             QCoreApplication::processEvents();
             QStringList assets_uuids = m_assetsSessions.values(id_session);
-            for (const QString &asset_uuid: qAsConst(assets_uuids)){
+            for (const QString &asset_uuid: std::as_const(assets_uuids)){
                 if (m_assets.contains(asset_uuid)){
                     updateAsset(*m_assets[asset_uuid]);
                 }
@@ -1049,7 +1049,7 @@ void AssetsWidget::on_treeAssets_itemCollapsed(QTreeWidgetItem *item)
         if (id_session != -1){
             // Remove all assets from display
             QList<QTreeWidgetItem*> assets_items = item->takeChildren();
-            for(QTreeWidgetItem* asset_item: qAsConst(assets_items)){
+            for(QTreeWidgetItem* asset_item: std::as_const(assets_items)){
                 QString asset_uuid = m_treeAssets.key(asset_item);
                 m_treeAssets.remove(asset_uuid);
                 delete asset_item;

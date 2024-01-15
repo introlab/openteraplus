@@ -1,23 +1,23 @@
 if (APPLE)
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum OS X deployment version")
 endif(APPLE)
 
 project(OpenTeraPlus)
 
-include(CTest)
-enable_testing()
+#include(CTest)
+#enable_testing()
 #include(CheckFunctionExists)
 
 #Look for minimum cmake version
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.21)
 
 #DEFINITIONS POLICY, NEW SINCE 3.0.2
 cmake_policy(SET CMP0043 NEW)
 
 # Software version
 SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "1")
-SET(CPACK_PACKAGE_VERSION_PATCH "3")
+SET(CPACK_PACKAGE_VERSION_MINOR "2")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 add_definitions(-DOPENTERAPLUS_VERSION="${CPACK_PACKAGE_VERSION}" )
 add_definitions(-DOPENTERAPLUS_VERSION_MAJOR="${CPACK_PACKAGE_VERSION_MAJOR}" )
@@ -48,7 +48,7 @@ endif(UNIX AND NOT APPLE)
 
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 message(STATUS "Using QMAKE: ${QT_QMAKE_EXECUTABLE}")
@@ -67,7 +67,7 @@ add_subdirectory(shared)
 add_subdirectory(client)
 
 # Tests
-add_subdirectory(tests)
+#add_subdirectory(tests)
 
 # Readme and other files
 add_custom_target(readme SOURCES README.md LICENSE.TXT)

@@ -91,6 +91,7 @@ private:
 
     QTreeWidgetItem* getProjectItem(const int& id_project, const TeraDataTypes& data_type = TERADATA_NONE);
     QTreeWidgetItem* getProjectForItem(const QTreeWidgetItem *item);
+    QTreeWidgetItem* getParticipantGroupForItem(const QTreeWidgetItem* item);
 
     bool isParticipantFiltered(const QString &part_uuid);
     bool isAdvancedView();

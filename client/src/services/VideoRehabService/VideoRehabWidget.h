@@ -41,7 +41,7 @@ public:
 private slots:
     void on_txtURL_returnPressed();
     void webEngineURLChanged(QUrl url);
-    void webEngineDownloadRequested(QWebEngineDownloadItem* item);
+    void webEngineDownloadRequested(QWebEngineDownloadRequest* item);
     void webEngineDownloadCompleted();
 
     void webPageLoaded(bool ok);
@@ -75,6 +75,10 @@ private:
 
  signals:
     void fileDownloading(bool downloading);
+
+     // QWidget interface
+ protected:
+     void resizeEvent(QResizeEvent *event) override;
 };
 
 #endif // VIDEOREHABWIDGET_H

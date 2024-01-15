@@ -412,9 +412,7 @@ void AbstractStream::setPaused(bool paused)
         this->m_dataLoopResult.waitForFinished();
     else
         this->m_dataLoopResult =
-            QtConcurrent::run(&this->m_threadPool,
-                              this,
-                              &AbstractStream::dataLoop);
+            QtConcurrent::run(&this->m_threadPool, [=]{AbstractStream::dataLoop();});
 
     this->m_paused = paused;
     emit this->pausedChanged(paused);
@@ -440,13 +438,9 @@ bool AbstractStream::init()
     this->m_runPacketLoop = true;
     this->m_runDataLoop = true;
     this->m_packetLoopResult =
-            QtConcurrent::run(&this->m_threadPool,
-                              this,
-                              &AbstractStream::packetLoop);
+        QtConcurrent::run(&m_threadPool,[=]{AbstractStream::packetLoop();});
     this->m_dataLoopResult =
-            QtConcurrent::run(&this->m_threadPool,
-                              this,
-                              &AbstractStream::dataLoop);
+            QtConcurrent::run(&m_threadPool, [=]{AbstractStream::dataLoop();});
 
     return true;
 }

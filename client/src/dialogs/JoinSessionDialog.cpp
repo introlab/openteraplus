@@ -1,5 +1,6 @@
 #include "JoinSessionDialog.h"
 #include "ui_JoinSessionDialog.h"
+#include <QSoundEffect>
 
 JoinSessionDialog::JoinSessionDialog(ComManager *comMan, opentera::protobuf::JoinSessionEvent event, QWidget *parent) :
     QDialog(parent),
@@ -65,7 +66,9 @@ void JoinSessionDialog::initUi()
         ui->lblInviteMsg->setText(tr("L'invitation comporte le message suivant:<br><i>") + QString::fromStdString(m_event.join_msg()) + "</i>");
     }
 
-    QSound::play("://sounds/notify_invite.wav");
+    m_soundPlayer.setSource(QUrl::fromLocalFile("://sounds/notify_invite.wav"));
+    m_soundPlayer.setVolume(0.25f);
+    m_soundPlayer.play();
 }
 
 void JoinSessionDialog::connectSignals()

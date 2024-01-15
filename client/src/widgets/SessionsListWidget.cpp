@@ -164,7 +164,7 @@ const TeraData *SessionsListWidget::hasResumableSession(const int &id_session_ty
 {
     TeraData *rval = nullptr;
     // Check if we have a session that can be resumed for that date
-    for(TeraData* session:qAsConst(m_ids_sessions)){
+    for(TeraData* session:std::as_const(m_ids_sessions)){
         if (id_session_type == session->getFieldValue("id_session_type").toInt()){
             int session_status = session->getFieldValue("session_status").toInt();
             if (session_status == TeraSessionStatus::STATUS_INPROGRESS || session_status == TeraSessionStatus::STATUS_NOTSTARTED){
@@ -387,14 +387,20 @@ void SessionsListWidget::on_btnNextCal_clicked()
 void SessionsListWidget::updateCalendars(QDate left_date)
 {
     ui->calMonth1->setCurrentPage(left_date.year(),left_date.month());
+    ui->calMonth1->setMinimumDate(QDate(left_date.year(),left_date.month(), 1));
+    ui->calMonth1->setMaximumDate(QDate(left_date.year(),left_date.month(), left_date.daysInMonth()));
     ui->lblMonth1->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     left_date = left_date.addMonths(1);
     ui->calMonth2->setCurrentPage(left_date.year(),left_date.month());
+    ui->calMonth2->setMinimumDate(QDate(left_date.year(),left_date.month(), 1));
+    ui->calMonth2->setMaximumDate(QDate(left_date.year(),left_date.month(), left_date.daysInMonth()));
     ui->lblMonth2->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     left_date = left_date.addMonths(1);
     ui->calMonth3->setCurrentPage(left_date.year(),left_date.month());
+    ui->calMonth3->setMinimumDate(QDate(left_date.year(),left_date.month(), 1));
+    ui->calMonth3->setMaximumDate(QDate(left_date.year(),left_date.month(), left_date.daysInMonth()));
     ui->lblMonth3->setText(Utils::toCamelCase(QLocale().monthName(left_date.month())) + " " + QString::number(left_date.year()));
 
     // Check if we must enable the previous month button
@@ -409,7 +415,7 @@ void SessionsListWidget::updateCalendars(QDate left_date)
 QDate SessionsListWidget::getMinimumSessionDate()
 {
     QDate min_date = QDate::currentDate();
-    for (TeraData* session:qAsConst(m_ids_sessions)){
+    for (TeraData* session:std::as_const(m_ids_sessions)){
         QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date < min_date)
             min_date = session_date;
@@ -420,13 +426,12 @@ QDate SessionsListWidget::getMinimumSessionDate()
 
 QDate SessionsListWidget::getMaximumSessionDate()
 {
-    QDate max_date = QDate::currentDate();
-    for (TeraData* session:qAsConst(m_ids_sessions)){
+    QDate max_date;
+    for (TeraData* session:std::as_const(m_ids_sessions)){
         QDate session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date();
         if (session_date > max_date)
             max_date = session_date;
     }
-
     return max_date;
 }
 
@@ -456,6 +461,7 @@ void SessionsListWidget::newSessionRequest(const QDateTime &session_datetime)
     m_diag_editor->setWindowTitle(tr("Séance"));
     m_diag_editor->setMinimumSize(this->width(), this->height());
 
+
     connect(ses_widget, &SessionWidget::closeRequest, m_diag_editor, &QDialog::accept);
     connect(ses_widget, &SessionWidget::dataWasChanged, m_diag_editor, &QDialog::accept);
     connect(ses_widget, &SessionWidget::dataWasDeleted, m_diag_editor, &QDialog::accept);
@@ -475,7 +481,7 @@ void SessionsListWidget::setSessionsLoading(const bool &loading)
 void SessionsListWidget::querySessions()
 {
     if (m_totalSessions == 0){
-        qWarning() << "SessionsListWidget::querySessions(): No sessions to query - aborting!";
+        //qWarning() << "SessionsListWidget::querySessions(): No sessions to query - aborting!";
         return;
     }
     ui->tableSessions->setSortingEnabled(false);
@@ -847,7 +853,7 @@ void SessionsListWidget::currentCalendarDateChanged(QDate current_date)
     // Select all the sessions in the list that fits with that date
     QTableWidgetItem* first_item = nullptr;
     //foreach(TeraData* session, m_ids_sessions){
-    for(TeraData* session: qAsConst(m_ids_sessions)){
+    for(TeraData* session: std::as_const(m_ids_sessions)){
         if (session->getFieldValue("session_start_datetime").toDateTime().toLocalTime().date() == current_date){
             QTableWidgetItem* session_item = m_listSessions_items.value(session->getId());
             if (session_item){

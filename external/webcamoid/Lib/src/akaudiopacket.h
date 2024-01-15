@@ -22,6 +22,7 @@
 
 #include "akpacket.h"
 #include "akaudiocaps.h"
+#include <QVariant>
 
 class AkAudioPacketPrivate;
 

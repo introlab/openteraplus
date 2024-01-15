@@ -14,7 +14,7 @@ HistoryCalendarWidget::~HistoryCalendarWidget(){
     qDeleteAll(m_ids_session_types);
 }
 
-void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, const QDate &date) const{
+void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, QDate date) const{
     QPen pen;
     QBrush brush;
     brush.setColor(Qt::transparent);
@@ -37,16 +37,27 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
         //return;
     }*/
 
-    if (date==QDate::currentDate()){
-        pen.setColor(Qt::cyan);
+    QFont painter_font = painter->font();
+    if (date==QDate::currentDate() && date <= maximumDate()){
+        pen.setColor(Qt::red);
+        painter_font.setBold(true);
         painter->setPen(pen);
         painter->drawText(rect, Qt::AlignCenter, QString::number(date.day()));
+    }else{
+        painter_font.setBold(false);
     }
+    painter->setFont(painter_font);
 
     // Check for sessions on that date
-    if (!m_sessions.contains(date) || date.month() != monthShown()){
+    if (!m_sessions.contains(date) || date.month() != monthShown() || date > maximumDate() || date < minimumDate()){
         // Paint with default format
-        QCalendarWidget::paintCell (painter, rect, date);
+        if (date >= minimumDate() && date <= maximumDate()){
+            pen.setColor(Qt::gray);
+            painter->setPen(pen);
+            painter->drawText(rect, Qt::AlignCenter, QString::number(date.day()));
+        }/*else{
+            QCalendarWidget::paintCell(painter, rect, date);
+        }*/
         return;
     }
     // Check to be sure that we don't have all filtered out sessions types for that date
@@ -66,11 +77,13 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
             LOG_WARNING("No session type match - ignoring.", "HistoryCalendarWidget::paintCell");
         }
     }
-    int count = 0;
     int total = display_colors.count(); //m_sessions->at(m_dates.value(date))->sessionsTypesCount(*m_displayTypes);
     if (total==0){
         // All session types filtered for today, paint with default
-        QCalendarWidget::paintCell (painter, rect, date);
+        pen.setColor(Qt::gray);
+        painter->setPen(pen);
+        painter->drawText(rect, Qt::AlignCenter, QString::number(date.day()));
+
         return;
     }
 
@@ -105,7 +118,8 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
     //qDebug() << date.toString() << ": Count = " << QString::number(count) << ", Total = " << QString::number(total);
 
     //for (int i=0; i<display_colors.count(); i++){
-    for(const QString &color_str:qAsConst(display_colors)){
+    int count = 0;
+    for(const QString &color_str:std::as_const(display_colors)){
         //QColor color(display_colors.values().at(i));
         QColor color(color_str);
 
@@ -120,16 +134,11 @@ void HistoryCalendarWidget::paintCell(QPainter *painter, const QRect &rect, cons
         painter->drawRect(rect.adjusted(2,
                                         static_cast<int>(ratio*rect.height()+2),
                                         static_cast<int>(-2*static_cast<float>(rect.width())/3-2),
-                                        static_cast<int>(rect.height()/static_cast<float>(total)-2)));
+                                        -2 //static_cast<int>(rect.height()/static_cast<float>(total)-2)
+                                        )
+                          );
         count++;
     }
-
-    // Check if we need to display any indicator warning for that session
-    /*for (int i=0; i<sessions->count(); i++){
-        if (sessions->at(i)->hasTechAlert()){
-            painter->drawImage(rect.adjusted((float)rect.width()/2,2,-2,-(float)rect.height()/2),QImage(":/pictures/icons/warning.png"));
-        }
-    }*/
 
     pen.setColor(Qt::black);
     painter->setPen(pen);

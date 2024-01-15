@@ -112,7 +112,7 @@ void DeviceWidget::updateControlsState()
            bool has_project_admin_access = m_comManager->isCurrentUserSuperAdmin();
            if (!has_project_admin_access){
                // Check if we are admin in a list one site
-               for(int id_project:qAsConst(m_devicesProjects)){
+               for(int id_project:std::as_const(m_devicesProjects)){
                    if (m_comManager->isCurrentUserProjectAdmin(id_project)){
                        has_project_admin_access = true;
                        break;
@@ -153,7 +153,7 @@ bool DeviceWidget::validateSitesProjects()
     if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
         // Sites
-        for (QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+        for (QTreeWidgetItem* item: std::as_const(m_treeSites_items)){
             if (item->checkState(0) == Qt::Checked){
                 at_least_one_selected = true;
                 break;
@@ -161,7 +161,7 @@ bool DeviceWidget::validateSitesProjects()
         }
 
         // Projects
-        for (QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+        for (QTreeWidgetItem* item: std::as_const(m_treeProjects_items)){
             if (item->checkState(0) == Qt::Checked){
                 at_least_one_selected = true;
                 break;
@@ -344,7 +344,7 @@ void DeviceWidget::postDeviceSites()
     QJsonObject base_obj;
     QJsonArray sites;
 
-    for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeSites_items)){
         int site_id = m_treeSites_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;
@@ -367,7 +367,7 @@ void DeviceWidget::postDeviceProjects()
     QJsonObject base_obj;
     QJsonArray projects;
 
-    for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeProjects_items)){
         int project_id = m_treeProjects_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;
@@ -387,7 +387,7 @@ void DeviceWidget::postDeviceProjects()
 QJsonArray DeviceWidget::getSelectedProjectsAsJsonArray()
 {
     QJsonArray projects;
-    for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeProjects_items)){
     //for (int i=0; i<m_listProjects_items.count(); i++){
         int project_id = m_treeProjects_items.key(item);
         if (item->checkState(0) == Qt::Checked){
@@ -402,7 +402,7 @@ QJsonArray DeviceWidget::getSelectedProjectsAsJsonArray()
 QJsonArray DeviceWidget::getSelectedSitesAsJsonArray()
 {
     QJsonArray sites;
-    for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeSites_items)){
         int site_id = m_treeSites_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;
@@ -499,7 +499,7 @@ void DeviceWidget::btnSaveSites_clicked()
 
     bool has_removed = false;
 
-    for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeSites_items)){
         if (item->checkState(0) == Qt::Unchecked && item->data(0, Qt::UserRole) == Qt::Checked){
             has_removed = true;
             break;
@@ -507,7 +507,7 @@ void DeviceWidget::btnSaveSites_clicked()
     }
 
     if (!has_removed){
-        for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+        for(QTreeWidgetItem* item: std::as_const(m_treeProjects_items)){
             if (item->checkState(0) == Qt::Unchecked && item->data(0, Qt::UserRole) == Qt::Checked){
                 has_removed = true;
                 break;
@@ -598,14 +598,14 @@ void DeviceWidget::lstSites_itemChanged(QTreeWidgetItem *item, int column)
 
     updating = false;
 
-    for(QTreeWidgetItem* site: qAsConst(m_treeSites_items)){
+    for(QTreeWidgetItem* site: std::as_const(m_treeSites_items)){
         if (site->checkState(0) != site->data(0, Qt::UserRole) && site->data(0, Qt::UserRole) != Qt::PartiallyChecked){
             has_changes = true;
             break;
         }
     }
     if (!has_changes){
-        for(QTreeWidgetItem* proj: qAsConst(m_treeProjects_items)){
+        for(QTreeWidgetItem* proj: std::as_const(m_treeProjects_items)){
             if (proj->checkState(0) != proj->data(0, Qt::UserRole)){
                 has_changes = true;
                 break;
@@ -644,7 +644,7 @@ void DeviceWidget::on_tabNav_currentChanged(int index)
         // Service configuration
         if (!ui->wdgServiceConfig->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
+            layout->setContentsMargins(0,0,0,0);
             ui->wdgServiceConfig->setLayout(layout);
         }
         if (ui->wdgServiceConfig->layout()->count() == 0){

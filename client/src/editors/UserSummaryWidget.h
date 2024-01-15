@@ -10,7 +10,9 @@
 #include "TeraSessionStatus.h"
 #include "Utils.h"
 #include "ServiceConfigWidget.h"
+#ifndef OPENTERA_WEBASSEMBLY
 #include "dialogs/SessionLobbyDialog.h"
+#endif
 
 namespace Ui {
 class UserSummaryWidget;
@@ -22,9 +24,9 @@ class UserSummaryWidget : public DataEditorWidget
 
 public:
     explicit UserSummaryWidget(ComManager* comMan, const TeraData* data = nullptr, const int &id_project = -1, QWidget *parent = nullptr);
-    ~UserSummaryWidget();
+    ~UserSummaryWidget() override;
 
-    void saveData(bool signal=true);
+    void saveData(bool signal=true) override;
 
     void connectSignals();
 
@@ -34,18 +36,20 @@ private:
     QMap<int, TeraData*>            m_ids_session_types;
 
     BaseDialog*                     m_diag_editor;
+#ifndef OPENTERA_WEBASSEMBLY
     SessionLobbyDialog*             m_sessionLobby;
+#endif
 
     int m_idProject;
 
     bool    m_passwordJustGenerated;
     bool    m_currentUserPasswordChanged;
 
-    void updateControlsState();
-    void updateFieldsValue();
+    void updateControlsState() override;
+    void updateFieldsValue() override;
     void initUI();
 
-    bool validateData();
+    bool validateData() override;
 
 private slots:
     void processFormsReply(QString form_type, QString data);
@@ -58,11 +62,11 @@ private slots:
     void userFormValueHasFocus(QWidget* widget);
 
     void ws_userEvent(opentera::protobuf::UserEvent event);
-
+#ifndef OPENTERA_WEBASSEMBLY
     void sessionLobbyStartSessionRequested();
     void sessionLobbyStartSessionCancelled();
-
     void on_btnNewSession_clicked();
+#endif
 
     void on_tabNav_currentChanged(int index);
 

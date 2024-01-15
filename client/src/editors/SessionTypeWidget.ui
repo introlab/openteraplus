@@ -135,7 +135,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../resources/TeraClient.qrc">:/icons/session_type.png</pixmap>
+        <pixmap>:/icons/session_type.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -163,7 +163,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
+       <iconset>
         <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
@@ -227,7 +227,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <string>Éditer</string>
                </property>
                <property name="icon">
-                <iconset resource="../../resources/TeraClient.qrc">
+                <iconset>
                  <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
                </property>
                <property name="iconSize">
@@ -272,7 +272,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <string>Sauvegarder</string>
             </property>
             <property name="icon">
-             <iconset resource="../../resources/TeraClient.qrc">
+             <iconset>
               <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
             </property>
             <property name="iconSize">
@@ -298,7 +298,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <string>Annuler</string>
             </property>
             <property name="icon">
-             <iconset resource="../../resources/TeraClient.qrc">
+             <iconset>
               <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
             </property>
             <property name="iconSize">
@@ -316,7 +316,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      </widget>
      <widget class="QWidget" name="tabProjects">
       <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
+       <iconset>
         <normaloff>:/icons/site-icon.png</normaloff>:/icons/site-icon.png</iconset>
       </attribute>
       <attribute name="title">
@@ -330,6 +330,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
@@ -368,7 +371,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <string>Mettre à jour les sites / projets associés</string>
          </property>
          <property name="icon">
-          <iconset resource="../../resources/TeraClient.qrc">
+          <iconset>
            <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
          </property>
          <property name="iconSize">
@@ -383,7 +386,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      </widget>
      <widget class="QWidget" name="tabConfig">
       <attribute name="icon">
-       <iconset resource="../../resources/TeraClient.qrc">
+       <iconset>
         <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
       </attribute>
       <attribute name="title">
@@ -418,7 +421,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <string>Mettre à jour la configuration</string>
          </property>
          <property name="icon">
-          <iconset resource="../../resources/TeraClient.qrc">
+          <iconset>
            <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
          </property>
          <property name="iconSize">
@@ -443,8 +446,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../resources/TeraClient.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

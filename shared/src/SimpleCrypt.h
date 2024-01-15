@@ -27,6 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef SIMPLECRYPT_H
 #define SIMPLECRYPT_H
+
+#include "SharedLib.h"
 #include <QString>
 #include <QVector>
 #include <QFlags>
@@ -54,7 +56,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   SimpleCrypt is prepared for the case that the encryption and decryption
   algorithm is changed in a later version, by prepending a version identifier to the cypertext.
   */
-class SimpleCrypt
+class SHAREDLIB_EXPORT SimpleCrypt
 {
 public:
     /**

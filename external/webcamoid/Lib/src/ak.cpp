@@ -40,14 +40,15 @@ class AkPrivate
         {
             this->m_globalEngine = nullptr;
 
+            // SB: qRegisterMetaTypeStreamOperators is now useless in Qt6: https://www.qt.io/blog/whats-new-in-qmetatype-qvariant
             qRegisterMetaType<QRgb>("QRgb");
             qRegisterMetaType<QColor>("QColor");
             qRegisterMetaType<AkCaps>("AkCaps");
-            qRegisterMetaTypeStreamOperators<AkCaps>("AkCaps");
+            //qRegisterMetaTypeStreamOperators<AkCaps>("AkCaps");
             qRegisterMetaType<AkCaps::CapsType>("AkCaps::CapsType");
             qRegisterMetaType<AkCaps::CapsType>("CapsType");
             qRegisterMetaType<AkAudioCaps>("AkAudioCaps");
-            qRegisterMetaTypeStreamOperators<AkAudioCaps>("AkAudioCaps");
+            //qRegisterMetaTypeStreamOperators<AkAudioCaps>("AkAudioCaps");
             qRegisterMetaType<AkAudioCaps::SampleFormat>("AkAudioCaps::SampleFormat");
             qRegisterMetaType<AkAudioCaps::SampleFormat>("SampleFormat");
             qRegisterMetaType<AkAudioCaps::SampleType>("AkAudioCaps::SampleType");
@@ -55,14 +56,14 @@ class AkPrivate
             qRegisterMetaType<AkAudioCaps::ChannelLayout>("AkAudioCaps::ChannelLayout");
             qRegisterMetaType<AkAudioCaps::ChannelLayout>("ChannelLayout");
             qRegisterMetaType<AkVideoCaps>("AkVideoCaps");
-            qRegisterMetaTypeStreamOperators<AkVideoCaps>("AkVideoCaps");
+            //qRegisterMetaTypeStreamOperators<AkVideoCaps>("AkVideoCaps");
             qRegisterMetaType<AkVideoCaps::PixelFormat>("AkVideoCaps::PixelFormat");
             qRegisterMetaType<AkVideoCaps::PixelFormat>("PixelFormat");
             qRegisterMetaType<AkElement::ElementState>("AkElement::ElementState");
             qRegisterMetaType<AkElement::ElementState>("ElementState");
-            qRegisterMetaTypeStreamOperators<AkElement::ElementState>("AkElement::ElementState");
+            //qRegisterMetaTypeStreamOperators<AkElement::ElementState>("AkElement::ElementState");
             qRegisterMetaType<AkFrac>("AkFrac");
-            qRegisterMetaTypeStreamOperators<AkFrac>("AkFrac");
+            //qRegisterMetaTypeStreamOperators<AkFrac>("AkFrac");
             qRegisterMetaType<AkPacket>("AkPacket");
             qRegisterMetaType<AkElementPtr>("AkElementPtr");
 

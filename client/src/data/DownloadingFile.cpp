@@ -69,7 +69,7 @@ void DownloadingFile::onDownloadDataReceived()
                     abortTransfer();
                     return;
                 }*/
-                for (const QString &info: qAsConst(header_info_parts)){
+                for (const QString &info: std::as_const(header_info_parts)){
                     if (info.trimmed().startsWith("filename=")){
                         QStringList file_parts = info.split("=");
                         if (file_parts.count() == 2)

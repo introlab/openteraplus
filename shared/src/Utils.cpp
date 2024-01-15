@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <QRegularExpression>
 
 Utils::Utils(QObject *parent) : QObject(parent)
 {
@@ -16,7 +17,7 @@ QString Utils::generatePassword(const int &len)
        password.clear();
        for(int i=0; i<len; ++i)
        {
-           quint32 index = QRandomGenerator::global()->bounded(possibleCharacters.length());
+           auto index = QRandomGenerator::global()->bounded(possibleCharacters.length());
            QChar nextChar = possibleCharacters.at(index);
            password.append(nextChar);
        }
@@ -33,23 +34,24 @@ QList<Utils::PasswordValidationErrors> Utils::validatePassword(const QString &pa
         errors.append(PASSWORD_LENGTH);
     }
 
-    QRegExp validator("[A-Z]");
-    if (validator.indexIn(password) == -1){
+    QRegularExpression validator("[A-Z]");
+
+    if (!validator.match(password).hasMatch()){
         errors.append(PASSWORD_NOCAPS);
     }
 
     validator.setPattern("[a-z]");
-    if (validator.indexIn(password) == -1){
+    if (!validator.match(password).hasMatch()){
         errors.append(PASSWORD_NONOCAPS);
     }
 
     validator.setPattern("[0-9]");
-    if (validator.indexIn(password) == -1){
+    if (!validator.match(password).hasMatch()){
         errors.append(PASSWORD_NODIGITS);
     }
 
     validator.setPattern("[^A-Za-z0-9]");
-    if (validator.indexIn(password) == -1){
+    if (!validator.match(password).hasMatch()){
         errors.append(PASSWORD_NOCHAR);
     }
 
@@ -79,66 +81,14 @@ QString Utils::getMachineUniqueId()
     return machine_id;
 }
 
-QStringList Utils::getAudioDeviceNames()
-{
-    QStringList names;
-    QList<QAudioDeviceInfo> audio_devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-    foreach(QAudioDeviceInfo input, audio_devices){
-#ifdef Q_OS_LINUX
-        // On linux, since Qt use ALSA API, we must filter the returned device list...
-        if (input.deviceName().startsWith("alsa_input") || input.deviceName() == "default"){
-            QString filtered_name = input.deviceName();
-            if (input.deviceName() != "default"){
-                QStringList name_parts = filtered_name.split(".");
-                // Removes first part - usually is "alsa_input"
-                if (name_parts.count()>1)
-                    filtered_name = name_parts[1];
-
-                // Split using "_" to remove first and last part, and replace others with spaces
-                name_parts = filtered_name.split("_");
-                if (name_parts.count()>2){
-                    filtered_name = "";
-                    for (int i=1; i<name_parts.count()-1; i++){
-                        if (i>1)
-                            filtered_name += " ";
-                        filtered_name += name_parts[i];
-                    }
-                }else{
-                    // No audio name...
-                    name_parts = filtered_name.split("-");
-                    if (name_parts.count()>2){
-                        filtered_name = name_parts[1].replace("_", ":");
-                    }
-                }
-
-            }
-            names.append(filtered_name);
-        }
-#else
-        names.append(input.deviceName());
-#endif
-    }
-    return names;
-}
-
-QStringList Utils::getVideoDeviceNames()
-{
-    QStringList names;
-    QList<QCameraInfo> video_devices = QCameraInfo::availableCameras();
-    for (const QCameraInfo &camera:qAsConst(video_devices)){
-        names.append(camera.description());
-    }
-    return names;
-}
-
 void Utils::inStringUnicodeConverter(QString *str)
 {
     if (str->contains("\\u")) {
        do {
-          int idx = str->indexOf("\\u");
+          auto idx = str->indexOf("\\u");
           QString strHex = str->mid(idx, 6);
           strHex = strHex.replace("\\u", QString());
-          int nHex = strHex.toInt(0, 16);
+          auto nHex = strHex.toInt(nullptr, 16);
           str->replace(idx, 6, QChar(nHex));
        } while (str->indexOf("\\u") != -1);
     }
@@ -151,7 +101,7 @@ QString Utils::removeAccents(const QString &s) {
     QString output = "";
     for (int i = 0; i < s.length(); i++) {
         QChar c = s[i];
-        int dIndex = diacriticLetters_.indexOf(c);
+        auto dIndex = diacriticLetters_.indexOf(c);
         if (dIndex < 0) {
             output.append(c);
         } else {
@@ -217,4 +167,3 @@ QString Utils::formatDuration(const QString &duration)
     }
     return video_duration.toString("hh:mm:ss");
 }
-

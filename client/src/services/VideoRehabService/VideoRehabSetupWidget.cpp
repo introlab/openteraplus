@@ -36,6 +36,7 @@ VideoRehabSetupWidget::~VideoRehabSetupWidget()
         m_virtualCamThread->wait();
         m_virtualCamThread->deleteLater();
      }
+
 }
 
 QJsonDocument VideoRehabSetupWidget::getSetupConfig()
@@ -46,6 +47,7 @@ QJsonDocument VideoRehabSetupWidget::getSetupConfig()
 void VideoRehabSetupWidget::initUI()
 {
     ui->frameError->hide();
+    ui->widgetSetup->setComManager(m_comManager);
 
     //// Web engine setup
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
@@ -75,8 +77,8 @@ void VideoRehabSetupWidget::initUI()
     m_webEngine->setSizePolicy(sizePolicy);
     ui->wdgWebEngine->layout()->addWidget(m_webEngine);
 
-    // Wait for service configuration before setting url
-    //m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
+    // Load url - will set correct camera when service config form will be loaded
+    m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
 
     // Hide PTZ fields in setup widget
     //ui->widgetSetup->hideFields(QStringList() << "camera_ptz_type" << "camera_ptz_ip" << "camera_ptz_port" << "camera_ptz_username" << "camera_ptz_password");
@@ -186,7 +188,6 @@ void VideoRehabSetupWidget::startPTZCamera()
 
         return;
     }
-
     showError(tr("Caméra PTZ"), "VideoRehabSetupWidget::startPTZCamera", tr("Type de caméra PTZ non-supporté"), true);
 
 }
@@ -211,8 +212,9 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
     bool ptz = ui->widgetSetup->getFieldValue("camera_ptz").toBool();
     m_webPage->getSharedObject()->setPTZCapabilities(ptz, ptz, ptz);
     m_webPage->getSharedObject()->sendPTZCapabilities();
-    if (ptz)
+    if (ptz) {
         startPTZCamera();
+    }
 
     // Update video source
     QString video_src = ui->widgetSetup->getFieldValue("camera").toString();
@@ -306,7 +308,7 @@ void VideoRehabSetupWidget::processServiceConfigsReply(QList<TeraData> configs, 
             m_webPage->getSharedObject()->setCurrentCameraName(ui->widgetSetup->getFieldValue("camera").toString());
 
             // Load page
-            m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
+            //m_webEngine->setUrl(QUrl("qrc:/VideoRehabService/html/index.html"));
         }
     }
 
@@ -403,8 +405,12 @@ void VideoRehabSetupWidget::setupFormValueChanged(QWidget *wdg, QVariant value)
                 startVirtualCamera(src);
             }
         }else{
+            /*
             if (m_virtualCamThread)
+            {
                 stopVirtualCamera();
+            }
+            */
         }
     }
 
@@ -445,7 +451,6 @@ void VideoRehabSetupWidget::ptzCameraError(CameraInfo infos)
         break;
     case CameraInfo::CIE_NO_ERROR:
         // Shouldn't get here, but managed in case
-        return;
         break;
 
     }

@@ -57,7 +57,7 @@ private slots:
     void on_lstServiceConfig_itemClicked(QListWidgetItem *item);
     void on_btnSave_clicked();
     void on_btnUndo_clicked();
-    void on_cmbSpecific_currentIndexChanged(const QString &current_id);
+    void on_cmbSpecific_currentIndexChanged(const int &current_index);
 };
 
 #endif // SERVICECONFIGWIDGET_H

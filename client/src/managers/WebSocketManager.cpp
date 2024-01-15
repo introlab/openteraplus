@@ -18,7 +18,9 @@ WebSocketManager::WebSocketManager(QObject *parent) : QObject(parent)
     connect(m_webSocket, &QWebSocket::connected, this, &WebSocketManager::onSocketConnected);
     connect(m_webSocket, &QWebSocket::disconnected, this, &WebSocketManager::onSocketDisconnected);
     connect(m_webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
+#ifndef OPENTERA_WEBASSEMBLY
     connect(m_webSocket, &QWebSocket::sslErrors, this, &WebSocketManager::onSocketSslErrors);
+#endif
     connect(m_webSocket, &QWebSocket::textMessageReceived, this, &WebSocketManager::onSocketTextMessageReceived);
     connect(m_webSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketManager::onSocketBinaryMessageReceived);
 
@@ -136,6 +138,7 @@ void WebSocketManager::onSocketDisconnected()
     emit serverDisconnected();
 }
 
+#ifndef OPENTERA_WEBASSEMBLY
 void WebSocketManager::onSocketSslErrors(const QList<QSslError> &errors)
 {
     Q_UNUSED(errors)
@@ -146,6 +149,7 @@ void WebSocketManager::onSocketSslErrors(const QList<QSslError> &errors)
     qDebug() << "WebSocketManager::SSlErrors " << errors;
     m_webSocket->ignoreSslErrors();
 }
+#endif
 
 void WebSocketManager::onSocketTextMessageReceived(const QString &message)
 {
@@ -253,7 +257,6 @@ void WebSocketManager::onSocketTextMessageReceived(const QString &message)
     }else{
         LOG_ERROR("Unable to decode received protobuf message", "WebSocketManager::onSocketTextMessageReceived");
     }
-
 }
 
 void WebSocketManager::onSocketBinaryMessageReceived(const QByteArray &message)

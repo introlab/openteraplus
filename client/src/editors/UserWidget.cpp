@@ -1,12 +1,11 @@
 #include "UserWidget.h"
 #include "ui_UserWidget.h"
 
-#include <QtSerialPort/QSerialPortInfo>
-#include <QtMultimedia/QCameraInfo>
+#include <QtMultimedia/QCameraDevice>
 #include <QtMultimedia/QCamera>
 #include <QInputDialog>
 
-#include <QtMultimedia/QAudioDeviceInfo>
+#include <QtMultimedia/QAudioDevice>
 
 #include "dialogs/PasswordStrengthDialog.h"
 
@@ -160,7 +159,7 @@ void UserWidget::updateControlsState(){
             if (!has_site_admin_access){
                 // Check if we are admin in a list one site
                 QList<int> id_sites = m_userSitesRole.keys();
-                for(int id_site:qAsConst(id_sites)){
+                for(int id_site:std::as_const(id_sites)){
                     if (m_comManager->isCurrentUserSiteAdmin(id_site)){
                         has_site_admin_access = true;
                         break;
@@ -207,7 +206,7 @@ bool UserWidget::validateData(){
 
 void UserWidget::refreshUsersUserGroups()
 {
-    for(QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+    for(QListWidgetItem* item: std::as_const(m_listUserGroups_items)){
         if (std::find(m_listUserUserGroups_items.cbegin(), m_listUserUserGroups_items.cend(), item) != m_listUserUserGroups_items.cend()){
         //if (m_listUserUserGroups_items.contains(item)){
             item->setCheckState(Qt::Checked);
@@ -229,7 +228,7 @@ void UserWidget::refreshUsersUserGroups()
 QJsonArray UserWidget::getSelectedGroupsAsJsonArray()
 {
     QJsonArray user_groups;
-    for(QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+    for(QListWidgetItem* item: std::as_const(m_listUserGroups_items)){
         int user_group_id = m_listUserGroups_items.key(item);
         if (item->checkState() == Qt::Checked){
             QJsonObject data_obj;
@@ -334,6 +333,19 @@ void UserWidget::updateProjectAccess(const TeraData *project_access)
     ui->tableProjectsRoles->setItem(current_row,2,item);
 }
 
+void UserWidget::updateServiceAccess(const TeraData *service_access)
+{
+    // We assume the table is cleared beforehand and that item isn't already present.
+    int current_row = ui->tableServicesRoles->rowCount();
+    ui->tableServicesRoles->setRowCount(ui->tableServicesRoles->rowCount()+1);
+    QTableWidgetItem* item = new QTableWidgetItem(service_access->getFieldValue("service_name").toString());
+    item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE)));
+    ui->tableServicesRoles->setItem(current_row,0,item);
+    item = new QTableWidgetItem(getRoleName(service_access->getFieldValue("service_access_role_name").toString()));
+    ui->tableServicesRoles->setItem(current_row,1,item);
+
+}
+
 void UserWidget::queryUserAccess()
 {
     // Roles
@@ -344,6 +356,9 @@ void UserWidget::queryUserAccess()
     ui->tableSitesRoles->clearContents();
     ui->tableSitesRoles->setRowCount(0);
     ui->tableSitesRoles->sortItems(-1);
+    ui->tableServicesRoles->clearContents();
+    ui->tableServicesRoles->setRowCount(0);
+    ui->tableServicesRoles->sortItems(-1);
 
     // Query sites and projects roles
     if (!m_data->isNew()){
@@ -351,6 +366,9 @@ void UserWidget::queryUserAccess()
         args.addQueryItem(WEB_QUERY_ID_USER, QString::number(m_data->getId()));
 
         queryDataRequest(WEB_SITEACCESS_PATH, args);
+
+        queryDataRequest(WEB_SERVICEACCESSINFO_PATH, args);
+
         args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
         queryDataRequest(WEB_PROJECTACCESS_PATH, args);
 
@@ -362,7 +380,7 @@ bool UserWidget::validateUserGroups()
     //if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
         //for (int i=0; i<m_listUserGroups_items.count(); i++){
-        for (QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+        for (QListWidgetItem* item: std::as_const(m_listUserGroups_items)){
             if (item->checkState() == Qt::Checked){
                 at_least_one_selected = true;
                 break;
@@ -405,7 +423,7 @@ void UserWidget::processSitesAccessReply(QList<TeraData> sites)
     foreach (TeraData site, sites){
         updateSiteAccess(&site);
     }
-    ui->tableSitesRoles->resizeColumnsToContents();
+    //ui->tableSitesRoles->resizeColumnsToContents();
 }
 
 void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
@@ -413,7 +431,17 @@ void UserWidget::processProjectsAccessReply(QList<TeraData> projects)
     foreach (TeraData project, projects){
         updateProjectAccess(&project);
     }
-    ui->tableProjectsRoles->resizeColumnsToContents();
+    //ui->tableProjectsRoles->resizeColumnsToContents();
+}
+
+void UserWidget::processServicesAccessReply(QList<TeraData> services_access)
+{
+    foreach (TeraData access, services_access){
+        // Ignore "OpenTera" service
+        if (access.getFieldValue("service_key").toString() == "OpenTeraServer")
+            continue;
+        updateServiceAccess(&access);
+    }
 }
 
 void UserWidget::processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query)
@@ -502,6 +530,7 @@ void UserWidget::connectSignals()
     connect(m_comManager, &ComManager::usersReceived, this, &UserWidget::processUsersReply);
     connect(m_comManager, &ComManager::siteAccessReceived, this, &UserWidget::processSitesAccessReply);
     connect(m_comManager, &ComManager::projectAccessReceived, this, &UserWidget::processProjectsAccessReply);
+    connect(m_comManager, &ComManager::servicesAccessReceived, this, &UserWidget::processServicesAccessReply);
     connect(m_comManager, &ComManager::formReceived, this, &UserWidget::processFormsReply);
     connect(m_comManager, &ComManager::userGroupsReceived, this, &UserWidget::processUserGroupsReply);
     connect(m_comManager, &ComManager::userUserGroupsReceived, this, &UserWidget::processUserUsersGroupsReply);
@@ -527,6 +556,7 @@ void UserWidget::initUI()
 void UserWidget::on_tabMain_currentChanged(int index)
 {
     QUrlQuery args;
+    bool super_admin = m_data->getFieldValue("user_superadmin").toBool();
 
     if (!ui->tabMain->currentWidget()->isEnabled())
         return;
@@ -543,19 +573,21 @@ void UserWidget::on_tabMain_currentChanged(int index)
         //}
 
         // If user is super admin, disable groups
-        bool super_admin = m_data->getFieldValue("user_superadmin").toBool();
         ui->lblWarning->setVisible(super_admin);
         ui->frameGroups->setVisible(!super_admin);
     }
     if (current_tab == ui->tabRoles){
         queryUserAccess();
+        // If user is super admin, disable services
+        ui->lblWarning2->setVisible(super_admin);
+        ui->tableServicesRoles->setVisible(!super_admin);
     }
 
     if (current_tab == ui->tabConfig){
         // Service config
         if (!ui->wdgServiceConfig->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
+            layout->setContentsMargins(0,0,0,0);
             ui->wdgServiceConfig->setLayout(layout);
         }
         if (ui->wdgServiceConfig->layout()->count() == 0){
@@ -605,7 +637,7 @@ void UserWidget::on_btnUpdateGroups_clicked()
     QList<int> user_user_group_to_delete;
 
     //for (int i=0; i<m_listUserGroups_items.count(); i++){
-    for (QListWidgetItem* item: qAsConst(m_listUserGroups_items)){
+    for (QListWidgetItem* item: std::as_const(m_listUserGroups_items)){
         // Build json list of user and groups
         if (item->checkState()==Qt::Checked){
             QJsonObject item_obj;

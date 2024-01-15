@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QDataStream>
 #include <QDebug>
+#include <QVariant>
 
 #include "akcommons.h"
 

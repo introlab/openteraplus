@@ -310,7 +310,8 @@ AkPacket AudioStream::convert(AVFrame *iFrame)
         AkAudioCaps caps(format,
                          iChannels > 1? 2: 1,
                          iFrame->sample_rate);
-        this->m_audioConvert->setProperty("caps", caps.toString());
+        // SB: FIXME - call to setProperty is done from another thread, and thus crashing... For now, we don't care much, since we don't have audio in our stream
+        //this->m_audioConvert->setProperty("caps", caps.toString());
         this->m_audioConvert->setState(AkElement::ElementStatePlaying);
     }
 

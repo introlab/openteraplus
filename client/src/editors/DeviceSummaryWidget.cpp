@@ -9,7 +9,9 @@ DeviceSummaryWidget::DeviceSummaryWidget(ComManager *comMan, const TeraData *dat
 {
 
     m_diag_editor = nullptr;
+#ifndef OPENTERA_WEBASSEMBLY
     m_sessionLobby = nullptr;
+#endif
     m_idProject = id_project;
 
     ui->setupUi(this);
@@ -47,9 +49,10 @@ DeviceSummaryWidget::DeviceSummaryWidget(ComManager *comMan, const TeraData *dat
 DeviceSummaryWidget::~DeviceSummaryWidget()
 {
     delete ui;
-
+#ifndef OPENTERA_WEBASSEMBLY
     if (m_sessionLobby)
         m_sessionLobby->deleteLater();
+#endif
 }
 
 void DeviceSummaryWidget::connectSignals()
@@ -232,7 +235,7 @@ void DeviceSummaryWidget::ws_deviceEvent(DeviceEvent event)
     }
     updateFieldsValue();
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void DeviceSummaryWidget::sessionLobbyStartSessionRequested()
 {
     int id_session_type = ui->cmbSessionType->currentData().toInt();
@@ -281,7 +284,7 @@ void DeviceSummaryWidget::on_btnNewSession_clicked()
     // Show Session Lobby
     m_sessionLobby->exec();
 }
-
+#endif
 void DeviceSummaryWidget::on_tabNav_currentChanged(int index)
 {
     Q_UNUSED(index)

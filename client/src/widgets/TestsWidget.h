@@ -81,8 +81,9 @@ private:
     void setLoading(const bool &loading, const QString &msg = QString(), const bool &hide_ui = false);
 
     void showTestSummary(const QString& test_uuid);
-
     void updateTestsCountLabel();
+
+    void downloadTests(const QList<TeraData*> tests);
 
 
 private slots:
@@ -90,14 +91,12 @@ private slots:
     void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
 
     void comDeleteDataReply(QString path, int id);
-
     void nextMessageWasShown(Message current_message);
-
     void on_btnDelete_clicked();
-
     void on_tableTests_itemSelectionChanged();
 
     void on_btnDownloadAll_clicked();
+    void on_btnDownload_clicked();
 
 signals:
     void testCountChanged(int new_count);

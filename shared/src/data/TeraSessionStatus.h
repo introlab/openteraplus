@@ -2,8 +2,9 @@
 #define TERASESSIONSTATUS_H
 
 #include <QObject>
+#include "SharedLib.h"
 
-class TeraSessionStatus : public QObject
+class SHAREDLIB_EXPORT TeraSessionStatus : public QObject
 {
     Q_OBJECT
 public:

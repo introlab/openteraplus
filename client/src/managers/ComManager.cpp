@@ -574,7 +574,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
     if (data_list.isArray()){
         const QJsonArray data_array = data_list.array();
-        for (const QJsonValue &data:data_array){
+        for (const QJsonValue data:data_array){
             TeraData item_data(items_type, data);
 
             // Check if the currently connected user was updated and not requesting a list (limited information)
@@ -696,6 +696,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_SERVICE_CONFIG:
         emit servicesConfigReceived(items, reply_query);
+        break;
+    case TERADATA_SERVICE_ROLE:
+        emit servicesRolesReceived(items, reply_query);
         break;
     case TERADATA_STATS:
         if (items.count() > 0)

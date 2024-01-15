@@ -2,7 +2,9 @@
 #include "ui_TeraForm.h"
 
 #include "Logger.h"
-#include "DataEditorWidget.h"
+#include "GlobalMessageBox.h"
+#include "libs/AudioVideoUtils.h"
+
 #include <QDebug>
 #include <QStyledItemDelegate>
 
@@ -13,17 +15,9 @@ TeraForm::TeraForm(QWidget *parent, ComManager *com_man) :
     ui->setupUi(this);
 
     m_mainWidget = ui->toolboxMain;
-    m_highlightConditionals = true;
-
-    // TODO: Find out why the global stylesheet isn't correctly used by TeraForm
-    /*QFile file(":/stylesheet.qss");
-    file.open(QFile::ReadOnly);
-    QString stylesheet = QLatin1String(file.readAll());
-    setStyleSheet(stylesheet);*/
+    m_highlightConditionals = false;
 
     // Automatically sets comManager
-    /*DataEditorWidget* parent_editor = dynamic_cast<DataEditorWidget*>(parent);
-    if (parent_editor){*/
     setComManager(com_man);
     //}
 }
@@ -48,8 +42,10 @@ void TeraForm::buildUiFromStructure(const QString &structure)
 
     while (ui->toolboxMain->count() > 0){
         ui->toolboxMain->widget(0)->deleteLater();
-        ui->toolboxMain->removeItem(0);
+        //ui->toolboxMain->removeItem(0);
+        ui->toolboxMain->removeTab(0);
     }
+    ui->toolboxMain->show();
 
 
     QJsonObject struct_object = struct_info.object();
@@ -63,18 +59,19 @@ void TeraForm::buildUiFromStructure(const QString &structure)
         if (struct_data.count() > 1){
             int page_index = 0;
             m_mainWidget = ui->toolboxMain;
-            for (const QVariant &section:qAsConst(struct_data)){
-                if (section.canConvert(QMetaType::QVariantHash)){
+            for (const QVariant &section:std::as_const(struct_data)){
+                if (section.canConvert<QVariantHash>()){
                     QVariantHash section_data = section.toHash();
                     //if (page_index>0){
                         QWidget* new_page = new QWidget(ui->toolboxMain);
                         new_page->setObjectName("pageSection" + QString::number(page_index+1));
                         new_page->setStyleSheet("QWidget#" + new_page->objectName() + "{border: 1px solid white; border-radius: 5px;}");
-                        ui->toolboxMain->addItem(new_page,"");
+                        //ui->toolboxMain->addItem(new_page,"");
+                        ui->toolboxMain->addTab(new_page, section_data["label"].toString());
                     //}
-                    ui->toolboxMain->setItemText(page_index, section_data["label"].toString());
+                    //ui->toolboxMain->setItemText(page_index, section_data["label"].toString());
                     if (section_data.contains("items")){
-                        if (section_data["items"].canConvert(QMetaType::QVariantList)){
+                        if (section_data["items"].canConvert<QVariantList>()){
                             buildFormFromStructure(ui->toolboxMain->widget(page_index), section_data["items"].toList());
                         }
                     }
@@ -85,11 +82,12 @@ void TeraForm::buildUiFromStructure(const QString &structure)
             if (struct_data.count() == 1){
                 // Only one section - hides the header and don't use QToolBox
                 ui->mainLayout->removeWidget(ui->toolboxMain);
+                ui->toolboxMain->hide();
                 m_mainWidget = new QFrame(this);
                 ui->mainLayout->addWidget(m_mainWidget);
                 QVariantHash section_data = struct_data.first().toHash();
                 if (section_data.contains("items")){
-                    if (section_data["items"].canConvert(QMetaType::QVariantList)){
+                    if (section_data["items"].canConvert<QVariantList>()){
                         buildFormFromStructure(m_mainWidget, section_data["items"].toList());
                     }
                 }
@@ -116,7 +114,7 @@ void TeraForm::fillFormFromData(const QJsonObject &data)
     resetFormValues();
 
     // Set initial values for missing fields
-    for (QWidget* widget:qAsConst(m_widgets)){
+    for (QWidget* widget:std::as_const(m_widgets)){
         QString field = m_widgets.key(widget);
         if (!m_initialValues.contains(field)){
             QVariant value;
@@ -150,10 +148,17 @@ void TeraForm::fillFormFromData(const QString &structure)
 
 }
 
+void TeraForm::setSectionsPosition(const QTabWidget::TabPosition &position)
+{
+    if (dynamic_cast<QTabWidget*>(ui->toolboxMain)){
+        ui->toolboxMain->setTabPosition(position);
+    }
+}
+
 bool TeraForm::validateFormData(bool include_hidden)
 {
     bool rval = true;
-    for (QWidget* item:qAsConst(m_widgets)){
+    for (QWidget* item:std::as_const(m_widgets)){
        rval &= validateWidget(item, include_hidden);
     }
     return rval;
@@ -162,7 +167,7 @@ bool TeraForm::validateFormData(bool include_hidden)
 QStringList TeraForm::getInvalidFormDataLabels(bool include_hidden)
 {
     QStringList rval;
-    for (QWidget* item:qAsConst(m_widgets)){
+    for (QWidget* item:std::as_const(m_widgets)){
         if (!validateWidget(item, include_hidden)){
             rval.append(item->property("label").toString());
         }
@@ -226,7 +231,7 @@ bool TeraForm::getFieldDirty(QWidget *widget)
         }
         QVariant value, id;
         getWidgetValues(widget, &id, &value);
-        if (!id.isNull())
+        if (!id.isNull() && id.isValid())
             value = id;
 
         if (dynamic_cast<QDateTimeEdit*>(widget)){
@@ -255,7 +260,7 @@ void TeraForm::hideField(const QString &field)
         // Disable condition
         if (widget->property("condition").isValid() && !hasHookCondition(widget)){
             widget->setProperty("_condition", widget->property("condition"));
-            widget->setProperty("condition", QVariant::Invalid);
+            widget->setProperty("condition", QVariant());
         }
     }
 }
@@ -268,7 +273,7 @@ void TeraForm::showField(const QString &field)
         // Enable condition
         if (widget->property("_condition").isValid()){
             widget->setProperty("condition", widget->property("_condition"));
-            widget->setProperty("_condition", QVariant::Invalid);
+            widget->setProperty("_condition", QVariant());
         }
         checkConditions(widget);
     }
@@ -313,7 +318,7 @@ void TeraForm::setFieldsEnabled(const QStringList &fields, const bool &enabled)
 bool TeraForm::isDirty()
 {
     bool dirty = false;
-    for(QWidget* wdg: qAsConst(m_widgets)){
+    for(QWidget* wdg: std::as_const(m_widgets)){
         if (getFieldDirty(wdg)){
             dirty = true;
             break;
@@ -336,11 +341,11 @@ QJsonDocument TeraForm::getFormDataJson(bool include_unmodified_data)
     QJsonObject data_obj;
     QJsonObject base_obj;
 
-    for(QWidget* wdg:qAsConst(m_widgets)){
+    for(QWidget* wdg:std::as_const(m_widgets)){
         QString field = m_widgets.key(wdg);
         QVariant value, id;
         getWidgetValues(wdg, &id, &value);
-        if (!id.isNull())
+        if (!id.isNull() && id.isValid())
             value = id;
         // Include only modified fields or ids
         if ((!include_unmodified_data && getFieldDirty(field))
@@ -365,11 +370,11 @@ QJsonDocument TeraForm::getFormDataJson(bool include_unmodified_data)
 TeraData* TeraForm::getFormDataObject(const TeraDataTypes data_type)
 {
     TeraData* rval = new TeraData(data_type);
-    for(QWidget* wdg:qAsConst(m_widgets)){
+    for(QWidget* wdg:std::as_const(m_widgets)){
         QString field = m_widgets.key(wdg);
         QVariant value, id;
         if (getWidgetValues(wdg, &id, &value)){
-            if (!id.isNull())
+            if (!id.isNull() && id.isValid())
                 value = id;
             rval->setFieldValue(field, value);
         }
@@ -435,12 +440,12 @@ bool TeraForm::formHasStructure()
 void TeraForm::resetFormValues()
 {
     QStringList keys = m_initialValues.keys();
-    for (const QString& field:qAsConst(keys)){
+    for (const QString& field:std::as_const(keys)){
         if (m_widgets.contains(field)){
             setWidgetValue(m_widgets[field], m_initialValues[field]);
             checkConditions(m_widgets[field]);
         } else{
-           LOG_WARNING("No widget for field: " + field, "TeraForm::resetFormValues");
+           //LOG_WARNING("No widget for field: " + field, "TeraForm::resetFormValues");
         }
     }
 
@@ -458,27 +463,24 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
         layout = new QFormLayout(page);
         //layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+        //layout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
+        layout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
+        layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         layout->setVerticalSpacing(3);
+
     }else{
         layout = static_cast<QFormLayout*>(page->layout());
     }
 
     for (const QVariant &item:structure){
-        if (item.canConvert(QMetaType::QVariantHash)){
+        if (item.canConvert<QVariantHash>()){
             QVariantHash item_data = item.toHash();
             QString item_id = item_data["id"].toString();
             QWidget* item_widget = nullptr;
             QLabel* item_label = new QLabel(item_data["label"].toString());
             item_label->setAlignment(Qt::AlignVCenter);
-            item_label->setStyleSheet("QLabel{min-height: 25px;}");
-
-            /*QFrame* item_frame = new QFrame();
-            QHBoxLayout* item_frame_layout = new QHBoxLayout();
-            item_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-            item_frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-            item_frame_layout->addWidget(item_label);
-            item_frame->setLayout(item_frame_layout);*/
-
+            item_label->setStyleSheet("QLabel{color: #b6ddf8;}");
+            //item_label->setStyleSheet("QLabel{min-height: 25px;}");
 
             // Build widget according to item type
             QString item_type = item_data["type"].toString().toLower();
@@ -514,6 +516,9 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
             }
             else if (item_type == "label"){
                 item_widget = createLabelWidget(item_data);
+            }
+            else if (item_type == "longlabel"){
+                item_widget = createLongLabelWidget(item_data);
             }
             else if (item_type == "color"){
                 item_widget = createColorWidget(item_data);
@@ -580,6 +585,7 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
 
     // Set layout alignement
     layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    layout->update();
     page->setLayout(layout);
 
     // Set default values
@@ -588,12 +594,13 @@ void TeraForm::buildFormFromStructure(QWidget *page, const QVariantList &structu
     validateFormData(true);
 
     page->setDisabled(m_disabled);
+    updateRequiredWidgetsLabel();
 
 }
 
 void TeraForm::setDefaultValues()
 {
-    for (QWidget* item:qAsConst(m_widgets)){
+    for (QWidget* item:std::as_const(m_widgets)){
         if (QComboBox* combo = dynamic_cast<QComboBox*>(item)){
             combo->setCurrentIndex(0);
         }
@@ -616,7 +623,7 @@ QWidget *TeraForm::createVideoInputsWidget(const QVariantHash &structure)
         //item_combo->addItem(camera.description(), camera.deviceName());
         item_combo->addItem(camera.description(), camera.description());
     }*/
-    for (const QString &camera:qAsConst(m_videoInputs)){
+    for (const QString &camera:std::as_const(m_videoInputs)){
         item_combo->addItem(camera, camera);
     }
 
@@ -641,7 +648,7 @@ QWidget *TeraForm::createAudioInputsWidget(const QVariantHash &structure)
     /*for (QAudioDeviceInfo input:m_audioInputs){
         item_combo->addItem(input.deviceName(), input.deviceName());
     }*/
-    for (const QString &input:qAsConst(m_audioInputs)){
+    for (const QString &input:std::as_const(m_audioInputs)){
         item_combo->addItem(input, input);
     }
 
@@ -660,10 +667,10 @@ QWidget *TeraForm::createArrayWidget(const QVariantHash &structure)
     item_combo->addItem("", "");
 
     if (structure.contains("values")){
-        if (structure["values"].canConvert(QMetaType::QVariantList)){
+        if (structure["values"].canConvert<QVariantList>()){
             QVariantList list = structure["values"].toList();
-            for (const QVariant &value:qAsConst(list)){
-                if (value.canConvert(QMetaType::QVariantHash)){
+            for (const QVariant &value:std::as_const(list)){
+                if (value.canConvert<QVariantHash>()){
                     QVariantHash item_data = value.toHash();
                     item_combo->addItem(item_data["value"].toString(), item_data["id"].toString());
                 }
@@ -745,10 +752,25 @@ QWidget *TeraForm::createLabelWidget(const QVariantHash &structure)
     QLabel* item_label = new QLabel();
 
     item_label->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+    //item_label->setWordWrap(true);
 
     //item_label->setHidden(is_hidden);
 
     return item_label;
+}
+
+QWidget *TeraForm::createLongLabelWidget(const QVariantHash &structure)
+{
+    QPushButton* item_button = new QPushButton();
+    item_button->setText(tr("Afficher"));
+    item_button->setIcon(QIcon(":/icons/view_on.png"));
+    item_button->setCursor(Qt::PointingHandCursor);
+
+    // Connect signal
+    connect(item_button, &QPushButton::clicked, this, &TeraForm::longLabelButtonClicked);
+
+    return item_button;
+
 }
 
 QWidget *TeraForm::createListWidget(const QVariantHash &structure)
@@ -766,6 +788,10 @@ QWidget *TeraForm::createLongTextWidget(const QVariantHash &structure)
 {
     Q_UNUSED(structure)
     QTextEdit* item_text = new QTextEdit();
+
+    /*QFontMetrics metrics(item_text->font());
+    int row_height = metrics.lineSpacing();
+    item_text->setFixedHeight(4.5 * row_height);*/
 
     //item_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 
@@ -823,17 +849,17 @@ QWidget *TeraForm::createDurationWidget(const QVariantHash &structure)
 
 void TeraForm::loadAudioInputs()
 {
-    m_audioInputs = Utils::getAudioDeviceNames();// QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    m_audioInputs = AudioVideoUtils::getAudioDeviceNames();// QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
 }
 
 void TeraForm::loadVideoInputs()
 {
-    m_videoInputs = Utils::getVideoDeviceNames(); //QCameraInfo::availableCameras();
+    m_videoInputs = AudioVideoUtils::getVideoDeviceNames(); //QCameraInfo::availableCameras();
 }
 
 void TeraForm::checkConditions(QWidget *item_triggering)
 {
-    for (QWidget* item:qAsConst(m_widgets)){
+    for (QWidget* item:std::as_const(m_widgets)){
         if (!item)
             continue;
         if (item == item_triggering)
@@ -846,7 +872,7 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
 {
     if (item->property("condition").isValid()){
         // Item has a condition
-        if (item->property("condition").canConvert(QMetaType::QVariantHash)){
+        if (item->property("condition").canConvert<QVariantHash>()){
             QVariantHash condition = item->property("condition").toHash();
             QString check_id = condition["item"].toString();
             if (!check_id.isNull()){
@@ -885,8 +911,9 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
                         }
                     }
                     if (op.toUpper() == "NOT NULL"){
-                        if (!sender_index.isNull() || !sender_value.isNull())
+                        if ((!sender_index.isValid() && !sender_value.isValid()) || (!sender_value.isValid() || (sender_value.typeId() == QMetaType::QString && !sender_value.toString().isEmpty()))){
                             condition_met = true;
+                        }
                     }
                     if (op.toUpper() == "CONTAINS"){
                         if (sender_index == value || sender_value.toString().contains(value.toString())){
@@ -898,7 +925,7 @@ void TeraForm::checkConditionsForItem(QWidget *item, QWidget *item_triggering)
                     setWidgetVisibility(item, check_item, condition_met);
 
                     // We have a hook requesting data for that specific widget...
-                    if (!hook.isNull()){
+                    if (!hook.isNull() || hook.isValid()){
                         if (item_triggering == check_item){
                             if (sender_index.toString() != ""){
                                 if (m_comManager){
@@ -931,7 +958,7 @@ bool TeraForm::hasHookCondition(QWidget *item)
     // Check if any item a hook condition on it
     if (item->property("condition").isValid()){
         // Item has a condition
-        if (item->property("condition").canConvert(QMetaType::QVariantHash)){
+        if (item->property("condition").canConvert<QVariantHash>()){
             QVariantHash condition = item->property("condition").toHash();
             if (condition.contains("hook"))
                 return true;
@@ -1036,6 +1063,9 @@ bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
         if (btn->property("color").isValid()){
             *value = btn->property("color").toString();
         }
+        if (btn->property("display_text").isValid()){
+            *value = btn->property("display_text").toString();
+        }
     }
 
     if (QTimeEdit* te = dynamic_cast<QTimeEdit*>(widget)){
@@ -1057,7 +1087,7 @@ bool TeraForm::getWidgetValues(QWidget* widget, QVariant *id, QVariant *value)
     }
 
 
-    if (value->canConvert(QMetaType::QString)){
+    if (value->canConvert<QString>()){
         bool ok;
         QString string_val = value->toString();
         string_val.toInt(&ok);
@@ -1087,7 +1117,7 @@ QVariant TeraForm::getWidgetValue(QWidget *widget)
 
     getWidgetValues(widget, &id, &value);
 
-    if (!id.isNull())
+    if (!id.isNull() || id.isValid())
         value = id;
 
     return value;
@@ -1108,7 +1138,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
                 combo->setCurrentIndex(index);
             }else{
                 // Check if we have a number, if so, suppose it is the index
-                if (value.canConvert(QMetaType::Int)){
+                if (value.canConvert<int>()){
                     index = value.toInt();
                     if (index>=0 && index+1<combo->count()){
                         combo->setCurrentIndex(index+1);
@@ -1127,7 +1157,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QTextEdit* text = dynamic_cast<QTextEdit*>(widget)){
-        if (value.canConvert(QMetaType::QVariantMap) || value.canConvert(QMetaType::QVariantHash)){
+        if (value.canConvert<QVariantMap>() || value.canConvert<QVariantHash>()){
             QVariantHash data = value.toHash();
             QJsonDocument doc;
             doc.setObject(QJsonObject::fromVariantHash(data));
@@ -1158,6 +1188,9 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
             btn->setProperty("color", value.toString());
             btn->setStyleSheet(QString("background-color: " + value.toString() + ";min-width: 32px;"));
             return;
+        }else{
+            btn->setProperty("display_text", value.toString());
+            return;
         }
 
     }
@@ -1174,7 +1207,7 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
     }
 
     if (QDateTimeEdit* dt = dynamic_cast<QDateTimeEdit*>(widget)){
-        if (value.canConvert(QVariant::String)){
+        if (value.canConvert<QString>()){
             if (value.toString().isEmpty()){
                 widget->hide();
                 return;
@@ -1182,7 +1215,6 @@ void TeraForm::setWidgetValue(QWidget *widget, const QVariant &value)
         }
 
         QDateTime time_value = value.toDateTime().toLocalTime();
-
         if (!time_value.isValid()){
             unsigned int time_s = value.toUInt();
             // Consider we have a UNIX timestamp
@@ -1209,12 +1241,13 @@ void TeraForm::setWidgetRequired(QWidget *item_widget, QLabel *item_label, const
         return;
 
     item_widget->setProperty("required", required);
-    if (required){
+    item_label->setProperty("required", required);
+    item_label->setProperty("label", item_label->text());
+    /*if (required){
         item_label->setText("<font color=red>*</font> " + item_label->text());
     }else{
-
         item_label->setText("  " + item_label->text());
-    }
+    }*/
 }
 
 void TeraForm::updateWidgetChoices(QWidget *widget, const QList<TeraData> values)
@@ -1258,7 +1291,7 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
                 QVariant id, value;
                 getWidgetValues(widget, &id, &value);
                 //qDebug() << widget->metaObject()->className() << " - " << m_widgets.key(widget) << " - " << value;
-                if (value.isNull() || value.toInt()==-1 || value.toString().isEmpty()){
+                if (value.isNull() || !value.isValid() || value.toInt()==-1 || value.toString().isEmpty()){
                     rval = false;
                 }
             }
@@ -1281,6 +1314,25 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
 qreal TeraForm::doLinearInterpolation(const qreal &p1, const qreal &p2, const qreal &value)
 {
     return (p1 + (p2-p1)*value);
+}
+
+void TeraForm::updateRequiredWidgetsLabel()
+{
+    for (QLabel* label: m_widgetsLabels){
+        if (m_disabled){
+            if (label->property("label").isValid()){
+                label->setText(label->property("label").toString());
+            }
+        }else{
+            for (QLabel* label: m_widgetsLabels){
+                if (label->property("required").toBool()){
+                    label->setText("<font color=red>*</font> " + label->property("label").toString());
+                }else{
+                    label->setText("  " + label->property("label").toString());
+                }
+            }
+        }
+    }
 }
 
 bool TeraForm::eventFilter(QObject *object, QEvent *event)
@@ -1344,6 +1396,21 @@ void TeraForm::colorWidgetClicked()
     }
 }
 
+void TeraForm::longLabelButtonClicked()
+{
+    QObject* sender = QObject::sender();
+    if (!sender)
+        return;
+
+    QPushButton* sender_widget = dynamic_cast<QPushButton*>(sender);
+    QString text = sender_widget->property("display_text").toString();
+
+    if (!text.isEmpty()){
+        GlobalMessageBox msgbox(this);
+        msgbox.showInfo(m_widgetsLabels.value(sender_widget)->text(), text);
+    }
+}
+
 void TeraForm::hookReplyReceived(TeraDataTypes data_type, QList<TeraData> datas)
 {
     if (m_widgetsHookRequests.isEmpty())
@@ -1376,8 +1443,12 @@ void TeraForm::setDisabled(bool disable)
             m_mainWidget->setDisabled(disable);
     }
     m_disabled = disable;
-    //QWidget::setDisabled(disable);
 
+    // Hide "required" labels indicators
+    updateRequiredWidgetsLabel();
+
+    //QLabel* widget_label = m_widgetsLabels[widget];
+    //QWidget::setDisabled(disable);
 
 }
 
@@ -1394,4 +1465,6 @@ void TeraForm::setEnabled(bool enable)
     }
     m_disabled = !enable;
     //QWidget::setEnabled(enable);
+    // Show "required" labels indicators
+    updateRequiredWidgetsLabel();
 }

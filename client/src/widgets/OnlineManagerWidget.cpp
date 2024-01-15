@@ -124,9 +124,10 @@ void OnlineManagerWidget::refreshOnlines()
 
     QUrlQuery args;
     m_comManager->doGet(WEB_ONLINEDEVICEINFO_PATH, args);
-    m_comManager->doGet(WEB_ONLINEPARTICIPANTINFO_PATH, args);
     m_comManager->doGet(WEB_ONLINEUSERINFO_PATH, args);
-
+    args.addQueryItem(WEB_QUERY_WITH_PROJECTS, "1");
+    args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
+    m_comManager->doGet(WEB_ONLINEPARTICIPANTINFO_PATH, args);
 }
 
 void OnlineManagerWidget::updateCounts()
@@ -190,9 +191,27 @@ void OnlineManagerWidget::updateOnlineParticipant(const TeraData *online_partici
         if (online_participant->isOnline()/* || online_participant.isBusy()*/){ // Not online and not busy = don't need to add!
             participant_item = new QTreeWidgetItem(m_baseParticipants);
             participant_item->setIcon(0, QIcon(online_participant->getIconStateFilename()));
-            participant_item->setText(0, online_participant->getName());
+            QString name = online_participant->getName();
+            QString project;
+            if (online_participant->hasFieldName("project_name")){
+                project = online_participant->getFieldValue("project_name").toString();
+            }
+            QString site;
+            if (online_participant->hasFieldName("site_name")){
+                site = online_participant->getFieldValue("site_name").toString();
+            }
+            if (!project.isEmpty()){
+                name += " (" + project + ")";
+            }
+            participant_item->setText(0, name);
 #ifdef QT_DEBUG
-            participant_item->setToolTip(0, uuid);
+            QString tooltip = uuid;
+            if (!site.isEmpty() && !project.isEmpty())
+                tooltip += "\n" + site + "\n" + project;
+            participant_item->setToolTip(0, tooltip);
+#else
+            if (!site.isEmpty() && !project.isEmpty())
+                participant_item->setToolTip(0, site + "\n" + project);
 #endif
             m_onlineParticipants[uuid] = participant_item;
         }
@@ -265,11 +284,13 @@ void OnlineManagerWidget::createOnlineUser(const QString &uuid, const QString &n
     m_onlineUsersData[uuid] = new_data;
 }
 
-void OnlineManagerWidget::createOnlineParticipant(const QString& uuid, const QString& name)
+void OnlineManagerWidget::createOnlineParticipant(const QString& uuid, const QString& name, const QString &site, const QString &project)
 {
     TeraData new_data(TERADATA_ONLINE_PARTICIPANT);
     new_data.setName(name);
     new_data.setUuid(uuid);
+    new_data.setFieldValue("site_name", site);
+    new_data.setFieldValue("project_name", project);
     m_onlineParticipantsData[uuid] = new_data;
 }
 
@@ -320,7 +341,7 @@ void OnlineManagerWidget::ws_participantEvent(ParticipantEvent event)
         return;*/
 
     if (!m_onlineParticipantsData.contains(uuid)){
-       createOnlineParticipant(uuid, QString::fromStdString(event.participant_name()));
+        createOnlineParticipant(uuid, QString::fromStdString(event.participant_name()), QString::fromStdString(event.participant_site_name()), QString::fromStdString(event.participant_project_name()));
     }
     TeraData* participant_data = &m_onlineParticipantsData[uuid];
 
@@ -397,7 +418,13 @@ void OnlineManagerWidget::processOnlineParticipants(QList<TeraData> participants
 {
     foreach(TeraData online_participant, participants){
         if (!m_onlineParticipantsData.contains(online_participant.getUuid())){
-           createOnlineParticipant(online_participant.getUuid(), online_participant.getName());
+            QString project;
+            if (online_participant.hasFieldName("project_name"))
+                project = online_participant.getFieldValue("project_name").toString();
+            QString site;
+            if (online_participant.hasFieldName("site_name"))
+                site = online_participant.getFieldValue("site_name").toString();
+           createOnlineParticipant(online_participant.getUuid(), online_participant.getName(), site, project);
         }
         TeraData* part_data = &m_onlineParticipantsData[online_participant.getUuid()];
         part_data->setOnline(online_participant.isOnline());

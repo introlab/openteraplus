@@ -109,7 +109,7 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
     // If we have extra fields to display, append them
     QString extra_field = "";
     if (!m_extraDisplayFields.isEmpty() && !m_extraInfos.contains(data->getId())){
-        for (QString field:qAsConst(m_extraDisplayFields)){
+        for (QString field:std::as_const(m_extraDisplayFields)){
             QStringList subfields = field.split(".");
             QString subfield;
             if (subfields.count() > 1){
@@ -121,22 +121,26 @@ void DataListWidget::updateDataInList(TeraData* data, bool select_item){
                     extra_field += ", ";
                 QVariant field_value = data->getFieldValue(field);
 
-                if (field_value.canConvert(QMetaType::QVariantList)){
-                    QVariantList field_values = field_value.toList();
-                    QString merged_list;
-                    for (QVariant field_value:qAsConst(field_values)){
-                        if (!merged_list.isEmpty())
-                            merged_list += ", ";
-                        // Search for subfield?
-                        if (field_value.canConvert(QMetaType::QVariantMap)){
-                            QVariantMap field_map = field_value.toMap();
-                            field_value = field_map[subfield];
-                        }
-                        merged_list += field_value.toString();
-                    }
-                    extra_field += merged_list;
+                if (field_value.typeId() == QMetaType::QString){
+                     extra_field += field_value.toString();
                 }else{
-                    extra_field += data->getFieldValue(field).toString();
+                    if (field_value.canConvert<QVariantList>()){
+                        QVariantList field_values = field_value.toList();
+                        QString merged_list;
+                        for (QVariant field_value:std::as_const(field_values)){
+                            if (!merged_list.isEmpty())
+                                merged_list += ", ";
+                            // Search for subfield?
+                            if (field_value.canConvert<QVariantMap>()){
+                                QVariantMap field_map = field_value.toMap();
+                                field_value = field_map[subfield];
+                            }
+                            merged_list += field_value.toString();
+                        }
+                        extra_field += merged_list;
+                    }else{
+                        extra_field += field_value.toString();
+                    }
                 }
             }
         }
@@ -224,7 +228,7 @@ void DataListWidget::showEditor(TeraData *data)
             m_editor = new UserWidget(m_comManager, data);
         break;
         case TERADATA_SITE:
-            m_editor = new SiteWidget(m_comManager, data);
+            m_editor = new SiteWidget(m_comManager, data, true);
         break;
         case TERADATA_DEVICE:
             m_editor = new DeviceWidget(m_comManager, data);
@@ -341,7 +345,7 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
 
     // Less simple case - the pointers are not the same, but we might be referencing an object already present.
     if (!data->isNew()){
-        for (QListWidgetItem* item: qAsConst(m_datamap)){
+        for (QListWidgetItem* item: std::as_const(m_datamap)){
             TeraData* current_data = m_datamap.key(item);
         /*}
         for (TeraData* current_data:m_datamap.keys()){*/
@@ -352,7 +356,7 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
 
         // Not found - try to find an item which is new but with the same name
         //for (TeraData* current_data:m_datamap.keys()){
-        for (QListWidgetItem* item: qAsConst(m_datamap)){
+        for (QListWidgetItem* item: std::as_const(m_datamap)){
             TeraData* current_data = m_datamap.key(item);
             if (current_data->isNew() && current_data->getName() == data->getName()){
                 m_newdata=false;
@@ -362,7 +366,7 @@ QListWidgetItem *DataListWidget::getItemForData(TeraData *data)
     }else{
         // We have a new item - try and match.
         //for (TeraData* current_data:m_datamap.keys()){
-        for (QListWidgetItem* item: qAsConst(m_datamap)){
+        for (QListWidgetItem* item: std::as_const(m_datamap)){
             TeraData* current_data = m_datamap.key(item);
             if (current_data->isNew()){
                 return m_datamap[current_data];
@@ -379,7 +383,7 @@ void DataListWidget::clearDataList(){
     ui->lstData->clear();
 
     //for (TeraData* data:m_datamap.keys()){
-    for (QListWidgetItem* item: qAsConst(m_datamap)){
+    for (QListWidgetItem* item: std::as_const(m_datamap)){
         TeraData* data = m_datamap.key(item);
         delete data;
     }
@@ -407,7 +411,7 @@ void DataListWidget::deleteDataReply(QString path, int id)
 
     if (path == TeraData::getPathForDataType(m_dataType)){
         // An item that we are managing got deleted
-        for (QListWidgetItem* item: qAsConst(m_datamap)){
+        for (QListWidgetItem* item: std::as_const(m_datamap)){
             TeraData* data = m_datamap.key(item);
         //for (TeraData* data:m_datamap.keys()){
             if (data->getId() == id){
@@ -464,7 +468,7 @@ void DataListWidget::editor_dataChanged()
 void DataListWidget::searchChanged(QString new_search){
     Q_UNUSED(new_search)
     // Check if search field is empty
-    if (ui->txtSearch->text().count()==0){
+    if (ui->txtSearch->text().size()==0){
         setSearching(false);
         // Display back all items
         for (int i=0; i<ui->lstData->count();i++){

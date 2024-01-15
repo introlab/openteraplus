@@ -17,10 +17,8 @@
  * Web-Site: http://webcamoid.github.io/
  */
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QStringList>
-#include <QVariant>
-
 #include "akcaps.h"
 
 class AkCapsPrivate
@@ -140,8 +138,8 @@ AkCaps &AkCaps::fromMap(const QVariantMap &caps)
 
     for (const QString &key: caps.keys())
         if (key == "mimeType") {
-            this->d->m_isValid = QRegExp("\\s*[a-z]+/\\w+(?:(?:-|\\+|\\.)\\w+)*\\s*")
-                                 .exactMatch(caps[key].toString());
+            this->d->m_isValid = QRegularExpression("\\s*[a-z]+/\\w+(?:(?:-|\\+|\\.)\\w+)*\\s*")
+                                 .match(caps[key].toString()).hasMatch();
             this->d->m_mimeType = caps[key].toString().trimmed();
         } else
             this->setProperty(key.trimmed().toStdString().c_str(), caps[key]);
@@ -151,9 +149,9 @@ AkCaps &AkCaps::fromMap(const QVariantMap &caps)
 
 AkCaps &AkCaps::fromString(const QString &caps)
 {
-    this->d->m_isValid = QRegExp("\\s*[a-z]+/\\w+(?:(?:-|\\+|\\.)\\w+)*"
+    this->d->m_isValid = QRegularExpression("\\s*[a-z]+/\\w+(?:(?:-|\\+|\\.)\\w+)*"
                                  "(?:\\s*,\\s*[a-zA-Z_]\\w*\\s*="
-                                 "\\s*[^,=]+)*\\s*").exactMatch(caps);
+                                 "\\s*[^,=]+)*\\s*").match(caps).hasMatch();
 
     QList<QByteArray> properties = this->dynamicPropertyNames();
 
@@ -163,11 +161,11 @@ AkCaps &AkCaps::fromString(const QString &caps)
     QStringList capsChunks;
 
     if (this->d->m_isValid)
-        capsChunks = caps.split(QRegExp("\\s*,\\s*"),
+        capsChunks = caps.split(QRegularExpression("\\s*,\\s*"),
                                       Qt::SkipEmptyParts);
 
     for (int i = 1; i < capsChunks.length(); i++) {
-        QStringList pair = capsChunks[i].split(QRegExp("\\s*=\\s*"),
+        QStringList pair = capsChunks[i].split(QRegularExpression("\\s*=\\s*"),
                                                Qt::SkipEmptyParts);
 
         this->setProperty(pair[0].trimmed().toStdString().c_str(),
@@ -247,7 +245,7 @@ bool AkCaps::contains(const QString &property) const
 
 void AkCaps::setMimeType(const QString &mimeType)
 {
-    this->d->m_isValid = QRegExp("\\s*[a-z]+/\\w+(?:(?:-|\\+|\\.)\\w+)*\\s*").exactMatch(mimeType);
+    this->d->m_isValid = QRegularExpression("\\s*[a-z]+/\\w+(?:(?:-|\\+|\\.)\\w+)*\\s*").match(mimeType).hasMatch();
     QString _mimeType = this->d->m_isValid? mimeType.trimmed(): QString("");
 
     if (this->d->m_mimeType == _mimeType)

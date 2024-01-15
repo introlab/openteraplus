@@ -133,11 +133,11 @@ void CleanUpDialog::refreshData()
     ui->tableItems->clearContents();
     m_itemsMap.clear();
 
-    for(const QVariant &data:qAsConst(m_data)){
+    for(const QVariant &data:std::as_const(m_data)){
         QVariantMap data_map = data.toMap();
         int current_row = ui->tableItems->rowCount();
         ui->tableItems->setRowCount(ui->tableItems->rowCount()+1);
-        for (const QVariant &data_value: qAsConst(data_map)){
+        for (const QVariant &data_value: std::as_const(data_map)){
             QString data_key = data_map.key(data_value);
             if (m_columnsMap.contains(data_key)){
                 QTableWidgetItem* item;
@@ -163,7 +163,7 @@ void CleanUpDialog::refreshData()
         QFrame* action_frame = new QFrame();
         QHBoxLayout* layout = new QHBoxLayout();
         layout->setContentsMargins(0,0,0,0);
-        layout->setAlignment(Qt::AlignLeft);
+        layout->setAlignment(Qt::AlignHCenter);
         action_frame->setLayout(layout);
 
         // Delete button
@@ -172,7 +172,7 @@ void CleanUpDialog::refreshData()
             btnDisable->setIcon(QIcon("://controls/check_off.png"));
             btnDisable->setProperty("id", m_itemsMap[ui->tableItems->item(current_row,0)]);
             btnDisable->setCursor(Qt::PointingHandCursor);
-            btnDisable->setMaximumWidth(32);
+            btnDisable->setMaximumWidth(48);
             btnDisable->setToolTip(tr("Désactiver"));
             connect(btnDisable, &QToolButton::clicked, this, &CleanUpDialog::btnDisable_clicked);
             layout->addWidget(btnDisable);
@@ -184,7 +184,7 @@ void CleanUpDialog::refreshData()
             btnDelete->setIcon(QIcon(":/icons/delete_old.png"));
             btnDelete->setProperty("id", m_itemsMap[ui->tableItems->item(current_row,0)]);
             btnDelete->setCursor(Qt::PointingHandCursor);
-            btnDelete->setMaximumWidth(32);
+            btnDelete->setMaximumWidth(48);
             btnDelete->setToolTip(tr("Supprimer"));
             connect(btnDelete, &QToolButton::clicked, this, &CleanUpDialog::btnDelete_clicked);
             layout->addWidget(btnDelete);
@@ -289,7 +289,7 @@ void CleanUpDialog::on_btnDisableAll_clicked()
 
     answer = diag.showYesNo(tr("Désactivation?"), tr("Êtes-vous sûrs de vouloir tout désactiver?"));
     if (answer == QMessageBox::Yes){
-        for(int id:qAsConst(m_itemsMap)){
+        for(int id:std::as_const(m_itemsMap)){
             m_idsToManage.append(id);
         }
         disableNextItem();
@@ -304,7 +304,7 @@ void CleanUpDialog::on_btnDeleteAll_clicked()
 
     answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir tout supprimer?"));
     if (answer == QMessageBox::Yes){
-        for(int id:qAsConst(m_itemsMap)){
+        for(int id:std::as_const(m_itemsMap)){
             m_idsToManage.append(id);
         }
         deleteNextItem();

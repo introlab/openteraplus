@@ -10,8 +10,9 @@ class AboutDialogPage : public QWebEnginePage
 public:
     AboutDialogPage();
 
-protected:
-    virtual bool certificateError(const QWebEngineCertificateError &certificateError) override;
+protected slots:
+
+    void onCertificateError(const QWebEngineCertificateError &certificateError);
 };
 
 #endif // ABOUTDIALOGPAGE_H

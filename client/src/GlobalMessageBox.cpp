@@ -17,6 +17,7 @@ GlobalMessageBox::GlobalMessageBox(QWidget *parent) :
                          "QPushButton:hover{background-color:  rgba(255,255,255,75%);color:black;}");*/
 
     m_xPressed=false;
+    setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 }
 
 GlobalMessageBox::~GlobalMessageBox()
@@ -25,23 +26,24 @@ GlobalMessageBox::~GlobalMessageBox()
 }
 
 QMessageBox::StandardButton GlobalMessageBox::showYesNo(const QString &title, const QString &text){
-
-   /* QPixmap image;
-    image.load(":/pictures/UnknownSystem.png");
-
-    setIconPixmap(image.scaled(48,48));*/
     setIcon(QMessageBox::Question);
     setWindowTitle(title);
     setText(text);
     setModal(true);
 
+
     setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    setButtonText(QMessageBox::Yes,tr("Oui"));
-    setButtonText(QMessageBox::No,tr("Non"));
+    //setButtonText(QMessageBox::Yes,tr("Oui"));
+    //setButtonText(QMessageBox::No,tr("Non"));
     button(QMessageBox::Yes)->setIcon(QIcon("://icons/ok.png"));
     button(QMessageBox::Yes)->setCursor(Qt::PointingHandCursor);
+    button(QMessageBox::Yes)->setText(tr("Oui"));
+
     button(QMessageBox::No)->setIcon(QIcon("://icons/error.png"));
     button(QMessageBox::No)->setCursor(Qt::PointingHandCursor);
+    button(QMessageBox::No)->setText(tr("Non"));
+
+
     setDefaultButton(QMessageBox::No);
 
     exec();

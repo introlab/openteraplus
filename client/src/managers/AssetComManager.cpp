@@ -86,7 +86,7 @@ bool AssetComManager::handleDataReply(const QString &reply_path, const QString &
     QList<QJsonObject> items;
     if (data_list.isArray()){
         QJsonArray data_list_array = data_list.array();
-        for (const QJsonValue &data:qAsConst(data_list_array)){
+        for (const QJsonValue &data:std::as_const(data_list_array)){
             items.append(data.toObject());
         }
     }else{

@@ -326,10 +326,10 @@ void QtScreenDev::readFrame()
     if (!this->m_threadStatus.isRunning()) {
         this->m_curPacket = packet;
 
-        this->m_threadStatus = QtConcurrent::run(&this->m_threadPool,
+        this->m_threadStatus = QtConcurrent::run(&this->m_threadPool,[=]{QtScreenDev::sendPacket(this->m_curPacket);});
+                                                 /*&QtScreenDev::sendPacket,
                                                  this,
-                                                 &QtScreenDev::sendPacket,
-                                                 this->m_curPacket);
+                                                 this->m_curPacket);*/
     }
 }
 
@@ -343,7 +343,7 @@ void QtScreenDev::screenCountChanged(QScreen *screen)
 void QtScreenDev::srceenResized(int screen)
 {
     QString media = QString("screen://%1").arg(screen);
-    QWidget *widget = QApplication::desktop()->screen(screen);
+    QScreen *widget = QGuiApplication::screens().at(screen);//QApplication::desktop()->screen(screen);
 
     emit this->sizeChanged(media, widget->size());
 }

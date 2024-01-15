@@ -1,2 +1,9 @@
 /client/resources/translations/*.qm
 deploy
+/build-*
+*.user
+
+html
+venv
+doctrees
+CMakeLists.txt.user

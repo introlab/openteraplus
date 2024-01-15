@@ -19,8 +19,6 @@ VideoRehabWidget::VideoRehabWidget(ComManager *comMan, QWidget *parent) :
     connectSignals();
 
     emit widgetIsReady(false); // We wait until webpage is fully loaded...
-
-
 }
 
 VideoRehabWidget::~VideoRehabWidget()
@@ -29,6 +27,7 @@ VideoRehabWidget::~VideoRehabWidget()
     m_loadingIcon->deleteLater();
     m_webPage->deleteLater();
     m_webEngine->deleteLater();
+
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
         m_virtualCamThread->wait();
@@ -47,20 +46,16 @@ void VideoRehabWidget::initUI()
     // Set and start loading
     ui->frameError->hide();
     setLoading(true);
-    ui->wdgWebEngine->hide();
 
     m_loadingIcon = new QMovie("://status/calling.gif");
     ui->icoLoading->setMovie(m_loadingIcon);
     m_loadingIcon->start();
 
-    QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::ScreenCaptureEnabled, true);
-    //QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PluginsEnabled, true);
-    QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::PlaybackRequiresUserGesture, false);
-
-    m_webEngine = new QWebEngineView(ui->wdgWebEngine);
+    m_webEngine = new QWebEngineView(/*ui->wdgWebEngine*/);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &VideoRehabWidget::webPageLoaded);
 
     // Create a new page
+    // DL new Settings are set in the page constructor
     m_webPage = new VideoRehabWebPage(m_webEngine);
     connect(m_webPage->getSharedObject(), &SharedObject::pageIsReady, this, &VideoRehabWidget::webPageReady);
     connect(m_webPage->getSharedObject(), &SharedObject::videoErrorOccured, this, &VideoRehabWidget::webPageVideoError);
@@ -77,8 +72,8 @@ void VideoRehabWidget::initUI()
     //Set page to view
     m_webEngine->setPage(m_webPage);
 
-    QWebEngineProfile::defaultProfile()->setPersistentCookiesPolicy(/*QWebEngineProfile::AllowPersistentCookies*/QWebEngineProfile::NoPersistentCookies);
-    QWebEngineProfile::defaultProfile()->setHttpCacheType(/*QWebEngineProfile::DiskHttpCache*/QWebEngineProfile::NoCache);
+    QWebEngineProfile::defaultProfile()->setPersistentCookiesPolicy(QWebEngineProfile::NoPersistentCookies);
+    QWebEngineProfile::defaultProfile()->setHttpCacheType(QWebEngineProfile::NoCache);
 
     // Set download path
     setDataSavePath();
@@ -90,9 +85,10 @@ void VideoRehabWidget::initUI()
         layout->setContentsMargins(0,0,0,0);
         ui->wdgWebEngine->setLayout(layout);
     }
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_webEngine->setSizePolicy(sizePolicy);
     ui->wdgWebEngine->layout()->addWidget(m_webEngine);
+
 }
 
 bool VideoRehabWidget::handleJoinSessionEvent(const JoinSessionEvent &event)
@@ -177,7 +173,7 @@ void VideoRehabWidget::webEngineURLChanged(QUrl url)
     ui->txtURL->setText(url.toString());
 }
 
-void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
+void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadRequest *item)
 {
     //qDebug() << "WebEngine: about to download " << item->suggestedFileName();
     emit fileDownloading(true);
@@ -210,7 +206,7 @@ void VideoRehabWidget::webEngineDownloadRequested(QWebEngineDownloadItem *item)
         item->setDownloadFileName(file_name);
     }
 
-    connect(item, &QWebEngineDownloadItem::finished, this, &VideoRehabWidget::webEngineDownloadCompleted);
+    connect(item, &QWebEngineDownloadRequest::isFinishedChanged, this, &VideoRehabWidget::webEngineDownloadCompleted);
     item->accept();
 
 }
@@ -220,7 +216,7 @@ void VideoRehabWidget::webEngineDownloadCompleted()
     // Enable buttons
     emit fileDownloading(false);
 
-    QWebEngineDownloadItem* item = dynamic_cast<QWebEngineDownloadItem*>(sender());
+    QWebEngineDownloadRequest* item = dynamic_cast<QWebEngineDownloadRequest*>(sender());
     if (item){
         if (item->receivedBytes() == 0)
             return;
@@ -357,7 +353,13 @@ void VideoRehabWidget::setLoading(const bool &loading)
 {
     ui->frameLoading->setVisible(loading);
     if (!ui->frameError->isVisible()){
-        ui->wdgWebEngine->setVisible(!loading);
+        // SB Qt6 WebEngine seems to force refresh of the whole window when showing / hiding once in a while.
+        //    So instead of fully hiding, we just set its maximum height.
+        if (loading)
+            ui->wdgWebEngine->setMaximumHeight(0);
+        else
+            ui->wdgWebEngine->setMaximumHeight(65535);
+        //ui->wdgWebEngine->setVisible(!loading);
     }
 }
 
@@ -383,11 +385,12 @@ void VideoRehabWidget::startVirtualCamera(const QString &src)
     ui->frameError->hide();
     m_virtualCamThread = new VirtualCameraThread(src);
     connect(m_virtualCamThread, &VirtualCameraThread::virtualCamDisconnected, this, &VideoRehabWidget::virtualCameraDisconnected);
-    m_virtualCamThread->start();
+    m_virtualCamThread->start();    
 }
 
 void VideoRehabWidget::stopVirtualCamera()
 {
+
     qDebug() << "VideoRehabWidget::stopVirtualCamera";
     if (m_virtualCamThread){
         m_virtualCamThread->quit();
@@ -395,6 +398,16 @@ void VideoRehabWidget::stopVirtualCamera()
         m_virtualCamThread->deleteLater();
         m_virtualCamThread = nullptr;
     }
+}
+
+void VideoRehabWidget::resizeEvent(QResizeEvent *event)
+{
+    // Webpage will set its content size to its initial size, thus webengine will stay at that size.
+    // This resizes the view to force a resize of the underlying page.
+    // Not perfect as multiple calls could be performed, but working for now.
+    ui->wdgWebEngine->setMaximumWidth(event->size().width()-50);
+
+    //BaseServiceWidget::resizeEvent(event);
 }
 
 void VideoRehabWidget::on_btnRefresh_clicked()

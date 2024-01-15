@@ -162,7 +162,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="iconSize">
       <size>
@@ -193,6 +193,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <size>
              <width>0</width>
              <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>150</height>
             </size>
            </property>
           </widget>
@@ -227,6 +233,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
        <item alignment="Qt::AlignTop">
         <widget class="QFrame" name="frameButtons">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QPushButton" name="btnSave">
@@ -285,10 +297,19 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
        <item>
         <widget class="QGroupBox" name="grpSummary">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Résumé</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <property name="spacing">
+           <number>15</number>
+          </property>
           <item>
            <layout class="QGridLayout" name="gridLayout">
             <property name="horizontalSpacing">
@@ -492,6 +513,13 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            </layout>
           </item>
           <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
              <widget class="QTableWidget" name="tableSummary">
@@ -561,6 +589,13 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chkShowInactive">
+            <property name="text">
+             <string>Afficher les participants inactifs</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -709,7 +744,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <property name="iconSize">
           <size>
@@ -814,6 +849,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
              </attribute>
              <column>
               <property name="text">
@@ -955,6 +993,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
              </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
              <column>
               <property name="text">
                <string>Groupe Utilisateur</string>
@@ -1010,6 +1051,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
         <widget class="QListWidget" name="lstSessionTypes">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
          <property name="iconSize">
           <size>
            <width>24</width>
@@ -1046,6 +1090,56 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabTestTypes">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/test_type.png</normaloff>:/icons/test_type.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Types de tests</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
+       <item>
+        <widget class="QListWidget" name="lstTestTypes">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateTestTypes">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les types de tests associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tabDevices">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
@@ -1061,13 +1155,16 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
          <property name="iconSize">
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
+         </property>
+         <property name="indentation">
+          <number>0</number>
          </property>
          <attribute name="headerVisible">
           <bool>false</bool>
@@ -1141,6 +1238,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <widget class="QListWidget" name="lstServices">
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
              <property name="iconSize">
               <size>
                <width>24</width>
@@ -1184,14 +1284,19 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
     </widget>
    </item>
   </layout>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>100</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_10"/>
+  </widget>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>TeraForm</class>
-   <extends>QWidget</extends>
-   <header>TeraForm.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
@@ -1200,6 +1305,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
     <signal>clicked()</signal>
     <slot>clicked()</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>TeraForm</class>
+   <extends>QWidget</extends>
+   <header>TeraForm.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

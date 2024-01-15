@@ -439,7 +439,7 @@ QGroupBox#grpLogos{background-color:rgba(200,200,200,200);}
         </property>
         <property name="icon">
          <iconset resource="../../resources/TeraClient.qrc">
-          <normaloff>:/controls/branch_closed.png</normaloff>:/controls/branch_closed.png</iconset>
+          <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
         </property>
         <property name="iconSize">
          <size>

@@ -15,9 +15,9 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::ParticipantWidget)
 {
-
+#ifndef OPENTERA_WEBASSEMBLY
     m_sessionLobby = nullptr;
-
+#endif
     m_allowFileTransfers = false;
 
     ui->setupUi(this);
@@ -76,11 +76,15 @@ ParticipantWidget::~ParticipantWidget()
     qDeleteAll(m_ids_session_types);
     delete ui;
 
-    if (m_sessionLobby)
+#ifndef OPENTERA_WEBASSEMBLY
+    if (m_sessionLobby) {
         m_sessionLobby->deleteLater();
+    }
+#endif
 
-    if (m_diag_qr)
+    if (m_diag_qr) {
         m_diag_qr->deleteLater();
+    }
 }
 
 
@@ -132,8 +136,9 @@ void ParticipantWidget::connectSignals()
 
     connect(ui->lstAvailDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentAvailDeviceChanged);
     connect(ui->lstDevices, &QListWidget::currentItemChanged, this, &ParticipantWidget::currentDeviceChanged);
-
+#ifndef OPENTERA_WEBASSEMBLY
     connect(ui->wdgSessions, &SessionsListWidget::startSessionRequested, this, &ParticipantWidget::showSessionLobby);
+#endif
     connect(ui->wdgSessions, &SessionsListWidget::sessionsCountUpdated, this, &ParticipantWidget::sessionTotalCountUpdated);
 }
 
@@ -169,6 +174,9 @@ void ParticipantWidget::updateFieldsValue()
         if (!dataIsNew()){
             ui->lblTitle->setText(m_data->getName());
             ui->chkEnabled->setChecked(m_data->getFieldValue("participant_enabled").toBool());
+            if (m_data->hasFieldName("participant_project_enabled")){
+                ui->chkEnabled->setEnabled(m_data->getFieldValue("participant_project_enabled").toBool());
+            }
             ui->chkLogin->setChecked(m_data->getFieldValue("participant_login_enabled").toBool());
             if (ui->chkLogin->isChecked()){
                 ui->btnSaveLogin->setEnabled(false); // Disable save login infos on already enabled participants
@@ -186,7 +194,7 @@ void ParticipantWidget::updateFieldsValue()
             on_txtPassword_textEdited("");
 
             // Status
-            ui->icoOnline->setVisible(m_data->isEnabled());
+            //ui->icoOnline->setVisible(m_data->isEnabled());
             ui->icoTitle->setPixmap(QPixmap(m_data->getIconStateFilename()));
             if (m_data->isBusy()){
                 ui->icoOnline->setPixmap(QPixmap("://status/status_busy.png"));
@@ -219,6 +227,7 @@ void ParticipantWidget::initUI()
     ui->frameActive->hide();
     ui->frameWeb->hide();
     ui->txtWeb->hide();
+    ui->icoOnline->hide();
 
     // Disable random password button, handled in the PasswordStrengthDialog now!
     ui->btnRandomPass->hide();
@@ -364,7 +373,7 @@ void ParticipantWidget::updateServiceTabs()
 
     QList<int> ids_service;
 
-    for(const TeraData &service: qAsConst(m_services)){
+    for(const TeraData &service: std::as_const(m_services)){
         ids_service.append(service.getId());
 
         // Create specific tabs for services
@@ -372,7 +381,7 @@ void ParticipantWidget::updateServiceTabs()
     }
 
     // Remove tabs not anymore present
-    /*for(QWidget* tab: qAsConst(m_services_tabs)){
+    /*for(QWidget* tab: std::as_const(m_services_tabs)){
         if (!ids_service.contains(m_services_tabs.key(tab))){
             ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
             tab->deleteLater();
@@ -598,7 +607,7 @@ void ParticipantWidget::deleteDataReply(QString path, int id)
 
     if (path == WEB_DEVICEPARTICIPANTINFO_PATH){
         // A participant device association was deleted
-        for (QListWidgetItem* item: qAsConst(m_listDevices_items)){
+        for (QListWidgetItem* item: std::as_const(m_listDevices_items)){
             // Check for id_device_participant, which is stored in "data" of the item
             if (item->data(Qt::UserRole).toInt() == id){
                 // We found it - remove it and request update
@@ -665,7 +674,7 @@ void ParticipantWidget::btnAddDevice_clicked()
         if (diag->result() == DeviceAssignDialog::DEVICEASSIGN_DEASSIGN){
             // Delete all associated participants
             QList<int> ids = diag->getDeviceParticipantsIds();
-            for (int id:qAsConst(ids)){
+            for (int id:std::as_const(ids)){
                 deleteDataRequest(WEB_DEVICEPARTICIPANTINFO_PATH, id);
             }
         }
@@ -714,7 +723,7 @@ bool ParticipantWidget::isProjectAdmin()
 
     return m_comManager->getCurrentUserProjectRole(m_data->getFieldValue("id_project").toInt()) == "admin";
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &id_session)
 {
     if (!canStartNewSession(id_session_type)){
@@ -738,6 +747,10 @@ void ParticipantWidget::showSessionLobby(const int &id_session_type, const int &
     connect(m_sessionLobby, &QDialog::rejected, this, &ParticipantWidget::sessionLobbyStartSessionCancelled);
     if (height()<800)
         m_sessionLobby->showMaximized();
+    else{
+        m_sessionLobby->setMinimumSize(3*QGuiApplication::primaryScreen()->availableGeometry().width() / 4,
+                                       2*QGuiApplication::primaryScreen()->availableGeometry().height() / 3);
+    }
 
     // Show Session Lobby
     m_sessionLobby->exec();
@@ -773,7 +786,7 @@ void ParticipantWidget::sessionLobbyStartSessionCancelled()
         m_sessionLobby = nullptr;
     }
 }
-
+#endif
 void ParticipantWidget::currentAvailDeviceChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     Q_UNUSED(previous)
@@ -876,7 +889,7 @@ void ParticipantWidget::on_chkLogin_stateChanged(int checkState)
                 ui->btnSaveLogin->setEnabled(false);
             }else{
                 ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
-                ui->btnSaveLogin->setEnabled(true);
+                ui->btnSaveLogin->setEnabled(false);
             }
         }
     }
@@ -1019,7 +1032,9 @@ void ParticipantWidget::on_btnNewSession_clicked()
     }
 
     // If id_session == 0, will start a new session. Otherwise, will resume that session with id_session
+#ifndef OPENTERA_WEBASSEMBLY
     showSessionLobby(id_session_type, id_session);
+#endif
 }
 
 void ParticipantWidget::on_btnViewLink_clicked()
@@ -1118,7 +1133,8 @@ void ParticipantWidget::on_tabNav_currentChanged(int index)
     if (current_tab == ui->tabServices){ // Services
         if (!ui->wdgServiceConfig->layout()){
             QHBoxLayout* layout = new QHBoxLayout();
-            layout->setMargin(0);
+
+            //layout->setMargin(0);
             ui->wdgServiceConfig->setLayout(layout);
         }
         if (ui->wdgServiceConfig->layout()->count() == 0){
@@ -1131,12 +1147,14 @@ void ParticipantWidget::on_tabNav_currentChanged(int index)
 
 void ParticipantWidget::on_lstAvailDevices_itemDoubleClicked(QListWidgetItem *item)
 {
+    Q_UNUSED(item)
     btnAddDevice_clicked();
 }
 
 
 void ParticipantWidget::on_lstDevices_itemDoubleClicked(QListWidgetItem *item)
 {
+    Q_UNUSED(item)
     btnDelDevice_clicked();
 }
 

@@ -12,6 +12,8 @@ SessionLobbyDialog::SessionLobbyDialog(ComManager* comManager, TeraData &session
     ui->setupUi(this);
     m_setupWdg = nullptr;
 
+    setModal(true);
+
     ui->lblTitle->setText(m_sessionType.getFieldValue("session_type_name").toString());
 
     connectSignals();
@@ -43,37 +45,16 @@ void SessionLobbyDialog::addDevicesToSession(const QList<TeraData> &devices, con
 
 QStringList SessionLobbyDialog::getSessionParticipantsUuids()
 {
-    /*QStringList uuids;
-    QList<TeraData> participants = ui->wdgSessionInvite->getParticipantsInSession();
-
-    foreach(TeraData part, participants){
-        uuids.append(part.getUuid());
-    }
-    return uuids;*/
     return ui->wdgSessionInvite->getParticipantsUuidsInSession();
 }
 
 QStringList SessionLobbyDialog::getSessionUsersUuids()
 {
-    /*QStringList uuids;
-    QList<TeraData> users = ui->wdgSessionInvite->getUsersInSession();
-
-    foreach(TeraData user, users){
-        uuids.append(user.getUuid());
-    }
-    return uuids;*/
     return ui->wdgSessionInvite->getUsersUuidsInSession();
 }
 
 QStringList SessionLobbyDialog::getSessionDevicesUuids()
 {
-    /*QStringList uuids;
-    QList<TeraData> devices = ui->wdgSessionInvite->getDevicesInSession();
-
-    foreach(TeraData device, devices){
-        uuids.append(device.getUuid());
-    }
-    return uuids;*/
     return ui->wdgSessionInvite->getDevicesUuidsInSession();
 }
 
@@ -266,7 +247,7 @@ void SessionLobbyDialog::processSessionsReply(QList<TeraData> sessions)
             if (session.hasFieldName("session_participants")){
                 item_list = session.getFieldValue("session_participants").toList();
 
-                for(const QVariant &session_part:qAsConst(item_list)){
+                for(const QVariant &session_part:std::as_const(item_list)){
                     QVariantMap part_info = session_part.toMap();
                     ui->wdgSessionInvite->addRequiredParticipant(part_info["id_participant"].toInt());
                 }
@@ -275,7 +256,7 @@ void SessionLobbyDialog::processSessionsReply(QList<TeraData> sessions)
             if (session.hasFieldName("session_users")){
                 item_list = session.getFieldValue("session_users").toList();
 
-                for(const QVariant &session_user:qAsConst(item_list)){
+                for(const QVariant &session_user:std::as_const(item_list)){
                     QVariantMap user_info = session_user.toMap();
                     ui->wdgSessionInvite->addRequiredUser(user_info["id_user"].toInt());
                 }
@@ -284,7 +265,7 @@ void SessionLobbyDialog::processSessionsReply(QList<TeraData> sessions)
             if (session.hasFieldName("session_devices")){
                 item_list = session.getFieldValue("session_devices").toList();
 
-                for(const QVariant &session_device:qAsConst(item_list)){
+                for(const QVariant &session_device:std::as_const(item_list)){
                     QVariantMap device_info = session_device.toMap();
                     ui->wdgSessionInvite->addRequiredDevice(device_info["id_device"].toInt());
                 }

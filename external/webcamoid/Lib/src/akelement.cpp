@@ -17,7 +17,7 @@
  * Web-Site: http://webcamoid.github.io/
  */
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QMetaMethod>
 #include <QPluginLoader>
 #include <QDirIterator>
@@ -105,8 +105,8 @@ class AkElementPrivate
                 QMetaMethod method = object->metaObject()->method(i);
                 QString signature(method.methodSignature());
 
-                if (QRegExp(QString("\\s*%1\\s*\\(.*").arg(methodName))
-                    .exactMatch(signature))
+                if (QRegularExpression(QString("\\s*%1\\s*\\(.*").arg(methodName))
+                    .match(signature).hasMatch())
                     if (!methodSignatures.contains(signature)) {
                         methods << method;
                         methodSignatures << signature;
@@ -133,7 +133,7 @@ class AkElementPrivate
             return pluginId;
                                               ;
 #else
-            return pluginId.remove(QRegExp("^lib"));
+            return pluginId.remove(QRegularExpression("^lib"));
 #endif
         }
 
@@ -158,7 +158,7 @@ class AkElementPrivate
                 for (int i = sPath->length() - 1; i >= 0; i--) {
                     QString searchDir(sPath->at(i));
 
-                    searchDir.replace(QRegExp("((\\\\/?)|(/\\\\?))+"),
+                    searchDir.replace(QRegularExpression("((\\\\/?)|(/\\\\?))+"),
                                       QDir::separator());
 
                     while (searchDir.endsWith(QDir::separator()))
@@ -208,9 +208,12 @@ class AkElementPrivate
                         if (QFileInfo(path).isFile()) {
                             QString fileName = QFileInfo(path).fileName();
 
-                            if (QRegExp(this->m_pluginFilePattern,
-                                        Qt::CaseSensitive,
-                                        QRegExp::Wildcard).exactMatch(fileName)) {
+                            // if (QRegExp(this->m_pluginFilePattern,
+                            //             Qt::CaseSensitive,
+                            //             QRegExp::Wildcard).exactMatch(fileName)) {
+                            if (QRegularExpression(
+                                    QRegularExpression::fromWildcard(this->m_pluginFilePattern, Qt::CaseSensitive)
+                                        ).match(fileName).hasMatch()) {
                                 QPluginLoader pluginLoader(path);
 
                                 if (pluginLoader.load()) {
@@ -508,7 +511,7 @@ QStringList AkElement::listSubModules(const QStringList &types)
 
     if (this->d->m_pluginId.isEmpty()) {
         pluginId = this->metaObject()->className();
-        pluginId.replace(QRegExp("Element$"), "");
+        pluginId.replace(QRegularExpression("Element$"), "");
     } else {
         pluginId = this->d->m_pluginId;
     }
@@ -575,7 +578,7 @@ QStringList AkElement::listSubModulesPaths()
 
     if (this->d->m_pluginId.isEmpty()) {
         pluginId = this->metaObject()->className();
-        pluginId.replace(QRegExp("Element$"), "");
+        pluginId.replace(QRegularExpression("Element$"), "");
     } else {
         pluginId = this->d->m_pluginId;
     }
@@ -624,7 +627,7 @@ QObject *AkElement::loadSubModule(const QString &subModule)
 
     if (this->d->m_pluginId.isEmpty()) {
         pluginId = this->metaObject()->className();
-        pluginId.replace(QRegExp("Element$"), "");
+        pluginId.replace(QRegularExpression("Element$"), "");
     } else {
         pluginId = this->d->m_pluginId;
     }
@@ -717,7 +720,7 @@ QStringList AkElement::listPluginPaths(const QString &searchPath)
 
     QString searchDir(searchPath);
 
-    searchDir.replace(QRegExp("((\\\\/?)|(/\\\\?))+"),
+    searchDir.replace(QRegularExpression("((\\\\/?)|(/\\\\?))+"),
                                   QDir::separator());
 
     QStringList files;

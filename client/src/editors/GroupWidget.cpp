@@ -15,9 +15,9 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
     setLimited(false);
-
+#ifndef OPENTERA_WEBASSEMBLY
     m_sessionLobby = nullptr;
-
+#endif
     // Use base class to manage editing
     setEditorControls(ui->wdgGroup, ui->btnEdit, ui->frameButtons, ui->btnSave, ui->btnUndo);
 
@@ -60,13 +60,16 @@ GroupWidget::GroupWidget(ComManager *comMan, const TeraData *data, QWidget *pare
 
 GroupWidget::~GroupWidget()
 {
-    if (ui)
+    if (ui) {
         delete ui;
+    }
 
     qDeleteAll(m_ids_session_types);
-
-    if (m_sessionLobby)
+#ifndef OPENTERA_WEBASSEMBLY
+    if (m_sessionLobby) {
         m_sessionLobby->deleteLater();
+    }
+#endif
 }
 
 void GroupWidget::saveData(bool signal){
@@ -178,7 +181,7 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
-        for(const QVariant &part:qAsConst(parts_list)){
+        for(const QVariant &part:std::as_const(parts_list)){
             QVariantMap part_info = part.toMap();
             int part_id = part_info["id_participant"].toInt();
 
@@ -196,9 +199,12 @@ void GroupWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
                 item->setForeground(Qt::green);
                 if (!m_activeParticipants.contains(part_id))
                     m_activeParticipants.append(part_id);
+                ui->tableSummary->showRow(current_row);
             }else{
                 status = tr("Inactif");
                 item->setForeground(Qt::red);
+                if (!ui->chkShowInactive->isChecked())
+                    ui->tableSummary->hideRow(current_row);
             }
             item->setText(status);
             item->setTextAlignment(Qt::AlignCenter);
@@ -325,7 +331,7 @@ void GroupWidget::deleteDataReply(QString path, int del_id)
         }
     }
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void GroupWidget::showSessionLobby(const int &id_session_type, const int &id_session)
 {
     if (m_sessionLobby)
@@ -335,7 +341,7 @@ void GroupWidget::showSessionLobby(const int &id_session_type, const int &id_ses
 
     // Add current participants to session
     //m_sessionLobby->addParticipantsToSession(QList<TeraData>() << *m_data, QList<int>() << m_data->getId());
-    for(int id_part:qAsConst(m_activeParticipants)){
+    for(int id_part:std::as_const(m_activeParticipants)){
         TeraData part_data;
         part_data.setDataType(TeraDataTypes::TERADATA_PARTICIPANT);
         part_data.setId(id_part);
@@ -385,6 +391,7 @@ void GroupWidget::sessionLobbyStartSessionCancelled()
     }
 }
 
+#endif
 void GroupWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::formReceived, this, &GroupWidget::processFormsReply);
@@ -429,7 +436,7 @@ void GroupWidget::on_tableSummary_itemSelectionChanged()
     ui->btnDelete->setEnabled(!ui->tableSummary->selectedItems().isEmpty());
 }
 
-
+#ifndef OPENTERA_WEBASSEMBLY
 void GroupWidget::on_btnNewSession_clicked()
 {
     if (ui->cmbSessionType->currentIndex() < 0)
@@ -442,5 +449,23 @@ void GroupWidget::on_btnNewSession_clicked()
     int id_session = 0;
 
     showSessionLobby(id_session_type, id_session);
+}
+#endif
+
+void GroupWidget::on_chkShowInactive_stateChanged(int checked)
+{
+    for(QTableWidgetItem* item: m_tableParticipants_items){
+        int row = item->row();
+        if (ui->chkShowInactive->isChecked()){
+            if (ui->tableSummary->isRowHidden(row))
+                ui->tableSummary->showRow(row);
+        }else{
+            bool active = ui->tableSummary->item(row, 1)->foreground() != Qt::red;
+            if (!active){
+                ui->tableSummary->hideRow(row);
+            }
+        }
+    }
+    ui->tableSummary->resizeColumnsToContents();
 }
 

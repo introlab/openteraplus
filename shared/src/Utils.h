@@ -1,17 +1,16 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "SharedLib.h"
 #include <QObject>
 #include <QRandomGenerator>
 #include <QRegularExpression>
 #include <QSysInfo>
 #include <QSettings>
 #include <QUuid>
-#include <QAudioDeviceInfo>
-#include <QCameraInfo>
 #include <QTime>
 
-class Utils : public QObject
+class SHAREDLIB_EXPORT Utils : public QObject
 {
     Q_OBJECT
 public:
@@ -29,9 +28,6 @@ public:
     static QList<PasswordValidationErrors> validatePassword(const QString& password);
 
     static QString getMachineUniqueId();
-
-    static QStringList getAudioDeviceNames();
-    static QStringList getVideoDeviceNames();
 
     static void inStringUnicodeConverter(QString* str);
 

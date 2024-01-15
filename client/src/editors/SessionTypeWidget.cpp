@@ -20,6 +20,7 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
     connectSignals();
 
     // Query form definition
+    ui->wdgSessionType->setComManager(m_comManager);
     queryDataRequest(WEB_FORMS_PATH, QUrlQuery(WEB_FORMS_QUERY_SESSION_TYPE));
     if (!data->isNew()){
         QUrlQuery args(WEB_FORMS_QUERY_SESSION_TYPE_CONFIG);
@@ -27,7 +28,6 @@ SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, Q
         queryDataRequest(WEB_FORMS_PATH, args);
     }
 
-    ui->wdgSessionType->setComManager(m_comManager);
     setData(data);
 
 }
@@ -51,7 +51,7 @@ void SessionTypeWidget::saveData(bool signal){
         QJsonArray sites;
 
         // Sites
-        for(QTreeWidgetItem* item:qAsConst(m_treeSites_items)){
+        for(QTreeWidgetItem* item:std::as_const(m_treeSites_items)){
             if (item->checkState(0) == Qt::Checked){
                 int site_id = m_treeSites_items.key(item);
                 QJsonObject data_obj;
@@ -67,7 +67,7 @@ void SessionTypeWidget::saveData(bool signal){
         }
 
         // Projects
-        for(QTreeWidgetItem* item:qAsConst(m_treeProjects_items)){
+        for(QTreeWidgetItem* item:std::as_const(m_treeProjects_items)){
             if (item->checkState(0) == Qt::Checked){
                 int project_id = m_treeProjects_items.key(item);
                 QJsonObject data_obj;
@@ -238,7 +238,7 @@ void SessionTypeWidget::postSessionTypeSites()
     QJsonObject base_obj;
     QJsonArray sites;
 
-    for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeSites_items)){
         int site_id = m_treeSites_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;
@@ -261,7 +261,7 @@ void SessionTypeWidget::postSessionTypeProjects()
     QJsonObject base_obj;
     QJsonArray projects;
 
-    for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeProjects_items)){
         int proj_id = m_treeProjects_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;
@@ -293,7 +293,7 @@ bool SessionTypeWidget::validateProjects()
 {
     if (!m_comManager->isCurrentUserSuperAdmin()){
         bool at_least_one_selected = false;
-        for(QTreeWidgetItem* site_item:qAsConst(m_treeSites_items)){
+        for(QTreeWidgetItem* site_item:std::as_const(m_treeSites_items)){
             if (site_item->checkState(0) == Qt::Checked){
                 at_least_one_selected = true;
                 break;

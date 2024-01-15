@@ -194,7 +194,7 @@ bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QS
     if (data_type == TERADATA_GROUP){
         foreach(QTreeWidgetItem* item, m_groups_items){
             if (item->text(0) == name){
-                ui->treeNavigator->setCurrentItem(item);
+                setCurrentItem(item);
                 currentNavItemChanged(item, nullptr);
                 return true;
             }
@@ -204,7 +204,7 @@ bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QS
     if (data_type == TERADATA_PROJECT){
         foreach(QTreeWidgetItem* item, m_projects_items){
             if (item->text(0) == name){
-                ui->treeNavigator->setCurrentItem(item);
+                setCurrentItem(item);
                 currentNavItemChanged(item, nullptr);
                 return true;
             }
@@ -214,7 +214,7 @@ bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QS
     if (data_type == TERADATA_PARTICIPANT){
         foreach(QTreeWidgetItem* item, m_participants_items){
             if (item->text(0) == name){
-                 ui->treeNavigator->setCurrentItem(item);
+                 setCurrentItem(item);
                  currentNavItemChanged(item, nullptr);
                  return true;
             }
@@ -224,7 +224,7 @@ bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QS
     if (data_type == TERADATA_USER){
         foreach(QTreeWidgetItem* item, m_users_items){
             if (item->text(0) == name){
-                 ui->treeNavigator->setCurrentItem(item);
+                 setCurrentItem(item);
                  currentNavItemChanged(item, nullptr);
                  return true;
             }
@@ -234,7 +234,7 @@ bool ProjectNavigator::selectItemByName(const TeraDataTypes &data_type, const QS
     if (data_type == TERADATA_DEVICE){
         foreach(QTreeWidgetItem* item, m_devices_items){
             if (item->text(0) == name){
-                 ui->treeNavigator->setCurrentItem(item);
+                 setCurrentItem(item);
                  currentNavItemChanged(item, nullptr);
                  return true;
             }
@@ -250,7 +250,7 @@ bool ProjectNavigator::selectItemByUuid(const TeraDataTypes &data_type, const QS
         if (m_participants.contains(uuid)){
             QTreeWidgetItem* item = m_participants_items[m_participants[uuid].getId()];
             if (item){
-                ui->treeNavigator->setCurrentItem(item);
+                setCurrentItem(item);
                 currentNavItemChanged(item, nullptr);
                 return true;
             }
@@ -353,21 +353,7 @@ TeraDataTypes ProjectNavigator::getCurrentItemType()
 {
     QTreeWidgetItem* item = getCurrentItem();
 
-    if (item){
-        if (m_devices_items.key(item, -1) >= 0){
-            return TERADATA_DEVICE;
-        }
-        if (m_groups_items.key(item, -1) >= 0){
-            return TERADATA_GROUP;
-        }
-        if (m_participants_items.key(item, -1) >= 0){
-            return TERADATA_PARTICIPANT;
-        }
-        if (m_users_items.key(item, -1) >= 0){
-            return TERADATA_USER;
-        }
-    }
-    return TERADATA_NONE;
+    return getItemType(item);
 }
 
 int ProjectNavigator::getCurrentItemId()
@@ -385,6 +371,9 @@ int ProjectNavigator::getCurrentItemId()
         }
         if (id == -1){
             id = m_users_items.key(item, -1);
+        }
+        if (id == -1){
+            id = m_projects_items.key(item, -1);
         }
         return id;
     }
@@ -534,7 +523,14 @@ void ProjectNavigator::updateProject(const TeraData *project)
     }
 
     item->setText(0, project->getName());
-    item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_PROJECT)));
+    item->setIcon(0, QIcon(project->getIconStateFilename()));
+    if (project->isEnabled() || !project->hasEnabledField()){
+        item->setForeground(0, Qt::white);
+        item->setData(0, Qt::UserRole, true); // Enabled status
+    }else{
+        item->setForeground(0, Qt::gray);
+        item->setData(0, Qt::UserRole, false);  // Disabled status
+    }
 
     if (m_currentProjectId == id_project && m_currentProjectId >0 && !m_selectionHold){
         // Load details
@@ -696,6 +692,7 @@ void ProjectNavigator::updateGroup(const TeraData *group)
     }
 
     item->setText(0, group->getName());
+    item->setForeground(0, m_projects_items[id_project]->foreground(0));
     item->setIcon(0, QIcon(TeraData::getIconFilenameForDataType(TERADATA_GROUP)));
 
    if (m_currentGroupId == id_group && m_currentGroupId >0 && !item->isExpanded()){
@@ -900,6 +897,12 @@ void ProjectNavigator::updateParticipant(const TeraData *participant)
     }
 
     item->setText(0, participant->getName());
+    if (participant->isEnabled()){
+        item->setForeground(0, Qt::white);
+    }else{
+        item->setForeground(0, Qt::gray);
+    }
+
     if (participant->hasBusyStateField() || participant->hasOnlineStateField())
         item->setIcon(0, QIcon(participant->getIconStateFilename()));
     m_participants[participant->getUuid()] = *participant;
@@ -926,7 +929,7 @@ void ProjectNavigator::updateUser(const TeraData *user, const int& id_project)
     if (id_project >=0){
         // Check if already exists for that project
         bool exists = false;
-        for (QTreeWidgetItem* item:qAsConst(items)){
+        for (QTreeWidgetItem* item:std::as_const(items)){
             QTreeWidgetItem* project = getProjectForItem(item);
             if (project){
                 if (m_projects_items.key(project) == id_project){
@@ -964,7 +967,7 @@ void ProjectNavigator::updateUser(const TeraData *user, const int& id_project)
         }
     }
 
-    for (QTreeWidgetItem* item:qAsConst(items)){
+    for (QTreeWidgetItem* item:std::as_const(items)){
         item->setText(0, user->getName());
         item->setIcon(0, QIcon(user->getIconStateFilename()));
     }
@@ -982,7 +985,7 @@ void ProjectNavigator::updateDevice(const TeraData *device, const int &id_projec
     if (id_project >=0){
         // Check if already exists for that project
         bool exists = false;
-        for (QTreeWidgetItem* item:qAsConst(items)){
+        for (QTreeWidgetItem* item:std::as_const(items)){
             QTreeWidgetItem* project = getProjectForItem(item);
             if (project){
                 if (m_projects_items.key(project) == id_project){
@@ -1019,7 +1022,7 @@ void ProjectNavigator::updateDevice(const TeraData *device, const int &id_projec
         }
     }
 
-    for (QTreeWidgetItem* item:qAsConst(items)){
+    for (QTreeWidgetItem* item:std::as_const(items)){
         item->setText(0, device->getName());
         item->setIcon(0, QIcon(device->getIconStateFilename()));
     }
@@ -1133,6 +1136,18 @@ QTreeWidgetItem *ProjectNavigator::getProjectForItem(const QTreeWidgetItem *item
 
 }
 
+QTreeWidgetItem *ProjectNavigator::getParticipantGroupForItem(const QTreeWidgetItem *item)
+{
+    QTreeWidgetItem* group = nullptr;
+    QTreeWidgetItem* item_parent = item->parent();
+    if (item_parent){
+        if (m_groups_items.key(item_parent,0) > 0){
+            group = item_parent;
+        }
+    }
+    return group;
+}
+
 bool ProjectNavigator::isParticipantFiltered(const QString &part_uuid)
 {
     // No participant with that uuid!
@@ -1148,7 +1163,6 @@ bool ProjectNavigator::isParticipantFiltered(const QString &part_uuid)
     }
 
     // Check for text filtering
-
     if (ui->btnSearch->isChecked() && !filtered){
         filtered = !m_participants[part_uuid].getName().contains(ui->txtNavSearch->text(), Qt::CaseInsensitive);
     }
@@ -1164,6 +1178,21 @@ bool ProjectNavigator::isAdvancedView()
 void ProjectNavigator::setCurrentItem(QTreeWidgetItem *item)
 {
     ui->treeNavigator->setCurrentItem(item);
+    TeraDataTypes item_type = getItemType(item);
+    if (item_type == TERADATA_GROUP || item_type == TERADATA_PARTICIPANT){
+        // Make sure current project id is correct
+        QTreeWidgetItem* project = getProjectForItem(item);
+        if (project){
+            m_currentProjectId = m_projects_items.key(project);
+        }
+    }
+    if (item_type == TERADATA_PARTICIPANT){
+        // Make sure group id is correct, if available
+        QTreeWidgetItem* group = getParticipantGroupForItem(item);
+        if (group){
+            m_currentGroupId = m_groups_items.key(group);
+        }
+    }
     updateAvailableActions(item);
 }
 
@@ -1186,6 +1215,16 @@ void ProjectNavigator::selectItem(QTreeWidgetItem *item)
         int id = m_participants_items.key(item);
         setCurrentItem(m_participants_items[id]);
         m_currentParticipantUuid = getParticipantUuid(id);
+        /*QTreeWidgetItem* project = getProjectForItem(ui->treeNavigator->currentItem());
+        if (project){
+            m_currentProjectId = m_projects_items.key(project);
+        }
+
+        QTreeWidgetItem* group = getParticipantGroupForItem(ui->treeNavigator->currentItem());
+        if (group){
+            m_currentGroupId = m_groups_items.key(group);
+        }*/
+
         return;
     }
 }
@@ -1258,24 +1297,20 @@ void ProjectNavigator::updateAvailableActions(QTreeWidgetItem* current_item)
 
 TeraDataTypes ProjectNavigator::getItemType(QTreeWidgetItem *item)
 {
-    if (std::find(m_projects_items.cbegin(), m_projects_items.cend(), item) != m_projects_items.cend()){
-        return TERADATA_PROJECT;
+    if (m_devices_items.key(item, -1) >= 0){
+        return TERADATA_DEVICE;
     }
-
-    if (std::find(m_groups_items.cbegin(), m_groups_items.cend(), item) != m_groups_items.cend()){
+    if (m_groups_items.key(item, -1) >= 0){
         return TERADATA_GROUP;
     }
-
-    if (std::find(m_participants_items.cbegin(), m_participants_items.cend(), item) != m_participants_items.cend()){
+    if (m_participants_items.key(item, -1) >= 0){
         return TERADATA_PARTICIPANT;
     }
-
-    if (std::find(m_users_items.cbegin(), m_users_items.cend(), item) != m_users_items.cend()){
+    if (m_users_items.key(item, -1) >= 0){
         return TERADATA_USER;
     }
-
-    if (std::find(m_devices_items.cbegin(), m_devices_items.cend(), item) != m_devices_items.cend()){
-        return TERADATA_DEVICE;
+    if (m_projects_items.key(item, -1) >= 0){
+        return TERADATA_PROJECT;
     }
 
     if (isAdvancedView() && item){
@@ -1370,8 +1405,8 @@ void ProjectNavigator::deleteItemRequested()
                                                         tr("Êtes-vous sûrs de vouloir supprimer """) + ui->treeNavigator->currentItem()->text(0) + """?");
     if (answer == QMessageBox::Yes){
         // We must delete!
-        TeraDataTypes item_type = getItemType(ui->treeNavigator->currentItem());
-        int id_todel = ui->treeNavigator->currentItem()->data(0, Qt::UserRole).toInt();
+        TeraDataTypes item_type = getCurrentItemType(); //getItemType(ui->treeNavigator->currentItem());
+        int id_todel = getCurrentItemId();
         emit dataDeleteRequest(item_type, id_todel);
     }
 }
@@ -1842,9 +1877,16 @@ void ProjectNavigator::on_btnFilterActive_toggled(bool checked)
             item->setHidden(filtered);
         }
     }
+
+    // Filter disabled projects
+    foreach(QTreeWidgetItem* item, m_projects_items){
+        bool enabled = item->data(0, Qt::UserRole).toBool();
+        item->setHidden(!enabled && checked);
+    }
+
     // Update counts for all projects
     /*if (isAdvancedView()){
-        for(QTreeWidgetItem* item_project:qAsConst(m_projects_items)){
+        for(QTreeWidgetItem* item_project:std::as_const(m_projects_items)){
             if (item_project->isExpanded()){
                 updateCountsForProject(m_projects_items.key(item_project));
             }

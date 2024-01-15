@@ -7,7 +7,11 @@
 #include <QNetworkRequest>
 #include <QAuthenticator>
 #include <QNetworkProxy>
+
+#ifndef OPENTERA_WEBASSEMBLY
 #include <QSslPreSharedKeyAuthenticator>
+#endif
+
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
 
@@ -143,6 +147,7 @@ signals:
     void servicesSitesReceived(QList<TeraData> sites_list, QUrlQuery reply_query);
     void servicesAccessReceived(QList<TeraData> access_list, QUrlQuery reply_query);
     void servicesConfigReceived(QList<TeraData> config_list, QUrlQuery reply_query);
+    void servicesRolesReceived(QList<TeraData> roles_list, QUrlQuery reply_query);
     void statsReceived(TeraData stats, QUrlQuery reply_query);
     void onlineUsersReceived(QList<TeraData> users_list, QUrlQuery reply_query);
     void onlineParticipantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);

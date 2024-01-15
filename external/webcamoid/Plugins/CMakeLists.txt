@@ -57,19 +57,50 @@ endif()
 
 if(WIN32)
 
-    #Hard coded path for now
-    set(FFMPEG_PATH "C:/Libs/ffmpeg")
+    # Oldest archive found working
+    set(ffmpeg_version "4.4")
+
+    set(ffmpeg_archive_name "ffmpeg-${ffmpeg_version}-full_build-shared.zip")
+    set(ffmpeg_archive_url "https://github.com/GyanD/codexffmpeg/releases/download/${ffmpeg_version}/${ffmpeg_archive_name}")
+
+    set(ffmpeg_archive_url_download_log "")
+    set(ffmpeg_archive_url_download_status "")
+
+    # Download FFMPEG
+    if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ffmpeg_archive_name})
+            message(STATUS "Downloading : ${ffmpeg_archive_url}")
+            file(DOWNLOAD
+                    ${ffmpeg_archive_url}
+                    ${CMAKE_CURRENT_BINARY_DIR}/${ffmpeg_archive_name}
+                    TIMEOUT 300 #seconds
+                    LOG ffmpeg_archive_url_download_log
+                    STATUS ffmpeg_archive_url_download_status
+                    TLS_VERIFY ON
+                    SHOW_PROGRESS)
+    endif()
+
+    MESSAGE ( STATUS "Download status = ${ffmpeg_archive_url_download_status} log = ${ffmpeg_archive_url_download_log}")
+
+
+    # Extract file
+    if (NOT EXISTS {CMAKE_CURRENT_BINARY_DIR}/ffmpeg-${ffmpeg_version}-full_build-shared/README.txt)
+        file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_BINARY_DIR}/${ffmpeg_archive_name} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+    endif()
+
+
+    # Using downloaded archive
+    set(FFMPEG_PATH ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-${ffmpeg_version}-full_build-shared)
 
     FILE(GLOB FFMPEG_DLL "${FFMPEG_PATH}/bin/*.dll")
     MESSAGE ( STATUS "FFMpeg libs = ${FFMPEG_DLL}")
 
-    #FOR SOME REASON, DLLs ARE IN THE BIN DIRECTORY...
+    # DLLs ARE IN THE BIN DIRECTORY...
     INSTALL(FILES ${FFMPEG_DLL} DESTINATION bin)
 
-    #For IN-SOURCE debug
+    # For IN-SOURCE debug
     file(COPY ${FFMPEG_DLL} DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 
-    #FOR MSVC
+    # FOR MSVC
     set(ffmpeg_lib_names
         ${FFMPEG_PATH}/lib/avcodec.lib
         ${FFMPEG_PATH}/lib/avfilter.lib
@@ -81,7 +112,7 @@ if(WIN32)
         ${FFMPEG_PATH}/lib/swscale.lib
     )
 
-    #for linking and compiling
+    # For linking and compiling
     set(FFMPEG_INCLUDES "${FFMPEG_PATH}/include " CACHE INTERNAL "doc string")
     message ( STATUS "FFMpeg includes = ${FFMPEG_INCLUDES}")
 
@@ -90,7 +121,7 @@ if(WIN32)
 
 endif()
 
-#Will output in the right directory
+# Will output in the right directory
 FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin/AvKysPlugins)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin/AvKysPlugins)
 SET (AVKYS_LIBRARY_INSTALL_PATH ${CMAKE_INSTALL_BINDIR}/AvKysPlugins)

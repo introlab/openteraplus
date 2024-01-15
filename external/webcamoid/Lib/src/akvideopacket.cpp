@@ -18,6 +18,7 @@
  */
 
 #include "akvideopacket.h"
+#include <QVariant>
 
 class AkVideoPacketPrivate
 {

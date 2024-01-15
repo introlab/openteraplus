@@ -260,8 +260,13 @@ void InSessionWidget::on_btnEndSession_clicked()
 
 void InSessionWidget::on_btnInSessionInfos_toggled(bool checked)
 {
+    int mainWidth = ui->widgetMain->width();
     ui->tabInfos->setVisible(checked);
-
+    if (checked){
+        ui->widgetMain->setMaximumWidth(mainWidth - ui->tabInfos->width());
+    }else{
+        ui->widgetMain->setMaximumWidth(mainWidth + ui->tabInfos->width());
+    }
 }
 
 void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
@@ -282,7 +287,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
            /*if (session.hasFieldName("session_participants")){
                 item_list = session.getFieldValue("session_participants").toList();
 
-                for(const QVariant &session_part:qAsConst(item_list)){
+                for(const QVariant &session_part:std::as_const(item_list)){
                     QVariantMap part_info = session_part.toMap();
                     ui->wdgInvitees->addRequiredParticipant(part_info["id_participant"].toInt());
                 }
@@ -291,7 +296,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
             if (session.hasFieldName("session_users")){
                 item_list = session.getFieldValue("session_users").toList();
 
-                for(const QVariant &session_user:qAsConst(item_list)){
+                for(const QVariant &session_user:std::as_const(item_list)){
                     QVariantMap user_info = session_user.toMap();
                     int id_user = user_info["id_user"].toInt();
                     if (id_user == m_comManager->getCurrentUser().getId())
@@ -302,7 +307,7 @@ void InSessionWidget::processSessionsReply(QList<TeraData> sessions)
             /*if (session.hasFieldName("session_devices")){
                 item_list = session.getFieldValue("session_devices").toList();
 
-                for(const QVariant &session_device:qAsConst(item_list)){
+                for(const QVariant &session_device:std::as_const(item_list)){
                     QVariantMap device_info = session_device.toMap();
                     ui->wdgInvitees->addRequiredDevice(device_info["id_device"].toInt());
                 }
@@ -367,6 +372,17 @@ void InSessionWidget::ws_JoinSessionEvent(JoinSessionEvent event)
 
     // Forward to widget
     if (m_serviceWidget){
+        // SB Qt6 WebEngineView seems to cause issue when loading / displaying... Bug?
+        //    This patch this behaviour and ensures that the session always starts in maximized mode
+        QWidget* parent = parentWidget();
+        while(parent){
+            parent = parent->parentWidget();
+            if (QString::fromStdString(parent->metaObject()->className()) == "MainWindow"){
+                parent->showNormal();
+                parent->showMaximized();
+                break;
+            }
+        }
         bool result = m_serviceWidget->handleJoinSessionEvent(event);
         if (result){
             // If we have a result here, it's that the join was accepted for the first time.
@@ -458,16 +474,16 @@ void InSessionWidget::connectSignals()
 
 void InSessionWidget::initUI()
 {
+    ui->btnEndSession->hide();
+    ui->grpSavePath->hide();
 
     ui->wdgInvitees->setConfirmOnRemove(true);
     ui->wdgInvitees->setComManager(m_comManager);
     //ui->wdgInvitees->showAvailableInvitees(true);
 
-    ui->btnInSessionInfos->setChecked(true);
+    ui->btnInSessionInfos->setChecked(false);
+    ui->tabInfos->hide();
     ui->tabInfos->setCurrentIndex(0);
-
-    ui->btnEndSession->hide();
-    ui->grpSavePath->hide();
 
     // Clean up, if needed
     if (m_serviceWidget){
@@ -485,7 +501,7 @@ void InSessionWidget::initUI()
         bool handled = false;
         if (service_key == "VideoRehabService"){
             // Main widget = QWebEngine
-            m_serviceWidget = new VideoRehabWidget(m_comManager, this);
+            m_serviceWidget = new VideoRehabWidget(m_comManager);
             setMainWidget(m_serviceWidget);
             m_serviceToolsWidget = new VideoRehabToolsWidget(m_comManager, m_serviceWidget, this);
             setToolsWidget(m_serviceToolsWidget);

@@ -4,8 +4,9 @@
 #include <QObject>
 #include "TeraData.h"
 #include <QJsonDocument>
+#include "SharedLib.h"
 
-class TeraPreferences : public QObject
+class SHAREDLIB_EXPORT TeraPreferences : public QObject
 {
     Q_OBJECT
 

@@ -1,0 +1,6 @@
+if(WIN32)
+    message("Cleaning unneeded files for package...")
+    file(REMOVE_RECURSE ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/libprotobuf/lib)
+    file(REMOVE_RECURSE ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/openteraplus/lib)
+    file(REMOVE_RECURSE ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/openteraplus/include)
+endif(WIN32)

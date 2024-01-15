@@ -150,11 +150,8 @@ void ServiceWidget::postServiceRoles()
     QJsonObject base_obj;
     QJsonArray roles;
 
-    for (const QString &role_name:qAsConst(m_serviceRoles)){
+    for (const QString &role_name:std::as_const(m_serviceRoles)){
         int role_id = m_serviceRoles.key(role_name);
-/*    for (int i=0; i<m_serviceRoles.count(); i++){
-        int role_id = m_serviceRoles.keys().at(i);
-        QString role_name = m_serviceRoles.values().at(i);*/
         QJsonObject data_obj;
         data_obj.insert("id_service_role", role_id);
         data_obj.insert("service_role_name", role_name);
@@ -175,7 +172,7 @@ void ServiceWidget::postServiceSites()
     QJsonObject base_obj;
     QJsonArray sites;
 
-    for(QTreeWidgetItem* item: qAsConst(m_treeSites_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeSites_items)){
         int site_id = m_treeSites_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;
@@ -198,7 +195,7 @@ void ServiceWidget::postServiceProjects()
     QJsonObject base_obj;
     QJsonArray projects;
 
-    for(QTreeWidgetItem* item: qAsConst(m_treeProjects_items)){
+    for(QTreeWidgetItem* item: std::as_const(m_treeProjects_items)){
         int project_id = m_treeProjects_items.key(item);
         if (item->checkState(0) == Qt::Checked){
             QJsonObject data_obj;

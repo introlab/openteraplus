@@ -256,6 +256,10 @@ QString DataEditorWidget::getRoleName(const QString &role)
         return tr("Administrateur");
     if (role == "user")
         return tr("Utilisateur");
+    if (role == "manager")
+        return tr("Gestionnaire");
+    if (role == "editor")
+        return tr("Éditeur");
     if (role == "")
         return tr("Aucun rôle");
     return role;
@@ -331,11 +335,15 @@ void DataEditorWidget::deleteDataReplyOK(const QString &path, const int &id)
         setReady();
 }
 
-void DataEditorWidget::comDataError(QNetworkReply::NetworkError error, QString error_str)
+void DataEditorWidget::comDataError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation op, int status_code, QString path, QUrlQuery url_query)
 {
     Q_UNUSED(error)
     Q_UNUSED(error_str)
+    QString query_name = getQueryDataName(path, url_query);
+    m_requests.removeOne(query_name);
     setReady();
+    if (!hasPendingDataRequests())
+        updateFieldsValue();
 }
 
 void DataEditorWidget::editToggleClicked()
@@ -358,7 +366,7 @@ void DataEditorWidget::saveButtonClicked()
 
         if (!invalids.isEmpty()){
             QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-            for (const QString &field:qAsConst(invalids)){
+            for (const QString &field:std::as_const(invalids)){
                 msg += "<li>" + field + "</li>";
             }
             msg += "</ul>";

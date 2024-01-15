@@ -7,7 +7,6 @@ ServiceConfigWidget::ServiceConfigWidget(ComManager *comMan, const QString id_fi
 {   
 
     ui->setupUi(this);
-
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
 
     setLimited(false);
@@ -119,7 +118,7 @@ void ServiceConfigWidget::updateFieldsValue(){
         QVariantList specifics = m_data->getFieldValue("service_config_specifics").toList();
         if (!specifics.isEmpty()){
             ui->cmbSpecific->addItem(tr("Globale"));
-            for (const QVariant &specific_id:qAsConst(specifics)){
+            for (const QVariant &specific_id:std::as_const(specifics)){
                 ui->cmbSpecific->addItem(specific_id.toString());
             }
             ui->frameSpecific->show();
@@ -146,7 +145,7 @@ void ServiceConfigWidget::updateService(const TeraData *service)
         // New service with a config
         item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE_CONFIG)), service_name);
         item->setToolTip(service_name);
-        item->setSizeHint(QSize(ui->lstServiceConfig->width(), 64));
+        //item->setSizeHint(QSize(ui->lstServiceConfig->width(), 64));
         ui->lstServiceConfig->addItem(item);
         m_listServices_items[id_service] = item;
     }
@@ -156,8 +155,7 @@ void ServiceConfigWidget::updateService(const TeraData *service)
 bool ServiceConfigWidget::validateData(){
     bool valid = false;
 
-    valid = ui->wdgServiceConfig->validateFormData() & ui->wdgServiceConfigConfig->validateFormData() ;
-
+    valid = ui->wdgServiceConfig->validateFormData() && ui->wdgServiceConfigConfig->validateFormData() ;
 
     return valid;
 }
@@ -290,7 +288,7 @@ void ServiceConfigWidget::on_btnSave_clicked()
 
         if (!invalids.isEmpty()){
             QString msg = tr("Les champs suivants doivent être complétés:") +" <ul>";
-            for (const QString &field:qAsConst(invalids)){
+            for (const QString &field:std::as_const(invalids)){
                 msg += "<li>" + field + "</li>";
             }
             msg += "</ul>";
@@ -307,22 +305,21 @@ void ServiceConfigWidget::on_btnUndo_clicked()
     undoData();
 }
 
-void ServiceConfigWidget::on_cmbSpecific_currentIndexChanged(const QString &current_id)
+void ServiceConfigWidget::on_cmbSpecific_currentIndexChanged(const int &current_index)
 {
     if (isLoading())
         return;
-
     // Reload data for requested config
     int id_service = m_listServices_items.key(ui->lstServiceConfig->currentItem());
     QUrlQuery args;
     args.addQueryItem(m_idFieldName, QString::number(m_idFieldValue));
     args.addQueryItem(WEB_QUERY_ID_SERVICE, QString::number(id_service));
     if (ui->cmbSpecific->currentIndex()>0){
-        args.addQueryItem(WEB_QUERY_ID_SPECIFIC, current_id);
-        m_specificId = current_id;
+        args.addQueryItem(WEB_QUERY_ID_SPECIFIC, ui->cmbSpecific->currentText());
+        m_specificId = ui->cmbSpecific->currentText();
     }else{
         m_specificId.clear();
     }
     queryDataRequest(WEB_SERVICECONFIGINFO_PATH, args);
-
 }
+

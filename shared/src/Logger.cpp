@@ -2,11 +2,11 @@
 #include <QtDebug>
 #include <QMutexLocker>
 #include <QCoreApplication>
-
+#include <QMutex>
 
 //Singleton
 Logger* Logger::m_instance = nullptr;
-QMutex  Logger::m_mutex(QMutex::Recursive);
+QRecursiveMutex  Logger::m_mutex;
 Logger::ActivationPriority Logger::m_active_priority = Logger::DISABLE_PRIORITY; //DISABLE_PRIORITY; //INFO_PRIORITY; //
 
 

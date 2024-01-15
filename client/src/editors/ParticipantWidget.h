@@ -17,7 +17,10 @@
 #include "TeraSettings.h"
 #include "ServiceConfigWidget.h"
 
+#ifndef OPENTERA_WEBASSEMBLY
 #include "dialogs/SessionLobbyDialog.h"
+#endif
+
 #include "dialogs/EmailInviteDialog.h"
 #include "dialogs/DeviceAssignDialog.h"
 #include "dialogs/QRCodeDialog.h"
@@ -56,7 +59,9 @@ private:
     bool                            m_allowFileTransfers;   // Allow to attach files to a session?
 
     QRCodeDialog*                   m_diag_qr = nullptr;
+#ifndef OPENTERA_WEBASSEMBLY
     SessionLobbyDialog*             m_sessionLobby;
+#endif
 
     QHash<int, TeraData*>           m_ids_session_types;
 
@@ -95,10 +100,11 @@ private slots:
 
     void btnAddDevice_clicked();
     void btnDelDevice_clicked();
-
+#ifndef OPENTERA_WEBASSEMBLY
     void showSessionLobby(const int& id_session_type, const int& id_session);
     void sessionLobbyStartSessionRequested();
     void sessionLobbyStartSessionCancelled();
+#endif
 
     void currentAvailDeviceChanged(QListWidgetItem* current, QListWidgetItem* previous);
     void currentDeviceChanged(QListWidgetItem* current, QListWidgetItem* previous);

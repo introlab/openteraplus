@@ -64,6 +64,7 @@ private:
     void updateUserGroup(const TeraData* group);
     void updateSiteAccess(const TeraData* site_access);
     void updateProjectAccess(const TeraData* project_access);
+    void updateServiceAccess(const TeraData* service_access);
 
     void queryUserAccess();
 
@@ -76,6 +77,7 @@ private slots:
     void processUsersReply(QList<TeraData> users);
     void processSitesAccessReply(QList<TeraData> sites);
     void processProjectsAccessReply(QList<TeraData> projects);
+    void processServicesAccessReply(QList<TeraData> services_access);
     void processUserGroupsReply(QList<TeraData> user_groups, QUrlQuery query);
     void processUserUsersGroupsReply(QList<TeraData> user_users_groups, QUrlQuery query);
     void processUserPrefsReply(QList<TeraData> user_prefs, QUrlQuery query);

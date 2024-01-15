@@ -75,7 +75,7 @@ void DanceConfigWidget::on_btnUpload_clicked()
 void DanceConfigWidget::processVideosReply(QList<QJsonObject> videos)
 {
 
-    for (const QJsonObject &video:qAsConst(videos)){
+    for (const QJsonObject &video:std::as_const(videos)){
         updateVideoInLibrary(video);
         updateVideoInPlaylist(video);
     }
@@ -107,7 +107,7 @@ void DanceConfigWidget::processPlaylistReply(QList<QJsonObject> playlists)
     m_playlistIds.clear();
     checkDirty();
 
-    for (const QJsonObject &playlist:qAsConst(playlists)){
+    for (const QJsonObject &playlist:std::as_const(playlists)){
         int id_video = playlist["id_video"].toInt();
         m_playlistIds.append(id_video);
         // Find video in available list
@@ -661,7 +661,7 @@ void DanceConfigWidget::on_btnCancel_clicked()
     ui->lstPlaylist->clearContents();
     ui->lstPlaylist->setRowCount(0);
 
-    for (const int& id:qAsConst(m_playlistIds)){
+    for (const int& id:std::as_const(m_playlistIds)){
         // Find video in available
         for(int i=0; i<ui->lstAvailVideos->count(); i++){
             if (ui->lstAvailVideos->item(i)->data(Qt::UserRole).toInt() == id){

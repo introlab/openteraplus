@@ -7,8 +7,9 @@
 #include <QHBoxLayout>
 #include <QComboBox>
 
-#include <QAudioDeviceInfo>
-#include <QCameraInfo>
+#include <QMediaDevices>
+#include <QCameraDevice>
+#include <QAudioDevice>
 
 #include "services/BaseServiceSetupWidget.h"
 

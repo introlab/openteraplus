@@ -18,7 +18,7 @@ LogViewWidget::LogViewWidget(QWidget *parent):
     // Init levels combo box
     int level_id = LogEvent::LogLevel_MIN;
     QStringList names = getLogLevelNames();
-    for(const QString &name:qAsConst(names)){
+    for(const QString &name:std::as_const(names)){
         ui->cmbLevel->addItem(name, level_id++);
         /*if (level_id == LogEvent::LOGLEVEL_INFO){
             ui->cmbLevel->setCurrentIndex(ui->cmbLevel->count()-1);
@@ -383,6 +383,9 @@ QString LogViewWidget::getOSIcon(const QString &os)
 
     if (compare_os.contains("android"))
         return "://icons/logs/os_android.png";
+
+    if (compare_os.contains("chrome"))
+        return "://icons/logs/browser_chrome.png";
 
     return "";
 

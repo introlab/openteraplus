@@ -25,7 +25,7 @@ class KitConfigDialog : public QDialog
 
 public:
     explicit KitConfigDialog(ComManager* comMan, KitConfigManager* kitConfig, QWidget *parent = nullptr);
-    ~KitConfigDialog();
+    ~KitConfigDialog() override;
 
 private slots:
     void on_btnClose_clicked();

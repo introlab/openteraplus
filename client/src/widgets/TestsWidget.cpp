@@ -323,263 +323,25 @@ void TestsWidget::updateTestsCountLabel()
     ui->btnDownloadAll->setEnabled(m_tests.count()>0);
 }
 
-void TestsWidget::processTestsReply(QList<TeraData> tests, QUrlQuery reply_query)
+void TestsWidget::downloadTests(const QList<TeraData *> tests)
 {
-    if (reply_query.hasQueryItem(WEB_QUERY_WITH_ONLY_TOKEN)){
-        // Only update access token!
-        foreach(TeraData test, tests){
-            QString test_uuid = test.getUuid();
-            QString access_token = test.getFieldValue("access_token").toString();
-            if (m_tests.contains(test_uuid)){
-                m_tests[test_uuid]->setFieldValue("access_token", access_token);
-            }
-            // Start refresh timer
-            // m_refreshTokenTimer.start();
-        }
-    }else{
-        bool empty_tests = m_tests.isEmpty();
-        foreach(TeraData test, tests){
-            // Participant name
-            int id_participant = -1;
-            if (reply_query.hasQueryItem(WEB_QUERY_ID_PARTICIPANT)){
-                id_participant = reply_query.queryItemValue(WEB_QUERY_ID_PARTICIPANT).toInt();
-            }
-            updateTest(test, id_participant, !empty_tests); // No count change signal on new query
-        }
 
-        updateTestsCountLabel();
-
-        // Query extra information
-        //queryAssetsInfos();
-
-        /*if (!m_refreshTokenTimer.isActive())
-            m_refreshTokenTimer.start();*/
-    }
-    ui->tableTests->resizeColumnsToContents();
-
-    setLoading(false);
-
-}
-
-void TestsWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)
-{
-    for(const TeraData &service:services){
-       if (service.getFieldValue("service_key").toString() == "FileTransferService"){
-           // Check if project is in service_fields
-           if (service.hasFieldName("service_projects")){
-               QVariantList projects = service.getFieldValue("service_projects").toList();
-               for (const QVariant &project:qAsConst(projects)){
-                   QVariantMap project_info = project.toMap();
-                   if (project_info["id_project"].toInt() == m_idProject){
-                       // Ok, we are allowed to use file transfer service
-                       /*if (m_fileTransferServiceInfos)
-                           delete m_fileTransferServiceInfos;
-                       m_fileTransferServiceInfos = new TeraData(service);
-                       ui->btnNew->setVisible(true);*/
-                       break;
-                   }
-               }
-           }
-       }
-    }
-}
-
-void TestsWidget::comDeleteDataReply(QString path, int id)
-{
-    if (path == WEB_TESTINFO_PATH){
-        // Remove test from list
-        for(TeraData* test_info:qAsConst(m_tests)){
-            if (test_info->getId() == id){
-                QString test_uuid = test_info->getUuid();
-                ui->tableTests->removeRow(m_tableTests[test_uuid]->row());
-                m_tableTests.remove(test_uuid);
-                delete m_tests.take(test_uuid);
-
-                // Emit update signal
-                emit testCountChanged(m_tests.count());
-                updateTestsCountLabel();
-                break;
-            }
-        }
-    }
-}
-
-void TestsWidget::nextMessageWasShown(Message current_message)
-{
-    if (current_message.getMessageType()==Message::MESSAGE_NONE){
-        ui->wdgMessages->hide();
-    }else{
-        ui->wdgMessages->show();
-    }
-}
-
-/*void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path)
-{
-    for (const QJsonObject &asset_info:qAsConst(infos)){
-        QString asset_uuid = asset_info["asset_uuid"].toString();
-
-        if (!m_treeAssets.contains(asset_uuid)){
-            // Create a new asset, if possible (should happen if we posted a new asset)
-            TeraData asset(TERADATA_ASSET, asset_info);
-            updateAsset(asset); // TODO: manage participant association, if required by the view
-        }
-
-        if (m_treeAssets.contains(asset_uuid)){
-            QTreeWidgetItem* asset_item = m_treeAssets[asset_uuid];
-
-            if (asset_info.contains("asset_file_size")){
-
-                asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset_info["asset_file_size"].toInt()));
-                ui->treeAssets->showColumn(AssetColumn::ASSET_SIZE);
-            }
-
-            if (asset_info.contains("file_size")){
-                asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset_info["file_size"].toInt()));
-                ui->treeAssets->showColumn(AssetColumn::ASSET_SIZE);
-            }
-
-            if (asset_info.contains("video_duration")){
-                asset_item->setText(AssetColumn::ASSET_DURATION, Utils::formatDuration(asset_info["video_duration"].toString()));
-                ui->treeAssets->showColumn(AssetColumn::ASSET_DURATION);
-            }
-        }
-
-        if (m_assets.contains(asset_uuid)){
-            // Append received fields to current asset
-            TeraData* asset = m_assets[asset_uuid];
-            asset->updateFrom(asset_info);
-        }
-    }
-    resizeAssetsColumnsToContent();
-
-    setLoading(false);
-}
-
-void AssetsWidget::refreshAccessToken()
-{
-    if (!m_comManager)
-        return;
-
-    QUrlQuery query = m_dataQuery; // Original data query
-
-    query.addQueryItem(WEB_QUERY_WITH_ONLY_TOKEN, "1");
-    m_comManager->doGet(WEB_ASSETINFO_PATH, query);
-}
-
-void AssetsWidget::on_treeAssets_itemSelectionChanged()
-{
-    bool at_least_one_asset_selected = false;
-
-    // Make sure we don't have only "labels" items (session, participant, ...) selected
-    const QList<QTreeWidgetItem*> selected_items = ui->treeAssets->selectedItems();
-    for(QTreeWidgetItem* item:selected_items){
-        if (!m_treeAssets.key(item).isEmpty() ){
-            at_least_one_asset_selected = true;
-            break;
-        }
-    }
-    ui->btnDelete->setEnabled(at_least_one_asset_selected);
-    ui->btnDownload->setEnabled(at_least_one_asset_selected);
-}
-
-
-void AssetsWidget::on_btnNew_clicked()
-{
-    // Upload a new asset to the FileTransfer service
-    if (!m_fileTransferServiceInfos || !m_comAssetManager || !m_comManager){
-        return; // Should not happen at this point.
-    }
-
-    if (m_uploadDialog){
-        m_uploadDialog->deleteLater();
-    }
-
-    // Open upload dialog
-    m_uploadDialog = new FileUploaderDialog(tr("Tous (*.*)"), dynamic_cast<QWidget*>(this));
-    if (m_uploadDialog->result() == QDialog::Rejected){
-        // No file selected - no need to upload anything!
-        m_uploadDialog->deleteLater();
-        m_uploadDialog = nullptr;
-        return;
-    }
-    m_uploadDialog->setMinimumWidth(2*this->width()/3);
-
-    connect(m_uploadDialog, &FileUploaderDialog::finished, this, &AssetsWidget::fileUploaderFinished);
-
-    m_uploadDialog->setModal(true);
-    m_uploadDialog->show();
-
-
-}*/
-
-void TestsWidget::on_btnDelete_clicked()
-{
-    // Check if the sender is a QToolButton (from the action column)
-    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
-    if (action_btn && action_btn != ui->btnDelete){
-        // Select row according to the session id of that button
-        QString test_uuid = action_btn->property("test_uuid").toString();
-        QTableWidgetItem* test_item = m_tableTests[test_uuid];
-        ui->tableTests->clearSelection();
-        if (test_item)
-            test_item->setSelected(true); // Select row?
-    }
-
-    if (ui->tableTests->selectedItems().count()==0)
-        return;
-
-    GlobalMessageBox diag;
-    QMessageBox::StandardButton answer = QMessageBox::No;
-    if (ui->tableTests->selectionModel()->selectedRows().count() == 1){
-        QTableWidgetItem* base_item = ui->tableTests->item(ui->tableTests->currentRow(), TEST_NAME_COLUMN);
-        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer """) + base_item->text() + """?");
-    }else{
-        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer toutes les évaluations sélectionnées?"));
-    }
-
-    if (answer == QMessageBox::Yes){
-        // We must delete!
-        foreach(QModelIndex selected_row, ui->tableTests->selectionModel()->selectedRows()){
-            QTableWidgetItem* base_item = ui->tableTests->item(selected_row.row(), TEST_NAME_COLUMN);
-            QString test_uuid = m_tableTests.key(base_item);
-            int test_id = m_tests[test_uuid]->getId();
-            m_comManager->doDelete(WEB_TESTINFO_PATH, test_id);
-        }
-    }
-}
-
-
-void TestsWidget::on_tableTests_itemSelectionChanged()
-{
-    ui->btnDelete->setEnabled(!ui->tableTests->selectedItems().isEmpty());
-
-    // Display / hide summary
-    ui->tableTestSummary->setVisible(ui->tableTests->selectionModel()->selectedRows().count() == 1);
-
-    if (ui->tableTestSummary->isVisible()){
-        QString test_uuid = m_tableTests.key(ui->tableTests->item(ui->tableTests->currentRow(), TEST_NAME_COLUMN));
-        showTestSummary(test_uuid);
-    }
-}
-
-void TestsWidget::on_btnDownloadAll_clicked()
-{
-    if (m_tests.isEmpty()) return; // Should not happen
+    if (tests.isEmpty()) return;
 
     GlobalMessageBox msg(this);
 
     // Query for file to save
     QString full_path;
     QString filename = ""; // Generate default filename
-    if (m_tests.first()->hasFieldName("test_participant")){
-        QString clean_name = Utils::removeNonAlphanumerics(m_tests.first()->getFieldValue("test_participant").toString());
+    if (tests.first()->hasFieldName("test_participant")){
+        QString clean_name = Utils::removeNonAlphanumerics(tests.first()->getFieldValue("test_participant").toString());
         filename += clean_name;
         if (!filename.endsWith("_"))
             filename += "_";
     }
     if (m_viewMode == VIEWMODE_SESSION){
-        if (m_tests.first()->hasFieldName("test_session_name")){
-            QString clean_name = Utils::removeNonAlphanumerics(m_tests.first()->getFieldValue("test_session_name").toString());
+        if (tests.first()->hasFieldName("test_session_name")){
+            QString clean_name = Utils::removeNonAlphanumerics(tests.first()->getFieldValue("test_session_name").toString());
             filename += clean_name;
             if (!filename.endsWith("_"))
                 filename += "_";
@@ -604,7 +366,7 @@ void TestsWidget::on_btnDownloadAll_clicked()
     // Get all variables in the json fields
     QStringList columns;
     QStringList variables;
-    for (TeraData* test:qAsConst(m_tests)){
+    for (TeraData* test:std::as_const(tests)){
         // Parse json result
         if (test->hasFieldName("test_summary")){
             QJsonDocument test_summary_doc = QJsonDocument::fromJson(test->getFieldValue("test_summary").toString().toUtf8());
@@ -629,16 +391,14 @@ void TestsWidget::on_btnDownloadAll_clicked()
     if (csv_file.open(QIODevice::WriteOnly| QIODevice::Text)){
         QTextStream csv_writer(&csv_file);
 
-        for (const QString &col: qAsConst(columns))
+        for (const QString &col: std::as_const(columns))
             csv_writer << col << '\t';
 
-        for (const QString &var: qAsConst(variables))
+        for (const QString &var: std::as_const(variables))
             csv_writer << var << '\t';
         csv_writer << Qt::endl;
 
-        for (int i=0; i<ui->tableTests->rowCount(); i++){
-            // Use the data in the table to keep received order of items
-            TeraData* test = m_tests[m_tableTests.key(ui->tableTests->item(i,0))];
+        for (TeraData* test:tests){
 
             // Creator
             if (test->hasFieldName("test_participant")){
@@ -685,7 +445,7 @@ void TestsWidget::on_btnDownloadAll_clicked()
                 QJsonDocument test_summary_doc = QJsonDocument::fromJson(test->getFieldValue("test_summary").toString().toUtf8());
                 if (!test_summary_doc.isNull()){
                    QVariantMap test_summary = test_summary_doc.object().toVariantMap();
-                   for (const QString &var: qAsConst(variables)){
+                   for (const QString &var: std::as_const(variables)){
                        if (test_summary.contains(var)){
                            csv_writer <<test_summary[var].toString();
                        }
@@ -704,6 +464,179 @@ void TestsWidget::on_btnDownloadAll_clicked()
 
     msg.showInfo(tr("Exportation terminée"), tr("L'exportation des données a été complétée avec succès."));
 
+}
 
+void TestsWidget::processTestsReply(QList<TeraData> tests, QUrlQuery reply_query)
+{
+    if (reply_query.hasQueryItem(WEB_QUERY_WITH_ONLY_TOKEN)){
+        // Only update access token!
+        foreach(TeraData test, tests){
+            QString test_uuid = test.getUuid();
+            QString access_token = test.getFieldValue("access_token").toString();
+            if (m_tests.contains(test_uuid)){
+                m_tests[test_uuid]->setFieldValue("access_token", access_token);
+            }
+            // Start refresh timer
+            // m_refreshTokenTimer.start();
+        }
+    }else{
+        bool empty_tests = m_tests.isEmpty();
+        foreach(TeraData test, tests){
+            // Participant name
+            int id_participant = -1;
+            if (reply_query.hasQueryItem(WEB_QUERY_ID_PARTICIPANT)){
+                id_participant = reply_query.queryItemValue(WEB_QUERY_ID_PARTICIPANT).toInt();
+            }
+            updateTest(test, id_participant, !empty_tests); // No count change signal on new query
+        }
+
+        updateTestsCountLabel();
+
+        // Query extra information
+        //queryAssetsInfos();
+
+        /*if (!m_refreshTokenTimer.isActive())
+            m_refreshTokenTimer.start();*/
+    }
+    ui->tableTests->resizeColumnsToContents();
+
+    setLoading(false);
+
+}
+
+void TestsWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)
+{
+    for(const TeraData &service:services){
+       if (service.getFieldValue("service_key").toString() == "FileTransferService"){
+           // Check if project is in service_fields
+           if (service.hasFieldName("service_projects")){
+               QVariantList projects = service.getFieldValue("service_projects").toList();
+               for (const QVariant &project:std::as_const(projects)){
+                   QVariantMap project_info = project.toMap();
+                   if (project_info["id_project"].toInt() == m_idProject){
+                       // Ok, we are allowed to use file transfer service
+                       /*if (m_fileTransferServiceInfos)
+                           delete m_fileTransferServiceInfos;
+                       m_fileTransferServiceInfos = new TeraData(service);
+                       ui->btnNew->setVisible(true);*/
+                       break;
+                   }
+               }
+           }
+       }
+    }
+}
+
+void TestsWidget::comDeleteDataReply(QString path, int id)
+{
+    if (path == WEB_TESTINFO_PATH){
+        // Remove test from list
+        for(TeraData* test_info:std::as_const(m_tests)){
+            if (test_info->getId() == id){
+                QString test_uuid = test_info->getUuid();
+                ui->tableTests->removeRow(m_tableTests[test_uuid]->row());
+                m_tableTests.remove(test_uuid);
+                delete m_tests.take(test_uuid);
+
+                // Emit update signal
+                emit testCountChanged(m_tests.count());
+                updateTestsCountLabel();
+                break;
+            }
+        }
+    }
+}
+
+void TestsWidget::nextMessageWasShown(Message current_message)
+{
+    if (current_message.getMessageType()==Message::MESSAGE_NONE){
+        ui->wdgMessages->hide();
+    }else{
+        ui->wdgMessages->show();
+    }
+}
+
+void TestsWidget::on_btnDelete_clicked()
+{
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    if (action_btn && action_btn != ui->btnDelete){
+        // Select row according to the session id of that button
+        QString test_uuid = action_btn->property("test_uuid").toString();
+        QTableWidgetItem* test_item = m_tableTests[test_uuid];
+        ui->tableTests->clearSelection();
+        if (test_item)
+            test_item->setSelected(true); // Select row?
+    }
+
+    if (ui->tableTests->selectedItems().count()==0)
+        return;
+
+    GlobalMessageBox diag;
+    QMessageBox::StandardButton answer = QMessageBox::No;
+    if (ui->tableTests->selectionModel()->selectedRows().count() == 1){
+        QTableWidgetItem* base_item = ui->tableTests->item(ui->tableTests->currentRow(), TEST_NAME_COLUMN);
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer """) + base_item->text() + """?");
+    }else{
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer toutes les évaluations sélectionnées?"));
+    }
+
+    if (answer == QMessageBox::Yes){
+        // We must delete!
+        foreach(QModelIndex selected_row, ui->tableTests->selectionModel()->selectedRows()){
+            QTableWidgetItem* base_item = ui->tableTests->item(selected_row.row(), TEST_NAME_COLUMN);
+            QString test_uuid = m_tableTests.key(base_item);
+            int test_id = m_tests[test_uuid]->getId();
+            m_comManager->doDelete(WEB_TESTINFO_PATH, test_id);
+        }
+    }
+}
+
+
+void TestsWidget::on_tableTests_itemSelectionChanged()
+{
+    bool has_selection = !ui->tableTests->selectedItems().isEmpty();
+    ui->btnDelete->setEnabled(has_selection);
+    ui->btnDownload->setEnabled(has_selection);
+
+    // Display / hide summary
+    ui->tableTestSummary->setVisible(ui->tableTests->selectionModel()->selectedRows().count() == 1);
+
+    if (ui->tableTestSummary->isVisible()){
+        QString test_uuid = m_tableTests.key(ui->tableTests->item(ui->tableTests->currentRow(), TEST_NAME_COLUMN));
+        showTestSummary(test_uuid);
+    }
+
+}
+
+void TestsWidget::on_btnDownloadAll_clicked()
+{
+    if (m_tests.isEmpty()) return; // Should not happen
+
+    QList<TeraData*> tests;
+
+    // Browse table items to have sorted list (the order it will be exported)
+    for (int i=0; i<ui->tableTests->rowCount(); i++){
+        TeraData* test = m_tests[m_tableTests.key(ui->tableTests->item(i,0))];
+        tests.append(test);
+    }
+    downloadTests(tests);
+}
+
+
+void TestsWidget::on_btnDownload_clicked()
+{
+    if (m_tests.isEmpty() || ui->tableTests->selectedItems().isEmpty()) return; // Should not happen
+
+    QList<TeraData*> tests;
+
+    // Browse table items to have sorted list (the order it will be exported)
+    for (int i=0; i<ui->tableTests->selectedItems().count(); i++){
+        if (m_tableTests.key(ui->tableTests->selectedItems().at(i), nullptr) != nullptr){
+            TeraData* test = m_tests[m_tableTests.key(ui->tableTests->selectedItems().at(i))];
+            tests.append(test);
+        }
+    }
+    downloadTests(tests);
 }
 

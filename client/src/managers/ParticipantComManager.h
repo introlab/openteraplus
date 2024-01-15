@@ -7,7 +7,9 @@
 #include <QNetworkRequest>
 #include <QAuthenticator>
 #include <QNetworkProxy>
-#include <QSslPreSharedKeyAuthenticator>
+#ifndef OPENTERA_WEBASSEMBLY
+    #include <QSslPreSharedKeyAuthenticator>
+#endif
 #include <QNetworkCookieJar>
 #include <QNetworkCookie>
 

@@ -2,8 +2,9 @@
 #define TERASESSIONEVENT_H
 
 #include <QObject>
+#include "SharedLib.h"
 
-class TeraSessionEvent : public QObject
+class SHAREDLIB_EXPORT TeraSessionEvent : public QObject
 {
     Q_OBJECT
 public:

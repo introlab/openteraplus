@@ -7,8 +7,9 @@ DashboardWidget::DashboardWidget(ComManager *comMan, int id_site, QWidget *paren
     m_comManager(comMan)
 {
     ui->setupUi(this);
-
+#ifndef OPENTERA_WEBASSEMBLY
     m_sessionLobby = nullptr;
+#endif
     m_cleanupDiag = nullptr;
     ui->tableUpcomingSessions->hide();
     ui->tableRecentParticipants->hide();
@@ -28,10 +29,15 @@ DashboardWidget::~DashboardWidget()
     qDeleteAll(m_sessions);
     qDeleteAll(m_session_types);
 
-    if (m_cleanupDiag)
+    if (m_cleanupDiag) {
         m_cleanupDiag->deleteLater();
-    if (m_sessionLobby)
+    }
+
+#ifndef OPENTERA_WEBASSEMBLY
+    if (m_sessionLobby) {
         m_sessionLobby->deleteLater();
+    }
+#endif
 
     delete ui;
 }
@@ -152,7 +158,7 @@ void DashboardWidget::processSessionsReply(const QList<TeraData> sessions)
         // Update values
         name_item->setText(session.getName());
         QDateTime session_date = session.getFieldValue("session_start_datetime").toDateTime().toLocalTime();
-        date_item->setText(session_date.toString("dd-MM-yyyy hh:mm:ss"));
+        date_item->setDate(session_date);
 
         // Type
         int id_session_type = session.getFieldValue("id_session_type").toInt();
@@ -180,7 +186,7 @@ void DashboardWidget::processSessionsReply(const QList<TeraData> sessions)
         QString project_name;
         if (session.hasFieldName("session_participants")){
             QVariantList participants = session.getFieldValue("session_participants").toList();
-            for(const QVariant &participant: qAsConst(participants)){
+            for(const QVariant &participant: std::as_const(participants)){
                 QVariantHash part_data = participant.toHash();
                 if (project_name.isEmpty() && part_data.contains("project_name")){
 
@@ -195,14 +201,14 @@ void DashboardWidget::processSessionsReply(const QList<TeraData> sessions)
         }
         if (session.hasFieldName("session_users")){
             QVariantList users = session.getFieldValue("session_users").toList();
-            for(const QVariant &user: qAsConst(users)){
+            for(const QVariant &user: std::as_const(users)){
                 QVariantHash user_data = user.toHash();
                 invitees.append(user_data["user_name"].toString());
             }
         }
         if (session.hasFieldName("session_devices")){
             QVariantList devices = session.getFieldValue("session_devices").toList();
-            for(const QVariant &device: qAsConst(devices)){
+            for(const QVariant &device: std::as_const(devices)){
                 QVariantHash device_data = device.toHash();
                 invitees.append(device_data["device_name"].toString());
             }
@@ -253,6 +259,9 @@ void DashboardWidget::processSessionTypesReply(const QList<TeraData> session_typ
 
     // Refresh data
     refreshData();
+
+    // Disconnect signal since we don't need it anymore
+    disconnect(m_comManager, &ComManager::sessionTypesReceived, this, &DashboardWidget::processSessionTypesReply);
 }
 
 void DashboardWidget::processParticipantsReply(const QList<TeraData> participants, const QUrlQuery reply_query)
@@ -346,6 +355,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
     ui->treeWarnings->clear();
     int warnings = 0;
     int total_warnings = 0;
+    ui->treeWarnings->setColumnWidth(0, 48);
     if (stats.hasFieldName("warning_participants_count")){
         warnings = stats.getFieldValue("warning_participants_count").toInt();
         if (warnings > 0){
@@ -357,11 +367,11 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
             QToolButton* manage_btn = createManageWarningButton();
             manage_btn->setProperty("data", stats.getFieldValue("warning_participants"));
             manage_btn->setProperty("data_type", TERADATA_PARTICIPANT);
-            ui->treeWarnings->setItemWidget(item, 0, manage_btn);
+            ui->treeWarnings->setItemWidget(item, 0, manage_btn);  
 
             // Participants details
             QVariantList participants = stats.getFieldValue("warning_participants").toList();
-            for (const QVariant &part: qAsConst(participants)){
+            for (const QVariant &part: std::as_const(participants)){
                 QVariantHash part_data = part.toHash();
                 QString data_str;
                 data_str = part_data["participant_name"].toString();
@@ -393,7 +403,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
 
             // Participants details
             QVariantList participants = stats.getFieldValue("warning_nosession_participants").toList();
-            for (const QVariant &part: qAsConst(participants)){
+            for (const QVariant &part: std::as_const(participants)){
                 QVariantHash part_data = part.toHash();
                 QString data_str;
                 data_str = part_data["participant_name"].toString();
@@ -426,7 +436,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
 
                 // Users details
                 QVariantList users = stats.getFieldValue("warning_users").toList();
-                for (const QVariant &user: qAsConst(users)){
+                for (const QVariant &user: std::as_const(users)){
                     QVariantHash user_data = user.toHash();
                     QString data_str;
                     data_str = user_data["user_fullname"].toString();
@@ -455,7 +465,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
 
                 // Users details
                 QVariantList users = stats.getFieldValue("warning_neverlogged_users").toList();
-                for (const QVariant &user: qAsConst(users)){
+                for (const QVariant &user: std::as_const(users)){
                     QVariantHash user_data = user.toHash();
                     QString data_str;
                     data_str = user_data["user_fullname"].toString();
@@ -486,7 +496,7 @@ void DashboardWidget::processStatsReply(const TeraData stats, const QUrlQuery re
     ui->btnAttention->setText(tr("Attention requise") + " (" + QString::number(total_warnings) + ")");
 
 }
-
+#ifndef OPENTERA_WEBASSEMBLY
 void DashboardWidget::sessionLobbyStartSessionCancelled()
 {
     if (m_sessionLobby){
@@ -509,6 +519,7 @@ void DashboardWidget::sessionLobbyStartSessionRequested()
     m_sessionLobby->deleteLater();
     m_sessionLobby = nullptr;
 }
+#endif
 
 void DashboardWidget::cleanupDialogCompleted()
 {
@@ -567,6 +578,7 @@ void DashboardWidget::updateUiSpacing()
     }
 }
 
+#ifndef OPENTERA_WEBASSEMBLY
 void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id_session)
 {
     if (m_sessionLobby)
@@ -598,7 +610,7 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     QList<int> ids;
     if (session->hasFieldName("session_participants")){
         QVariantList session_participants = session->getFieldValue("session_participants").toList();
-        for(const QVariant &participant: qAsConst(session_participants)){
+        for(const QVariant &participant: std::as_const(session_participants)){
             TeraData part_data(TERADATA_PARTICIPANT, participant.toJsonValue());
             participants.append(part_data);
             ids.append(part_data.getId());
@@ -612,7 +624,7 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     QList<TeraData> users;
     if (session->hasFieldName("session_users")){
         QVariantList session_users = session->getFieldValue("session_users").toList();
-        for(const QVariant &user: qAsConst(session_users)){
+        for(const QVariant &user: std::as_const(session_users)){
             TeraData user_data(TERADATA_USER, user.toJsonValue());
             users.append(user_data);
             ids.append(user_data.getId());
@@ -626,7 +638,7 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     QList<TeraData> devices;
     if (session->hasFieldName("session_devices")){
         QVariantList session_devices = session->getFieldValue("session_devices").toList();
-        for(const QVariant &device: qAsConst(session_devices)){
+        for(const QVariant &device: std::as_const(session_devices)){
             TeraData device_data(TERADATA_DEVICE, device.toJsonValue());
             devices.append(device_data);
             ids.append(device_data.getId());
@@ -644,13 +656,15 @@ void DashboardWidget::showSessionLobby(const int &id_session_type, const int &id
     // Show Session Lobby
     m_sessionLobby->exec();
 }
+#endif
 
 QToolButton *DashboardWidget::createManageWarningButton()
 {
     QToolButton* manage_btn = new QToolButton();
     manage_btn->setIcon(QIcon("://icons/config.png"));
     manage_btn->setIconSize(QSize(20,20));
-    manage_btn->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    manage_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    manage_btn->setFixedSize(28, 28);
     manage_btn->setToolTip(tr("Gérer"));
     manage_btn->setCursor(Qt::PointingHandCursor);
     manage_btn->setStyleSheet("QToolButton::hover{background-color:transparent;}");
@@ -663,13 +677,14 @@ QToolButton *DashboardWidget::createManageWarningButton()
 
 void DashboardWidget::on_tableUpcomingSessions_itemDoubleClicked(QTableWidgetItem *item)
 {
+#ifndef OPENTERA_WEBASSEMBLY
     int current_row = item->row();
     QTableWidgetItem* base_item = ui->tableUpcomingSessions->item(current_row, 1);
-
     if (m_listSessions_items.contains(base_item)){
         int id_session = m_listSessions_items.value(base_item);
         showSessionLobby(m_sessions[id_session]->getFieldValue("id_session_type").toInt(), id_session);
     }
+#endif
 }
 
 
