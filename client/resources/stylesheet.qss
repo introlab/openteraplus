@@ -653,7 +653,7 @@ QLabel#lblTitle{
     color: cyan;
 }
 
-QLabel#lblWarning, QLabel#lblWarning2{
+QLabel#lblWarning, QLabel#lblWarning2, QLabel#lblDeviceRegisterKeyValue{
     font-weight: bold;
     font-size: 14px;
     color: orange;

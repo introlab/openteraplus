@@ -564,6 +564,11 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         return handleVersionsReply(data_list);
     }
 
+    // Server settings reply
+    if (reply_path == WEB_SERVERSETTINGS_PATH){
+        return handleServerSettingsReply(data_list);
+    }
+
     // Refresh token information reply
     if (reply_path == WEB_REFRESH_TOKEN_PATH){
         return handleTokenRefreshReply(data_list);
@@ -841,6 +846,13 @@ bool ComManager::handleTokenRefreshReply(const QJsonDocument &refresh_data)
         return false;
     setCredentials(refresh_data["refresh_token"].toString());
     emit userTokenUpdated();
+    return true;
+}
+
+bool ComManager::handleServerSettingsReply(const QJsonDocument &settings_data)
+{
+    QVariantHash settings = settings_data.object().toVariantHash();
+    emit serverSettingsReceived(settings);
     return true;
 }
 

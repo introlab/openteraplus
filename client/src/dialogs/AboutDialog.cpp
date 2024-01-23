@@ -1,7 +1,7 @@
 #include "AboutDialog.h"
 #include "ui_AboutDialog.h"
 
-AboutDialog::AboutDialog(QUrl server_url, QWidget *parent) :
+AboutDialog::AboutDialog(ComManager* comManager, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AboutDialog)
 {
@@ -12,8 +12,10 @@ AboutDialog::AboutDialog(QUrl server_url, QWidget *parent) :
     m_webPage = new AboutDialogPage();
     m_webEngine->setPage(m_webPage);
 
+    m_comManager = comManager;
+
     //Load about page
-    QString url = server_url.toString() + "/about";
+    QString url = m_comManager->getServerUrl().toString() + "/about";
     m_webEngine->setUrl(url);
 
     // Create layout for widget if missing
@@ -26,6 +28,13 @@ AboutDialog::AboutDialog(QUrl server_url, QWidget *parent) :
     m_webEngine->setSizePolicy(sizePolicy);
     ui->wdgWebView->layout()->addWidget(m_webEngine);
     ui->wdgWebView->setFocus();
+
+    // Request server settings
+    connectSignals();
+
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_DEVICE_REGISTER_KEY, "1");
+    m_comManager->doGet(WEB_SERVERSETTINGS_PATH, args);
 }
 
 AboutDialog::~AboutDialog()
@@ -47,4 +56,18 @@ void AboutDialog::on_lblAbout_clicked()
         ui->wdgWebView->setFocus();
 
     }
+}
+
+void AboutDialog::processServerSettings(QVariantHash settings)
+{
+    if (settings.contains(WEB_QUERY_DEVICE_REGISTER_KEY)){
+        ui->lblDeviceRegisterKeyValue->setText(settings[WEB_QUERY_DEVICE_REGISTER_KEY].toString());
+    }else{
+        ui->lblDeviceRegisterKeyValue->setText(tr("Inconnue"));
+    }
+}
+
+void AboutDialog::connectSignals()
+{
+    connect(m_comManager, &ComManager::serverSettingsReceived, this, &AboutDialog::processServerSettings);
 }

@@ -84,6 +84,7 @@ protected:
     bool handleFormReply(const QUrlQuery& reply_query, const QString& reply_data);
     bool handleVersionsReply(const QJsonDocument &version_data);
     bool handleTokenRefreshReply(const QJsonDocument &refresh_data);
+    bool handleServerSettingsReply(const QJsonDocument &settings_data);
 
     void updateCurrentUser(const TeraData& user_data);
     void updateCurrentPrefs(const TeraData& user_prefs);
@@ -164,7 +165,8 @@ signals:
     void sessionError(QString error);
 
     // Version management
-    void newVersionAvailable(QString version, QString download_url);   
+    void newVersionAvailable(QString version, QString download_url);
+    void serverSettingsReceived(QVariantHash settings);
 
 private slots:
     // Network
