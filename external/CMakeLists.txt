@@ -37,7 +37,7 @@ if (MSVC)
     option(protobuf_MSVC_STATIC_RUNTIME "" OFF)
 endif(MSVC)
 
-add_subdirectory(protobuf)
+add_subdirectory(protobuf/cmake)
 
 #Generate messages
 add_subdirectory(messages/cpp)
