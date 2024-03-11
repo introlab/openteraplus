@@ -83,6 +83,9 @@ set(headers
     services/DanceService/DanceConfigWidget.h
     services/DanceService/DanceWebAPI.h
     services/DanceService/DanceComManager.h
+    services/DashboardsService/DashboardsComManager.h
+    services/DashboardsService/DashboardsConfigWidget.h
+    services/DashboardsService/DashboardsWebAPI.h
     # Widgets
     widgets/SessionInviteWidget.h
     widgets/OnlineManagerWidget.h
@@ -198,6 +201,8 @@ set(srcs
     services/BaseServiceSetupWidget.cpp
     services/DanceService/DanceConfigWidget.cpp
     services/DanceService/DanceComManager.cpp
+    services/DashboardsService/DashboardsConfigWidget.cpp
+    services/DashboardsService/DashboardsComManager.cpp
     # Widgets
     widgets/ProjectNavigator.cpp
     widgets/ProjectNavigatorTree.cpp
@@ -295,6 +300,7 @@ SET(uis
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
     services/VideoRehabService/VideoRehabPTZDialog.ui
     services/DanceService/DanceConfigWidget.ui
+    services/DashboardsService/DashboardsConfigWidget.ui
     # Widgets
     widgets/ProjectNavigator.ui
     widgets/notification.ui

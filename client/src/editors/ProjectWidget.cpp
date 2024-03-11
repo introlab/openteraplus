@@ -1,6 +1,5 @@
 #include "ProjectWidget.h"
 #include "ui_ProjectWidget.h"
-
 #include "editors/DataListWidget.h"
 
 ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
@@ -1137,6 +1136,19 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
         if (is_project_admin){
             DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getId());
             //ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_project.getFieldValue("service_name").toString());
+            QString service_name = service_key;
+            if (m_listServices_items.contains(id_service)){
+                service_name = m_listServices_items[id_service]->text();
+            }
+            ui->tabManageServices->insertTab(0, wdg, QIcon("://icons/config.png"), service_name);
+            m_services_tabs.insert(id_service, wdg);
+        }
+    }
+
+    // Dashboards Service
+    if (service_key == "DashboardsService"){
+        if (is_project_admin){
+            DashboardsConfigWidget* wdg = new DashboardsConfigWidget(m_comManager, m_data->getFieldValue("id_site").toInt(), m_data->getId());
             QString service_name = service_key;
             if (m_listServices_items.contains(id_service)){
                 service_name = m_listServices_items[id_service]->text();

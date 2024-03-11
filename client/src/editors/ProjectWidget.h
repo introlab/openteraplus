@@ -7,6 +7,7 @@
 
 #include "DataEditorWidget.h"
 #include "GlobalMessageBox.h"
+
 #include "dialogs/BaseDialog.h"
 
 #include "widgets/TableDateWidgetItem.h"
@@ -14,6 +15,7 @@
 
 // Service specific config widgets
 #include "services/DanceService/DanceConfigWidget.h"
+#include "services/DashboardsService/DashboardsConfigWidget.h"
 
 namespace Ui {
 class ProjectWidget;

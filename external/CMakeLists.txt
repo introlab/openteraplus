@@ -24,7 +24,9 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 #Disable tests for now...
 option(protobuf_BUILD_TESTS "" OFF)
-set(ABSL_PROPAGATE_CXX_STD ON)
+if (APPLE)
+    set(ABSL_PROPAGATE_CXX_STD ON)
+endif()
 set(protobuf_BUILD_EXAMPLES OFF)
 set(protobuf_BUILD_LIBPROTOC OFF)
 set(protobuf_BUILD_TESTS OFF)
