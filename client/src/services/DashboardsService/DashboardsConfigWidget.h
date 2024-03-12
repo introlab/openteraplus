@@ -25,6 +25,8 @@ private:
     DashboardsComManager*   m_dashComManager;
 
     QHash<int, QListWidgetItem*>    m_listDashboards_items;
+    QHash<int, QList<int>>          m_listDashboards_projects;
+    QHash<int, QList<int>>          m_listDashboards_sites;
 
     int m_idProject;
     int m_idSite;
@@ -33,9 +35,12 @@ private:
 
 private slots:
     void processDashboardsReply(QList<QJsonObject> dashboards, QUrlQuery reply_query);
+    void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
+    void dashComDeleteOK(QString path, int id);
+    void dashComPostOK(QString path);
 
-    /*void on_lstDashboards_itemChanged(QListWidgetItem *item);
-    void on_btnUpdateDashboards_clicked();*/
+    void on_lstDashboards_itemChanged(QListWidgetItem *item);
+
     void on_lstDashboards_itemClicked(QListWidgetItem *item);
     void on_cmbVersion_currentIndexChanged(int index);
 };
