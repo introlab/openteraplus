@@ -2,6 +2,8 @@
 #define DASHBOARDSCONFIGWIDGET_H
 
 #include <QWidget>
+#include <QListWidgetItem>
+
 #include "DashboardsComManager.h"
 
 namespace Ui {
@@ -22,9 +24,20 @@ private:
     ComManager*             m_comManager;
     DashboardsComManager*   m_dashComManager;
 
+    QHash<int, QListWidgetItem*>    m_listDashboards_items;
+
     int m_idProject;
     int m_idSite;
 
+    void connectSignals();
+
+private slots:
+    void processDashboardsReply(QList<QJsonObject> dashboards, QUrlQuery reply_query);
+
+    /*void on_lstDashboards_itemChanged(QListWidgetItem *item);
+    void on_btnUpdateDashboards_clicked();*/
+    void on_lstDashboards_itemClicked(QListWidgetItem *item);
+    void on_cmbVersion_currentIndexChanged(int index);
 };
 
 #endif // DASHBOARDSCONFIGWIDGET_H

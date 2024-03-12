@@ -101,17 +101,20 @@ void DashboardsComManager::handleUserTokenUpdated()
     setCredentials(m_comManager->getCurrentToken());
 }
 
-void DashboardsComManager::doGet(const QString &path, const QUrlQuery &query_args)
+void DashboardsComManager::doGet(const QString &path, const QUrlQuery &query_args, const bool &use_token)
 {
+    Q_UNUSED(use_token)
     BaseComManager::doGet(path, query_args, true);
 }
 
-void DashboardsComManager::doPost(const QString &path, const QString &post_data)
+void DashboardsComManager::doPost(const QString &path, const QString &post_data, const bool &use_token)
 {
+    Q_UNUSED(use_token)
     BaseComManager::doPost(path, post_data, true);
 }
 
-void DashboardsComManager::doDelete(const QString &path, const int &id)
+void DashboardsComManager::doDelete(const QString &path, const int &id, const bool &use_token)
 {
+    Q_UNUSED(use_token)
     BaseComManager::doDelete(path, id, true);
 }

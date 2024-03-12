@@ -16,9 +16,9 @@ public:
 
     bool processNetworkReply(QNetworkReply* reply);
 
-    void doGet(const QString &path, const QUrlQuery &query_args = QUrlQuery());
-    void doPost(const QString &path, const QString &post_data);
-    void doDelete(const QString &path, const int& id);
+    void doGet(const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=true);
+    void doPost(const QString &path, const QString &post_data, const bool &use_token=true);
+    void doDelete(const QString &path, const int& id, const bool &use_token=true);
 
 
 private:
@@ -33,7 +33,7 @@ private slots:
 
 signals:
     void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
-    void dashboardsReceived(QList<QJsonObject> videos, QUrlQuery reply_query);
+    void dashboardsReceived(QList<QJsonObject> dashboards, QUrlQuery reply_query);
 
 };
 
