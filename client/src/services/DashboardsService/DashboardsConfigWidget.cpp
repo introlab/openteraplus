@@ -53,6 +53,15 @@ void DashboardsConfigWidget::connectSignals()
     connect(ui->wdgMessages, &ResultMessageWidget::nextMessageShown, this, &DashboardsConfigWidget::nextMessageWasShown);
 }
 
+void DashboardsConfigWidget::queryDashboard(const int &id_dashboard)
+{
+    QUrlQuery args;
+    args.addQueryItem(WEB_QUERY_ID_DASHBOARD, QString::number(id_dashboard));
+    args.addQueryItem(WEB_QUERY_ALL_VERSIONS, "1");
+    ui->frameEditor->hide();
+    m_dashComManager->doGet(DASHBOARDS_USER_PATH, args);
+}
+
 void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboards, QUrlQuery reply_query)
 {
     if (reply_query.hasQueryItem(WEB_QUERY_ID_DASHBOARD)){
@@ -73,6 +82,9 @@ void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboard
             ui->cmbVersion->addItem(version_str, version_obj["dashboard_definition"].toString());
             ui->cmbFixedVersion->addItem(version_str);
         }
+
+        // Select latest version
+        ui->cmbVersion->setCurrentIndex(ui->cmbVersion->count()-1);
 
         ui->chkEnabled->setChecked(false);
         QJsonArray projects = dashboards.first()["dashboard_projects"].toArray();
@@ -104,12 +116,7 @@ void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboard
 
         ui->frameEditor->show();
 
-    }else{/*
-        ui->lstDashboards->clear();
-        m_listDashboards_items.clear();
-        m_listDashboards_projects.clear();
-        m_listDashboards_sites.clear();*/
-
+    }else{
         for (const QJsonObject &dash:std::as_const(dashboards)){
             int id_dashboard = dash["id_dashboard"].toInt();
             QListWidgetItem* item;
@@ -128,7 +135,9 @@ void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboard
             bool checkable = false;
             if (m_idSite>0){
                 QJsonArray sites = dash["dashboard_sites"].toArray();
-                m_listDashboards_sites.clear();
+                if (m_listDashboards_sites.contains(id_dashboard)){
+                    m_listDashboards_sites[id_dashboard].clear();
+                }
                 for(QJsonValueRef site:sites){
                     QJsonObject site_obj = site.toObject();
                     int id_site = site_obj["id_site"].toInt();
@@ -145,7 +154,9 @@ void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboard
 
             if (m_idProject>0){
                 QJsonArray projects = dash["dashboard_projects"].toArray();
-                m_listDashboards_projects.clear();
+                if (m_listDashboards_projects.contains(id_dashboard)){
+                    m_listDashboards_projects[id_dashboard].clear();
+                }
                 for(QJsonValueRef project:projects){
                     QJsonObject proj_obj = project.toObject();
                     int id_project = proj_obj["id_project"].toInt();
@@ -211,6 +222,7 @@ void DashboardsConfigWidget::dashComDeleteOK(QString path, int id)
 void DashboardsConfigWidget::dashComPostOK(QString path)
 {
     ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Données sauvegardées")));
+    ui->btnEdit->setChecked(false);
 }
 
 void DashboardsConfigWidget::nextMessageWasShown(Message current_message)
@@ -283,20 +295,15 @@ void DashboardsConfigWidget::on_lstDashboards_itemChanged(QListWidgetItem *item)
 void DashboardsConfigWidget::on_lstDashboards_itemClicked(QListWidgetItem *item)
 {
     // Query informations for that dashboard
-    QUrlQuery args;
     int id_dashboard = m_listDashboards_items.key(item);
-    args.addQueryItem(WEB_QUERY_ID_DASHBOARD, QString::number(id_dashboard));
-    args.addQueryItem(WEB_QUERY_ALL_VERSIONS, "1");
-    ui->frameEditor->hide();
-    m_dashComManager->doGet(DASHBOARDS_USER_PATH, args);
+    queryDashboard(id_dashboard);
 }
-
 
 void DashboardsConfigWidget::on_cmbVersion_currentIndexChanged(int index)
 {
     ui->txtDefinition->setText(ui->cmbVersion->currentData().toString());
+    ui->txtDefinition->setEnabled(index == ui->cmbVersion->count()-1 && ui->btnEdit->isChecked()); // Only allow editing of latest version
 }
-
 
 void DashboardsConfigWidget::on_btnEdit_toggled(bool checked)
 {
@@ -304,18 +311,79 @@ void DashboardsConfigWidget::on_btnEdit_toggled(bool checked)
     if (m_comManager->isCurrentUserSuperAdmin()){
         ui->frameDashboardDetails->setEnabled(checked);
         ui->frameVersionsButtons->setVisible(checked);
-        ui->txtDefinition->setEnabled(checked);
+        ui->txtDefinition->setEnabled(checked && ui->cmbVersion->currentIndex() == ui->cmbVersion->count()-1);
     }
     ui->frameSpecific->setEnabled(checked);
     ui->frameButtons->setVisible(checked);
     ui->btnEdit->setVisible(!checked);
 }
 
-
 void DashboardsConfigWidget::on_btnCancel_clicked()
 {
     // Refresh data
     ui->btnEdit->setChecked(false);
-    //on_btnEdit_toggled(false);
+    if (ui->lstDashboards->currentItem()){
+        int id_dashboard = m_listDashboards_items.key(ui->lstDashboards->currentItem());
+        queryDashboard(id_dashboard);
+    }
+}
+
+void DashboardsConfigWidget::on_btnSave_clicked()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonObject data_obj;
+    QJsonArray attached_items;
+
+    QListWidgetItem* item = ui->lstDashboards->currentItem();
+
+    if (!item){
+        qCritical() << "DashboardsConfigWidget::on_btnSave_clicked - No selected item!";
+        return;
+    }
+    int id_dashboard = item->data(Qt::UserRole).toInt();
+    data_obj["id_dashboard"] = id_dashboard;
+
+    if (m_comManager->isCurrentUserSuperAdmin()){
+        data_obj["dashboard_name"] = ui->txtName->text();
+        data_obj["dashboard_description"] = ui->txtDescription->toPlainText();
+
+        // Updated versions
+        if (ui->cmbVersion->currentData().toString() != ui->txtDefinition->toPlainText()){
+            data_obj["dashboard_version"] = ui->cmbVersion->count();
+            data_obj["dashboard_definition"] = ui->txtDefinition->toPlainText();
+        }
+    }
+
+    if (ui->frameSpecific->isVisible()){
+        // Generate projects / sites list with enabled and fixed version
+        if (m_idProject>0){
+            for(int item_id: m_listDashboards_projects[id_dashboard]){
+                QJsonObject item;
+                item["id_project"] = item_id;
+                if (item_id == m_idProject){
+                    item["dashboard_project_enabled"] = ui->chkEnabled->isChecked();
+                    item["dashboard_project_version"] = ui->cmbFixedVersion->currentIndex();
+                }
+                attached_items.append(item);
+            }
+            data_obj["dashboard_projects"] = attached_items;
+        }else{
+            for(int item_id: m_listDashboards_sites[id_dashboard]){
+                QJsonObject item;
+                item["id_site"] = item_id;
+                if (item_id == m_idSite){
+                    item["dashboard_site_enabled"] = ui->chkEnabled->isChecked();
+                    item["dashboard_site_version"] = ui->cmbFixedVersion->currentIndex();
+                }
+                attached_items.append(item);
+            }
+            data_obj["dashboard_sites"] = attached_items;
+        }
+    }
+
+    base_obj.insert("dashboard", data_obj);
+    document.setObject(base_obj);
+    m_dashComManager->doPost(DASHBOARDS_USER_PATH, document.toJson());
 }
 

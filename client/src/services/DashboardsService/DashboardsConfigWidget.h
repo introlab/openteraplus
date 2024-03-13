@@ -33,6 +33,7 @@ private:
     int m_idSite;
 
     void connectSignals();
+    void queryDashboard(const int& id_dashboard);
 
 private slots:
     void processDashboardsReply(QList<QJsonObject> dashboards, QUrlQuery reply_query);
@@ -47,6 +48,7 @@ private slots:
     void on_cmbVersion_currentIndexChanged(int index);
     void on_btnEdit_toggled(bool checked);
     void on_btnCancel_clicked();
+    void on_btnSave_clicked();
 };
 
 #endif // DASHBOARDSCONFIGWIDGET_H
