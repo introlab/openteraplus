@@ -734,7 +734,7 @@ QToolButton#btnVideo:!checked, QToolButton#btnLog:!checked, QToolButton#btnFilte
     border-radius: 5px;
 }
 
-QToolButton#btnLog:!checked, QToolButton#btnInSessionInfos:!checked, QToolButton#btnPause:!checked{
+QToolButton#btnLog:!checked, QToolButton#btnInSessionInfos:!checked, QToolButton#btnPause:!checked, QToolButton#btnEdit:!checked{
     color:white;
     background-color: transparent;
     border: 0px;

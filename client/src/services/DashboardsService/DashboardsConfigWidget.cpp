@@ -15,12 +15,25 @@ DashboardsConfigWidget::DashboardsConfigWidget(ComManager *comManager, const int
     connectSignals();
 
     // Init ui
+    bool is_super = m_comManager->isCurrentUserSuperAdmin();
     ui->frameEditor->hide();
     ui->wdgMessages->hide();
+    ui->frameDashboardButtons->setVisible(is_super);
+    ui->frameButtons->hide();
+    ui->frameVersionsInfos->setVisible(is_super);
+    ui->frameVersionsButtons->hide();
 
     // Query dashboards
     QUrlQuery args;
     //args.addQueryItem(WEB_QUERY_LIST, "1");
+    args.addQueryItem(WEB_QUERY_ENABLED, "0"); // Include dashboards that are not enabled
+    if (!m_comManager->isCurrentUserSuperAdmin()){
+        // Only query dashboards associated with that item
+        if (m_idSite > 0)
+            args.addQueryItem(WEB_QUERY_ID_SITE, QString::number(m_idSite));
+        if (m_idProject > 0)
+            args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
+    }
     m_dashComManager->doGet(DASHBOARDS_USER_PATH, args);
 }
 
@@ -36,6 +49,8 @@ void DashboardsConfigWidget::connectSignals()
     connect(m_dashComManager, &DashboardsComManager::networkError, this, &DashboardsConfigWidget::handleNetworkError);
     connect(m_dashComManager, &DashboardsComManager::deleteResultsOK, this, &DashboardsConfigWidget::dashComDeleteOK);
     connect(m_dashComManager, &DashboardsComManager::postResultsOK, this, &DashboardsConfigWidget::dashComPostOK);
+
+    connect(ui->wdgMessages, &ResultMessageWidget::nextMessageShown, this, &DashboardsConfigWidget::nextMessageWasShown);
 }
 
 void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboards, QUrlQuery reply_query)
@@ -82,28 +97,38 @@ void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboard
             }
         }
 
-        if (ui->lstDashboards->currentItem())
-            ui->frameSpecific->setVisible(ui->lstDashboards->currentItem()->checkState() == Qt::Checked);
+        if (ui->lstDashboards->currentItem()){
+            ui->frameSpecific->setVisible(ui->lstDashboards->currentItem()->checkState() == Qt::Checked ||
+                                          !ui->lstDashboards->currentItem()->flags().testFlags(Qt::ItemIsUserCheckable));
+        }
 
         ui->frameEditor->show();
 
-    }else{
+    }else{/*
         ui->lstDashboards->clear();
         m_listDashboards_items.clear();
         m_listDashboards_projects.clear();
-        m_listDashboards_sites.clear();
+        m_listDashboards_sites.clear();*/
 
         for (const QJsonObject &dash:std::as_const(dashboards)){
-            QListWidgetItem* item = new QListWidgetItem();
             int id_dashboard = dash["id_dashboard"].toInt();
-            item->setIcon(QIcon("://icons/history.png"));
-            item->setData(Qt::UserRole, id_dashboard);
+            QListWidgetItem* item;
+            if (m_listDashboards_items.contains(id_dashboard)){
+                item = m_listDashboards_items[id_dashboard];
+            }else{
+                item = new QListWidgetItem();
+
+                item->setIcon(QIcon("://icons/history.png"));
+                item->setData(Qt::UserRole, id_dashboard);
+                m_listDashboards_items.insert(id_dashboard, item);
+            }
             item->setText(dash["dashboard_name"].toString());
 
-            bool checked = false;/*dash["dashboard_sites"].toArray().contains(m_idSite) ||
-                           dash["dashboard_projects"].toArray().contains(m_idProject);*/
+            bool checked = false;
+            bool checkable = false;
             if (m_idSite>0){
                 QJsonArray sites = dash["dashboard_sites"].toArray();
+                m_listDashboards_sites.clear();
                 for(QJsonValueRef site:sites){
                     QJsonObject site_obj = site.toObject();
                     int id_site = site_obj["id_site"].toInt();
@@ -115,10 +140,12 @@ void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboard
                         m_listDashboards_sites[id_dashboard] = QList<int>() << id_site;
                     }
                 }
+                checkable = sites.count() > 1 || m_comManager->isCurrentUserSuperAdmin();
             }
 
             if (m_idProject>0){
                 QJsonArray projects = dash["dashboard_projects"].toArray();
+                m_listDashboards_projects.clear();
                 for(QJsonValueRef project:projects){
                     QJsonObject proj_obj = project.toObject();
                     int id_project = proj_obj["id_project"].toInt();
@@ -130,15 +157,21 @@ void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboard
                         m_listDashboards_projects[id_dashboard] = QList<int>() << id_project;
                     }
                 }
+                checkable = projects.count() > 1 || m_comManager->isCurrentUserSuperAdmin();
             }
 
-            if (checked){
-                item->setCheckState(Qt::Checked);
+            if (checkable){
+                if (checked){
+                    item->setCheckState(Qt::Checked);
+                }else{
+                    item->setCheckState(Qt::Unchecked);
+                }
+                item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
             }else{
-                item->setCheckState(Qt::Unchecked);
+                item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             }
             ui->lstDashboards->addItem(item);
-            m_listDashboards_items.insert(id_dashboard, item);
+
         }
     }
 }
@@ -180,6 +213,15 @@ void DashboardsConfigWidget::dashComPostOK(QString path)
     ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Données sauvegardées")));
 }
 
+void DashboardsConfigWidget::nextMessageWasShown(Message current_message)
+{
+    if (current_message.getMessageType()==Message::MESSAGE_NONE){
+        ui->wdgMessages->hide();
+    }else{
+        ui->wdgMessages->show();
+    }
+}
+
 void DashboardsConfigWidget::on_lstDashboards_itemChanged(QListWidgetItem *item)
 {
     ui->frameSpecific->setVisible(item->checkState() == Qt::Checked);
@@ -207,7 +249,7 @@ void DashboardsConfigWidget::on_lstDashboards_itemChanged(QListWidgetItem *item)
         }else{
             if (!m_listDashboards_projects[id_dashboard].contains(m_idProject))
                 return; // No need to update - all set!
-            m_listDashboards_projects[id_dashboard].remove(m_idProject);
+            m_listDashboards_projects[id_dashboard].removeAll(m_idProject);
         }
         for(int item_id: m_listDashboards_projects[id_dashboard]){
             QJsonObject item;
@@ -223,7 +265,7 @@ void DashboardsConfigWidget::on_lstDashboards_itemChanged(QListWidgetItem *item)
         }else{
             if (!m_listDashboards_sites[id_dashboard].contains(m_idSite))
                 return; // No need to update - all set!
-            m_listDashboards_sites[id_dashboard].remove(m_idSite);
+            m_listDashboards_sites[id_dashboard].removeAll(m_idSite);
         }
         for(int item_id: m_listDashboards_sites[id_dashboard]){
             QJsonObject item;
@@ -253,5 +295,27 @@ void DashboardsConfigWidget::on_lstDashboards_itemClicked(QListWidgetItem *item)
 void DashboardsConfigWidget::on_cmbVersion_currentIndexChanged(int index)
 {
     ui->txtDefinition->setText(ui->cmbVersion->currentData().toString());
+}
+
+
+void DashboardsConfigWidget::on_btnEdit_toggled(bool checked)
+{
+    ui->frameDashboards->setDisabled(checked);
+    if (m_comManager->isCurrentUserSuperAdmin()){
+        ui->frameDashboardDetails->setEnabled(checked);
+        ui->frameVersionsButtons->setVisible(checked);
+        ui->txtDefinition->setEnabled(checked);
+    }
+    ui->frameSpecific->setEnabled(checked);
+    ui->frameButtons->setVisible(checked);
+    ui->btnEdit->setVisible(!checked);
+}
+
+
+void DashboardsConfigWidget::on_btnCancel_clicked()
+{
+    // Refresh data
+    ui->btnEdit->setChecked(false);
+    //on_btnEdit_toggled(false);
 }
 

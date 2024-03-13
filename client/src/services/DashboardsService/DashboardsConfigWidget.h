@@ -5,6 +5,7 @@
 #include <QListWidgetItem>
 
 #include "DashboardsComManager.h"
+#include "data/Message.h"
 
 namespace Ui {
 class DashboardsConfigWidget;
@@ -39,10 +40,13 @@ private slots:
     void dashComDeleteOK(QString path, int id);
     void dashComPostOK(QString path);
 
-    void on_lstDashboards_itemChanged(QListWidgetItem *item);
+    void nextMessageWasShown(Message current_message);
 
+    void on_lstDashboards_itemChanged(QListWidgetItem *item);
     void on_lstDashboards_itemClicked(QListWidgetItem *item);
     void on_cmbVersion_currentIndexChanged(int index);
+    void on_btnEdit_toggled(bool checked);
+    void on_btnCancel_clicked();
 };
 
 #endif // DASHBOARDSCONFIGWIDGET_H

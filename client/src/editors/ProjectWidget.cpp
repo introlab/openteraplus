@@ -1147,7 +1147,7 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
 
     // Dashboards Service
     if (service_key == "DashboardsService"){
-        if (is_project_admin){
+        if (isSiteAdmin()){
             DashboardsConfigWidget* wdg = new DashboardsConfigWidget(m_comManager, 0, m_data->getId());
             QString service_name = service_key;
             if (m_listServices_items.contains(id_service)){

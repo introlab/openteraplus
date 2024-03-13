@@ -162,7 +162,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -1284,7 +1284,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
     </widget>
    </item>
   </layout>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -1298,6 +1298,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
  </widget>
  <customwidgets>
   <customwidget>
+   <class>TeraForm</class>
+   <extends>QWidget</extends>
+   <header>TeraForm.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>widgets/ClickableLabel.h</header>
@@ -1305,12 +1311,6 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
     <signal>clicked()</signal>
     <slot>clicked()</slot>
    </slots>
-  </customwidget>
-  <customwidget>
-   <class>TeraForm</class>
-   <extends>QWidget</extends>
-   <header>TeraForm.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
