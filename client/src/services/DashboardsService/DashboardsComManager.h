@@ -35,6 +35,8 @@ signals:
     void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
     void dashboardsReceived(QList<QJsonObject> dashboards, QUrlQuery reply_query);
 
+    void postResultsOK(QString reply_path, QString reply_data);
+
 };
 
 #endif // DASHCOMMANAGER_H

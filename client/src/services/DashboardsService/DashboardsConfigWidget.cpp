@@ -1,6 +1,8 @@
 #include "DashboardsConfigWidget.h"
 #include "ui_DashboardsConfigWidget.h"
 
+#include "GlobalMessageBox.h"
+
 DashboardsConfigWidget::DashboardsConfigWidget(ComManager *comManager, const int &id_site, const int &id_project, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::DashboardsConfigWidget)
@@ -22,6 +24,7 @@ DashboardsConfigWidget::DashboardsConfigWidget(ComManager *comManager, const int
     ui->frameButtons->hide();
     ui->frameVersionsInfos->setVisible(is_super);
     ui->frameVersionsButtons->hide();
+    ui->btnDeleteVersion->hide();
 
     // Query dashboards
     QUrlQuery args;
@@ -60,6 +63,23 @@ void DashboardsConfigWidget::queryDashboard(const int &id_dashboard)
     args.addQueryItem(WEB_QUERY_ALL_VERSIONS, "1");
     ui->frameEditor->hide();
     m_dashComManager->doGet(DASHBOARDS_USER_PATH, args);
+}
+
+void DashboardsConfigWidget::clearDetails()
+{
+    ui->txtName->clear();
+    ui->txtDescription->clear();
+    ui->cmbVersion->clear();
+    ui->txtDefinition->clear();
+
+}
+
+void DashboardsConfigWidget::validateDetails()
+{
+    bool valid = false;
+    valid = !ui->txtName->text().isEmpty() && !ui->txtDefinition->toPlainText().isEmpty();
+
+    ui->btnSave->setEnabled(valid);
 }
 
 void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboards, QUrlQuery reply_query)
@@ -182,7 +202,6 @@ void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboard
                 item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             }
             ui->lstDashboards->addItem(item);
-
         }
     }
 }
@@ -216,13 +235,31 @@ void DashboardsConfigWidget::handleNetworkError(QNetworkReply::NetworkError erro
 
 void DashboardsConfigWidget::dashComDeleteOK(QString path, int id)
 {
-
+    if (path == DASHBOARDS_USER_PATH && m_listDashboards_items.contains(id)){
+        delete m_listDashboards_items[id];
+        m_listDashboards_items.remove(id);
+        m_listDashboards_projects.remove(id);
+        m_listDashboards_sites.remove(id);
+        ui->lstDashboards->setCurrentRow(-1);
+        ui->frameEditor->hide();
+    }
 }
 
-void DashboardsConfigWidget::dashComPostOK(QString path)
+void DashboardsConfigWidget::dashComPostOK(QString path, QString data)
 {
     ui->wdgMessages->addMessage(Message(Message::MESSAGE_OK, tr("Données sauvegardées")));
     ui->btnEdit->setChecked(false);
+    ui->frameDashboards->show();
+
+    // Ensure item is selected in list
+    QJsonParseError json_error;
+    QJsonDocument data_list = QJsonDocument::fromJson(data.toUtf8(), &json_error);
+    if (json_error.error == QJsonParseError::NoError){
+        int id_dashboard = data_list.object()["id_dashboard"].toInt();
+        if (m_listDashboards_items.contains(id_dashboard)){
+            ui->lstDashboards->setCurrentItem(m_listDashboards_items[id_dashboard]);
+        }
+    }
 }
 
 void DashboardsConfigWidget::nextMessageWasShown(Message current_message)
@@ -316,6 +353,7 @@ void DashboardsConfigWidget::on_btnEdit_toggled(bool checked)
     ui->frameSpecific->setEnabled(checked);
     ui->frameButtons->setVisible(checked);
     ui->btnEdit->setVisible(!checked);
+    validateDetails();
 }
 
 void DashboardsConfigWidget::on_btnCancel_clicked()
@@ -325,6 +363,9 @@ void DashboardsConfigWidget::on_btnCancel_clicked()
     if (ui->lstDashboards->currentItem()){
         int id_dashboard = m_listDashboards_items.key(ui->lstDashboards->currentItem());
         queryDashboard(id_dashboard);
+    }else{
+        ui->frameDashboards->show();
+        ui->frameEditor->hide();
     }
 }
 
@@ -337,11 +378,11 @@ void DashboardsConfigWidget::on_btnSave_clicked()
 
     QListWidgetItem* item = ui->lstDashboards->currentItem();
 
-    if (!item){
-        qCritical() << "DashboardsConfigWidget::on_btnSave_clicked - No selected item!";
-        return;
+    int id_dashboard = 0;
+    if (item){
+        id_dashboard = item->data(Qt::UserRole).toInt(); // Editing item
     }
-    int id_dashboard = item->data(Qt::UserRole).toInt();
+
     data_obj["id_dashboard"] = id_dashboard;
 
     if (m_comManager->isCurrentUserSuperAdmin()){
@@ -349,7 +390,7 @@ void DashboardsConfigWidget::on_btnSave_clicked()
         data_obj["dashboard_description"] = ui->txtDescription->toPlainText();
 
         // Updated versions
-        if (ui->cmbVersion->currentData().toString() != ui->txtDefinition->toPlainText()){
+        if (ui->cmbVersion->currentData().toString() != ui->txtDefinition->toPlainText() || id_dashboard == 0){
             data_obj["dashboard_version"] = ui->cmbVersion->count();
             data_obj["dashboard_definition"] = ui->txtDefinition->toPlainText();
         }
@@ -358,24 +399,42 @@ void DashboardsConfigWidget::on_btnSave_clicked()
     if (ui->frameSpecific->isVisible()){
         // Generate projects / sites list with enabled and fixed version
         if (m_idProject>0){
-            for(int item_id: m_listDashboards_projects[id_dashboard]){
-                QJsonObject item;
-                item["id_project"] = item_id;
-                if (item_id == m_idProject){
-                    item["dashboard_project_enabled"] = ui->chkEnabled->isChecked();
-                    item["dashboard_project_version"] = ui->cmbFixedVersion->currentIndex();
+            if (id_dashboard > 0){
+                for(int item_id: m_listDashboards_projects[id_dashboard]){
+                    QJsonObject item;
+                    item["id_project"] = item_id;
+                    if (item_id == m_idProject){
+                        item["dashboard_project_enabled"] = ui->chkEnabled->isChecked();
+                        item["dashboard_project_version"] = ui->cmbFixedVersion->currentIndex();
+                    }
+                    attached_items.append(item);
                 }
+            }else{
+                // New dashboard - append current
+                QJsonObject item;
+                item["id_project"] = m_idProject;
+                item["dashboard_project_enabled"] = ui->chkEnabled->isChecked();
+                item["dashboard_project_version"] = ui->cmbFixedVersion->currentIndex();
                 attached_items.append(item);
             }
             data_obj["dashboard_projects"] = attached_items;
         }else{
-            for(int item_id: m_listDashboards_sites[id_dashboard]){
-                QJsonObject item;
-                item["id_site"] = item_id;
-                if (item_id == m_idSite){
-                    item["dashboard_site_enabled"] = ui->chkEnabled->isChecked();
-                    item["dashboard_site_version"] = ui->cmbFixedVersion->currentIndex();
+            if (id_dashboard > 0){
+                for(int item_id: m_listDashboards_sites[id_dashboard]){
+                    QJsonObject item;
+                    item["id_site"] = item_id;
+                    if (item_id == m_idSite){
+                        item["dashboard_site_enabled"] = ui->chkEnabled->isChecked();
+                        item["dashboard_site_version"] = ui->cmbFixedVersion->currentIndex();
+                    }
+                    attached_items.append(item);
                 }
+            }else{
+                // New dashboard - append current
+                QJsonObject item;
+                item["id_site"] = m_idSite;
+                item["dashboard_project_enabled"] = ui->chkEnabled->isChecked();
+                item["dashboard_project_version"] = ui->cmbFixedVersion->currentIndex();
                 attached_items.append(item);
             }
             data_obj["dashboard_sites"] = attached_items;
@@ -385,5 +444,70 @@ void DashboardsConfigWidget::on_btnSave_clicked()
     base_obj.insert("dashboard", data_obj);
     document.setObject(base_obj);
     m_dashComManager->doPost(DASHBOARDS_USER_PATH, document.toJson());
+}
+
+void DashboardsConfigWidget::on_btnNewVersion_clicked()
+{
+    ui->cmbVersion->addItem(QString::number(ui->cmbVersion->count()+1), "");
+    ui->cmbVersion->setCurrentIndex(ui->cmbVersion->count()-1);
+}
+
+void DashboardsConfigWidget::on_btnNewDashboard_clicked()
+{
+    ui->lstDashboards->setCurrentRow(-1);
+    ui->btnEdit->setChecked(true);
+    clearDetails();
+    ui->cmbVersion->addItem("1", "{}");
+    ui->frameDashboards->hide();
+    ui->frameSpecific->show();
+    on_txtName_textChanged("");
+    ui->chkEnabled->setChecked(true);
+    ui->frameEditor->show();
+
+}
+
+void DashboardsConfigWidget::on_txtName_textChanged(const QString &arg1)
+{
+    if (ui->btnEdit->isChecked()){
+        if (ui->txtName->text().isEmpty()){
+            ui->txtName->setStyleSheet("background-color: #ffaaaa; color:black;");
+        }else{
+            ui->txtName->setStyleSheet("");
+        }
+        validateDetails();
+    }
+}
+
+void DashboardsConfigWidget::on_txtDefinition_textChanged()
+{
+    if (ui->btnEdit->isChecked()){
+        if (ui->txtDefinition->toPlainText().isEmpty()){
+            ui->txtDefinition->setStyleSheet("background-color: #ffaaaa; color:black;");
+        }else{
+            ui->txtDefinition->setStyleSheet("");
+        }
+        validateDetails();
+    }
+}
+
+void DashboardsConfigWidget::on_btnDeleteDashboard_clicked()
+{
+    if (!ui->lstDashboards->currentItem())
+        return;
+
+    GlobalMessageBox msgbox;
+
+    GlobalMessageBox msg;
+    QMessageBox::StandardButton conf = msg.showYesNo(tr("Suppression"), tr("Êtes-vous sûr de vouloir supprimer le tableau de bord sélectionné?"));
+
+    if (conf == QMessageBox::Yes){
+        int id_dashboard = ui->lstDashboards->currentItem()->data(Qt::UserRole).toInt();
+        m_dashComManager->doDelete(DASHBOARDS_USER_PATH, id_dashboard);
+    }
+}
+
+void DashboardsConfigWidget::on_lstDashboards_currentRowChanged(int currentRow)
+{
+    ui->btnDeleteDashboard->setEnabled(currentRow>=0);
 }
 

@@ -72,6 +72,9 @@
            </item>
            <item>
             <widget class="QToolButton" name="btnDeleteDashboard">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="minimumSize">
               <size>
                <width>32</width>
