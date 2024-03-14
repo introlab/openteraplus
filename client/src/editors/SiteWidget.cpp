@@ -2,6 +2,7 @@
 #include "ui_SiteWidget.h"
 
 #include "editors/DataListWidget.h"
+#include "services/DashboardsService/DashboardsConfigWidget.h"
 
 SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, const bool configMode, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -188,6 +189,32 @@ bool SiteWidget::validateData()
     return ui->wdgSite->validateFormData();
 }
 
+void SiteWidget::addServiceTab(const TeraData &service_site)
+{
+    int id_service = service_site.getFieldValue("id_service").toInt();
+    if (m_services_tabs.contains(id_service)) // Already there
+        return;
+
+    if (service_site.getFieldValue("id_site").toInt() != m_data->getId())
+        return; // Service not enabled for that project
+
+    QString service_key = m_services_keys[id_service];
+
+    // Dashboards Service
+    if (service_key == "DashboardsService"){
+        if (isSiteAdmin()){
+            DashboardsConfigWidget* wdg = new DashboardsConfigWidget(m_comManager, m_data->getId());
+            QString service_name = service_key;
+            if (m_listServices_items.contains(id_service)){
+                service_name = m_listServices_items[id_service]->text();
+            }
+            //ui->tabManageServices->insertTab(0, wdg, QIcon("://icons/config.png"), service_name);
+            ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
+            m_services_tabs.insert(id_service, wdg);
+        }
+    }
+}
+
 bool SiteWidget::isSiteAdmin()
 {
     if (m_data){
@@ -277,6 +304,11 @@ void SiteWidget::processServiceSiteAccessReply(QList<TeraData> service_sites, QU
 {
     for(const TeraData &service_site: service_sites){
         updateServiceSite(&service_site);
+        // Add specific services configuration tabs
+        if (!dataIsNew()){ // Don't add anything if a new project
+            //ids_service.append(service_project.getFieldValue("id_service").toInt());
+            addServiceTab(service_site);
+        }
     }
 
     // Update used list from what is checked right now
@@ -289,6 +321,7 @@ void SiteWidget::processServiceSiteAccessReply(QList<TeraData> service_sites, QU
             }
         }
     }
+
 
     // New list received - disable save button
     ui->btnUpdateServices->setEnabled(false);
@@ -417,6 +450,10 @@ void SiteWidget::updateServiceSite(const TeraData *service_site)
         if (m_listServicesSites_items.contains(id_service_site)){
             m_listServicesSites_items.remove(id_service_site);
         }
+    }
+
+    if (service_site->hasFieldName("service_key")){
+        m_services_keys[id_service] = service_site->getFieldValue("service_key").toString();
     }
 
 }
@@ -702,6 +739,7 @@ void SiteWidget::on_tabNav_currentChanged(int index)
         if (m_listServices_items.isEmpty()){
             queryServiceSiteAccess();
         }
+        ui->tabManageServices->setCurrentIndex(0);
     }
 
     if (current_tab == ui->tabSessionTypes){
