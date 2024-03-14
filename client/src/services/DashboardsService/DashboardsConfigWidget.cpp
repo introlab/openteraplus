@@ -25,6 +25,8 @@ DashboardsConfigWidget::DashboardsConfigWidget(ComManager *comManager, const int
     ui->frameVersionsInfos->setVisible(is_super);
     ui->frameVersionsButtons->hide();
     ui->btnDeleteVersion->hide();
+    m_highlighter = new QSourceHighlite::QSourceHighliter(ui->txtDefinition->document());
+    m_highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeJSON);
 
     // Query dashboards
     QUrlQuery args;
@@ -44,6 +46,7 @@ DashboardsConfigWidget::~DashboardsConfigWidget()
 {
     delete ui;
     delete m_dashComManager;
+    m_highlighter->deleteLater();
 }
 
 void DashboardsConfigWidget::connectSignals()
@@ -339,7 +342,12 @@ void DashboardsConfigWidget::on_lstDashboards_itemClicked(QListWidgetItem *item)
 void DashboardsConfigWidget::on_cmbVersion_currentIndexChanged(int index)
 {
     ui->txtDefinition->setText(ui->cmbVersion->currentData().toString());
-    ui->txtDefinition->setEnabled(index == ui->cmbVersion->count()-1 && ui->btnEdit->isChecked()); // Only allow editing of latest version
+    ui->txtDefinition->setReadOnly(!(index == ui->cmbVersion->count()-1 && ui->btnEdit->isChecked())); // Only allow editing of latest version
+    if (ui->txtDefinition->isReadOnly()){
+        ui->txtDefinition->setStyleSheet("");
+    }else{
+        ui->txtDefinition->setStyleSheet("background-color: rgba(255,255,255,50%); color: black;");
+    }
 }
 
 void DashboardsConfigWidget::on_btnEdit_toggled(bool checked)
@@ -348,7 +356,12 @@ void DashboardsConfigWidget::on_btnEdit_toggled(bool checked)
     if (m_comManager->isCurrentUserSuperAdmin()){
         ui->frameDashboardDetails->setEnabled(checked);
         ui->frameVersionsButtons->setVisible(checked);
-        ui->txtDefinition->setEnabled(checked && ui->cmbVersion->currentIndex() == ui->cmbVersion->count()-1);
+        ui->txtDefinition->setReadOnly(!(checked && ui->cmbVersion->currentIndex() == ui->cmbVersion->count()-1));
+        if (ui->txtDefinition->isReadOnly()){
+            ui->txtDefinition->setStyleSheet("");
+        }else{
+            ui->txtDefinition->setStyleSheet("background-color: rgba(255,255,255,50%); color: black;");
+        }
     }
     ui->frameSpecific->setEnabled(checked);
     ui->frameButtons->setVisible(checked);

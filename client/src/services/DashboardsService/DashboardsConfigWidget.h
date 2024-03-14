@@ -7,6 +7,8 @@
 #include "DashboardsComManager.h"
 #include "data/Message.h"
 
+#include "libs/highlighter/qsourcehighliter.h"
+
 namespace Ui {
 class DashboardsConfigWidget;
 }
@@ -24,6 +26,8 @@ private:
 
     ComManager*             m_comManager;
     DashboardsComManager*   m_dashComManager;
+
+    QSourceHighlite::QSourceHighliter* m_highlighter;
 
     QHash<int, QListWidgetItem*>    m_listDashboards_items;
     QHash<int, QList<int>>          m_listDashboards_projects;

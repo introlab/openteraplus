@@ -923,3 +923,9 @@ QPushButton#btnDefaultPath, QPushButton#btnBrowseSavePath{
 QWidget#line{
     background-color: #808080;
 }
+
+QTextEdit#txtDefinition{
+    background-color: rgba(255,255,255,30%);
+    color: black;
+}
+

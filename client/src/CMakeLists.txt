@@ -33,6 +33,9 @@ set(headers
     data/IconMenuDelegate.h
     # Librairies
     libs/AudioVideoUtils.h
+    libs/highlighter/languagedata.h
+    libs/highlighter/qsourcehighliter.h
+    libs/highlighter/qsourcehighliterthemes.h
     # Main Windows
     main/MainWindow.h
     # Managers
@@ -152,6 +155,9 @@ set(srcs
     data/IconMenuDelegate.cpp
     # Librairies
     libs/AudioVideoUtils.cpp
+    libs/highlighter/languagedata.cpp
+    libs/highlighter/qsourcehighliter.cpp
+    libs/highlighter/qsourcehighliterthemes.cpp
     # Main Windows
     main/MainWindow.cpp
     # Managers
