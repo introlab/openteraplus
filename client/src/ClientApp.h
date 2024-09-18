@@ -15,6 +15,10 @@
 #include "main/MainKitWindow.h"
 #endif
 
+#ifndef OPENTERA_WEBASSEMBLY
+#include "dialogs/WebLoginDialog.h"
+#endif
+
 #include "dialogs/LoginDialog.h"
 #include "GlobalMessageBox.h"
 
@@ -44,7 +48,13 @@ protected:
     void setTranslation(QString language = "");
 
     ConfigManagerClient m_config;
+
+#ifndef OPENTERA_WEBASSEMBLY
+    WebLoginDialog *m_loginDiag;
+#else
     LoginDialog*        m_loginDiag;
+#endif
+
     MainWindow*         m_mainWindow;
 #ifndef OPENTERA_WEBASSEMBLY
     MainKitWindow*      m_mainKitWindow;

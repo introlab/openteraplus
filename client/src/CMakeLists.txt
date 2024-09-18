@@ -119,6 +119,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         dialogs/JoinSessionDialog.h
         dialogs/AboutDialog.h
         dialogs/AboutDialogPage.h
+        dialogs/WebLoginDialog.h
         # Widgets
         widgets/InSessionWidget.h
         # Services
@@ -238,6 +239,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         dialogs/JoinSessionDialog.cpp
         dialogs/AboutDialog.cpp
         dialogs/AboutDialogPage.cpp
+        dialogs/WebLoginDialog.cpp
         # Widgets
         widgets/InSessionWidget.cpp
         # Services
@@ -280,6 +282,7 @@ SET(uis
     dialogs/CleanUpDialog.ui
     dialogs/FileUploaderDialog.ui
     dialogs/QRCodeDialog.ui
+    dialogs/WebLoginDialog.ui
     # Editors
     editors/DataListWidget.ui
     editors/DeviceSubTypeWidget.ui
@@ -417,7 +420,8 @@ set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 # create an executable file named "OpenTeraPlus" from the source files
 # Put qrc files after qm files
 if(NOT DEFINED OPENTERA_WEBASSEMBLY)
-    add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
+    add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc}
+        dialogs/WebLoginDialog.ui)
 else()
     qt_add_executable(OpenTeraPlus ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
 endif()

@@ -122,6 +122,10 @@ void ClientApp::showLogin()
         m_comMan = nullptr;
     }
     if (m_loginDiag == nullptr){
+
+#ifndef OPENTERA_WEBASSEMBLY
+        m_loginDiag = new WebLoginDialog();
+#else
         m_loginDiag = new LoginDialog();
         connect(m_loginDiag, &LoginDialog::loginRequest,    this, &ClientApp::loginRequested);
         connect(m_loginDiag, &LoginDialog::quitRequest,     this, &ClientApp::loginQuitRequested);
@@ -131,6 +135,7 @@ void ClientApp::showLogin()
 
         // Show servers list... or not!
         m_loginDiag->showServers(m_config.showServers());
+#endif
     }
 
     // Delete main window, if present
