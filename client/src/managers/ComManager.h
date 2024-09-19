@@ -47,6 +47,7 @@ public:
     ~ComManager();
 
     void connectToServer(QString username, QString password);
+    void connectToServer(const QString &token, const QString &websocket_url, const QString &user_uuid);
     void disconnectFromServer();
 
     bool processNetworkReply(QNetworkReply* reply);

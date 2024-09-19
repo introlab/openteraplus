@@ -72,6 +72,7 @@ private slots:
     void loginRequested(QString username, QString password, QString server_name);
     void logoutRequested();
     void on_loginResult(bool logged, QString log_msg);
+    void onLoginSuccess(const QString &token, const QString websocket_url, const QString &user_uuid);
     void loginQuitRequested();
 
     void on_serverDisconnected();

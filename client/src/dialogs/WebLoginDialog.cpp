@@ -24,6 +24,7 @@ WebLoginDialog::WebLoginDialog(QWidget *parent)
     m_webPage->setWebChannel(channel);
 
     connect(m_webPage, &QWebEnginePage::certificateError, this, &WebLoginDialog::onCertificateError);
+    connect(myObject, &WebLoginSharedObject::loginSuccess, this, &WebLoginDialog::loginSuccess);
 
     m_webPage->setUrl(QUrl("https://127.0.0.1:40075/login"));
 

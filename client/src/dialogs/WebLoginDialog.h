@@ -13,10 +13,20 @@
 class WebLoginSharedObject : public QObject {
     Q_OBJECT
 public:
-    Q_INVOKABLE void handleToken(const QString &token) {
-        qDebug() << "Token received from web page: " << token;
-        // Use the token in your Qt application
+
+    Q_INVOKABLE void debugPrint(const QString &message) {
+        qDebug() << "[WebLoginSharedObject::debugPrint] " << message;
     }
+
+    Q_INVOKABLE void sendLoginSuccess(const QString &token, const QString &websocket_url, const QString &user_uuid) {
+        qDebug() << "[WebLoginSharedObject::sendLoginSuccess] " << token << websocket_url;
+        emit loginSuccess(token, websocket_url, user_uuid);
+    }
+
+signals:
+
+    void loginSuccess(const QString &token, const QString &websocket_url, const QString& user_uuid);
+
 };
 
 namespace Ui {
@@ -41,6 +51,8 @@ private slots:
     void onCertificateError(const QWebEngineCertificateError &certificateError);
 
 signals:
+
+    void loginSuccess(const QString &token, const QString &websocket_url, const QString &user_uuid);
 
 private:
     Ui::WebLoginDialog *ui;

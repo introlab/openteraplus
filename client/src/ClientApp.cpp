@@ -125,6 +125,7 @@ void ClientApp::showLogin()
 
 #ifndef OPENTERA_WEBASSEMBLY
         m_loginDiag = new WebLoginDialog();
+        connect(m_loginDiag, &WebLoginDialog::loginSuccess, this, &ClientApp::onLoginSuccess, Qt::QueuedConnection);
 #else
         m_loginDiag = new LoginDialog();
         connect(m_loginDiag, &LoginDialog::loginRequest,    this, &ClientApp::loginRequested);
@@ -309,6 +310,18 @@ void ClientApp::on_loginResult(bool logged, QString log_msg)
         msg.showError(tr("Déconnexion"), tr("Vous avez été déconnecté du serveur. Veuillez vous connecter à nouveau."));
         m_comMan->disconnectFromServer();
     }
+}
+
+void ClientApp::onLoginSuccess(const QString &token, const QString websocket_url, const QString &user_uuid)
+{
+    // Create ComManager for that server
+    if (m_comMan){
+        m_comMan->deleteLater();
+    }
+    m_comMan = new ComManager(QUrl("https://127.0.0.1:40075"));
+    m_comMan->connectToServer(token, websocket_url, user_uuid);
+
+    showMainWindow();
 }
 
 void ClientApp::loginQuitRequested()

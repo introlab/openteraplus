@@ -52,6 +52,29 @@ void ComManager::connectToServer(QString username, QString password)
 
 }
 
+void ComManager::connectToServer(const QString &token, const QString &websocket_url, const QString &user_uuid)
+{
+    setCredentials("username", "password");
+    m_loggingInProgress = true;     // Indicate that a login request was sent, but not processed
+    QString url = websocket_url;
+    QString uuid = user_uuid;
+    if (m_enableWebsocket)
+    {
+        m_webSocketMan->connectWebSocket(url, uuid);
+    }
+
+    // Set current user values
+    m_currentUser.setFieldValue("user_uuid", user_uuid);
+    setCredentials(token);
+    m_tokenRefreshTimer.start();
+
+    // Query versions informations
+    doGet(WEB_VERSIONSINFO_PATH);
+
+    doUpdateCurrentUser();
+
+}
+
 void ComManager::disconnectFromServer()
 {
     doGet(QString(WEB_LOGOUT_PATH));
