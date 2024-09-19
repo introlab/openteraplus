@@ -8,6 +8,17 @@
 #include <QWebEngineSettings>
 #include <QWebEngineCertificateError>
 
+#include <QWebChannel>
+
+class WebLoginSharedObject : public QObject {
+    Q_OBJECT
+public:
+    Q_INVOKABLE void handleToken(const QString &token) {
+        qDebug() << "Token received from web page: " << token;
+        // Use the token in your Qt application
+    }
+};
+
 namespace Ui {
 class WebLoginDialog;
 }
