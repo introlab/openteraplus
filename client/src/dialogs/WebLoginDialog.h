@@ -24,9 +24,14 @@ public:
         emit loginSuccess(token, websocket_url, user_uuid);
     }
 
+    Q_INVOKABLE void sendLoginFailure(const QString &message) {
+        emit loginFailure(message);
+    }
+
 signals:
 
     void loginSuccess(const QString &token, const QString &websocket_url, const QString& user_uuid);
+    void loginFailure(const QString &message);
 
 };
 
@@ -49,6 +54,7 @@ public:
 signals:
 
     void loginSuccess(const QString &token, const QString &websocket_url, const QString &user_uuid);
+    void loginFailure(const QString &message);
 
 private slots:
 

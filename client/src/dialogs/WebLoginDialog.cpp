@@ -24,6 +24,7 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
 
     connect(m_webPage, &QWebEnginePage::certificateError, this, &WebLoginDialog::onCertificateError);
     connect(myObject, &WebLoginSharedObject::loginSuccess, this, &WebLoginDialog::loginSuccess);
+    connect(myObject, &WebLoginSharedObject::loginFailure, this, &WebLoginDialog::loginFailure);
 
     m_webView->setPage(m_webPage);   
 }
