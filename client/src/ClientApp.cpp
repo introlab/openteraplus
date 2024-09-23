@@ -124,20 +124,21 @@ void ClientApp::showLogin()
     if (m_loginDiag == nullptr){
 
 #ifndef OPENTERA_WEBASSEMBLY
-        m_loginDiag = new WebLoginDialog();
+        m_loginDiag = new WebLoginDialog(&m_config);
         connect(m_loginDiag, &WebLoginDialog::loginSuccess, this, &ClientApp::onLoginSuccess, Qt::QueuedConnection);
 #else
         m_loginDiag = new LoginDialog();
         connect(m_loginDiag, &LoginDialog::loginRequest,    this, &ClientApp::loginRequested);
         connect(m_loginDiag, &LoginDialog::quitRequest,     this, &ClientApp::loginQuitRequested);
-
-        // Set server names
-        m_loginDiag->setServerNames(m_config.getServerNames());
-
-        // Show servers list... or not!
-        m_loginDiag->showServers(m_config.showServers());
 #endif
     }
+
+    // Set server names
+    m_loginDiag->setServerNames(m_config.getServerNames());
+
+    // Show servers list... or not!
+    m_loginDiag->showServers(m_config.showServers());
+
 
     // Delete main window, if present
     if (m_mainWindow){

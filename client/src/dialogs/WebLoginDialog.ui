@@ -43,6 +43,9 @@
     </widget>
    </item>
    <item>
+    <widget class="QComboBox" name="cmbServers"/>
+   </item>
+   <item>
     <widget class="QWidget" name="centralWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">

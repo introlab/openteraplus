@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "TeraSettings.h"
+#include "managers/ConfigManagerClient.h"
 #include <QWebEngineView>
 #include <QWebEnginePage>
 #include <QWebEngineSettings>
@@ -38,26 +39,27 @@ class WebLoginDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit WebLoginDialog(QWidget *parent = nullptr);
+    explicit WebLoginDialog(ConfigManagerClient *config, QWidget *parent = nullptr);
     ~WebLoginDialog();
-    QString currentServerName() {return QString();}
     void setStatusMessage(const QString &message, bool error=false) {qDebug() << "Unhandled message: " << message << "error: " << error;}
-
-
-private:
-
-private slots:
-
-    void onCertificateError(const QWebEngineCertificateError &certificateError);
+    void setServerNames(QStringList servers);
+    QString currentServerName();
+    void showServers(bool show);
 
 signals:
 
     void loginSuccess(const QString &token, const QString &websocket_url, const QString &user_uuid);
 
+private slots:
+
+    void onCertificateError(const QWebEngineCertificateError &certificateError);
+    void onServerSelected(int index);
+
 private:
     Ui::WebLoginDialog *ui;
     QWebEngineView *m_webView;
     QWebEnginePage *m_webPage;
+    ConfigManagerClient *m_config;
 };
 
 #endif // WEBLOGINDIALOG_H
