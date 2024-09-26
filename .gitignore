@@ -1,6 +1,6 @@
 /client/resources/translations/*.qm
 deploy
-/build-*
+/build
 *.user
 
 html

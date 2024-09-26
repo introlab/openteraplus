@@ -10,6 +10,8 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
 
     //Create Web View
     m_webView = new QWebEngineView(ui->centralWidget);
+    ui->lblError->hide();
+    ui->centralWidget->hide();
 
     QVBoxLayout *layout = new QVBoxLayout(ui->centralWidget);
     layout->addWidget(m_webView);
@@ -22,11 +24,18 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     channel->registerObject("qtObject", myObject);
     m_webPage->setWebChannel(channel);
 
+    auto settings = m_webPage->settings();
+    settings->setAttribute(QWebEngineSettings::ShowScrollBars, false);
+
     connect(m_webPage, &QWebEnginePage::certificateError, this, &WebLoginDialog::onCertificateError);
+    connect(m_webView, &QWebEngineView::loadFinished, this, &WebLoginDialog::onLoginPageLoaded);
+    connect(m_webView, &QWebEngineView::loadStarted, this, &WebLoginDialog::onLoginPageLoading);
+
     connect(myObject, &WebLoginSharedObject::loginSuccess, this, &WebLoginDialog::loginSuccess);
     connect(myObject, &WebLoginSharedObject::loginFailure, this, &WebLoginDialog::loginFailure);
 
-    m_webView->setPage(m_webPage);   
+    m_webPage->setBackgroundColor(QColor(0x2c3338));
+    m_webView->setPage(m_webPage);
 }
 
 WebLoginDialog::~WebLoginDialog()
@@ -55,7 +64,6 @@ void WebLoginDialog::setServerNames(QStringList servers)
     }
 }
 
-
 void WebLoginDialog::showServers(bool show)
 {
     if (ui->cmbServers->count() == 1)
@@ -63,7 +71,6 @@ void WebLoginDialog::showServers(bool show)
 
     ui->cmbServers->setVisible(show);
 }
-
 
 void WebLoginDialog::onCertificateError(const QWebEngineCertificateError &certificateError)
 {
@@ -84,8 +91,28 @@ void WebLoginDialog::onServerSelected(int index)
     if (m_config && m_webPage)
     {
         QUrl loginUrl = m_config->getServerLoginUrl(currentServer);
+        loginUrl.setQuery("no_logo");
         m_webPage->setUrl(loginUrl);
     }
+}
+
+void WebLoginDialog::onLoginPageLoaded(bool ok)
+{
+    if (ok){
+        ui->centralWidget->show();
+        ui->frameLoginMessages->hide();
+    }else{
+        ui->lblError->show();
+        ui->lblLoading->hide();
+    }
+}
+
+void WebLoginDialog::onLoginPageLoading()
+{
+    ui->centralWidget->hide();
+    ui->lblError->hide();
+    ui->lblLoading->show();
+    ui->frameLoginMessages->show();
 }
 
 QString WebLoginDialog::currentServerName()

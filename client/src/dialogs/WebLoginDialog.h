@@ -60,6 +60,8 @@ private slots:
 
     void onCertificateError(const QWebEngineCertificateError &certificateError);
     void onServerSelected(int index);
+    void onLoginPageLoaded(bool ok);
+    void onLoginPageLoading();
 
 private:
     Ui::WebLoginDialog *ui;
