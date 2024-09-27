@@ -1,5 +1,4 @@
 #include "BaseComManager.h"
-#include <QOperatingSystemVersion>
 
 BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
     : QObject{parent},
@@ -10,9 +9,8 @@ BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
     m_loggingInProgress = false;
 
     // Get Operating system information to send to server for logging
-    QOperatingSystemVersion os = QOperatingSystemVersion::current();
-    m_osName = os.name();
-    m_osVersion = QString::number(os.majorVersion()) + "." + QString::number(os.minorVersion()) + "." + QString::number(os.microVersion());
+    m_osName = Utils::getOsName();
+    m_osVersion = Utils::getOsVersion();
 
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));

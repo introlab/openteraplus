@@ -2,12 +2,13 @@
 #define WEBLOGINDIALOG_H
 
 #include <QDialog>
-#include "TeraSettings.h"
+
 #include "managers/ConfigManagerClient.h"
 #include <QWebEngineView>
 #include <QWebEnginePage>
 #include <QWebEngineSettings>
 #include <QWebEngineCertificateError>
+#include <QWebEngineUrlRequestInterceptor>
 
 #include <QWebChannel>
 
@@ -39,6 +40,19 @@ namespace Ui {
 class WebLoginDialog;
 }
 
+
+class WebLoginRequestInterceptor : public QWebEngineUrlRequestInterceptor {
+
+        // QWebEngineUrlRequestInterceptor interface
+public:
+    WebLoginRequestInterceptor(QObject *p = nullptr);
+    ~WebLoginRequestInterceptor();
+    void interceptRequest(QWebEngineUrlRequestInfo &info) override;
+private:
+    QString m_osName;
+    QString m_osVersion;
+};
+
 class WebLoginDialog : public QDialog
 {
     Q_OBJECT
@@ -64,10 +78,12 @@ private slots:
     void onLoginPageLoading();
 
 private:
-    Ui::WebLoginDialog *ui;
-    QWebEngineView *m_webView;
-    QWebEnginePage *m_webPage;
+    Ui::WebLoginDialog  *ui;
+    QWebEngineView      *m_webView;
+    QWebEnginePage      *m_webPage;
+    WebLoginRequestInterceptor *m_requestInterceptor;
     ConfigManagerClient *m_config;
 };
+
 
 #endif // WEBLOGINDIALOG_H

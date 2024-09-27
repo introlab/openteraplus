@@ -28,6 +28,8 @@ public:
     static QList<PasswordValidationErrors> validatePassword(const QString& password);
 
     static QString getMachineUniqueId();
+    static QString getOsName();
+    static QString getOsVersion();
 
     static void inStringUnicodeConverter(QString* str);
 

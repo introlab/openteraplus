@@ -16,6 +16,11 @@ endif (MSVC)
 
 find_package(Qt6 REQUIRED COMPONENTS LinguistTools Multimedia WebSockets Network)
 
+qt_standard_project_setup(
+    I18N_SOURCE_LANGUAGE fr
+    I18N_TRANSLATED_LANGUAGES en fr
+)
+
 # Drivers first
 add_subdirectory(drivers)
 
@@ -351,30 +356,61 @@ set(translation_files_srcs
 )
 
 
-#Translation files, this is done manually to avoid removing the file when doing make clean
-# Add -noobsolete parameter to remove obsoleted translations
-add_custom_target(openteraplus_en_ts
-        COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${moc_uis}
+# #Translation files, this is done manually to avoid removing the file when doing make clean
+# # Add -noobsolete parameter to remove obsoleted translations
+# add_custom_target(openteraplus_en_ts
+#         COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+#         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#         DEPENDS ${moc_uis}
+# )
+
+# add_custom_target(openteraplus_fr_ts
+#         COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+#         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#         DEPENDS ${moc_uis}
+# )
+
+# #set qm files output directory
+# set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
+
+# #Build this target to update translations
+# add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
+# add_custom_target(translation_files SOURCES ${translation_files_srcs})
+
+# #Generate qm files from .ts files
+# qt6_add_translation(qm_files
+#     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+#     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+
+# Translations
+# if (Qt6_VERSION VERSION_GREATER_EQUAL 6.7)
+#     qt_add_translations(TARGETS OpenTeraPlus
+#         SOURCE_TARGETS ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis}
+#         TS_FILES ${translation_files_srcs}
+
+#     )
+# else()
+#     qt_add_translations(OpenTeraPlus
+#         TS_FILES
+#             ${translation_files_srcs}
+#     )
+# endif()
+qt_add_lupdate(
+    TS_FILES
+    ${translation_files_srcs}
+
+    SOURCES
+    ${srcs}
+    ${headers}
+    ${moc_uis}
+
+    SOURCE_TARGETS opentera_shared
 )
 
-add_custom_target(openteraplus_fr_ts
-        COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${moc_uis}
+qt_add_lrelease(
+    TS_FILES
+    ${translation_files_srcs}
 )
-
-#set qm files output directory
-set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
-
-#Build this target to update translations
-add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
-add_custom_target(translation_files SOURCES ${translation_files_srcs})
-
-#Generate qm files from .ts files
-qt6_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
-
 
 message(STATUS "qm_files : ${qm_files}")
 

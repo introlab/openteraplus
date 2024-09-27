@@ -1,7 +1,10 @@
 #include "WebLoginDialog.h"
 #include "ui_WebLoginDialog.h"
+
 #include <QVBoxLayout>
 
+#include "Utils.h"
+#include "TeraSettings.h"
 
 WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     : QDialog(parent), ui(new Ui::WebLoginDialog), m_config(config)
@@ -16,7 +19,10 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(ui->centralWidget);
     layout->addWidget(m_webView);
 
+    m_requestInterceptor = new WebLoginRequestInterceptor(this);
+
     m_webPage = new QWebEnginePage(m_webView);
+    m_webPage->setUrlRequestInterceptor(m_requestInterceptor);
 
     QWebChannel *channel = new QWebChannel(m_webPage);
 
@@ -101,6 +107,7 @@ void WebLoginDialog::onLoginPageLoaded(bool ok)
     if (ok){
         ui->centralWidget->show();
         ui->frameLoginMessages->hide();
+        m_webView->setFocus();
     }else{
         ui->lblError->show();
         ui->lblLoading->hide();
@@ -122,3 +129,31 @@ QString WebLoginDialog::currentServerName()
     }
     return QString();
 }
+
+
+WebLoginRequestInterceptor::WebLoginRequestInterceptor(QObject *p) : QWebEngineUrlRequestInterceptor(p)
+{
+    // Cache OS information
+    m_osName = Utils::getOsName();
+    m_osVersion = Utils::getOsVersion();
+}
+
+WebLoginRequestInterceptor::~WebLoginRequestInterceptor()
+{
+
+}
+
+void WebLoginRequestInterceptor::interceptRequest(QWebEngineUrlRequestInfo &info)
+{
+    // Inject client name and version
+    info.setHttpHeader("X-Client-Name", QByteArray(OPENTERAPLUS_CLIENT_NAME));
+    info.setHttpHeader("X-Client-Version", QByteArray(OPENTERAPLUS_VERSION));
+    info.setHttpHeader("X-OS-Name", m_osName.toUtf8());
+    info.setHttpHeader("X-OS-Version", m_osVersion.toUtf8());
+
+    // Inject required language
+    QString localeString = QLocale().bcp47Name();
+    //qDebug() << "localeString : " << localeString;
+    info.setHttpHeader(QByteArray("Accept-Language"), localeString.toUtf8());
+}
+

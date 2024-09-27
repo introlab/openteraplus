@@ -13,6 +13,7 @@ cmake_minimum_required(VERSION 3.21)
 
 #DEFINITIONS POLICY, NEW SINCE 3.0.2
 cmake_policy(SET CMP0043 NEW)
+cmake_policy(SET CMP0007 NEW)
 
 # Software version
 SET(CPACK_PACKAGE_VERSION_MAJOR "1")
