@@ -2,6 +2,7 @@
 #include "ui_WebLoginDialog.h"
 
 #include <QVBoxLayout>
+#include <QScreen>
 
 #include "Utils.h"
 #include "TeraSettings.h"
@@ -10,6 +11,7 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     : QDialog(parent), ui(new Ui::WebLoginDialog), m_config(config)
 {
     ui->setupUi(this);
+    showLargeView(false);
 
     //Create Web View
     m_webView = new QWebEngineView(ui->centralWidget);
@@ -38,7 +40,9 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     connect(m_webView, &QWebEngineView::loadStarted, this, &WebLoginDialog::onLoginPageLoading);
 
     connect(myObject, &WebLoginSharedObject::loginSuccess, this, &WebLoginDialog::loginSuccess);
-    connect(myObject, &WebLoginSharedObject::loginFailure, this, &WebLoginDialog::loginFailure);
+    connect(myObject, &WebLoginSharedObject::loginFailure, this, &WebLoginDialog::onLoginFailed);
+    connect(myObject, &WebLoginSharedObject::mfaCheckInProgress, this, &WebLoginDialog::onMfaCheckInProgress);
+    connect(myObject, &WebLoginSharedObject::mfaSetupInProgress, this, &WebLoginDialog::onMfaSetupInProgress);
 
     m_webPage->setBackgroundColor(QColor(0x2c3338));
     m_webView->setPage(m_webPage);
@@ -73,9 +77,11 @@ void WebLoginDialog::setServerNames(QStringList servers)
 void WebLoginDialog::showServers(bool show)
 {
     if (ui->cmbServers->count() == 1)
-        show = false; // Never show server list if only one item.
+        m_showServers = false; // Never show server list if only one item.
+    else
+        m_showServers = show;
 
-    ui->cmbServers->setVisible(show);
+    ui->cmbServers->setVisible(m_showServers);
 }
 
 void WebLoginDialog::onCertificateError(const QWebEngineCertificateError &certificateError)
@@ -123,9 +129,50 @@ void WebLoginDialog::onLoginPageLoading()
     ui->frameLoginMessages->show();
 }
 
+void WebLoginDialog::onMfaSetupInProgress()
+{
+    qDebug() << "WebLoginDialog::onMfaSetupInProgress";
+    showLargeView(true);
+}
+
+void WebLoginDialog::onMfaCheckInProgress()
+{
+    qDebug() << "WebLoginDialog::onMfaCheckInProgress()";
+    showLargeView(true);
+}
+
+void WebLoginDialog::onLoginFailed(const QString &message)
+{
+    showLargeView(false);
+    emit loginFailure(message);
+}
+
+void WebLoginDialog::showLargeView(const bool &large)
+{
+    ui->lblLogo->setVisible(!large);
+    ui->btnCancel->setVisible(large);
+
+    if (m_showServers){
+        ui->frameServers->setVisible(!large);
+    }
+    if (large){
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        setFixedSize(768, 768);
+
+    }else{
+        setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        setFixedSize(550, 500);
+    }
+
+    // Recenter on screen
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+                                          this->size(),
+                                          QGuiApplication::primaryScreen()->availableGeometry()));
+}
+
 QString WebLoginDialog::currentServerName()
 {
-    if (ui->cmbServers->currentIndex() >=0 && ui->cmbServers->isVisible()){
+    if (ui->cmbServers->currentIndex() >=0/* && ui->cmbServers->isVisible()*/){
         return ui->cmbServers->currentText();
     }
     return QString();
@@ -156,5 +203,13 @@ void WebLoginRequestInterceptor::interceptRequest(QWebEngineUrlRequestInfo &info
     QString localeString = QLocale().bcp47Name();
     //qDebug() << "localeString : " << localeString;
     info.setHttpHeader(QByteArray("Accept-Language"), localeString.toUtf8());
+}
+
+
+void WebLoginDialog::on_btnCancel_clicked()
+{
+    showLargeView(false);
+    // Return to login page
+    onServerSelected(ui->cmbServers->currentIndex());
 }
 

@@ -29,10 +29,20 @@ public:
         emit loginFailure(message);
     }
 
+    Q_INVOKABLE void sendSetupInProgress() {
+        emit mfaSetupInProgress();
+    }
+
+    Q_INVOKABLE void sendCheckInProgress() {
+        emit mfaCheckInProgress();
+    }
+
 signals:
 
     void loginSuccess(const QString &token, const QString &websocket_url, const QString& user_uuid);
     void loginFailure(const QString &message);
+    void mfaSetupInProgress();
+    void mfaCheckInProgress();
 
 };
 
@@ -79,12 +89,23 @@ private slots:
     void onLoginPageLoaded(bool ok);
     void onLoginPageLoading();
 
+    void onMfaSetupInProgress();
+    void onMfaCheckInProgress();
+    void onLoginFailed(const QString &message);
+
+    void on_btnCancel_clicked();
+
 private:
-    Ui::WebLoginDialog  *ui;
-    QWebEngineView      *m_webView;
-    QWebEnginePage      *m_webPage;
-    WebLoginRequestInterceptor *m_requestInterceptor;
-    ConfigManagerClient *m_config;
+    Ui::WebLoginDialog          *ui;
+    QWebEngineView              *m_webView;
+    QWebEnginePage              *m_webPage;
+    WebLoginRequestInterceptor  *m_requestInterceptor;
+    ConfigManagerClient         *m_config;
+
+    bool                        m_showServers = false;
+
+
+    void showLargeView(const bool& large);
 };
 
 
