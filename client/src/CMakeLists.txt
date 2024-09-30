@@ -370,9 +370,6 @@ set(translation_files_srcs
 #         DEPENDS ${moc_uis}
 # )
 
-# #set qm files output directory
-# set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
-
 # #Build this target to update translations
 # add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
 # add_custom_target(translation_files SOURCES ${translation_files_srcs})
@@ -395,6 +392,10 @@ set(translation_files_srcs
 #             ${translation_files_srcs}
 #     )
 # endif()
+
+# #set qm files output directory
+set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
+
 qt_add_lupdate(
     TS_FILES
     ${translation_files_srcs}
@@ -408,8 +409,7 @@ qt_add_lupdate(
 )
 
 qt_add_lrelease(
-    TS_FILES
-    ${translation_files_srcs}
+    TS_FILES ${translation_files_srcs}
 )
 
 message(STATUS "qm_files : ${qm_files}")

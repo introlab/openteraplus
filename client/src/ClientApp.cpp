@@ -17,8 +17,8 @@ ClientApp::ClientApp(int &argc, char **argv)
     m_mainKitWindow = nullptr;
 #endif
 
-    m_translator = new QTranslator();
-    m_qt_translator = new QTranslator();
+    m_translator = new QTranslator(this);
+    m_qt_translator = new QTranslator(this);
 
     // Translations
     QString last_lang = TeraSettings::getGlobalSetting(SETTINGS_LASTLANGUAGE).toString();
@@ -62,9 +62,6 @@ ClientApp::~ClientApp()
         m_comMan->disconnectFromServer();
         m_comMan->deleteLater();
     }
-
-    delete m_translator;
-    delete m_qt_translator;
 
 }
 
@@ -131,14 +128,12 @@ void ClientApp::showLogin()
         connect(m_loginDiag, &LoginDialog::loginRequest,    this, &ClientApp::loginRequested);
         connect(m_loginDiag, &LoginDialog::quitRequest,     this, &ClientApp::loginQuitRequested);
 #endif
+        // Set server names
+        m_loginDiag->setServerNames(m_config.getServerNames());
+
+        // Show servers list... or not!
+        m_loginDiag->showServers(m_config.showServers());
     }
-
-    // Set server names
-    m_loginDiag->setServerNames(m_config.getServerNames());
-
-    // Show servers list... or not!
-    m_loginDiag->showServers(m_config.showServers());
-
 
     // Delete main window, if present
     if (m_mainWindow){
@@ -227,12 +222,12 @@ void ClientApp::setTranslation(QString language)
         m_currentLocale = QLocale(); // Use system locale by default
         lang_changed = true;
     }
-    if (language.toLower() == "en" && m_currentLocale != QLocale::English){
+    if (language.toLower() == "en" && m_currentLocale.language() != QLocale::English){
         m_currentLocale = QLocale(QLocale::English);
         lang_changed = true;
     }
 
-    if (language.toLower() == "fr" && m_currentLocale != QLocale::French){
+    if (language.toLower() == "fr" && m_currentLocale.language() != QLocale::French){
         m_currentLocale = QLocale(QLocale::French);
         lang_changed = true;
     }
@@ -246,15 +241,23 @@ void ClientApp::setTranslation(QString language)
         QLocale::setDefault(m_currentLocale);
 
         // Install Qt translator for default widgets
-        if (m_qt_translator->load("qt_" + m_currentLocale.name(), QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
+        if (m_qt_translator->load(m_currentLocale, QLatin1String("qt"), QLatin1String("_"), QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
         {
-            this->installTranslator(m_qt_translator);
+            if(!this->installTranslator(m_qt_translator)){
+                //qWarning() << "Unable to install Qt translator...";
+            }else{
+                //qDebug() << "Installed Qt translator";
+            }
         }
 
-        // Install app specific translator
+        // Install app specific translator        
         if (m_translator->load(m_currentLocale, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
-            this->installTranslator(m_translator);
-            //qDebug() << "Installed translator";
+            //qDebug() << m_translator->filePath() << m_translator->language() << m_translator->isEmpty();
+            if (!this->installTranslator(m_translator)){
+                //qWarning() << "Unable to install translator...";
+            }else{
+                //qDebug() << "Installed translator";
+            }
         }
 
         // Save last used language
@@ -319,10 +322,27 @@ void ClientApp::onLoginSuccess(const QString &token, const QString websocket_url
     if (m_comMan){
         m_comMan->deleteLater();
     }
-    m_comMan = new ComManager(QUrl("https://127.0.0.1:40075"));
+
+    // Find server url for that server
+    QUrl server;
+    if (m_loginDiag)
+        server = m_config.getServerUrl(m_loginDiag->currentServerName());
+
+    m_comMan = new ComManager(server);
+
+    connect(m_comMan, &ComManager::socketError, this, &ClientApp::on_serverError);
+    connect(m_comMan, &ComManager::serverDisconnected, this, &ClientApp::on_serverDisconnected);
+    connect(m_comMan, &ComManager::loginResult, this, &ClientApp::on_loginResult);
+    connect(m_comMan, &ComManager::networkError, this, &ClientApp::on_networkError);
+    connect(m_comMan, &ComManager::preferencesUpdated, this, &ClientApp::preferencesUpdated);
+    connect(m_comMan, &ComManager::newVersionAvailable, this, &ClientApp::on_newVersionAvailable);
+    connect(m_comMan, &ComManager::currentUserUpdated, this, &ClientApp::on_currentUserUpdated);
+
+    connect(m_comMan->getWebSocketManager(), &WebSocketManager::genericEventReceived, this, &ClientApp::ws_genericEventReceived);
+
     m_comMan->connectToServer(token, websocket_url, user_uuid);
 
-    showMainWindow();
+    //showMainWindow();
 }
 
 void ClientApp::loginQuitRequested()

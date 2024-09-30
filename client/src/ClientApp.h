@@ -50,7 +50,7 @@ protected:
     ConfigManagerClient m_config;
 
 #ifndef OPENTERA_WEBASSEMBLY
-    WebLoginDialog *m_loginDiag;
+    WebLoginDialog*     m_loginDiag;
 #else
     LoginDialog*        m_loginDiag;
 #endif

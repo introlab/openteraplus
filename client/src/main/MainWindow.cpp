@@ -730,6 +730,7 @@ void MainWindow::com_downloadCompleted(DownloadingFile *file)
 
 void MainWindow::com_preferencesUpdated()
 {
+    qDebug() << m_currentLanguage << m_comManager->getCurrentPreferences().getLanguage();
     if (m_currentLanguage != m_comManager->getCurrentPreferences().getLanguage()){ // Filter initial language change
         GlobalMessageBox msg;
         if (msg.showYesNo(tr("Changement de langue"), tr("La langue a été modifiée.\nSouhaitez-vous vous déconnecter pour appliquer les changements?")) == QMessageBox::Yes){

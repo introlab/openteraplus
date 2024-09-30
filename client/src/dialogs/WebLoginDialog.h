@@ -21,7 +21,7 @@ public:
     }
 
     Q_INVOKABLE void sendLoginSuccess(const QString &token, const QString &websocket_url, const QString &user_uuid) {
-        qDebug() << "[WebLoginSharedObject::sendLoginSuccess] " << token << websocket_url;
+        //qDebug() << "[WebLoginSharedObject::sendLoginSuccess] " << token << websocket_url;
         emit loginSuccess(token, websocket_url, user_uuid);
     }
 
@@ -60,7 +60,9 @@ class WebLoginDialog : public QDialog
 public:
     explicit WebLoginDialog(ConfigManagerClient *config, QWidget *parent = nullptr);
     ~WebLoginDialog();
-    void setStatusMessage(const QString &message, bool error=false) {qDebug() << "Unhandled message: " << message << "error: " << error;}
+    void setStatusMessage(const QString &message, bool error=false) {
+        /*qDebug() << "Unhandled message: " << message << "error: " << error;*/
+    }
     void setServerNames(QStringList servers);
     QString currentServerName();
     void showServers(bool show);

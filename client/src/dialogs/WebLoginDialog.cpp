@@ -90,6 +90,7 @@ void WebLoginDialog::onCertificateError(const QWebEngineCertificateError &certif
 void WebLoginDialog::onServerSelected(int index)
 {
     QString currentServer = ui->cmbServers->itemText(index);
+
     // Update last server
     TeraSettings::setGlobalSetting("last_used_server", currentServer);
 
@@ -130,7 +131,7 @@ QString WebLoginDialog::currentServerName()
     return QString();
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 WebLoginRequestInterceptor::WebLoginRequestInterceptor(QObject *p) : QWebEngineUrlRequestInterceptor(p)
 {
     // Cache OS information
