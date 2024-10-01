@@ -11,6 +11,7 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     : QDialog(parent), ui(new Ui::WebLoginDialog), m_config(config)
 {
     ui->setupUi(this);
+    ui->btnRetry->hide();
     showLargeView(false);
 
     //Create Web View
@@ -36,13 +37,13 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     settings->setAttribute(QWebEngineSettings::ShowScrollBars, false);
 
     connect(m_webPage, &QWebEnginePage::certificateError, this, &WebLoginDialog::onCertificateError);
-    connect(m_webView, &QWebEngineView::loadFinished, this, &WebLoginDialog::onLoginPageLoaded);
-    connect(m_webView, &QWebEngineView::loadStarted, this, &WebLoginDialog::onLoginPageLoading);
+    connect(m_webPage, &QWebEnginePage::loadingChanged, this, &WebLoginDialog::onLoginPageLoadingChanged);
 
     connect(myObject, &WebLoginSharedObject::loginSuccess, this, &WebLoginDialog::loginSuccess);
     connect(myObject, &WebLoginSharedObject::loginFailure, this, &WebLoginDialog::onLoginFailed);
     connect(myObject, &WebLoginSharedObject::mfaCheckInProgress, this, &WebLoginDialog::onMfaCheckInProgress);
     connect(myObject, &WebLoginSharedObject::mfaSetupInProgress, this, &WebLoginDialog::onMfaSetupInProgress);
+    connect(myObject, &WebLoginSharedObject::redirectToLogin, this, &WebLoginDialog::onRedirectToLoginRequest);
 
     m_webPage->setBackgroundColor(QColor(0x2c3338));
     m_webView->setPage(m_webPage);
@@ -106,45 +107,60 @@ void WebLoginDialog::onServerSelected(int index)
         QUrl loginUrl = m_config->getServerLoginUrl(currentServer);
         loginUrl.setQuery("no_logo");
         m_webPage->setUrl(loginUrl);
+        showLargeView(false);
     }
 }
 
-void WebLoginDialog::onLoginPageLoaded(bool ok)
+void WebLoginDialog::onLoginPageLoadingChanged(const QWebEngineLoadingInfo &loadingInfo)
 {
-    if (ok){
+    qDebug() << loadingInfo.status();
+    if (loadingInfo.status() == QWebEngineLoadingInfo::LoadStartedStatus){
+        // Page is loading...
+        ui->centralWidget->hide();
+        ui->btnRetry->hide();
+        ui->lblError->hide();
+        ui->lblLoading->show();
+        ui->frameLoginMessages->show();
+        return;
+    }
+
+    if (loadingInfo.status() == QWebEngineLoadingInfo::LoadSucceededStatus){
         ui->centralWidget->show();
         ui->frameLoginMessages->hide();
         m_webView->setFocus();
     }else{
+        // Manage specific error messages
+        if (loadingInfo.errorCode() == 404) {
+            // Not found error
+            ui->lblError->setText(tr("Impossible de rejoindre le serveur. Vérifiez votre connexion Internet, vos paramètres et votre pare-feu, puis essayez de nouveau."));
+        }else{
+            ui->lblError->setText(tr("Une erreur est survenue") + ": \n" + QString::number(loadingInfo.errorCode()) + " - " + loadingInfo.errorString());
+        }
         ui->lblError->show();
         ui->lblLoading->hide();
+        ui->btnRetry->show();
     }
-}
-
-void WebLoginDialog::onLoginPageLoading()
-{
-    ui->centralWidget->hide();
-    ui->lblError->hide();
-    ui->lblLoading->show();
-    ui->frameLoginMessages->show();
 }
 
 void WebLoginDialog::onMfaSetupInProgress()
 {
-    qDebug() << "WebLoginDialog::onMfaSetupInProgress";
     showLargeView(true);
 }
 
 void WebLoginDialog::onMfaCheckInProgress()
 {
-    qDebug() << "WebLoginDialog::onMfaCheckInProgress()";
-    showLargeView(true);
+    ui->btnCancel->setVisible(true);
 }
 
 void WebLoginDialog::onLoginFailed(const QString &message)
 {
     showLargeView(false);
     emit loginFailure(message);
+}
+
+void WebLoginDialog::onRedirectToLoginRequest()
+{
+    onServerSelected(ui->cmbServers->currentIndex());
 }
 
 void WebLoginDialog::showLargeView(const bool &large)
@@ -157,8 +173,7 @@ void WebLoginDialog::showLargeView(const bool &large)
     }
     if (large){
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        setFixedSize(768, 768);
-
+        setFixedSize(768, 500);
     }else{
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         setFixedSize(550, 500);
@@ -211,5 +226,11 @@ void WebLoginDialog::on_btnCancel_clicked()
     showLargeView(false);
     // Return to login page
     onServerSelected(ui->cmbServers->currentIndex());
+}
+
+
+void WebLoginDialog::on_btnRetry_clicked()
+{
+    m_webPage->load(m_webPage->url());
 }
 

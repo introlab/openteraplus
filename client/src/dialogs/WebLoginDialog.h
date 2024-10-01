@@ -9,6 +9,7 @@
 #include <QWebEngineSettings>
 #include <QWebEngineCertificateError>
 #include <QWebEngineUrlRequestInterceptor>
+#include <QWebEngineLoadingInfo>
 
 #include <QWebChannel>
 
@@ -37,10 +38,16 @@ public:
         emit mfaCheckInProgress();
     }
 
+    Q_INVOKABLE void sendRedirectToLogin(){
+        emit redirectToLogin();
+    }
+
 signals:
 
     void loginSuccess(const QString &token, const QString &websocket_url, const QString& user_uuid);
     void loginFailure(const QString &message);
+    void redirectToLogin();
+
     void mfaSetupInProgress();
     void mfaCheckInProgress();
 
@@ -86,14 +93,16 @@ private slots:
 
     void onCertificateError(const QWebEngineCertificateError &certificateError);
     void onServerSelected(int index);
-    void onLoginPageLoaded(bool ok);
-    void onLoginPageLoading();
+    void onLoginPageLoadingChanged(const QWebEngineLoadingInfo &loadingInfo);
 
     void onMfaSetupInProgress();
     void onMfaCheckInProgress();
     void onLoginFailed(const QString &message);
+    void onRedirectToLoginRequest();
 
     void on_btnCancel_clicked();
+
+    void on_btnRetry_clicked();
 
 private:
     Ui::WebLoginDialog          *ui;

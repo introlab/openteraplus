@@ -60,7 +60,8 @@ ClientApp::~ClientApp()
 
     if (m_comMan){
         m_comMan->disconnectFromServer();
-        m_comMan->deleteLater();
+        //m_comMan->deleteLater();
+        delete m_comMan;
     }
 
 }
