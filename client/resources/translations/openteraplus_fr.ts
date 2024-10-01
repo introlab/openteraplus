@@ -372,83 +372,83 @@
 <context>
     <name>ClientApp</name>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="169"/>
+        <location filename="../../src/ClientApp.cpp" line="165"/>
         <source>Connexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="305"/>
+        <location filename="../../src/ClientApp.cpp" line="309"/>
         <source>Bienvenue!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="311"/>
+        <location filename="../../src/ClientApp.cpp" line="315"/>
         <source>Déconnexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="311"/>
+        <location filename="../../src/ClientApp.cpp" line="315"/>
         <source>Vous avez été déconnecté du serveur. Veuillez vous connecter à nouveau.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="343"/>
-        <location filename="../../src/ClientApp.cpp" line="357"/>
+        <location filename="../../src/ClientApp.cpp" line="364"/>
+        <location filename="../../src/ClientApp.cpp" line="378"/>
         <source>La connexion a été refusée par le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="364"/>
+        <location filename="../../src/ClientApp.cpp" line="385"/>
         <source>Impossible de rejoindre le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="367"/>
+        <location filename="../../src/ClientApp.cpp" line="388"/>
         <source>Le serveur est introuvable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="370"/>
+        <location filename="../../src/ClientApp.cpp" line="391"/>
         <source>Impossible de se connecter (Code erreur: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="390"/>
+        <location filename="../../src/ClientApp.cpp" line="411"/>
         <source>Une nouvelle version (</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="390"/>
+        <location filename="../../src/ClientApp.cpp" line="411"/>
         <source>) du logiciel est disponible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="392"/>
+        <location filename="../../src/ClientApp.cpp" line="413"/>
         <source>Veuillez contacter votre fournisseur pour l&apos;obtenir.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="394"/>
+        <location filename="../../src/ClientApp.cpp" line="415"/>
         <source>Cliquez </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="394"/>
+        <location filename="../../src/ClientApp.cpp" line="415"/>
         <source>ICI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="394"/>
+        <location filename="../../src/ClientApp.cpp" line="415"/>
         <source> pour la télécharger.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="395"/>
+        <location filename="../../src/ClientApp.cpp" line="416"/>
         <source>Important: assurez-vous que le logiciel est bien fermé avant de procéder à la mise à jour.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="397"/>
+        <location filename="../../src/ClientApp.cpp" line="418"/>
         <source>Nouvelle version disponible!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2586,91 +2586,91 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="776"/>
+        <location filename="../../src/main/MainWindow.cpp" line="777"/>
         <source>Erreur de séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="776"/>
+        <location filename="../../src/main/MainWindow.cpp" line="777"/>
         <source>Une erreur est survenue:
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="776"/>
+        <location filename="../../src/main/MainWindow.cpp" line="777"/>
         <source>
 
 La séance ne peut pas continuer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="785"/>
-        <location filename="../../src/main/MainWindow.cpp" line="808"/>
-        <location filename="../../src/main/MainWindow.cpp" line="832"/>
+        <location filename="../../src/main/MainWindow.cpp" line="786"/>
+        <location filename="../../src/main/MainWindow.cpp" line="809"/>
+        <location filename="../../src/main/MainWindow.cpp" line="833"/>
         <source> est en ligne.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="794"/>
-        <location filename="../../src/main/MainWindow.cpp" line="820"/>
-        <location filename="../../src/main/MainWindow.cpp" line="841"/>
+        <location filename="../../src/main/MainWindow.cpp" line="795"/>
+        <location filename="../../src/main/MainWindow.cpp" line="821"/>
+        <location filename="../../src/main/MainWindow.cpp" line="842"/>
         <source> est hors-ligne.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="880"/>
+        <location filename="../../src/main/MainWindow.cpp" line="881"/>
         <source>Erreur de serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="887"/>
-        <location filename="../../src/main/MainWindow.cpp" line="892"/>
+        <location filename="../../src/main/MainWindow.cpp" line="888"/>
+        <location filename="../../src/main/MainWindow.cpp" line="893"/>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainWindow.h" line="471"/>
         <source>Déconnexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="887"/>
+        <location filename="../../src/main/MainWindow.cpp" line="888"/>
         <source>Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="887"/>
+        <location filename="../../src/main/MainWindow.cpp" line="888"/>
         <source>Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="964"/>
+        <location filename="../../src/main/MainWindow.cpp" line="965"/>
         <source>Votre compte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="988"/>
+        <location filename="../../src/main/MainWindow.cpp" line="989"/>
         <source>Configuration Globale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="1008"/>
+        <location filename="../../src/main/MainWindow.cpp" line="1009"/>
         <source>Détails</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="1054"/>
+        <location filename="../../src/main/MainWindow.cpp" line="1055"/>
         <source>Séance en cours</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="1054"/>
+        <location filename="../../src/main/MainWindow.cpp" line="1055"/>
         <source>La séance en cours empêche la fermeture du logiciel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="1054"/>
+        <location filename="../../src/main/MainWindow.cpp" line="1055"/>
         <source>Veuillez la terminer avant de poursuivre.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="735"/>
+        <location filename="../../src/main/MainWindow.cpp" line="736"/>
         <source>Changement de langue</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2680,7 +2680,7 @@ La séance ne peut pas continuer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="735"/>
+        <location filename="../../src/main/MainWindow.cpp" line="736"/>
         <source>La langue a été modifiée.
 Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
         <translation type="unfinished"></translation>
@@ -6022,23 +6022,43 @@ Vous devez spécifier au moins un groupe utilisateur</source>
 <context>
     <name>WebLoginDialog</name>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="174"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="217"/>
         <source>OpenTeraPlus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="176"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="219"/>
         <source>Serveur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="177"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="220"/>
         <source>Chargement en cours...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="178"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="221"/>
+        <source>(Erreur)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="222"/>
+        <source>Réessayer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_WebLoginDialog.h" line="223"/>
+        <source>Annuler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="135"/>
         <source>Impossible de rejoindre le serveur. Vérifiez votre connexion Internet, vos paramètres et votre pare-feu, puis essayez de nouveau.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="137"/>
+        <source>Une erreur est survenue</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
