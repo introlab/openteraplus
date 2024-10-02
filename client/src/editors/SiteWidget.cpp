@@ -4,6 +4,8 @@
 #include "editors/DataListWidget.h"
 #include "services/DashboardsService/DashboardsConfigWidget.h"
 
+#include "GlobalMessageBox.h"
+
 SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, const bool configMode, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::SiteWidget)
@@ -86,6 +88,8 @@ void SiteWidget::connectSignals()
 
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &SiteWidget::btnUpdateAccess_clicked);
 
+    connect(ui->wdgSite, &TeraForm::widgetValueHasChanged, this, &SiteWidget::siteValueHasChanged);
+
 }
 
 void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
@@ -148,6 +152,9 @@ void SiteWidget::updateControlsState()
 {
     bool is_super_admin = m_comManager->isCurrentUserSuperAdmin();
     bool is_site_admin = isSiteAdmin() || is_super_admin;
+
+    if (!is_site_admin)
+        ui->wdgSite->hideField("site_2fa_required");
 
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabUsersDetails), is_site_admin);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), is_site_admin /*(is_site_admin && m_devicesCount>0) || is_super_admin*/);
@@ -412,6 +419,20 @@ void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
     m_devicesCount = stats.getFieldValue("devices_total_count").toInt();
 
+}
+
+void SiteWidget::siteValueHasChanged(QWidget *widget, QVariant value)
+{
+    if (widget == ui->wdgSite->getWidgetForField("site_2fa_required")){
+        if (value.toBool()){
+            GlobalMessageBox msgbox;
+            if (msgbox.showYesNo(tr("Authentification multi-facteurs"),
+                                 tr("Activer l'authentification multi-facteurs forcera les utilisateurs ayant accès au site à utiliser cette authentification.\n\n"
+                                    "Cette action sera difficilement réversible - il faudra désactiver l'authentification pour chacun des utilisateurs individuellement.\n\nVoulez-vous continuer?")) == GlobalMessageBox::No){
+                ui->wdgSite->setFieldValue("site_2fa_required", false);
+            }
+        }
+    }
 }
 
 void SiteWidget::updateServiceSite(const TeraData *service_site)

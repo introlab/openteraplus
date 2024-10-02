@@ -47,7 +47,6 @@ void TeraForm::buildUiFromStructure(const QString &structure)
     }
     ui->toolboxMain->show();
 
-
     QJsonObject struct_object = struct_info.object();
     //qDebug() << struct_info.object().keys();
     if (struct_object.contains("objecttype"))
@@ -91,7 +90,6 @@ void TeraForm::buildUiFromStructure(const QString &structure)
                         buildFormFromStructure(m_mainWidget, section_data["items"].toList());
                     }
                 }
-
             }
         }
     }

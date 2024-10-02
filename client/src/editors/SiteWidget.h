@@ -6,7 +6,6 @@
 #include <QTableWidgetItem>
 
 #include "DataEditorWidget.h"
-#include "GlobalMessageBox.h"
 #include "dialogs/BaseDialog.h"
 
 namespace Ui {
@@ -31,7 +30,9 @@ private slots:
     void processDeviceSiteAccessReply(QList<TeraData>device_sites, QUrlQuery reply_query);
     void processSessionTypeSiteAccessReply(QList<TeraData>st_sites, QUrlQuery reply_query);
     void processTestTypeSiteAccessReply(QList<TeraData>tt_sites, QUrlQuery reply_query);
-    void processStatsReply(TeraData stats, QUrlQuery reply_query);   
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
+
+    void siteValueHasChanged(QWidget* widget, QVariant value);
 
     void processPostOKReply(QString path);
 

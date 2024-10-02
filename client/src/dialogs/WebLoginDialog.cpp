@@ -3,6 +3,7 @@
 
 #include <QVBoxLayout>
 #include <QScreen>
+#include <QTextDocumentFragment>
 
 #include "Utils.h"
 #include "TeraSettings.h"
@@ -113,7 +114,7 @@ void WebLoginDialog::onServerSelected(int index)
 
 void WebLoginDialog::onLoginPageLoadingChanged(const QWebEngineLoadingInfo &loadingInfo)
 {
-    qDebug() << loadingInfo.status();
+    //qDebug() << loadingInfo.status();
     if (loadingInfo.status() == QWebEngineLoadingInfo::LoadStartedStatus){
         // Page is loading...
         ui->centralWidget->hide();
@@ -134,7 +135,8 @@ void WebLoginDialog::onLoginPageLoadingChanged(const QWebEngineLoadingInfo &load
             // Not found error
             ui->lblError->setText(tr("Impossible de rejoindre le serveur. Vérifiez votre connexion Internet, vos paramètres et votre pare-feu, puis essayez de nouveau."));
         }else{
-            ui->lblError->setText(tr("Une erreur est survenue") + ": \n" + QString::number(loadingInfo.errorCode()) + " - " + loadingInfo.errorString());
+            QString message = QTextDocumentFragment::fromHtml(loadingInfo.errorString()).toPlainText();
+            ui->lblError->setText(tr("Une erreur est survenue") + ": \n" + QString::number(loadingInfo.errorCode()) + " - " + message);
         }
         ui->lblError->show();
         ui->lblLoading->hide();
