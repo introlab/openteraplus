@@ -44,6 +44,7 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     connect(myObject, &WebLoginSharedObject::loginFailure, this, &WebLoginDialog::onLoginFailed);
     connect(myObject, &WebLoginSharedObject::mfaCheckInProgress, this, &WebLoginDialog::onMfaCheckInProgress);
     connect(myObject, &WebLoginSharedObject::mfaSetupInProgress, this, &WebLoginDialog::onMfaSetupInProgress);
+    connect(myObject, &WebLoginSharedObject::passwordChangeInProgress, this, &WebLoginDialog::onPasswordChangeInProgress);
     connect(myObject, &WebLoginSharedObject::redirectToLogin, this, &WebLoginDialog::onRedirectToLoginRequest);
 
     m_webPage->setBackgroundColor(QColor(0x2c3338));
@@ -152,6 +153,11 @@ void WebLoginDialog::onMfaSetupInProgress()
 void WebLoginDialog::onMfaCheckInProgress()
 {
     ui->btnCancel->setVisible(true);
+}
+
+void WebLoginDialog::onPasswordChangeInProgress()
+{
+    showLargeView(true);
 }
 
 void WebLoginDialog::onLoginFailed(const QString &message)

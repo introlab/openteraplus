@@ -38,6 +38,10 @@ public:
         emit mfaCheckInProgress();
     }
 
+    Q_INVOKABLE void sendPasswordChangeInProgress(){
+        emit passwordChangeInProgress();
+    }
+
     Q_INVOKABLE void sendRedirectToLogin(){
         emit redirectToLogin();
     }
@@ -50,6 +54,8 @@ signals:
 
     void mfaSetupInProgress();
     void mfaCheckInProgress();
+
+    void passwordChangeInProgress();
 
 };
 
@@ -97,6 +103,8 @@ private slots:
 
     void onMfaSetupInProgress();
     void onMfaCheckInProgress();
+    void onPasswordChangeInProgress();
+
     void onLoginFailed(const QString &message);
     void onRedirectToLoginRequest();
 
