@@ -711,6 +711,17 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
         }
     }
 
+    if (widget == ui->wdgUser->getWidgetForField("user_2fa_enabled")){
+        if (m_data){
+            if (value.toBool() && !m_data->getFieldValue("user_2fa_enabled").toBool()){
+                GlobalMessageBox msgbox;
+                if (msgbox.showYesNo(tr("Authentification multi-facteurs"),
+                                     tr("Activer la double authentification forcera une configuration de l'utilisateur lors de la prochaine connexion.\n\nVoulez-vous continuer?")) == GlobalMessageBox::No){
+                    ui->wdgUser->setFieldValue("user_2fa_enabled", false);
+                }
+            }
+        }
+    }
     if (widget == ui->wdgUser->getWidgetForField("user_2fa_otp_enabled")){
         if (m_data){
             if (!value.toBool() && m_data->getFieldValue("user_2fa_otp_enabled").toBool()){
