@@ -262,7 +262,7 @@ void ClientApp::setTranslation(QString language)
         }
 
         // Save last used language
-        TeraSettings::setGlobalSetting(SETTINGS_LASTLANGUAGE, m_currentLocale.bcp47Name());
+        TeraSettings::setGlobalSetting(SETTINGS_LASTLANGUAGE, QLocale(m_currentLocale.language()).bcp47Name());
     }
 
 }
