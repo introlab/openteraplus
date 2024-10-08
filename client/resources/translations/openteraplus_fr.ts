@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr">
+<TS version="2.1" language="fr_FR">
 <context>
     <name>AboutDialog</name>
     <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_AboutDialog.h" line="111"/>
         <source>À propos d&apos;OpenTera...</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos d&apos;OpenTera...</translation>
     </message>
     <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_AboutDialog.h" line="112"/>
