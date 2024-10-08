@@ -72,8 +72,17 @@ void WebLoginDialog::setServerNames(QStringList servers)
     // Select server from the list if we have a setting for that
     if (current_server.isValid()){
         QString server_name = current_server.toString();
-        if (servers.contains(server_name))
-            ui->cmbServers->setCurrentText(server_name);
+        if (servers.contains(server_name)){
+            if (ui->cmbServers->currentText() != server_name)
+                ui->cmbServers->setCurrentText(server_name);
+            else
+                onServerSelected(0);
+        }
+    }else{
+        if (ui->cmbServers->count() > 0){
+            ui->cmbServers->setCurrentIndex(0);
+            onServerSelected(0);
+        }
     }
 }
 
@@ -178,6 +187,8 @@ void WebLoginDialog::showLargeView(const bool &large)
 
     if (m_showServers){
         ui->frameServers->setVisible(!large);
+    }else{
+        ui->frameServers->hide();
     }
     if (large){
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
