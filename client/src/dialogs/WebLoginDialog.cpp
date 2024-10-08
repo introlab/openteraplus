@@ -84,7 +84,7 @@ void WebLoginDialog::showServers(bool show)
     else
         m_showServers = show;
 
-    ui->cmbServers->setVisible(m_showServers);
+    ui->frameServers->setVisible(m_showServers);
 }
 
 void WebLoginDialog::onCertificateError(const QWebEngineCertificateError &certificateError)
