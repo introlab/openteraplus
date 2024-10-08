@@ -456,22 +456,22 @@
 <context>
     <name>ComManager</name>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="497"/>
+        <location filename="../../src/managers/ComManager.cpp" line="496"/>
         <source>L&apos;utilisateur est déjà connecté.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="818"/>
+        <location filename="../../src/managers/ComManager.cpp" line="817"/>
         <source>Erreur inconnue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="926"/>
+        <location filename="../../src/managers/ComManager.cpp" line="925"/>
         <source>Utilisateur ou mot de passe invalide.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/managers/ComManager.cpp" line="936"/>
+        <location filename="../../src/managers/ComManager.cpp" line="935"/>
         <source>La communication avec le serveur n&apos;a pu être établie.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4348,113 +4348,127 @@ Vous devez associer au moins un site.</source>
 <context>
     <name>SiteWidget</name>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="404"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="411"/>
         <source> Utilisateurs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="406"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="413"/>
         <source> Projets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="407"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="414"/>
         <source> Groupes participants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="408"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="415"/>
         <source> Participants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="409"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="416"/>
         <source> Participants actifs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="410"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="417"/>
         <source> Séances planifiées 
 ou réalisées</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="411"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="418"/>
         <source> Appareils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="800"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="429"/>
+        <source>Authentification multi-facteurs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/SiteWidget.cpp" line="430"/>
+        <source>Activer l&apos;authentification multi-facteurs forcera les utilisateurs ayant accès au site à utiliser cette authentification.
+
+Cette action sera difficilement réversible - il faudra désactiver l&apos;authentification pour chacun des utilisateurs individuellement.
+
+Voulez-vous continuer?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/SiteWidget.cpp" line="821"/>
         <source>Suppression de service associé</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="800"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="821"/>
         <source>Au moins un service a été retiré de ce site. S&apos;il y a des projets qui utilisent ce service, ils ne pourront plus l&apos;utiliser.
 Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="895"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="916"/>
         <source>Suppression d&apos;appareil associé</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="895"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="916"/>
         <source>Au moins un appareil a été retiré de ce site. S&apos;il y a des projets qui utilisent cet appareil, ils ne pourront plus l&apos;utiliser.
 Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="1000"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="1021"/>
         <source>Suppression de types de séances associés</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="1000"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="1021"/>
         <source>Au moins un type de séance a été retiré de ce site. S&apos;il y a des projets qui utilisent ce type, ils ne pourront plus l&apos;utiliser.
 Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="1024"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="1045"/>
         <source>Seuls les types de séances associés au site sont affichés.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="1027"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="1048"/>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SiteWidget.h" line="706"/>
         <source>Types de séances</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="1090"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="1111"/>
         <source>Suppression de types de tests associés</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="1090"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="1111"/>
         <source>Au moins un type de test a été retiré de ce site. S&apos;il y a des projets qui utilisent ce type, ils ne pourront plus l&apos;utiliser.
 Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="929"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="950"/>
         <source>Seuls les appareils associés au site sont affichés.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="733"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="754"/>
         <source>Seuls les utilisateurs ayant un accès au site sont affichés.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="642"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="663"/>
         <source>Seuls les groupes utilisateurs ayant un accès au site sont affichés.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="645"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="666"/>
         <source>Groupes Utilisateurs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4621,7 +4635,7 @@ Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/SiteWidget.cpp" line="932"/>
+        <location filename="../../src/editors/SiteWidget.cpp" line="953"/>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SiteWidget.h" line="714"/>
         <source>Appareils</source>
         <translation type="unfinished"></translation>
@@ -4847,12 +4861,12 @@ Souhaitez-vous continuer?</source>
 <context>
     <name>TeraForm</name>
     <message>
-        <location filename="../../src/editors/TeraForm.cpp" line="765"/>
+        <location filename="../../src/editors/TeraForm.cpp" line="763"/>
         <source>Afficher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/TeraForm.cpp" line="1390"/>
+        <location filename="../../src/editors/TeraForm.cpp" line="1388"/>
         <source>Choisir la couleur</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5505,154 +5519,187 @@ Vous devez associer au moins un site.</source>
 <context>
     <name>UserWidget</name>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="144"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="153"/>
         <source>Groupes utilisateurs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="171"/>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="519"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="180"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="538"/>
         <source>Journal d&apos;accès</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="255"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="271"/>
         <source>Langue de l&apos;interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="260"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="276"/>
         <source>Français</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="264"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="280"/>
         <source>Anglais</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="271"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="287"/>
         <source>Sons lors des notifications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="392"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="408"/>
         <source>Attention</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="392"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="408"/>
         <source>Aucun groupe utilisateur n&apos;a été spécifié.
 Vous devez spécifier au moins un groupe utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="483"/>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="485"/>
-        <source>Utilisateur</source>
+        <location filename="../../src/editors/UserWidget.cpp" line="718"/>
+        <location filename="../../src/editors/UserWidget.cpp" line="729"/>
+        <source>Authentification multi-facteurs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="486"/>
-        <source>Éditer</source>
+        <location filename="../../src/editors/UserWidget.cpp" line="719"/>
+        <source>Activer la double authentification forcera une configuration de l&apos;utilisateur lors de la prochaine connexion.
+
+Voulez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="487"/>
-        <source>Sauvegarder</source>
+        <location filename="../../src/editors/UserWidget.cpp" line="730"/>
+        <source>Désactiver l&apos;authentification par OTP forcera une reconfiguration de l&apos;utilisateur lors de la prochaine connexion.
+
+Voulez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="488"/>
-        <source>Annuler</source>
+        <location filename="../../src/editors/UserWidget.cpp" line="817"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="504"/>
+        <source>Réinitialiser code authentification</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="489"/>
-        <source>Informations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="491"/>
-        <source>Mettre à jour les groupes de cet utilisateur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="492"/>
-        <source>Groupes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="493"/>
-        <source>Rôles effectifs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="495"/>
-        <source>Sites</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="497"/>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="505"/>
-        <source>Site</source>
+        <location filename="../../src/editors/UserWidget.cpp" line="817"/>
+        <source>Cette action forcera l&apos;utilisateur à reconfigurer ses paramètres d&apos;authentification.
+
+Voulez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="501"/>
-        <source>Projets</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="503"/>
-        <source>Projet</source>
+        <source>Utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="499"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="505"/>
+        <source>Éditer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="506"/>
+        <source>Sauvegarder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="507"/>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="514"/>
-        <source>Rôle</source>
+        <source>Annuler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="490"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cet utilisateur est un super administrateur.&lt;/p&gt;&lt;p&gt;Il est donc impossible de lui assigner des groupes utiilsateurs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="509"/>
-        <source>Services</source>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="508"/>
+        <source>Informations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="510"/>
-        <source>Cet utilisateur est un super-administrateur.</source>
+        <source>Mettre à jour les groupes de cet utilisateur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="511"/>
+        <source>Groupes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="512"/>
-        <source>Service</source>
+        <source>Rôles effectifs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="515"/>
-        <source>Rôles</source>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="514"/>
+        <source>Sites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="516"/>
-        <source>Mettre à jour les préférences</source>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="524"/>
+        <source>Site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/editors/UserWidget.cpp" line="275"/>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="517"/>
-        <source>Préférences</source>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="520"/>
+        <source>Projets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="522"/>
+        <source>Projet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="518"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="526"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="533"/>
+        <source>Rôle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="509"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cet utilisateur est un super administrateur.&lt;/p&gt;&lt;p&gt;Il est donc impossible de lui assigner des groupes utiilsateurs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="528"/>
+        <source>Services</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="529"/>
+        <source>Cet utilisateur est un super-administrateur.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="531"/>
+        <source>Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="534"/>
+        <source>Rôles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="535"/>
+        <source>Mettre à jour les préférences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/UserWidget.cpp" line="291"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="536"/>
+        <source>Préférences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_UserWidget.h" line="537"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6052,12 +6099,12 @@ Vous devez spécifier au moins un groupe utilisateur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="135"/>
+        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="137"/>
         <source>Impossible de rejoindre le serveur. Vérifiez votre connexion Internet, vos paramètres et votre pare-feu, puis essayez de nouveau.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="137"/>
+        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="140"/>
         <source>Une erreur est survenue</source>
         <translation type="unfinished"></translation>
     </message>
