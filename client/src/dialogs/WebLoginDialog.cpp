@@ -17,6 +17,7 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
 
     //Create Web View
     m_webView = new QWebEngineView(ui->centralWidget);
+    m_webView->setContextMenuPolicy(Qt::NoContextMenu);
     ui->lblError->hide();
     ui->centralWidget->hide();
 

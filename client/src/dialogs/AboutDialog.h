@@ -23,6 +23,7 @@ public:
 private slots:
     void on_btnOk_clicked();
     void on_lblAbout_clicked();
+    void onPageLoaded();
 
     void processServerSettings(QVariantHash settings);
 
