@@ -250,27 +250,27 @@ void ClientApp::setTranslation(QString language)
         QLocale::setDefault(m_currentLocale);
 
         // Install Qt translator for default widgets
-        if (m_qt_translator->load(m_currentLocale, QLatin1String("qt"), QLatin1String("_"), QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
+        if (m_qt_translator->load(QLocale(m_currentLocale.language()), QLatin1String("qt"), QLatin1String("_"), QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
         {
             if(!this->installTranslator(m_qt_translator)){
-                //qWarning() << "Unable to install Qt translator...";
+                qWarning() << "Unable to install Qt translator...";
             }else{
-                //qDebug() << "Installed Qt translator";
+                qDebug() << "Installed Qt translator";
             }
         }
 
         // Install app specific translator        
-        if (m_translator->load(m_currentLocale, QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
-            //qDebug() << m_translator->filePath() << m_translator->language() << m_translator->isEmpty();
+        if (m_translator->load(QLocale(m_currentLocale.language()), QLatin1String("openteraplus"), QLatin1String("_"), QLatin1String(":/translations"))) {
+            qDebug() << m_translator->filePath() << m_translator->language() << m_translator->isEmpty();
             if (!this->installTranslator(m_translator)){
-                //qWarning() << "Unable to install translator...";
+                qWarning() << "Unable to install translator...";
             }else{
-                //qDebug() << "Installed translator";
+                qDebug() << "Installed translator";
             }
         }
 
         // Save last used language
-        TeraSettings::setGlobalSetting(SETTINGS_LASTLANGUAGE, language.toLower());
+        TeraSettings::setGlobalSetting(SETTINGS_LASTLANGUAGE, QLocale(m_currentLocale.language()).bcp47Name());
     }
 
 }

@@ -345,15 +345,40 @@ QT6_WRAP_UI(moc_uis ${uis})
 #This will generate moc_* for Qt
 QT6_WRAP_CPP(moc_srcs ${headers})
 
+set(translation_files_srcs
+        ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+        ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+)
+
+# #set qm files output directory
+set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
+
+qt_add_lupdate(
+    TS_FILES
+    ${translation_files_srcs}
+
+    SOURCES
+    ${srcs}
+    ${headers}
+    ${moc_uis}
+
+    SOURCE_TARGETS opentera_shared
+)
+
+qt_add_lrelease(
+    TS_FILES ${translation_files_srcs} QM_FILES_OUTPUT_VARIABLE qm_files
+)
+
+message(STATUS "qm_files : ${qm_files}")
+
+
 # generate rules for building source files from the resources
 QT6_ADD_RESOURCES(client_qrc ${qrcs})
 
 
 
-set(translation_files_srcs
-        ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
-        ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
-)
+# Make client_qrc target depends on qm_files
+
 
 
 # #Translation files, this is done manually to avoid removing the file when doing make clean
@@ -393,26 +418,7 @@ set(translation_files_srcs
 #     )
 # endif()
 
-# #set qm files output directory
-set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
 
-qt_add_lupdate(
-    TS_FILES
-    ${translation_files_srcs}
-
-    SOURCES
-    ${srcs}
-    ${headers}
-    ${moc_uis}
-
-    SOURCE_TARGETS opentera_shared
-)
-
-qt_add_lrelease(
-    TS_FILES ${translation_files_srcs}
-)
-
-message(STATUS "qm_files : ${qm_files}")
 
 include_directories(
     ${TERACLIENT_RES_INCLUDES}
