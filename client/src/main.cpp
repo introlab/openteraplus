@@ -29,5 +29,7 @@ int main(int argc, char* argv[])
     //QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
     //QWebEngineSettings::defaultSettings()->setAttribute(QWebEngineSettings::JavascriptCanOpenWindows, true);
 
-    return app.exec();
+    int rval = app.exec();
+    qDebug() << "Bye!";
+    return rval;
 }

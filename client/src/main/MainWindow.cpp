@@ -252,7 +252,7 @@ void MainWindow::showDashboard(const bool &show)
         }
 
         if (!m_dashboard){
-            m_dashboard = new DashboardWidget(m_comManager, ui->projNavigator->getCurrentSiteId());
+            m_dashboard = new DashboardWidget(m_comManager, ui->projNavigator->getCurrentSiteId(), this);
             connect(m_dashboard, &DashboardWidget::dataDisplayRequest, this, &MainWindow::dataDisplayRequested);
             ui->wdgMainTop->layout()->addWidget(m_dashboard);
         }else{
@@ -1058,6 +1058,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
         }
     }
 #endif
+    m_comManager->disconnect();
+    //QApplication::quit();
     event->accept();
 }
 

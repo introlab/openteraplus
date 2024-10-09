@@ -59,10 +59,17 @@ ClientApp::~ClientApp()
         delete m_loginDiag;
 
     if (m_comMan){
-        m_comMan->disconnectFromServer();
+        //m_comMan->disconnect();
+        //m_comMan->disconnectFromServer();
         //m_comMan->deleteLater();
         delete m_comMan;
     }
+
+    if (m_mainWindow){
+        delete m_mainWindow;
+    }
+    if (m_mainKitWindow)
+        delete m_mainKitWindow;
 
 }
 
@@ -124,6 +131,7 @@ void ClientApp::showLogin()
 #ifndef OPENTERA_WEBASSEMBLY
         m_loginDiag = new WebLoginDialog(&m_config);
         connect(m_loginDiag, &WebLoginDialog::loginSuccess, this, &ClientApp::onLoginSuccess, Qt::QueuedConnection);
+        connect(m_loginDiag, &WebLoginDialog::finished,     this, &ClientApp::loginQuitRequested);
 #else
         m_loginDiag = new LoginDialog();
         connect(m_loginDiag, &LoginDialog::loginRequest,    this, &ClientApp::loginRequested);
@@ -297,7 +305,7 @@ void ClientApp::loginRequested(QString username, QString password, QString serve
 void ClientApp::logoutRequested()
 {
     m_comMan->disconnectFromServer();
-    showLogin();
+    //showLogin();
 }
 
 void ClientApp::on_loginResult(bool logged, QString log_msg)
@@ -355,6 +363,7 @@ void ClientApp::on_serverDisconnected()
 {
     LOG_DEBUG("Disconnected from server.", "ClientApp::on_serverDisconnected");
     showLogin();
+
 }
 
 void ClientApp::on_serverError(QAbstractSocket::SocketError error, QString error_str)
