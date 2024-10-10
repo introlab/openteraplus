@@ -730,13 +730,18 @@ void MainWindow::com_downloadCompleted(DownloadingFile *file)
 
 void MainWindow::com_preferencesUpdated()
 {
-    qDebug() << m_currentLanguage << m_comManager->getCurrentPreferences().getLanguage();
+    // qDebug() << m_currentLanguage << m_comManager->getCurrentPreferences().getLanguage();
     if (m_currentLanguage != m_comManager->getCurrentPreferences().getLanguage()){ // Filter initial language change
+        m_currentLanguage = m_comManager->getCurrentPreferences().getLanguage();
         GlobalMessageBox msg;
         if (msg.showYesNo(tr("Changement de langue"), tr("La langue a été modifiée.\nSouhaitez-vous vous déconnecter pour appliquer les changements?")) == QMessageBox::Yes){
+            if (m_diag_editor){
+                m_diag_editor->close();
+                delete m_diag_editor;
+                m_diag_editor = nullptr;
+            }
             emit logout_request();
         }
-        m_currentLanguage = m_comManager->getCurrentPreferences().getLanguage();
     }
 }
 
