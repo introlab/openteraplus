@@ -1,5 +1,7 @@
 #include "VideoRehabWebPage.h"
 #include "Logger.h"
+#include "dialogs/DesktopShareDialog.h"
+
 #include <QWebEngineSettings>
 
 VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
@@ -29,7 +31,8 @@ VideoRehabWebPage::VideoRehabWebPage(QObject *parent): QWebEnginePage(parent)
     // Connect signals
     connect(m_clientWrapper, &WebSocketClientWrapper::clientConnected, m_webChannel, &QWebChannel::connectTo); // Transport will be automatically connected
     connect(this, &VideoRehabWebPage::featurePermissionRequested, this, &VideoRehabWebPage::featurePermissionHandler);
-    connect(this,&QWebEnginePage::certificateError, this, &VideoRehabWebPage::onCertificateError);
+    connect(this, &QWebEnginePage::certificateError, this, &VideoRehabWebPage::onCertificateError);
+    connect(this, &QWebEnginePage::desktopMediaRequested, this, &VideoRehabWebPage::onDesktopMediaRequest);
 
     m_webChannel->registerObject(QStringLiteral("SharedObject"), m_sharedObject);
 }
@@ -54,6 +57,22 @@ void VideoRehabWebPage::onCertificateError(const QWebEngineCertificateError &cer
     //TODO Do not accept certificates in production ?
     auto mutableError = const_cast<QWebEngineCertificateError&>(certificateError);
     mutableError.acceptCertificate();
+
+}
+
+void VideoRehabWebPage::onDesktopMediaRequest(const QWebEngineDesktopMediaRequest &request)
+{
+    DesktopShareDialog dlg;
+    dlg.setWindows(request.windowsModel());
+    dlg.setScreens(request.screensModel());
+    if (dlg.exec() == QDialog::Rejected){
+        request.cancel();
+    }else{
+        if (dlg.getSelectedScreen() >= 0)
+            request.selectScreen(request.screensModel()->index(dlg.getSelectedScreen()));
+        if (dlg.getSelectedWindow() >= 0)
+            request.selectWindow(request.windowsModel()->index(dlg.getSelectedWindow()));
+    }
 
 }
 

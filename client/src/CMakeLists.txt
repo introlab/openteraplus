@@ -50,17 +50,20 @@ set(headers
     managers/WebSocketManager.h
     managers/BaseComManager.h
     managers/AssetComManager.h
+
     # Dialogs
-    dialogs/LoginDialog.h
-    dialogs/EmailInviteDialog.h
-    dialogs/GeneratePasswordDialog.h
-    dialogs/PasswordStrengthDialog.h
-    dialogs/TransferProgressDialog.h
     dialogs/BaseDialog.h
-    dialogs/DeviceAssignDialog.h
     dialogs/CleanUpDialog.h
+    dialogs/DesktopShareDialog.h
+    dialogs/DeviceAssignDialog.h
+    dialogs/EmailInviteDialog.h
     dialogs/FileUploaderDialog.h
+    dialogs/GeneratePasswordDialog.h
+    dialogs/LoginDialog.h
+    dialogs/PasswordStrengthDialog.h
     dialogs/QRCodeDialog.h
+    dialogs/TransferProgressDialog.h
+
     # Editors
     editors/DataEditorWidget.h    
     editors/DataListWidget.h
@@ -151,6 +154,7 @@ set(srcs
     main.cpp
     ClientApp.cpp
     GlobalMessageBox.cpp
+
     # Data structures
     data/DownloadingFile.cpp
     data/GlobalEvent.cpp
@@ -159,13 +163,16 @@ set(srcs
     data/TransferringFile.cpp
     data/UploadingFile.cpp
     data/IconMenuDelegate.cpp
+
     # Librairies
     libs/AudioVideoUtils.cpp
     libs/highlighter/languagedata.cpp
     libs/highlighter/qsourcehighliter.cpp
     libs/highlighter/qsourcehighliterthemes.cpp
+
     # Main Windows
     main/MainWindow.cpp
+
     # Managers
     managers/ConfigManagerClient.cpp
     managers/ComManager.cpp
@@ -173,17 +180,20 @@ set(srcs
     managers/ParticipantComManager.cpp
     managers/BaseComManager.cpp
     managers/AssetComManager.cpp
+
     # Dialogs
-    dialogs/LoginDialog.cpp
-    dialogs/DeviceAssignDialog.cpp
-    dialogs/TransferProgressDialog.cpp
     dialogs/BaseDialog.cpp
-    dialogs/EmailInviteDialog.cpp
-    dialogs/GeneratePasswordDialog.cpp
-    dialogs/PasswordStrengthDialog.cpp
     dialogs/CleanUpDialog.cpp
+    dialogs/DesktopShareDialog.cpp
+    dialogs/DeviceAssignDialog.cpp
+    dialogs/EmailInviteDialog.cpp
     dialogs/FileUploaderDialog.cpp
+    dialogs/GeneratePasswordDialog.cpp
+    dialogs/LoginDialog.cpp
+    dialogs/PasswordStrengthDialog.cpp
     dialogs/QRCodeDialog.cpp
+    dialogs/TransferProgressDialog.cpp
+
     # Editors
     editors/DataEditorWidget.cpp
     editors/DataListWidget.cpp    
@@ -204,6 +214,7 @@ set(srcs
     editors/UserGroupWidget.cpp
     editors/UserSummaryWidget.cpp
     editors/UserWidget.cpp
+
     # Wizards
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
@@ -239,12 +250,13 @@ set(srcs
 if(NOT DEFINED OPENTERA_WEBASSEMBLY)
     set(srcs ${srcs}
         # Dialogs
-        dialogs/StartSessionDialog.cpp
-        dialogs/SessionLobbyDialog.cpp
-        dialogs/JoinSessionDialog.cpp
         dialogs/AboutDialog.cpp
         dialogs/AboutDialogPage.cpp
+        dialogs/JoinSessionDialog.cpp
+        dialogs/StartSessionDialog.cpp
+        dialogs/SessionLobbyDialog.cpp
         dialogs/WebLoginDialog.cpp
+
         # Widgets
         widgets/InSessionWidget.cpp
         # Services
@@ -272,22 +284,25 @@ SET(uis
     # Main Windows
     main/MainWindow.ui
     main/MainKitWindow.ui
+
     # Dialogs
-    dialogs/LoginDialog.ui
-    dialogs/DeviceAssignDialog.ui
-    dialogs/TransferProgressDialog.ui
-    dialogs/BaseDialog.ui
-    dialogs/StartSessionDialog.ui
-    dialogs/SessionLobbyDialog.ui
-    dialogs/JoinSessionDialog.ui
-    dialogs/EmailInviteDialog.ui
     dialogs/AboutDialog.ui
-    dialogs/GeneratePasswordDialog.ui
-    dialogs/PasswordStrengthDialog.ui
+    dialogs/BaseDialog.ui
     dialogs/CleanUpDialog.ui
+    dialogs/DeviceAssignDialog.ui
+    dialogs/DesktopShareDialog.ui
+    dialogs/EmailInviteDialog.ui
     dialogs/FileUploaderDialog.ui
+    dialogs/JoinSessionDialog.ui
+    dialogs/GeneratePasswordDialog.ui
+    dialogs/LoginDialog.ui
+    dialogs/PasswordStrengthDialog.ui
     dialogs/QRCodeDialog.ui
+    dialogs/SessionLobbyDialog.ui
+    dialogs/StartSessionDialog.ui
+    dialogs/TransferProgressDialog.ui
     dialogs/WebLoginDialog.ui
+
     # Editors
     editors/DataListWidget.ui
     editors/DeviceSubTypeWidget.ui
@@ -307,6 +322,7 @@ SET(uis
     editors/UserGroupWidget.ui
     editors/UserSummaryWidget.ui
     editors/UserWidget.ui
+
     # Services
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
@@ -315,6 +331,7 @@ SET(uis
     services/VideoRehabService/VideoRehabPTZDialog.ui
     services/DanceService/DanceConfigWidget.ui
     services/DashboardsService/DashboardsConfigWidget.ui
+
     # Widgets
     widgets/ProjectNavigator.ui
     widgets/notification.ui
@@ -328,6 +345,7 @@ SET(uis
     widgets/TestsWidget.ui
     widgets/LogViewWidget.ui
     widgets/SessionsListWidget.ui
+
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui

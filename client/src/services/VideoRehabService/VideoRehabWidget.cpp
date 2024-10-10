@@ -77,7 +77,7 @@ void VideoRehabWidget::initUI()
     QWebEngineProfile::defaultProfile()->setHttpCacheType(QWebEngineProfile::NoCache);
 
     // Set download path
-    setDataSavePath();
+    VideoRehabWidget::setDataSavePath();
     connect(QWebEngineProfile::defaultProfile(), &QWebEngineProfile::downloadRequested, this, &VideoRehabWidget::webEngineDownloadRequested);
 
     // Create layout for widget if missing

@@ -114,10 +114,10 @@ private slots:
 
 private:
     Ui::WebLoginDialog          *ui;
-    QWebEngineView              *m_webView;
-    QWebEnginePage              *m_webPage;
-    WebLoginRequestInterceptor  *m_requestInterceptor;
-    ConfigManagerClient         *m_config;
+    QWebEngineView              *m_webView = nullptr;
+    QWebEnginePage              *m_webPage = nullptr;
+    WebLoginRequestInterceptor  *m_requestInterceptor = nullptr;
+    ConfigManagerClient         *m_config = nullptr;
 
     bool                        m_showServers = false;
 
