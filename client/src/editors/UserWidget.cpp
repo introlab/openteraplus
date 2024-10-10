@@ -8,6 +8,8 @@
 #include <QtMultimedia/QAudioDevice>
 
 #include "dialogs/PasswordStrengthDialog.h"
+#include "ServiceConfigWidget.h"
+#include "GlobalMessageBox.h"
 
 
 UserWidget::UserWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
@@ -129,10 +131,17 @@ void UserWidget::updateControlsState(){
 
     // Enable access editing
     bool allow_access_edit = !m_limited;
+    bool is_editing_current_user = m_data->getId() == m_comManager->getCurrentUser().getId();
     if (m_data){
         bool user_is_superadmin = m_data->getFieldValue("user_superadmin").toBool();
         // Super admin can't be changed - they have access to everything!
         allow_access_edit &= !user_is_superadmin;
+
+        if (is_editing_current_user){
+            ui->wdgUser->hideFields(QStringList() << "user_force_password_change" << "user_2fa_otp_enabled" << "user_2fa_email_enabled");
+            ui->wdgUser->setFieldEnabled("user_2fa_enabled", !m_data->getFieldValue("user_2fa_enabled").toBool());
+        }
+
     }
     ui->frameGroups->setEnabled(allow_access_edit);
 
@@ -155,7 +164,7 @@ void UserWidget::updateControlsState(){
     }else{
         if (ui->tabMain->indexOf(ui->tabLogins) < 0){
             // Check if current user is site admin in at least a site of that user... or is self!
-            bool has_site_admin_access = m_comManager->getCurrentUser().getId() == m_data->getId() || m_comManager->isCurrentUserSuperAdmin();
+            bool has_site_admin_access = is_editing_current_user || m_comManager->isCurrentUserSuperAdmin();
             if (!has_site_admin_access){
                 // Check if we are admin in a list one site
                 QList<int> id_sites = m_userSitesRole.keys();
@@ -169,6 +178,13 @@ void UserWidget::updateControlsState(){
 
             if (has_site_admin_access){
                 ui->tabMain->addTab(ui->tabLogins, QIcon(":/icons/password.png"), tr("Journal d'accès"));
+            }else{
+                ui->wdgUser->hideFields(QStringList() << "user_force_password_change" << "user_2fa_otp_enabled" << "user_2fa_email_enabled");
+                ui->wdgUser->setFieldEnabled("user_2fa_enabled", false);
+            }
+
+            if (m_data){
+                ui->btnReset2FA->setVisible(m_data->getFieldValue("user_2fa_enabled").toBool());
             }
         }
 
@@ -694,6 +710,29 @@ void UserWidget::userFormValueChanged(QWidget *widget, QVariant value)
                 m_passwordJustGenerated = false;
         }
     }
+
+    if (widget == ui->wdgUser->getWidgetForField("user_2fa_enabled")){
+        if (m_data){
+            if (value.toBool() && !m_data->getFieldValue("user_2fa_enabled").toBool()){
+                GlobalMessageBox msgbox;
+                if (msgbox.showYesNo(tr("Authentification multi-facteurs"),
+                                     tr("Activer la double authentification forcera une configuration de l'utilisateur lors de la prochaine connexion.\n\nVoulez-vous continuer?")) == GlobalMessageBox::No){
+                    ui->wdgUser->setFieldValue("user_2fa_enabled", false);
+                }
+            }
+        }
+    }
+    if (widget == ui->wdgUser->getWidgetForField("user_2fa_otp_enabled")){
+        if (m_data){
+            if (!value.toBool() && m_data->getFieldValue("user_2fa_otp_enabled").toBool()){
+                GlobalMessageBox msgbox;
+                if (msgbox.showYesNo(tr("Authentification multi-facteurs"),
+                                     tr("Désactiver l'authentification par OTP forcera une reconfiguration de l'utilisateur lors de la prochaine connexion.\n\nVoulez-vous continuer?")) == GlobalMessageBox::No){
+                    ui->wdgUser->setFieldValue("user_2fa_otp_enabled", true);
+                }
+            }
+        }
+    }
 }
 
 void UserWidget::userFormValueHasFocus(QWidget *widget)
@@ -771,3 +810,23 @@ void UserWidget::undoButtonClicked()
     DataEditorWidget::undoButtonClicked();
 
 }
+
+void UserWidget::on_btnReset2FA_clicked()
+{
+    GlobalMessageBox msg;
+    if (msg.showYesNo(tr("Réinitialiser code authentification"), tr("Cette action forcera l'utilisateur à reconfigurer ses paramètres d'authentification.\n\nVoulez-vous continuer?")) == GlobalMessageBox::Yes){
+        QJsonDocument document;
+        QJsonObject data_obj;
+        QJsonObject base_obj;
+
+        data_obj.insert("id_user", QJsonValue::fromVariant(ui->wdgUser->getFieldValue("id_user")));
+        data_obj.insert("user_2fa_otp_secret", QJsonValue::fromVariant(""));
+
+        base_obj.insert(TeraData::getDataTypeName(TERADATA_USER), data_obj);
+        document.setObject(base_obj);
+
+        postDataRequest(WEB_USERINFO_PATH, document.toJson());
+
+    }
+}
+

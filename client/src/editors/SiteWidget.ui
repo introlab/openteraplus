@@ -79,7 +79,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -114,7 +114,7 @@
            </property>
           </widget>
          </item>
-         <item alignment="Qt::AlignTop">
+         <item alignment="Qt::AlignmentFlag::AlignTop">
           <widget class="QToolButton" name="btnEdit">
            <property name="minimumSize">
             <size>
@@ -142,7 +142,7 @@
          </item>
         </layout>
        </item>
-       <item alignment="Qt::AlignTop">
+       <item alignment="Qt::AlignmentFlag::AlignTop">
         <widget class="QFrame" name="frameSave">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
@@ -224,14 +224,14 @@
              <property name="verticalSpacing">
               <number>15</number>
              </property>
-             <item row="3" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
+             <item row="3" column="2" alignment="Qt::AlignmentFlag::AlignTop">
               <widget class="QLabel" name="lblDevices">
                <property name="text">
                 <string>XXX Appareils</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="0" alignment="Qt::AlignHCenter">
+             <item row="0" column="0">
               <widget class="ClickableLabel" name="icoUsers">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -262,7 +262,7 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="2" alignment="Qt::AlignHCenter">
+             <item row="4" column="2">
               <widget class="QLabel" name="icoSessions">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -293,7 +293,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
+             <item row="5" column="2" alignment="Qt::AlignmentFlag::AlignTop">
               <widget class="QLabel" name="lblSessions">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -305,11 +305,11 @@
                 <string>XXXX Séances</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
-             <item row="3" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
+             <item row="3" column="0" alignment="Qt::AlignmentFlag::AlignTop">
               <widget class="QLabel" name="lblUsers">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -321,11 +321,11 @@
                 <string>XXXX Utilisateurs</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
-             <item row="0" column="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+             <item row="0" column="2" alignment="Qt::AlignmentFlag::AlignVCenter">
               <widget class="ClickableLabel" name="icoDevices">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -356,7 +356,7 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0" alignment="Qt::AlignHCenter">
+             <item row="4" column="0">
               <widget class="QLabel" name="icoGroups">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -387,14 +387,14 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
+             <item row="5" column="0" alignment="Qt::AlignmentFlag::AlignTop">
               <widget class="QLabel" name="lblGroups">
                <property name="text">
                 <string>XXXX Groupes</string>
                </property>
               </widget>
              </item>
-             <item row="4" column="1" alignment="Qt::AlignHCenter">
+             <item row="4" column="1">
               <widget class="QLabel" name="icoProjects">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -437,11 +437,11 @@
                 <string>XXXX Projets</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
-             <item row="0" column="1" alignment="Qt::AlignHCenter">
+             <item row="0" column="1">
               <widget class="QLabel" name="icoParticipant">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -472,7 +472,7 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="1" alignment="Qt::AlignHCenter">
+             <item row="3" column="1">
               <widget class="QLabel" name="lblParticipant">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -484,7 +484,7 @@
                 <string>XXXX Participants</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -494,7 +494,7 @@
           <item>
            <spacer name="verticalSpacer">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -521,7 +521,7 @@
        <item>
         <widget class="QTabWidget" name="tabManageUsers">
          <property name="tabPosition">
-          <enum>QTabWidget::West</enum>
+          <enum>QTabWidget::TabPosition::West</enum>
          </property>
          <property name="currentIndex">
           <number>1</number>
@@ -581,7 +581,7 @@
              <item>
               <spacer name="horizontalSpacer_2">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -648,7 +648,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Il n'est pas possible de spécifier &amp;quot;Aucun rôle&amp;quot; aux groupes utilisateurs qui ont au moins un accès (Administrateur ou Utilisateur) à un projet du groupe.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignCenter</set>
+              <set>Qt::AlignmentFlag::AlignCenter</set>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -658,7 +658,7 @@
            <item>
             <widget class="QTableWidget" name="tableUserGroups">
              <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
+              <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
              </property>
              <property name="showDropIndicator" stdset="0">
               <bool>false</bool>
@@ -667,10 +667,10 @@
               <bool>false</bool>
              </property>
              <property name="selectionMode">
-              <enum>QAbstractItemView::NoSelection</enum>
+              <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
              </property>
              <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectRows</enum>
+              <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
              </property>
              <property name="iconSize">
               <size>
@@ -775,7 +775,7 @@
          <item>
           <spacer name="horizontalSpacer_3">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -816,16 +816,16 @@
        <item>
         <widget class="QListWidget" name="lstSessionTypes">
          <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
+          <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
          <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
+          <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
          </property>
          <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
+          <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
          </property>
          <property name="iconSize">
           <size>
@@ -895,16 +895,16 @@
        <item>
         <widget class="QListWidget" name="lstTestTypes">
          <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
+          <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
          <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
+          <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
          </property>
          <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
+          <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
          </property>
          <property name="iconSize">
           <size>
@@ -1030,10 +1030,10 @@
        <item>
         <widget class="QListWidget" name="lstDevices">
          <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
+          <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
          <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
          </property>
          <property name="showDropIndicator" stdset="0">
           <bool>false</bool>
@@ -1042,10 +1042,10 @@
           <bool>false</bool>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
+          <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
          </property>
          <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
+          <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
          </property>
          <property name="iconSize">
           <size>
@@ -1095,7 +1095,7 @@
        <item>
         <widget class="QTabWidget" name="tabManageServices">
          <property name="tabPosition">
-          <enum>QTabWidget::West</enum>
+          <enum>QTabWidget::TabPosition::West</enum>
          </property>
          <property name="currentIndex">
           <number>0</number>
@@ -1118,7 +1118,7 @@
            <item>
             <widget class="QListWidget" name="lstServices">
              <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
+              <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
              </property>
              <property name="iconSize">
               <size>

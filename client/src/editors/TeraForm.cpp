@@ -47,7 +47,6 @@ void TeraForm::buildUiFromStructure(const QString &structure)
     }
     ui->toolboxMain->show();
 
-
     QJsonObject struct_object = struct_info.object();
     //qDebug() << struct_info.object().keys();
     if (struct_object.contains("objecttype"))
@@ -91,7 +90,6 @@ void TeraForm::buildUiFromStructure(const QString &structure)
                         buildFormFromStructure(m_mainWidget, section_data["items"].toList());
                     }
                 }
-
             }
         }
     }
@@ -258,10 +256,10 @@ void TeraForm::hideField(const QString &field)
         setWidgetVisibility(widget, nullptr, false);
         checkConditions(widget);
         // Disable condition
-        if (widget->property("condition").isValid() && !hasHookCondition(widget)){
+        /*if (widget->property("condition").isValid() && !hasHookCondition(widget)){
             widget->setProperty("_condition", widget->property("condition"));
             widget->setProperty("condition", QVariant());
-        }
+        }*/
     }
 }
 
@@ -271,10 +269,10 @@ void TeraForm::showField(const QString &field)
     if (widget){
         setWidgetVisibility(widget, nullptr, true);
         // Enable condition
-        if (widget->property("_condition").isValid()){
+        /*if (widget->property("_condition").isValid()){
             widget->setProperty("condition", widget->property("_condition"));
             widget->setProperty("_condition", QVariant());
-        }
+        }*/
         checkConditions(widget);
     }
 }

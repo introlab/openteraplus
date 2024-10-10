@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include <QRegularExpression>
+#include <QOperatingSystemVersion>
 
 Utils::Utils(QObject *parent) : QObject(parent)
 {
@@ -79,6 +80,18 @@ QString Utils::getMachineUniqueId()
     }
 
     return machine_id;
+}
+
+QString Utils::getOsName()
+{
+    QOperatingSystemVersion os = QOperatingSystemVersion::current();
+    return os.name();
+}
+
+QString Utils::getOsVersion()
+{
+    QOperatingSystemVersion os = QOperatingSystemVersion::current();
+    return QString::number(os.majorVersion()) + "." + QString::number(os.minorVersion()) + "." + QString::number(os.microVersion());
 }
 
 void Utils::inStringUnicodeConverter(QString *str)

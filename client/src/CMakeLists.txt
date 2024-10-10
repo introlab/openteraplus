@@ -16,6 +16,11 @@ endif (MSVC)
 
 find_package(Qt6 REQUIRED COMPONENTS LinguistTools Multimedia WebSockets Network)
 
+qt_standard_project_setup(
+    I18N_SOURCE_LANGUAGE fr
+    I18N_TRANSLATED_LANGUAGES en fr
+)
+
 # Drivers first
 add_subdirectory(drivers)
 
@@ -119,6 +124,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         dialogs/JoinSessionDialog.h
         dialogs/AboutDialog.h
         dialogs/AboutDialogPage.h
+        dialogs/WebLoginDialog.h
         # Widgets
         widgets/InSessionWidget.h
         # Services
@@ -238,6 +244,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         dialogs/JoinSessionDialog.cpp
         dialogs/AboutDialog.cpp
         dialogs/AboutDialogPage.cpp
+        dialogs/WebLoginDialog.cpp
         # Widgets
         widgets/InSessionWidget.cpp
         # Services
@@ -280,6 +287,7 @@ SET(uis
     dialogs/CleanUpDialog.ui
     dialogs/FileUploaderDialog.ui
     dialogs/QRCodeDialog.ui
+    dialogs/WebLoginDialog.ui
     # Editors
     editors/DataListWidget.ui
     editors/DeviceSubTypeWidget.ui
@@ -337,43 +345,80 @@ QT6_WRAP_UI(moc_uis ${uis})
 #This will generate moc_* for Qt
 QT6_WRAP_CPP(moc_srcs ${headers})
 
-# generate rules for building source files from the resources
-QT6_ADD_RESOURCES(client_qrc ${qrcs})
-
-
-
 set(translation_files_srcs
         ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
         ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
 )
 
-
-#Translation files, this is done manually to avoid removing the file when doing make clean
-# Add -noobsolete parameter to remove obsoleted translations
-add_custom_target(openteraplus_en_ts
-        COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${moc_uis}
-)
-
-add_custom_target(openteraplus_fr_ts
-        COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${moc_uis}
-)
-
-#set qm files output directory
+# #set qm files output directory
 set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
 
-#Build this target to update translations
-add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
-add_custom_target(translation_files SOURCES ${translation_files_srcs})
+qt_add_lupdate(
+    TS_FILES
+    ${translation_files_srcs}
 
-#Generate qm files from .ts files
-qt6_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+    SOURCES
+    ${srcs}
+    ${headers}
+    ${moc_uis}
 
+    SOURCE_TARGETS opentera_shared
+)
+
+qt_add_lrelease(
+    TS_FILES ${translation_files_srcs} QM_FILES_OUTPUT_VARIABLE qm_files
+)
 
 message(STATUS "qm_files : ${qm_files}")
+
+
+# generate rules for building source files from the resources
+QT6_ADD_RESOURCES(client_qrc ${qrcs})
+
+
+
+# Make client_qrc target depends on qm_files
+
+
+
+# #Translation files, this is done manually to avoid removing the file when doing make clean
+# # Add -noobsolete parameter to remove obsoleted translations
+# add_custom_target(openteraplus_en_ts
+#         COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+#         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#         DEPENDS ${moc_uis}
+# )
+
+# add_custom_target(openteraplus_fr_ts
+#         COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+#         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#         DEPENDS ${moc_uis}
+# )
+
+# #Build this target to update translations
+# add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
+# add_custom_target(translation_files SOURCES ${translation_files_srcs})
+
+# #Generate qm files from .ts files
+# qt6_add_translation(qm_files
+#     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+#     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+
+# Translations
+# if (Qt6_VERSION VERSION_GREATER_EQUAL 6.7)
+#     qt_add_translations(TARGETS OpenTeraPlus
+#         SOURCE_TARGETS ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis}
+#         TS_FILES ${translation_files_srcs}
+
+#     )
+# else()
+#     qt_add_translations(OpenTeraPlus
+#         TS_FILES
+#             ${translation_files_srcs}
+#     )
+# endif()
+
+
 
 include_directories(
     ${TERACLIENT_RES_INCLUDES}
@@ -417,7 +462,8 @@ set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 # create an executable file named "OpenTeraPlus" from the source files
 # Put qrc files after qm files
 if(NOT DEFINED OPENTERA_WEBASSEMBLY)
-    add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
+    add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc}
+        dialogs/WebLoginDialog.ui)
 else()
     qt_add_executable(OpenTeraPlus ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
 endif()

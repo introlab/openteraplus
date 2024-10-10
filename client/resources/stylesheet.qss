@@ -660,11 +660,12 @@ QLabel#lblWarning, QLabel#lblWarning2, QLabel#lblDeviceRegisterKeyValue{
 }
 
 
-/* Customizations for LoginDialog */
+/* Customizations for LoginDialog / WebLoginDialog */
 QFrame#frameLogos{background-color:rgba(200,200,200,100%);}
 QLabel#lblMessage{color:white;}
 QFrame#frameMessage{background-color: transparent;}
-QFrame#frameButtons{background-color:rgba(29,29,29,50%);}
+QFrame#frameButtons,QFrame#frameLoginMessages{background-color:rgba(29,29,29,50%);}
+QLabel#lblError{color: orange;}
 
 /* Customizations for MainWindow */
 QMainWindow{background-image: url(://TeRA_Background.png); background-color: #2c3338;}

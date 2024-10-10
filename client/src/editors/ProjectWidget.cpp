@@ -660,7 +660,7 @@ bool ProjectWidget::validateData()
     if (!editedProjectEnabled && m_data->getFieldValue("project_enabled").toBool()){
         // We changed from "enabled" to "disabled". User confirmation required before proceeding.
         GlobalMessageBox msg;
-        GlobalMessageBox::StandardButton rval = msg.showYesNo(tr("Confirmation - désactivation"), tr("Le project sera désactivé.") + "\n\r" +
+        GlobalMessageBox::StandardButton rval = msg.showYesNo(tr("Confirmation - désactivation"), tr("Le projet sera désactivé.") + "\n\r" +
                                                               tr("Tous les participants seront aussi désactivés et les appareils associés à ceux-ci seront désassociés.") + "\n\r" +
                                                               tr("Êtes-vous sûrs de vouloir continuer?"));
         if (rval != GlobalMessageBox::Yes){

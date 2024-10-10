@@ -9,6 +9,7 @@ AboutDialog::AboutDialog(ComManager* comManager, QWidget *parent) :
 
     // Initialize web engine view
     m_webEngine = new QWebEngineView(ui->wdgWebView);
+    m_webEngine->setContextMenuPolicy(Qt::NoContextMenu);
     m_webPage = new AboutDialogPage();
     m_webEngine->setPage(m_webPage);
 
@@ -53,9 +54,12 @@ void AboutDialog::on_lblAbout_clicked()
 {
     if (m_webEngine){
         m_webEngine->setUrl(QUrl("chrome://dino"));
-        ui->wdgWebView->setFocus();
-
     }
+}
+
+void AboutDialog::onPageLoaded()
+{
+    ui->wdgWebView->setFocus();
 }
 
 void AboutDialog::processServerSettings(QVariantHash settings)
@@ -69,5 +73,6 @@ void AboutDialog::processServerSettings(QVariantHash settings)
 
 void AboutDialog::connectSignals()
 {
+    connect(m_webEngine, &QWebEngineView::loadFinished, this, &AboutDialog::onPageLoaded);
     connect(m_comManager, &ComManager::serverSettingsReceived, this, &AboutDialog::processServerSettings);
 }

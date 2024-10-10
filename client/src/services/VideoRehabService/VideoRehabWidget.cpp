@@ -52,6 +52,7 @@ void VideoRehabWidget::initUI()
     m_loadingIcon->start();
 
     m_webEngine = new QWebEngineView(/*ui->wdgWebEngine*/);
+    m_webEngine->setContextMenuPolicy(Qt::NoContextMenu);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &VideoRehabWidget::webPageLoaded);
 
     // Create a new page

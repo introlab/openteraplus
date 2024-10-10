@@ -34,7 +34,7 @@ void TeraPreferences::load(const TeraData &pref_obj)
 void TeraPreferences::clear()
 {
     // Reset default values
-    m_language = "fr";
+    m_language = "";
     m_notifySounds = true;
     m_isSet = false;
 
