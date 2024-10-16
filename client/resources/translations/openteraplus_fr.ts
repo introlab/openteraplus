@@ -24,7 +24,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/AboutDialog.cpp" line="66"/>
+        <location filename="../../src/dialogs/AboutDialog.cpp" line="70"/>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_AboutDialog.h" line="114"/>
         <source>Inconnue</source>
         <translation type="unfinished"></translation>
@@ -372,83 +372,83 @@
 <context>
     <name>ClientApp</name>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="165"/>
+        <location filename="../../src/ClientApp.cpp" line="173"/>
         <source>Connexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="309"/>
+        <location filename="../../src/ClientApp.cpp" line="317"/>
         <source>Bienvenue!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="315"/>
+        <location filename="../../src/ClientApp.cpp" line="323"/>
         <source>Déconnexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="315"/>
+        <location filename="../../src/ClientApp.cpp" line="323"/>
         <source>Vous avez été déconnecté du serveur. Veuillez vous connecter à nouveau.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="364"/>
-        <location filename="../../src/ClientApp.cpp" line="378"/>
+        <location filename="../../src/ClientApp.cpp" line="373"/>
+        <location filename="../../src/ClientApp.cpp" line="387"/>
         <source>La connexion a été refusée par le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="385"/>
+        <location filename="../../src/ClientApp.cpp" line="394"/>
         <source>Impossible de rejoindre le serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="388"/>
+        <location filename="../../src/ClientApp.cpp" line="397"/>
         <source>Le serveur est introuvable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="391"/>
+        <location filename="../../src/ClientApp.cpp" line="400"/>
         <source>Impossible de se connecter (Code erreur: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="411"/>
+        <location filename="../../src/ClientApp.cpp" line="420"/>
         <source>Une nouvelle version (</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="411"/>
+        <location filename="../../src/ClientApp.cpp" line="420"/>
         <source>) du logiciel est disponible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="413"/>
+        <location filename="../../src/ClientApp.cpp" line="422"/>
         <source>Veuillez contacter votre fournisseur pour l&apos;obtenir.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="415"/>
+        <location filename="../../src/ClientApp.cpp" line="424"/>
         <source>Cliquez </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="415"/>
+        <location filename="../../src/ClientApp.cpp" line="424"/>
         <source>ICI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="415"/>
+        <location filename="../../src/ClientApp.cpp" line="424"/>
         <source> pour la télécharger.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="416"/>
+        <location filename="../../src/ClientApp.cpp" line="425"/>
         <source>Important: assurez-vous que le logiciel est bien fermé avant de procéder à la mise à jour.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/ClientApp.cpp" line="418"/>
+        <location filename="../../src/ClientApp.cpp" line="427"/>
         <source>Nouvelle version disponible!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1033,6 +1033,35 @@
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DataListWidget.h" line="311"/>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DataListWidget.h" line="312"/>
         <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DesktopShareDialog</name>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DesktopShareDialog.h" line="160"/>
+        <source>Partage d&apos;écran</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DesktopShareDialog.h" line="161"/>
+        <source>Fenêtres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DesktopShareDialog.h" line="162"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DesktopShareDialog.h" line="163"/>
+        <source>Partager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DesktopShareDialog.h" line="164"/>
+        <source>Écrans</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DesktopShareDialog.h" line="165"/>
+        <source>Annuler</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2098,22 +2127,22 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
 <context>
     <name>KitVideoRehabWidget</name>
     <message>
-        <location filename="../../src/kit/KitVideoRehabWidget.cpp" line="104"/>
+        <location filename="../../src/kit/KitVideoRehabWidget.cpp" line="105"/>
         <source>Impossible de charger la page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitVideoRehabWidget.cpp" line="117"/>
+        <location filename="../../src/kit/KitVideoRehabWidget.cpp" line="118"/>
         <source>Problème vidéo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitVideoRehabWidget.cpp" line="122"/>
+        <location filename="../../src/kit/KitVideoRehabWidget.cpp" line="123"/>
         <source>Problème audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitVideoRehabWidget.cpp" line="127"/>
+        <location filename="../../src/kit/KitVideoRehabWidget.cpp" line="128"/>
         <source>Erreur</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2586,91 +2615,91 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="777"/>
+        <location filename="../../src/main/MainWindow.cpp" line="782"/>
         <source>Erreur de séance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="777"/>
+        <location filename="../../src/main/MainWindow.cpp" line="782"/>
         <source>Une erreur est survenue:
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="777"/>
+        <location filename="../../src/main/MainWindow.cpp" line="782"/>
         <source>
 
 La séance ne peut pas continuer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="786"/>
-        <location filename="../../src/main/MainWindow.cpp" line="809"/>
-        <location filename="../../src/main/MainWindow.cpp" line="833"/>
+        <location filename="../../src/main/MainWindow.cpp" line="791"/>
+        <location filename="../../src/main/MainWindow.cpp" line="814"/>
+        <location filename="../../src/main/MainWindow.cpp" line="838"/>
         <source> est en ligne.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="795"/>
-        <location filename="../../src/main/MainWindow.cpp" line="821"/>
-        <location filename="../../src/main/MainWindow.cpp" line="842"/>
+        <location filename="../../src/main/MainWindow.cpp" line="800"/>
+        <location filename="../../src/main/MainWindow.cpp" line="826"/>
+        <location filename="../../src/main/MainWindow.cpp" line="847"/>
         <source> est hors-ligne.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="881"/>
+        <location filename="../../src/main/MainWindow.cpp" line="886"/>
         <source>Erreur de serveur.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="888"/>
         <location filename="../../src/main/MainWindow.cpp" line="893"/>
+        <location filename="../../src/main/MainWindow.cpp" line="898"/>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainWindow.h" line="471"/>
         <source>Déconnexion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="888"/>
+        <location filename="../../src/main/MainWindow.cpp" line="893"/>
         <source>Vous serez déconnecté du logiciel. Toute donnée non enregistrée sera perdue.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="888"/>
+        <location filename="../../src/main/MainWindow.cpp" line="893"/>
         <source>Souhaitez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="965"/>
+        <location filename="../../src/main/MainWindow.cpp" line="970"/>
         <source>Votre compte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="989"/>
+        <location filename="../../src/main/MainWindow.cpp" line="994"/>
         <source>Configuration Globale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="1009"/>
+        <location filename="../../src/main/MainWindow.cpp" line="1014"/>
         <source>Détails</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="1055"/>
+        <location filename="../../src/main/MainWindow.cpp" line="1060"/>
         <source>Séance en cours</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="1055"/>
+        <location filename="../../src/main/MainWindow.cpp" line="1060"/>
         <source>La séance en cours empêche la fermeture du logiciel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="1055"/>
+        <location filename="../../src/main/MainWindow.cpp" line="1060"/>
         <source>Veuillez la terminer avant de poursuivre.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="736"/>
+        <location filename="../../src/main/MainWindow.cpp" line="737"/>
         <source>Changement de langue</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2680,7 +2709,7 @@ La séance ne peut pas continuer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/main/MainWindow.cpp" line="736"/>
+        <location filename="../../src/main/MainWindow.cpp" line="737"/>
         <source>La langue a été modifiée.
 Souhaitez-vous vous déconnecter pour appliquer les changements?</source>
         <translation type="unfinished"></translation>
@@ -5804,58 +5833,58 @@ Voulez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="191"/>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="457"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="192"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="462"/>
         <source>Caméra PTZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="191"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="192"/>
         <source>Type de caméra PTZ non-supporté</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="247"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="252"/>
         <source>Impossible de charger la page de prévisualisation de la caméra</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="265"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="270"/>
         <source>Problème vidéo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="270"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="275"/>
         <source>Problème audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="275"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="280"/>
         <source>Erreur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="433"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="438"/>
         <source>Erreur de caméra</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="433"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="438"/>
         <source>Impossible de se connecter à la source vidéo.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="444"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="449"/>
         <source>Caméra PTZ: Impossible de se connecter.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="447"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="452"/>
         <source>Caméra PTZ: Erreur de communication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="450"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabSetupWidget.cpp" line="455"/>
         <source>Caméra PTZ: Authentification refusée.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6031,37 +6060,37 @@ Voulez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="235"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="236"/>
         <source>Fichier disponible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="235"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="236"/>
         <source>Le fichier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="236"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="237"/>
         <source>est disponible dans le répertoire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="245"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="246"/>
         <source>Impossible de charger la page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="259"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="260"/>
         <source>Problème vidéo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="264"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="265"/>
         <source>Problème audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="269"/>
+        <location filename="../../src/services/VideoRehabService/VideoRehabWidget.cpp" line="270"/>
         <source>Erreur</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6099,12 +6128,12 @@ Voulez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="137"/>
+        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="147"/>
         <source>Impossible de rejoindre le serveur. Vérifiez votre connexion Internet, vos paramètres et votre pare-feu, puis essayez de nouveau.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="140"/>
+        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="150"/>
         <source>Une erreur est survenue</source>
         <translation type="unfinished"></translation>
     </message>

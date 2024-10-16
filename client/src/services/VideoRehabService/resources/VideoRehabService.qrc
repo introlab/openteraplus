@@ -20,5 +20,6 @@
         <file>html/js/teraplus.js</file>
         <file>html/js/volume-meter.js</file>
         <file>html/js/main_audio_test.js</file>
+        <file>html/js/tera_processing.js</file>
     </qresource>
 </RCC>

@@ -11,6 +11,8 @@ var localContact = {'name':'Unknown','uuid':'00000000-0000-0000-0000-00000000000
 var debounceWheel = 0;
 var extraParams;
 
+let videoBlurred = false;
+
 function connect() {
     var baseUrl = "ws://localhost:12345";
     //console.log("Connecting to WebSocket server at " + baseUrl + ".");
@@ -53,6 +55,7 @@ function setupSharedObjectCallbacks(channel) {
     SharedObject.newVideoSource.connect(selectVideoSource);
     SharedObject.newAudioSource.connect(selectAudioSource);
     SharedObject.setLocalMirrorSignal.connect(setLocalMirror);
+    SharedObject.setLocalBlurSignal.connect(setLocalBlur);
     SharedObject.newPTZCapabilities.connect(setPTZCapabilities);
 	
     // Check if we need to apply specific parameters
@@ -96,6 +99,12 @@ function setLocalMirror(mirror)
 		document.getElementById("selfVideo").className = "";
 	}
 	
+}
+
+
+function setLocalBlur(blur_value)
+{
+    videoBlurred = blur_value;
 }
 
 function fillVideoSourceList(){
@@ -192,9 +201,10 @@ function selectAudioSource(source){
     }
 }
 
-var video = document.getElementById("selfVideo");
+//var video = document.getElementById("selfVideo");
 
 function initLocalVideo(tag){
+    let video = document.getElementById("selfVideo");
     console.log('initLocalVideo');
 	video = document.querySelector(tag);
 				 
@@ -219,6 +229,8 @@ function handleVideo(stream) {
         var select = document.getElementById('videoSelect');
         SharedObject.cameraChanged(select[select.selectedIndex].label, select.selectedIndex);
     }
+
+    blur(videoBlurred);
 }
  
 function videoError(e) {

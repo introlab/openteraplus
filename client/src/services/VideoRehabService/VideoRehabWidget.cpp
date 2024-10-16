@@ -314,6 +314,7 @@ void VideoRehabWidget::processSessionConfig()
             if (session_params.contains("camera")) shared->setCurrentCameraName(session_params["camera"].toString());
             if (session_params.contains("audio")) shared->setCurrentAudioSrcName(session_params["audio"].toString());
             if (session_params.contains("mirror")) shared->setLocalMirror(session_params["mirror"].toBool());
+            if (session_params.contains("blur")) shared->setLocalBlur(session_params["blur"].toBool());
             if (session_params.contains("extra_params")) shared->setExtraParams(session_params["extra_params"].toString());
             if (session_params.contains("camera2")) shared->setSecondVideoName(session_params["camera2"].toString());
             if (session_params.contains("audio2")) shared->setSecondAudioSrcName(session_params["audio2"].toString());
