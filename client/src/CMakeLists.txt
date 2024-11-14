@@ -97,6 +97,7 @@ set(headers
     services/DashboardsService/DashboardsComManager.h
     services/DashboardsService/DashboardsConfigWidget.h
     services/DashboardsService/DashboardsWebAPI.h
+    services/EmailService/EmailServiceConfigWidget.h
     # Widgets
     widgets/SessionInviteWidget.h
     widgets/OnlineManagerWidget.h
@@ -218,6 +219,7 @@ set(srcs
     # Wizards
     wizards/UserWizard.cpp
     wizards/BaseWizard.cpp
+
     # Services
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
@@ -226,6 +228,8 @@ set(srcs
     services/DanceService/DanceComManager.cpp
     services/DashboardsService/DashboardsConfigWidget.cpp
     services/DashboardsService/DashboardsComManager.cpp
+    services/EmailService/EmailServiceConfigWidget.cpp
+
     # Widgets
     widgets/ProjectNavigator.cpp
     widgets/ProjectNavigatorTree.cpp
@@ -331,6 +335,7 @@ SET(uis
     services/VideoRehabService/VideoRehabPTZDialog.ui
     services/DanceService/DanceConfigWidget.ui
     services/DashboardsService/DashboardsConfigWidget.ui
+    services/EmailService/EmailServiceConfigWidget.ui
 
     # Widgets
     widgets/ProjectNavigator.ui

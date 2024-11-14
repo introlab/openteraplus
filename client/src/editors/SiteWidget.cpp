@@ -3,6 +3,7 @@
 
 #include "editors/DataListWidget.h"
 #include "services/DashboardsService/DashboardsConfigWidget.h"
+#include "services/EmailService/EmailServiceConfigWidget.h"
 
 #include "GlobalMessageBox.h"
 
@@ -216,6 +217,19 @@ void SiteWidget::addServiceTab(const TeraData &service_site)
                 service_name = m_listServices_items[id_service]->text();
             }
             //ui->tabManageServices->insertTab(0, wdg, QIcon("://icons/config.png"), service_name);
+            ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
+            m_services_tabs.insert(id_service, wdg);
+        }
+    }
+
+    // Email Service
+    if (service_key == "EmailService"){
+        if (isSiteAdmin()){
+            EmailServiceConfigWidget* wdg = new EmailServiceConfigWidget(m_comManager);
+            QString service_name = service_key;
+            if (m_listServices_items.contains(id_service)){
+                service_name = m_listServices_items[id_service]->text();
+            }
             ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
             m_services_tabs.insert(id_service, wdg);
         }
