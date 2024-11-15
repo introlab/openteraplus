@@ -84,9 +84,7 @@ set(headers
     editors/UserGroupWidget.h
     editors/UserSummaryWidget.h
     editors/UserWidget.h
-    # Wizards
-    wizards/BaseWizard.h
-    wizards/UserWizard.h
+
     # Services
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
@@ -98,6 +96,9 @@ set(headers
     services/DashboardsService/DashboardsConfigWidget.h
     services/DashboardsService/DashboardsWebAPI.h
     services/EmailService/EmailServiceConfigWidget.h
+    services/EmailService/EmailComManager.h
+    services/EmailService/EmailServiceWebAPI.h
+
     # Widgets
     widgets/SessionInviteWidget.h
     widgets/OnlineManagerWidget.h
@@ -216,10 +217,6 @@ set(srcs
     editors/UserSummaryWidget.cpp
     editors/UserWidget.cpp
 
-    # Wizards
-    wizards/UserWizard.cpp
-    wizards/BaseWizard.cpp
-
     # Services
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
@@ -229,6 +226,7 @@ set(srcs
     services/DashboardsService/DashboardsConfigWidget.cpp
     services/DashboardsService/DashboardsComManager.cpp
     services/EmailService/EmailServiceConfigWidget.cpp
+    services/EmailService/EmailComManager.cpp
 
     # Widgets
     widgets/ProjectNavigator.cpp
@@ -263,6 +261,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
 
         # Widgets
         widgets/InSessionWidget.cpp
+
         # Services
         services/VideoRehabService/ScreenController.cpp
         services/VideoRehabService/VideoRehabWidget.cpp
@@ -274,6 +273,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         services/VideoRehabService/WebSocket/SharedObject.cpp
         services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
         services/VideoRehabService/WebSocket/WebSocketTransport.cpp
+
         # Kits
         kit/KitConfigDialog.cpp
         kit/KitConfigManager.cpp

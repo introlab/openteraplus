@@ -110,7 +110,7 @@ signals:
     void networkAuthFailed();
 
     void queryResultsOK(QString path, QUrlQuery url_query);
-    void postResultsOK(QString path);
+    void postResultsOK(QString reply_path, QString reply_data);
     void deleteResultsOK(QString path, int id);
     void posting(QString path, QString data);
     void querying(QString path);

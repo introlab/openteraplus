@@ -133,7 +133,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
 
         if (!handled){
             handled=handleDataReply(reply_path, reply_data, reply_query);
-            if (handled) emit postResultsOK(reply_path);
+            if (handled) emit postResultsOK(reply_path, reply_data);
         }
     }
 

@@ -1,24 +1,23 @@
-#include "DanceComManager.h"
+#include "EmailComManager.h"
+#include "EmailServiceWebAPI.h"
 
-DanceComManager::DanceComManager(ComManager *comManager, QObject *parent)
-    : BaseComManager(comManager->getServerUrl()),
-      m_comManager(comManager)
+EmailComManager::EmailComManager(ComManager *comManager, QObject *parent)
+    : BaseComManager{comManager->getServerUrl(), parent},
+    m_comManager(comManager)
 {
-
     // Set initial user token
     setCredentials(m_comManager->getCurrentToken());
 
     // Connect signals
     connectSignals();
-
 }
 
-DanceComManager::~DanceComManager()
+EmailComManager::~EmailComManager()
 {
 
 }
 
-bool DanceComManager::processNetworkReply(QNetworkReply *reply)
+bool EmailComManager::processNetworkReply(QNetworkReply *reply)
 {
     QString reply_path = reply->url().path();
     QString reply_data = reply->readAll();
@@ -37,7 +36,7 @@ bool DanceComManager::processNetworkReply(QNetworkReply *reply)
 
     if (reply->operation()==QNetworkAccessManager::PostOperation){
         if (!handled){
-            handled=handleDataReply(reply_path, reply_data, reply_query);
+            handled = handleDataReply(reply_path, reply_data, reply_query);
             if (handled) emit postResultsOK(reply_path, reply_data);
         }
     }
@@ -55,12 +54,7 @@ bool DanceComManager::processNetworkReply(QNetworkReply *reply)
     return handled;
 }
 
-void DanceComManager::connectSignals()
-{
-    connect(m_comManager, &ComManager::userTokenUpdated, this, &DanceComManager::handleUserTokenUpdated);
-}
-
-bool DanceComManager::handleDataReply(const QString &reply_path, const QString &reply_data, const QUrlQuery &reply_query)
+bool EmailComManager::handleDataReply(const QString &reply_path, const QString &reply_data, const QUrlQuery &reply_query)
 {
     QJsonParseError json_error;
 
@@ -69,7 +63,7 @@ bool DanceComManager::handleDataReply(const QString &reply_path, const QString &
 
     QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
     if (json_error.error!= QJsonParseError::NoError){
-        LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "DanceComManager::handleDataReply");
+        LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "DashboardsComManager::handleDataReply");
         return false;
     }
 
@@ -85,12 +79,10 @@ bool DanceComManager::handleDataReply(const QString &reply_path, const QString &
     }
 
     // Check to emit correct signals for specific data types
-    if (reply_path.endsWith(DANCE_LIBRARY_PATH) || reply_path.endsWith(DANCE_LIBRARY_VIDEOS_PATH)){
-        emit videosReceived(items, reply_query);
-    }
-
-    if (reply_path.endsWith(DANCE_PLAYLIST_PATH)){
-        emit playlistReceived(items, reply_query);
+    if (reply_path.endsWith(EMAIL_TEMPLATE_PATH)){
+        if (!items.empty()){
+            emit emailTemplateReceived(items.first());
+        }
     }
 
     // Always emit generic signal
@@ -99,26 +91,13 @@ bool DanceComManager::handleDataReply(const QString &reply_path, const QString &
     return true;
 }
 
-void DanceComManager::handleUserTokenUpdated()
+void EmailComManager::connectSignals()
+{
+    connect(m_comManager, &ComManager::userTokenUpdated, this, &EmailComManager::handleUserTokenUpdated);
+}
+
+void EmailComManager::handleUserTokenUpdated()
 {
     // Update token
     setCredentials(m_comManager->getCurrentToken());
-}
-
-void DanceComManager::doGet(const QString &path, const QUrlQuery &query_args, const bool &use_token)
-{
-    Q_UNUSED(use_token)
-    BaseComManager::doGet(path, query_args, true); // Always use token!
-}
-
-void DanceComManager::doPost(const QString &path, const QString &post_data, const bool &use_token)
-{
-    Q_UNUSED(use_token)
-    BaseComManager::doPost(path, post_data, true); // Always use token!
-}
-
-void DanceComManager::doDelete(const QString &path, const int &id, const bool &use_token)
-{
-    Q_UNUSED(use_token)
-    BaseComManager::doDelete(path, id, true); // Always use token!
 }

@@ -4,8 +4,6 @@
 #include <QObject>
 #include "managers/ComManager.h"
 #include "managers/BaseComManager.h"
-#include "Utils.h"
-#include "DashboardsWebAPI.h"
 
 class DashboardsComManager : public BaseComManager
 {
@@ -25,7 +23,6 @@ private:
     ComManager*             m_comManager;
 
     void connectSignals();
-
     bool handleDataReply(const QString& reply_path, const QString &reply_data, const QUrlQuery &reply_query);
 
 private slots:
@@ -34,8 +31,6 @@ private slots:
 signals:
     void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
     void dashboardsReceived(QList<QJsonObject> dashboards, QUrlQuery reply_query);
-
-    void postResultsOK(QString reply_path, QString reply_data);
 
 };
 

@@ -1,4 +1,5 @@
 #include "DashboardsComManager.h"
+#include "DashboardsWebAPI.h"
 
 DashboardsComManager::DashboardsComManager(ComManager *comManager, QObject *parent)
     : BaseComManager(comManager->getServerUrl()),

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMenu>
 #include "managers/ComManager.h"
+#include "services/EmailService/EmailComManager.h"
 
 namespace Ui {
 class EmailServiceConfigWidget;
@@ -19,14 +20,27 @@ public:
 
 private slots:
     void insertCurrentVariable();
+    void processTemplateReply(const QJsonObject email_template);
+
+    void on_txtTemplate_textChanged();
+
+    void on_btnSave_clicked();
+
+    void on_btnUndo_clicked();
 
 private:
-    void initVariablesMenu();
+    Ui::EmailServiceConfigWidget    *ui;
+    EmailComManager*                m_emailComManager;
 
-    Ui::EmailServiceConfigWidget *ui;
-
-    ComManager*     m_comMan;
+    ComManager*     m_comManager;
     QMenu*          m_variablesMenu = nullptr;
+
+    void connectSignals();
+
+    void initVariablesMenu();
+    void initTemplates();
+
+    void queryTemplate(const QString& key);
 };
 
 #endif // EMAILSERVICECONFIGWIDGET_H

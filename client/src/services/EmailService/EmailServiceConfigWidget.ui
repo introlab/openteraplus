@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,13 +45,7 @@ QToolButton#btnVariables{
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cmbTemplate">
-       <item>
-        <property name="text">
-         <string>Courriel d'invitation</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="cmbTemplate"/>
      </item>
     </layout>
    </item>
@@ -208,6 +202,9 @@ QToolButton#btnVariables{
    </item>
    <item>
     <widget class="QFrame" name="frameSave">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QPushButton" name="btnSave">

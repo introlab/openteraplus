@@ -1,5 +1,6 @@
 #include "DashboardsConfigWidget.h"
 #include "ui_DashboardsConfigWidget.h"
+#include "DashboardsWebAPI.h"
 
 #include "GlobalMessageBox.h"
 
