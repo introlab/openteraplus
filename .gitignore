@@ -3,7 +3,6 @@ deploy
 /build
 *.user
 
-html
 venv
 doctrees
 CMakeLists.txt.user

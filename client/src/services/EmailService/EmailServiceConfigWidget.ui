@@ -45,7 +45,24 @@ QToolButton#btnVariables{
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cmbTemplate"/>
+      <widget class="QComboBox" name="cmbTemplate">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblLanguage">
+       <property name="text">
+        <string>Langue</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmbLanguage"/>
      </item>
     </layout>
    </item>
@@ -261,8 +278,19 @@ QToolButton#btnVariables{
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="ResultMessageWidget" name="wdgMessages" native="true"/>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ResultMessageWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/ResultMessageWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../resources/TeraClient.qrc"/>
  </resources>

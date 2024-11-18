@@ -225,7 +225,7 @@ void SiteWidget::addServiceTab(const TeraData &service_site)
     // Email Service
     if (service_key == "EmailService"){
         if (isSiteAdmin()){
-            EmailServiceConfigWidget* wdg = new EmailServiceConfigWidget(m_comManager);
+            EmailServiceConfigWidget* wdg = new EmailServiceConfigWidget(m_comManager, m_data->getId());
             QString service_name = service_key;
             if (m_listServices_items.contains(id_service)){
                 service_name = m_listServices_items[id_service]->text();
