@@ -15,21 +15,11 @@ EmailServiceConfigWidget::EmailServiceConfigWidget(ComManager *comManager, const
 
     ui->setupUi(this);
     ui->cmbTemplate->setItemDelegate(new QStyledItemDelegate(ui->cmbTemplate));
-    ui->btnBold->hide();
-    ui->btnItalic->hide();
-    ui->btnColor->hide();
-    ui->btnUnderline->hide();
     ui->wdgMessages->hide();
+    ui->wdgEditor->setVariable("$fullname", m_comManager->getCurrentUser().getName());
 
-    initVariablesMenu();
     initTemplates();
     connectSignals();
-
-    // Only one template for now... query it!
-    if (ui->cmbTemplate->count() > 0){
-        //queryTemplate(ui->cmbTemplate->currentData().toString());
-    }
-
 
 }
 
@@ -37,6 +27,11 @@ EmailServiceConfigWidget::~EmailServiceConfigWidget()
 {
     delete ui;
     delete m_emailComManager;
+}
+
+void EmailServiceConfigWidget::refresh()
+{
+    queryTemplate(ui->cmbTemplate->currentData().toString());
 }
 
 void EmailServiceConfigWidget::setSiteId(const int &id_site)
@@ -49,25 +44,12 @@ void EmailServiceConfigWidget::setProjectId(const int &id_project)
     m_idProject = id_project;
 }
 
-void EmailServiceConfigWidget::insertCurrentVariable()
-{
-    QObject* sender = QObject::sender();
-    if (!sender)
-        return;
-
-    QAction* action = dynamic_cast<QAction*>(sender);
-    if (action){
-        ui->txtTemplate->insertHtml(action->data().toString());
-    }
-}
-
 void EmailServiceConfigWidget::processTemplateReply(const QJsonObject email_template)
 {
     if (!email_template.empty()){
         QString template_html = email_template["email_template"].toString();
-        ui->txtTemplate->setHtml(template_html);
-        ui->txtTemplate->setProperty("original", ui->txtTemplate->toHtml());
-        ui->frameEditor->show();
+        ui->wdgEditor->setEmailTemplate(template_html);
+        ui->wdgEditor->show();
         ui->frameSave->show();
         ui->frameSave->setEnabled(false);
     }
@@ -125,6 +107,16 @@ void EmailServiceConfigWidget::nextMessageWasShown(Message current_message)
     }
 }
 
+void EmailServiceConfigWidget::templateEdited(bool edited)
+{
+    ui->frameSave->setEnabled(edited);
+}
+
+void EmailServiceConfigWidget::templateBeingEdited(bool editing)
+{
+    //ui->frameSave->setVisible(editing);
+}
+
 void EmailServiceConfigWidget::connectSignals()
 {
     connect(m_emailComManager, &EmailComManager::emailTemplateReceived, this, &EmailServiceConfigWidget::processTemplateReply);
@@ -133,30 +125,8 @@ void EmailServiceConfigWidget::connectSignals()
 
     connect(ui->wdgMessages, &ResultMessageWidget::nextMessageShown, this, &EmailServiceConfigWidget::nextMessageWasShown);
 
-}
+    connect(ui->wdgEditor, &EmailTemplateWidget::dirtyChanged, this, &EmailServiceConfigWidget::templateEdited);
 
-void EmailServiceConfigWidget::initVariablesMenu()
-{
-    if (!m_variablesMenu){
-        m_variablesMenu = new QMenu(this);
-
-        QAction* new_action = new QAction(tr("Nom participant"));
-        new_action->setData("$participant");
-        connect(new_action, &QAction::triggered, this, &EmailServiceConfigWidget::insertCurrentVariable);
-        m_variablesMenu->addAction(new_action);
-
-        new_action = new QAction(tr("Nom utilisateur"));
-        new_action->setData("$fullname");
-        connect(new_action, &QAction::triggered, this, &EmailServiceConfigWidget::insertCurrentVariable);
-        m_variablesMenu->addAction(new_action);
-
-        new_action = new QAction(tr("Lien de connexion"));
-        new_action->setData("$join_link");
-        connect(new_action, &QAction::triggered, this, &EmailServiceConfigWidget::insertCurrentVariable);
-        m_variablesMenu->addAction(new_action);
-
-        ui->btnVariables->setMenu(m_variablesMenu);
-    }
 }
 
 void EmailServiceConfigWidget::initTemplates()
@@ -189,18 +159,10 @@ void EmailServiceConfigWidget::queryTemplate(const QString &key)
     if (m_idProject > 0)
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
 
-    ui->frameEditor->hide();
+    ui->wdgEditor->hide();
     ui->frameSave->hide();
     m_emailComManager->doGet(EMAIL_TEMPLATE_PATH, args);
 }
-
-
-void EmailServiceConfigWidget::on_txtTemplate_textChanged()
-{
-    bool has_changes = ui->txtTemplate->toHtml() != ui->txtTemplate->property("original").toString();
-    ui->frameSave->setEnabled(has_changes);
-}
-
 
 void EmailServiceConfigWidget::on_btnSave_clicked()
 {
@@ -218,7 +180,7 @@ void EmailServiceConfigWidget::on_btnSave_clicked()
     else
         m_currentTemplate["id_project"] = QJsonValue::Null;
 
-    m_currentTemplate["email_template"] = ui->txtTemplate->toHtml();
+    m_currentTemplate["email_template"] = ui->wdgEditor->getEmailTemplate();
 
     QJsonObject base_obj;
     QJsonDocument doc;
@@ -231,13 +193,14 @@ void EmailServiceConfigWidget::on_btnSave_clicked()
 
 void EmailServiceConfigWidget::on_btnUndo_clicked()
 {
-    ui->txtTemplate->setHtml(ui->txtTemplate->property("original").toString());
-    ui->txtTemplate->setProperty("original", ui->txtTemplate->toHtml());
+    ui->wdgEditor->revert();
 }
 
 
 void EmailServiceConfigWidget::on_cmbLanguage_currentIndexChanged(int index)
 {
+    if (!m_loaded)
+        return;
     queryTemplate(ui->cmbTemplate->currentData().toString());
 }
 

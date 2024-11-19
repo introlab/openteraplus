@@ -29,6 +29,19 @@ DashboardsConfigWidget::DashboardsConfigWidget(ComManager *comManager, const int
     m_highlighter = new QSourceHighlite::QSourceHighliter(ui->txtDefinition->document());
     m_highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeJSON);
 
+
+}
+
+DashboardsConfigWidget::~DashboardsConfigWidget()
+{
+    delete ui;
+    delete m_dashComManager;
+    m_highlighter->deleteLater();
+}
+
+void DashboardsConfigWidget::refresh()
+{
+    ui->frameDashboardButtons->hide();
     // Query dashboards
     QUrlQuery args;
     //args.addQueryItem(WEB_QUERY_LIST, "1");
@@ -41,13 +54,6 @@ DashboardsConfigWidget::DashboardsConfigWidget(ComManager *comManager, const int
             args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
     }
     m_dashComManager->doGet(DASHBOARDS_USER_PATH, args);
-}
-
-DashboardsConfigWidget::~DashboardsConfigWidget()
-{
-    delete ui;
-    delete m_dashComManager;
-    m_highlighter->deleteLater();
 }
 
 void DashboardsConfigWidget::connectSignals()
@@ -88,6 +94,7 @@ void DashboardsConfigWidget::validateDetails()
 
 void DashboardsConfigWidget::processDashboardsReply(QList<QJsonObject> dashboards, QUrlQuery reply_query)
 {
+    ui->frameDashboardButtons->show();
     if (reply_query.hasQueryItem(WEB_QUERY_ID_DASHBOARD)){
         // Querying specific dashboard
         if (dashboards.count() != 1){

@@ -1134,3 +1134,17 @@ void SiteWidget::on_btnUpdateTestTypes_clicked()
     postDataRequest(WEB_TESTTYPESITE_PATH, document.toJson());
 }
 
+
+void SiteWidget::on_tabManageServices_currentChanged(int index)
+{
+    QWidget* current_tab = ui->tabManageServices->widget(index);
+
+    if (dynamic_cast<DashboardsConfigWidget*>(current_tab)){
+        dynamic_cast<DashboardsConfigWidget*>(current_tab)->refresh();
+    }
+
+    if (dynamic_cast<EmailServiceConfigWidget*>(current_tab)){
+        dynamic_cast<EmailServiceConfigWidget*>(current_tab)->refresh();
+    }
+}
+

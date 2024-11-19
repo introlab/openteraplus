@@ -19,16 +19,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="lblWarning">
-     <property name="text">
-      <string>Pour le moment, aucun courriel automatisé n'est envoyé par le système. Vous êtes responsable d'envoyer ce courriel.</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="labelDest">

@@ -25,6 +25,8 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     ui->cmbServices->setItemDelegate(new QStyledItemDelegate(ui->cmbServices));
     ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate(ui->cmbSessionType));
 
+    ui->btnEmailWeb->hide();
+
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
     setLimited(false);
 
@@ -545,6 +547,7 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
     ui->cmbServices->clear();
     m_services.clear();
 
+    bool has_email_service = false;
     foreach(TeraData service, services){
         QString service_key = service.getFieldValue("service_key").toString();
         if (service_key != "FileTransferService"){
@@ -553,6 +556,10 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
         }else{
             m_allowFileTransfers = true; // We have a file transfer service with that project - allow uploads!
             ui->wdgSessions->enableFileTransfers(true);
+        }
+
+        if (service_key == "EmailService"){
+            has_email_service = true;
         }
 
         if (service.hasFieldName("service_editable_config")){
@@ -567,6 +574,8 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
             }
         }
     }
+
+    ui->btnEmailWeb->setVisible(has_email_service);
 
     // Find and select VideoRehab by default in the combobox
     int default_index = ui->cmbServices->findData("VideoRehabService");
@@ -1188,6 +1197,16 @@ void ParticipantWidget::on_tabInfosDetails_currentChanged(int index)
 {
     if (ui->tabInfosDetails->currentWidget() == ui->tabLogins){
         ui->wdgLogins->refreshData();
+    }
+}
+
+
+void ParticipantWidget::on_tabServicesDetails_currentChanged(int index)
+{
+    QWidget* current_tab = ui->tabServicesDetails->widget(index);
+
+    if (dynamic_cast<DanceConfigWidget*>(current_tab)){
+        dynamic_cast<DanceConfigWidget*>(current_tab)->refresh();
     }
 }
 

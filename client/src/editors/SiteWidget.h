@@ -63,6 +63,8 @@ private slots:
 
     void on_btnUpdateTestTypes_clicked();
 
+    void on_tabManageServices_currentChanged(int index);
+
 private:
     Ui::SiteWidget *ui;
 

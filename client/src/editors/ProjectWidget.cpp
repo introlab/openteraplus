@@ -1276,6 +1276,17 @@ void ProjectWidget::on_tabManageServices_currentChanged(int index)
     }
 
     // Service configuration tabs
+    if (dynamic_cast<DashboardsConfigWidget*>(current_tab)){
+        dynamic_cast<DashboardsConfigWidget*>(current_tab)->refresh();
+    }
+
+    if (dynamic_cast<EmailServiceConfigWidget*>(current_tab)){
+        dynamic_cast<EmailServiceConfigWidget*>(current_tab)->refresh();
+    }
+
+    if (dynamic_cast<DanceConfigWidget*>(current_tab)){
+        dynamic_cast<DanceConfigWidget*>(current_tab)->refresh();
+    }
 
 }
 

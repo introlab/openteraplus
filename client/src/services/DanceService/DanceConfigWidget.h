@@ -28,6 +28,8 @@ public:
     explicit DanceConfigWidget(ComManager* comManager, int projectId, QString participantUuid = QString(), QWidget *parent = nullptr);
     ~DanceConfigWidget();
 
+    void refresh();
+
 private:
     Ui::DanceConfigWidget   *ui;
     FileUploaderDialog*     m_uploadDialog;

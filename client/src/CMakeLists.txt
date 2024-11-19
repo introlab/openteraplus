@@ -98,6 +98,7 @@ set(headers
     services/EmailService/EmailServiceConfigWidget.h
     services/EmailService/EmailComManager.h
     services/EmailService/EmailServiceWebAPI.h
+    services/EmailService/EmailTemplateWidget.h
 
     # Widgets
     widgets/SessionInviteWidget.h
@@ -225,8 +226,9 @@ set(srcs
     services/DanceService/DanceComManager.cpp
     services/DashboardsService/DashboardsConfigWidget.cpp
     services/DashboardsService/DashboardsComManager.cpp
-    services/EmailService/EmailServiceConfigWidget.cpp
     services/EmailService/EmailComManager.cpp
+    services/EmailService/EmailServiceConfigWidget.cpp
+    services/EmailService/EmailTemplateWidget.cpp
 
     # Widgets
     widgets/ProjectNavigator.cpp
@@ -336,6 +338,7 @@ SET(uis
     services/DanceService/DanceConfigWidget.ui
     services/DashboardsService/DashboardsConfigWidget.ui
     services/EmailService/EmailServiceConfigWidget.ui
+    services/EmailService/EmailTemplateWidget.ui
 
     # Widgets
     widgets/ProjectNavigator.ui

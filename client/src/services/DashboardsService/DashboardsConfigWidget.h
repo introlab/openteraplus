@@ -21,6 +21,8 @@ public:
     explicit DashboardsConfigWidget(ComManager* comManager, const int& id_site, const int& id_project = 0, QWidget *parent = nullptr);
     ~DashboardsConfigWidget();
 
+    void refresh();
+
 private:
     Ui::DashboardsConfigWidget *ui;
 

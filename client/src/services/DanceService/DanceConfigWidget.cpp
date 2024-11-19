@@ -20,20 +20,6 @@ DanceConfigWidget::DanceConfigWidget(ComManager *comManager, int projectId, QStr
     ui->wdgMessages->hide();
 
     connectSignals();
-
-    // Setup widget according to setted values
-    if (m_uuidParticipant.isEmpty()){
-        // Hide the playlist tab if no participant specified
-        ui->tabMain->removeTab(ui->tabMain->indexOf(ui->tabPlaylist));
-        // Refresh videos in library
-        queryVideoLibrary();
-    }else{
-        // Query session types
-        QUrlQuery query;
-        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
-        m_comManager->doGet(WEB_SESSIONTYPE_PATH, query);
-    }
-
 }
 
 DanceConfigWidget::~DanceConfigWidget()
@@ -47,6 +33,22 @@ DanceConfigWidget::~DanceConfigWidget()
 
     if (m_transferDialog){
         m_transferDialog->deleteLater();
+    }
+}
+
+void DanceConfigWidget::refresh()
+{
+    // Setup widget according to setted values
+    if (m_uuidParticipant.isEmpty()){
+        // Hide the playlist tab if no participant specified
+        ui->tabMain->removeTab(ui->tabMain->indexOf(ui->tabPlaylist));
+        // Refresh videos in library
+        queryVideoLibrary();
+    }else{
+        // Query session types
+        QUrlQuery query;
+        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
+        m_comManager->doGet(WEB_SESSIONTYPE_PATH, query);
     }
 }
 
