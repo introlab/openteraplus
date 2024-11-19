@@ -31,6 +31,11 @@
   <property name="windowTitle">
    <string>OpenTeraPlus</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QStackedWidget{
+background-color: transparent;
+}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -246,13 +251,46 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="centralWidget" native="true">
+    <widget class="QStackedWidget" name="stackedLogins">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="pageWebLogin">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QWidget" name="centralWidget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="StandardLoginWidget" name="pageStandardLogin"/>
     </widget>
    </item>
    <item>
@@ -284,6 +322,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>StandardLoginWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/StandardLoginWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../resources/TeraClient.qrc"/>
  </resources>

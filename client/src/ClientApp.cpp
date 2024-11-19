@@ -132,6 +132,7 @@ void ClientApp::showLogin()
         m_loginDiag = new WebLoginDialog(&m_config);
         connect(m_loginDiag, &WebLoginDialog::loginSuccess, this, &ClientApp::onLoginSuccess, Qt::QueuedConnection);
         connect(m_loginDiag, &WebLoginDialog::finished,     this, &ClientApp::loginQuitRequested);
+        connect(m_loginDiag, &WebLoginDialog::loginRequest,    this, &ClientApp::loginRequested);
 #else
         m_loginDiag = new LoginDialog();
         connect(m_loginDiag, &LoginDialog::loginRequest,    this, &ClientApp::loginRequested);

@@ -83,9 +83,9 @@ class WebLoginDialog : public QDialog
 public:
     explicit WebLoginDialog(ConfigManagerClient *config, QWidget *parent = nullptr);
     ~WebLoginDialog();
-    void setStatusMessage(const QString &message, bool error=false) {
-        /*qDebug() << "Unhandled message: " << message << "error: " << error;*/
-    }
+
+
+    void setStatusMessage(const QString &message, const bool& error=false);
     void setServerNames(QStringList servers);
     QString currentServerName();
     void showServers(bool show);
@@ -94,6 +94,8 @@ signals:
 
     void loginSuccess(const QString &token, const QString &websocket_url, const QString &user_uuid);
     void loginFailure(const QString &message);
+
+    void loginRequest(QString username, QString password, QString server_name);
 
 private slots:
 
@@ -109,8 +111,9 @@ private slots:
     void onRedirectToLoginRequest();
 
     void on_btnCancel_clicked();
-
     void on_btnRetry_clicked();
+
+    void onStandardLoginRequested(QString username, QString password);
 
 private:
     Ui::WebLoginDialog          *ui;

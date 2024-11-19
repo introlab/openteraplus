@@ -59,7 +59,6 @@ set(headers
     dialogs/EmailInviteDialog.h
     dialogs/FileUploaderDialog.h
     dialogs/GeneratePasswordDialog.h
-    dialogs/LoginDialog.h
     dialogs/PasswordStrengthDialog.h
     dialogs/QRCodeDialog.h
     dialogs/TransferProgressDialog.h
@@ -118,6 +117,7 @@ set(headers
     widgets/QRWidget.h
     widgets/LogViewWidget.h
     widgets/SessionsListWidget.h
+    widgets/StandardLoginWidget.h
 
 )
 
@@ -130,6 +130,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         dialogs/JoinSessionDialog.h
         dialogs/AboutDialog.h
         dialogs/AboutDialogPage.h
+        dialogs/LoginDialog.h
         dialogs/WebLoginDialog.h
         # Widgets
         widgets/InSessionWidget.h
@@ -192,7 +193,6 @@ set(srcs
     dialogs/EmailInviteDialog.cpp
     dialogs/FileUploaderDialog.cpp
     dialogs/GeneratePasswordDialog.cpp
-    dialogs/LoginDialog.cpp
     dialogs/PasswordStrengthDialog.cpp
     dialogs/QRCodeDialog.cpp
     dialogs/TransferProgressDialog.cpp
@@ -248,6 +248,7 @@ set(srcs
     widgets/QRWidget.cpp
     widgets/LogViewWidget.cpp
     widgets/SessionsListWidget.cpp
+    widgets/StandardLoginWidget.cpp
 )
 
 #Additional srcs not for WebAssembly
@@ -259,6 +260,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         dialogs/JoinSessionDialog.cpp
         dialogs/StartSessionDialog.cpp
         dialogs/SessionLobbyDialog.cpp
+        dialogs/LoginDialog.cpp
         dialogs/WebLoginDialog.cpp
 
         # Widgets
@@ -353,6 +355,7 @@ SET(uis
     widgets/TestsWidget.ui
     widgets/LogViewWidget.ui
     widgets/SessionsListWidget.ui
+    widgets/StandardLoginWidget.ui
 
     # Kits
     kit/KitConfigDialog.ui

@@ -12,14 +12,17 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     : QDialog(parent), ui(new Ui::WebLoginDialog), m_config(config)
 {
     ui->setupUi(this);
+    setWindowTitle("OpenTeraPlus - Version " + QString(OPENTERAPLUS_VERSION));
+
     ui->btnRetry->hide();
+    ui->stackedLogins->setCurrentIndex(0);
     showLargeView(false);
 
     //Create Web View
     m_webView = new QWebEngineView(ui->centralWidget);
     m_webView->setContextMenuPolicy(Qt::NoContextMenu);
     ui->lblError->hide();
-    ui->centralWidget->hide();
+    ui->stackedLogins->hide();
 
     QVBoxLayout *layout = new QVBoxLayout(ui->centralWidget);
     layout->addWidget(m_webView);
@@ -50,11 +53,18 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
 
     m_webPage->setBackgroundColor(QColor(0x2c3338));
     m_webView->setPage(m_webPage);
+
+    connect(ui->pageStandardLogin, &StandardLoginWidget::standardLoginRequest, this, &WebLoginDialog::onStandardLoginRequested);
 }
 
 WebLoginDialog::~WebLoginDialog()
 {
     delete ui;
+}
+
+void WebLoginDialog::setStatusMessage(const QString &message, const bool &error)
+{
+    ui->pageStandardLogin->setStatusMessage(message, error);
 }
 
 void WebLoginDialog::setServerNames(QStringList servers)
@@ -128,7 +138,7 @@ void WebLoginDialog::onLoginPageLoadingChanged(const QWebEngineLoadingInfo &load
     //qDebug() << loadingInfo.status();
     if (loadingInfo.status() == QWebEngineLoadingInfo::LoadStartedStatus){
         // Page is loading...
-        ui->centralWidget->hide();
+        ui->stackedLogins->hide();
         ui->btnRetry->hide();
         ui->lblError->hide();
         ui->lblLoading->show();
@@ -137,14 +147,22 @@ void WebLoginDialog::onLoginPageLoadingChanged(const QWebEngineLoadingInfo &load
     }
 
     if (loadingInfo.status() == QWebEngineLoadingInfo::LoadSucceededStatus){
-        ui->centralWidget->show();
+        ui->stackedLogins->setCurrentIndex(0);
+        ui->stackedLogins->show();
         ui->frameLoginMessages->hide();
         m_webView->setFocus();
     }else{
         // Manage specific error messages
         if (loadingInfo.errorCode() == 404) {
             // Not found error
-            ui->lblError->setText(tr("Impossible de rejoindre le serveur. Vérifiez votre connexion Internet, vos paramètres et votre pare-feu, puis essayez de nouveau."));
+            //ui->lblError->setText(tr("Impossible de rejoindre le serveur. Vérifiez votre connexion Internet, vos paramètres et votre pare-feu, puis essayez de nouveau."));
+            ui->stackedLogins->setCurrentIndex(1);
+            ui->pageStandardLogin->setFocus();
+            ui->lblLoading->hide();
+            ui->frameLoginMessages->hide();
+            ui->stackedLogins->show();
+            return;
+
         }else{
             QString message = QTextDocumentFragment::fromHtml(loadingInfo.errorString()).toPlainText();
             ui->lblError->setText(tr("Une erreur est survenue") + ": \n" + QString::number(loadingInfo.errorCode()) + " - " + message);
@@ -252,5 +270,12 @@ void WebLoginDialog::on_btnCancel_clicked()
 void WebLoginDialog::on_btnRetry_clicked()
 {
     m_webPage->load(m_webPage->url());
+}
+
+void WebLoginDialog::onStandardLoginRequested(QString username, QString password)
+{
+    emit loginRequest(username, password, ui->cmbServers->currentText());
+    TeraSettings::setGlobalSetting("last_used_server", ui->cmbServers->currentText());
+
 }
 
