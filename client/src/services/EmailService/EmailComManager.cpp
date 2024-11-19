@@ -61,6 +61,11 @@ bool EmailComManager::handleDataReply(const QString &reply_path, const QString &
     // Process reply
     QString data_str = filterReplyString(reply_data);
 
+     if (reply_path.endsWith(EMAIL_SEND_PATH)){
+        emit emailSendSuccess();
+        return true;
+     }
+
     QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
     if (json_error.error!= QJsonParseError::NoError){
         LOG_ERROR("Received a JSON string for " + reply_path + " with " + reply_query.toString() + " with error: " + json_error.errorString(), "DashboardsComManager::handleDataReply");

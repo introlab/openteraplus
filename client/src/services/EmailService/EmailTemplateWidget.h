@@ -2,6 +2,7 @@
 #define EMAILTEMPLATEWIDGET_H
 
 #include <QWidget>
+#include <QTextEdit>
 
 namespace Ui {
 class EmailTemplateWidget;
@@ -17,8 +18,11 @@ public:
 
     void setEmailTemplate(const QString& text);
     QString getEmailTemplate() const;
+    QTextEdit* getPreview() const;
 
     void setVariable(const QString& name, const QString& value);
+    bool isEditing() const;
+    void setEditing(const bool& editing);
 
     void revert();
 

@@ -6,4 +6,6 @@
 
 #define WEB_QUERY_EMAIL_LANG     "lang"
 
+#define KEY_EMAIL_INVITE        "INVITE_EMAIL"
+
 #endif // EMAILWEBAPI_H

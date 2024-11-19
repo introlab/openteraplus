@@ -36,10 +36,25 @@ QString EmailTemplateWidget::getEmailTemplate() const
     return ui->txtTemplate->toHtml();
 }
 
+QTextEdit *EmailTemplateWidget::getPreview() const
+{
+    return ui->txtPreview;
+}
+
 void EmailTemplateWidget::setVariable(const QString &name, const QString &value)
 {
     m_variablesValues[name] = value;
     refreshPreview();
+}
+
+bool EmailTemplateWidget::isEditing() const
+{
+    return ui->btnEdit->isChecked();
+}
+
+void EmailTemplateWidget::setEditing(const bool &editing)
+{
+    ui->btnEdit->setChecked(editing);
 }
 
 void EmailTemplateWidget::revert()

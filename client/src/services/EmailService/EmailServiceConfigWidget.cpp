@@ -132,7 +132,7 @@ void EmailServiceConfigWidget::connectSignals()
 void EmailServiceConfigWidget::initTemplates()
 {
     ui->cmbTemplate->clear();
-    ui->cmbTemplate->addItem(tr("Courriel d'invitation"), "INVITE_EMAIL");
+    ui->cmbTemplate->addItem(tr("Courriel d'invitation"), KEY_EMAIL_INVITE);
 
     ui->cmbLanguage->clear();
     ui->cmbLanguage->addItem(tr("Français"), "fr");

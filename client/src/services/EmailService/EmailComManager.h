@@ -25,6 +25,7 @@ private slots:
 signals:
     void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
     void emailTemplateReceived(QJsonObject email_template);
+    void emailSendSuccess();
 
 };
 
