@@ -21,6 +21,8 @@ EmailServiceConfigWidget::EmailServiceConfigWidget(ComManager *comManager, const
     initTemplates();
     connectSignals();
 
+    m_loaded = true;
+
 }
 
 EmailServiceConfigWidget::~EmailServiceConfigWidget()

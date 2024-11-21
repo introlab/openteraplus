@@ -15,6 +15,7 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     setWindowTitle("OpenTeraPlus - Version " + QString(OPENTERAPLUS_VERSION));
 
     ui->btnRetry->hide();
+    ui->lblWarning->hide();
     ui->stackedLogins->setCurrentIndex(0);
     showLargeView(false);
 
@@ -127,6 +128,7 @@ void WebLoginDialog::onServerSelected(int index)
     if (m_config && m_webPage)
     {
         QUrl loginUrl = m_config->getServerLoginUrl(currentServer);
+        ui->lblWarning->setVisible(loginUrl.host().contains("localhost") || loginUrl.host().contains("127.0.0.1"));
         loginUrl.setQuery("no_logo");
         m_webPage->setUrl(loginUrl);
         showLargeView(false);

@@ -139,6 +139,23 @@ background-color: transparent;
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="lblWarning">
+     <property name="text">
+      <string>Serveur de test
+À moins d'être un développeur, vous ne pourrez pas vous connecter.</string>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QFrame" name="frameLoginMessages">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
