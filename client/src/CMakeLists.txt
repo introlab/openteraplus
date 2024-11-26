@@ -98,6 +98,9 @@ set(headers
     services/EmailService/EmailComManager.h
     services/EmailService/EmailServiceWebAPI.h
     services/EmailService/EmailTemplateWidget.h
+    services/SurveyService/SurveyComManager.h
+    services/SurveyService/SurveyServiceConfigWidget.h
+    services/SurveyService/SurveyServiceWebAPI.h
 
     # Widgets
     widgets/SessionInviteWidget.h
@@ -229,6 +232,8 @@ set(srcs
     services/EmailService/EmailComManager.cpp
     services/EmailService/EmailServiceConfigWidget.cpp
     services/EmailService/EmailTemplateWidget.cpp
+    services/SurveyService/SurveyComManager.cpp
+    services/SurveyService/SurveyServiceConfigWidget.cpp
 
     # Widgets
     widgets/ProjectNavigator.cpp
@@ -332,15 +337,16 @@ SET(uis
     editors/UserWidget.ui
 
     # Services
+    services/DanceService/DanceConfigWidget.ui
+    services/DashboardsService/DashboardsConfigWidget.ui
+    services/EmailService/EmailServiceConfigWidget.ui
+    services/EmailService/EmailTemplateWidget.ui
+    services/SurveyService/SurveyServiceConfigWidget.ui
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
     services/VideoRehabService/VideoRehabToolsWidget.ui
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
     services/VideoRehabService/VideoRehabPTZDialog.ui
-    services/DanceService/DanceConfigWidget.ui
-    services/DashboardsService/DashboardsConfigWidget.ui
-    services/EmailService/EmailServiceConfigWidget.ui
-    services/EmailService/EmailTemplateWidget.ui
 
     # Widgets
     widgets/ProjectNavigator.ui

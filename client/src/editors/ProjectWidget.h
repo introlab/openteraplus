@@ -4,18 +4,10 @@
 #include <QWidget>
 #include <QListWidgetItem>
 #include <QTreeWidgetItem>
+#include <QTableWidgetItem>
 
 #include "DataEditorWidget.h"
-#include "GlobalMessageBox.h"
-
 #include "dialogs/BaseDialog.h"
-
-#include "widgets/TableDateWidgetItem.h"
-#include "widgets/TableNumberWidgetItem.h"
-
-// Service specific config widgets
-#include "services/DanceService/DanceConfigWidget.h"
-#include "services/DashboardsService/DashboardsConfigWidget.h"
 
 namespace Ui {
 class ProjectWidget;
@@ -84,7 +76,7 @@ private:
     Ui::ProjectWidget               *ui;
 
     QHash<int, QTableWidgetItem*>   m_tableUsers_items;
-    QMap<int, QTableWidgetItem*>    m_tableUserGroups_items;
+    QMap<int,  QTableWidgetItem*>   m_tableUserGroups_items;
     QHash<int, QTableWidgetItem*>   m_tableParticipants_items;
     QHash<int, QListWidgetItem*>    m_listGroups_items;
 

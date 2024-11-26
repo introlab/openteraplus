@@ -87,8 +87,34 @@ void BaseComManager::doPost(const QUrl &full_url, const QString &post_data, cons
         LOG_DEBUG("POST: " + full_url.toString() + ", with " + post_data, QString(this->metaObject()->className()) + "::doPost");
     #else
         // Strip data from logging in release, since this might contains passwords!
-        LOG_DEBUG("POST: " + full_url.toString(), QString(this->metaObject()->className()) + "::doPost");
+        //LOG_DEBUG("POST: " + full_url.toString(), QString(this->metaObject()->className()) + "::doPost");
     #endif
+}
+
+void BaseComManager::doPostWithParams(const QString &path, const QString &post_data, const QUrlQuery &query_args, const bool &use_token)
+{
+    QUrl query = m_serverUrl;
+
+    query.setPath(path);
+    query.setQuery(query_args);
+
+    QNetworkRequest request(query);
+
+    setRequestCredentials(request, use_token);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
+    request.setRawHeader("Content-Type", "application/json");
+
+    m_netManager->post(request, post_data.toUtf8());
+    emit waitingForReply(true);
+
+#ifndef QT_NO_DEBUG
+    LOG_DEBUG("POST: " + query.toString() + ", with " + post_data, QString(this->metaObject()->className()) + "::doPost");
+#else \
+    // Strip data from logging in release, since this might contains passwords!
+        //LOG_DEBUG("POST: " + full_url.toString(), QString(this->metaObject()->className()) + "::doPost");
+#endif
 }
 
 void BaseComManager::doDelete(const QString &path, const int &id, const bool &use_token)

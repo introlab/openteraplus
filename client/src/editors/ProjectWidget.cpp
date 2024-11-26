@@ -1,8 +1,18 @@
 #include "ProjectWidget.h"
 #include "ui_ProjectWidget.h"
 
+#include "GlobalMessageBox.h"
+
 #include "editors/DataListWidget.h"
+
+#include "widgets/TableDateWidgetItem.h"
+#include "widgets/TableNumberWidgetItem.h"
+
+// Service specific config widgets
+#include "services/DanceService/DanceConfigWidget.h"
+#include "services/DashboardsService/DashboardsConfigWidget.h"
 #include "services/EmailService/EmailServiceConfigWidget.h"
+#include "services/SurveyService/SurveyServiceConfigWidget.h"
 
 ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -1163,7 +1173,7 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
 
     // Email Service
     if (service_key == "EmailService"){
-        if (isSiteAdmin()){
+        if (is_project_admin){
             EmailServiceConfigWidget* wdg = new EmailServiceConfigWidget(m_comManager, -1, m_data->getId());
             QString service_name = service_key;
             if (m_listServices_items.contains(id_service)){
@@ -1172,6 +1182,17 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
             ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
             m_services_tabs.insert(id_service, wdg);
         }
+    }
+
+    // Survey Service
+    if (service_key == "SurveyJSService"){
+        SurveyServiceConfigWidget* wdg = new SurveyServiceConfigWidget(m_comManager, m_data->getId());
+        QString service_name = service_key;
+        if (m_listServices_items.contains(id_service)){
+            service_name = m_listServices_items[id_service]->text();
+        }
+        ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
+        m_services_tabs.insert(id_service, wdg);
     }
 }
 
@@ -1286,6 +1307,10 @@ void ProjectWidget::on_tabManageServices_currentChanged(int index)
 
     if (dynamic_cast<DanceConfigWidget*>(current_tab)){
         dynamic_cast<DanceConfigWidget*>(current_tab)->refresh();
+    }
+
+    if (dynamic_cast<SurveyServiceConfigWidget*>(current_tab)){
+        dynamic_cast<SurveyServiceConfigWidget*>(current_tab)->refresh();
     }
 
 }

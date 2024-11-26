@@ -60,8 +60,6 @@ void EmailServiceConfigWidget::processTemplateReply(const QJsonObject email_temp
 
 void EmailServiceConfigWidget::handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code)
 {
-    Q_UNUSED(error)
-
     if (error == QNetworkReply::OperationCanceledError && op == QNetworkAccessManager::PostOperation){
         // Transfer was cancelled by user - no need to alert anyone!
         return;
