@@ -100,6 +100,7 @@ set(headers
     services/EmailService/EmailServiceWebAPI.h
     services/EmailService/EmailTemplateWidget.h
     services/SurveyService/SurveyComManager.h
+    services/SurveyService/SurveyEditorDialog.h
     services/SurveyService/SurveyServiceConfigWidget.h
     services/SurveyService/SurveyServiceWebAPI.h
 
@@ -235,6 +236,7 @@ set(srcs
     services/EmailService/EmailServiceConfigWidget.cpp
     services/EmailService/EmailTemplateWidget.cpp
     services/SurveyService/SurveyComManager.cpp
+    services/SurveyService/SurveyEditorDialog.cpp
     services/SurveyService/SurveyServiceConfigWidget.cpp
 
     # Widgets
@@ -343,6 +345,7 @@ SET(uis
     services/DashboardsService/DashboardsConfigWidget.ui
     services/EmailService/EmailServiceConfigWidget.ui
     services/EmailService/EmailTemplateWidget.ui
+    services/SurveyService/SurveyEditorDialog.ui
     services/SurveyService/SurveyServiceConfigWidget.ui
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui

@@ -19,9 +19,10 @@ public:
 
     bool isReady();
 
+    QString getServiceEndpoint(const QString &path);
+
 private:
     void connectSignals();
-    QString getServiceEndpoint(const QString &path);
 
 protected:
     ComManager* m_comManager;

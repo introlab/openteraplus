@@ -71,6 +71,25 @@ void SurveyServiceConfigWidget::setEditMode(const bool &editing)
     ui->txtName->setFocus();
 }
 
+void SurveyServiceConfigWidget::showSurveyEditor()
+{
+    if (m_surveyEditor){
+        m_surveyEditor->deleteLater();
+        m_surveyEditor = nullptr;
+    }
+
+    if (!m_data)
+        return;
+
+    if (m_data->isNew())
+        return;
+
+    m_surveyEditor = new SurveyEditorDialog(m_surveyComManager, m_data->getUuid(), this);
+    connect(m_surveyEditor, &SurveyEditorDialog::finished, this, &SurveyServiceConfigWidget::surveyEditorFinished);
+    m_surveyEditor->showMaximized();
+
+}
+
 void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, QUrlQuery reply_query)
 {
     for(const TeraData &data:ttp_list){
@@ -115,16 +134,23 @@ void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, 
 
 void SurveyServiceConfigWidget::processActiveSurveyReply(const QJsonObject survey)
 {
+    QString test_type_uuid = survey.value("active_survey_test_type_uuid").toString();
     if (m_id_survey == 0){
         // New survey
         m_id_survey = survey.value("id_active_survey").toInt();
+        if (m_data){
+            delete m_data;
+        }
+        m_data = new TeraData(TeraDataTypes::TERADATA_TESTTYPE);
+        m_data->setUuid(test_type_uuid);
+
     }else{
         // Updated survey
 
     }
     // Update related test type
     QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_UUID_TESTTYPE, survey.value("active_survey_test_type_uuid").toString());
+    args.addQueryItem(WEB_QUERY_UUID_TESTTYPE, test_type_uuid);
     m_comManager->doGet(WEB_TESTTYPEINFO_PATH, args);
 
     setEditMode(false);
@@ -170,6 +196,12 @@ void SurveyServiceConfigWidget::nextMessageWasShown(Message current_message)
     }else{
         ui->wdgMessages->show();
     }
+}
+
+void SurveyServiceConfigWidget::surveyEditorFinished(int result)
+{
+    m_surveyEditor->deleteLater();
+    m_surveyEditor = nullptr;
 }
 
 void SurveyServiceConfigWidget::on_btnNew_clicked()
@@ -230,5 +262,11 @@ void SurveyServiceConfigWidget::on_lstData_currentItemChanged(QListWidgetItem *c
     args.addQueryItem(SURVEY_QUERY_ACTIVE_TEST_TYPE_UUID, m_data->getUuid());
     m_surveyComManager->doGet(SURVEY_ACTIVE_PATH, args);
 
+}
+
+
+void SurveyServiceConfigWidget::on_btnEditSurvey_clicked()
+{
+    showSurveyEditor();
 }
 

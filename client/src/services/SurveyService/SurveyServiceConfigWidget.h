@@ -7,6 +7,7 @@
 
 #include "managers/ComManager.h"
 #include "SurveyComManager.h"
+#include "SurveyEditorDialog.h"
 #include "data/Message.h"
 
 namespace Ui {
@@ -36,15 +37,18 @@ private slots:
 
     void nextMessageWasShown(Message current_message);
 
-    void on_txtName_textChanged(const QString &arg1);
+    void surveyEditorFinished(int result);
 
+    void on_txtName_textChanged(const QString &arg1);
     void on_lstData_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void on_btnEditSurvey_clicked();
 
 private:
     Ui::SurveyServiceConfigWidget *ui;
 
     ComManager*         m_comManager;
     SurveyComManager*   m_surveyComManager;
+    SurveyEditorDialog* m_surveyEditor = nullptr;
 
     int             m_id_project;
     int             m_id_survey = 0;
@@ -57,6 +61,7 @@ private:
     void connectSignals();
     void queryTestTypes();
     void setEditMode(const bool& editing);
+    void showSurveyEditor();
 
 
 };

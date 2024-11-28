@@ -213,10 +213,10 @@ void WebLoginDialog::showLargeView(const bool &large)
     }
     if (large){
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        setFixedSize(768, 500);
+        setFixedSize(768, 550);
     }else{
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        setFixedSize(550, 500);
+        setFixedSize(550, 550);
     }
 
     // Recenter on screen
