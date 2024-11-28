@@ -85,6 +85,7 @@ set(headers
     editors/UserWidget.h
 
     # Services
+    services/BaseServiceComManager.h
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
     services/BaseServiceSetupWidget.h
@@ -222,6 +223,7 @@ set(srcs
     editors/UserWidget.cpp
 
     # Services
+    services/BaseServiceComManager.cpp
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
     services/BaseServiceSetupWidget.cpp

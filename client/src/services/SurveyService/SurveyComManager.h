@@ -2,27 +2,23 @@
 #define SURVEYCOMMANAGER_H
 
 #include <QObject>
-#include "managers/BaseComManager.h"
+#include "services/BaseServiceComManager.h"
 #include "managers/ComManager.h"
 
-class SurveyComManager : public BaseComManager
+class SurveyComManager : public BaseServiceComManager
 {
     Q_OBJECT
 public:
     explicit SurveyComManager(ComManager* comManager, QObject *parent = nullptr);
 
 private:
-    ComManager*             m_comManager;
 
     void connectSignals();
-    bool processNetworkReply(QNetworkReply* reply) override;
-    bool handleDataReply(const QString& reply_path, const QString &reply_data, const QUrlQuery &reply_query);
 
 private slots:
-    void handleUserTokenUpdated();
+    void onDataReceived(QList<QJsonObject> items, QString reply_path, QUrlQuery reply_query);
 
 signals:
-    void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
     void activeSurveyReceived(QJsonObject survey);
 
 };

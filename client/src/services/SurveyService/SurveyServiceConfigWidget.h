@@ -29,6 +29,7 @@ private slots:
     void on_btnSave_clicked();
 
     void processTestTypesReply(QList<TeraData> ttp_list, QUrlQuery reply_query);
+
     void processActiveSurveyReply(const QJsonObject survey);
     void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
     void nextMessageWasShown(Message current_message);
@@ -38,8 +39,8 @@ private slots:
 private:
     Ui::SurveyServiceConfigWidget *ui;
 
-    ComManager* m_comManager;
-    SurveyComManager* m_surveyComManager;
+    ComManager*         m_comManager;
+    SurveyComManager*   m_surveyComManager;
 
     int         m_id_project;
     int         m_current_id = 0;
