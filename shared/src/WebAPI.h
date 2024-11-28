@@ -93,6 +93,7 @@
 #define WEB_QUERY_UUID_ASSET        "asset_uuid"
 #define WEB_QUERY_UUID_USER         "user_uuid"
 #define WEB_QUERY_UUID_DEVICE       "device_uuid"
+#define WEB_QUERY_UUID_TESTTYPE     "test_type_uuid"
 
 #define WEB_QUERY_UUID                  "uuid"
 #define WEB_QUERY_APPTAG                "app_tag"

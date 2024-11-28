@@ -32,9 +32,13 @@ private slots:
 
     void processActiveSurveyReply(const QJsonObject survey);
     void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
+    void surveyComManagerReady(bool ready);
+
     void nextMessageWasShown(Message current_message);
 
     void on_txtName_textChanged(const QString &arg1);
+
+    void on_lstData_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
 private:
     Ui::SurveyServiceConfigWidget *ui;
@@ -42,10 +46,13 @@ private:
     ComManager*         m_comManager;
     SurveyComManager*   m_surveyComManager;
 
-    int         m_id_project;
-    int         m_current_id = 0;
+    int             m_id_project;
+    int             m_id_survey = 0;
+    TeraData*       m_data = nullptr;
 
-    QHash<int, QListWidgetItem*>    m_listTestTypes_items;
+    bool        m_refreshRequested = false;
+
+    QHash<QString, QListWidgetItem*>    m_listTestTypes_items; // Test type UUID mapping
 
     void connectSignals();
     void queryTestTypes();

@@ -14,7 +14,7 @@ SurveyServiceConfigWidget::SurveyServiceConfigWidget(ComManager *comManager, int
 
     ui->setupUi(this);
 
-    ui->frameEditor->hide();
+    ui->frameItemEditor->hide();
     ui->btnDelete->setEnabled(false);
     ui->wdgMessages->hide();
 
@@ -24,10 +24,17 @@ SurveyServiceConfigWidget::SurveyServiceConfigWidget(ComManager *comManager, int
 SurveyServiceConfigWidget::~SurveyServiceConfigWidget()
 {
     delete ui;
+    if (m_data){
+        delete m_data;
+    }
 }
 
 void SurveyServiceConfigWidget::refresh()
 {
+    if (!m_surveyComManager->isReady()){
+        m_refreshRequested = true;
+        return;
+    }
     queryTestTypes();
 }
 
@@ -53,12 +60,12 @@ void SurveyServiceConfigWidget::queryTestTypes()
 
 void SurveyServiceConfigWidget::setEditMode(const bool &editing)
 {
-    ui->frameEditButton->setVisible(!editing && m_current_id > 0);
+    ui->frameEditButton->setVisible(!editing && m_id_survey > 0);
     ui->frameSave->setVisible(editing);
 
-    ui->btnEditSurvey->setVisible(m_current_id > 0);
+    ui->btnEditSurvey->setVisible(m_id_survey > 0);
     ui->frameEditor->setEnabled(editing);
-    ui->frameEditor->setVisible(editing || m_current_id > 0);
+    ui->frameItemEditor->setVisible(editing || m_id_survey > 0);
     ui->frameItems->setEnabled(!editing);
     ui->btnSave->setDisabled(ui->txtName->text().isEmpty());
     ui->txtName->setFocus();
@@ -74,11 +81,12 @@ void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, 
             continue;
 
         QListWidgetItem* item = nullptr;
-        int id_testtype = data.getId();
+        //int id_testtype = data.getId();
+        QString testtype_uuid = data.getUuid();
 
         // Check if we already have that item
-        if (m_listTestTypes_items.contains(id_testtype))
-            item = m_listTestTypes_items[id_testtype];
+        if (m_listTestTypes_items.contains(testtype_uuid))
+            item = m_listTestTypes_items[testtype_uuid];
 
         QString tt_name = data.getName();
 
@@ -87,27 +95,36 @@ void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, 
             // Check if we have a new item that we could match
             item = new QListWidgetItem(tt_name, ui->lstData);
             item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_TESTTYPE)));
-            m_listTestTypes_items[id_testtype] = item;
+            m_listTestTypes_items[testtype_uuid] = item;
 
         }else{
             // Update name if needed
-            m_listTestTypes_items[id_testtype]->setText(tt_name);
+            m_listTestTypes_items[testtype_uuid]->setText(tt_name);
+
+            // Refresh infos if we are looking for it
+            if (m_data){
+                if (m_data->getUuid() == testtype_uuid){
+                    *m_data = data;
+                    ui->txtDescription->setPlainText(m_data->getFieldValue("test_type_description").toString());
+                    ui->txtName->setText(m_data->getName());
+                }
+            }
         }
     }
 }
 
 void SurveyServiceConfigWidget::processActiveSurveyReply(const QJsonObject survey)
 {
-    if (m_current_id == 0){
-        // New servey
-        m_current_id = survey.value("id_active_survey").toInt();
+    if (m_id_survey == 0){
+        // New survey
+        m_id_survey = survey.value("id_active_survey").toInt();
     }else{
         // Updated survey
 
     }
     // Update related test type
     QUrlQuery args;
-    args.addQueryItem(WEB_QUERY_UUID, survey.value("active_survey_test_type_uuid").toString());
+    args.addQueryItem(WEB_QUERY_UUID_TESTTYPE, survey.value("active_survey_test_type_uuid").toString());
     m_comManager->doGet(WEB_TESTTYPEINFO_PATH, args);
 
     setEditMode(false);
@@ -136,6 +153,16 @@ void SurveyServiceConfigWidget::handleNetworkError(QNetworkReply::NetworkError e
     ui->wdgMessages->addMessage(Message(Message::MESSAGE_ERROR, error_str));
 }
 
+void SurveyServiceConfigWidget::surveyComManagerReady(bool ready)
+{
+    if (ready){
+        if (m_refreshRequested){
+            m_refreshRequested = false;
+            refresh();
+        }
+    }
+}
+
 void SurveyServiceConfigWidget::nextMessageWasShown(Message current_message)
 {
     if (current_message.getMessageType()==Message::MESSAGE_NONE){
@@ -149,7 +176,7 @@ void SurveyServiceConfigWidget::on_btnNew_clicked()
 {
     ui->txtName->clear();
     ui->txtDescription->clear();
-    m_current_id = 0;
+    m_id_survey = 0;
 
     setEditMode(true);
 
@@ -169,7 +196,7 @@ void SurveyServiceConfigWidget::on_btnSave_clicked()
     QJsonObject data_obj;
     QJsonDocument doc;
 
-    data_obj["id_active_survey"] = m_current_id;
+    data_obj["id_active_survey"] = m_id_survey;
     data_obj["active_survey_name"] = ui->txtName->text();
     data_obj["active_survey_description"] = ui->txtDescription->toPlainText();
 
@@ -186,5 +213,22 @@ void SurveyServiceConfigWidget::on_btnSave_clicked()
 void SurveyServiceConfigWidget::on_txtName_textChanged(const QString &new_text)
 {
     ui->btnSave->setDisabled(new_text.isEmpty());
+}
+
+
+void SurveyServiceConfigWidget::on_lstData_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    ui->btnDelete->setEnabled(current);
+
+    if (m_data)
+        delete m_data;
+
+    m_data = new TeraData(TeraDataTypes::TERADATA_TESTTYPE);
+    m_data->setUuid(m_listTestTypes_items.key(current));
+
+    QUrlQuery args;
+    args.addQueryItem(SURVEY_QUERY_ACTIVE_TEST_TYPE_UUID, m_data->getUuid());
+    m_surveyComManager->doGet(SURVEY_ACTIVE_PATH, args);
+
 }
 
