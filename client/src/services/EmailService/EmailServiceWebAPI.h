@@ -1,8 +1,8 @@
 #ifndef EMAILWEBAPI_H
 #define EMAILWEBAPI_H
 
-#define EMAIL_SEND_PATH          "/email/api/send"
-#define EMAIL_TEMPLATE_PATH      "/email/api/templates"
+#define EMAIL_SEND_PATH          "api/send"
+#define EMAIL_TEMPLATE_PATH      "api/templates"
 
 #define WEB_QUERY_EMAIL_LANG     "lang"
 

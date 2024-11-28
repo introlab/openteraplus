@@ -20,27 +20,53 @@ BaseServiceComManager::BaseServiceComManager(ComManager *comManager, QString ser
 
 void BaseServiceComManager::doGet(const QString &path, const QUrlQuery &query_args, const bool &use_token)
 {
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring GET.";
+        return;
+    }
+
     BaseComManager::doGet(getServiceEndpoint(path), query_args, use_token);
 }
 
 void BaseServiceComManager::doPost(const QString &path, const QString &post_data, const bool &use_token)
 {
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring POST.";
+        return;
+    }
     BaseComManager::doPost(getServiceEndpoint(path), post_data, use_token);
 }
 
 void BaseServiceComManager::doPost(const QUrl &full_url, const QString &post_data, const bool &use_token)
 {
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring POST.";
+        return;
+    }
     BaseComManager::doPost(getServiceEndpoint(full_url.toString()), post_data, use_token);
 }
 
 void BaseServiceComManager::doPostWithParams(const QString &path, const QString &post_data, const QUrlQuery &query_args, const bool &use_token)
 {
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring POST.";
+        return;
+    }
     BaseComManager::doPostWithParams(getServiceEndpoint(path), post_data, query_args, use_token);
 }
 
 void BaseServiceComManager::doDelete(const QString &path, const int &id, const bool &use_token)
 {
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring DELETE.";
+        return;
+    }
     BaseComManager::doDelete(getServiceEndpoint(path), id, use_token);
+}
+
+bool BaseServiceComManager::isReady()
+{
+    return !m_service.isNew();
 }
 
 void BaseServiceComManager::connectSignals()
@@ -55,6 +81,9 @@ bool BaseServiceComManager::handleDataReply(const QString &reply_path, const QSt
 
     // Process reply
     QString data_str = filterReplyString(reply_data);
+    if (preHandleData(reply_path, data_str, reply_query)){
+        return true;
+    }
 
     QJsonDocument data_list = QJsonDocument::fromJson(data_str.toUtf8(), &json_error);
     if (json_error.error!= QJsonParseError::NoError){
@@ -72,10 +101,21 @@ bool BaseServiceComManager::handleDataReply(const QString &reply_path, const QSt
     }else{
         items.append(data_list.object());
     }
+
+    postHandleData(items, reply_path, reply_query);
+
     // Always emit generic signal
     emit dataReceived(items, reply_path, reply_query);
 
     return true;
+}
+
+bool BaseServiceComManager::preHandleData(const QString &reply_path, const QString &data, const QUrlQuery &reply_query)
+{
+    Q_UNUSED(reply_path)
+    Q_UNUSED(data)
+    Q_UNUSED(reply_query)
+    return false; // No prehandling by default
 }
 
 QString BaseServiceComManager::getServiceEndpoint(const QString& path)
@@ -132,6 +172,7 @@ void BaseServiceComManager::processServicesReply(QList<TeraData> services, QUrlQ
         if (service.hasFieldName("service_key")){
             if (service.getFieldValue("service_key").toString() == m_serviceKey){
                 m_service = service;
+                emit readyChanged(true);
                 break;
             }
         }

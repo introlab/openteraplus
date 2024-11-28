@@ -12,11 +12,7 @@ public:
     explicit SurveyComManager(ComManager* comManager, QObject *parent = nullptr);
 
 private:
-
-    void connectSignals();
-
-private slots:
-    void onDataReceived(QList<QJsonObject> items, QString reply_path, QUrlQuery reply_query);
+    void postHandleData(const QList<QJsonObject>& items, const QString &reply_path, const QUrlQuery &reply_query) override;
 
 signals:
     void activeSurveyReceived(QJsonObject survey);

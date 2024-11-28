@@ -17,6 +17,8 @@ public:
     void doPostWithParams(const QString &path, const QString &post_data, const QUrlQuery &query_args, const bool &use_token=true) override;
     void doDelete(const QString &path, const int& id, const bool &use_token=true) override;
 
+    bool isReady();
+
 private:
     void connectSignals();
     QString getServiceEndpoint(const QString &path);
@@ -28,14 +30,16 @@ protected:
 
     bool processNetworkReply(QNetworkReply* reply) override;
     virtual bool handleDataReply(const QString& reply_path, const QString &reply_data, const QUrlQuery &reply_query);
+    virtual bool preHandleData(const QString& reply_path, const QString& data, const QUrlQuery &reply_query);
+    virtual void postHandleData(const QList<QJsonObject>& items, const QString &reply_path, const QUrlQuery &reply_query) = 0;
 
 private slots:
     void handleUserTokenUpdated();
-
     void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
 
 signals:
     void dataReceived(QList<QJsonObject> items, QString endpoint, QUrlQuery reply_query);
+    void readyChanged(bool ready);
 
 };
 

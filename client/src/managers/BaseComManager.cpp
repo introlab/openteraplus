@@ -67,7 +67,7 @@ void BaseComManager::doPost(const QString &path, const QString &post_data, const
 
     query.setPath(path);
 
-    doPost(query, post_data, use_token);
+    BaseComManager::doPost(query, post_data, use_token);
     emit posting(path, post_data);
 }
 

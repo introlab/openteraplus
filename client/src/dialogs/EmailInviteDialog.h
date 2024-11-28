@@ -24,6 +24,8 @@ public:
     void setFieldValues(const QHash<QString, QString> &fields);
 
 private slots:
+    void onEmailComReady(bool ready);
+
     void on_btnOk_clicked();
     void on_btnCopy_clicked();
     void on_btnSendLocalEmail_clicked();

@@ -2,10 +2,10 @@
 #define EMAILCOMMANAGER_H
 
 #include <QObject>
-#include "managers/BaseComManager.h"
+#include "services/BaseServiceComManager.h"
 #include "managers/ComManager.h"
 
-class EmailComManager : public BaseComManager
+class EmailComManager : public BaseServiceComManager
 {
     Q_OBJECT
 public:
@@ -13,17 +13,10 @@ public:
     ~EmailComManager();
 
 private:
-    ComManager*             m_comManager;
-
-    void connectSignals();
-    bool processNetworkReply(QNetworkReply* reply) override;
-    bool handleDataReply(const QString& reply_path, const QString &reply_data, const QUrlQuery &reply_query);
-
-private slots:
-    void handleUserTokenUpdated();
+    bool preHandleData(const QString& reply_path, const QString& data, const QUrlQuery &reply_query) override;
+    void postHandleData(const QList<QJsonObject>& items, const QString &reply_path, const QUrlQuery &reply_query) override;
 
 signals:
-    void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
     void emailTemplateReceived(QJsonObject email_template);
     void emailSendSuccess();
 

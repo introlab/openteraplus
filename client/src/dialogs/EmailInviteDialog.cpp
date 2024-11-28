@@ -55,6 +55,12 @@ void EmailInviteDialog::setFieldValues(const QHash<QString, QString> &fields)
     ui->wdgEmail->setVariable("$participant", m_participant->getName());
 }
 
+void EmailInviteDialog::onEmailComReady(bool ready)
+{
+    if (ready)
+        queryTemplate();
+}
+
 void EmailInviteDialog::on_btnOk_clicked()
 {
     accept();
@@ -151,7 +157,8 @@ void EmailInviteDialog::queryTemplate()
 
 void EmailInviteDialog::on_cmbLanguage_currentIndexChanged(int index)
 {
-    queryTemplate();
+    if (m_emailComManager->isReady())
+        queryTemplate();
     if (ui->cmbLanguage->currentData().toString() == "fr"){
         ui->txtSubject->setText(tr("Invitation - Séances via OpenTera"));
     }
@@ -162,6 +169,7 @@ void EmailInviteDialog::on_cmbLanguage_currentIndexChanged(int index)
 
 void EmailInviteDialog::connectSignals()
 {
+    connect(m_emailComManager, &EmailComManager::readyChanged, this, &EmailInviteDialog::onEmailComReady);
     connect(m_emailComManager, &EmailComManager::emailTemplateReceived, this, &EmailInviteDialog::processTemplateReply);
     connect(m_emailComManager, &EmailComManager::postResultsOK, this, &EmailInviteDialog::emailSentSuccess);
     connect(m_emailComManager, &EmailComManager::networkError, this, &EmailInviteDialog::handleNetworkError);
