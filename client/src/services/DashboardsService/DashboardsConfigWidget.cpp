@@ -42,6 +42,12 @@ DashboardsConfigWidget::~DashboardsConfigWidget()
 void DashboardsConfigWidget::refresh()
 {
     ui->frameDashboardButtons->hide();
+
+    if (!m_dashComManager->isReady()){
+        m_refreshRequested = true;
+        return;
+    }
+
     // Query dashboards
     QUrlQuery args;
     //args.addQueryItem(WEB_QUERY_LIST, "1");
@@ -58,6 +64,7 @@ void DashboardsConfigWidget::refresh()
 
 void DashboardsConfigWidget::connectSignals()
 {
+    connect(m_dashComManager, &DashboardsComManager::readyChanged, this, &DashboardsConfigWidget::dashComReady);
     connect(m_dashComManager, &DashboardsComManager::dashboardsReceived, this, &DashboardsConfigWidget::processDashboardsReply);
     connect(m_dashComManager, &DashboardsComManager::networkError, this, &DashboardsConfigWidget::handleNetworkError);
     connect(m_dashComManager, &DashboardsComManager::deleteResultsOK, this, &DashboardsConfigWidget::dashComDeleteOK);
@@ -269,6 +276,16 @@ void DashboardsConfigWidget::dashComPostOK(QString path, QString data)
         int id_dashboard = data_list.object()["id_dashboard"].toInt();
         if (m_listDashboards_items.contains(id_dashboard)){
             ui->lstDashboards->setCurrentItem(m_listDashboards_items[id_dashboard]);
+        }
+    }
+}
+
+void DashboardsConfigWidget::dashComReady(bool ready)
+{
+    if (ready){
+        if (m_refreshRequested){
+            m_refreshRequested = false;
+            refresh();
         }
     }
 }

@@ -28,6 +28,7 @@ private slots:
     void processTemplateReply(const QJsonObject email_template);
     void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
     void emailComPostOK(QString path, QString data);
+    void emailComReady(bool ready);
 
     void nextMessageWasShown(Message current_message);
 
@@ -49,6 +50,7 @@ private:
     QJsonObject     m_currentTemplate;
 
     bool m_loaded = false;
+    bool m_refreshRequested = false;
 
     void connectSignals();
 

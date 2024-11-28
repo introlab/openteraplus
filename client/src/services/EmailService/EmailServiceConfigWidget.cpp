@@ -33,7 +33,10 @@ EmailServiceConfigWidget::~EmailServiceConfigWidget()
 
 void EmailServiceConfigWidget::refresh()
 {
-    queryTemplate(ui->cmbTemplate->currentData().toString());
+    if (m_emailComManager->isReady())
+        queryTemplate(ui->cmbTemplate->currentData().toString());
+    else
+        m_refreshRequested = true;
 }
 
 void EmailServiceConfigWidget::setSiteId(const int &id_site)
@@ -98,6 +101,16 @@ void EmailServiceConfigWidget::emailComPostOK(QString path, QString data)
 
 }
 
+void EmailServiceConfigWidget::emailComReady(bool ready)
+{
+    if (ready){
+        if (m_refreshRequested){
+            m_refreshRequested = false;
+            refresh();
+        }
+    }
+}
+
 void EmailServiceConfigWidget::nextMessageWasShown(Message current_message)
 {
     if (current_message.getMessageType()==Message::MESSAGE_NONE){
@@ -119,6 +132,7 @@ void EmailServiceConfigWidget::templateBeingEdited(bool editing)
 
 void EmailServiceConfigWidget::connectSignals()
 {
+    connect(m_emailComManager, &EmailComManager::readyChanged, this, &EmailServiceConfigWidget::emailComReady);
     connect(m_emailComManager, &EmailComManager::emailTemplateReceived, this, &EmailServiceConfigWidget::processTemplateReply);
     connect(m_emailComManager, &EmailComManager::postResultsOK, this, &EmailServiceConfigWidget::emailComPostOK);
     connect(m_emailComManager, &EmailComManager::networkError, this, &EmailServiceConfigWidget::handleNetworkError);

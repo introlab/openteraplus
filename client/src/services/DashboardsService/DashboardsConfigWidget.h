@@ -38,6 +38,8 @@ private:
     int m_idProject;
     int m_idSite;
 
+    bool m_refreshRequested = false;
+
     void connectSignals();
     void queryDashboard(const int& id_dashboard);
     void clearDetails();
@@ -48,6 +50,7 @@ private slots:
     void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
     void dashComDeleteOK(QString path, int id);
     void dashComPostOK(QString path, QString data);
+    void dashComReady(bool ready);
 
     void nextMessageWasShown(Message current_message);
 
