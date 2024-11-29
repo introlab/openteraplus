@@ -8,6 +8,7 @@
 #include <QWebEngineLoadingInfo>
 
 #include "SurveyComManager.h"
+#include "libs/WebPageRequestInterceptor.h"
 
 namespace Ui {
 class SurveyEditorDialog;
@@ -31,12 +32,15 @@ private slots:
     void onPageLoadingChanged(const QWebEngineLoadingInfo &loadingInfo);
     void onPageLoadingProcess(int progress);
 
+    void onUserTokenUpdated();
+
 
 private:
     Ui::SurveyEditorDialog  *ui;
     SurveyComManager        *m_surveyComManager;
     QWebEngineView          *m_webView = nullptr;
     QWebEnginePage          *m_webPage = nullptr;
+    WebPageRequestInterceptor *m_requestInterceptor = nullptr;
     QString                 m_testTypeUuid;
 
     QMovie*                 m_loadingIcon;

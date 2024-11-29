@@ -5,7 +5,6 @@
 #include <QScreen>
 #include <QTextDocumentFragment>
 
-#include "Utils.h"
 #include "TeraSettings.h"
 
 WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
@@ -28,7 +27,7 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(ui->centralWidget);
     layout->addWidget(m_webView);
 
-    m_requestInterceptor = new WebLoginRequestInterceptor(this);
+    m_requestInterceptor = new WebPageRequestInterceptor(true, this);
 
     m_webPage = new QWebEnginePage(m_webView);
     m_webPage->setUrlRequestInterceptor(m_requestInterceptor);
@@ -232,34 +231,6 @@ QString WebLoginDialog::currentServerName()
     }
     return QString();
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-WebLoginRequestInterceptor::WebLoginRequestInterceptor(QObject *p) : QWebEngineUrlRequestInterceptor(p)
-{
-    // Cache OS information
-    m_osName = Utils::getOsName();
-    m_osVersion = Utils::getOsVersion();
-}
-
-WebLoginRequestInterceptor::~WebLoginRequestInterceptor()
-{
-
-}
-
-void WebLoginRequestInterceptor::interceptRequest(QWebEngineUrlRequestInfo &info)
-{
-    // Inject client name and version
-    info.setHttpHeader("X-Client-Name", QByteArray(OPENTERAPLUS_CLIENT_NAME));
-    info.setHttpHeader("X-Client-Version", QByteArray(OPENTERAPLUS_VERSION));
-    info.setHttpHeader("X-OS-Name", m_osName.toUtf8());
-    info.setHttpHeader("X-OS-Version", m_osVersion.toUtf8());
-
-    // Inject required language
-    QString localeString = QLocale().bcp47Name();
-    //qDebug() << "localeString : " << localeString;
-    info.setHttpHeader(QByteArray("Accept-Language"), localeString.toUtf8());
-}
-
 
 void WebLoginDialog::on_btnCancel_clicked()
 {

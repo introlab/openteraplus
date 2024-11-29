@@ -169,6 +169,8 @@ void BaseServiceComManager::handleUserTokenUpdated()
 {
     // Update token
     setCredentials(m_comManager->getCurrentToken());
+
+    emit userTokenUpdated();
 }
 
 void BaseServiceComManager::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)

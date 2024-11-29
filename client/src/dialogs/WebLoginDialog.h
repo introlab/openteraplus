@@ -4,6 +4,8 @@
 #include <QDialog>
 
 #include "managers/ConfigManagerClient.h"
+#include "libs/WebPageRequestInterceptor.h"
+
 #include <QWebEngineView>
 #include <QWebEnginePage>
 #include <QWebEngineSettings>
@@ -63,19 +65,6 @@ namespace Ui {
 class WebLoginDialog;
 }
 
-
-class WebLoginRequestInterceptor : public QWebEngineUrlRequestInterceptor {
-
-        // QWebEngineUrlRequestInterceptor interface
-public:
-    WebLoginRequestInterceptor(QObject *p = nullptr);
-    ~WebLoginRequestInterceptor();
-    void interceptRequest(QWebEngineUrlRequestInfo &info) override;
-private:
-    QString m_osName;
-    QString m_osVersion;
-};
-
 class WebLoginDialog : public QDialog
 {
     Q_OBJECT
@@ -119,7 +108,7 @@ private:
     Ui::WebLoginDialog          *ui;
     QWebEngineView              *m_webView = nullptr;
     QWebEnginePage              *m_webPage = nullptr;
-    WebLoginRequestInterceptor  *m_requestInterceptor = nullptr;
+    WebPageRequestInterceptor   *m_requestInterceptor = nullptr;
     ConfigManagerClient         *m_config = nullptr;
 
     bool                        m_showServers = false;

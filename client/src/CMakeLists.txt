@@ -36,11 +36,14 @@ set(headers
     data/TransferringFile.h
     data/UploadingFile.h
     data/IconMenuDelegate.h
+
     # Librairies
     libs/AudioVideoUtils.h
+    libs/WebPageRequestInterceptor.h
     libs/highlighter/languagedata.h
     libs/highlighter/qsourcehighliter.h
     libs/highlighter/qsourcehighliterthemes.h
+
     # Main Windows
     main/MainWindow.h
     # Managers
@@ -175,6 +178,7 @@ set(srcs
 
     # Librairies
     libs/AudioVideoUtils.cpp
+    libs/WebPageRequestInterceptor.cpp
     libs/highlighter/languagedata.cpp
     libs/highlighter/qsourcehighliter.cpp
     libs/highlighter/qsourcehighliterthemes.cpp

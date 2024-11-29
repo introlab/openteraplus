@@ -29,12 +29,17 @@ SurveyEditorDialog::SurveyEditorDialog(SurveyComManager *surveyComManager, const
     profile->setHttpCacheType(QWebEngineProfile::DiskHttpCache);
     qDebug() << "Cache Path = " << profile->cachePath();*/
 
+    m_requestInterceptor = new WebPageRequestInterceptor(false, this);
     m_webPage = new QWebEnginePage(m_webView);
+    m_webPage->setUrlRequestInterceptor(m_requestInterceptor);
 
     connect(m_webPage, &QWebEnginePage::certificateError, this, &SurveyEditorDialog::onCertificateError);
     connect(m_webPage, &QWebEnginePage::loadingChanged, this, &SurveyEditorDialog::onPageLoadingChanged);
     connect(m_webPage, &QWebEnginePage::loadProgress, this, &SurveyEditorDialog::onPageLoadingProcess);
     m_webView->setPage(m_webPage);
+
+    connect(m_surveyComManager, &SurveyComManager::userTokenUpdated, this, &SurveyEditorDialog::onUserTokenUpdated);
+
 }
 
 SurveyEditorDialog::~SurveyEditorDialog()
@@ -92,5 +97,11 @@ void SurveyEditorDialog::onPageLoadingChanged(const QWebEngineLoadingInfo &loadi
 void SurveyEditorDialog::onPageLoadingProcess(int progress)
 {
     ui->progressLoading->setValue(progress);
+}
+
+void SurveyEditorDialog::onUserTokenUpdated()
+{
+    qDebug() << "Changing user token in Survey Editor";
+    m_webPage->runJavaScript("set_user_token(\"" + m_surveyComManager->getCurrentToken() + "\");");
 }
 

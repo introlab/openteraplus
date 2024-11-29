@@ -22,6 +22,7 @@ ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
 
     // Initialize token refresher timer @ each 15 minutes
     m_tokenRefreshTimer.setInterval(1000*60*15);
+    //m_tokenRefreshTimer.setInterval(1000*60);
     m_tokenRefreshTimer.setSingleShot(false);
     connect(&m_tokenRefreshTimer, &QTimer::timeout, this, &ComManager::refreshUserToken);
 

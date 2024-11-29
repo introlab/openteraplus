@@ -41,6 +41,7 @@ private slots:
 signals:
     void dataReceived(QList<QJsonObject> items, QString endpoint, QUrlQuery reply_query);
     void readyChanged(bool ready);
+    void userTokenUpdated();
 
 };
 
