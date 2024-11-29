@@ -34,6 +34,7 @@ private slots:
     void processActiveSurveyReply(const QJsonObject survey);
     void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
     void surveyComManagerReady(bool ready);
+    void comManagerDeleteOK(QString path, int id);
 
     void nextMessageWasShown(Message current_message);
 
@@ -42,6 +43,8 @@ private slots:
     void on_txtName_textChanged(const QString &arg1);
     void on_lstData_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void on_btnEditSurvey_clicked();
+    void on_btnEdit_clicked();
+    void on_btnDelete_clicked();
 
 private:
     Ui::SurveyServiceConfigWidget *ui;
@@ -54,9 +57,10 @@ private:
     int             m_id_survey = 0;
     TeraData*       m_data = nullptr;
 
-    bool        m_refreshRequested = false;
+    bool            m_refreshRequested = false;
 
     QHash<QString, QListWidgetItem*>    m_listTestTypes_items; // Test type UUID mapping
+    QHash<int, QListWidgetItem*>        m_listTestTypes_items_ids; // Test type ids mapping
 
     void connectSignals();
     void queryTestTypes();

@@ -2,6 +2,7 @@
 #include "ui_SurveyServiceConfigWidget.h"
 
 #include "SurveyServiceWebAPI.h"
+#include "GlobalMessageBox.h"
 
 SurveyServiceConfigWidget::SurveyServiceConfigWidget(ComManager *comManager, int id_project, QWidget *parent)
     : QWidget(parent)
@@ -41,6 +42,7 @@ void SurveyServiceConfigWidget::refresh()
 void SurveyServiceConfigWidget::connectSignals()
 {
     connect(m_comManager, &ComManager::testTypesReceived, this, &SurveyServiceConfigWidget::processTestTypesReply);
+    connect(m_comManager, &ComManager::deleteResultsOK, this, &SurveyServiceConfigWidget::comManagerDeleteOK);
 
     connect(m_surveyComManager, &SurveyComManager::activeSurveyReceived, this, &SurveyServiceConfigWidget::processActiveSurveyReply);
     connect(m_surveyComManager, &SurveyComManager::networkError, this, &SurveyServiceConfigWidget::handleNetworkError);
@@ -54,7 +56,9 @@ void SurveyServiceConfigWidget::queryTestTypes()
     args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_id_project));
     m_comManager->doGet(WEB_TESTTYPEINFO_PATH, args);
 
+    ui->frameItemEditor->hide();
     m_listTestTypes_items.clear();
+    m_listTestTypes_items_ids.clear();
     ui->lstData->clear();
 }
 
@@ -63,7 +67,7 @@ void SurveyServiceConfigWidget::setEditMode(const bool &editing)
     ui->frameEditButton->setVisible(!editing && m_id_survey > 0);
     ui->frameSave->setVisible(editing);
 
-    ui->btnEditSurvey->setVisible(m_id_survey > 0);
+    ui->btnEditSurvey->setVisible(m_id_survey > 0 && !editing);
     ui->frameEditor->setEnabled(editing);
     ui->frameItemEditor->setVisible(editing || m_id_survey > 0);
     ui->frameItems->setEnabled(!editing);
@@ -73,10 +77,10 @@ void SurveyServiceConfigWidget::setEditMode(const bool &editing)
 
 void SurveyServiceConfigWidget::showSurveyEditor()
 {
-    if (m_surveyEditor){
+    /*if (m_surveyEditor){
         m_surveyEditor->deleteLater();
         m_surveyEditor = nullptr;
-    }
+    }*/
 
     if (!m_data)
         return;
@@ -84,8 +88,14 @@ void SurveyServiceConfigWidget::showSurveyEditor()
     if (m_data->isNew())
         return;
 
-    m_surveyEditor = new SurveyEditorDialog(m_surveyComManager, m_data->getUuid(), this);
-    connect(m_surveyEditor, &SurveyEditorDialog::finished, this, &SurveyServiceConfigWidget::surveyEditorFinished);
+    if (!m_surveyEditor){
+        m_surveyEditor = new SurveyEditorDialog(m_surveyComManager, m_data->getUuid(), this);
+        connect(m_surveyEditor, &SurveyEditorDialog::finished, this, &SurveyServiceConfigWidget::surveyEditorFinished);
+    }else{
+        m_surveyEditor->setCurrentTestTypeUuid(m_data->getUuid());
+    }
+    m_surveyEditor->loadEditor();
+
     m_surveyEditor->showMaximized();
 
 }
@@ -100,7 +110,7 @@ void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, 
             continue;
 
         QListWidgetItem* item = nullptr;
-        //int id_testtype = data.getId();
+        int id_testtype = data.getId();
         QString testtype_uuid = data.getUuid();
 
         // Check if we already have that item
@@ -115,6 +125,7 @@ void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, 
             item = new QListWidgetItem(tt_name, ui->lstData);
             item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_TESTTYPE)));
             m_listTestTypes_items[testtype_uuid] = item;
+            m_listTestTypes_items_ids[id_testtype] = item;
 
         }else{
             // Update name if needed
@@ -189,6 +200,31 @@ void SurveyServiceConfigWidget::surveyComManagerReady(bool ready)
     }
 }
 
+void SurveyServiceConfigWidget::comManagerDeleteOK(QString path, int id)
+{
+    if (path == WEB_TESTTYPEINFO_PATH){
+        // Remove test type info from list
+        QListWidgetItem* item = m_listTestTypes_items_ids.value(id);
+        if (!item){
+            // Not in list, nothing to do!
+            return;
+        }
+
+        if (m_data){
+            if (m_data->getId() == id){
+                delete m_data;
+                m_data = nullptr;
+                m_id_survey = 0;
+            }
+        }
+
+        QString uuid = m_listTestTypes_items.key(item);
+        m_listTestTypes_items.remove(uuid);
+        m_listTestTypes_items_ids.remove(id);
+        delete item;
+    }
+}
+
 void SurveyServiceConfigWidget::nextMessageWasShown(Message current_message)
 {
     if (current_message.getMessageType()==Message::MESSAGE_NONE){
@@ -200,8 +236,8 @@ void SurveyServiceConfigWidget::nextMessageWasShown(Message current_message)
 
 void SurveyServiceConfigWidget::surveyEditorFinished(int result)
 {
-    m_surveyEditor->deleteLater();
-    m_surveyEditor = nullptr;
+    /*m_surveyEditor->deleteLater();
+    m_surveyEditor = nullptr;*/
 }
 
 void SurveyServiceConfigWidget::on_btnNew_clicked()
@@ -218,6 +254,9 @@ void SurveyServiceConfigWidget::on_btnNew_clicked()
 void SurveyServiceConfigWidget::on_btnUndo_clicked()
 {
     setEditMode(false);
+    if (ui->lstData->currentItem()){
+        on_lstData_currentItemChanged(ui->lstData->currentItem(), nullptr);
+    }
 }
 
 
@@ -252,8 +291,15 @@ void SurveyServiceConfigWidget::on_lstData_currentItemChanged(QListWidgetItem *c
 {
     ui->btnDelete->setEnabled(current);
 
-    if (m_data)
+    if (m_data){
         delete m_data;
+        m_data = nullptr;
+    }
+
+    if (!current){
+        ui->frameItemEditor->hide();
+        return;
+    }
 
     m_data = new TeraData(TeraDataTypes::TERADATA_TESTTYPE);
     m_data->setUuid(m_listTestTypes_items.key(current));
@@ -268,5 +314,24 @@ void SurveyServiceConfigWidget::on_lstData_currentItemChanged(QListWidgetItem *c
 void SurveyServiceConfigWidget::on_btnEditSurvey_clicked()
 {
     showSurveyEditor();
+}
+
+void SurveyServiceConfigWidget::on_btnEdit_clicked()
+{
+    setEditMode(true);
+}
+
+
+void SurveyServiceConfigWidget::on_btnDelete_clicked()
+{
+    if (!ui->lstData->currentItem() || !m_data)
+        return;
+
+    GlobalMessageBox msg;
+    GlobalMessageBox::StandardButton result;
+    result = msg.showYesNo(tr("Supprimer") + "?", tr("Voulez-vous supprimer le questionnaire") + " '" + ui->lstData->currentItem()->text() + "' ?");
+    if (result == GlobalMessageBox::Yes){
+        m_comManager->doDelete(WEB_TESTTYPEINFO_PATH, m_data->getId());
+    }
 }
 

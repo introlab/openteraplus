@@ -2,6 +2,7 @@
 #define SURVEYEDITORDIALOG_H
 
 #include <QDialog>
+#include <QMovie>
 #include <QWebEngineView>
 #include <QWebEngineCertificateError>
 #include <QWebEngineLoadingInfo>
@@ -20,6 +21,7 @@ public:
     explicit SurveyEditorDialog(SurveyComManager *surveyComManager, const QString &test_type_uuid, QWidget *parent = nullptr);
     ~SurveyEditorDialog();
 
+    void setCurrentTestTypeUuid(const QString& test_type_uuid);
     void loadEditor();
 
 private slots:
@@ -27,6 +29,7 @@ private slots:
 
     void onCertificateError(const QWebEngineCertificateError &certificateError);
     void onPageLoadingChanged(const QWebEngineLoadingInfo &loadingInfo);
+    void onPageLoadingProcess(int progress);
 
 
 private:
@@ -35,6 +38,8 @@ private:
     QWebEngineView          *m_webView = nullptr;
     QWebEnginePage          *m_webPage = nullptr;
     QString                 m_testTypeUuid;
+
+    QMovie*                 m_loadingIcon;
 };
 
 #endif // SURVEYEDITORDIALOG_H
