@@ -459,6 +459,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::sessionTypesProjectsReceived;
     case TERADATA_SESSIONTYPESITE:
         return &ComManager::sessionTypesSitesReceived;
+    case TERADATA_SESSIONTYPESERVICE:
+        return &ComManager::sessionTypesServicesReceived;
     case TERADATA_SERVICE_CONFIG:
         return &ComManager::servicesConfigReceived;
     default:
@@ -706,6 +708,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_SESSIONTYPESITE:
         emit sessionTypesSitesReceived(items, reply_query);
+        break;
+    case TERADATA_SESSIONTYPESERVICE:
+        emit sessionTypesServicesReceived(items, reply_query);
         break;
     case TERADATA_SESSIONEVENT:
         emit sessionEventsReceived(items, reply_query);

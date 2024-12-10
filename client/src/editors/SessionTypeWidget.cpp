@@ -1,6 +1,8 @@
 #include "SessionTypeWidget.h"
 #include "ui_SessionTypeWidget.h"
 
+#include "GlobalMessageBox.h"
+
 SessionTypeWidget::SessionTypeWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
     ui(new Ui::SessionTypeWidget)
@@ -232,6 +234,32 @@ void SessionTypeWidget::updateProject(TeraData *project)
     item->setText(0, project->getName());
 }
 
+void SessionTypeWidget::updateSessionTypeService(TeraData *sts)
+{
+    int id_service = sts->getFieldValue("id_service").toInt();
+    QListWidgetItem* item;
+    if (m_lstServices_items.contains(id_service)){
+        item = m_lstServices_items[id_service];
+    }else{
+        item = new QListWidgetItem();
+        item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SERVICE)));
+        item->setCheckState(Qt::Unchecked);
+        ui->lstServices->addItem(item);
+
+        m_lstServices_items[id_service] = item;
+    }
+
+    QString service_name = sts->getFieldValue("service_name").toString();
+    if (!service_name.isEmpty())
+        item->setText(service_name);
+    int st_id = sts->getFieldValue("id_session_type").toInt();
+    if (st_id > 0){
+        item->setCheckState(Qt::Checked);
+    }else{
+        item->setCheckState(Qt::Unchecked);
+    }
+}
+
 void SessionTypeWidget::postSessionTypeSites()
 {
     QJsonDocument document;
@@ -371,6 +399,13 @@ void SessionTypeWidget::processProjectsReply(QList<TeraData> projects)
     ui->treeProjects->expandAll();
 }
 
+void SessionTypeWidget::processSessionTypesServicesReply(QList<TeraData> services)
+{
+    for(TeraData service:services){
+        updateSessionTypeService(&service);
+    }
+}
+
 
 void SessionTypeWidget::postResultReply(QString path)
 {
@@ -394,6 +429,8 @@ void SessionTypeWidget::connectSignals()
 
     connect(m_comManager, &ComManager::sitesReceived, this, &SessionTypeWidget::processSitesReply);
     connect(m_comManager, &ComManager::projectsReceived, this, &SessionTypeWidget::processProjectsReply);
+
+    connect(m_comManager, &ComManager::sessionTypesServicesReceived, this, &SessionTypeWidget::processSessionTypesServicesReply);
 
     connect(ui->btnProjects, & QPushButton::clicked, this, &SessionTypeWidget::btnSaveProjects_clicked);
 }
@@ -445,7 +482,6 @@ void SessionTypeWidget::on_tabNav_currentChanged(int index)
 {
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getId()));
-
     QWidget* current_tab = ui->tabNav->widget(index);
 
     if (current_tab == ui->tabProjects){
@@ -453,6 +489,13 @@ void SessionTypeWidget::on_tabNav_currentChanged(int index)
         if (m_treeSites_items.isEmpty() || m_treeSites_items.isEmpty()){
             args.addQueryItem(WEB_QUERY_WITH_SITES, "1");
             queryDataRequest(WEB_SESSIONTYPESITE_PATH, args);
+        }
+    }
+
+    if (current_tab == ui->tabServices){
+        if (m_lstServices_items.isEmpty()){
+            args.addQueryItem(WEB_QUERY_WITH_SERVICES, "1");
+            queryDataRequest(WEB_SESSIONTYPESERVICE_PATH, args);
         }
     }
 
@@ -465,3 +508,27 @@ void SessionTypeWidget::on_btnUpdateConfig_clicked()
     ui->wdgSessionType->setFieldValue("session_type_config", config_str);
     saveData();
 }
+
+void SessionTypeWidget::on_btnServices_clicked()
+{
+    QJsonDocument document;
+    QJsonObject base_obj;
+    QJsonArray services;
+
+    for(QListWidgetItem* item: std::as_const(m_lstServices_items)){
+        int service_id = m_lstServices_items.key(item);
+        if (item->checkState() == Qt::Checked){
+            QJsonObject data_obj;
+            data_obj.insert("id_service", service_id);
+            services.append(data_obj);
+        }
+    }
+
+    QJsonObject service_obj;
+    service_obj.insert("id_session_type", m_data->getId());
+    service_obj.insert("services", services);
+    base_obj.insert("session_type", service_obj);
+    document.setObject(base_obj);
+    postDataRequest(WEB_SESSIONTYPESERVICE_PATH, document.toJson());
+}
+

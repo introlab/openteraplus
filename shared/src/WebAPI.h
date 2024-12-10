@@ -27,6 +27,7 @@
 #define WEB_SESSIONTYPE_PATH                "/api/user/sessiontypes"
 #define WEB_SESSIONTYPEPROJECT_PATH         "/api/user/sessiontypes/projects"
 #define WEB_SESSIONTYPESITE_PATH            "/api/user/sessiontypes/sites"
+#define WEB_SESSIONTYPESERVICE_PATH         "/api/user/sessiontypes/services"
 #define WEB_SESSIONEVENT_PATH               "/api/user/sessions/events"
 #define WEB_SERVICEINFO_PATH                "/api/user/services"
 #define WEB_SERVICEPROJECTINFO_PATH         "/api/user/services/projects"

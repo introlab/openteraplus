@@ -1300,11 +1300,12 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
         if (!dynamic_cast<QPushButton*>(widget)) // Ignore push button in validation
             widget->setStyleSheet("");
     }else{
-        if (!dynamic_cast<QComboBox*>(widget)){
+        widget->setStyleSheet("background-color: #ffaaaa;");
+        /*if (!dynamic_cast<QComboBox*>(widget)){
            widget->setStyleSheet("background-color: #ffaaaa;");
         }else{
-           widget->setStyleSheet("background-color: #ffaaaa; color:black;");
-        }
+           widget->setStyleSheet("background-color: #ffaaaa; color:white;");
+        }*/
     }
     return rval;
 }

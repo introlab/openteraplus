@@ -91,7 +91,11 @@ QString Utils::getOsName()
 QString Utils::getOsVersion()
 {
     QOperatingSystemVersion os = QOperatingSystemVersion::current();
-    return QString::number(os.majorVersion()) + "." + QString::number(os.minorVersion()) + "." + QString::number(os.microVersion());
+    int major = os.majorVersion();
+    if (os.type() == QOperatingSystemVersion::Windows && os.microVersion() > 20000){
+        major = 11; // Windows 11 still labels itself as major version 10...
+    }
+    return QString::number(major) + "." + QString::number(os.minorVersion()) + "." + QString::number(os.microVersion());
 }
 
 void Utils::inStringUnicodeConverter(QString *str)
