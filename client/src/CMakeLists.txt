@@ -126,6 +126,7 @@ set(headers
     widgets/LogViewWidget.h
     widgets/SessionsListWidget.h
     widgets/StandardLoginWidget.h
+    widgets/TestInvitationsWidget.h
 
 )
 
@@ -262,6 +263,7 @@ set(srcs
     widgets/LogViewWidget.cpp
     widgets/SessionsListWidget.cpp
     widgets/StandardLoginWidget.cpp
+    widgets/TestInvitationsWidget.cpp
 )
 
 #Additional srcs not for WebAssembly
@@ -371,6 +373,7 @@ SET(uis
     widgets/LogViewWidget.ui
     widgets/SessionsListWidget.ui
     widgets/StandardLoginWidget.ui
+    widgets/TestInvitationsWidget.ui
 
     # Kits
     kit/KitConfigDialog.ui
