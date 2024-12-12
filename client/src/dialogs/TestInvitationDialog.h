@@ -24,6 +24,8 @@ private slots:
 
     void on_btnNext_clicked();
 
+    void on_btnOK_clicked();
+
 private:
     Ui::TestInvitationDialog *ui;
 
