@@ -5,6 +5,7 @@
 #include <QTableWidgetItem>
 
 #include "managers/ComManager.h"
+#include "dialogs/TestInvitationDialog.h"
 
 namespace Ui {
 class TestInvitationsWidget;
@@ -24,6 +25,9 @@ public:
 
 private slots:
     void processTestInvitationsReply(QList<TeraData> invitations);
+    void onTestInvitationDialogFinished(int result);
+
+    void on_btnInvite_clicked();
 
 private:
     typedef enum {
@@ -52,6 +56,8 @@ private:
     Ui::TestInvitationsWidget *ui;
     ComManager*                 m_comManager = nullptr;
     ViewMode                    m_currentView = VIEWMODE_UNKNOWN;
+
+    TestInvitationDialog*       m_invitationDialog = nullptr;
 
     QHash<int, QTableWidgetItem*>   m_listInvitations_items; // ID Invitation to QTableWidgetItem* mapping
 

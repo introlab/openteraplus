@@ -52,6 +52,12 @@ void TestInvitationsWidget::processTestInvitationsReply(QList<TeraData> invitati
     }
 }
 
+void TestInvitationsWidget::onTestInvitationDialogFinished(int result)
+{
+    m_invitationDialog->deleteLater();
+    m_invitationDialog = nullptr;
+}
+
 void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
 {
     int id_test_invitation = invitation->getId();
@@ -156,3 +162,15 @@ void TestInvitationsWidget::setViewMode(const ViewMode &mode)
         break;
     }
 }
+
+void TestInvitationsWidget::on_btnInvite_clicked()
+{
+    if (m_invitationDialog)
+        m_invitationDialog->deleteLater();
+
+    m_invitationDialog = new TestInvitationDialog(this);
+
+    connect(m_invitationDialog, &TestInvitationDialog::finished, this, &TestInvitationsWidget::onTestInvitationDialogFinished);
+    m_invitationDialog->show();
+}
+

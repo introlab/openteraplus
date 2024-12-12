@@ -64,6 +64,7 @@ set(headers
     dialogs/GeneratePasswordDialog.h
     dialogs/PasswordStrengthDialog.h
     dialogs/QRCodeDialog.h
+    dialogs/TestInvitationDialog.h
     dialogs/TransferProgressDialog.h
 
     # Editors
@@ -205,6 +206,7 @@ set(srcs
     dialogs/GeneratePasswordDialog.cpp
     dialogs/PasswordStrengthDialog.cpp
     dialogs/QRCodeDialog.cpp
+    dialogs/TestInvitationDialog.cpp
     dialogs/TransferProgressDialog.cpp
 
     # Editors
@@ -323,6 +325,7 @@ SET(uis
     dialogs/QRCodeDialog.ui
     dialogs/SessionLobbyDialog.ui
     dialogs/StartSessionDialog.ui
+    dialogs/TestInvitationDialog.ui
     dialogs/TransferProgressDialog.ui
     dialogs/WebLoginDialog.ui
 
