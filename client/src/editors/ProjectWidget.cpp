@@ -134,6 +134,8 @@ void ProjectWidget::connectSignals()
 
 void ProjectWidget::initUI()
 {
+    ui->wdgInvitations->setComManager(m_comManager);
+
     // Default display
     ui->tabNav->setCurrentIndex(0);
     ui->tabManageUsers->setCurrentIndex(0);
@@ -1265,6 +1267,12 @@ void ProjectWidget::on_tabNav_currentChanged(int index)
 
     if (current_tab == ui->tabServicesDetails){
         ui->tabManageServices->setCurrentIndex(0);
+    }
+
+    // Test invitations
+    if (current_tab == ui->tabInvitations){
+        if (m_data)
+            ui->wdgInvitations->loadForProject(m_data->getId());
     }
 
 }

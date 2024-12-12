@@ -305,6 +305,8 @@ QString TeraData::getDataTypeName(const TeraDataTypes &data_type)
         return "asset";
     case TERADATA_TEST:
         return "test";
+    case TERADATA_TESTINVITATION:
+        return "test_invitation";
     case TERADATA_LOG_LOGIN:
         return "log_login";
     case TERADATA_LOG_LOG:
@@ -393,6 +395,8 @@ QString TeraData::getDataTypeNameText(const TeraDataTypes &data_type)
         return tr("Donnée");
     case TERADATA_TEST:
         return tr("Évaluation");
+    case TERADATA_TESTINVITATION:
+        return tr("Invitation");
     case TERADATA_LOG_LOGIN:
         return tr("Journal: Connexion");
     case TERADATA_LOG_LOG:
@@ -441,6 +445,7 @@ TeraDataTypes TeraData::getDataTypeFromPath(const QString &path)
     if (path==WEB_TESTTYPEPROJECT_PATH)         return TERADATA_TESTTYPEPROJECT;
     if (path==WEB_TESTTYPESITE_PATH)            return TERADATA_TESTTYPESITE;
     if (path==WEB_TESTINFO_PATH)                return TERADATA_TEST;
+    if (path==WEB_TESTINVITATION_PATH)          return TERADATA_TESTINVITATION;
     if (path==WEB_LOGS_LOGINS_PATH)             return TERADATA_LOG_LOGIN;
     if (path==WEB_LOGS_LOGS_PATH)               return TERADATA_LOG_LOG;
 

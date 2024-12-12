@@ -126,6 +126,7 @@ signals:
     void testTypesProjectsReceived(QList<TeraData> ttp_list, QUrlQuery reply_query);
     void testTypesSitesReceived(QList<TeraData> tts_list, QUrlQuery reply_query);
     void testsReceived(QList<TeraData> tests_list, QUrlQuery reply_query);
+    void testInvitationsReceived(QList<TeraData> invitations, QUrlQuery reply_query);
     void projectsReceived(QList<TeraData> projects_list, QUrlQuery reply_query);
     void devicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
     void participantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);

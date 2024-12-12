@@ -41,6 +41,7 @@
 #define WEB_TESTTYPESITE_PATH               "/api/user/testtypes/sites"
 #define WEB_TESTTYPEPROJECT_PATH            "/api/user/testtypes/projects"
 #define WEB_TESTINFO_PATH                   "/api/user/tests"
+#define WEB_TESTINVITATION_PATH             "/api/user/tests/invitations"
 #define WEB_DISCONNECT_PATH                 "/api/user/disconnect"
 #define WEB_SERVERSETTINGS_PATH             "/api/user/server/settings"
 
