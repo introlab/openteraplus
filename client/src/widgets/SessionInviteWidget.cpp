@@ -393,6 +393,12 @@ bool SessionInviteWidget::isEditable() const
     return m_editable;
 }
 
+void SessionInviteWidget::setCountLimited(const bool &count_limited)
+{
+    m_countLimited = count_limited;
+    ui->frameCount->setVisible(m_countLimited);
+}
+
 QList<TeraData> SessionInviteWidget::getParticipantsInSession()
 {
     QList<TeraData> rval;
@@ -929,7 +935,7 @@ void SessionInviteWidget::setSearching(const bool &search)
 void SessionInviteWidget::on_btnInvite_clicked()
 {
     // Check if we are under the allowed maximum number of invitees in a session
-    if (getInviteesCount() + ui->lstInvitables->selectedItems().count() > MAX_INVITEES_IN_SESSION){
+    if (getInviteesCount() + ui->lstInvitables->selectedItems().count() > MAX_INVITEES_IN_SESSION && m_countLimited){
         GlobalMessageBox msgbox;
         msgbox.showError(tr("Nombre maximal d'invités atteint"), tr("Impossible d'ajouter ces invités à la séance: le nombre maximal de participants (") + QString::number(MAX_INVITEES_IN_SESSION) + ") " + tr("serait dépassé"));
         return;
@@ -995,7 +1001,7 @@ void SessionInviteWidget::on_treeInvitees_itemDoubleClicked(QTreeWidgetItem *ite
 {
     Q_UNUSED(item)
     Q_UNUSED(column)
-    if (!item->isDisabled())
+    if (!item->isDisabled() && item->parent())
         on_btnRemove_clicked();
 }
 

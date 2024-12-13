@@ -21,6 +21,8 @@ public:
     ~TestInvitationsWidget();
 
     void setComManager(ComManager* comMan);
+    void setCurrentTestTypes(const QList<TeraData>& test_types);
+
     void loadForProject(const int& id_project);
 
 private slots:
@@ -56,6 +58,8 @@ private:
     Ui::TestInvitationsWidget *ui;
     ComManager*                 m_comManager = nullptr;
     ViewMode                    m_currentView = VIEWMODE_UNKNOWN;
+
+    QList<TeraData>             m_testTypes;
 
     TestInvitationDialog*       m_invitationDialog = nullptr;
 

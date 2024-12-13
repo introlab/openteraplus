@@ -63,6 +63,7 @@ public:
 
     void setEditable(const bool &editable);
     bool isEditable() const;
+    void setCountLimited(const bool &count_limited);
 
     QList<TeraData> getParticipantsInSession();
     QList<TeraData> getUsersInSession();
@@ -112,6 +113,7 @@ private:
     bool m_searching;
     bool m_confirmRemove;
     bool m_editable;
+    bool m_countLimited = true;
 
     QHash<int, TeraData>    m_users; // id, data
     QHash<int, TeraData>    m_participants;

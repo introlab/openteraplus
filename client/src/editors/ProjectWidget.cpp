@@ -52,6 +52,7 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
 
     if (!dataIsNew()){
         queryServicesProject();
+        queryTestTypesProject();
     }
 
 }
@@ -135,6 +136,7 @@ void ProjectWidget::connectSignals()
 void ProjectWidget::initUI()
 {
     ui->wdgInvitations->setComManager(m_comManager);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), false);
 
     // Default display
     ui->tabNav->setCurrentIndex(0);
@@ -510,6 +512,7 @@ void ProjectWidget::updateParticipant(const TeraData *participant)
         item_last_online = new TableDateWidgetItem();
         item_last_online->setTextAlignment(Qt::AlignCenter);
         ui->tableSummary->setItem(current_row, 5, item_last_online);
+
     }
 
     // Set current values
@@ -713,6 +716,24 @@ void ProjectWidget::queryUsers()
     queryDataRequest(WEB_PROJECTACCESS_PATH, args);
 }
 
+void ProjectWidget::refreshSelectedTestTypes()
+{
+    QList<TeraData> test_types;
+    for (int i=0; i<ui->lstTestTypes->count(); i++){
+        QListWidgetItem* item = ui->lstTestTypes->item(i);
+        if (item->checkState() == Qt::Checked){
+            TeraData tt(TeraDataTypes::TERADATA_TESTTYPE);
+            tt.setName(item->text());
+            int id_test_type = m_listTestTypes_items.key(item);
+            tt.setId(id_test_type);
+            test_types.append(tt);
+        }
+    }
+
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), !test_types.isEmpty());
+    ui->wdgInvitations->setCurrentTestTypes(test_types);
+}
+
 void ProjectWidget::processFormsReply(QString form_type, QString data)
 {
     if (form_type == WEB_FORMS_QUERY_PROJECT){
@@ -760,7 +781,6 @@ void ProjectWidget::processParticipantsReply(QList<TeraData> participants, QUrlQ
     // Only update state for now...
     for (int i=0; i<participants.count(); i++){
         updateParticipant(&participants.at(i));
-
     }
 }
 
@@ -886,6 +906,7 @@ void ProjectWidget::processTestTypeProjectReply(QList<TeraData> ttp_list, QUrlQu
             }
         }
     }
+    refreshSelectedTestTypes();
 }
 
 void ProjectWidget::processTestTypeSiteReply(QList<TeraData> tts_list, QUrlQuery reply_query)

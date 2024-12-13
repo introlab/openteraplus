@@ -16,11 +16,25 @@ TestInvitationDialog::~TestInvitationDialog()
     delete ui;
 }
 
+void TestInvitationDialog::setTestTypes(const QList<TeraData> &test_types)
+{
+    ui->cmbTestType->clear();
+
+    for (TeraData tt: test_types){
+        ui->cmbTestType->addItem(tt.getName(), tt.getId());
+    }
+}
+
 void TestInvitationDialog::initUI()
 {
     ui->stackedPages->setCurrentIndex(0);
     ui->btnPrevious->setEnabled(false);
     ui->btnOK->setEnabled(false);
+
+    ui->dateExpiration->setDate(QDate::currentDate().addDays(30));
+
+    ui->widgetInvitees->setCountLimited(false);
+
 }
 
 void TestInvitationDialog::on_btnCancel_clicked()

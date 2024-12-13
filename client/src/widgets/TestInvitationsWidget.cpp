@@ -30,6 +30,11 @@ void TestInvitationsWidget::setComManager(ComManager *comMan)
 
 }
 
+void TestInvitationsWidget::setCurrentTestTypes(const QList<TeraData> &test_types)
+{
+    m_testTypes = test_types;
+}
+
 void TestInvitationsWidget::loadForProject(const int &id_project)
 {
     setViewMode(ViewMode::VIEWMODE_PROJECT);
@@ -169,6 +174,7 @@ void TestInvitationsWidget::on_btnInvite_clicked()
         m_invitationDialog->deleteLater();
 
     m_invitationDialog = new TestInvitationDialog(this);
+    m_invitationDialog->setTestTypes(m_testTypes);
 
     connect(m_invitationDialog, &TestInvitationDialog::finished, this, &TestInvitationsWidget::onTestInvitationDialogFinished);
     m_invitationDialog->show();

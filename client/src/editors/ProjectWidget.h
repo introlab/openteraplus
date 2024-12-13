@@ -77,8 +77,10 @@ private:
 
     QHash<int, QTableWidgetItem*>   m_tableUsers_items;
     QMap<int,  QTableWidgetItem*>   m_tableUserGroups_items;
-    QHash<int, QTableWidgetItem*>   m_tableParticipants_items;
     QHash<int, QListWidgetItem*>    m_listGroups_items;
+
+    QHash<int, QTableWidgetItem*>   m_tableParticipants_items;
+    QHash<int, TeraData>            m_participants;
 
     QHash<int, QTreeWidgetItem*>    m_treeDevices_items;
     QHash<int, QTreeWidgetItem*>    m_treeDevicesProjects_items;
@@ -118,6 +120,8 @@ private:
     void queryTestTypesProject();
     void queryUserGroupsProjectAccess();
     void queryUsers();
+
+    void refreshSelectedTestTypes();
 
     void addServiceTab(const TeraData& service_project);
 

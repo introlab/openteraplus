@@ -286,21 +286,21 @@ QTreeWidget::branch:open:has-children:has-siblings   {
 /*
     QLineEdit
 */
-QLineEdit, QSpinBox, QTextEdit, QDateTimeEdit, QTimeEdit{
+QLineEdit, QSpinBox, QTextEdit, QDateTimeEdit, QTimeEdit, QDateEdit{
     background-color: rgba(255,255,255,70%);
     color:black;
     min-height: 25px;
     padding-left: 5px;
 }
 
-QLineEdit:!enabled, QSpinBox:!enabled, QTextEdit:!enabled, QDateTimeEdit:!enabled, QTimeEdit:!enabled{
+QLineEdit:!enabled, QSpinBox:!enabled, QTextEdit:!enabled, QDateTimeEdit:!enabled, QTimeEdit:!enabled, QDateEdit:!enabled{
     background-color: rgba(0,0,0,0%);
     color:rgba(255,255,255,80%);
     padding-left: 0px;
 }
 
 
-QDateTimeEdit::down-arrow:!enabled, QDateTimeEdit::up-arrow:!enabled {
+QDateTimeEdit::down-arrow:!enabled, QDateTimeEdit::up-arrow:!enabled, QDateEdit::down-arrow:!enabled, QDateEdit::up-arrow:!enabled {
     image: none;
 }
 
