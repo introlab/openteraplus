@@ -240,9 +240,11 @@ void SessionInviteWidget::removeDeviceFromSession(const QString &device_uuid)
     emit removedDevice(device_uuid);
 }
 
-void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &participants)
+void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &participants, const bool &enabled_only)
 {
     foreach(TeraData participant, participants){
+        if (enabled_only && !participant.isEnabled())
+            continue;
         int id_participant = participant.getId();
         m_participants[id_participant] = participant;
         if (m_unknownParticipantUuidsInSession.contains(participant.getUuid())){
@@ -257,9 +259,11 @@ void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &partic
     ui->btnParticipants->setVisible(!m_participants.isEmpty());
 }
 
-void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users)
+void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users, const bool& enabled_only)
 {
     foreach(TeraData user, users){
+        if (enabled_only && !user.isEnabled())
+            continue;
         int id_user = user.getId();
         m_users[id_user] = user;
         if (m_unknownUserUuidsInSession.contains(user.getUuid())){
@@ -275,9 +279,11 @@ void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users)
     ui->btnUsers->setVisible(!m_users.isEmpty());
 }
 
-void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices)
+void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices, const bool &enabled_only)
 {
     foreach(TeraData device, devices){
+        if (enabled_only && !device.isEnabled())
+            continue;
         int id_device = device.getId();
         m_devices[id_device] = device;
         if (m_unknownDeviceUuidsInSession.contains(device.getUuid())){

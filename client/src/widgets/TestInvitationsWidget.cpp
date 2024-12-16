@@ -35,6 +35,21 @@ void TestInvitationsWidget::setCurrentTestTypes(const QList<TeraData> &test_type
     m_testTypes = test_types;
 }
 
+void TestInvitationsWidget::setInvitableDevices(QHash<int, TeraData> *devices)
+{
+    m_invitableDevices = devices;
+}
+
+void TestInvitationsWidget::setInvitableParticipants(QHash<int, TeraData> *participants)
+{
+    m_invitableParticipants = participants;
+}
+
+void TestInvitationsWidget::setInvitableUsers(QHash<int, TeraData> *users)
+{
+    m_invitableUsers = users;
+}
+
 void TestInvitationsWidget::loadForProject(const int &id_project)
 {
     setViewMode(ViewMode::VIEWMODE_PROJECT);
@@ -91,7 +106,7 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
         expiration_item = dynamic_cast<TableDateWidgetItem*>(ui->tableInvitations->item(row, COLUMN_EXPIRATION));
     }else{
         ui->tableInvitations->setRowCount(ui->tableInvitations->rowCount()+1);
-        int current_row = ui->tableInvitations->rowCount();
+        int current_row = ui->tableInvitations->rowCount()-1;
         user_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_USER)),"");
         ui->tableInvitations->setItem(current_row, COLUMN_USER, user_item);
         participant_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)),"");
@@ -122,14 +137,14 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
     }
     if (invitation->hasFieldName("test_invitation_device")){
         QJsonObject obj = invitation->getFieldValue("test_invitation_device").toJsonObject();
-        device_item->setText(invitation->getFieldValue("device_name").toString());
+        device_item->setText(obj["device_name"].toString());
     }
     if (invitation->hasFieldName("test_invitation_test_type")){
         QJsonObject obj = invitation->getFieldValue("test_invitation_test_type").toJsonObject();
-        device_item->setText(invitation->getFieldValue("test_type_name").toString());
+        test_type_item->setText(obj["test_type_name"].toString());
     }
     limit_item->setText(invitation->getFieldValue("test_invitation_max_count").toString());
-    count_item->setText(invitation->getFieldValue("test_invitation_usage").toString());
+    count_item->setText(invitation->getFieldValue("test_invitation_count").toString());
     key_item->setText(invitation->getFieldValue("test_invitation_key").toString());
     creation_item->setDate(invitation->getFieldValue("test_invitation_creation_date"));
     expiration_item->setDate(invitation->getFieldValue("test_invitation_expiration_date"));
@@ -173,8 +188,11 @@ void TestInvitationsWidget::on_btnInvite_clicked()
     if (m_invitationDialog)
         m_invitationDialog->deleteLater();
 
-    m_invitationDialog = new TestInvitationDialog(this);
+    m_invitationDialog = new TestInvitationDialog(m_comManager, this);
     m_invitationDialog->setTestTypes(m_testTypes);
+    m_invitationDialog->setInvitableDevices(m_invitableDevices);
+    m_invitationDialog->setInvitableParticipants(m_invitableParticipants);
+    m_invitationDialog->setInvitableUsers(m_invitableUsers);
 
     connect(m_invitationDialog, &TestInvitationDialog::finished, this, &TestInvitationsWidget::onTestInvitationDialogFinished);
     m_invitationDialog->show();

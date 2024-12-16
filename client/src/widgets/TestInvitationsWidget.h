@@ -22,6 +22,9 @@ public:
 
     void setComManager(ComManager* comMan);
     void setCurrentTestTypes(const QList<TeraData>& test_types);
+    void setInvitableDevices(QHash<int, TeraData>* devices);
+    void setInvitableParticipants(QHash<int, TeraData>* participants);
+    void setInvitableUsers(QHash<int, TeraData>* users);
 
     void loadForProject(const int& id_project);
 
@@ -55,15 +58,19 @@ private:
     }
     ViewMode;
 
-    Ui::TestInvitationsWidget *ui;
-    ComManager*                 m_comManager = nullptr;
-    ViewMode                    m_currentView = VIEWMODE_UNKNOWN;
+    Ui::TestInvitationsWidget       *ui;
+    ComManager*                     m_comManager = nullptr;
+    ViewMode                        m_currentView = VIEWMODE_UNKNOWN;
 
-    QList<TeraData>             m_testTypes;
+    QList<TeraData>                 m_testTypes;
 
-    TestInvitationDialog*       m_invitationDialog = nullptr;
+    TestInvitationDialog*           m_invitationDialog = nullptr;
 
     QHash<int, QTableWidgetItem*>   m_listInvitations_items; // ID Invitation to QTableWidgetItem* mapping
+
+    QHash<int, TeraData>*           m_invitableDevices = nullptr;
+    QHash<int, TeraData>*           m_invitableParticipants = nullptr;
+    QHash<int, TeraData>*           m_invitableUsers = nullptr;
 
     void updateInvitation(const TeraData* invitation);
     void setViewMode(const ViewMode &mode);

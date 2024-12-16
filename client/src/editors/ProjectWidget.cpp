@@ -136,6 +136,8 @@ void ProjectWidget::connectSignals()
 void ProjectWidget::initUI()
 {
     ui->wdgInvitations->setComManager(m_comManager);
+    ui->wdgInvitations->setInvitableParticipants(&m_participants);
+
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), false);
 
     // Default display
@@ -505,6 +507,7 @@ void ProjectWidget::updateParticipant(const TeraData *participant)
         item_first_session = new TableDateWidgetItem();
         item_first_session->setTextAlignment(Qt::AlignCenter);
         ui->tableSummary->setItem(current_row, 3, item_first_session);
+
         item_last_session = new TableDateWidgetItem();
         item_last_session->setTextAlignment(Qt::AlignCenter);
         ui->tableSummary->setItem(current_row, 4, item_last_session);
@@ -516,6 +519,8 @@ void ProjectWidget::updateParticipant(const TeraData *participant)
     }
 
     // Set current values
+    m_participants[participant->getId()] = *participant;
+
     item_name->setText(participant->getName());
     QString status;
     if (participant->isEnabled()){
@@ -937,6 +942,7 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
     if (stats.hasFieldName("participants")){
         ui->tableSummary->clearContents();
         m_tableParticipants_items.clear();
+        m_participants.clear();
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
@@ -1001,6 +1007,7 @@ void ProjectWidget::deleteDataReply(QString path, int del_id)
         if (m_tableParticipants_items.contains(del_id)){
             ui->tableSummary->removeRow(m_tableParticipants_items[del_id]->row());
             m_tableParticipants_items.remove(del_id);
+            m_participants.remove(del_id);
         }
     }
 

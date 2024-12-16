@@ -2,6 +2,7 @@
 #define TESTINVITATIONDIALOG_H
 
 #include <QDialog>
+#include "managers/ComManager.h"
 #include "TeraData.h"
 
 namespace Ui {
@@ -13,10 +14,13 @@ class TestInvitationDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TestInvitationDialog(QWidget *parent = nullptr);
+    explicit TestInvitationDialog(ComManager* comMan, QWidget *parent = nullptr);
     ~TestInvitationDialog();
 
     void setTestTypes(const QList<TeraData>& test_types);
+    void setInvitableDevices(QHash<int, TeraData>* devices);
+    void setInvitableParticipants(QHash<int, TeraData>* participants);
+    void setInvitableUsers(QHash<int, TeraData>* users);
 
 private slots:
     void on_btnCancel_clicked();
@@ -29,6 +33,7 @@ private slots:
 
 private:
     Ui::TestInvitationDialog *ui;
+    ComManager* m_comManager;
 
     void initUI();
 };

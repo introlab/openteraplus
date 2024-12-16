@@ -45,9 +45,9 @@ public:
     void showAvailableInvitees(const bool &show, const bool &hide_button=false);
     void showOnlineFilter(const bool &show);
 
-    void setAvailableParticipants(const QList<TeraData> &participants);
-    void setAvailableUsers(const QList<TeraData> &users);
-    void setAvailableDevices(const QList<TeraData> &devices);
+    void setAvailableParticipants(const QList<TeraData> &participants, const bool& enabled_only = false);
+    void setAvailableUsers(const QList<TeraData> &users, const bool& enabled_only = false);
+    void setAvailableDevices(const QList<TeraData> &devices, const bool& enabled_only = false);
 
     bool hasAvailableParticipants() const;
     bool hasAvailableDevices() const;
