@@ -44,7 +44,7 @@ WebLoginDialog::WebLoginDialog(ConfigManagerClient *config, QWidget *parent)
     connect(m_webPage, &QWebEnginePage::certificateError, this, &WebLoginDialog::onCertificateError);
     connect(m_webPage, &QWebEnginePage::loadingChanged, this, &WebLoginDialog::onLoginPageLoadingChanged);
 
-    connect(myObject, &WebLoginSharedObject::loginSuccess, this, &WebLoginDialog::loginSuccess);
+    connect(myObject, &WebLoginSharedObject::loginSuccess, this, &WebLoginDialog::onLoginSuccess);
     connect(myObject, &WebLoginSharedObject::loginFailure, this, &WebLoginDialog::onLoginFailed);
     connect(myObject, &WebLoginSharedObject::mfaCheckInProgress, this, &WebLoginDialog::onMfaCheckInProgress);
     connect(myObject, &WebLoginSharedObject::mfaSetupInProgress, this, &WebLoginDialog::onMfaSetupInProgress);
@@ -172,6 +172,17 @@ void WebLoginDialog::onLoginPageLoadingChanged(const QWebEngineLoadingInfo &load
         ui->lblLoading->hide();
         ui->btnRetry->show();
     }
+}
+
+void WebLoginDialog::onLoginSuccess(const QString &token, const QString &websocket_url, const QString &user_uuid)
+{
+    ui->lblLoading->show();
+    ui->btnRetry->hide();
+    ui->lblLoading->setText(tr("Bienvenue!"));
+    ui->lblError->hide();
+    ui->frameLoginMessages->show();
+    ui->stackedLogins->hide();
+    emit loginSuccess(token, websocket_url, user_uuid);
 }
 
 void WebLoginDialog::onMfaSetupInProgress()

@@ -208,6 +208,16 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
 
         m_listInvitations_items[id_test_invitation] = user_item;
     }
+    QColor invite_color = Qt::white;
+    int max_count = invitation->getFieldValue("test_invitation_max_count").toInt();
+    int current_count = invitation->getFieldValue("test_invitation_count").toInt();
+    if (max_count > 0 && current_count >= max_count){
+        invite_color = Qt::green;
+    }else{
+        if (invitation->getFieldValue("test_invitation_expiration_date").toDate() < QDate::currentDate()){
+            invite_color = Qt::red;
+        }
+    }
 
     if (invitation->hasFieldName("test_invitation_user")){
         QJsonObject obj = invitation->getFieldValue("test_invitation_user").toJsonObject();
@@ -225,6 +235,17 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
         QJsonObject obj = invitation->getFieldValue("test_invitation_test_type").toJsonObject();
         test_type_item->setText(obj["test_type_name"].toString());
     }
+
+    user_item->setForeground(invite_color);
+    participant_item->setForeground(invite_color);
+    device_item->setForeground(invite_color);
+    test_type_item->setForeground(invite_color);
+    limit_item->setForeground(invite_color);
+    count_item->setForeground(invite_color);
+    key_item->setForeground(invite_color);
+    creation_item->setForeground(invite_color);
+    expiration_item->setForeground(invite_color);
+
     limit_item->setText(invitation->getFieldValue("test_invitation_max_count").toString());
     count_item->setText(invitation->getFieldValue("test_invitation_count").toString());
     key_item->setText(invitation->getFieldValue("test_invitation_key").toString());
@@ -315,6 +336,34 @@ void TestInvitationsWidget::on_deleteInvitation()
 
 void TestInvitationsWidget::on_editInvitation()
 {
+    int id_test_invitation = -1;
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    if (action_btn){
+        // Select row according to the invitation id of that button
+        id_test_invitation = action_btn->property("id_test_invitation").toInt();
+        QTableWidgetItem* invitation_item = m_listInvitations_items[id_test_invitation];
+        if (invitation_item)
+            ui->tableInvitations->selectRow(invitation_item->row());
+    }
+
+    if (ui->tableInvitations->selectionModel()->selectedRows().count() > 1)
+        return;
+
+    if (id_test_invitation <= 0){
+        QTableWidgetItem* base_item = ui->tableInvitations->item(ui->tableInvitations->selectionModel()->selectedRows().first().row(), 0);
+        id_test_invitation = m_listInvitations_items.key(base_item);
+    }
+
+    if (m_invitationDialog)
+        m_invitationDialog->deleteLater();
+
+    m_invitationDialog = new TestInvitationDialog(m_comManager, this);
+    m_invitationDialog->setTestTypes(m_testTypes);
+    m_invitationDialog->setCurrentData(&m_invitations[id_test_invitation]);
+
+    connect(m_invitationDialog, &TestInvitationDialog::finished, this, &TestInvitationsWidget::onTestInvitationDialogFinished);
+    m_invitationDialog->show();
 
 }
 
@@ -333,7 +382,7 @@ void TestInvitationsWidget::on_copyInvitation()
             ui->tableInvitations->selectRow(invitation_item->row());
     }
 
-    if (ui->tableInvitations->selectedRanges().count() > 1)
+    if (ui->tableInvitations->selectionModel()->selectedRows().count() > 1)
         return;
 
     if (id_test_invitation <= 0){
@@ -357,7 +406,7 @@ void TestInvitationsWidget::on_viewInvitation()
             ui->tableInvitations->selectRow(invitation_item->row());
     }
 
-    if (ui->tableInvitations->selectedRanges().count() > 1)
+    if (ui->tableInvitations->selectionModel()->selectedRows().count() > 1)
         return;
 
     if (id_test_invitation <= 0){
@@ -387,14 +436,11 @@ void TestInvitationsWidget::connectSignals()
 void TestInvitationsWidget::on_tableInvitations_itemSelectionChanged()
 {
     bool has_selection = !ui->tableInvitations->selectedItems().empty();
-    int selected_count = 0;
-    if (ui->tableInvitations->selectedRanges().count() > 0)
-        selected_count = ui->tableInvitations->selectedRanges().count();
-    qDebug() << selected_count;
+    int selected_count = ui->tableInvitations->selectionModel()->selectedRows().count();
 
     ui->btnCopyLink->setEnabled(selected_count == 1);
     ui->btnDeleteInvitation->setEnabled(has_selection);
-    ui->btnEdit->setEnabled(has_selection);
+    ui->btnEdit->setEnabled(selected_count == 1);
     ui->btnOpen->setEnabled(selected_count == 1);
 }
 

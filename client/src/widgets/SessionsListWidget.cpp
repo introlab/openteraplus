@@ -763,11 +763,16 @@ void SessionsListWidget::updateSession(const TeraData *session, const bool &auto
 
     // Resume session
     if (btnResume){
+        btnResume->hide();
         if (session->hasFieldName("session_start_datetime")){
             QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
-            btnResume->setVisible(session_date.date() == QDate::currentDate());
-        }else{
-            btnResume->hide();
+            // Check if session type can be resumed
+            int id_session_type = session->getFieldValue("id_session_type").toInt();
+            TeraData* session_type = m_ids_session_types[id_session_type];
+            if (session_type){
+                if (session_type->getFieldValue("session_type_online").toBool() == true)
+                    btnResume->setVisible(session_date.date() == QDate::currentDate());
+            }
         }
     }
 

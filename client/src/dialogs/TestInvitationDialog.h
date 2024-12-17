@@ -18,6 +18,8 @@ public:
     ~TestInvitationDialog();
 
     void setTestTypes(const QList<TeraData>& test_types);
+    void setCurrentData(TeraData* data);
+
     void setInvitableDevices(QHash<int, TeraData>* devices);
     void setInvitableParticipants(QHash<int, TeraData>* participants);
     void setInvitableUsers(QHash<int, TeraData>* users);
@@ -34,6 +36,7 @@ private slots:
 private:
     Ui::TestInvitationDialog *ui;
     ComManager* m_comManager;
+    TeraData*   m_data = nullptr;
 
     void initUI();
 };

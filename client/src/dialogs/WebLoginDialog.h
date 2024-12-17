@@ -91,6 +91,7 @@ private slots:
     void onCertificateError(const QWebEngineCertificateError &certificateError);
     void onServerSelected(int index);
     void onLoginPageLoadingChanged(const QWebEngineLoadingInfo &loadingInfo);
+    void onLoginSuccess(const QString &token, const QString &websocket_url, const QString &user_uuid);
 
     void onMfaSetupInProgress();
     void onMfaCheckInProgress();
