@@ -26,7 +26,7 @@
       <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+      <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
      </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
@@ -92,6 +92,135 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
+      <widget class="QPushButton" name="btnDeleteInvitation">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>Supprimer</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resources/TeraClient.qrc">
+         <normaloff>:/icons/delete_old.png</normaloff>:/icons/delete_old.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>Éditer</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resources/TeraClient.qrc">
+         <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCopyLink">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>Copier le lien de l'invitation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resources/TeraClient.qrc">
+         <normaloff>:/icons/copy.png</normaloff>:/icons/copy.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnOpen">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>Ouvrir l'invitation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resources/TeraClient.qrc">
+         <normaloff>:/icons/search.png</normaloff>:/icons/search.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Orientation::Horizontal</enum>
@@ -116,7 +245,7 @@
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="text">
-        <string>Inviter</string>
+        <string>Inviter...</string>
        </property>
        <property name="icon">
         <iconset resource="../../resources/TeraClient.qrc">

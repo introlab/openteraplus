@@ -478,6 +478,7 @@ QString TeraData::getPathForDataType(const TeraDataTypes &data_type)
     if (data_type==TERADATA_TEST)               return WEB_TESTINFO_PATH;
     if (data_type==TERADATA_LOG_LOGIN)          return WEB_LOGS_LOGINS_PATH;
     if (data_type==TERADATA_LOG_LOG)            return WEB_LOGS_LOGS_PATH;
+    if (data_type==TERADATA_TESTINVITATION)     return WEB_TESTINVITATION_PATH;
 
     LOG_ERROR("Unknown path for data_type: " + getDataTypeName(data_type), "TeraData::getPathForDataType");
 

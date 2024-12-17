@@ -1,6 +1,12 @@
+#include <QToolButton>
+#include <QClipboard>
+#include <QDesktopServices>
+
 #include "TestInvitationsWidget.h"
 #include "TableNumberWidgetItem.h"
 #include "TableDateWidgetItem.h"
+#include "GlobalMessageBox.h"
+
 #include "ui_TestInvitationsWidget.h"
 
 TestInvitationsWidget::TestInvitationsWidget(QWidget *parent)
@@ -8,6 +14,10 @@ TestInvitationsWidget::TestInvitationsWidget(QWidget *parent)
     , ui(new Ui::TestInvitationsWidget)
 {
     ui->setupUi(this);
+
+    initUI();
+
+    connectSignals();
 }
 
 TestInvitationsWidget::TestInvitationsWidget(ComManager *comMan, QWidget *parent)
@@ -27,6 +37,7 @@ void TestInvitationsWidget::setComManager(ComManager *comMan)
     m_comManager = comMan;
 
     connect(m_comManager, &ComManager::testInvitationsReceived, this, &TestInvitationsWidget::processTestInvitationsReply);
+    connect(m_comManager, &ComManager::deleteResultsOK, this, &TestInvitationsWidget::deleteDataReply);
 
 }
 
@@ -54,7 +65,9 @@ void TestInvitationsWidget::loadForProject(const int &id_project)
 {
     setViewMode(ViewMode::VIEWMODE_PROJECT);
     ui->tableInvitations->clearContents();
+    ui->tableInvitations->setRowCount(0);
     m_listInvitations_items.clear();
+    m_invitations.clear();
 
     if (m_comManager){
         QUrlQuery args;
@@ -69,6 +82,23 @@ void TestInvitationsWidget::processTestInvitationsReply(QList<TeraData> invitati
 {
     for(int i=0; i<invitations.count(); i++){
         updateInvitation(&invitations[i]);
+    }
+
+    ui->tableInvitations->resizeColumnsToContents();
+}
+
+void TestInvitationsWidget::deleteDataReply(QString path, int id)
+{
+    if (id==0)
+        return;
+
+    if (path == WEB_TESTINVITATION_PATH){
+        // An invitation got deleted - check if it affects the current display
+        if (m_listInvitations_items.contains(id)){
+            ui->tableInvitations->removeRow(m_listInvitations_items[id]->row());
+            m_listInvitations_items.remove(id);
+            m_invitations.remove(id);
+        }
     }
 }
 
@@ -116,15 +146,67 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
         test_type_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_TESTTYPE)),"");
         ui->tableInvitations->setItem(current_row, COLUMN_TESTTYPE, test_type_item);
         limit_item = new TableNumberWidgetItem();
+        limit_item->setTextAlignment(Qt::AlignCenter);
         ui->tableInvitations->setItem(current_row, COLUMN_LIMIT, limit_item);
         count_item = new TableNumberWidgetItem();
+        count_item->setTextAlignment(Qt::AlignCenter);
         ui->tableInvitations->setItem(current_row, COLUMN_COUNT, count_item);
         key_item = new QTableWidgetItem();
         ui->tableInvitations->setItem(current_row, COLUMN_KEY, key_item);
         creation_item = new TableDateWidgetItem();
         ui->tableInvitations->setItem(current_row, COLUMN_CREATION, creation_item);
         expiration_item = new TableDateWidgetItem();
+        expiration_item->setShowTime(false);
+        expiration_item->setTextAlignment(Qt::AlignCenter);
         ui->tableInvitations->setItem(current_row, COLUMN_EXPIRATION, expiration_item);
+
+        // Create action buttons
+        QFrame* action_frame = new QFrame();
+        QHBoxLayout* layout = new QHBoxLayout();
+        layout->setContentsMargins(0,0,0,0);
+        layout->setSpacing(1);
+        layout->setAlignment(Qt::AlignLeft);
+        action_frame->setLayout(layout);
+
+        QToolButton* btnCopy = new QToolButton(action_frame);
+        btnCopy->setIcon(m_copyIcon);
+        btnCopy->setProperty("id_test_invitation", id_test_invitation);
+        btnCopy->setCursor(Qt::PointingHandCursor);
+        btnCopy->setMaximumWidth(32);
+        btnCopy->setToolTip(tr("Copier le lien"));
+        connect(btnCopy, &QToolButton::clicked, this, &TestInvitationsWidget::on_copyInvitation);
+        layout->addWidget(btnCopy);
+
+        QToolButton* btnView = new QToolButton(action_frame);
+        btnView->setIcon(m_viewIcon);
+        btnView->setProperty("id_test_invitation", id_test_invitation);
+        btnView->setCursor(Qt::PointingHandCursor);
+        btnView->setMaximumWidth(32);
+        btnView->setToolTip(tr("Ouvrir le lien"));
+        connect(btnView, &QToolButton::clicked, this, &TestInvitationsWidget::on_viewInvitation);
+        layout->addWidget(btnView);
+
+        QToolButton* btnEdit = new QToolButton(action_frame);
+        btnEdit->setIcon(m_editIcon);
+        btnEdit->setProperty("id_test_invitation", id_test_invitation);
+        btnEdit->setCursor(Qt::PointingHandCursor);
+        btnEdit->setMaximumWidth(32);
+        btnEdit->setToolTip(tr("Éditer"));
+        connect(btnEdit, &QToolButton::clicked, this, &TestInvitationsWidget::on_editInvitation);
+        layout->addWidget(btnEdit);
+
+        QToolButton* btnDelete = new QToolButton(action_frame);
+        btnDelete->setIcon(m_deleteIcon);
+        btnDelete->setProperty("id_test_invitation", id_test_invitation);
+        btnDelete->setCursor(Qt::PointingHandCursor);
+        btnDelete->setMaximumWidth(32);
+        btnDelete->setToolTip(tr("Supprimer"));
+        connect(btnDelete, &QToolButton::clicked, this, &TestInvitationsWidget::on_deleteInvitation);
+        layout->addWidget(btnDelete);
+
+        ui->tableInvitations->setCellWidget(current_row, COLUMN_ACTIONS, action_frame);
+
+        m_listInvitations_items[id_test_invitation] = user_item;
     }
 
     if (invitation->hasFieldName("test_invitation_user")){
@@ -149,6 +231,7 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
     creation_item->setDate(invitation->getFieldValue("test_invitation_creation_date"));
     expiration_item->setDate(invitation->getFieldValue("test_invitation_expiration_date"));
 
+    m_invitations[id_test_invitation] = *invitation;
 }
 
 void TestInvitationsWidget::setViewMode(const ViewMode &mode)
@@ -196,5 +279,122 @@ void TestInvitationsWidget::on_btnInvite_clicked()
 
     connect(m_invitationDialog, &TestInvitationDialog::finished, this, &TestInvitationsWidget::onTestInvitationDialogFinished);
     m_invitationDialog->show();
+}
+
+void TestInvitationsWidget::on_deleteInvitation()
+{
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    if (action_btn){
+        // Select row according to the invitation id of that button
+        int id_test_invitation = action_btn->property("id_test_invitation").toInt();
+        QTableWidgetItem* invitation_item = m_listInvitations_items[id_test_invitation];
+        if (invitation_item)
+            ui->tableInvitations->selectRow(invitation_item->row());
+    }
+
+    if (ui->tableInvitations->selectedItems().empty())
+        return;
+
+    GlobalMessageBox diag;
+    QMessageBox::StandardButton answer = QMessageBox::No;
+    if (ui->tableInvitations->selectionModel()->selectedRows().count() == 1){
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer cette invitation?"));
+    }else{
+        answer = diag.showYesNo(tr("Suppression?"), tr("Êtes-vous sûrs de vouloir supprimer toutes les invitations sélectionnées?"));
+    }
+
+    if (answer == QMessageBox::Yes){
+        // We must delete!
+        foreach(QModelIndex selected_row, ui->tableInvitations->selectionModel()->selectedRows()){
+            QTableWidgetItem* base_item = ui->tableInvitations->item(selected_row.row(), 0);
+            m_comManager->doDelete(WEB_TESTINVITATION_PATH, m_listInvitations_items.key(base_item));
+        }
+    }
+}
+
+void TestInvitationsWidget::on_editInvitation()
+{
+
+}
+
+void TestInvitationsWidget::on_copyInvitation()
+{
+
+    int id_test_invitation = -1;
+    QClipboard* clipboard = QApplication::clipboard();
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    if (action_btn){
+        // Select row according to the invitation id of that button
+        id_test_invitation = action_btn->property("id_test_invitation").toInt();
+        QTableWidgetItem* invitation_item = m_listInvitations_items[id_test_invitation];
+        if (invitation_item)
+            ui->tableInvitations->selectRow(invitation_item->row());
+    }
+
+    if (ui->tableInvitations->selectedRanges().count() > 1)
+        return;
+
+    if (id_test_invitation <= 0){
+        QTableWidgetItem* base_item = ui->tableInvitations->item(ui->tableInvitations->selectionModel()->selectedRows().first().row(), 0);
+        id_test_invitation = m_listInvitations_items.key(base_item);
+    }
+
+    clipboard->setText(m_invitations[id_test_invitation].getFieldValue("test_invitation_url").toString(), QClipboard::Clipboard);
+}
+
+void TestInvitationsWidget::on_viewInvitation()
+{
+    int id_test_invitation = -1;
+    // Check if the sender is a QToolButton (from the action column)
+    QToolButton* action_btn = dynamic_cast<QToolButton*>(sender());
+    if (action_btn){
+        // Select row according to the invitation id of that button
+        id_test_invitation = action_btn->property("id_test_invitation").toInt();
+        QTableWidgetItem* invitation_item = m_listInvitations_items[id_test_invitation];
+        if (invitation_item)
+            ui->tableInvitations->selectRow(invitation_item->row());
+    }
+
+    if (ui->tableInvitations->selectedRanges().count() > 1)
+        return;
+
+    if (id_test_invitation <= 0){
+        QTableWidgetItem* base_item = ui->tableInvitations->item(ui->tableInvitations->selectionModel()->selectedRows().first().row(), 0);
+        id_test_invitation = m_listInvitations_items.key(base_item);
+    }
+    QDesktopServices::openUrl(m_invitations[id_test_invitation].getFieldValue("test_invitation_url").toString());
+}
+
+void TestInvitationsWidget::initUI()
+{
+    // Load table icons
+    m_deleteIcon = QIcon(":/icons/delete_old.png");
+    m_viewIcon = QIcon(":/icons/search.png");
+    m_editIcon = QIcon(":/icons/edit.png");
+    m_copyIcon = QIcon(":/icons/copy.png");
+}
+
+void TestInvitationsWidget::connectSignals()
+{
+    connect(ui->btnDeleteInvitation, &QPushButton::clicked, this, &TestInvitationsWidget::on_deleteInvitation);
+    connect(ui->btnEdit, &QPushButton::clicked, this, &TestInvitationsWidget::on_editInvitation);
+    connect(ui->btnCopyLink, &QPushButton::clicked, this, &TestInvitationsWidget::on_copyInvitation);
+    connect(ui->btnOpen, &QPushButton::clicked, this, &TestInvitationsWidget::on_viewInvitation);
+}
+
+void TestInvitationsWidget::on_tableInvitations_itemSelectionChanged()
+{
+    bool has_selection = !ui->tableInvitations->selectedItems().empty();
+    int selected_count = 0;
+    if (ui->tableInvitations->selectedRanges().count() > 0)
+        selected_count = ui->tableInvitations->selectedRanges().count();
+    qDebug() << selected_count;
+
+    ui->btnCopyLink->setEnabled(selected_count == 1);
+    ui->btnDeleteInvitation->setEnabled(has_selection);
+    ui->btnEdit->setEnabled(has_selection);
+    ui->btnOpen->setEnabled(selected_count == 1);
 }
 

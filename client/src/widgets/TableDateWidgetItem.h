@@ -16,9 +16,11 @@ class TableDateWidgetItem : public QTableWidgetItem
         bool operator<(const QTableWidgetItem &other) const override;
 
         void setDate(const QVariant &date_var);
+        void setShowTime(const bool& show_time);
 
     private:
-        QDateTime m_date;
+        QDateTime   m_date;
+        bool        m_showTime = true;
 };
 
 

@@ -30,9 +30,18 @@ public:
 
 private slots:
     void processTestInvitationsReply(QList<TeraData> invitations);
+    void deleteDataReply(QString path, int id);
+
     void onTestInvitationDialogFinished(int result);
 
     void on_btnInvite_clicked();
+
+    void on_deleteInvitation();
+    void on_editInvitation();
+    void on_copyInvitation();
+    void on_viewInvitation();
+
+    void on_tableInvitations_itemSelectionChanged();
 
 private:
     typedef enum {
@@ -67,10 +76,20 @@ private:
     TestInvitationDialog*           m_invitationDialog = nullptr;
 
     QHash<int, QTableWidgetItem*>   m_listInvitations_items; // ID Invitation to QTableWidgetItem* mapping
+    QHash<int, TeraData>            m_invitations;
 
     QHash<int, TeraData>*           m_invitableDevices = nullptr;
     QHash<int, TeraData>*           m_invitableParticipants = nullptr;
     QHash<int, TeraData>*           m_invitableUsers = nullptr;
+
+    // Icons are defined here (speed up load)
+    QIcon m_deleteIcon;
+    QIcon m_viewIcon;
+    QIcon m_editIcon;
+    QIcon m_copyIcon;
+
+    void initUI();
+    void connectSignals();
 
     void updateInvitation(const TeraData* invitation);
     void setViewMode(const ViewMode &mode);

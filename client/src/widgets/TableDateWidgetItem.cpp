@@ -31,6 +31,14 @@ bool TableDateWidgetItem::operator<(const QTableWidgetItem &other) const
 void TableDateWidgetItem::setDate(const QVariant &date_var)
 {
     m_date = date_var.toDateTime().toLocalTime();
-    setText(m_date.toString("dd-MM-yyyy hh:mm:ss"));
+    if (m_showTime)
+        setText(m_date.toString("dd-MM-yyyy hh:mm:ss"));
+    else
+        setText(m_date.toString("dd-MM-yyyy"));
+}
+
+void TableDateWidgetItem::setShowTime(const bool &show_time)
+{
+    m_showTime = show_time;
 }
 
