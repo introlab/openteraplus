@@ -130,6 +130,7 @@ private:
     bool validateData() override;
 
     bool isSiteAdmin();
+    bool hasAssociatedService(const QString& service_key);
 
 
 };

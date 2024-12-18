@@ -61,6 +61,11 @@ void TestInvitationsWidget::setInvitableUsers(QHash<int, TeraData> *users)
     m_invitableUsers = users;
 }
 
+void TestInvitationsWidget::setEnableEmail(const bool &enable_email)
+{
+    m_enableEmails = enable_email;
+}
+
 void TestInvitationsWidget::loadForProject(const int &id_project)
 {
     setViewMode(ViewMode::VIEWMODE_PROJECT);
@@ -297,6 +302,7 @@ void TestInvitationsWidget::on_btnInvite_clicked()
     m_invitationDialog->setInvitableDevices(m_invitableDevices);
     m_invitationDialog->setInvitableParticipants(m_invitableParticipants);
     m_invitationDialog->setInvitableUsers(m_invitableUsers);
+    m_invitationDialog->setEnableEmail(m_enableEmails);
 
     connect(m_invitationDialog, &TestInvitationDialog::finished, this, &TestInvitationsWidget::onTestInvitationDialogFinished);
     m_invitationDialog->show();
@@ -361,6 +367,7 @@ void TestInvitationsWidget::on_editInvitation()
     m_invitationDialog = new TestInvitationDialog(m_comManager, this);
     m_invitationDialog->setTestTypes(m_testTypes);
     m_invitationDialog->setCurrentData(&m_invitations[id_test_invitation]);
+    m_invitationDialog->setEnableEmail(m_enableEmails);
 
     connect(m_invitationDialog, &TestInvitationDialog::finished, this, &TestInvitationsWidget::onTestInvitationDialogFinished);
     m_invitationDialog->show();

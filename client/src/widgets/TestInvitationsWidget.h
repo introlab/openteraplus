@@ -25,6 +25,7 @@ public:
     void setInvitableDevices(QHash<int, TeraData>* devices);
     void setInvitableParticipants(QHash<int, TeraData>* participants);
     void setInvitableUsers(QHash<int, TeraData>* users);
+    void setEnableEmail(const bool& enable_email);
 
     void loadForProject(const int& id_project);
 
@@ -87,6 +88,8 @@ private:
     QIcon m_viewIcon;
     QIcon m_editIcon;
     QIcon m_copyIcon;
+
+    bool m_enableEmails = false;
 
     void initUI();
     void connectSignals();

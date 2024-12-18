@@ -703,6 +703,20 @@ bool ProjectWidget::isSiteAdmin()
     }
 }
 
+bool ProjectWidget::hasAssociatedService(const QString &service_key)
+{
+    int id_service = m_services_keys.key(service_key, -1);
+    if (id_service <= 0)
+        return false;
+
+    if (m_listServicesProjects_items.contains(id_service)){
+        if (m_listServicesProjects_items[id_service]->checkState() == Qt::Checked)
+            return true;
+    }
+
+    return false;
+}
+
 void ProjectWidget::queryUserGroupsProjectAccess()
 {
     QUrlQuery args;
@@ -862,6 +876,9 @@ void ProjectWidget::processServiceProjectsReply(QList<TeraData> services_project
             }
         }
     }
+
+    // Update invitations widget
+    ui->wdgInvitations->setEnableEmail(hasAssociatedService("EmailService"));
 }
 
 void ProjectWidget::processSessionTypeProjectReply(QList<TeraData> stp_list, QUrlQuery reply_query)
