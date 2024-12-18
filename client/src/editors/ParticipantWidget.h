@@ -58,6 +58,8 @@ private:
     QMap<int, QWidget*>             m_services_tabs;
     bool                            m_allowFileTransfers;   // Allow to attach files to a session?
 
+    QList<TeraData>                 m_testTypes;
+
     QRCodeDialog*                   m_diag_qr = nullptr;
 #ifndef OPENTERA_WEBASSEMBLY
     SessionLobbyDialog*             m_sessionLobby;
@@ -90,6 +92,7 @@ private slots:
     void processDeviceProjectsReply(QList<TeraData> device_projects);
     void processDeviceParticipantsReply(QList<TeraData> device_participants);
     void processParticipantsReply(QList<TeraData> participants);
+    void processTestTypesReply(QList<TeraData> test_types, QUrlQuery reply_query);
     void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
     void processStatsReply(TeraData stats, QUrlQuery reply_query);
 

@@ -28,6 +28,7 @@ public:
     void setEnableEmail(const bool& enable_email);
 
     void loadForProject(const int& id_project);
+    void loadForParticipant(TeraData *participant);
 
 private slots:
     void processTestInvitationsReply(QList<TeraData> invitations);
@@ -73,6 +74,7 @@ private:
     ViewMode                        m_currentView = VIEWMODE_UNKNOWN;
 
     QList<TeraData>                 m_testTypes;
+    TeraData*                       m_currentData = nullptr;
 
     TestInvitationDialog*           m_invitationDialog = nullptr;
 

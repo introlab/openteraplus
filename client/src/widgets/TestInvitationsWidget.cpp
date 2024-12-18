@@ -83,6 +83,24 @@ void TestInvitationsWidget::loadForProject(const int &id_project)
     }
 }
 
+void TestInvitationsWidget::loadForParticipant(TeraData* participant)
+{
+    m_currentData = participant;
+    setViewMode(ViewMode::VIEWMODE_PARTICIPANT);
+    ui->tableInvitations->clearContents();
+    ui->tableInvitations->setRowCount(0);
+    m_listInvitations_items.clear();
+    m_invitations.clear();
+
+    if (m_comManager){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_PARTICIPANT, QString::number(participant->getId()));
+        args.addQueryItem(WEB_QUERY_WITH_URLS, "1");
+        args.addQueryItem(WEB_QUERY_FULL, "1");
+        m_comManager->doGet(WEB_TESTINVITATION_PATH, args);
+    }
+}
+
 void TestInvitationsWidget::processTestInvitationsReply(QList<TeraData> invitations)
 {
     for(int i=0; i<invitations.count(); i++){
@@ -302,6 +320,15 @@ void TestInvitationsWidget::on_btnInvite_clicked()
     m_invitationDialog->setInvitableDevices(m_invitableDevices);
     m_invitationDialog->setInvitableParticipants(m_invitableParticipants);
     m_invitationDialog->setInvitableUsers(m_invitableUsers);
+    if (m_currentView == VIEWMODE_PARTICIPANT){
+        if (m_currentData){
+            QHash<int, TeraData> invitable_participant;
+            invitable_participant[m_currentData->getId()] = *m_currentData;
+            m_invitationDialog->setInvitableParticipants(&invitable_participant);
+            m_invitationDialog->addParticipantsToInvitation(QStringList() << m_currentData->getUuid());
+            m_invitationDialog->setEnableInviteesList(false);
+        }
+    }
     m_invitationDialog->setEnableEmail(m_enableEmails);
 
     connect(m_invitationDialog, &TestInvitationDialog::finished, this, &TestInvitationsWidget::onTestInvitationDialogFinished);

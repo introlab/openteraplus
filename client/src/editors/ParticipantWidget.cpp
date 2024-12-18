@@ -64,6 +64,12 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
         queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
 
+        // Query test types if not a new participant
+        args.clear();
+        args.addQueryItem(WEB_QUERY_LIST, "1");
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+        queryDataRequest(WEB_TESTTYPEINFO_PATH, args);
+
     }
 
     // Default display
@@ -128,6 +134,7 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &ParticipantWidget::processDeviceParticipantsReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &ParticipantWidget::processParticipantsReply);
     connect(m_comManager, &ComManager::servicesReceived, this, &ParticipantWidget::processServicesReply);
+    connect(m_comManager, &ComManager::testTypesReceived, this, &ParticipantWidget::processTestTypesReply);
     connect(m_comManager, &ComManager::statsReceived, this, &ParticipantWidget::processStatsReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
 
@@ -239,15 +246,19 @@ void ParticipantWidget::initUI()
                                 "participant_username", "participant_password"};
     ui->wdgParticipant->hideFields(ignore_fields);
 
-    // Hide device & service tabs by default
+    // Hide device, service and invitation tabs by default
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), false);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), false);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), false);
     ui->tabServicesDetails->setTabVisible(ui->tabServicesDetails->indexOf(ui->tabServiceParams), false);
 
     // Configure log view
     ui->wdgLogins->setComManager(m_comManager);
     ui->wdgLogins->setViewMode(LogViewWidget::VIEW_LOGINS_PARTICIPANT, m_data->getUuid());
     ui->wdgLogins->setUuidName(m_data->getUuid(), m_data->getName());
+
+    // Configure invitation widget
+    ui->wdgInvitations->setComManager(m_comManager);
 
 }
 
@@ -536,6 +547,24 @@ void ParticipantWidget::processParticipantsReply(QList<TeraData> participants)
     }
 }
 
+void ParticipantWidget::processTestTypesReply(QList<TeraData> test_types, QUrlQuery reply_query)
+{
+    if (dataIsNew())
+        return;
+
+    if (!reply_query.hasQueryItem(WEB_QUERY_ID_PROJECT))
+        return;
+
+    if (reply_query.queryItemValue(WEB_QUERY_ID_PROJECT) == m_data->getFieldValue("id_project").toString()){
+        // For us!
+        m_testTypes.clear();
+        m_testTypes = test_types;
+        ui->wdgInvitations->setCurrentTestTypes(m_testTypes);
+        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), !m_testTypes.isEmpty());
+    }
+
+}
+
 void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)
 {
     if (!reply_query.hasQueryItem(WEB_QUERY_ID_PROJECT))
@@ -576,6 +605,7 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
     }
 
     ui->btnEmailWeb->setVisible(has_email_service);
+    ui->wdgInvitations->setEnableEmail(has_email_service);
 
     // Find and select VideoRehab by default in the combobox
     int default_index = ui->cmbServices->findData("VideoRehabService");
@@ -1149,6 +1179,13 @@ void ParticipantWidget::on_tabNav_currentChanged(int index)
         if (ui->wdgServiceConfig->layout()->count() == 0){
             ServiceConfigWidget* service_config_widget = new ServiceConfigWidget(m_comManager, m_data->getIdFieldName(), m_data->getId(), ui->wdgServiceConfig);
             ui->wdgServiceConfig->layout()->addWidget(service_config_widget);
+        }
+    }
+
+    // Test invitations
+    if (current_tab == ui->tabInvitations){
+        if (m_data){
+            ui->wdgInvitations->loadForParticipant(m_data);
         }
     }
 }

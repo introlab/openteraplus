@@ -220,10 +220,10 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
          </sizepolicy>
         </property>
         <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
+         <enum>QFrame::Shape::StyledPanel</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
+         <enum>QFrame::Shadow::Raised</enum>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <property name="leftMargin">
@@ -241,7 +241,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
          <item>
           <spacer name="horizontalSpacer_6">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -367,7 +367,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="iconSize">
       <size>
@@ -430,10 +430,10 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
           <item>
            <widget class="QFrame" name="frameActive">
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::Shape::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
              <property name="spacing">
@@ -457,9 +457,9 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                 <number>6</number>
                </property>
                <property name="sizeConstraint">
-                <enum>QLayout::SetDefaultConstraint</enum>
+                <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                </property>
-               <item alignment="Qt::AlignLeft">
+               <item alignment="Qt::AlignmentFlag::AlignLeft">
                 <widget class="QCheckBox" name="chkWebAccess">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -503,7 +503,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                   <property name="sizeConstraint">
-                   <enum>QLayout::SetMaximumSize</enum>
+                   <enum>QLayout::SizeConstraint::SetMaximumSize</enum>
                   </property>
                   <property name="leftMargin">
                    <number>4</number>
@@ -599,7 +599,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                      </size>
                     </property>
                     <property name="toolButtonStyle">
-                     <enum>Qt::ToolButtonTextBesideIcon</enum>
+                     <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
                     </property>
                    </widget>
                   </item>
@@ -637,7 +637,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                      </size>
                     </property>
                     <property name="toolButtonStyle">
-                     <enum>Qt::ToolButtonTextBesideIcon</enum>
+                     <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
                     </property>
                    </widget>
                   </item>
@@ -705,7 +705,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                   <item>
                    <spacer name="horizontalSpacer_4">
                     <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                     <enum>Qt::Orientation::Horizontal</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -725,7 +725,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                <property name="spacing">
                 <number>6</number>
                </property>
-               <item alignment="Qt::AlignLeft">
+               <item alignment="Qt::AlignmentFlag::AlignLeft">
                 <widget class="QCheckBox" name="chkLogin">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -750,10 +750,10 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                <item>
                 <widget class="QFrame" name="frameParticipantLogin">
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::Shape::StyledPanel</enum>
                  </property>
                  <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
+                  <enum>QFrame::Shadow::Raised</enum>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_7">
                   <property name="leftMargin">
@@ -857,7 +857,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                      </size>
                     </property>
                     <property name="echoMode">
-                     <enum>QLineEdit::Password</enum>
+                     <enum>QLineEdit::EchoMode::Password</enum>
                     </property>
                     <property name="placeholderText">
                      <string>Mot de passe</string>
@@ -886,14 +886,14 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
                      </size>
                     </property>
                     <property name="toolButtonStyle">
-                     <enum>Qt::ToolButtonTextBesideIcon</enum>
+                     <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_2">
                     <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                     <enum>Qt::Orientation::Horizontal</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -964,7 +964,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
        <item>
         <widget class="QTabWidget" name="tabInfosDetails">
          <property name="tabPosition">
-          <enum>QTabWidget::West</enum>
+          <enum>QTabWidget::TabPosition::West</enum>
          </property>
          <property name="currentIndex">
           <number>0</number>
@@ -989,7 +989,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
              <item>
               <spacer name="horizontalSpacer_5">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -1130,6 +1130,20 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabInvitations">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/test.png</normaloff>:/icons/test.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Invitations</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="TestInvitationsWidget" name="wdgInvitations" native="true"/>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tabDevices">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
@@ -1147,7 +1161,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             <string>Appareil(s) assigné(s)</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <set>Qt::AlignmentFlag::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -1163,16 +1177,16 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
             </sizepolicy>
            </property>
            <property name="editTriggers">
-            <set>QAbstractItemView::NoEditTriggers</set>
+            <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
            </property>
            <property name="dragDropMode">
-            <enum>QAbstractItemView::NoDragDrop</enum>
+            <enum>QAbstractItemView::DragDropMode::NoDragDrop</enum>
            </property>
            <property name="defaultDropAction">
-            <enum>Qt::IgnoreAction</enum>
+            <enum>Qt::DropAction::IgnoreAction</enum>
            </property>
            <property name="selectionMode">
-            <enum>QAbstractItemView::SingleSelection</enum>
+            <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
            </property>
            <property name="iconSize">
             <size>
@@ -1190,7 +1204,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
           <item>
            <spacer name="verticalSpacer">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1265,7 +1279,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
           <item>
            <spacer name="verticalSpacer_2">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1287,7 +1301,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
              <string>Appareils disponibles</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -1300,13 +1314,13 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
              </sizepolicy>
             </property>
             <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
+             <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
             </property>
             <property name="dragDropMode">
-             <enum>QAbstractItemView::NoDragDrop</enum>
+             <enum>QAbstractItemView::DragDropMode::NoDragDrop</enum>
             </property>
             <property name="defaultDropAction">
-             <enum>Qt::IgnoreAction</enum>
+             <enum>Qt::DropAction::IgnoreAction</enum>
             </property>
             <property name="iconSize">
              <size>
@@ -1333,7 +1347,7 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
        <item>
         <widget class="QTabWidget" name="tabServicesDetails">
          <property name="tabPosition">
-          <enum>QTabWidget::West</enum>
+          <enum>QTabWidget::TabPosition::West</enum>
          </property>
          <property name="currentIndex">
           <number>0</number>
@@ -1371,6 +1385,12 @@ QCalendarWidget QSpinBox::down-arrow { width:16px; height:16px; }
    <class>TeraForm</class>
    <extends>QWidget</extends>
    <header>TeraForm.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TestInvitationsWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/TestInvitationsWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

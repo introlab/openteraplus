@@ -139,7 +139,7 @@ void SessionInviteWidget::addParticipantToSession(const QString &participant_uui
             m_participantsInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
 
         // Update item display
-       //updateItem(m_participants[data->getId()]);
+       updateItem(m_participants[data->getId()]);
     }
 }
 

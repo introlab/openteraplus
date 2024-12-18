@@ -1,6 +1,9 @@
 #include "TestInvitationDialog.h"
 #include "services/EmailService/EmailServiceWebAPI.h"
 #include "ui_TestInvitationDialog.h"
+
+#include <QStyledItemDelegate>
+
 #include "WebAPI.h"
 
 TestInvitationDialog::TestInvitationDialog(ComManager *comMan, QWidget *parent)
@@ -32,6 +35,14 @@ void TestInvitationDialog::setTestTypes(const QList<TeraData> &test_types)
     for (TeraData tt: test_types){
         ui->cmbTestType->addItem(tt.getName(), tt.getId());
     }
+}
+
+void TestInvitationDialog::setCurrentSession(const TeraData *session)
+{
+    ui->lblSessionName->setText(session->getName());
+    m_currentSessionId = session->getId();
+    ui->lblSession->show();
+    ui->lblSessionName->show();
 }
 
 void TestInvitationDialog::setCurrentData(TeraData *data)
@@ -69,6 +80,17 @@ void TestInvitationDialog::setEnableEmail(const bool &enable_email)
     ui->chkInviteEmail->setVisible(m_enableEmails);
 }
 
+void TestInvitationDialog::setEnableInviteesList(const bool &enable)
+{
+    if (m_data)
+        return; // Don't change anything if we already have some invitation data
+
+    if (!enable)
+        ui->stackedPages->removeWidget(ui->pageTargets);
+    else
+        ui->stackedPages->addWidget(ui->pageTargets);
+}
+
 void TestInvitationDialog::setInvitableDevices(QHash<int, TeraData> *devices)
 {
     if (devices)
@@ -91,6 +113,27 @@ void TestInvitationDialog::setInvitableUsers(QHash<int, TeraData> *users)
         ui->widgetInvitees->setAvailableUsers(users->values(), true);
     else
         ui->widgetInvitees->setAvailableUsers(QList<TeraData>());
+}
+
+void TestInvitationDialog::addDevicesToInvitation(const QStringList &device_uuids)
+{
+    for(const QString& uuid: device_uuids){
+        ui->widgetInvitees->addDeviceToSession(uuid);
+    }
+}
+
+void TestInvitationDialog::addParticipantsToInvitation(const QStringList &participant_uuids)
+{
+    for(const QString& uuid: participant_uuids){
+        ui->widgetInvitees->addParticipantToSession(uuid);
+    }
+}
+
+void TestInvitationDialog::addUsersToInvitation(const QStringList &user_uuids)
+{
+    for(const QString& uuid: user_uuids){
+        ui->widgetInvitees->addUserToSession(uuid);
+    }
 }
 
 void TestInvitationDialog::processTestInvitationsReply(QList<TeraData> invitations)
@@ -125,9 +168,13 @@ void TestInvitationDialog::emailSentError(QNetworkReply::NetworkError error, QSt
 
 void TestInvitationDialog::initUI()
 {
+    ui->cmbTestType->setItemDelegate(new QStyledItemDelegate(ui->cmbTestType));
+
     ui->stackedPages->setCurrentIndex(0);
     ui->lblCount->hide();
     ui->numCount->hide();
+    ui->lblSession->hide();
+    ui->lblSessionName->hide();
     ui->btnPrevious->setEnabled(false);
     ui->btnOK->setVisible(false);
     ui->btnDone->setVisible(false);

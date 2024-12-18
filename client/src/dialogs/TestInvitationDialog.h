@@ -19,12 +19,18 @@ public:
     ~TestInvitationDialog();
 
     void setTestTypes(const QList<TeraData>& test_types);
+    void setCurrentSession(const TeraData* session);
     void setCurrentData(TeraData* data);
     void setEnableEmail(const bool& enable_email);
+    void setEnableInviteesList(const bool& enable);
 
     void setInvitableDevices(QHash<int, TeraData>* devices);
     void setInvitableParticipants(QHash<int, TeraData>* participants);
     void setInvitableUsers(QHash<int, TeraData>* users);
+
+    void addDevicesToInvitation(const QStringList &device_uuids);
+    void addParticipantsToInvitation(const QStringList &participant_uuids);
+    void addUsersToInvitation(const QStringList &user_uuids);
 
 private slots:
     void processTestInvitationsReply(QList<TeraData> invitations);
@@ -47,6 +53,7 @@ private:
     bool        m_enableEmails = false;
 
     QList<TeraData> m_pendingInvitations;
+    int         m_currentSessionId = 0;
 
     void initUI();
     void processNextEmail();

@@ -34,7 +34,7 @@
      </property>
      <widget class="QWidget" name="pageTestType">
       <layout class="QGridLayout" name="gridLayout">
-       <item row="5" column="1">
+       <item row="6" column="1">
         <widget class="QCheckBox" name="chkInviteEmail">
          <property name="text">
           <string>Envoyer les invitations automatiquement par courriel</string>
@@ -51,7 +51,10 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="4" column="1">
+        <widget class="QSpinBox" name="numCount"/>
+       </item>
+       <item row="3" column="0">
         <widget class="QLabel" name="lblMaxUsage">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -75,6 +78,21 @@
        <item row="1" column="1">
         <widget class="QComboBox" name="cmbTestType"/>
        </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="lblCount">
+         <property name="font">
+          <font>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Usage actuel</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="lblTestTypes">
          <property name="sizePolicy">
@@ -96,7 +114,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="3" column="1">
         <widget class="QSpinBox" name="numUsage">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -116,9 +134,12 @@
          <property name="maximum">
           <number>1000</number>
          </property>
+         <property name="value">
+          <number>1</number>
+         </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <widget class="QDateEdit" name="dateExpiration">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -150,7 +171,7 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QLabel" name="lblExpiration">
          <property name="font">
           <font>
@@ -165,7 +186,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="7" column="1">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
@@ -178,23 +199,27 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="lblCount">
+       <item row="2" column="0">
+        <widget class="QLabel" name="lblSession">
          <property name="font">
           <font>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>Usage actuel</string>
+          <string>Séance</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QSpinBox" name="numCount"/>
+       <item row="2" column="1">
+        <widget class="QLabel" name="lblSessionName">
+         <property name="text">
+          <string>(Séance)</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
