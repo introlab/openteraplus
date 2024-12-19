@@ -561,6 +561,7 @@ void ParticipantWidget::processTestTypesReply(QList<TeraData> test_types, QUrlQu
         m_testTypes = test_types;
         ui->wdgInvitations->setCurrentTestTypes(m_testTypes);
         ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), !m_testTypes.isEmpty());
+        ui->wdgSessions->enableTestInvitations(&m_testTypes);
     }
 
 }

@@ -45,6 +45,8 @@ private slots:
     void on_btnDone_clicked();
     void on_chkInviteEmail_checkStateChanged(const Qt::CheckState &state);
 
+    void inviteesCountChanged(int count);
+
 private:
     Ui::TestInvitationDialog *ui;
     ComManager*         m_comManager;

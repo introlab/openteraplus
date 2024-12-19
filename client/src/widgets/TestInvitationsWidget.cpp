@@ -101,6 +101,24 @@ void TestInvitationsWidget::loadForParticipant(TeraData* participant)
     }
 }
 
+void TestInvitationsWidget::loadForSession(TeraData *session)
+{
+    m_currentData = session;
+    setViewMode(ViewMode::VIEWMODE_SESSION);
+    ui->tableInvitations->clearContents();
+    ui->tableInvitations->setRowCount(0);
+    m_listInvitations_items.clear();
+    m_invitations.clear();
+
+    if (m_comManager){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(session->getId()));
+        args.addQueryItem(WEB_QUERY_WITH_URLS, "1");
+        args.addQueryItem(WEB_QUERY_FULL, "1");
+        m_comManager->doGet(WEB_TESTINVITATION_PATH, args);
+    }
+}
+
 void TestInvitationsWidget::processTestInvitationsReply(QList<TeraData> invitations)
 {
     for(int i=0; i<invitations.count(); i++){
@@ -139,6 +157,7 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
     QTableWidgetItem* participant_item;
     QTableWidgetItem* device_item;
     QTableWidgetItem* test_type_item;
+    QTableWidgetItem* session_item;
     TableNumberWidgetItem* limit_item;
     TableNumberWidgetItem* count_item;
     QTableWidgetItem* key_item;
@@ -151,6 +170,7 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
         int row = user_item->row();
         participant_item = ui->tableInvitations->item(row, COLUMN_PARTICIPANT);
         device_item = ui->tableInvitations->item(row, COLUMN_DEVICE);
+        session_item = ui->tableInvitations->item(row, COLUMN_SESSION);
         test_type_item = ui->tableInvitations->item(row, COLUMN_TESTTYPE);
         limit_item = dynamic_cast<TableNumberWidgetItem*>(ui->tableInvitations->item(row, COLUMN_LIMIT));
         count_item = dynamic_cast<TableNumberWidgetItem*>(ui->tableInvitations->item(row, COLUMN_COUNT));
@@ -166,6 +186,8 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
         ui->tableInvitations->setItem(current_row, COLUMN_PARTICIPANT, participant_item);
         device_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_DEVICE)),"");
         ui->tableInvitations->setItem(current_row, COLUMN_DEVICE, device_item);
+        session_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_SESSION)),"");
+        ui->tableInvitations->setItem(current_row, COLUMN_SESSION, session_item);
         test_type_item = new QTableWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_TESTTYPE)),"");
         ui->tableInvitations->setItem(current_row, COLUMN_TESTTYPE, test_type_item);
         limit_item = new TableNumberWidgetItem();
@@ -258,10 +280,17 @@ void TestInvitationsWidget::updateInvitation(const TeraData *invitation)
         QJsonObject obj = invitation->getFieldValue("test_invitation_test_type").toJsonObject();
         test_type_item->setText(obj["test_type_name"].toString());
     }
+    if (invitation->hasFieldName("test_invitation_session")){
+        QJsonObject obj = invitation->getFieldValue("test_invitation_session").toJsonObject();
+        session_item->setText(obj["session_name"].toString());
+    }else{
+        session_item->setText("(" + tr("Nouvelle") + ")");
+    }
 
     user_item->setForeground(invite_color);
     participant_item->setForeground(invite_color);
     device_item->setForeground(invite_color);
+    session_item->setForeground(invite_color);
     test_type_item->setForeground(invite_color);
     limit_item->setForeground(invite_color);
     count_item->setForeground(invite_color);
@@ -307,6 +336,11 @@ void TestInvitationsWidget::setViewMode(const ViewMode &mode)
         ui->tableInvitations->showColumn(InviteColumns::COLUMN_USER);
         ui->tableInvitations->hideColumn(InviteColumns::COLUMN_DEVICE);
         break;
+    case VIEWMODE_SESSION:
+        ui->tableInvitations->showColumn(InviteColumns::COLUMN_PARTICIPANT);
+        ui->tableInvitations->hideColumn(InviteColumns::COLUMN_USER);
+        ui->tableInvitations->hideColumn(InviteColumns::COLUMN_DEVICE);
+        break;
     }
 }
 
@@ -320,14 +354,45 @@ void TestInvitationsWidget::on_btnInvite_clicked()
     m_invitationDialog->setInvitableDevices(m_invitableDevices);
     m_invitationDialog->setInvitableParticipants(m_invitableParticipants);
     m_invitationDialog->setInvitableUsers(m_invitableUsers);
-    if (m_currentView == VIEWMODE_PARTICIPANT){
+    switch(m_currentView){
+    case VIEWMODE_PARTICIPANT:
         if (m_currentData){
             QHash<int, TeraData> invitable_participant;
             invitable_participant[m_currentData->getId()] = *m_currentData;
             m_invitationDialog->setInvitableParticipants(&invitable_participant);
+
             m_invitationDialog->addParticipantsToInvitation(QStringList() << m_currentData->getUuid());
             m_invitationDialog->setEnableInviteesList(false);
         }
+        break;
+    case VIEWMODE_SESSION:
+        if (m_currentData){
+            // Add participants in invitation based on session participants
+            QHash<int, TeraData> invitable_participants;
+            QStringList uuids;
+            if (m_currentData->hasFieldName("session_participants")){
+                QJsonArray participants = m_currentData->getFieldValue("session_participants").toJsonArray();
+                for(QJsonValue participant: participants){
+                    TeraData session_participant(TERADATA_PARTICIPANT);
+                    session_participant.fromJson(participant);
+                    session_participant.setFieldValue("participant_enabled", true); // Always enable session participants!
+                    invitable_participants[session_participant.getId()] = session_participant;
+                    uuids.append(session_participant.getUuid());
+                }
+
+            }
+            m_invitationDialog->setInvitableParticipants(&invitable_participants);
+            m_invitationDialog->addParticipantsToInvitation(uuids);
+            m_invitationDialog->setCurrentSession(m_currentData);
+
+            // TODO: Users and Devices
+        }
+        break;
+    default:
+        m_invitationDialog->setInvitableDevices(m_invitableDevices);
+        m_invitationDialog->setInvitableParticipants(m_invitableParticipants);
+        m_invitationDialog->setInvitableUsers(m_invitableUsers);
+        break;
     }
     m_invitationDialog->setEnableEmail(m_enableEmails);
 
@@ -452,6 +517,8 @@ void TestInvitationsWidget::on_viewInvitation()
 
 void TestInvitationsWidget::initUI()
 {
+    ui->tableInvitations->hideColumn(COLUMN_KEY);
+
     // Load table icons
     m_deleteIcon = QIcon(":/icons/delete_old.png");
     m_viewIcon = QIcon(":/icons/search.png");

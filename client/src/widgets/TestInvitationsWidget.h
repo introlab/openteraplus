@@ -29,6 +29,7 @@ public:
 
     void loadForProject(const int& id_project);
     void loadForParticipant(TeraData *participant);
+    void loadForSession(TeraData* session);
 
 private slots:
     void processTestInvitationsReply(QList<TeraData> invitations);
@@ -50,13 +51,14 @@ private:
         COLUMN_USER = 0,
         COLUMN_PARTICIPANT = 1,
         COLUMN_DEVICE = 2,
-        COLUMN_TESTTYPE = 3,
-        COLUMN_LIMIT = 4,
-        COLUMN_COUNT = 5,
-        COLUMN_KEY = 6,
-        COLUMN_CREATION = 7,
-        COLUMN_EXPIRATION = 8,
-        COLUMN_ACTIONS = 9
+        COLUMN_SESSION = 3,
+        COLUMN_TESTTYPE = 4,
+        COLUMN_LIMIT = 5,
+        COLUMN_COUNT = 6,
+        COLUMN_KEY = 7,
+        COLUMN_CREATION = 8,
+        COLUMN_EXPIRATION = 9,
+        COLUMN_ACTIONS = 10
     }
     InviteColumns;
 
@@ -65,7 +67,8 @@ private:
         VIEWMODE_DEVICE,
         VIEWMODE_PARTICIPANT,
         VIEWMODE_PROJECT,
-        VIEWMODE_USER
+        VIEWMODE_USER,
+        VIEWMODE_SESSION
     }
     ViewMode;
 

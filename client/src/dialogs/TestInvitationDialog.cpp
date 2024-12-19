@@ -192,6 +192,8 @@ void TestInvitationDialog::initUI()
     ui->widgetInvitees->showOnlineFilter(false);
     ui->widgetInvitees->selectFilterParticipant();
 
+    connect(ui->widgetInvitees, &SessionInviteWidget::inviteesCountChanged, this, &TestInvitationDialog::inviteesCountChanged);
+
 }
 
 void TestInvitationDialog::processNextEmail()
@@ -237,6 +239,9 @@ void TestInvitationDialog::on_stackedPages_currentChanged(int current_index)
     ui->btnPrevious->setEnabled(current_index>0);
     ui->btnNext->setEnabled(current_index < ui->stackedPages->count() - 1);
     ui->btnOK->setVisible(current_index == ui->stackedPages->count() - 1);
+    if (ui->btnNext->isEnabled() && ui->stackedPages->currentWidget() == ui->pageTargets){
+        ui->btnNext->setEnabled(ui->widgetInvitees->getInviteesCount() > 0);
+    }
 }
 
 
@@ -268,6 +273,8 @@ void TestInvitationDialog::on_btnOK_clicked()
             QJsonObject invitation;
             invitation["id_test_invitation"] = 0;
             invitation["id_participant"] = id;
+            if (m_currentSessionId)
+                invitation["id_session"] = m_currentSessionId;
             invitation["id_test_type"] = ui->cmbTestType->currentData().toInt();
             invitation["test_invitation_max_count"] = ui->numUsage->value();
             invitation["test_invitation_expiration_date"] = QJsonValue::fromVariant(ui->dateExpiration->date());
@@ -279,6 +286,8 @@ void TestInvitationDialog::on_btnOK_clicked()
             QJsonObject invitation;
             invitation["id_test_invitation"] = 0;
             invitation["id_device"] = id;
+            if (m_currentSessionId)
+                invitation["id_session"] = m_currentSessionId;
             invitation["id_test_type"] = ui->cmbTestType->currentData().toInt();
             invitation["test_invitation_max_count"] = ui->numUsage->value();
             invitation["test_invitation_expiration_date"] = QJsonValue::fromVariant(ui->dateExpiration->date());
@@ -290,6 +299,8 @@ void TestInvitationDialog::on_btnOK_clicked()
             QJsonObject invitation;
             invitation["id_test_invitation"] = 0;
             invitation["id_user"] = id;
+            if (m_currentSessionId)
+                invitation["id_session"] = m_currentSessionId;
             invitation["id_test_type"] = ui->cmbTestType->currentData().toInt();
             invitation["test_invitation_max_count"] = ui->numUsage->value();
             invitation["test_invitation_expiration_date"] = QJsonValue::fromVariant(ui->dateExpiration->date());
@@ -340,5 +351,12 @@ void TestInvitationDialog::on_chkInviteEmail_checkStateChanged(const Qt::CheckSt
             ui->stackedPages->addWidget(ui->pageMessage);
     }
     on_stackedPages_currentChanged(ui->stackedPages->currentIndex());
+}
+
+void TestInvitationDialog::inviteesCountChanged(int count)
+{
+    qDebug() << count;
+    if (ui->stackedPages->currentWidget() == ui->pageTargets)
+        ui->btnNext->setEnabled(count > 0);
 }
 

@@ -54,7 +54,12 @@
      </column>
      <column>
       <property name="text">
-       <string>Test</string>
+       <string>Séance</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Type de test</string>
       </property>
      </column>
      <column>

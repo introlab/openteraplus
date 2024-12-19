@@ -150,6 +150,8 @@ private:
     void removedParticipant(QString participant_uuid);
     void removedDevice(QString device_uuid);
 
+    void inviteesCountChanged(int new_count);
+
 };
 
 #endif // SESSIONINVITEWIDGET_H

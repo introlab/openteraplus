@@ -37,6 +37,7 @@ public:
 
     void enableDeletion(const bool& enable);
     void enableFileTransfers(const bool& enable);
+    void enableTestInvitations(QList<TeraData>* test_types);
 
     void setSessionsCount(const int& count);
     int getSessionsCount();
@@ -54,6 +55,7 @@ private:
     ViewMode                        m_viewMode;
 
     QHash<int, QTableWidgetItem*>   m_listSessions_items; // ID Session to QTableWidgetItem* mapping
+    QList<TeraData>*                m_testTypes = nullptr; // Tests types available to the widget
 
     BaseDialog*                     m_diag_editor;
 

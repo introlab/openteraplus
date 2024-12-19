@@ -18,6 +18,9 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     ui->wdgSession->setComManager(m_comManager);
     ui->tabNav->setCurrentIndex(0);
 
+    ui->wdgInvitations->setComManager(m_comManager);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), false);
+
     ui->wdgSessionInvitees->setComManager(m_comManager);
     ui->wdgSessionInvitees->showOnlineFilter(false);
 
@@ -170,6 +173,19 @@ void SessionWidget::showTests()
 {
     // Display tests tab by default
     ui->tabNav->setCurrentWidget(ui->tabTests);
+}
+
+void SessionWidget::setTestTypes(QList<TeraData> *test_types)
+{
+    m_testTypes = test_types;
+    bool show = m_testTypes != nullptr;
+    if (show && m_testTypes){
+        show = !m_testTypes->isEmpty();
+    }
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), show);
+    if (show){
+        ui->wdgInvitations->setCurrentTestTypes(*m_testTypes);
+    }
 }
 
 void SessionWidget::updateControlsState()
@@ -705,6 +721,12 @@ void SessionWidget::on_tabNav_currentChanged(int index)
         // Tests
         ui->tabTests->enableNewTests(false);
         ui->tabTests->displayTestsForSession(m_data->getId());
+    }
+
+    if (current_tab == ui->tabInvitations){
+        if (m_data){
+            ui->wdgInvitations->loadForSession(m_data);
+        }
     }
 }
 

@@ -29,8 +29,9 @@ public:
 
     void alwaysShowAssets(const bool &allow);
     void showAssets();
-
     void showTests();
+
+    void setTestTypes(QList<TeraData>* test_types);
 
     void connectSignals();
 private:
@@ -42,6 +43,7 @@ private:
 
     //QMap<int, QTableWidgetItem*> m_listDeviceDatas;
     QMap<int, QTableWidgetItem*> m_listSessionEvents;
+    QList<TeraData>*    m_testTypes = nullptr;
 
     void updateControlsState();
     void updateFieldsValue();

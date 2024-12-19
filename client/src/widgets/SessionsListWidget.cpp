@@ -112,6 +112,11 @@ void SessionsListWidget::enableFileTransfers(const bool &enable)
     m_allowFileTransfers = enable;
 }
 
+void SessionsListWidget::enableTestInvitations(QList<TeraData> *test_types)
+{
+    m_testTypes = test_types;
+}
+
 void SessionsListWidget::setSessionsCount(const int &count)
 {
     m_totalSessions = count;
@@ -803,6 +808,7 @@ void SessionsListWidget::showSessionEditor(TeraData *session_info)
     session_info->setFieldValue("id_project", m_currentIdProject);
     SessionWidget* ses_widget = new SessionWidget(m_comManager, session_info, m_diag_editor);
     ses_widget->alwaysShowAssets(m_allowFileTransfers);
+    ses_widget->setTestTypes(m_testTypes);
     if (m_currentSessionShowAssets)
         ses_widget->showAssets();
     if (m_currentSessionShowTests)
