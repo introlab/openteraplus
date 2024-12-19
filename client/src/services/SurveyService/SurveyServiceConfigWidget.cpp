@@ -68,6 +68,7 @@ void SurveyServiceConfigWidget::setEditMode(const bool &editing)
     ui->frameSave->setVisible(editing);
 
     ui->btnEditSurvey->setVisible(m_id_survey > 0 && !editing);
+    ui->btnAnswers->setVisible(m_id_survey > 0 && !editing);
     ui->frameEditor->setEnabled(editing);
     ui->frameItemEditor->setVisible(editing || m_id_survey > 0);
     ui->frameItems->setEnabled(!editing);
@@ -98,6 +99,25 @@ void SurveyServiceConfigWidget::showSurveyEditor()
 
     m_surveyEditor->showMaximized();
 
+}
+
+void SurveyServiceConfigWidget::showSurveyManager()
+{
+    if (!m_data)
+        return;
+
+    if (m_data->isNew())
+        return;
+
+    if (!m_surveyEditor){
+        m_surveyEditor = new SurveyEditorDialog(m_surveyComManager, m_data->getUuid(), this);
+        connect(m_surveyEditor, &SurveyEditorDialog::finished, this, &SurveyServiceConfigWidget::surveyEditorFinished);
+    }else{
+        m_surveyEditor->setCurrentTestTypeUuid(m_data->getUuid());
+    }
+    m_surveyEditor->loadManager(m_id_project);
+
+    m_surveyEditor->showMaximized();
 }
 
 void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, QUrlQuery reply_query)
@@ -333,5 +353,11 @@ void SurveyServiceConfigWidget::on_btnDelete_clicked()
     if (result == GlobalMessageBox::Yes){
         m_comManager->doDelete(WEB_TESTTYPEINFO_PATH, m_data->getId());
     }
+}
+
+
+void SurveyServiceConfigWidget::on_btnAnswers_clicked()
+{
+    showSurveyManager();
 }
 

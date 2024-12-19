@@ -2,6 +2,8 @@
 #include "ui_SurveyEditorDialog.h"
 
 #include <QWebEngineProfile>
+#include <QFileDialog>
+#include <QStandardPaths>
 
 SurveyEditorDialog::SurveyEditorDialog(SurveyComManager *surveyComManager, const QString& test_type_uuid, QWidget *parent)
     : QDialog(parent)
@@ -38,6 +40,8 @@ SurveyEditorDialog::SurveyEditorDialog(SurveyComManager *surveyComManager, const
     connect(m_webPage, &QWebEnginePage::loadProgress, this, &SurveyEditorDialog::onPageLoadingProcess);
     m_webView->setPage(m_webPage);
 
+    connect(m_webPage->profile(), &QWebEngineProfile::downloadRequested, this, &SurveyEditorDialog::onFileDownloadRequested);
+
     connect(m_surveyComManager, &SurveyComManager::userTokenUpdated, this, &SurveyEditorDialog::onUserTokenUpdated);
 
 }
@@ -63,6 +67,20 @@ void SurveyEditorDialog::loadEditor()
     editor_url.setQuery(args);
     //qDebug() << "SurveyEditorDialog - Loading " << editor_url.toString();
     m_webPage->load(editor_url);
+}
+
+void SurveyEditorDialog::loadManager(const int &id_project)
+{
+    ui->wdgWebView->hide();
+    QUrl manager_url = m_surveyComManager->getServerUrl();
+    manager_url.setPath(m_surveyComManager->getServiceEndpoint("manager"));
+    QUrlQuery args;
+    //TODO: Enable arguments when supported by service
+    //args.addQueryItem("token", m_surveyComManager->getCurrentToken());
+    args.addQueryItem("test_type_uuid", m_testTypeUuid);
+    //args.addQueryItem("id_project", QString::number(id_project));
+    manager_url.setQuery(args);
+    m_webPage->load(manager_url);
 }
 
 void SurveyEditorDialog::on_btnClose_clicked()
@@ -99,9 +117,20 @@ void SurveyEditorDialog::onPageLoadingProcess(int progress)
     ui->progressLoading->setValue(progress);
 }
 
+void SurveyEditorDialog::onFileDownloadRequested(QWebEngineDownloadRequest *download)
+{
+    QString filename = QFileDialog::getSaveFileName(this, tr("Enregistrer sous"), QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).first() + "/" + download->suggestedFileName());
+    if (!filename.isEmpty()){
+        download->setDownloadFileName(filename);
+        download->accept();
+    }else{
+        download->cancel();
+    }
+}
+
 void SurveyEditorDialog::onUserTokenUpdated()
 {
-    qDebug() << "Changing user token in Survey Editor";
+    //qDebug() << "Changing user token in Survey Editor";
     m_webPage->runJavaScript("set_user_token(\"" + m_surveyComManager->getCurrentToken() + "\");");
 }
 

@@ -6,6 +6,7 @@
 #include <QWebEngineView>
 #include <QWebEngineCertificateError>
 #include <QWebEngineLoadingInfo>
+#include <QWebEngineDownloadRequest>
 
 #include "SurveyComManager.h"
 #include "libs/WebPageRequestInterceptor.h"
@@ -24,6 +25,7 @@ public:
 
     void setCurrentTestTypeUuid(const QString& test_type_uuid);
     void loadEditor();
+    void loadManager(const int& id_project);
 
 private slots:
     void on_btnClose_clicked();
@@ -31,6 +33,7 @@ private slots:
     void onCertificateError(const QWebEngineCertificateError &certificateError);
     void onPageLoadingChanged(const QWebEngineLoadingInfo &loadingInfo);
     void onPageLoadingProcess(int progress);
+    void onFileDownloadRequested(QWebEngineDownloadRequest *download);
 
     void onUserTokenUpdated();
 

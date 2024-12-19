@@ -45,6 +45,7 @@ private slots:
     void on_btnEditSurvey_clicked();
     void on_btnEdit_clicked();
     void on_btnDelete_clicked();
+    void on_btnAnswers_clicked();
 
 private:
     Ui::SurveyServiceConfigWidget *ui;
@@ -66,6 +67,7 @@ private:
     void queryTestTypes();
     void setEditMode(const bool& editing);
     void showSurveyEditor();
+    void showSurveyManager();
 
 
 };

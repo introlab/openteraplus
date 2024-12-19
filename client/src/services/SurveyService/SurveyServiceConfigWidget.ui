@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>673</width>
-    <height>484</height>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -470,10 +470,22 @@
             <property name="enabled">
              <bool>true</bool>
             </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>0</width>
               <height>32</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="cursor">
@@ -485,6 +497,32 @@
             <property name="icon">
              <iconset resource="../../../resources/TeraClient.qrc">
               <normaloff>:/icons/test.png</normaloff>:/icons/test.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAnswers">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="text">
+             <string>Voir les réponses pour ce projet</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../resources/TeraClient.qrc">
+              <normaloff>:/icons/search.png</normaloff>:/icons/search.png</iconset>
             </property>
             <property name="iconSize">
              <size>
