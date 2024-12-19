@@ -1316,8 +1316,10 @@ void ProjectWidget::on_tabNav_currentChanged(int index)
 
     // Test invitations
     if (current_tab == ui->tabInvitations){
-        if (m_data)
+        if (m_data){
+            ui->wdgInvitations->setCurrentProject(m_data->getId());
             ui->wdgInvitations->loadForProject(m_data->getId());
+        }
     }
 
 }

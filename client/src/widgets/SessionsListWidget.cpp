@@ -117,6 +117,11 @@ void SessionsListWidget::enableTestInvitations(QList<TeraData> *test_types)
     m_testTypes = test_types;
 }
 
+void SessionsListWidget::enableEmails(const bool &enable)
+{
+    m_allowEmails = enable;
+}
+
 void SessionsListWidget::setSessionsCount(const int &count)
 {
     m_totalSessions = count;
@@ -813,6 +818,7 @@ void SessionsListWidget::showSessionEditor(TeraData *session_info)
         ses_widget->showAssets();
     if (m_currentSessionShowTests)
         ses_widget->showTests();
+    ses_widget->enableEmails(m_allowEmails);
 
     m_diag_editor->setCentralWidget(ses_widget);
 

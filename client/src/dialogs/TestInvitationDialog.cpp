@@ -73,6 +73,7 @@ void TestInvitationDialog::setEnableEmail(const bool &enable_email)
 
     if (!m_enableEmails){
         ui->chkInviteEmail->setCheckState(Qt::Unchecked);
+        on_chkInviteEmail_checkStateChanged(Qt::Unchecked); // Force check since it's the default value
     }else{
         // Default value is on
         ui->chkInviteEmail->setCheckState(Qt::Checked);
@@ -89,6 +90,11 @@ void TestInvitationDialog::setEnableInviteesList(const bool &enable)
         ui->stackedPages->removeWidget(ui->pageTargets);
     else
         ui->stackedPages->addWidget(ui->pageTargets);
+}
+
+void TestInvitationDialog::setCurrentProjectId(const int &id_project)
+{
+    m_currentProjectId = id_project;
 }
 
 void TestInvitationDialog::setInvitableDevices(QHash<int, TeraData> *devices)
@@ -242,6 +248,9 @@ void TestInvitationDialog::on_stackedPages_currentChanged(int current_index)
     if (ui->btnNext->isEnabled() && ui->stackedPages->currentWidget() == ui->pageTargets){
         ui->btnNext->setEnabled(ui->widgetInvitees->getInviteesCount() > 0);
     }
+    if (ui->btnOK->isVisible() && ui->stackedPages->currentWidget() == ui->pageTargets){
+        ui->btnOK->setEnabled(ui->widgetInvitees->getInviteesCount() > 0);
+    }
 }
 
 
@@ -273,6 +282,7 @@ void TestInvitationDialog::on_btnOK_clicked()
             QJsonObject invitation;
             invitation["id_test_invitation"] = 0;
             invitation["id_participant"] = id;
+            invitation["id_project"] = m_currentProjectId;
             if (m_currentSessionId)
                 invitation["id_session"] = m_currentSessionId;
             invitation["id_test_type"] = ui->cmbTestType->currentData().toInt();
@@ -286,6 +296,7 @@ void TestInvitationDialog::on_btnOK_clicked()
             QJsonObject invitation;
             invitation["id_test_invitation"] = 0;
             invitation["id_device"] = id;
+            invitation["id_project"] = m_currentProjectId;
             if (m_currentSessionId)
                 invitation["id_session"] = m_currentSessionId;
             invitation["id_test_type"] = ui->cmbTestType->currentData().toInt();
@@ -299,6 +310,7 @@ void TestInvitationDialog::on_btnOK_clicked()
             QJsonObject invitation;
             invitation["id_test_invitation"] = 0;
             invitation["id_user"] = id;
+            invitation["id_project"] = m_currentProjectId;
             if (m_currentSessionId)
                 invitation["id_session"] = m_currentSessionId;
             invitation["id_test_type"] = ui->cmbTestType->currentData().toInt();
@@ -355,8 +367,10 @@ void TestInvitationDialog::on_chkInviteEmail_checkStateChanged(const Qt::CheckSt
 
 void TestInvitationDialog::inviteesCountChanged(int count)
 {
-    qDebug() << count;
-    if (ui->stackedPages->currentWidget() == ui->pageTargets)
+    if (ui->stackedPages->currentWidget() == ui->pageTargets && ui->stackedPages->currentIndex() < ui->stackedPages->count() - 1)
         ui->btnNext->setEnabled(count > 0);
+
+    if (ui->stackedPages->currentIndex() == ui->stackedPages->count() - 1)
+        ui->btnOK->setEnabled(count > 0);
 }
 

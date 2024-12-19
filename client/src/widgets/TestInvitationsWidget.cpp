@@ -66,6 +66,11 @@ void TestInvitationsWidget::setEnableEmail(const bool &enable_email)
     m_enableEmails = enable_email;
 }
 
+void TestInvitationsWidget::setCurrentProject(const int &id_project)
+{
+    m_idProject = id_project;
+}
+
 void TestInvitationsWidget::loadForProject(const int &id_project)
 {
     setViewMode(ViewMode::VIEWMODE_PROJECT);
@@ -91,6 +96,8 @@ void TestInvitationsWidget::loadForParticipant(TeraData* participant)
     ui->tableInvitations->setRowCount(0);
     m_listInvitations_items.clear();
     m_invitations.clear();
+
+    m_idProject = participant->getFieldValue("id_project").toInt();
 
     if (m_comManager){
         QUrlQuery args;
@@ -351,6 +358,7 @@ void TestInvitationsWidget::on_btnInvite_clicked()
 
     m_invitationDialog = new TestInvitationDialog(m_comManager, this);
     m_invitationDialog->setTestTypes(m_testTypes);
+    m_invitationDialog->setCurrentProjectId(m_idProject);
     m_invitationDialog->setInvitableDevices(m_invitableDevices);
     m_invitationDialog->setInvitableParticipants(m_invitableParticipants);
     m_invitationDialog->setInvitableUsers(m_invitableUsers);

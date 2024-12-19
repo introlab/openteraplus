@@ -26,6 +26,7 @@ public:
     void setInvitableParticipants(QHash<int, TeraData>* participants);
     void setInvitableUsers(QHash<int, TeraData>* users);
     void setEnableEmail(const bool& enable_email);
+    void setCurrentProject(const int& id_project);
 
     void loadForProject(const int& id_project);
     void loadForParticipant(TeraData *participant);
@@ -87,6 +88,8 @@ private:
     QHash<int, TeraData>*           m_invitableDevices = nullptr;
     QHash<int, TeraData>*           m_invitableParticipants = nullptr;
     QHash<int, TeraData>*           m_invitableUsers = nullptr;
+
+    int                             m_idProject = -1;
 
     // Icons are defined here (speed up load)
     QIcon m_deleteIcon;

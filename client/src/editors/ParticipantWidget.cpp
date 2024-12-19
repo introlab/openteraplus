@@ -607,6 +607,7 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
 
     ui->btnEmailWeb->setVisible(has_email_service);
     ui->wdgInvitations->setEnableEmail(has_email_service);
+    ui->wdgSessions->enableEmails(has_email_service);
 
     // Find and select VideoRehab by default in the combobox
     int default_index = ui->cmbServices->findData("VideoRehabService");

@@ -23,6 +23,7 @@ public:
     void setCurrentData(TeraData* data);
     void setEnableEmail(const bool& enable_email);
     void setEnableInviteesList(const bool& enable);
+    void setCurrentProjectId(const int& id_project);
 
     void setInvitableDevices(QHash<int, TeraData>* devices);
     void setInvitableParticipants(QHash<int, TeraData>* participants);
@@ -55,7 +56,8 @@ private:
     bool        m_enableEmails = false;
 
     QList<TeraData> m_pendingInvitations;
-    int         m_currentSessionId = 0;
+    int             m_currentSessionId = 0;
+    int             m_currentProjectId = 0;
 
     void initUI();
     void processNextEmail();

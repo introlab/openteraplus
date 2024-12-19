@@ -38,6 +38,7 @@ public:
     void enableDeletion(const bool& enable);
     void enableFileTransfers(const bool& enable);
     void enableTestInvitations(QList<TeraData>* test_types);
+    void enableEmails(const bool& enable);
 
     void setSessionsCount(const int& count);
     int getSessionsCount();
@@ -70,6 +71,7 @@ private:
 
     bool                            m_allowDeletion;
     bool                            m_allowFileTransfers;
+    bool                            m_allowEmails;
 
     QString                         m_currentUuid;
     int                             m_currentId;
@@ -123,15 +125,10 @@ private slots:
     void currentCalendarDateActivated(QDate current_date);
 
     void on_btnCheckSessionTypes_clicked();
-
     void on_btnUncheckSessionTypes_clicked();
-
     void on_btnFilterSessionsTypes_clicked();
-
     void on_tableSessions_itemDoubleClicked(QTableWidgetItem *item);
-
     void on_btnAssetsBrowser_clicked();
-
     void on_btnTestsBrowser_clicked();
 
 signals:

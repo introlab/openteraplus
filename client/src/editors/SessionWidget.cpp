@@ -1,6 +1,11 @@
 #include "SessionWidget.h"
 #include "ui_SessionWidget.h"
 
+#include "GlobalMessageBox.h"
+
+#include "TeraSessionStatus.h"
+#include "TeraSessionEvent.h"
+
 #include <QFileDialog>
 #include <QStandardPaths>
 
@@ -46,6 +51,7 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
 
      if (data->hasFieldName("id_project")){
          m_idProject = data->getFieldValue("id_project").toInt();
+         ui->wdgInvitations->setCurrentProject(m_idProject);
          ui->tabAssets->setAssociatedProject(m_idProject);
      }
 
@@ -186,6 +192,12 @@ void SessionWidget::setTestTypes(QList<TeraData> *test_types)
     if (show){
         ui->wdgInvitations->setCurrentTestTypes(*m_testTypes);
     }
+}
+
+void SessionWidget::enableEmails(const bool &enable)
+{
+    m_allowEmails = enable;
+    ui->wdgInvitations->setEnableEmail(m_allowEmails);
 }
 
 void SessionWidget::updateControlsState()
