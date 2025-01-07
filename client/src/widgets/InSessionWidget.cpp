@@ -353,20 +353,22 @@ void InSessionWidget::ws_JoinSessionEvent(JoinSessionEvent event)
     QString session_uuid = QString::fromStdString(event.session_uuid());
 
     // Check if that event is really for us
-    if (!m_session){
+    /*if (!m_session){
         LOG_ERROR("Received JoinSessionEvent, but no current session!", "InSessionWidget::processJoinSessionEvent");
         m_comManager->sendJoinSessionReply(session_uuid, JoinSessionReplyEvent::REPLY_DENIED, tr("En attente de démarrage de séance..."));
         return;
-    }
+    }*/
 
-    if (m_session->hasUuidField()){
-        if (m_session->getUuid() != session_uuid){
-            LOG_WARNING("Received JoinSessionEvent, but it's not for current session - replying busy", "InSessionWidget::processJoinSessionEvent");
-            m_comManager->sendJoinSessionReply(session_uuid, JoinSessionReplyEvent::REPLY_BUSY, tr("Déjà en séance"));
-            showNotification(NotificationWindow::TYPE_WARNING, QString::fromStdString(event.session_creator_name())
-                                         + tr(" vous a invité dans une séance, mais nous avons refusé l'invitation pour vous."),
-                                         "://icons/warning.png");
-            return;
+    if (m_session){
+        if (m_session->hasUuidField()){
+            if (m_session->getUuid() != session_uuid){
+                LOG_WARNING("Received JoinSessionEvent, but it's not for current session - replying busy", "InSessionWidget::processJoinSessionEvent");
+                m_comManager->sendJoinSessionReply(session_uuid, JoinSessionReplyEvent::REPLY_BUSY, tr("Déjà en séance"));
+                showNotification(NotificationWindow::TYPE_WARNING, QString::fromStdString(event.session_creator_name())
+                                             + tr(" vous a invité dans une séance, mais nous avons refusé l'invitation pour vous."),
+                                             "://icons/warning.png");
+                return;
+            }
         }
     }
 
@@ -374,7 +376,9 @@ void InSessionWidget::ws_JoinSessionEvent(JoinSessionEvent event)
     if (m_serviceWidget){
         // SB Qt6 WebEngineView seems to cause issue when loading / displaying... Bug?
         //    This patch this behaviour and ensures that the session always starts in maximized mode
-        QWidget* parent = parentWidget();
+
+        // SB - Doesn't seem to be needed anymore with Qt 6.7+
+        /*QWidget* parent = parentWidget();
         while(parent){
             parent = parent->parentWidget();
             if (QString::fromStdString(parent->metaObject()->className()) == "MainWindow"){
@@ -382,7 +386,7 @@ void InSessionWidget::ws_JoinSessionEvent(JoinSessionEvent event)
                 parent->showMaximized();
                 break;
             }
-        }
+        }*/
         bool result = m_serviceWidget->handleJoinSessionEvent(event);
         if (result){
             // If we have a result here, it's that the join was accepted for the first time.
