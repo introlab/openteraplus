@@ -75,8 +75,7 @@ void SurveyEditorDialog::loadManager(const int &id_project)
     QUrl manager_url = m_surveyComManager->getServerUrl();
     manager_url.setPath(m_surveyComManager->getServiceEndpoint("manager"));
     QUrlQuery args;
-    //TODO: Enable arguments when supported by service
-    //args.addQueryItem("token", m_surveyComManager->getCurrentToken());
+    args.addQueryItem("token", m_surveyComManager->getCurrentToken());
     args.addQueryItem("test_type_uuid", m_testTypeUuid);
     //args.addQueryItem("id_project", QString::number(id_project));
     manager_url.setQuery(args);
