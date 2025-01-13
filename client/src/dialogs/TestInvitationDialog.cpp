@@ -73,10 +73,11 @@ void TestInvitationDialog::setEnableEmail(const bool &enable_email)
 
     if (!m_enableEmails){
         ui->chkInviteEmail->setCheckState(Qt::Unchecked);
-        on_chkInviteEmail_checkStateChanged(Qt::Unchecked); // Force check since it's the default value
+        on_chkInviteEmail_checkStateChanged(Qt::Unchecked);
     }else{
         // Default value is on
         ui->chkInviteEmail->setCheckState(Qt::Checked);
+        on_chkInviteEmail_checkStateChanged(Qt::Checked);
     }
     ui->chkInviteEmail->setVisible(m_enableEmails);
 }

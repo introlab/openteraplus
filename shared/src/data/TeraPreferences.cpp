@@ -69,6 +69,12 @@ bool TeraPreferences::isSet() const
 
 QString TeraPreferences::getLanguage() const
 {
+    if (m_language.isEmpty()){
+        QString sys_language = QLocale(QLocale::system().language()).bcp47Name(); // Default language
+        if (sys_language != "fr")
+            sys_language = "en"; // Fallback to English by default
+        return sys_language;
+    }
     return m_language;
 }
 

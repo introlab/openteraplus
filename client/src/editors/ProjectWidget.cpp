@@ -709,12 +709,8 @@ bool ProjectWidget::hasAssociatedService(const QString &service_key)
     if (id_service <= 0)
         return false;
 
-    if (m_listServicesProjects_items.contains(id_service)){
-        if (m_listServicesProjects_items[id_service]->checkState() == Qt::Checked)
-            return true;
-    }
-
-    return false;
+    QListWidgetItem* item = m_listServices_items.value(id_service);
+    return m_listServicesProjects_items.values().contains(item);
 }
 
 void ProjectWidget::queryUserGroupsProjectAccess()
