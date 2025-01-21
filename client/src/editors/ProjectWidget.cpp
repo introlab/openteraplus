@@ -599,7 +599,7 @@ void ProjectWidget::updateControlsState()
 
         // Move projects list to first tab
         ui->tabSessionTypes->layout()->removeWidget(ui->lstSessionTypes);
-        ui->tabTestTypes->layout()->removeWidget(ui->lstTestTypes);
+        //ui->tabTestTypes->layout()->removeWidget(ui->lstTestTypes);
         ui->tabDashboard->layout()->removeWidget(ui->frameButtons);
 
         QLabel* lbl = new QLabel(tr("Types de séances associés"));
@@ -610,10 +610,10 @@ void ProjectWidget::updateControlsState()
 
         ui->tabDashboard->layout()->addWidget(lbl);
         ui->tabDashboard->layout()->addWidget(ui->lstSessionTypes);
-        lbl = new QLabel(tr("Types de tests associés"));
+        /*lbl = new QLabel(tr("Types de tests associés"));
         lbl->setFont(labelFont);
         ui->tabDashboard->layout()->addWidget(lbl);
-        ui->tabDashboard->layout()->addWidget(ui->lstTestTypes);
+        ui->tabDashboard->layout()->addWidget(ui->lstTestTypes);*/
         ui->tabDashboard->layout()->addWidget(ui->frameButtons);
 
         ui->frameActions->hide(); // Can't add participant when creating new project
@@ -626,11 +626,11 @@ void ProjectWidget::updateControlsState()
         }
 
         // Query test types
-        if (m_listTestTypes_items.isEmpty()){
+        /*if (m_listTestTypes_items.isEmpty()){
             QUrlQuery args;
             args.addQueryItem(WEB_QUERY_ID_SITE, m_data->getFieldValue("id_site").toString());
             queryDataRequest(WEB_TESTTYPESITE_PATH, args);
-        }
+        }*/
 
 
     }else{

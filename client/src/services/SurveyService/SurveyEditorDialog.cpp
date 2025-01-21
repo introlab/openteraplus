@@ -77,7 +77,7 @@ void SurveyEditorDialog::loadManager(const int &id_project)
     QUrlQuery args;
     args.addQueryItem("token", m_surveyComManager->getCurrentToken());
     args.addQueryItem("test_type_uuid", m_testTypeUuid);
-    //args.addQueryItem("id_project", QString::number(id_project));
+    args.addQueryItem("id_project", QString::number(id_project));
     manager_url.setQuery(args);
     m_webPage->load(manager_url);
 }
@@ -107,7 +107,7 @@ void SurveyEditorDialog::onPageLoadingChanged(const QWebEngineLoadingInfo &loadi
     ui->wdgWebView->setVisible(loadingInfo.status() == QWebEngineLoadingInfo::LoadSucceededStatus);
 
     //qDebug() << loadingInfo.status();
-    if (loadingInfo.isErrorPage())
+    if (loadingInfo.isErrorPage() || loadingInfo.status() == QWebEngineLoadingInfo::LoadFailedStatus)
         qDebug() << "Page loading error: " << loadingInfo.errorCode() << ": " << loadingInfo.errorString();
 }
 

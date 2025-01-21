@@ -146,6 +146,13 @@ void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, 
             item->setIcon(QIcon(TeraData::getIconFilenameForDataType(TERADATA_TESTTYPE)));
             m_listTestTypes_items[testtype_uuid] = item;
             m_listTestTypes_items_ids[id_testtype] = item;
+            if (m_data){
+                if (m_data->getUuid() == testtype_uuid){
+                    *m_data = data;
+                    // Make sure item is selected
+                    item->setSelected(true);
+                }
+            }
 
         }else{
             // Update name if needed
@@ -160,6 +167,13 @@ void SurveyServiceConfigWidget::processTestTypesReply(QList<TeraData> ttp_list, 
                 }
             }
         }
+        /*if (m_data){
+            if (m_data->getUuid() == testtype_uuid){
+                // Make sure item is selected
+                item->setSelected(true);
+
+            }
+        }*/
     }
 }
 
