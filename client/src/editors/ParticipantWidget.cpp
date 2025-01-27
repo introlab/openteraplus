@@ -25,6 +25,8 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
     ui->cmbServices->setItemDelegate(new QStyledItemDelegate(ui->cmbServices));
     ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate(ui->cmbSessionType));
 
+    ui->btnEmailWeb->hide();
+
     setAttribute(Qt::WA_StyledBackground); //Required to set a background image
     setLimited(false);
 
@@ -61,6 +63,12 @@ ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, Q
         args.clear();
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getFieldValue("id_project").toInt()));
         queryDataRequest(WEB_DEVICEPROJECTINFO_PATH, args);
+
+        // Query test types if not a new participant
+        args.clear();
+        args.addQueryItem(WEB_QUERY_LIST, "1");
+        args.addQueryItem(WEB_QUERY_ID_PROJECT, m_data->getFieldValue("id_project").toString());
+        queryDataRequest(WEB_TESTTYPEINFO_PATH, args);
 
     }
 
@@ -126,6 +134,7 @@ void ParticipantWidget::connectSignals()
     connect(m_comManager, &ComManager::deviceParticipantsReceived, this, &ParticipantWidget::processDeviceParticipantsReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &ParticipantWidget::processParticipantsReply);
     connect(m_comManager, &ComManager::servicesReceived, this, &ParticipantWidget::processServicesReply);
+    connect(m_comManager, &ComManager::testTypesReceived, this, &ParticipantWidget::processTestTypesReply);
     connect(m_comManager, &ComManager::statsReceived, this, &ParticipantWidget::processStatsReply);
     connect(m_comManager, &ComManager::deleteResultsOK, this, &ParticipantWidget::deleteDataReply);
 
@@ -237,15 +246,19 @@ void ParticipantWidget::initUI()
                                 "participant_username", "participant_password"};
     ui->wdgParticipant->hideFields(ignore_fields);
 
-    // Hide device & service tabs by default
+    // Hide device, service and invitation tabs by default
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), false);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), false);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), false);
     ui->tabServicesDetails->setTabVisible(ui->tabServicesDetails->indexOf(ui->tabServiceParams), false);
 
     // Configure log view
     ui->wdgLogins->setComManager(m_comManager);
     ui->wdgLogins->setViewMode(LogViewWidget::VIEW_LOGINS_PARTICIPANT, m_data->getUuid());
     ui->wdgLogins->setUuidName(m_data->getUuid(), m_data->getName());
+
+    // Configure invitation widget
+    ui->wdgInvitations->setComManager(m_comManager);
 
 }
 
@@ -534,6 +547,25 @@ void ParticipantWidget::processParticipantsReply(QList<TeraData> participants)
     }
 }
 
+void ParticipantWidget::processTestTypesReply(QList<TeraData> test_types, QUrlQuery reply_query)
+{
+    if (dataIsNew())
+        return;
+
+    if (!reply_query.hasQueryItem(WEB_QUERY_ID_PROJECT))
+        return;
+
+    if (reply_query.queryItemValue(WEB_QUERY_ID_PROJECT) == m_data->getFieldValue("id_project").toString()){
+        // For us!
+        m_testTypes.clear();
+        m_testTypes = test_types;
+        ui->wdgInvitations->setCurrentTestTypes(m_testTypes);
+        ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), !m_testTypes.isEmpty());
+        ui->wdgSessions->enableTestInvitations(&m_testTypes);
+    }
+
+}
+
 void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)
 {
     if (!reply_query.hasQueryItem(WEB_QUERY_ID_PROJECT))
@@ -545,6 +577,7 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
     ui->cmbServices->clear();
     m_services.clear();
 
+    bool has_email_service = false;
     foreach(TeraData service, services){
         QString service_key = service.getFieldValue("service_key").toString();
         if (service_key != "FileTransferService"){
@@ -553,6 +586,10 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
         }else{
             m_allowFileTransfers = true; // We have a file transfer service with that project - allow uploads!
             ui->wdgSessions->enableFileTransfers(true);
+        }
+
+        if (service_key == "EmailService"){
+            has_email_service = true;
         }
 
         if (service.hasFieldName("service_editable_config")){
@@ -567,6 +604,10 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
             }
         }
     }
+
+    ui->btnEmailWeb->setVisible(has_email_service);
+    ui->wdgInvitations->setEnableEmail(has_email_service);
+    ui->wdgSessions->enableEmails(has_email_service);
 
     // Find and select VideoRehab by default in the combobox
     int default_index = ui->cmbServices->findData("VideoRehabService");
@@ -1059,10 +1100,10 @@ void ParticipantWidget::on_cmbServices_currentIndexChanged(int index)
 
 void ParticipantWidget::on_btnEmailWeb_clicked()
 {
-    EmailInviteDialog email_diag(m_comManager, m_data);
+    EmailInviteDialog email_diag(m_comManager, m_data, this);
 
     QHash<QString, QString>fields;
-    fields["url"] = ui->txtWeb->text();
+    fields["$join_link"] = "<a href=\"" + ui->txtWeb->text() + "\">" + tr("cliquez ici") + "</a>";
 
     email_diag.setFieldValues(fields);
 
@@ -1142,6 +1183,13 @@ void ParticipantWidget::on_tabNav_currentChanged(int index)
             ui->wdgServiceConfig->layout()->addWidget(service_config_widget);
         }
     }
+
+    // Test invitations
+    if (current_tab == ui->tabInvitations){
+        if (m_data){
+            ui->wdgInvitations->loadForParticipant(m_data);
+        }
+    }
 }
 
 
@@ -1188,6 +1236,16 @@ void ParticipantWidget::on_tabInfosDetails_currentChanged(int index)
 {
     if (ui->tabInfosDetails->currentWidget() == ui->tabLogins){
         ui->wdgLogins->refreshData();
+    }
+}
+
+
+void ParticipantWidget::on_tabServicesDetails_currentChanged(int index)
+{
+    QWidget* current_tab = ui->tabServicesDetails->widget(index);
+
+    if (dynamic_cast<DanceConfigWidget*>(current_tab)){
+        dynamic_cast<DanceConfigWidget*>(current_tab)->refresh();
     }
 }
 

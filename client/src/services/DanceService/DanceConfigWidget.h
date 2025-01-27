@@ -14,7 +14,6 @@
 #include "GlobalMessageBox.h"
 
 #include "DanceComManager.h"
-#include "WebAPI.h"
 
 namespace Ui {
 class DanceConfigWidget;
@@ -28,6 +27,8 @@ public:
     explicit DanceConfigWidget(ComManager* comManager, int projectId, QString participantUuid = QString(), QWidget *parent = nullptr);
     ~DanceConfigWidget();
 
+    void refresh();
+
 private:
     Ui::DanceConfigWidget   *ui;
     FileUploaderDialog*     m_uploadDialog;
@@ -36,6 +37,8 @@ private:
     ComManager* m_comManager;
     int         m_idProject;
     QString     m_uuidParticipant;
+
+    bool m_refreshRequested = false;
 
     QList<int>  m_playlistIds;
 
@@ -66,6 +69,7 @@ private slots:
     void danceComUploadProgress(UploadingFile* file);
     void danceComUploadCompleted(UploadingFile* file);
     void danceComTransferAborted(TransferringFile *file);
+    void danceComReady(bool ready);
 
     void transferDialogCompleted();
     void transferDialogAbortRequested();

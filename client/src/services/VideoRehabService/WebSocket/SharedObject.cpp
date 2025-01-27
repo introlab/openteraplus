@@ -2,6 +2,8 @@
 #include <QScreen>
 #include <QGuiApplication>
 
+#include "drivers/PTZ/Vivotek8111.h"
+
 SharedObject::SharedObject(QObject *parent) : QObject(parent)
 {
     m_cameraIndex = -1;
@@ -426,6 +428,12 @@ void SharedObject::setLocalMirror(const bool &mirror){
     emit setLocalMirrorSignal(m_localMirror);
 }
 
+void SharedObject::setLocalBlur(const bool &blur)
+{
+    m_localBlur = blur;
+    emit setLocalBlurSignal(m_localBlur);
+}
+
 void SharedObject::setExtraParams(const QString &params)
 {
     m_extraParams = params;
@@ -467,6 +475,11 @@ bool SharedObject::getLocalMirror(){
     //emit setLocalMirrorSignal(m_localMirror);
 }
 
+bool SharedObject::getLocalBlur()
+{
+    return m_localBlur;
+}
+
 void SharedObject::getExtraParams()
 {
     sendExtraParams();
@@ -481,6 +494,7 @@ QString SharedObject::getAllSettings()
         {"audio", serializeAudioSource()},
         {"video", serializeVideoSource()},
         {"mirror", m_localMirror},
+        {"blur", m_localBlur},
         {"extraParams", m_extraParams},
         {"secondAudioVideo", serialize2ndSources()},
         {"ptz", serializePtzCapabilities()},

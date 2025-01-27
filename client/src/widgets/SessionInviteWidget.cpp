@@ -61,6 +61,7 @@ void SessionInviteWidget::addParticipantsToSession(const QList<TeraData> &partic
         // Update item display
         updateItem(participant);
     }
+    emit inviteesCountChanged(getInviteesCount());
 
 }
 
@@ -82,6 +83,7 @@ void SessionInviteWidget::addUsersToSession(const QList<TeraData> &users, const 
         if (!m_requiredUsers.contains(required_id))
             m_requiredUsers.append(required_id);
     }
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::addDevicesToSession(const QList<TeraData> &devices, const QList<int> &required_ids)
@@ -103,6 +105,7 @@ void SessionInviteWidget::addDevicesToSession(const QList<TeraData> &devices, co
         if (!m_requiredDevices.contains(required_id))
             m_requiredDevices.append(required_id);
     }
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::addUserToSession(const QString &user_uuid)
@@ -122,6 +125,7 @@ void SessionInviteWidget::addUserToSession(const QString &user_uuid)
         // Update item display
        updateItem(m_users[data->getId()]);
     }
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::addParticipantToSession(const QString &participant_uuid)
@@ -139,8 +143,9 @@ void SessionInviteWidget::addParticipantToSession(const QString &participant_uui
             m_participantsInSession[id_item] = nullptr; // Set to null = create a new ListWidgetItem*
 
         // Update item display
-       //updateItem(m_participants[data->getId()]);
+       updateItem(m_participants[data->getId()]);
     }
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::addDeviceToSession(const QString &device_uuid)
@@ -160,6 +165,7 @@ void SessionInviteWidget::addDeviceToSession(const QString &device_uuid)
         // Update item display
        updateItem(m_devices[data->getId()]);
     }
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::removeUserFromSession(const QString &user_uuid)
@@ -186,6 +192,7 @@ void SessionInviteWidget::removeUserFromSession(const QString &user_uuid)
     updateItem(*item_data);
 
     emit removedUser(user_uuid);
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::removeParticipantFromSession(const QString &participant_uuid)
@@ -212,6 +219,7 @@ void SessionInviteWidget::removeParticipantFromSession(const QString &participan
     updateItem(*item_data);
 
     emit removedParticipant(participant_uuid);
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::removeDeviceFromSession(const QString &device_uuid)
@@ -238,11 +246,14 @@ void SessionInviteWidget::removeDeviceFromSession(const QString &device_uuid)
     updateItem(*item_data);
 
     emit removedDevice(device_uuid);
+    emit inviteesCountChanged(getInviteesCount());
 }
 
-void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &participants)
+void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &participants, const bool &enabled_only)
 {
     foreach(TeraData participant, participants){
+        if (enabled_only && !participant.isEnabled())
+            continue;
         int id_participant = participant.getId();
         m_participants[id_participant] = participant;
         if (m_unknownParticipantUuidsInSession.contains(participant.getUuid())){
@@ -257,9 +268,11 @@ void SessionInviteWidget::setAvailableParticipants(const QList<TeraData> &partic
     ui->btnParticipants->setVisible(!m_participants.isEmpty());
 }
 
-void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users)
+void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users, const bool& enabled_only)
 {
     foreach(TeraData user, users){
+        if (enabled_only && !user.isEnabled())
+            continue;
         int id_user = user.getId();
         m_users[id_user] = user;
         if (m_unknownUserUuidsInSession.contains(user.getUuid())){
@@ -275,9 +288,11 @@ void SessionInviteWidget::setAvailableUsers(const QList<TeraData> &users)
     ui->btnUsers->setVisible(!m_users.isEmpty());
 }
 
-void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices)
+void SessionInviteWidget::setAvailableDevices(const QList<TeraData> &devices, const bool &enabled_only)
 {
     foreach(TeraData device, devices){
+        if (enabled_only && !device.isEnabled())
+            continue;
         int id_device = device.getId();
         m_devices[id_device] = device;
         if (m_unknownDeviceUuidsInSession.contains(device.getUuid())){
@@ -391,6 +406,12 @@ void SessionInviteWidget::setEditable(const bool &editable)
 bool SessionInviteWidget::isEditable() const
 {
     return m_editable;
+}
+
+void SessionInviteWidget::setCountLimited(const bool &count_limited)
+{
+    m_countLimited = count_limited;
+    ui->frameCount->setVisible(m_countLimited);
 }
 
 QList<TeraData> SessionInviteWidget::getParticipantsInSession()
@@ -929,7 +950,7 @@ void SessionInviteWidget::setSearching(const bool &search)
 void SessionInviteWidget::on_btnInvite_clicked()
 {
     // Check if we are under the allowed maximum number of invitees in a session
-    if (getInviteesCount() + ui->lstInvitables->selectedItems().count() > MAX_INVITEES_IN_SESSION){
+    if (getInviteesCount() + ui->lstInvitables->selectedItems().count() > MAX_INVITEES_IN_SESSION && m_countLimited){
         GlobalMessageBox msgbox;
         msgbox.showError(tr("Nombre maximal d'invités atteint"), tr("Impossible d'ajouter ces invités à la séance: le nombre maximal de participants (") + QString::number(MAX_INVITEES_IN_SESSION) + ") " + tr("serait dépassé"));
         return;
@@ -966,6 +987,7 @@ void SessionInviteWidget::on_btnInvite_clicked()
 
     // Signals
     emit newInvitees(invited_users, invited_participants, invited_devices);
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::on_lstInvitables_itemSelectionChanged()
@@ -995,7 +1017,7 @@ void SessionInviteWidget::on_treeInvitees_itemDoubleClicked(QTreeWidgetItem *ite
 {
     Q_UNUSED(item)
     Q_UNUSED(column)
-    if (!item->isDisabled())
+    if (!item->isDisabled() && item->parent())
         on_btnRemove_clicked();
 }
 
@@ -1044,6 +1066,7 @@ void SessionInviteWidget::on_btnRemove_clicked()
 
     // Emit signals
     emit removedInvitees(removed_users, removed_participants, removed_devices);
+    emit inviteesCountChanged(getInviteesCount());
 }
 
 void SessionInviteWidget::on_txtSearchInvitees_textChanged(const QString &arg1)

@@ -117,6 +117,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>10</number>
+     </property>
      <item>
       <widget class="QLabel" name="icoTitle">
        <property name="sizePolicy">
@@ -135,7 +138,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>:/icons/session_type.png</pixmap>
+        <pixmap resource="../../resources/TeraClient.qrc">:/icons/session_type.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -159,11 +162,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <item>
     <widget class="QTabWidget" name="tabNav">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabDashboard">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../resources/TeraClient.qrc">
         <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
       </attribute>
       <attribute name="title">
@@ -202,7 +205,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <item>
               <spacer name="horizontalSpacer">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -227,7 +230,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                 <string>Éditer</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../../resources/TeraClient.qrc">
                  <normaloff>:/icons/edit.png</normaloff>:/icons/edit.png</iconset>
                </property>
                <property name="iconSize">
@@ -272,7 +275,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <string>Sauvegarder</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../../resources/TeraClient.qrc">
               <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
             </property>
             <property name="iconSize">
@@ -298,7 +301,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <string>Annuler</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../../resources/TeraClient.qrc">
               <normaloff>:/icons/undo.png</normaloff>:/icons/undo.png</iconset>
             </property>
             <property name="iconSize">
@@ -316,7 +319,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      </widget>
      <widget class="QWidget" name="tabProjects">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../resources/TeraClient.qrc">
         <normaloff>:/icons/site-icon.png</normaloff>:/icons/site-icon.png</iconset>
       </attribute>
       <attribute name="title">
@@ -332,13 +335,13 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           </sizepolicy>
          </property>
          <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
+          <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
          <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
+          <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
          </property>
          <property name="iconSize">
           <size>
@@ -371,7 +374,54 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <string>Mettre à jour les sites / projets associés</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabServices">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/service.png</normaloff>:/icons/service.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Services additionnels</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QListWidget" name="lstServices">
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnServices">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les services associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
            <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
          </property>
          <property name="iconSize">
@@ -386,7 +436,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
      </widget>
      <widget class="QWidget" name="tabConfig">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../resources/TeraClient.qrc">
         <normaloff>:/icons/config.png</normaloff>:/icons/config.png</iconset>
       </attribute>
       <attribute name="title">
@@ -421,7 +471,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <string>Mettre à jour la configuration</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../../resources/TeraClient.qrc">
            <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
          </property>
          <property name="iconSize">
@@ -446,6 +496,8 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../resources/TeraClient.qrc"/>
+ </resources>
  <connections/>
 </ui>

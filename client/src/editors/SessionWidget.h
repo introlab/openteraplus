@@ -5,12 +5,6 @@
 #include <QTableWidgetItem>
 
 #include "DataEditorWidget.h"
-#include "GlobalMessageBox.h"
-
-#include "TeraSessionStatus.h"
-#include "TeraSessionEvent.h"
-#include "data/DownloadingFile.h"
-#include "dialogs/BaseDialog.h"
 
 namespace Ui {
 class SessionWidget;
@@ -29,8 +23,10 @@ public:
 
     void alwaysShowAssets(const bool &allow);
     void showAssets();
-
     void showTests();
+
+    void setTestTypes(QList<TeraData>* test_types);
+    void enableEmails(const bool& enable);
 
     void connectSignals();
 private:
@@ -39,9 +35,11 @@ private:
     int     m_idProject;
     QString m_baseParticipantUuid;  // Base participant UUID when editing a new session
     bool    m_alwaysShowAssets;       // Allow creation of new assets, even when no assets are present
+    bool    m_allowEmails = false;
 
     //QMap<int, QTableWidgetItem*> m_listDeviceDatas;
     QMap<int, QTableWidgetItem*> m_listSessionEvents;
+    QList<TeraData>*    m_testTypes = nullptr;
 
     void updateControlsState();
     void updateFieldsValue();

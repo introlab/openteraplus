@@ -1,3 +1,6 @@
+#Look for minimum cmake version
+cmake_minimum_required(VERSION 3.21)
+
 if (APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum OS X deployment version")
 endif(APPLE)
@@ -8,15 +11,13 @@ project(OpenTeraPlus)
 #enable_testing()
 #include(CheckFunctionExists)
 
-#Look for minimum cmake version
-cmake_minimum_required(VERSION 3.21)
-
 #DEFINITIONS POLICY, NEW SINCE 3.0.2
 cmake_policy(SET CMP0043 NEW)
+cmake_policy(SET CMP0007 NEW)
 
 # Software version
 SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "2")
+SET(CPACK_PACKAGE_VERSION_MINOR "3")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 add_definitions(-DOPENTERAPLUS_VERSION="${CPACK_PACKAGE_VERSION}" )

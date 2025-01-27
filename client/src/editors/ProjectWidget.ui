@@ -14,99 +14,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/*
-QPushButton#btnConnect{background-color:rgb(80,180,80)}
-QWidget{background-color: rgba(0,0,0,0);color:white;border-radius:5px}
-QWidget#mainWidget{background-color:rgba(128,128,128,25%);}
-QWidget#frmProfile,QWidget#pageProfile{background-color:rgba(108,8,156,25%);}
-QPlainTextEdit,QLineEdit,QListWidget,QComboBox,QTextEdit,QSpinBox{background-color: rgba(255,255,255,50%); color: black;}
-
-QTableWidget{
-background-color: rgba(0,0,0,50%);
-color: white;
-border: 1px solid rgba(255,255,255,50%);
-}
-
-QLabel#lblLastOnline{color:lightblue;}
-QLabel#lblError,QLabel#lblCamMissing,QLabel#lblAudioMissing{color:red; background-color:rgba(255,0,0,30%);}
-
-QLineEdit:!enabled, QListWidget:!enabled,QComboBox:!enabled,QTextEdit:!enabled,QPlainTextEdit:!enabled{background-color: rgba(0,0,0,30%);color:white;border:0}
-QDateEdit::down-arrow:!enabled,QTimeEdit::down-arrow:!enabled,QDateEdit::up-arrow:!enabled,QTimeEdit::up-arrow:!enabled,QComboBox::drop-down:!enabled{background-color:rgba(0,0,0,0%);}
-
-QTextEdit#txtProfile{background-color: rgba(255,255,255,80%);color:black;border:0}
-QTextEdit:!enabled#txtProfile{background-color: rgba(255,255,255,60%);color:black;border:0}
-
-QFrame#frmSelUser{background-color:rgba(100,100,200,50%);}
-QFrame#frmAudio,QFrame#frmCam1,QFrame#frmCam2,QFrame#frmSensors,QFrame#frmWebRTC,QFrame#frmVirtualCam,QFrame#frmExternalPrograms{background-color:rgba(100,100,200,35%);}
-
-QCheckBox::indicator:unchecked:!enabled { background-color:rgba(128,0,0,100%);}
-QCheckBox::indicator:checked:!enabled { background-color:green;}
-QCheckBox::indicator:unchecked{ background-color:red;border-radius:3px;}
-QCheckBox::indicator:checked {background-color:rgb(0,255,0);border-radius:3px;}
-QCheckBox:checked{color:lightgreen;background-color:rgba(0,0,0,0%);}
-QCheckBox:!checked{color:red;background-color:rgba(0,0,0,0%);}
-
-QPushButton{background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #2198c0, stop: 1 #0d5ca6);}
-QPushButton:checked{background-color:rgb(128,128,128); border:1px solid rgba(255,255,255,50%);}
-QPushButton:hover,QPushButton:checked{background-color:  rgba(255,255,255,75%);color:black;}
-
-QToolButton:hover{background-color:  rgba(255,255,255,50);}
-
-QTreeWidget::branch:closed:has-children:has-siblings  {
-            border-image: none;
-            image: url(:/pictures/controls/branch_closed.png);
-    }
-     
-    QTreeView::branch:open:has-children:!has-siblings,
-    QTreeView::branch:open:has-children:has-siblings   {
-            border-image: none;
-            image:url(:/pictures/controls/branch_opened.png);
-    }
-
-QWidget#lineOnline{background-color:blue;}
-QWidget#lineOffline{background-color:red;}
-QWidget#lineBoth{background-color:rgb(255,0,255);}
-
-
-QTabWidget::pane { 
-
-	background-color: rgba(128,128,140,25%);
-	border-radius: 5px;
-    border: 2px solid rgba(128,128,140,50%);
- }
-
- QTabWidget::tab-bar {
-     left: 5px; 
- }
-
-
- QTabBar::tab,QTableWidget::tab,QHeaderView::section {
-     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0  rgba(128,128,140,50%),  stop: 1.0  rgba(128,128,140,25%));
-     border: 2px solid  rgba(128,128,140,50%);
-     border-bottom: 0px;
-     border-top-left-radius: 4px;
-     border-top-right-radius: 4px;
-     padding: 2px;
-min-height:25px;
- }
-
- QTabBar::tab:selected, QTabBar::tab:hover {
-
-background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0  rgba(128,128,140,70%),  stop: 1.0  rgba(128,128,140,50%));
- }
-
- QTabBar::tab:selected {
-     border-color:rgba(128,128,140,60%);
-     border-bottom-color:rgba(128,128,140,60%); 
-
- QTabBar::tab:!selected {
-     margin-top: 2px; 
- }
-*/
-
-</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -162,7 +70,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -203,7 +111,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            </property>
           </widget>
          </item>
-         <item alignment="Qt::AlignTop">
+         <item alignment="Qt::AlignmentFlag::AlignTop">
           <widget class="QToolButton" name="btnEdit">
            <property name="minimumSize">
             <size>
@@ -231,7 +139,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
          </item>
         </layout>
        </item>
-       <item alignment="Qt::AlignTop">
+       <item alignment="Qt::AlignmentFlag::AlignTop">
         <widget class="QFrame" name="frameButtons">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -330,11 +238,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                <string>XXXX Séances</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignCenter</set>
+               <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
              </widget>
             </item>
-            <item row="0" column="2" alignment="Qt::AlignHCenter">
+            <item row="0" column="2" alignment="Qt::AlignmentFlag::AlignHCenter">
              <widget class="QLabel" name="icoParticipant">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -365,7 +273,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               </property>
              </widget>
             </item>
-            <item row="1" column="0" alignment="Qt::AlignHCenter">
+            <item row="1" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
              <widget class="QLabel" name="lblGroups">
               <property name="text">
                <string>XXXX Groupes</string>
@@ -384,11 +292,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                <string>XXXX Participants</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignCenter</set>
+               <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
              </widget>
             </item>
-            <item row="0" column="1" alignment="Qt::AlignHCenter">
+            <item row="0" column="1" alignment="Qt::AlignmentFlag::AlignHCenter">
              <widget class="ClickableLabel" name="icoUsers">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -419,7 +327,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               </property>
              </widget>
             </item>
-            <item row="0" column="0" alignment="Qt::AlignHCenter">
+            <item row="0" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
              <widget class="QLabel" name="icoGroups">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -462,11 +370,11 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                <string>XXXX Utilisateurs</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignCenter</set>
+               <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
              </widget>
             </item>
-            <item row="0" column="3" alignment="Qt::AlignHCenter">
+            <item row="0" column="3" alignment="Qt::AlignmentFlag::AlignHCenter">
              <widget class="ClickableLabel" name="icoSessions">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -500,7 +408,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
             <item row="0" column="4">
              <spacer name="horizontalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -515,7 +423,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
           <item>
            <widget class="Line" name="line">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -530,10 +438,10 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                </sizepolicy>
               </property>
               <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
+               <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
               </property>
               <property name="selectionBehavior">
-               <enum>QAbstractItemView::SelectRows</enum>
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
               </property>
               <property name="iconSize">
                <size>
@@ -603,10 +511,10 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <item>
         <widget class="QFrame" name="frameActions">
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::Shape::StyledPanel</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Shadow::Raised</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
@@ -640,7 +548,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </size>
             </property>
             <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
+             <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
@@ -675,7 +583,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </size>
             </property>
             <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
+             <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
@@ -707,14 +615,14 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              </size>
             </property>
             <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
+             <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer_4">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -741,7 +649,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <item>
         <widget class="QTabWidget" name="tabManageUsers">
          <property name="tabPosition">
-          <enum>QTabWidget::West</enum>
+          <enum>QTabWidget::TabPosition::West</enum>
          </property>
          <property name="currentIndex">
           <number>1</number>
@@ -764,16 +672,16 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <item>
             <widget class="QFrame" name="frameManageUsers">
              <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+              <enum>QFrame::Shape::StyledPanel</enum>
              </property>
              <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
+              <enum>QFrame::Shadow::Raised</enum>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_7">
               <item>
                <spacer name="horizontalSpacer_5">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -815,7 +723,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <item>
             <widget class="QTableWidget" name="tableUsers">
              <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
+              <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
              </property>
              <property name="showDropIndicator" stdset="0">
               <bool>false</bool>
@@ -824,10 +732,10 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <bool>false</bool>
              </property>
              <property name="selectionMode">
-              <enum>QAbstractItemView::NoSelection</enum>
+              <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
              </property>
              <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectRows</enum>
+              <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
              </property>
              <property name="iconSize">
               <size>
@@ -881,7 +789,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
              <item>
               <spacer name="horizontalSpacer_3">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -948,7 +856,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <string>La modification des accès est désactivée pour les groupes utilisateurs dont l'accès au projet provient du site (i.e. administrateurs du site associé au projet)</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignCenter</set>
+              <set>Qt::AlignmentFlag::AlignCenter</set>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -958,7 +866,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <item>
             <widget class="QTableWidget" name="tableUserGroups">
              <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
+              <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
              </property>
              <property name="showDropIndicator" stdset="0">
               <bool>false</bool>
@@ -967,10 +875,10 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
               <bool>false</bool>
              </property>
              <property name="selectionMode">
-              <enum>QAbstractItemView::NoSelection</enum>
+              <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
              </property>
              <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectRows</enum>
+              <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
              </property>
              <property name="iconSize">
               <size>
@@ -1040,6 +948,70 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabDevices">
+      <attribute name="icon">
+       <iconset resource="../../resources/TeraClient.qrc">
+        <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Appareils</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QTreeWidget" name="treeDevices">
+         <property name="editTriggers">
+          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="indentation">
+          <number>0</number>
+         </property>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnUpdateDevices">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Mettre à jour les appareils associés</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/TeraClient.qrc">
+           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tabSessionTypes">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
@@ -1052,7 +1024,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <item>
         <widget class="QListWidget" name="lstSessionTypes">
          <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
          </property>
          <property name="iconSize">
           <size>
@@ -1102,7 +1074,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <item>
         <widget class="QListWidget" name="lstTestTypes">
          <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
          </property>
          <property name="iconSize">
           <size>
@@ -1140,67 +1112,17 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabDevices">
+     <widget class="QWidget" name="tabInvitations">
       <attribute name="icon">
        <iconset resource="../../resources/TeraClient.qrc">
-        <normaloff>:/icons/device.png</normaloff>:/icons/device.png</iconset>
+        <normaloff>:/icons/test.png</normaloff>:/icons/test.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Appareils</string>
+       <string>Invitations</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout_13">
        <item>
-        <widget class="QTreeWidget" name="treeDevices">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="indentation">
-          <number>0</number>
-         </property>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string notr="true">1</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnUpdateDevices">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string>Mettre à jour les appareils associés</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resources/TeraClient.qrc">
-           <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="TestInvitationsWidget" name="wdgInvitations" native="true"/>
        </item>
       </layout>
      </widget>
@@ -1216,7 +1138,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
        <item>
         <widget class="QTabWidget" name="tabManageServices">
          <property name="tabPosition">
-          <enum>QTabWidget::West</enum>
+          <enum>QTabWidget::TabPosition::West</enum>
          </property>
          <property name="currentIndex">
           <number>0</number>
@@ -1239,7 +1161,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
            <item>
             <widget class="QListWidget" name="lstServices">
              <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
+              <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
              </property>
              <property name="iconSize">
               <size>
@@ -1284,7 +1206,7 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
     </widget>
    </item>
   </layout>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -1298,6 +1220,12 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
  </widget>
  <customwidgets>
   <customwidget>
+   <class>TeraForm</class>
+   <extends>QWidget</extends>
+   <header>TeraForm.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>widgets/ClickableLabel.h</header>
@@ -1307,9 +1235,9 @@ background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
    </slots>
   </customwidget>
   <customwidget>
-   <class>TeraForm</class>
+   <class>TestInvitationsWidget</class>
    <extends>QWidget</extends>
-   <header>TeraForm.h</header>
+   <header>widgets/TestInvitationsWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

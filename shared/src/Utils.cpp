@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include <QRegularExpression>
+#include <QOperatingSystemVersion>
 
 Utils::Utils(QObject *parent) : QObject(parent)
 {
@@ -79,6 +80,22 @@ QString Utils::getMachineUniqueId()
     }
 
     return machine_id;
+}
+
+QString Utils::getOsName()
+{
+    QOperatingSystemVersion os = QOperatingSystemVersion::current();
+    return os.name();
+}
+
+QString Utils::getOsVersion()
+{
+    QOperatingSystemVersion os = QOperatingSystemVersion::current();
+    int major = os.majorVersion();
+    if (os.type() == QOperatingSystemVersion::Windows && os.microVersion() > 20000){
+        major = 11; // Windows 11 still labels itself as major version 10...
+    }
+    return QString::number(major) + "." + QString::number(os.minorVersion()) + "." + QString::number(os.microVersion());
 }
 
 void Utils::inStringUnicodeConverter(QString *str)

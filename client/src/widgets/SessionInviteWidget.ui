@@ -36,7 +36,7 @@
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
-      <string>Ajouter des invités à la séance</string>
+      <string>Ajouter des invités</string>
      </property>
      <property name="icon">
       <iconset resource="../../resources/TeraClient.qrc">
@@ -56,10 +56,10 @@
    <item>
     <widget class="QFrame" name="frameSelector">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="leftMargin">
@@ -117,7 +117,7 @@
            <bool>false</bool>
           </property>
           <property name="popupMode">
-           <enum>QToolButton::InstantPopup</enum>
+           <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
           </property>
          </widget>
         </item>
@@ -152,7 +152,7 @@
            <bool>true</bool>
           </property>
           <property name="popupMode">
-           <enum>QToolButton::InstantPopup</enum>
+           <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
           </property>
          </widget>
         </item>
@@ -187,7 +187,7 @@
            <bool>true</bool>
           </property>
           <property name="popupMode">
-           <enum>QToolButton::InstantPopup</enum>
+           <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
           </property>
          </widget>
         </item>
@@ -225,7 +225,7 @@
            <bool>false</bool>
           </property>
           <property name="popupMode">
-           <enum>QToolButton::InstantPopup</enum>
+           <enum>QToolButton::ToolButtonPopupMode::InstantPopup</enum>
           </property>
          </widget>
         </item>
@@ -323,7 +323,7 @@
       <item>
        <widget class="QListWidget" name="lstInvitables">
         <property name="selectionMode">
-         <enum>QAbstractItemView::ExtendedSelection</enum>
+         <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
         </property>
         <property name="iconSize">
          <size>
@@ -368,10 +368,10 @@
    <item>
     <widget class="QFrame" name="frameInvitees">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="leftMargin">
@@ -386,20 +386,20 @@
       <item>
        <widget class="QLabel" name="lblInvitees">
         <property name="text">
-         <string>Invités dans la séance</string>
+         <string>Invités</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QTreeWidget" name="treeInvitees">
         <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
+         <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
         </property>
         <property name="showDropIndicator" stdset="0">
          <bool>false</bool>
         </property>
         <property name="selectionMode">
-         <enum>QAbstractItemView::ExtendedSelection</enum>
+         <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
         </property>
         <property name="iconSize">
          <size>
@@ -454,31 +454,33 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="rightMargin">
-         <number>6</number>
-        </property>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="lblCount">
-          <property name="text">
-           <string>0 / 7</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QFrame" name="frameCount">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblCount">
+           <property name="text">
+            <string>0 / 7</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnRemove">

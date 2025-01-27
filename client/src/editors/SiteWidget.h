@@ -6,7 +6,6 @@
 #include <QTableWidgetItem>
 
 #include "DataEditorWidget.h"
-#include "GlobalMessageBox.h"
 #include "dialogs/BaseDialog.h"
 
 namespace Ui {
@@ -31,7 +30,9 @@ private slots:
     void processDeviceSiteAccessReply(QList<TeraData>device_sites, QUrlQuery reply_query);
     void processSessionTypeSiteAccessReply(QList<TeraData>st_sites, QUrlQuery reply_query);
     void processTestTypeSiteAccessReply(QList<TeraData>tt_sites, QUrlQuery reply_query);
-    void processStatsReply(TeraData stats, QUrlQuery reply_query);   
+    void processStatsReply(TeraData stats, QUrlQuery reply_query);
+
+    void siteValueHasChanged(QWidget* widget, QVariant value);
 
     void processPostOKReply(QString path);
 
@@ -62,11 +63,14 @@ private slots:
 
     void on_btnUpdateTestTypes_clicked();
 
+    void on_tabManageServices_currentChanged(int index);
+
 private:
     Ui::SiteWidget *ui;
 
     QMap<int, QListWidgetItem*>  m_listProjects_items;
     QMap<int, QListWidgetItem*>  m_listServices_items;
+    QHash<int, QString>          m_services_keys;
     QMap<int, QListWidgetItem*>  m_listServicesSites_items;
     QMap<int, QTableWidgetItem*> m_tableUserGroups_items;
 
@@ -78,6 +82,8 @@ private:
 
     QMap<int, QListWidgetItem*>  m_listTestTypeSites_items;
     QMap<int, QListWidgetItem*>  m_listTestTypes_items;
+
+    QHash<int, QWidget*>         m_services_tabs;
 
     BaseDialog*                  m_diag_editor;
 
@@ -95,6 +101,8 @@ private:
     void updateControlsState();
     void updateFieldsValue();
     bool validateData();
+
+    void addServiceTab(const TeraData& service_site);
 
     bool isSiteAdmin();
 

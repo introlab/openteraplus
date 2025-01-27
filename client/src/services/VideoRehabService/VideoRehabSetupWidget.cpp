@@ -51,6 +51,7 @@ void VideoRehabSetupWidget::initUI()
 
     //// Web engine setup
     m_webEngine = new QWebEngineView(ui->wdgWebEngine);
+    m_webEngine->setContextMenuPolicy(Qt::NoContextMenu);
     connect(m_webEngine, &QWebEngineView::loadFinished, this, &VideoRehabSetupWidget::webPageLoaded);
 
     //Create a new page
@@ -236,7 +237,11 @@ void VideoRehabSetupWidget::refreshWebpageSettings()
     // Update mirror
     bool mirror = ui->widgetSetup->getFieldValue("mirror").toBool();
     m_webPage->getSharedObject()->setLocalMirror(mirror);
-    m_webPage->getSharedObject()->getLocalMirror();
+    //m_webPage->getSharedObject()->getLocalMirror();
+
+    // Update blur
+    bool blur = ui->widgetSetup->getFieldValue("blur").toBool();
+    m_webPage->getSharedObject()->setLocalBlur(blur);
 
 
 }

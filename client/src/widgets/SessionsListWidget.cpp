@@ -112,6 +112,16 @@ void SessionsListWidget::enableFileTransfers(const bool &enable)
     m_allowFileTransfers = enable;
 }
 
+void SessionsListWidget::enableTestInvitations(QList<TeraData> *test_types)
+{
+    m_testTypes = test_types;
+}
+
+void SessionsListWidget::enableEmails(const bool &enable)
+{
+    m_allowEmails = enable;
+}
+
 void SessionsListWidget::setSessionsCount(const int &count)
 {
     m_totalSessions = count;
@@ -763,11 +773,16 @@ void SessionsListWidget::updateSession(const TeraData *session, const bool &auto
 
     // Resume session
     if (btnResume){
+        btnResume->hide();
         if (session->hasFieldName("session_start_datetime")){
             QDateTime session_date = session->getFieldValue("session_start_datetime").toDateTime().toLocalTime();
-            btnResume->setVisible(session_date.date() == QDate::currentDate());
-        }else{
-            btnResume->hide();
+            // Check if session type can be resumed
+            int id_session_type = session->getFieldValue("id_session_type").toInt();
+            TeraData* session_type = m_ids_session_types[id_session_type];
+            if (session_type){
+                if (session_type->getFieldValue("session_type_online").toBool() == true)
+                    btnResume->setVisible(session_date.date() == QDate::currentDate());
+            }
         }
     }
 
@@ -798,10 +813,12 @@ void SessionsListWidget::showSessionEditor(TeraData *session_info)
     session_info->setFieldValue("id_project", m_currentIdProject);
     SessionWidget* ses_widget = new SessionWidget(m_comManager, session_info, m_diag_editor);
     ses_widget->alwaysShowAssets(m_allowFileTransfers);
+    ses_widget->setTestTypes(m_testTypes);
     if (m_currentSessionShowAssets)
         ses_widget->showAssets();
     if (m_currentSessionShowTests)
         ses_widget->showTests();
+    ses_widget->enableEmails(m_allowEmails);
 
     m_diag_editor->setCentralWidget(ses_widget);
 

@@ -1,6 +1,9 @@
 #include "DanceConfigWidget.h"
 #include "ui_DanceConfigWidget.h"
 
+#include "DanceWebAPI.h"
+#include "WebAPI.h"
+
 DanceConfigWidget::DanceConfigWidget(ComManager *comManager, int projectId, QString participantUuid, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DanceConfigWidget),
@@ -20,20 +23,6 @@ DanceConfigWidget::DanceConfigWidget(ComManager *comManager, int projectId, QStr
     ui->wdgMessages->hide();
 
     connectSignals();
-
-    // Setup widget according to setted values
-    if (m_uuidParticipant.isEmpty()){
-        // Hide the playlist tab if no participant specified
-        ui->tabMain->removeTab(ui->tabMain->indexOf(ui->tabPlaylist));
-        // Refresh videos in library
-        queryVideoLibrary();
-    }else{
-        // Query session types
-        QUrlQuery query;
-        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
-        m_comManager->doGet(WEB_SESSIONTYPE_PATH, query);
-    }
-
 }
 
 DanceConfigWidget::~DanceConfigWidget()
@@ -47,6 +36,26 @@ DanceConfigWidget::~DanceConfigWidget()
 
     if (m_transferDialog){
         m_transferDialog->deleteLater();
+    }
+}
+
+void DanceConfigWidget::refresh()
+{
+    if (!m_danceComManager->isReady()){
+        m_refreshRequested = true;
+        return;
+    }
+    // Setup widget according to setted values
+    if (m_uuidParticipant.isEmpty()){
+        // Hide the playlist tab if no participant specified
+        ui->tabMain->removeTab(ui->tabMain->indexOf(ui->tabPlaylist));
+        // Refresh videos in library
+        queryVideoLibrary();
+    }else{
+        // Query session types
+        QUrlQuery query;
+        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
+        m_comManager->doGet(WEB_SESSIONTYPE_PATH, query);
     }
 }
 
@@ -243,6 +252,16 @@ void DanceConfigWidget::danceComTransferAborted(TransferringFile *file)
     }
 }
 
+void DanceConfigWidget::danceComReady(bool ready)
+{
+    if (ready){
+        if (m_refreshRequested){
+            m_refreshRequested = false;
+            refresh();
+        }
+    }
+}
+
 void DanceConfigWidget::transferDialogCompleted()
 {
     if (m_transferDialog){
@@ -302,6 +321,7 @@ void DanceConfigWidget::nextMessageWasShown(Message current_message)
 
 void DanceConfigWidget::connectSignals()
 {
+    connect(m_danceComManager, &DanceComManager::readyChanged, this, &DanceConfigWidget::danceComReady);
     connect(m_danceComManager, &DanceComManager::videosReceived, this, &DanceConfigWidget::processVideosReply);
     connect(m_danceComManager, &DanceComManager::playlistReceived, this, &DanceConfigWidget::processPlaylistReply);
 

@@ -5,9 +5,9 @@
 #include <QClipboard>
 #include <QThread>
 #include <QDesktopServices>
-#include "GlobalMessageBox.h"
 
 #include "managers/ComManager.h"
+#include "services/EmailService/EmailComManager.h"
 
 namespace Ui {
 class EmailInviteDialog;
@@ -24,18 +24,30 @@ public:
     void setFieldValues(const QHash<QString, QString> &fields);
 
 private slots:
+    void onEmailComReady(bool ready);
+
     void on_btnOk_clicked();
-
     void on_btnCopy_clicked();
-
     void on_btnSendLocalEmail_clicked();
 
+    void processTemplateReply(const QJsonObject email_template);
+    void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
+    void emailSentSuccess();
+
+    void on_cmbLanguage_currentIndexChanged(int index);
+
+    void on_btnSend_clicked();
+
 private:
+    void connectSignals();
+    void initLanguages();
+    void queryTemplate();
+
     Ui::EmailInviteDialog *ui;
 
-    ComManager*     m_comManager;
-    TeraData*       m_participant;
-    QHash<QString, QString> m_fields;
+    ComManager*         m_comManager;
+    EmailComManager*    m_emailComManager;
+    TeraData*           m_participant;
 };
 
 #endif // EMAILINVITEDIALOG_H

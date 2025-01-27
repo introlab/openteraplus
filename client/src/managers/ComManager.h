@@ -47,6 +47,7 @@ public:
     ~ComManager();
 
     void connectToServer(QString username, QString password);
+    void connectToServer(const QString &token, const QString &websocket_url, const QString &user_uuid);
     void disconnectFromServer();
 
     bool processNetworkReply(QNetworkReply* reply);
@@ -84,6 +85,7 @@ protected:
     bool handleFormReply(const QUrlQuery& reply_query, const QString& reply_data);
     bool handleVersionsReply(const QJsonDocument &version_data);
     bool handleTokenRefreshReply(const QJsonDocument &refresh_data);
+    bool handleServerSettingsReply(const QJsonDocument &settings_data);
 
     void updateCurrentUser(const TeraData& user_data);
     void updateCurrentPrefs(const TeraData& user_prefs);
@@ -124,6 +126,7 @@ signals:
     void testTypesProjectsReceived(QList<TeraData> ttp_list, QUrlQuery reply_query);
     void testTypesSitesReceived(QList<TeraData> tts_list, QUrlQuery reply_query);
     void testsReceived(QList<TeraData> tests_list, QUrlQuery reply_query);
+    void testInvitationsReceived(QList<TeraData> invitations, QUrlQuery reply_query);
     void projectsReceived(QList<TeraData> projects_list, QUrlQuery reply_query);
     void devicesReceived(QList<TeraData> devices_list, QUrlQuery reply_query);
     void participantsReceived(QList<TeraData> participants_list, QUrlQuery reply_query);
@@ -136,6 +139,7 @@ signals:
     void deviceParticipantsReceived(QList<TeraData> device_participants_list, QUrlQuery reply_query);
     void sessionTypesProjectsReceived(QList<TeraData> session_types_projects_list, QUrlQuery reply_query);
     void sessionTypesSitesReceived(QList<TeraData> session_types_sites_list, QUrlQuery reply_query);
+    void sessionTypesServicesReceived(QList<TeraData> session_types_services_list, QUrlQuery reply_query);
     void sessionEventsReceived(QList<TeraData> events_list, QUrlQuery reply_query);
     void deviceTypesReceived(QList<TeraData> device_types_list, QUrlQuery reply_query);
     void deviceSubtypesReceived(QList<TeraData> device_subtypes_list, QUrlQuery reply_query);
@@ -164,7 +168,8 @@ signals:
     void sessionError(QString error);
 
     // Version management
-    void newVersionAvailable(QString version, QString download_url);   
+    void newVersionAvailable(QString version, QString download_url);
+    void serverSettingsReceived(QVariantHash settings);
 
 private slots:
     // Network

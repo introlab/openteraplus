@@ -34,7 +34,7 @@ void TeraPreferences::load(const TeraData &pref_obj)
 void TeraPreferences::clear()
 {
     // Reset default values
-    m_language = "fr";
+    m_language = "";
     m_notifySounds = true;
     m_isSet = false;
 
@@ -69,6 +69,12 @@ bool TeraPreferences::isSet() const
 
 QString TeraPreferences::getLanguage() const
 {
+    if (m_language.isEmpty()){
+        QString sys_language = QLocale(QLocale::system().language()).bcp47Name(); // Default language
+        if (sys_language != "fr")
+            sys_language = "en"; // Fallback to English by default
+        return sys_language;
+    }
     return m_language;
 }
 

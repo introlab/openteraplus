@@ -16,6 +16,11 @@ endif (MSVC)
 
 find_package(Qt6 REQUIRED COMPONENTS LinguistTools Multimedia WebSockets Network)
 
+qt_standard_project_setup(
+    I18N_SOURCE_LANGUAGE fr
+    I18N_TRANSLATED_LANGUAGES en fr
+)
+
 # Drivers first
 add_subdirectory(drivers)
 
@@ -31,8 +36,14 @@ set(headers
     data/TransferringFile.h
     data/UploadingFile.h
     data/IconMenuDelegate.h
+
     # Librairies
     libs/AudioVideoUtils.h
+    libs/WebPageRequestInterceptor.h
+    libs/highlighter/languagedata.h
+    libs/highlighter/qsourcehighliter.h
+    libs/highlighter/qsourcehighliterthemes.h
+
     # Main Windows
     main/MainWindow.h
     # Managers
@@ -42,17 +53,20 @@ set(headers
     managers/WebSocketManager.h
     managers/BaseComManager.h
     managers/AssetComManager.h
+
     # Dialogs
-    dialogs/LoginDialog.h
+    dialogs/BaseDialog.h
+    dialogs/CleanUpDialog.h
+    dialogs/DesktopShareDialog.h
+    dialogs/DeviceAssignDialog.h
     dialogs/EmailInviteDialog.h
+    dialogs/FileUploaderDialog.h
     dialogs/GeneratePasswordDialog.h
     dialogs/PasswordStrengthDialog.h
-    dialogs/TransferProgressDialog.h
-    dialogs/BaseDialog.h
-    dialogs/DeviceAssignDialog.h
-    dialogs/CleanUpDialog.h
-    dialogs/FileUploaderDialog.h
     dialogs/QRCodeDialog.h
+    dialogs/TestInvitationDialog.h
+    dialogs/TransferProgressDialog.h
+
     # Editors
     editors/DataEditorWidget.h    
     editors/DataListWidget.h
@@ -73,16 +87,27 @@ set(headers
     editors/UserGroupWidget.h
     editors/UserSummaryWidget.h
     editors/UserWidget.h
-    # Wizards
-    wizards/BaseWizard.h
-    wizards/UserWizard.h
+
     # Services
+    services/BaseServiceComManager.h
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
     services/BaseServiceSetupWidget.h
     services/DanceService/DanceConfigWidget.h
     services/DanceService/DanceWebAPI.h
     services/DanceService/DanceComManager.h
+    services/DashboardsService/DashboardsComManager.h
+    services/DashboardsService/DashboardsConfigWidget.h
+    services/DashboardsService/DashboardsWebAPI.h
+    services/EmailService/EmailServiceConfigWidget.h
+    services/EmailService/EmailComManager.h
+    services/EmailService/EmailServiceWebAPI.h
+    services/EmailService/EmailTemplateWidget.h
+    services/SurveyService/SurveyComManager.h
+    services/SurveyService/SurveyEditorDialog.h
+    services/SurveyService/SurveyServiceConfigWidget.h
+    services/SurveyService/SurveyServiceWebAPI.h
+
     # Widgets
     widgets/SessionInviteWidget.h
     widgets/OnlineManagerWidget.h
@@ -101,6 +126,8 @@ set(headers
     widgets/QRWidget.h
     widgets/LogViewWidget.h
     widgets/SessionsListWidget.h
+    widgets/StandardLoginWidget.h
+    widgets/TestInvitationsWidget.h
 
 )
 
@@ -113,6 +140,8 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         dialogs/JoinSessionDialog.h
         dialogs/AboutDialog.h
         dialogs/AboutDialogPage.h
+        dialogs/LoginDialog.h
+        dialogs/WebLoginDialog.h
         # Widgets
         widgets/InSessionWidget.h
         # Services
@@ -139,6 +168,7 @@ set(srcs
     main.cpp
     ClientApp.cpp
     GlobalMessageBox.cpp
+
     # Data structures
     data/DownloadingFile.cpp
     data/GlobalEvent.cpp
@@ -147,10 +177,17 @@ set(srcs
     data/TransferringFile.cpp
     data/UploadingFile.cpp
     data/IconMenuDelegate.cpp
+
     # Librairies
     libs/AudioVideoUtils.cpp
+    libs/WebPageRequestInterceptor.cpp
+    libs/highlighter/languagedata.cpp
+    libs/highlighter/qsourcehighliter.cpp
+    libs/highlighter/qsourcehighliterthemes.cpp
+
     # Main Windows
     main/MainWindow.cpp
+
     # Managers
     managers/ConfigManagerClient.cpp
     managers/ComManager.cpp
@@ -158,17 +195,20 @@ set(srcs
     managers/ParticipantComManager.cpp
     managers/BaseComManager.cpp
     managers/AssetComManager.cpp
+
     # Dialogs
-    dialogs/LoginDialog.cpp
-    dialogs/DeviceAssignDialog.cpp
-    dialogs/TransferProgressDialog.cpp
     dialogs/BaseDialog.cpp
+    dialogs/CleanUpDialog.cpp
+    dialogs/DesktopShareDialog.cpp
+    dialogs/DeviceAssignDialog.cpp
     dialogs/EmailInviteDialog.cpp
+    dialogs/FileUploaderDialog.cpp
     dialogs/GeneratePasswordDialog.cpp
     dialogs/PasswordStrengthDialog.cpp
-    dialogs/CleanUpDialog.cpp
-    dialogs/FileUploaderDialog.cpp
     dialogs/QRCodeDialog.cpp
+    dialogs/TestInvitationDialog.cpp
+    dialogs/TransferProgressDialog.cpp
+
     # Editors
     editors/DataEditorWidget.cpp
     editors/DataListWidget.cpp    
@@ -189,15 +229,23 @@ set(srcs
     editors/UserGroupWidget.cpp
     editors/UserSummaryWidget.cpp
     editors/UserWidget.cpp
-    # Wizards
-    wizards/UserWizard.cpp
-    wizards/BaseWizard.cpp
+
     # Services
+    services/BaseServiceComManager.cpp
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
     services/BaseServiceSetupWidget.cpp
     services/DanceService/DanceConfigWidget.cpp
     services/DanceService/DanceComManager.cpp
+    services/DashboardsService/DashboardsConfigWidget.cpp
+    services/DashboardsService/DashboardsComManager.cpp
+    services/EmailService/EmailComManager.cpp
+    services/EmailService/EmailServiceConfigWidget.cpp
+    services/EmailService/EmailTemplateWidget.cpp
+    services/SurveyService/SurveyComManager.cpp
+    services/SurveyService/SurveyEditorDialog.cpp
+    services/SurveyService/SurveyServiceConfigWidget.cpp
+
     # Widgets
     widgets/ProjectNavigator.cpp
     widgets/ProjectNavigatorTree.cpp
@@ -216,19 +264,25 @@ set(srcs
     widgets/QRWidget.cpp
     widgets/LogViewWidget.cpp
     widgets/SessionsListWidget.cpp
+    widgets/StandardLoginWidget.cpp
+    widgets/TestInvitationsWidget.cpp
 )
 
 #Additional srcs not for WebAssembly
 if(NOT DEFINED OPENTERA_WEBASSEMBLY)
     set(srcs ${srcs}
         # Dialogs
-        dialogs/StartSessionDialog.cpp
-        dialogs/SessionLobbyDialog.cpp
-        dialogs/JoinSessionDialog.cpp
         dialogs/AboutDialog.cpp
         dialogs/AboutDialogPage.cpp
+        dialogs/JoinSessionDialog.cpp
+        dialogs/StartSessionDialog.cpp
+        dialogs/SessionLobbyDialog.cpp
+        dialogs/LoginDialog.cpp
+        dialogs/WebLoginDialog.cpp
+
         # Widgets
         widgets/InSessionWidget.cpp
+
         # Services
         services/VideoRehabService/ScreenController.cpp
         services/VideoRehabService/VideoRehabWidget.cpp
@@ -240,6 +294,7 @@ if(NOT DEFINED OPENTERA_WEBASSEMBLY)
         services/VideoRehabService/WebSocket/SharedObject.cpp
         services/VideoRehabService/WebSocket/WebSocketClientWrapper.cpp
         services/VideoRehabService/WebSocket/WebSocketTransport.cpp
+
         # Kits
         kit/KitConfigDialog.cpp
         kit/KitConfigManager.cpp
@@ -254,21 +309,26 @@ SET(uis
     # Main Windows
     main/MainWindow.ui
     main/MainKitWindow.ui
+
     # Dialogs
-    dialogs/LoginDialog.ui
-    dialogs/DeviceAssignDialog.ui
-    dialogs/TransferProgressDialog.ui
-    dialogs/BaseDialog.ui
-    dialogs/StartSessionDialog.ui
-    dialogs/SessionLobbyDialog.ui
-    dialogs/JoinSessionDialog.ui
-    dialogs/EmailInviteDialog.ui
     dialogs/AboutDialog.ui
-    dialogs/GeneratePasswordDialog.ui
-    dialogs/PasswordStrengthDialog.ui
+    dialogs/BaseDialog.ui
     dialogs/CleanUpDialog.ui
+    dialogs/DeviceAssignDialog.ui
+    dialogs/DesktopShareDialog.ui
+    dialogs/EmailInviteDialog.ui
     dialogs/FileUploaderDialog.ui
+    dialogs/JoinSessionDialog.ui
+    dialogs/GeneratePasswordDialog.ui
+    dialogs/LoginDialog.ui
+    dialogs/PasswordStrengthDialog.ui
     dialogs/QRCodeDialog.ui
+    dialogs/SessionLobbyDialog.ui
+    dialogs/StartSessionDialog.ui
+    dialogs/TestInvitationDialog.ui
+    dialogs/TransferProgressDialog.ui
+    dialogs/WebLoginDialog.ui
+
     # Editors
     editors/DataListWidget.ui
     editors/DeviceSubTypeWidget.ui
@@ -288,13 +348,20 @@ SET(uis
     editors/UserGroupWidget.ui
     editors/UserSummaryWidget.ui
     editors/UserWidget.ui
+
     # Services
+    services/DanceService/DanceConfigWidget.ui
+    services/DashboardsService/DashboardsConfigWidget.ui
+    services/EmailService/EmailServiceConfigWidget.ui
+    services/EmailService/EmailTemplateWidget.ui
+    services/SurveyService/SurveyEditorDialog.ui
+    services/SurveyService/SurveyServiceConfigWidget.ui
     services/VideoRehabService/VideoRehabWidget.ui
     services/VideoRehabService/VideoRehabSetupWidget.ui
     services/VideoRehabService/VideoRehabToolsWidget.ui
     services/VideoRehabService/VideoRehabVirtualCamSetupDialog.ui
     services/VideoRehabService/VideoRehabPTZDialog.ui
-    services/DanceService/DanceConfigWidget.ui
+
     # Widgets
     widgets/ProjectNavigator.ui
     widgets/notification.ui
@@ -308,6 +375,9 @@ SET(uis
     widgets/TestsWidget.ui
     widgets/LogViewWidget.ui
     widgets/SessionsListWidget.ui
+    widgets/StandardLoginWidget.ui
+    widgets/TestInvitationsWidget.ui
+
     # Kits
     kit/KitConfigDialog.ui
     kit/KitInSessionDialog.ui
@@ -325,43 +395,80 @@ QT6_WRAP_UI(moc_uis ${uis})
 #This will generate moc_* for Qt
 QT6_WRAP_CPP(moc_srcs ${headers})
 
-# generate rules for building source files from the resources
-QT6_ADD_RESOURCES(client_qrc ${qrcs})
-
-
-
 set(translation_files_srcs
         ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
         ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
 )
 
-
-#Translation files, this is done manually to avoid removing the file when doing make clean
-# Add -noobsolete parameter to remove obsoleted translations
-add_custom_target(openteraplus_en_ts
-        COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${moc_uis}
-)
-
-add_custom_target(openteraplus_fr_ts
-        COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${moc_uis}
-)
-
-#set qm files output directory
+# #set qm files output directory
 set_source_files_properties(${translation_files_srcs} PROPERTIES OUTPUT_LOCATION ${TERACLIENT_RES_INCLUDES}/translations/)
 
-#Build this target to update translations
-add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
-add_custom_target(translation_files SOURCES ${translation_files_srcs})
+qt_add_lupdate(
+    TS_FILES
+    ${translation_files_srcs}
 
-#Generate qm files from .ts files
-qt6_add_translation(qm_files ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+    SOURCES
+    ${srcs}
+    ${headers}
+    ${moc_uis}
 
+    SOURCE_TARGETS opentera_shared
+)
+
+qt_add_lrelease(
+    TS_FILES ${translation_files_srcs} QM_FILES_OUTPUT_VARIABLE qm_files
+)
 
 message(STATUS "qm_files : ${qm_files}")
+
+
+# generate rules for building source files from the resources
+QT6_ADD_RESOURCES(client_qrc ${qrcs})
+
+
+
+# Make client_qrc target depends on qm_files
+
+
+
+# #Translation files, this is done manually to avoid removing the file when doing make clean
+# # Add -noobsolete parameter to remove obsoleted translations
+# add_custom_target(openteraplus_en_ts
+#         COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language en ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+#         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#         DEPENDS ${moc_uis}
+# )
+
+# add_custom_target(openteraplus_fr_ts
+#         COMMAND ${Qt6_LUPDATE_EXECUTABLE} -target-language fr ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis} -ts ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
+#         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#         DEPENDS ${moc_uis}
+# )
+
+# #Build this target to update translations
+# add_custom_target(translations DEPENDS openteraplus_en_ts openteraplus_fr_ts)
+# add_custom_target(translation_files SOURCES ${translation_files_srcs})
+
+# #Generate qm files from .ts files
+# qt6_add_translation(qm_files
+#     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+#     ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts)
+
+# Translations
+# if (Qt6_VERSION VERSION_GREATER_EQUAL 6.7)
+#     qt_add_translations(TARGETS OpenTeraPlus
+#         SOURCE_TARGETS ${srcs} ${OPENTERA_SHARED_INCLUDES} ${headers} ${moc_uis}
+#         TS_FILES ${translation_files_srcs}
+
+#     )
+# else()
+#     qt_add_translations(OpenTeraPlus
+#         TS_FILES
+#             ${translation_files_srcs}
+#     )
+# endif()
+
+
 
 include_directories(
     ${TERACLIENT_RES_INCLUDES}
@@ -405,7 +512,8 @@ set(ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${MACOSX_BUNDLE_ICON_FILE}")
 # create an executable file named "OpenTeraPlus" from the source files
 # Put qrc files after qm files
 if(NOT DEFINED OPENTERA_WEBASSEMBLY)
-    add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
+    add_executable(OpenTeraPlus MACOSX_BUNDLE WIN32 ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc}
+        dialogs/WebLoginDialog.ui)
 else()
     qt_add_executable(OpenTeraPlus ${icon} ${srcs} ${headers} ${moc_srcs} ${moc_uis} ${ICON_PATH} ${qm_files} ${client_qrc})
 endif()
@@ -441,7 +549,7 @@ set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION "Res
 if (APPLE)
     # Mac bundles...
     # Install targets
-    install(TARGETS OpenTeraPlus RUNTIME DESTINATION .)
+    install(TARGETS OpenTeraPlus RUNTIME DESTINATION . BUNDLE DESTINATION .)
     # install(TARGETS opentera_messages DESTINATION .)
 
 else(APPLE)

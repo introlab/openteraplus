@@ -11,7 +11,6 @@
 #include <QWebChannel>
 
 #include "drivers/PTZ/ICameraDriver.h"
-#include "drivers/PTZ/Vivotek8111.h"
 #include "drivers/PTZ/CamImageSettingsDialog.h"
 
 #include "services/VideoRehabService/ScreenController.h"
@@ -64,6 +63,7 @@ public slots:
     Q_INVOKABLE QString getCurrentAudioSource();
     Q_INVOKABLE void getSecondSources();
     Q_INVOKABLE bool getLocalMirror();
+    Q_INVOKABLE bool getLocalBlur();
     Q_INVOKABLE void getExtraParams();
 
     Q_INVOKABLE QString getAllSettings();
@@ -90,6 +90,7 @@ public slots:
 
     Q_INVOKABLE void cameraChanged(QString name, int index);
     Q_INVOKABLE void setLocalMirror(const bool &mirror);
+    Q_INVOKABLE void setLocalBlur(const bool &blur);
 
     Q_INVOKABLE void dataForwardReceived(QString json);
 
@@ -121,6 +122,7 @@ signals:
     void setCamSettings(QString uuid, CameraImageSettings& settings);   // Request to set camSettings (if local uuid) or to send camSettings (if remote uuid)
 
     void setLocalMirrorSignal(bool mirror);
+    void setLocalBlurSignal(bool blur);
 
     void pageIsReady();
     void currentCameraWasChanged();
@@ -157,6 +159,7 @@ protected:
     QString m_2ndVideoName;
     int     m_cameraIndex;
     bool    m_localMirror;
+    bool    m_localBlur = false;
     QString m_extraParams;
 
     bool    m_camCanZoom;

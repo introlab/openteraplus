@@ -28,6 +28,8 @@ public:
     virtual void doGet(const QString &path, const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=true);
     virtual void doPost(const QString &path, const QString &post_data, const bool &use_token=true);
     virtual void doPost(const QUrl &full_url, const QString &post_data, const bool &use_token=true);
+    virtual void doPostWithParams(const QString &path, const QString &post_data, const QUrlQuery &query_args, const bool &use_token=true);
+
     virtual void doDelete(const QString &path, const int& id, const bool &use_token=true);
 
     virtual void doDownload(const QString &path, const QString& save_path, const QString& download_uuid, const QString& save_filename = QString(), const QUrlQuery &query_args = QUrlQuery(), const bool &use_token=true);
@@ -110,7 +112,7 @@ signals:
     void networkAuthFailed();
 
     void queryResultsOK(QString path, QUrlQuery url_query);
-    void postResultsOK(QString path);
+    void postResultsOK(QString reply_path, QString reply_data);
     void deleteResultsOK(QString path, int id);
     void posting(QString path, QString data);
     void querying(QString path);

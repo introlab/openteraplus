@@ -13,6 +13,10 @@ public:
 protected slots:
 
     void onCertificateError(const QWebEngineCertificateError &certificateError);
+
+    // QWebEnginePage interface
+protected:
+    bool acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame) override;
 };
 
 #endif // ABOUTDIALOGPAGE_H

@@ -128,7 +128,7 @@ bool AssetComManager::processNetworkReply(QNetworkReply *reply)
                 reply_path = reply_path.append("/infos");
             }
             handled=handleDataReply(reply_path, reply_data, reply_query);
-            if (handled) emit postResultsOK(reply_path);
+            if (handled) emit postResultsOK(reply_path, reply_data);
         }
     }
 

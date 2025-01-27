@@ -2,6 +2,10 @@
 #include "ui_SiteWidget.h"
 
 #include "editors/DataListWidget.h"
+#include "services/DashboardsService/DashboardsConfigWidget.h"
+#include "services/EmailService/EmailServiceConfigWidget.h"
+
+#include "GlobalMessageBox.h"
 
 SiteWidget::SiteWidget(ComManager *comMan, const TeraData *data, const bool configMode, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -85,6 +89,8 @@ void SiteWidget::connectSignals()
 
     connect(ui->btnUpdateRoles, &QPushButton::clicked, this, &SiteWidget::btnUpdateAccess_clicked);
 
+    connect(ui->wdgSite, &TeraForm::widgetValueHasChanged, this, &SiteWidget::siteValueHasChanged);
+
 }
 
 void SiteWidget::updateUserGroupSiteAccess(const TeraData *access)
@@ -148,6 +154,9 @@ void SiteWidget::updateControlsState()
     bool is_super_admin = m_comManager->isCurrentUserSuperAdmin();
     bool is_site_admin = isSiteAdmin() || is_super_admin;
 
+    if (!is_site_admin)
+        ui->wdgSite->hideField("site_2fa_required");
+
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabUsersDetails), is_site_admin);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabDevices), is_site_admin /*(is_site_admin && m_devicesCount>0) || is_super_admin*/);
     ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabServices), is_site_admin);
@@ -186,6 +195,45 @@ void SiteWidget::updateFieldsValue()
 bool SiteWidget::validateData()
 {
     return ui->wdgSite->validateFormData();
+}
+
+void SiteWidget::addServiceTab(const TeraData &service_site)
+{
+    int id_service = service_site.getFieldValue("id_service").toInt();
+    if (m_services_tabs.contains(id_service)) // Already there
+        return;
+
+    if (service_site.getFieldValue("id_site").toInt() != m_data->getId())
+        return; // Service not enabled for that project
+
+    QString service_key = m_services_keys[id_service];
+
+    // Dashboards Service
+    if (service_key == "DashboardsService"){
+        if (isSiteAdmin()){
+            DashboardsConfigWidget* wdg = new DashboardsConfigWidget(m_comManager, m_data->getId());
+            QString service_name = service_key;
+            if (m_listServices_items.contains(id_service)){
+                service_name = m_listServices_items[id_service]->text();
+            }
+            //ui->tabManageServices->insertTab(0, wdg, QIcon("://icons/config.png"), service_name);
+            ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
+            m_services_tabs.insert(id_service, wdg);
+        }
+    }
+
+    // Email Service
+    if (service_key == "EmailService"){
+        if (isSiteAdmin()){
+            EmailServiceConfigWidget* wdg = new EmailServiceConfigWidget(m_comManager, m_data->getId());
+            QString service_name = service_key;
+            if (m_listServices_items.contains(id_service)){
+                service_name = m_listServices_items[id_service]->text();
+            }
+            ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
+            m_services_tabs.insert(id_service, wdg);
+        }
+    }
 }
 
 bool SiteWidget::isSiteAdmin()
@@ -277,6 +325,11 @@ void SiteWidget::processServiceSiteAccessReply(QList<TeraData> service_sites, QU
 {
     for(const TeraData &service_site: service_sites){
         updateServiceSite(&service_site);
+        // Add specific services configuration tabs
+        if (!dataIsNew()){ // Don't add anything if a new project
+            //ids_service.append(service_project.getFieldValue("id_service").toInt());
+            addServiceTab(service_site);
+        }
     }
 
     // Update used list from what is checked right now
@@ -289,6 +342,7 @@ void SiteWidget::processServiceSiteAccessReply(QList<TeraData> service_sites, QU
             }
         }
     }
+
 
     // New list received - disable save button
     ui->btnUpdateServices->setEnabled(false);
@@ -381,6 +435,20 @@ void SiteWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
 
 }
 
+void SiteWidget::siteValueHasChanged(QWidget *widget, QVariant value)
+{
+    if (widget == ui->wdgSite->getWidgetForField("site_2fa_required")){
+        if (value.toBool()){
+            GlobalMessageBox msgbox;
+            if (msgbox.showYesNo(tr("Authentification multi-facteurs"),
+                                 tr("Activer l'authentification multi-facteurs forcera les utilisateurs ayant accès au site à utiliser cette authentification.\n\n"
+                                    "Cette action sera difficilement réversible - il faudra désactiver l'authentification pour chacun des utilisateurs individuellement.\n\nVoulez-vous continuer?")) == GlobalMessageBox::No){
+                ui->wdgSite->setFieldValue("site_2fa_required", false);
+            }
+        }
+    }
+}
+
 void SiteWidget::updateServiceSite(const TeraData *service_site)
 {
     int id_site = service_site->getFieldValue("id_site").toInt();
@@ -417,6 +485,10 @@ void SiteWidget::updateServiceSite(const TeraData *service_site)
         if (m_listServicesSites_items.contains(id_service_site)){
             m_listServicesSites_items.remove(id_service_site);
         }
+    }
+
+    if (service_site->hasFieldName("service_key")){
+        m_services_keys[id_service] = service_site->getFieldValue("service_key").toString();
     }
 
 }
@@ -702,6 +774,7 @@ void SiteWidget::on_tabNav_currentChanged(int index)
         if (m_listServices_items.isEmpty()){
             queryServiceSiteAccess();
         }
+        ui->tabManageServices->setCurrentIndex(0);
     }
 
     if (current_tab == ui->tabSessionTypes){
@@ -1059,5 +1132,19 @@ void SiteWidget::on_btnUpdateTestTypes_clicked()
     base_obj.insert("site", site_obj);
     document.setObject(base_obj);
     postDataRequest(WEB_TESTTYPESITE_PATH, document.toJson());
+}
+
+
+void SiteWidget::on_tabManageServices_currentChanged(int index)
+{
+    QWidget* current_tab = ui->tabManageServices->widget(index);
+
+    if (dynamic_cast<DashboardsConfigWidget*>(current_tab)){
+        dynamic_cast<DashboardsConfigWidget*>(current_tab)->refresh();
+    }
+
+    if (dynamic_cast<EmailServiceConfigWidget*>(current_tab)){
+        dynamic_cast<EmailServiceConfigWidget*>(current_tab)->refresh();
+    }
 }
 

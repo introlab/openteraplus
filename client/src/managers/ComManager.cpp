@@ -1,5 +1,4 @@
 #include "ComManager.h"
-#include <sstream>
 #include <QLocale>
 
 ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
@@ -23,6 +22,7 @@ ComManager::ComManager(QUrl serverUrl, bool connectWebsocket, QObject *parent) :
 
     // Initialize token refresher timer @ each 15 minutes
     m_tokenRefreshTimer.setInterval(1000*60*15);
+    //m_tokenRefreshTimer.setInterval(1000*60);
     m_tokenRefreshTimer.setSingleShot(false);
     connect(&m_tokenRefreshTimer, &QTimer::timeout, this, &ComManager::refreshUserToken);
 
@@ -49,6 +49,29 @@ void ComManager::connectToServer(QString username, QString password)
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_WITH_WEBSOCKET, "1");
     doGet(QString(WEB_LOGIN_PATH), args, false);
+
+}
+
+void ComManager::connectToServer(const QString &token, const QString &websocket_url, const QString &user_uuid)
+{
+    setCredentials("username", "password");
+    m_loggingInProgress = true;     // Indicate that a login request was sent, but not processed
+    QString url = websocket_url;
+    QString uuid = user_uuid;
+    if (m_enableWebsocket)
+    {
+        m_webSocketMan->connectWebSocket(url, uuid);
+    }
+
+    // Set current user values
+    m_currentUser.setFieldValue("user_uuid", user_uuid);
+    setCredentials(token);
+    m_tokenRefreshTimer.start();
+
+    // Query versions informations
+    doGet(WEB_VERSIONSINFO_PATH);
+
+    doUpdateCurrentUser();
 
 }
 
@@ -111,7 +134,7 @@ bool ComManager::processNetworkReply(QNetworkReply *reply)
 
         if (!handled){
             handled=handleDataReply(reply_path, reply_data, reply_query);
-            if (handled) emit postResultsOK(reply_path);
+            if (handled) emit postResultsOK(reply_path, reply_data);
         }
     }
 
@@ -436,6 +459,8 @@ ComManager::signal_ptr ComManager::getSignalFunctionForDataType(const TeraDataTy
         return &ComManager::sessionTypesProjectsReceived;
     case TERADATA_SESSIONTYPESITE:
         return &ComManager::sessionTypesSitesReceived;
+    case TERADATA_SESSIONTYPESERVICE:
+        return &ComManager::sessionTypesServicesReceived;
     case TERADATA_SERVICE_CONFIG:
         return &ComManager::servicesConfigReceived;
     default:
@@ -564,6 +589,11 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         return handleVersionsReply(data_list);
     }
 
+    // Server settings reply
+    if (reply_path == WEB_SERVERSETTINGS_PATH){
+        return handleServerSettingsReply(data_list);
+    }
+
     // Refresh token information reply
     if (reply_path == WEB_REFRESH_TOKEN_PATH){
         return handleTokenRefreshReply(data_list);
@@ -574,7 +604,7 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     TeraDataTypes items_type = TeraData::getDataTypeFromPath(reply_path);
     if (data_list.isArray()){
         const QJsonArray data_array = data_list.array();
-        for (const QJsonValue data:data_array){
+        for (const QJsonValue &data:data_array){
             TeraData item_data(items_type, data);
 
             // Check if the currently connected user was updated and not requesting a list (limited information)
@@ -637,6 +667,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
     case TERADATA_TEST:
         emit testsReceived(items, reply_query);
         break;
+    case TERADATA_TESTINVITATION:
+        emit testInvitationsReceived(items, reply_query);
+        break;
     case TERADATA_PROJECT:
         emit projectsReceived(items, reply_query);
         break;
@@ -678,6 +711,9 @@ bool ComManager::handleDataReply(const QString& reply_path, const QString &reply
         break;
     case TERADATA_SESSIONTYPESITE:
         emit sessionTypesSitesReceived(items, reply_query);
+        break;
+    case TERADATA_SESSIONTYPESERVICE:
+        emit sessionTypesServicesReceived(items, reply_query);
         break;
     case TERADATA_SESSIONEVENT:
         emit sessionEventsReceived(items, reply_query);
@@ -841,6 +877,13 @@ bool ComManager::handleTokenRefreshReply(const QJsonDocument &refresh_data)
         return false;
     setCredentials(refresh_data["refresh_token"].toString());
     emit userTokenUpdated();
+    return true;
+}
+
+bool ComManager::handleServerSettingsReply(const QJsonDocument &settings_data)
+{
+    QVariantHash settings = settings_data.object().toVariantHash();
+    emit serverSettingsReceived(settings);
     return true;
 }
 

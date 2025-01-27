@@ -15,6 +15,10 @@
 #include "main/MainKitWindow.h"
 #endif
 
+#ifndef OPENTERA_WEBASSEMBLY
+#include "dialogs/WebLoginDialog.h"
+#endif
+
 #include "dialogs/LoginDialog.h"
 #include "GlobalMessageBox.h"
 
@@ -44,7 +48,13 @@ protected:
     void setTranslation(QString language = "");
 
     ConfigManagerClient m_config;
+
+#ifndef OPENTERA_WEBASSEMBLY
+    WebLoginDialog*     m_loginDiag;
+#else
     LoginDialog*        m_loginDiag;
+#endif
+
     MainWindow*         m_mainWindow;
 #ifndef OPENTERA_WEBASSEMBLY
     MainKitWindow*      m_mainKitWindow;
@@ -62,6 +72,7 @@ private slots:
     void loginRequested(QString username, QString password, QString server_name);
     void logoutRequested();
     void on_loginResult(bool logged, QString log_msg);
+    void onLoginSuccess(const QString &token, const QString websocket_url, const QString &user_uuid);
     void loginQuitRequested();
 
     void on_serverDisconnected();

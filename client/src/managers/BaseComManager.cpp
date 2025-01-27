@@ -1,5 +1,4 @@
 #include "BaseComManager.h"
-#include <QOperatingSystemVersion>
 
 BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
     : QObject{parent},
@@ -10,9 +9,8 @@ BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
     m_loggingInProgress = false;
 
     // Get Operating system information to send to server for logging
-    QOperatingSystemVersion os = QOperatingSystemVersion::current();
-    m_osName = os.name();
-    m_osVersion = QString::number(os.majorVersion()) + "." + QString::number(os.minorVersion()) + "." + QString::number(os.microVersion());
+    m_osName = Utils::getOsName();
+    m_osVersion = Utils::getOsVersion();
 
     // Create correct server url
     m_serverUrl.setUrl("https://" + serverUrl.host() + ":" + QString::number(serverUrl.port()));
@@ -69,7 +67,7 @@ void BaseComManager::doPost(const QString &path, const QString &post_data, const
 
     query.setPath(path);
 
-    doPost(query, post_data, use_token);
+    BaseComManager::doPost(query, post_data, use_token);
     emit posting(path, post_data);
 }
 
@@ -89,8 +87,34 @@ void BaseComManager::doPost(const QUrl &full_url, const QString &post_data, cons
         LOG_DEBUG("POST: " + full_url.toString() + ", with " + post_data, QString(this->metaObject()->className()) + "::doPost");
     #else
         // Strip data from logging in release, since this might contains passwords!
-        LOG_DEBUG("POST: " + full_url.toString(), QString(this->metaObject()->className()) + "::doPost");
+        //LOG_DEBUG("POST: " + full_url.toString(), QString(this->metaObject()->className()) + "::doPost");
     #endif
+}
+
+void BaseComManager::doPostWithParams(const QString &path, const QString &post_data, const QUrlQuery &query_args, const bool &use_token)
+{
+    QUrl query = m_serverUrl;
+
+    query.setPath(path);
+    query.setQuery(query_args);
+
+    QNetworkRequest request(query);
+
+    setRequestCredentials(request, use_token);
+    setRequestLanguage(request);
+    setRequestVersions(request);
+
+    request.setRawHeader("Content-Type", "application/json");
+
+    m_netManager->post(request, post_data.toUtf8());
+    emit waitingForReply(true);
+
+#ifndef QT_NO_DEBUG
+    LOG_DEBUG("POST: " + query.toString() + ", with " + post_data, QString(this->metaObject()->className()) + "::doPost");
+#else \
+    // Strip data from logging in release, since this might contains passwords!
+        //LOG_DEBUG("POST: " + full_url.toString(), QString(this->metaObject()->className()) + "::doPost");
+#endif
 }
 
 void BaseComManager::doDelete(const QString &path, const int &id, const bool &use_token)

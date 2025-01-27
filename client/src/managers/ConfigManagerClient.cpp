@@ -33,8 +33,16 @@ QUrl ConfigManagerClient::getServerUrl(const QString &server_name)
         QVariantMap server_info = servers[server_name].toMap();
         server_url.setHost(server_info["url"].toString());
         server_url.setPort(server_info["port"].toInt());
+        server_url.setScheme("https");
     }
     return server_url;
+}
+
+QUrl ConfigManagerClient::getServerLoginUrl(const QString &server_name)
+{
+    QUrl login_url = getServerUrl(server_name);
+    login_url.setPath("/login");
+    return login_url;
 }
 
 bool ConfigManagerClient::getLogToFile()

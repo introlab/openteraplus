@@ -1,7 +1,18 @@
 #include "ProjectWidget.h"
 #include "ui_ProjectWidget.h"
 
+#include "GlobalMessageBox.h"
+
 #include "editors/DataListWidget.h"
+
+#include "widgets/TableDateWidgetItem.h"
+#include "widgets/TableNumberWidgetItem.h"
+
+// Service specific config widgets
+#include "services/DanceService/DanceConfigWidget.h"
+#include "services/DashboardsService/DashboardsConfigWidget.h"
+#include "services/EmailService/EmailServiceConfigWidget.h"
+#include "services/SurveyService/SurveyServiceConfigWidget.h"
 
 ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -41,6 +52,7 @@ ProjectWidget::ProjectWidget(ComManager *comMan, const TeraData *data, QWidget *
 
     if (!dataIsNew()){
         queryServicesProject();
+        queryTestTypesProject();
     }
 
 }
@@ -123,6 +135,11 @@ void ProjectWidget::connectSignals()
 
 void ProjectWidget::initUI()
 {
+    ui->wdgInvitations->setComManager(m_comManager);
+    ui->wdgInvitations->setInvitableParticipants(&m_participants);
+
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), false);
+
     // Default display
     ui->tabNav->setCurrentIndex(0);
     ui->tabManageUsers->setCurrentIndex(0);
@@ -490,6 +507,7 @@ void ProjectWidget::updateParticipant(const TeraData *participant)
         item_first_session = new TableDateWidgetItem();
         item_first_session->setTextAlignment(Qt::AlignCenter);
         ui->tableSummary->setItem(current_row, 3, item_first_session);
+
         item_last_session = new TableDateWidgetItem();
         item_last_session->setTextAlignment(Qt::AlignCenter);
         ui->tableSummary->setItem(current_row, 4, item_last_session);
@@ -497,9 +515,12 @@ void ProjectWidget::updateParticipant(const TeraData *participant)
         item_last_online = new TableDateWidgetItem();
         item_last_online->setTextAlignment(Qt::AlignCenter);
         ui->tableSummary->setItem(current_row, 5, item_last_online);
+
     }
 
     // Set current values
+    m_participants[participant->getId()] = *participant;
+
     item_name->setText(participant->getName());
     QString status;
     if (participant->isEnabled()){
@@ -578,7 +599,7 @@ void ProjectWidget::updateControlsState()
 
         // Move projects list to first tab
         ui->tabSessionTypes->layout()->removeWidget(ui->lstSessionTypes);
-        ui->tabTestTypes->layout()->removeWidget(ui->lstTestTypes);
+        //ui->tabTestTypes->layout()->removeWidget(ui->lstTestTypes);
         ui->tabDashboard->layout()->removeWidget(ui->frameButtons);
 
         QLabel* lbl = new QLabel(tr("Types de séances associés"));
@@ -589,10 +610,10 @@ void ProjectWidget::updateControlsState()
 
         ui->tabDashboard->layout()->addWidget(lbl);
         ui->tabDashboard->layout()->addWidget(ui->lstSessionTypes);
-        lbl = new QLabel(tr("Types de tests associés"));
+        /*lbl = new QLabel(tr("Types de tests associés"));
         lbl->setFont(labelFont);
         ui->tabDashboard->layout()->addWidget(lbl);
-        ui->tabDashboard->layout()->addWidget(ui->lstTestTypes);
+        ui->tabDashboard->layout()->addWidget(ui->lstTestTypes);*/
         ui->tabDashboard->layout()->addWidget(ui->frameButtons);
 
         ui->frameActions->hide(); // Can't add participant when creating new project
@@ -605,11 +626,11 @@ void ProjectWidget::updateControlsState()
         }
 
         // Query test types
-        if (m_listTestTypes_items.isEmpty()){
+        /*if (m_listTestTypes_items.isEmpty()){
             QUrlQuery args;
             args.addQueryItem(WEB_QUERY_ID_SITE, m_data->getFieldValue("id_site").toString());
             queryDataRequest(WEB_TESTTYPESITE_PATH, args);
-        }
+        }*/
 
 
     }else{
@@ -661,7 +682,7 @@ bool ProjectWidget::validateData()
     if (!editedProjectEnabled && m_data->getFieldValue("project_enabled").toBool()){
         // We changed from "enabled" to "disabled". User confirmation required before proceeding.
         GlobalMessageBox msg;
-        GlobalMessageBox::StandardButton rval = msg.showYesNo(tr("Confirmation - désactivation"), tr("Le project sera désactivé.") + "\n\r" +
+        GlobalMessageBox::StandardButton rval = msg.showYesNo(tr("Confirmation - désactivation"), tr("Le projet sera désactivé.") + "\n\r" +
                                                               tr("Tous les participants seront aussi désactivés et les appareils associés à ceux-ci seront désassociés.") + "\n\r" +
                                                               tr("Êtes-vous sûrs de vouloir continuer?"));
         if (rval != GlobalMessageBox::Yes){
@@ -682,6 +703,16 @@ bool ProjectWidget::isSiteAdmin()
     }
 }
 
+bool ProjectWidget::hasAssociatedService(const QString &service_key)
+{
+    int id_service = m_services_keys.key(service_key, -1);
+    if (id_service <= 0)
+        return false;
+
+    QListWidgetItem* item = m_listServices_items.value(id_service);
+    return m_listServicesProjects_items.values().contains(item);
+}
+
 void ProjectWidget::queryUserGroupsProjectAccess()
 {
     QUrlQuery args;
@@ -698,6 +729,24 @@ void ProjectWidget::queryUsers()
     args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_data->getId()));
     args.addQueryItem(WEB_QUERY_BY_USERS, "1");
     queryDataRequest(WEB_PROJECTACCESS_PATH, args);
+}
+
+void ProjectWidget::refreshSelectedTestTypes()
+{
+    QList<TeraData> test_types;
+    for (int i=0; i<ui->lstTestTypes->count(); i++){
+        QListWidgetItem* item = ui->lstTestTypes->item(i);
+        if (item->checkState() == Qt::Checked){
+            TeraData tt(TeraDataTypes::TERADATA_TESTTYPE);
+            tt.setName(item->text());
+            int id_test_type = m_listTestTypes_items.key(item);
+            tt.setId(id_test_type);
+            test_types.append(tt);
+        }
+    }
+
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), !test_types.isEmpty());
+    ui->wdgInvitations->setCurrentTestTypes(test_types);
 }
 
 void ProjectWidget::processFormsReply(QString form_type, QString data)
@@ -747,7 +796,6 @@ void ProjectWidget::processParticipantsReply(QList<TeraData> participants, QUrlQ
     // Only update state for now...
     for (int i=0; i<participants.count(); i++){
         updateParticipant(&participants.at(i));
-
     }
 }
 
@@ -824,6 +872,9 @@ void ProjectWidget::processServiceProjectsReply(QList<TeraData> services_project
             }
         }
     }
+
+    // Update invitations widget
+    ui->wdgInvitations->setEnableEmail(hasAssociatedService("EmailService"));
 }
 
 void ProjectWidget::processSessionTypeProjectReply(QList<TeraData> stp_list, QUrlQuery reply_query)
@@ -873,6 +924,7 @@ void ProjectWidget::processTestTypeProjectReply(QList<TeraData> ttp_list, QUrlQu
             }
         }
     }
+    refreshSelectedTestTypes();
 }
 
 void ProjectWidget::processTestTypeSiteReply(QList<TeraData> tts_list, QUrlQuery reply_query)
@@ -903,6 +955,7 @@ void ProjectWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
     if (stats.hasFieldName("participants")){
         ui->tableSummary->clearContents();
         m_tableParticipants_items.clear();
+        m_participants.clear();
 
         QVariantList parts_list = stats.getFieldValue("participants").toList();
 
@@ -967,6 +1020,7 @@ void ProjectWidget::deleteDataReply(QString path, int del_id)
         if (m_tableParticipants_items.contains(del_id)){
             ui->tableSummary->removeRow(m_tableParticipants_items[del_id]->row());
             m_tableParticipants_items.remove(del_id);
+            m_participants.remove(del_id);
         }
     }
 
@@ -1136,14 +1190,52 @@ void ProjectWidget::addServiceTab(const TeraData &service_project)
     if (service_key == "DanceService"){
         if (is_project_admin){
             DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getId());
-            //ui->tabNav->addTab(wdg, QIcon("://icons/service.png"), service_project.getFieldValue("service_name").toString());
             QString service_name = service_key;
             if (m_listServices_items.contains(id_service)){
                 service_name = m_listServices_items[id_service]->text();
             }
-            ui->tabManageServices->insertTab(0, wdg, QIcon("://icons/config.png"), service_name);
+            //ui->tabManageServices->insertTab(0, wdg, QIcon("://icons/config.png"), service_name);
+            ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
             m_services_tabs.insert(id_service, wdg);
         }
+    }
+
+    // Dashboards Service
+    if (service_key == "DashboardsService"){
+        if (isSiteAdmin()){
+            DashboardsConfigWidget* wdg = new DashboardsConfigWidget(m_comManager, 0, m_data->getId());
+            QString service_name = service_key;
+            if (m_listServices_items.contains(id_service)){
+                service_name = m_listServices_items[id_service]->text();
+            }
+            //ui->tabManageServices->insertTab(0, wdg, QIcon("://icons/config.png"), service_name);
+            ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
+            m_services_tabs.insert(id_service, wdg);
+        }
+    }
+
+    // Email Service
+    if (service_key == "EmailService"){
+        if (is_project_admin){
+            EmailServiceConfigWidget* wdg = new EmailServiceConfigWidget(m_comManager, -1, m_data->getId());
+            QString service_name = service_key;
+            if (m_listServices_items.contains(id_service)){
+                service_name = m_listServices_items[id_service]->text();
+            }
+            ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
+            m_services_tabs.insert(id_service, wdg);
+        }
+    }
+
+    // Survey Service
+    if (service_key == "SurveyJSService"){
+        SurveyServiceConfigWidget* wdg = new SurveyServiceConfigWidget(m_comManager, m_data->getId());
+        QString service_name = service_key;
+        if (m_listServices_items.contains(id_service)){
+            service_name = m_listServices_items[id_service]->text();
+        }
+        ui->tabManageServices->addTab(wdg, QIcon("://icons/config.png"), service_name);
+        m_services_tabs.insert(id_service, wdg);
     }
 }
 
@@ -1218,6 +1310,14 @@ void ProjectWidget::on_tabNav_currentChanged(int index)
         ui->tabManageServices->setCurrentIndex(0);
     }
 
+    // Test invitations
+    if (current_tab == ui->tabInvitations){
+        if (m_data){
+            ui->wdgInvitations->setCurrentProject(m_data->getId());
+            ui->wdgInvitations->loadForProject(m_data->getId());
+        }
+    }
+
 }
 
 
@@ -1248,6 +1348,21 @@ void ProjectWidget::on_tabManageServices_currentChanged(int index)
     }
 
     // Service configuration tabs
+    if (dynamic_cast<DashboardsConfigWidget*>(current_tab)){
+        dynamic_cast<DashboardsConfigWidget*>(current_tab)->refresh();
+    }
+
+    if (dynamic_cast<EmailServiceConfigWidget*>(current_tab)){
+        dynamic_cast<EmailServiceConfigWidget*>(current_tab)->refresh();
+    }
+
+    if (dynamic_cast<DanceConfigWidget*>(current_tab)){
+        dynamic_cast<DanceConfigWidget*>(current_tab)->refresh();
+    }
+
+    if (dynamic_cast<SurveyServiceConfigWidget*>(current_tab)){
+        dynamic_cast<SurveyServiceConfigWidget*>(current_tab)->refresh();
+    }
 
 }
 

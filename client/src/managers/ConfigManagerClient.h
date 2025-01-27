@@ -13,6 +13,7 @@ public:
 
     QStringList     getServerNames();
     QUrl            getServerUrl(const QString &server_name);
+    QUrl            getServerLoginUrl(const QString &server_name);
 
     bool            getLogToFile();
 

@@ -6,6 +6,7 @@
 #include <QWebEngineCertificateError>
 #include <QWebChannel>
 #include <QWebSocketServer>
+#include <QWebEngineDesktopMediaRequest>
 
 #include "WebSocket/SharedObject.h"
 #include "WebSocket/WebSocketClientWrapper.h"
@@ -26,6 +27,7 @@ protected:
 private slots:
     void featurePermissionHandler(const QUrl &securityOrigin, QWebEnginePage::Feature feature);
     void onCertificateError(const QWebEngineCertificateError &certificateError);
+    void onDesktopMediaRequest(const QWebEngineDesktopMediaRequest &request);
 
 private:
     SharedObject            *m_sharedObject;           // Shared object for communication with page itself

@@ -1,6 +1,11 @@
 #include "SessionWidget.h"
 #include "ui_SessionWidget.h"
 
+#include "GlobalMessageBox.h"
+
+#include "TeraSessionStatus.h"
+#include "TeraSessionEvent.h"
+
 #include <QFileDialog>
 #include <QStandardPaths>
 
@@ -17,6 +22,9 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
     ui->wdgSession->setHighlightConditions(false); // Hide conditional questions indicator
     ui->wdgSession->setComManager(m_comManager);
     ui->tabNav->setCurrentIndex(0);
+
+    ui->wdgInvitations->setComManager(m_comManager);
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), false);
 
     ui->wdgSessionInvitees->setComManager(m_comManager);
     ui->wdgSessionInvitees->showOnlineFilter(false);
@@ -43,6 +51,7 @@ SessionWidget::SessionWidget(ComManager *comMan, const TeraData *data, QWidget *
 
      if (data->hasFieldName("id_project")){
          m_idProject = data->getFieldValue("id_project").toInt();
+         ui->wdgInvitations->setCurrentProject(m_idProject);
          ui->tabAssets->setAssociatedProject(m_idProject);
      }
 
@@ -170,6 +179,25 @@ void SessionWidget::showTests()
 {
     // Display tests tab by default
     ui->tabNav->setCurrentWidget(ui->tabTests);
+}
+
+void SessionWidget::setTestTypes(QList<TeraData> *test_types)
+{
+    m_testTypes = test_types;
+    bool show = m_testTypes != nullptr;
+    if (show && m_testTypes){
+        show = !m_testTypes->isEmpty();
+    }
+    ui->tabNav->setTabVisible(ui->tabNav->indexOf(ui->tabInvitations), show);
+    if (show){
+        ui->wdgInvitations->setCurrentTestTypes(*m_testTypes);
+    }
+}
+
+void SessionWidget::enableEmails(const bool &enable)
+{
+    m_allowEmails = enable;
+    ui->wdgInvitations->setEnableEmail(m_allowEmails);
 }
 
 void SessionWidget::updateControlsState()
@@ -705,6 +733,12 @@ void SessionWidget::on_tabNav_currentChanged(int index)
         // Tests
         ui->tabTests->enableNewTests(false);
         ui->tabTests->displayTestsForSession(m_data->getId());
+    }
+
+    if (current_tab == ui->tabInvitations){
+        if (m_data){
+            ui->wdgInvitations->loadForSession(m_data);
+        }
     }
 }
 

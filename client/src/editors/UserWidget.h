@@ -14,8 +14,6 @@
 #include <QComboBox>
 
 #include "DataEditorWidget.h"
-#include "ServiceConfigWidget.h"
-#include "GlobalMessageBox.h"
 
 namespace Ui {
 class UserWidget;
@@ -95,6 +93,7 @@ private slots:
     void saveButtonClicked() override;
     void undoButtonClicked() override;
 
+    void on_btnReset2FA_clicked();
 };
 
 

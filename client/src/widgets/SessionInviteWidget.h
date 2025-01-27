@@ -45,9 +45,9 @@ public:
     void showAvailableInvitees(const bool &show, const bool &hide_button=false);
     void showOnlineFilter(const bool &show);
 
-    void setAvailableParticipants(const QList<TeraData> &participants);
-    void setAvailableUsers(const QList<TeraData> &users);
-    void setAvailableDevices(const QList<TeraData> &devices);
+    void setAvailableParticipants(const QList<TeraData> &participants, const bool& enabled_only = false);
+    void setAvailableUsers(const QList<TeraData> &users, const bool& enabled_only = false);
+    void setAvailableDevices(const QList<TeraData> &devices, const bool& enabled_only = false);
 
     bool hasAvailableParticipants() const;
     bool hasAvailableDevices() const;
@@ -63,6 +63,7 @@ public:
 
     void setEditable(const bool &editable);
     bool isEditable() const;
+    void setCountLimited(const bool &count_limited);
 
     QList<TeraData> getParticipantsInSession();
     QList<TeraData> getUsersInSession();
@@ -112,6 +113,7 @@ private:
     bool m_searching;
     bool m_confirmRemove;
     bool m_editable;
+    bool m_countLimited = true;
 
     QHash<int, TeraData>    m_users; // id, data
     QHash<int, TeraData>    m_participants;
@@ -147,6 +149,8 @@ private:
     void removedUser(QString user_uuid);
     void removedParticipant(QString participant_uuid);
     void removedDevice(QString device_uuid);
+
+    void inviteesCountChanged(int new_count);
 
 };
 
