@@ -26,7 +26,7 @@ DashboardsConfigWidget::DashboardsConfigWidget(ComManager *comManager, const int
     ui->frameVersionsInfos->setVisible(is_super);
     ui->frameVersionsButtons->hide();
     ui->btnDeleteVersion->hide();
-    m_highlighter = new QSourceHighlite::QSourceHighliter(ui->txtDefinition->document());
+    m_highlighter = new QSourceHighlite::QSourceHighliter(ui->txtDefinition->document(), QSourceHighlite::QSourceHighliter::Monokai);
     m_highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeJSON);
 
 
@@ -369,9 +369,9 @@ void DashboardsConfigWidget::on_cmbVersion_currentIndexChanged(int index)
     ui->txtDefinition->setText(ui->cmbVersion->currentData().toString());
     ui->txtDefinition->setReadOnly(!(index == ui->cmbVersion->count()-1 && ui->btnEdit->isChecked())); // Only allow editing of latest version
     if (ui->txtDefinition->isReadOnly()){
-        ui->txtDefinition->setStyleSheet("");
+        ui->txtDefinition->setStyleSheet("background-color: rgba(255,255,255,40%);");
     }else{
-        ui->txtDefinition->setStyleSheet("background-color: rgba(255,255,255,50%); color: black;");
+        ui->txtDefinition->setStyleSheet("background-color: rgba(255,255,255,25%); color: black;");
     }
 }
 

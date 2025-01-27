@@ -293,10 +293,20 @@ QLineEdit, QSpinBox, QTextEdit, QDateTimeEdit, QTimeEdit, QDateEdit{
     padding-left: 5px;
 }
 
-QLineEdit:!enabled, QSpinBox:!enabled, QTextEdit:!enabled, QDateTimeEdit:!enabled, QTimeEdit:!enabled, QDateEdit:!enabled{
+QLineEdit:!enabled, QSpinBox:!enabled, QDateTimeEdit:!enabled, QTimeEdit:!enabled, QDateEdit:!enabled{
     background-color: rgba(0,0,0,0%);
     color:rgba(255,255,255,80%);
     padding-left: 0px;
+}
+
+QTextEdit:!enabled{
+    background-color: rgba(255,255,255,70%);
+    color: black;
+    padding-left: 0px;
+}
+
+QTextEdit:enabled{
+    background-color: rgba(255,255,255,100%);
 }
 
 

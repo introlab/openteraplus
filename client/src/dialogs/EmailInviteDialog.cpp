@@ -128,6 +128,7 @@ void EmailInviteDialog::emailSentSuccess()
     GlobalMessageBox msg;
     msg.showInfo(tr("Envoi courriel invitation"), tr("Le courriel d'invitation a été envoyé avec succès!"));
     setDisabled(false);
+    accept();
 }
 
 void EmailInviteDialog::initLanguages()
