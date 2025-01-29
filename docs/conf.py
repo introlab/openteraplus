@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'OpenTeraPlus'
-copyright = '2024, Simon Brière, Dominic Létourneau'
+copyright = '2025, Simon Brière, Dominic Létourneau'
 author = 'Simon Brière, Dominic Létourneau'
-release = '1.2.0'
+release = '1.3.0'
 version = release
 
 html_logo = 'logo/LogoOpenTeraPlus.png'
