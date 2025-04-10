@@ -264,12 +264,12 @@ void AssetsWidget::updateAssetInfos(const QString &asset_uuid)
 
         if (asset->hasFieldName("asset_file_size")){
 
-            asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset->getFieldValue("asset_file_size").toInt()));
+            asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset->getFieldValue("asset_file_size").toULongLong()));
             ui->treeAssets->showColumn(AssetColumn::ASSET_SIZE);
         }
 
         if (asset->hasFieldName("file_size")){
-            asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset->getFieldValue("file_size").toInt()));
+            asset_item->setText(AssetColumn::ASSET_SIZE, Utils::formatFileSize(asset->getFieldValue("file_size").toULongLong()));
             ui->treeAssets->showColumn(AssetColumn::ASSET_SIZE);
         }
 

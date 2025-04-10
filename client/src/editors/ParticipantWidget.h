@@ -124,7 +124,6 @@ private slots:
     void on_cmbServices_currentIndexChanged(int index);
     void on_btnEmailWeb_clicked();
     void on_cmbSessionType_currentIndexChanged(int index);
-    void on_btnAddSession_clicked();
     void on_tabNav_currentChanged(int index);
     void on_lstAvailDevices_itemDoubleClicked(QListWidgetItem *item);
     void on_lstDevices_itemDoubleClicked(QListWidgetItem *item);

@@ -397,6 +397,8 @@ void SessionInviteWidget::setConfirmOnRemove(const bool &confirm)
 
 void SessionInviteWidget::setEditable(const bool &editable)
 {
+    if (m_editable == editable)
+        return;
     m_editable = editable;
 
     ui->btnManageInvitees->setVisible(m_editable);

@@ -78,6 +78,8 @@ private slots:
 
     void on_tabNav_currentChanged(int index);
 
+    void on_btnEditInvitees_toggled(bool checked);
+
 signals:
     void assetsCountChanged(int id_session, int new_count);
     void testsCountChanged(int id_session, int new_count);

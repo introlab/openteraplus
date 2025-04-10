@@ -233,9 +233,10 @@ void SessionWidget::updateControlsState()
     }else{
         TeraSessionStatus::SessionStatus status = static_cast<TeraSessionStatus::SessionStatus>(m_data->getFieldValue("session_status").toInt());
         if (status == TeraSessionStatus::STATUS_NOTSTARTED){
+            ui->btnEditInvitees->hide();
             ui->wdgSessionInvitees->setEditable(true);
         }else{
-            ui->wdgSessionInvitees->setEditable(false);
+            ui->wdgSessionInvitees->setEditable(ui->btnEditInvitees->isChecked());
         }
     }
 
@@ -514,6 +515,8 @@ void SessionWidget::processParticipantsReply(QList<TeraData> participants)
             // Add current participant to session
             ui->wdgSessionInvitees->addParticipantToSession(m_baseParticipantUuid);
             ui->wdgSessionInvitees->addRequiredParticipant(m_baseParticipantUuid);
+        }else{
+            ui->wdgSessionInvitees->autoSelectFilters();
         }
     }
 }
@@ -522,6 +525,7 @@ void SessionWidget::processDevicesReply(QList<TeraData> devices)
 {
     if (!ui->wdgSessionInvitees->hasAvailableDevices()){
         ui->wdgSessionInvitees->setAvailableDevices(devices);
+        ui->wdgSessionInvitees->autoSelectFilters();
     }
 }
 
@@ -532,6 +536,8 @@ void SessionWidget::processUsersReply(QList<TeraData> users)
         if (dataIsNew()){
             // Add current user to session
             ui->wdgSessionInvitees->addUserToSession(m_comManager->getCurrentUser().getUuid());
+        }else{
+            ui->wdgSessionInvitees->autoSelectFilters();
         }
     }
 }
@@ -576,6 +582,13 @@ void SessionWidget::onTestsCountChanged(int new_count)
 
 void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids)
 {
+    if (ui->wdgSessionInvitees->getUsersInSessionCount() == 0
+        && ui->wdgSessionInvitees->getParticipantsInSessionCount() == 0
+        && ui->wdgSessionInvitees->getDevicesInSessionCount() == 0){
+        GlobalMessageBox msg;
+        msg.showError(tr("Séance vide"), tr("Une séance ne peut avoir aucun invité. Veuillez ajouter des invités à celle-ci."));
+        return;
+    }
     // Post session update with new lists
     QJsonDocument document;
     QJsonObject base_obj;
@@ -684,12 +697,12 @@ void SessionWidget::on_tabNav_currentChanged(int index)
     QWidget* current_tab = ui->tabNav->widget(index);
 
     if (current_tab == ui->tabInvitees){
-        if (ui->wdgSessionInvitees->isEditable()){
+        /*if (ui->wdgSessionInvitees->isEditable()){
             if (!ui->wdgSessionInvitees->hasAvailableDevices() || !ui->wdgSessionInvitees->hasAvailableParticipants() || !ui->wdgSessionInvitees->hasAvailableUsers()){
                 queryAvailableInvitees();
                 ui->wdgSessionInvitees->selectFilterParticipant();
             }
-        }
+        }*/
     }
 
     if (current_tab == ui->tabEvents){
@@ -740,5 +753,18 @@ void SessionWidget::on_tabNav_currentChanged(int index)
             ui->wdgInvitations->loadForSession(m_data);
         }
     }
+}
+
+void SessionWidget::on_btnEditInvitees_toggled(bool checked)
+{
+    ui->wdgSessionInvitees->setEditable(checked);
+    if (checked){
+        if (!ui->wdgSessionInvitees->hasAvailableDevices() || !ui->wdgSessionInvitees->hasAvailableParticipants() || !ui->wdgSessionInvitees->hasAvailableUsers()){
+            queryAvailableInvitees();
+        }
+        ui->wdgSessionInvitees->selectDefaultFilter();
+    }
+    ui->wdgSessionInvitees->showAvailableInvitees(checked, true);
+
 }
 

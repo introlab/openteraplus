@@ -166,7 +166,7 @@ bool Utils::isNewerVersion(QString version)
            current_minor < minor_version;
 }
 
-QString Utils::formatFileSize(const int &file_size)
+QString Utils::formatFileSize(const quint64 &file_size)
 {
     return QLocale().formattedDataSize(file_size, 2, QLocale::DataSizeTraditionalFormat);
 }

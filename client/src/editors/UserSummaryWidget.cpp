@@ -110,7 +110,7 @@ void UserSummaryWidget::updateFieldsValue()
 void UserSummaryWidget::initUI()
 {
     ui->wdgSessions->setComManager(m_comManager);
-    ui->wdgSessions->setViewMode(SessionsListWidget::VIEW_USER_SESSIONS, m_data->getUuid(), m_data->getId());
+    ui->wdgSessions->setViewMode(SessionsListWidget::VIEW_USER_SESSIONS, m_data->getUuid(), m_data->getId(), m_idProject);
 
     ui->cmbSessionType->setItemDelegate(new QStyledItemDelegate(ui->cmbSessionType));
     ui->wdgUser->hideFields({"user_username", "user_notes", "user_superadmin"});

@@ -39,7 +39,7 @@ public:
 
     static bool isNewerVersion(QString version);
 
-    static QString formatFileSize(const int &file_size);
+    static QString formatFileSize(const quint64 &file_size);
     static QString formatDuration(const QString &duration);
 
 signals:

@@ -746,7 +746,7 @@ QPushButton#btnEditUser:hover,QPushButton#btnConfig:hover{
     color: black;
 }
 
-QToolButton#btnVideo:!checked, QToolButton#btnLog:!checked, QToolButton#btnFilterActive:!checked, QToolButton#btnSearch:!checked, QToolButton#btnAdvanced:!checked{
+QToolButton#btnVideo:!checked, QToolButton#btnLog:!checked, QToolButton#btnFilterActive:!checked, QToolButton#btnSearch:!checked, QToolButton#btnAdvanced:!checked, QToolButton#btnEditInvitees:!checked{
     color:white;
     background-color: transparent;
     /*border: 1px solid rgb(120,120,120);*/
