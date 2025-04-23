@@ -282,30 +282,6 @@ void SessionWidget::updateSessionParticipants()
             TeraData part(TERADATA_PARTICIPANT);
             part.fromMap(part_info);
             participants.append(part);
-            /*
-            int id_participant = part_info["id_participant"].toInt();
-            QString participant_name = part_info["participant_name"].toString();
-            QListWidgetItem* item = nullptr;
-
-            for(int i=0; i<ui->lstParticipants->count(); i++){
-                int part_id = ui->lstParticipants->item(i)->data(Qt::UserRole).toInt();
-                if (part_id == id_participant){
-                    // Participant already present
-                    item = ui->lstParticipants->item(i);
-                    break;
-                }
-            }
-            // New participant
-            if (!item){
-                item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant_name);
-                item->setData(Qt::UserRole, id_participant);
-                ui->lstParticipants->addItem(item);
-            }
-
-            // Update participant name
-            item->setText(participant_name);*/
-
-
         }
         ui->wdgSessionInvitees->addParticipantsToSession(participants);
     }
@@ -431,7 +407,7 @@ void SessionWidget::queryAvailableInvitees()
 {
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_LIST, "1");
-    args.addQueryItem(WEB_QUERY_ENABLED, "1");
+    //args.addQueryItem(WEB_QUERY_ENABLED, "1");
     if (m_idProject >= 0){
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
     }
@@ -440,6 +416,7 @@ void SessionWidget::queryAvailableInvitees()
     queryDataRequest(WEB_PARTICIPANTINFO_PATH, args);
 
     // Query users
+    args.addQueryItem(WEB_QUERY_ENABLED, "1");
     queryDataRequest(WEB_USERINFO_PATH, args);
 
     // Query devices
