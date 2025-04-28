@@ -14,10 +14,6 @@
 #include "data/DownloadingFile.h"
 #include "data/UploadingFile.h"
 
-#include "Logger.h"
-#include "Utils.h"
-
-
 class BaseComManager : public QObject
 {
     Q_OBJECT

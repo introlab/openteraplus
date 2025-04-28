@@ -1,4 +1,5 @@
 #include "BaseComManager.h"
+#include "Utils.h"
 
 BaseComManager::BaseComManager(QUrl serverUrl, QObject *parent)
     : QObject{parent},
@@ -172,7 +173,8 @@ void BaseComManager::doDownload(const QUrl &full_url, const QString &save_path, 
 
 void BaseComManager::doUpload(const QString &path, const QString &file_name, const QVariantMap extra_headers, const QString &label, const bool &use_token)
 {
-    QUrl query = m_serverUrl;    query.setPath(path);
+    QUrl query = m_serverUrl;
+    query.setPath(path);
 
     // Prepare request
     QNetworkRequest* request = new QNetworkRequest(query);
