@@ -211,8 +211,8 @@
 <context>
     <name>BaseComManager</name>
     <message>
-        <location filename="../../src/managers/BaseComManager.cpp" line="615"/>
-        <location filename="../../src/managers/BaseComManager.cpp" line="639"/>
+        <location filename="../../src/managers/BaseComManager.cpp" line="617"/>
+        <location filename="../../src/managers/BaseComManager.cpp" line="641"/>
         <source>Impossible de créer la requête</source>
         <translation>Unable to create request</translation>
     </message>
@@ -878,55 +878,55 @@
         <translation>Are you sure you want to delete the selected dashboard?</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="373"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="374"/>
         <source>Dashboards Config</source>
         <translation>Dashboards Config</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="374"/>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="375"/>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="380"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="376"/>
         <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="381"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="382"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="376"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="377"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="377"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="378"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="378"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="379"/>
         <source>Nom</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="379"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="380"/>
         <source>Versions</source>
         <translation>Versions</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="382"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="383"/>
         <source>Activé pour ce site / projet</source>
         <translation>Enabled for this site / project</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="383"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="384"/>
         <source>Version fixe pour ce site / project</source>
         <translation>Fixed version for this site / project</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="384"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="385"/>
         <source>Mettre à jour</source>
         <translation>Update</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="385"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_DashboardsConfigWidget.h" line="386"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
@@ -1483,22 +1483,22 @@ p, li { white-space: pre-wrap; }
         <translation>Email invite successfully sent!</translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/EmailInviteDialog.cpp" line="136"/>
+        <location filename="../../src/dialogs/EmailInviteDialog.cpp" line="137"/>
         <source>Français</source>
         <translation>French</translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/EmailInviteDialog.cpp" line="137"/>
+        <location filename="../../src/dialogs/EmailInviteDialog.cpp" line="138"/>
         <source>Anglais</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/EmailInviteDialog.cpp" line="163"/>
+        <location filename="../../src/dialogs/EmailInviteDialog.cpp" line="164"/>
         <source>Invitation - Séances via OpenTera</source>
         <translation>Invitation - Sessions using OpenTera</translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/EmailInviteDialog.cpp" line="166"/>
+        <location filename="../../src/dialogs/EmailInviteDialog.cpp" line="167"/>
         <source>Invitation - Sessions using OpenTera</source>
         <translation>Invitation - Sessions using OpenTera</translation>
     </message>
@@ -1896,17 +1896,17 @@ or Completed</translation>
         <translation>The operation did not succeed. Please try again.</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="242"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="246"/>
         <source>Terminer la séance?</source>
         <translation>Terminate session?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="242"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="246"/>
         <source>Mettre fin à la séance?</source>
         <translation>Terminate session?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="257"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="261"/>
         <source>Arrêt de la séance en cours...</source>
         <translation>Stopping session...</translation>
     </message>
@@ -1915,53 +1915,53 @@ or Completed</translation>
         <translation type="vanished">Waiting for the session to start...</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="366"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="370"/>
         <source>Déjà en séance</source>
         <translation>Already in session</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="368"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="372"/>
         <source> vous a invité dans une séance, mais nous avons refusé l&apos;invitation pour vous.</source>
         <translation> You are invited to a session, but we denied the invitation for you.</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="418"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="422"/>
         <source>n&apos;a pas répondu à</source>
         <translation>did not respond to</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="432"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="436"/>
         <source>a refusé</source>
         <translation>refused</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="436"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="440"/>
         <source>est occupé et ne peut répondre à</source>
         <translation>is busy and cannot answer to</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="441"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="445"/>
         <source> l&apos;invitation.</source>
         <translation> the invitation.</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="443"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="447"/>
         <source>Raison: </source>
         <translation>Reason: </translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="543"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="547"/>
         <source>Service non-supporté</source>
         <translation>Unsupported service</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="543"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="547"/>
         <source>Le service &quot;</source>
         <translation>The service &quot;</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="543"/>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="553"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="547"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="557"/>
         <source>&quot; n&apos;est pas gérée par cette version du logiciel.
 
 Veuillez vérifier si une mise à jour existe ou contribuez au développement du logiciel!</source>
@@ -1969,27 +1969,27 @@ Veuillez vérifier si une mise à jour existe ou contribuez au développement du
 Please update the software or contribute to the development!</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="553"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="557"/>
         <source>Catégorie de séance non-supportée</source>
         <translation>Session category is not supported</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="553"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="557"/>
         <source>La catégorie de séance &quot;</source>
         <translation>The session category &quot;</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="642"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="646"/>
         <source>Quitter la séance?</source>
         <translation>Quit session?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="642"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="646"/>
         <source>Désirez-vous quitter la séance?</source>
         <translation>Do you want to qui the session?</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/InSessionWidget.cpp" line="671"/>
+        <location filename="../../src/widgets/InSessionWidget.cpp" line="675"/>
         <source>Répertoire où les données seront enregistrées</source>
         <translation>Folder to save data</translation>
     </message>
@@ -2139,149 +2139,154 @@ Please update the software or contribute to the development!</translation>
         <translation>was assigned to this kit</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="328"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="332"/>
         <source>Chargement des sites en cours...</source>
         <translation>Loading sites...</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="336"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="340"/>
         <source>Chargement des projets en cours...</source>
         <translation>Loading projects...</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="347"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="351"/>
         <source>Chargement des groupes en cours...</source>
         <translation>Loading groups...</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="358"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="362"/>
         <source>Chargement des services en cours...</source>
         <translation>Loading services...</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="369"/>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="381"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="373"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="385"/>
         <source>Chargement des participants en cours...</source>
         <translation>Loading participants...</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="394"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="398"/>
         <source>Chargement des informations du participant en cours...</source>
         <translation>Loading participant&apos;s details...</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="488"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="492"/>
         <source>Participant désassocié</source>
         <translation>Unassigned participant</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="488"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="492"/>
         <source>Ce kit n&apos;est maintenant plus associé à aucun participant</source>
         <translation>This kit is now currently free and not assigned to any participant</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="525"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="533"/>
         <source>Sauvegarde complétée</source>
         <translation>Data save completed</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="525"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="533"/>
         <source>La configuration du kit a été sauvegardée</source>
         <translation>Kit configuration was saved</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="541"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="549"/>
         <source>Sélectionnez le logiciel à lancer lors du support technique</source>
         <translation>Select software to launch in technical support sessions</translation>
     </message>
     <message>
-        <location filename="../../src/kit/KitConfigDialog.cpp" line="569"/>
+        <location filename="../../src/kit/KitConfigDialog.cpp" line="577"/>
         <source>Sélectionnez le logiciel à lancer lors du démarrage</source>
         <translation>Select software to launch at start</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="431"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="437"/>
         <source>OpenTeraPlus - Kit - Configuration</source>
         <translation>OpenTeraPlus - Kit - Configuration</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="432"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="438"/>
         <source>Chargement en cours...</source>
         <translation>Loading...</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="433"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="439"/>
         <source>Fermer</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="434"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="440"/>
         <source>Groupe</source>
         <translation>Group</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="438"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="444"/>
         <source>Projet</source>
         <translation>Project</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="439"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="445"/>
         <source>Site</source>
         <translation>Site</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="440"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="446"/>
         <source>Service</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="442"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="448"/>
         <source>Associer ce participant à ce kit</source>
         <translation>Assign this participant to this kit</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="443"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="449"/>
         <source>Désassocier le participant actuel</source>
         <translation>Unassign current participant</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="444"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="450"/>
         <source>Participant</source>
         <translation>Participant</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="445"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="451"/>
+        <source>Afficher bouton &quot;Quitter&quot;</source>
+        <translation>Show &quot;Quit&quot; button</translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="452"/>
         <source>Support technique?</source>
         <translation>Technical support?</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="446"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="453"/>
         <source>Logiciel à lancer lors de l&apos;activation du support technique</source>
         <translation>Software to launch in technical support session</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="447"/>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="450"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="454"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="457"/>
         <source>Parcourir...</source>
         <translation>Browse...</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="448"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="455"/>
         <source>Autre logiciel?</source>
         <translation>Other software?</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="449"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="456"/>
         <source>Logiciel à lancer lors de l&apos;activation du kit</source>
         <translation>Software to launch when activating kit</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="451"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="458"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="452"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_KitConfigDialog.h" line="459"/>
         <source>Configuration matérielle</source>
         <translation>Hardware configuration</translation>
     </message>
@@ -2626,146 +2631,151 @@ Please update the software or contribute to the development!</translation>
 <context>
     <name>MainKitWindow</name>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="82"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="111"/>
         <source>Bienvenue!</source>
         <translation>Welcome!</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="113"/>
-        <location filename="../../src/main/MainKitWindow.cpp" line="125"/>
-        <location filename="../../src/main/MainKitWindow.cpp" line="176"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="142"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="154"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="205"/>
         <source>La connexion a été refusée par le serveur.</source>
         <translation>Connection refused by server.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="132"/>
-        <location filename="../../src/main/MainKitWindow.cpp" line="179"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="161"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="208"/>
         <source>Impossible de rejoindre le serveur.</source>
         <translation>Unable to reach server.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="135"/>
-        <location filename="../../src/main/MainKitWindow.cpp" line="182"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="164"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="211"/>
         <source>Le serveur est introuvable.</source>
         <translation>Server is unreachable.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="138"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="167"/>
         <source>Impossible de se connecter (Code erreur: </source>
         <translation>Unable to connect (Error code: </translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="152"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="181"/>
         <source>Une nouvelle version (</source>
         <translation>A software update (</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="152"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="181"/>
         <source>) du logiciel est disponible.</source>
         <translation>) is available.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="154"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="183"/>
         <source>Veuillez contacter votre fournisseur pour l&apos;obtenir.</source>
         <translation>Please contact your provider to update.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="156"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="185"/>
         <source>Cliquez </source>
         <translation>Click </translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="156"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="185"/>
         <source>ICI</source>
         <translation>HERE</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="156"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="185"/>
         <source> pour la télécharger.</source>
         <translation> to download.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="158"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="187"/>
         <source>Nouvelle version disponible!</source>
         <translation>Software update available!</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="165"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="194"/>
         <source>Impossible de se connecter. Vérifiez si le participant est bien actif.</source>
         <translation>Unable to connect. Please check that the participant is enabled.</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="185"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="214"/>
         <source>Erreur serveur (Code erreur: </source>
         <translation>Serveur error (Error code: </translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="224"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="253"/>
         <source>Aucun participant associé</source>
         <translation>No assigned participant</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="425"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="455"/>
         <source>Redémarrage</source>
         <translation>Reboot</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="425"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="455"/>
         <source>Souhaitez-vous vraiment redémarrer le système?</source>
         <translation>Are you sure you want to reboot the system?</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="471"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="501"/>
         <source>Arrêter support</source>
         <translation>Stop support</translation>
     </message>
     <message>
-        <location filename="../../src/main/MainKitWindow.cpp" line="483"/>
+        <location filename="../../src/main/MainKitWindow.cpp" line="513"/>
         <source>Support technique</source>
         <translation>Technical support</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="371"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="394"/>
         <source>OpenTeraPlus - Kit</source>
         <translation>OpenTeraPlus - Kit</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="372"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="395"/>
         <source>Exit</source>
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="375"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="398"/>
         <source>Aucun participant sélectionné</source>
         <translation>No selected participant</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="376"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="399"/>
         <source>Allumer</source>
         <translation>Turn on</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="377"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="400"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="379"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="402"/>
         <source>Redémarrer</source>
         <translation>Reboot</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="380"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="403"/>
         <source>Le support technique est activé</source>
         <translation>Technical support is enabled</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="381"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="404"/>
         <source>Support Technique</source>
         <translation>Technical support</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="378"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="405"/>
+        <source>Quitter</source>
+        <translation>Quit</translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_MainKitWindow.h" line="401"/>
         <source>(Version)</source>
         <translation>(Version)</translation>
     </message>
@@ -4179,27 +4189,27 @@ Do you want to continue?</translation>
         <translation>Remove from session</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="955"/>
+        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="957"/>
         <source>Nombre maximal d&apos;invités atteint</source>
         <translation>Maximum invitees number reached</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="955"/>
+        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="957"/>
         <source>Impossible d&apos;ajouter ces invités à la séance: le nombre maximal de participants (</source>
         <translation>Unable to add those invitees to the session: maximum number of participants (</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="955"/>
+        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="957"/>
         <source>serait dépassé</source>
         <translation>would be exceeded</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="1031"/>
+        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="1033"/>
         <source>Confirmation</source>
         <translation>Confirmation</translation>
     </message>
     <message>
-        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="1031"/>
+        <location filename="../../src/widgets/SessionInviteWidget.cpp" line="1033"/>
         <source>Êtes-vous sûrs de vouloir retirer les invités sélectionnés de la séance?</source>
         <translation>Are you sure you want to remove selected attendees from the session?</translation>
     </message>
@@ -4310,164 +4320,175 @@ You must select at least one site.</translation>
 <context>
     <name>SessionWidget</name>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="250"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="251"/>
         <source>Séance: </source>
         <translation>Session: </translation>
     </message>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="259"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="260"/>
         <source>Invités manquants</source>
-        <translation>Missing attendees</translation>
+        <translation>Missing guests</translation>
     </message>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="259"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="260"/>
         <source>Au moins un invité doit être dans la séance</source>
         <translation>At least one guest must be in the session</translation>
     </message>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="487"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="465"/>
         <source> Utilisateurs</source>
         <translation> Users</translation>
     </message>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="488"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="466"/>
         <source> Participants</source>
         <translation> Participants</translation>
     </message>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="489"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="467"/>
         <source> Appareils</source>
         <translation> Devices</translation>
     </message>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="490"/>
-        <location filename="../../src/editors/SessionWidget.cpp" line="563"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="468"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="546"/>
         <source> Données</source>
         <translation> Assets</translation>
     </message>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="491"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="469"/>
         <source> Événements</source>
         <translation> Events</translation>
     </message>
     <message>
-        <location filename="../../src/editors/SessionWidget.cpp" line="492"/>
-        <location filename="../../src/editors/SessionWidget.cpp" line="571"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="470"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="554"/>
         <source> Évaluations</source>
         <translation> Tests</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="533"/>
+        <location filename="../../src/editors/SessionWidget.cpp" line="566"/>
+        <source>Séance vide</source>
+        <translation>Empty session</translation>
+    </message>
+    <message>
+        <location filename="../../src/editors/SessionWidget.cpp" line="566"/>
+        <source>Une séance ne peut avoir aucun invité. Veuillez ajouter des invités à celle-ci.</source>
+        <translation>A session is not allowed to have no guests. Please add guests to it.</translation>
+    </message>
+    <message>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="561"/>
         <source>Form</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="535"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="563"/>
         <source>Séance</source>
         <translation>Session</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="536"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="564"/>
         <source>État de la séance</source>
         <translation>Session Status</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="537"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="565"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="569"/>
         <source>Éditer</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="538"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="566"/>
         <source>Sauvegarder</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="539"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="567"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="540"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="568"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="541"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="570"/>
         <source>Invités</source>
-        <translation>Attendees</translation>
+        <translation>Guests</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="551"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="580"/>
         <source>Invitations</source>
         <translation>Invites</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="560"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="589"/>
         <source>XXXX Évaluations</source>
         <translation>XXXX Tests</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="558"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="587"/>
         <source>XXX Appareils</source>
         <translation>XXXX Devices</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="565"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="594"/>
         <source>XXXX Participants</source>
         <translation>XXXX Participants</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="556"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="585"/>
         <source>XXXX Utilisateurs</source>
         <translation>XXXX Users</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="562"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="591"/>
         <source>XXXX Données</source>
         <translation>XXXX Data</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="561"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="590"/>
         <source>XXXX Événements</source>
         <translation>XXXX Events</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="566"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="595"/>
         <source>Résumé</source>
         <translation>Summary</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="552"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="581"/>
         <source>Données</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="553"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="582"/>
         <source>Évaluations</source>
         <translation>Evaluations</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="543"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="572"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="545"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="574"/>
         <source>Date / Heure</source>
         <translation>Date / Hour</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="547"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="576"/>
         <source>Contexte</source>
         <translation>Context</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="549"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="578"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="550"/>
+        <location filename="../../../build/Desktop_Qt_6_7_3_MSVC2019_64bit-Debug/client/src/ui_SessionWidget.h" line="579"/>
         <source>Événements</source>
         <translation>Events</translation>
     </message>
@@ -5040,22 +5061,22 @@ Please try again later!</translation>
 <context>
     <name>SurveyServiceConfigWidget</name>
     <message>
-        <location filename="../../src/services/SurveyService/SurveyServiceConfigWidget.cpp" line="204"/>
+        <location filename="../../src/services/SurveyService/SurveyServiceConfigWidget.cpp" line="218"/>
         <source>Erreur HTTP </source>
         <translation>HTTP Error </translation>
     </message>
     <message>
-        <location filename="../../src/services/SurveyService/SurveyServiceConfigWidget.cpp" line="206"/>
+        <location filename="../../src/services/SurveyService/SurveyServiceConfigWidget.cpp" line="220"/>
         <source>Erreur </source>
         <translation>Error </translation>
     </message>
     <message>
-        <location filename="../../src/services/SurveyService/SurveyServiceConfigWidget.cpp" line="352"/>
+        <location filename="../../src/services/SurveyService/SurveyServiceConfigWidget.cpp" line="366"/>
         <source>Supprimer</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../src/services/SurveyService/SurveyServiceConfigWidget.cpp" line="352"/>
+        <location filename="../../src/services/SurveyService/SurveyServiceConfigWidget.cpp" line="366"/>
         <source>Voulez-vous supprimer le questionnaire</source>
         <translation>Do you want to delete test type</translation>
     </message>
@@ -6847,12 +6868,12 @@ Unless you are a developper, you probably won&apos;t be able to connect.</transl
         <translation type="vanished">Unable to reach server. Please check your Internet connection, your network settings and your firewall, then try again.</translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="169"/>
+        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="171"/>
         <source>Une erreur est survenue</source>
         <translation>An error occured</translation>
     </message>
     <message>
-        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="181"/>
+        <location filename="../../src/dialogs/WebLoginDialog.cpp" line="183"/>
         <source>Bienvenue!</source>
         <translation>Welcome!</translation>
     </message>

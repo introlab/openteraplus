@@ -52,7 +52,7 @@ QPushButton#btnClose{
       <string>Chargement en cours...</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -61,7 +61,7 @@ QPushButton#btnClose{
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -291,7 +291,7 @@ QPushButton#btnClose{
           <bool>false</bool>
          </property>
          <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+          <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
          </property>
          <property name="iconSize">
           <size>
@@ -300,10 +300,10 @@ QPushButton#btnClose{
           </size>
          </property>
          <property name="textElideMode">
-          <enum>Qt::ElideMiddle</enum>
+          <enum>Qt::TextElideMode::ElideMiddle</enum>
          </property>
          <property name="movement">
-          <enum>QListView::Static</enum>
+          <enum>QListView::Movement::Static</enum>
          </property>
          <property name="spacing">
           <number>0</number>
@@ -315,7 +315,7 @@ QPushButton#btnClose{
           </size>
          </property>
          <property name="viewMode">
-          <enum>QListView::IconMode</enum>
+          <enum>QListView::ViewMode::IconMode</enum>
          </property>
          <property name="uniformItemSizes">
           <bool>false</bool>
@@ -324,7 +324,7 @@ QPushButton#btnClose{
           <bool>true</bool>
          </property>
          <property name="itemAlignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -455,6 +455,13 @@ QPushButton#btnClose{
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="chkShowQuit">
+         <property name="text">
+          <string>Afficher bouton &quot;Quitter&quot;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QCheckBox" name="chkTechSup">
@@ -469,10 +476,10 @@ QPushButton#btnClose{
          <item>
           <widget class="QFrame" name="frameTechSup">
            <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+            <enum>QFrame::Shape::StyledPanel</enum>
            </property>
            <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+            <enum>QFrame::Shadow::Raised</enum>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <property name="leftMargin">
@@ -558,10 +565,10 @@ QPushButton#btnClose{
             </size>
            </property>
            <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
+            <enum>QFrame::Shape::StyledPanel</enum>
            </property>
            <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
+            <enum>QFrame::Shadow::Raised</enum>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <property name="leftMargin">

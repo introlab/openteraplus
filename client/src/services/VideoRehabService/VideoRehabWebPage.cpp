@@ -62,6 +62,11 @@ void VideoRehabWebPage::onCertificateError(const QWebEngineCertificateError &cer
 
 void VideoRehabWebPage::onDesktopMediaRequest(const QWebEngineDesktopMediaRequest &request)
 {
+    if (m_sharedObject->getMusicSharing()){
+        // We have a request to share music only - accept it with first window so no dialog!
+        request.selectWindow(request.windowsModel()->index(0));
+        return;
+    }
     DesktopShareDialog dlg;
     dlg.setWindows(request.windowsModel());
     dlg.setScreens(request.screensModel());

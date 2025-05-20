@@ -118,14 +118,18 @@ void InSessionWidget::startSessionDiagTimeout()
 
 void InSessionWidget::startSessionDiagAccepted()
 {
-    m_startDiag->deleteLater();
-    m_startDiag = nullptr;
+    if (m_startDiag){
+        m_startDiag->deleteLater();
+        m_startDiag = nullptr;
+    }
 }
 
 void InSessionWidget::startSessionDiagRejected()
 {
-    m_startDiag->deleteLater();
-    m_startDiag = nullptr;
+    if (m_startDiag){
+        m_startDiag->deleteLater();
+        m_startDiag = nullptr;
+    }
     emit sessionEndedWithError();
 }
 

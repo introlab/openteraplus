@@ -251,6 +251,9 @@ void KitConfigDialog::initUi()
     ui->txtTechSup->setText(m_kitConfig->getTechSupportClient());
     ui->txtTechSup->setProperty("initial_value", ui->txtTechSup->text());
 
+    ui->chkShowQuit->setChecked(m_kitConfig->getShowQuitButton());
+    ui->chkShowQuit->setProperty("initial_value", ui->chkShowQuit->isChecked());
+
     QString other_software = m_kitConfig->getOtherSoftwarePath();
     ui->chkOtherSoftware->setChecked(!other_software.isEmpty());
     ui->chkOtherSoftware->setProperty("initial_value", ui->chkOtherSoftware->isChecked());
@@ -283,7 +286,8 @@ void KitConfigDialog::updateSaveButtonState()
                                   ui->chkTechSup->isChecked() != ui->chkTechSup->property("initial_value").toBool() ||
                                   ui->txtTechSup->text() != ui->txtTechSup->property("initial_value").toString() ||
                                   ui->chkOtherSoftware->isChecked() != ui->chkOtherSoftware->property("initial_value").toBool() ||
-                                  ui->txtOtherSoftware->text() != ui->txtOtherSoftware->property("initial_value").toString());
+                                  ui->txtOtherSoftware->text() != ui->txtOtherSoftware->property("initial_value").toString() ||
+                                  ui->chkShowQuit->isChecked() != ui->chkShowQuit->property("initial_value").toBool());
 }
 
 void KitConfigDialog::setStatusMessage(QString msg, bool error)
@@ -512,6 +516,8 @@ void KitConfigDialog::on_btnSaveConfig_clicked()
         other_software = ui->txtOtherSoftware->text();
     }
     m_kitConfig->setOtherSoftwarePath(other_software);
+
+    m_kitConfig->setShowQuitButton(ui->chkShowQuit->isChecked());
     m_kitConfig->saveConfig();
 
     ui->chkTechSup->setProperty("initial_value", ui->chkTechSup->isChecked());
@@ -519,6 +525,8 @@ void KitConfigDialog::on_btnSaveConfig_clicked()
 
     ui->chkOtherSoftware->setProperty("initial_value", ui->chkOtherSoftware->isChecked());
     ui->txtOtherSoftware->setProperty("initial_value", ui->txtOtherSoftware->text());
+
+    ui->chkShowQuit->setProperty("initial_value", ui->chkShowQuit->isChecked());
 
     ui->btnSaveConfig->setEnabled(false);
     GlobalMessageBox msg;
@@ -575,6 +583,14 @@ void KitConfigDialog::on_btnOtherSoftware_clicked()
 
 
 void KitConfigDialog::on_txtOtherSoftware_textChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1)
+
+    updateSaveButtonState();
+}
+
+
+void KitConfigDialog::on_chkShowQuit_checkStateChanged(const Qt::CheckState &arg1)
 {
     Q_UNUSED(arg1)
 

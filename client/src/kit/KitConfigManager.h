@@ -33,6 +33,9 @@ public:
     QString         getOtherSoftwarePath();
     void            setOtherSoftwarePath(const QString& path);
 
+    bool            getShowQuitButton();
+    void            setShowQuitButton(const bool& show);
+
 };
 
 #endif // KITCONFIGMANAGER_H
