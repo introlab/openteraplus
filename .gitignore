@@ -6,3 +6,4 @@ deploy
 venv
 doctrees
 CMakeLists.txt.user
+.DS_Store
