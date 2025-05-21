@@ -88,6 +88,8 @@ void WebLoginDialog::setServerNames(QStringList servers)
                 ui->cmbServers->setCurrentText(server_name);
             else
                 onServerSelected(0);
+        }else{
+            onServerSelected(0);
         }
     }else{
         if (ui->cmbServers->count() > 0){

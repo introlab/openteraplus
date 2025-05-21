@@ -9,7 +9,7 @@
 #include "managers/ParticipantComManager.h"
 #include "managers/ConfigManagerClient.h"
 
-#include "dialogs/LoginDialog.h"
+#include "dialogs/WebLoginDialog.h"
 
 #include "kit/KitConfigDialog.h"
 #include "kit/KitConfigManager.h"
@@ -37,6 +37,7 @@ public:
 
 private slots:
     void userLoginRequested(QString username, QString password, QString server_name);
+    void userLoginSuccess(const QString &token, const QString websocket_url, const QString &user_uuid);
     void userLoginCancelled();
     void on_userLoginResult(bool logged, QString log_msg);
 
@@ -61,6 +62,8 @@ private slots:
 
     void on_btnTechSupport_clicked();
 
+    void on_btnQuit_clicked();
+
 private:
     void setWindowOnTop(bool top);
     void initUi();
@@ -80,7 +83,7 @@ private:
     Ui::MainKitWindow*      ui;
     ComManager*             m_comManager;
     ParticipantComManager*  m_partComManager;
-    LoginDialog*            m_loginDiag;
+    WebLoginDialog*            m_loginDiag;
     ConfigManagerClient*    m_config;
     KitConfigDialog*        m_configDiag;
     KitConfigManager        m_kitConfig;

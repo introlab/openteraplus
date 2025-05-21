@@ -1,5 +1,6 @@
 #include "MainKitWindow.h"
 #include "ui_MainKitWindow.h"
+#include "TeraSettings.h"
 
 MainKitWindow::MainKitWindow(ConfigManagerClient *config, QWidget *parent) :
     QMainWindow(parent),
@@ -71,6 +72,34 @@ void MainKitWindow::userLoginRequested(QString username, QString password, QStri
 
     // Connect to server
     m_comManager->connectToServer(username, password);
+}
+
+void MainKitWindow::userLoginSuccess(const QString &token, const QString websocket_url, const QString &user_uuid)
+{
+
+    // Create ComManager for that server
+    if (m_comManager){
+        m_comManager->deleteLater();
+    }
+
+    // Find server url for that server
+    QUrl server;
+    if (m_loginDiag)
+        server = m_config->getServerUrl(m_loginDiag->currentServerName());
+
+    m_comManager = new ComManager(server);
+
+    connect(m_comManager, &ComManager::socketError, this, &MainKitWindow::on_serverError);
+    connect(m_comManager, &ComManager::serverDisconnected, this, &::MainKitWindow::on_userServerDisconnected);
+    connect(m_comManager, &ComManager::loginResult, this, &MainKitWindow::on_userLoginResult);
+    connect(m_comManager, &ComManager::networkError, this, &MainKitWindow::on_userNetworkError);
+    connect(m_comManager, &ComManager::newVersionAvailable, this, &MainKitWindow::on_newVersionAvailable);
+
+
+    m_comManager->connectToServer(token, websocket_url, user_uuid);
+
+    //showMainWindow();
+
 }
 
 void MainKitWindow::on_userLoginResult(bool logged, QString log_msg)
@@ -228,6 +257,7 @@ void MainKitWindow::initUi()
     }
 
     ui->btnOnOff->setEnabled(!m_kitConfig.getParticipantToken().isEmpty());
+    ui->btnQuit->setVisible(m_kitConfig.getShowQuitButton());
 
     ui->frameTechSup->setVisible(!m_kitConfig.getTechSupportClient().isEmpty());
     ui->lblTechSup->hide();
@@ -323,9 +353,9 @@ void MainKitWindow::loadConfig()
 void MainKitWindow::showLogin()
 {
     if (m_loginDiag == nullptr){
-        m_loginDiag = new LoginDialog(this);
-        connect(m_loginDiag, &LoginDialog::loginRequest, this, &MainKitWindow::userLoginRequested);
-        connect(m_loginDiag, &LoginDialog::quitRequest, this, &MainKitWindow::userLoginCancelled);
+        m_loginDiag = new WebLoginDialog(m_config, this);
+        connect(m_loginDiag, &WebLoginDialog::loginSuccess, this, &MainKitWindow::userLoginSuccess, Qt::QueuedConnection);
+        connect(m_loginDiag, &WebLoginDialog::finished, this, &MainKitWindow::userLoginCancelled);
 
         // Set server names
         m_loginDiag->setServerNames(m_config->getServerNames());
@@ -491,3 +521,9 @@ void MainKitWindow::on_btnTechSupport_clicked()
     }
 
 }
+
+void MainKitWindow::on_btnQuit_clicked()
+{
+    QApplication::quit();
+}
+

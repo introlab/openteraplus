@@ -13,7 +13,7 @@ KitConfigManager::KitConfigManager(QString filename, QObject *parent) : ConfigMa
 
 void KitConfigManager::initConfig()
 {
-    ConfigManager::initConfig(QStringList() << "Participant" << "KitConfig" << "TechSupport" << "OtherSoftware");
+    ConfigManager::initConfig(QStringList() << "Participant" << "KitConfig" << "TechSupport" << "OtherSoftware" << "Settings");
 }
 
 QString KitConfigManager::getParticipantToken()
@@ -150,6 +150,27 @@ void KitConfigManager::setOtherSoftwarePath(const QString &path)
         QJsonObject tech_sup = config["OtherSoftware"].toObject();
         tech_sup.insert("software_path", path);
         config["OtherSoftware"] = tech_sup;
+        m_config.setObject(config);
+    }
+}
+
+bool KitConfigManager::getShowQuitButton()
+{
+    bool rval = "";
+    if (!m_config.isNull()){
+        QHash<QString, QVariant> settings = m_config["Settings"].toObject().toVariantHash();
+        rval = settings["show_quit"].toBool();
+    }
+    return rval;
+}
+
+void KitConfigManager::setShowQuitButton(const bool &show)
+{
+    if (!m_config.isNull()){
+        QJsonObject config = m_config.object();
+        QJsonObject settings = config["Settings"].toObject();
+        settings.insert("show_quit", show);
+        config["Settings"] = settings;
         m_config.setObject(config);
     }
 }

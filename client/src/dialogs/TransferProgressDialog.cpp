@@ -79,7 +79,7 @@ void TransferProgressDialog::updateTransferringFile(TransferringFile *file)
         if (file->totalBytes()>std::numeric_limits<int>::max()){
             progress->setMaximum(static_cast<int>(file->totalBytes()/1024));
             progress->setValue(static_cast<int>(file->currentBytes()/1024));
-            qDebug() << progress->maximum() << progress->value();
+            //qDebug() << progress->maximum() << progress->value();
         }else{
             progress->setMaximum(static_cast<int>(file->totalBytes()));
             progress->setValue(static_cast<int>(file->currentBytes()));

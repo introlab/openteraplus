@@ -64,6 +64,8 @@ private slots:
 
     void on_txtOtherSoftware_textChanged(const QString &arg1);
 
+    void on_chkShowQuit_checkStateChanged(const Qt::CheckState &arg1);
+
 private:
     void initUi();
     void connectSignals();

@@ -131,6 +131,8 @@ private slots:
     void on_btnAssetsBrowser_clicked();
     void on_btnTestsBrowser_clicked();
 
+    void on_btnAddSession_clicked();
+
 signals:
     void startSessionRequested(int id_session_type, int id_session);
     void sessionsCountUpdated(int new_total);

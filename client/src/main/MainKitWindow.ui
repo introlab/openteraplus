@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>969</width>
-    <height>797</height>
+    <width>1166</width>
+    <height>893</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,6 +49,14 @@ QFrame#frameMain{
 QPushButton#btnReboot{
 	border-image:url(&quot;:/controls/yellow_button.png&quot;) 0 0 0 0 stretch stretch;
 	color:black;
+	min-width: 200px;
+	min-height: 100px;
+	background-color: transparent;
+}
+
+QPushButton#btnQuit{
+	border-image:url(&quot;:/controls/red_button2.png&quot;) 0 0 0 0 stretch stretch;
+	color:white;
 	min-width: 300px;
 	min-height: 100px;
 	background-color: transparent;
@@ -95,10 +103,10 @@ QToolButton:hover{
        </sizepolicy>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -115,7 +123,7 @@ QToolButton:hover{
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
-         <item alignment="Qt::AlignTop">
+         <item alignment="Qt::AlignmentFlag::AlignTop">
           <widget class="QToolButton" name="btnExit">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -147,9 +155,9 @@ QToolButton:hover{
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
+          <spacer name="horizontalSpacer_2">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -159,7 +167,7 @@ QToolButton:hover{
            </property>
           </spacer>
          </item>
-         <item alignment="Qt::AlignHCenter">
+         <item alignment="Qt::AlignmentFlag::AlignHCenter">
           <widget class="QLabel" name="lblLogo">
            <property name="maximumSize">
             <size>
@@ -179,9 +187,9 @@ QToolButton:hover{
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_2">
+          <spacer name="horizontalSpacer">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -191,7 +199,7 @@ QToolButton:hover{
            </property>
           </spacer>
          </item>
-         <item alignment="Qt::AlignTop">
+         <item alignment="Qt::AlignmentFlag::AlignTop">
           <widget class="QToolButton" name="btnConfig">
            <property name="minimumSize">
             <size>
@@ -231,10 +239,10 @@ QToolButton:hover{
     <item>
      <widget class="QFrame" name="frameParticipant">
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
@@ -242,7 +250,6 @@ QToolButton:hover{
          <property name="font">
           <font>
            <pointsize>16</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -250,7 +257,7 @@ QToolButton:hover{
           <string>Aucun participant sélectionné</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -302,7 +309,6 @@ QToolButton:hover{
           <font>
            <family>Cordia New</family>
            <pointsize>21</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -359,10 +365,10 @@ QToolButton:hover{
        </size>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
@@ -376,7 +382,6 @@ QToolButton:hover{
          <property name="font">
           <font>
            <pointsize>11</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -384,7 +389,7 @@ QToolButton:hover{
           <string>Erreur</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -425,7 +430,7 @@ QToolButton:hover{
          <string>(Version)</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+         <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTop|Qt::AlignmentFlag::AlignTrailing</set>
         </property>
         <property name="indent">
          <number>-1</number>
@@ -449,10 +454,10 @@ QToolButton:hover{
        </size>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="spacing">
@@ -468,7 +473,7 @@ QToolButton:hover{
          </property>
          <property name="minimumSize">
           <size>
-           <width>300</width>
+           <width>200</width>
            <height>100</height>
           </size>
          </property>
@@ -481,7 +486,6 @@ QToolButton:hover{
          <property name="font">
           <font>
            <pointsize>11</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -506,7 +510,7 @@ QToolButton:hover{
        <item>
         <spacer name="horizontalSpacer_4">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -519,10 +523,10 @@ QToolButton:hover{
        <item>
         <widget class="QFrame" name="frameTechSup">
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::Shape::StyledPanel</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Shadow::Raised</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <property name="leftMargin">
@@ -566,7 +570,6 @@ QToolButton:hover{
             <property name="font">
              <font>
               <pointsize>11</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -585,6 +588,47 @@ QToolButton:hover{
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnQuit">
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>100</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>300</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>Quitter</string>
+         </property>
         </widget>
        </item>
       </layout>

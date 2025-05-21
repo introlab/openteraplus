@@ -69,6 +69,46 @@ void BaseServiceComManager::doDelete(const QString &path, const int &id, const b
     BaseComManager::doDelete(getServiceEndpoint(path), id, true);
 }
 
+void BaseServiceComManager::doDownload(const QString &path, const QString &save_path, const QString &download_uuid, const QString &save_filename, const QUrlQuery &query_args, const bool &use_token)
+{
+    Q_UNUSED(use_token)
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring DOWNLOAD.";
+        return;
+    }
+    BaseComManager::doDownload(getServiceEndpoint(path), save_path, download_uuid, save_filename, query_args);
+}
+
+void BaseServiceComManager::doDownload(const QUrl &full_url, const QString &save_path, const QString &download_uuid, const QString &save_filename, const QUrlQuery &query_args, const bool &use_token)
+{
+    Q_UNUSED(use_token)
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring DOWNLOAD.";
+        return;
+    }
+    BaseComManager::doDownload(full_url, save_path, download_uuid, save_filename, query_args);
+}
+
+void BaseServiceComManager::doUpload(const QString &path, const QString &file_name, const QVariantMap extra_headers, const QString &label, const bool &use_token)
+{
+    Q_UNUSED(use_token)
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring UPLOAD.";
+        return;
+    }
+    BaseComManager::doUpload(getServiceEndpoint(path), file_name, extra_headers, label);
+}
+
+void BaseServiceComManager::doUploadWithMultiPart(const QString &path, const QString &file_name, const QString &form_field_name, const QString &form_infos, const QVariantMap extra_headers, const bool &use_token)
+{
+    Q_UNUSED(use_token)
+    if (!isReady()){
+        qWarning() << "ServiceComManager is not ready yet - ignoring UPLOAD.";
+        return;
+    }
+    BaseComManager::doUploadWithMultiPart(getServiceEndpoint(path), file_name, form_field_name, form_infos, extra_headers);
+}
+
 bool BaseServiceComManager::isReady()
 {
     return !m_service.isNew();

@@ -149,5 +149,6 @@
         <file>icons/logs/os_windows.png</file>
         <file>icons/pause.png</file>
         <file>icons/project_disabled.png</file>
+        <file>controls/red_button2.png</file>
     </qresource>
 </RCC>

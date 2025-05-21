@@ -397,6 +397,8 @@ void SessionInviteWidget::setConfirmOnRemove(const bool &confirm)
 
 void SessionInviteWidget::setEditable(const bool &editable)
 {
+    if (m_editable == editable)
+        return;
     m_editable = editable;
 
     ui->btnManageInvitees->setVisible(m_editable);
@@ -1040,19 +1042,43 @@ void SessionInviteWidget::on_btnRemove_clicked()
     foreach(QTreeWidgetItem* item, ui->treeInvitees->selectedItems()){
         TeraData* item_data = nullptr;
         if (m_usersInSession.key(item) > 0){
-            item_data = &(m_users[m_usersInSession.key(item)]);
-            m_usersInSession.remove(item_data->getId());
-            removed_users.append(item_data->getUuid());
+            int id_user = m_usersInSession.key(item);
+            if (m_users.contains(id_user)){
+                item_data = &(m_users[id_user]);
+                m_usersInSession.remove(item_data->getId());
+                removed_users.append(item_data->getUuid());
+            }else{
+                // This can happens if the user in session isn't in the available list (usually from another project)
+                m_usersInSession.remove(id_user);
+                // TODO: Handle removed uuid
+                removed_users.append("");
+            }
         }
         if (m_devicesInSession.key(item) > 0){
-            item_data = &(m_devices[m_devicesInSession.key(item)]);
-            m_devicesInSession.remove(item_data->getId());
-            removed_devices.append(item_data->getUuid());
+            int id_device = m_devicesInSession.key(item);
+            if (m_devices.contains(id_device)){
+                item_data = &(m_devices[id_device]);
+                m_devicesInSession.remove(item_data->getId());
+                removed_devices.append(item_data->getUuid());
+            }else{
+                // This can happens if the device in session isn't in the available list (usually from another project)
+                m_devicesInSession.remove(id_device);
+                // TODO: Handle removed uuid
+                removed_devices.append("");
+            }
         }
         if (m_participantsInSession.key(item) > 0){
-            item_data = &(m_participants[m_participantsInSession.key(item)]);
-            m_participantsInSession.remove(item_data->getId());
-            removed_participants.append(item_data->getUuid());
+            int id_participant = m_participantsInSession.key(item);
+            if (m_participants.contains(id_participant)){
+                item_data = &(m_participants[id_participant]);
+                m_participantsInSession.remove(item_data->getId());
+                removed_participants.append(item_data->getUuid());
+            }else{
+                // This can happens if the participant in session isn't in the available list (usually from another project)
+                m_participantsInSession.remove(id_participant);
+                // TODO: Handle removed uuid
+                removed_participants.append("");
+            }
         }
 
         // Remove from view

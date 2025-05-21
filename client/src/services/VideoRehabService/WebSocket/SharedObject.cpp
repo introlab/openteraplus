@@ -434,6 +434,11 @@ void SharedObject::setLocalBlur(const bool &blur)
     emit setLocalBlurSignal(m_localBlur);
 }
 
+void SharedObject::setMusicSharing(const bool &music)
+{
+    m_musicSharing = music;
+}
+
 void SharedObject::setExtraParams(const QString &params)
 {
     m_extraParams = params;
@@ -478,6 +483,11 @@ bool SharedObject::getLocalMirror(){
 bool SharedObject::getLocalBlur()
 {
     return m_localBlur;
+}
+
+bool SharedObject::getMusicSharing()
+{
+    return m_musicSharing;
 }
 
 void SharedObject::getExtraParams()

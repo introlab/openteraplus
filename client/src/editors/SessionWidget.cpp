@@ -233,9 +233,10 @@ void SessionWidget::updateControlsState()
     }else{
         TeraSessionStatus::SessionStatus status = static_cast<TeraSessionStatus::SessionStatus>(m_data->getFieldValue("session_status").toInt());
         if (status == TeraSessionStatus::STATUS_NOTSTARTED){
+            ui->btnEditInvitees->hide();
             ui->wdgSessionInvitees->setEditable(true);
         }else{
-            ui->wdgSessionInvitees->setEditable(false);
+            ui->wdgSessionInvitees->setEditable(ui->btnEditInvitees->isChecked());
         }
     }
 
@@ -281,30 +282,6 @@ void SessionWidget::updateSessionParticipants()
             TeraData part(TERADATA_PARTICIPANT);
             part.fromMap(part_info);
             participants.append(part);
-            /*
-            int id_participant = part_info["id_participant"].toInt();
-            QString participant_name = part_info["participant_name"].toString();
-            QListWidgetItem* item = nullptr;
-
-            for(int i=0; i<ui->lstParticipants->count(); i++){
-                int part_id = ui->lstParticipants->item(i)->data(Qt::UserRole).toInt();
-                if (part_id == id_participant){
-                    // Participant already present
-                    item = ui->lstParticipants->item(i);
-                    break;
-                }
-            }
-            // New participant
-            if (!item){
-                item = new QListWidgetItem(QIcon(TeraData::getIconFilenameForDataType(TERADATA_PARTICIPANT)), participant_name);
-                item->setData(Qt::UserRole, id_participant);
-                ui->lstParticipants->addItem(item);
-            }
-
-            // Update participant name
-            item->setText(participant_name);*/
-
-
         }
         ui->wdgSessionInvitees->addParticipantsToSession(participants);
     }
@@ -430,7 +407,7 @@ void SessionWidget::queryAvailableInvitees()
 {
     QUrlQuery args;
     args.addQueryItem(WEB_QUERY_LIST, "1");
-    args.addQueryItem(WEB_QUERY_ENABLED, "1");
+    //args.addQueryItem(WEB_QUERY_ENABLED, "1");
     if (m_idProject >= 0){
         args.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
     }
@@ -439,6 +416,7 @@ void SessionWidget::queryAvailableInvitees()
     queryDataRequest(WEB_PARTICIPANTINFO_PATH, args);
 
     // Query users
+    args.addQueryItem(WEB_QUERY_ENABLED, "1");
     queryDataRequest(WEB_USERINFO_PATH, args);
 
     // Query devices
@@ -514,6 +492,8 @@ void SessionWidget::processParticipantsReply(QList<TeraData> participants)
             // Add current participant to session
             ui->wdgSessionInvitees->addParticipantToSession(m_baseParticipantUuid);
             ui->wdgSessionInvitees->addRequiredParticipant(m_baseParticipantUuid);
+        }else{
+            ui->wdgSessionInvitees->autoSelectFilters();
         }
     }
 }
@@ -522,6 +502,7 @@ void SessionWidget::processDevicesReply(QList<TeraData> devices)
 {
     if (!ui->wdgSessionInvitees->hasAvailableDevices()){
         ui->wdgSessionInvitees->setAvailableDevices(devices);
+        ui->wdgSessionInvitees->autoSelectFilters();
     }
 }
 
@@ -532,6 +513,8 @@ void SessionWidget::processUsersReply(QList<TeraData> users)
         if (dataIsNew()){
             // Add current user to session
             ui->wdgSessionInvitees->addUserToSession(m_comManager->getCurrentUser().getUuid());
+        }else{
+            ui->wdgSessionInvitees->autoSelectFilters();
         }
     }
 }
@@ -576,6 +559,13 @@ void SessionWidget::onTestsCountChanged(int new_count)
 
 void SessionWidget::sessionInviteesChanged(QStringList user_uuids, QStringList participant_uuids, QStringList device_uuids)
 {
+    if (ui->wdgSessionInvitees->getUsersInSessionCount() == 0
+        && ui->wdgSessionInvitees->getParticipantsInSessionCount() == 0
+        && ui->wdgSessionInvitees->getDevicesInSessionCount() == 0){
+        GlobalMessageBox msg;
+        msg.showError(tr("Séance vide"), tr("Une séance ne peut avoir aucun invité. Veuillez ajouter des invités à celle-ci."));
+        return;
+    }
     // Post session update with new lists
     QJsonDocument document;
     QJsonObject base_obj;
@@ -684,12 +674,12 @@ void SessionWidget::on_tabNav_currentChanged(int index)
     QWidget* current_tab = ui->tabNav->widget(index);
 
     if (current_tab == ui->tabInvitees){
-        if (ui->wdgSessionInvitees->isEditable()){
+        /*if (ui->wdgSessionInvitees->isEditable()){
             if (!ui->wdgSessionInvitees->hasAvailableDevices() || !ui->wdgSessionInvitees->hasAvailableParticipants() || !ui->wdgSessionInvitees->hasAvailableUsers()){
                 queryAvailableInvitees();
                 ui->wdgSessionInvitees->selectFilterParticipant();
             }
-        }
+        }*/
     }
 
     if (current_tab == ui->tabEvents){
@@ -740,5 +730,18 @@ void SessionWidget::on_tabNav_currentChanged(int index)
             ui->wdgInvitations->loadForSession(m_data);
         }
     }
+}
+
+void SessionWidget::on_btnEditInvitees_toggled(bool checked)
+{
+    ui->wdgSessionInvitees->setEditable(checked);
+    if (checked){
+        if (!ui->wdgSessionInvitees->hasAvailableDevices() || !ui->wdgSessionInvitees->hasAvailableParticipants() || !ui->wdgSessionInvitees->hasAvailableUsers()){
+            queryAvailableInvitees();
+        }
+        ui->wdgSessionInvitees->selectDefaultFilter();
+    }
+    ui->wdgSessionInvitees->showAvailableInvitees(checked, true);
+
 }
 

@@ -1003,3 +1003,14 @@ void SessionsListWidget::on_btnTestsBrowser_clicked()
     m_diag_editor->open();
 }
 
+void SessionsListWidget::on_btnAddSession_clicked()
+{
+    QDateTime session_datetime = QDateTime::currentDateTime();
+    QTime session_time = QTime::currentTime();
+    int minutes = (session_time.minute() / 15) * 15;
+    session_time.setHMS(session_datetime.time().addSecs(3600).hour(), minutes, 0);
+    session_datetime.setTime(session_time);
+
+    newSessionRequest(session_datetime);
+}
+

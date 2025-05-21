@@ -64,6 +64,7 @@ public slots:
     Q_INVOKABLE void getSecondSources();
     Q_INVOKABLE bool getLocalMirror();
     Q_INVOKABLE bool getLocalBlur();
+    Q_INVOKABLE bool getMusicSharing();
     Q_INVOKABLE void getExtraParams();
 
     Q_INVOKABLE QString getAllSettings();
@@ -91,6 +92,7 @@ public slots:
     Q_INVOKABLE void cameraChanged(QString name, int index);
     Q_INVOKABLE void setLocalMirror(const bool &mirror);
     Q_INVOKABLE void setLocalBlur(const bool &blur);
+    Q_INVOKABLE void setMusicSharing(const bool &music);
 
     Q_INVOKABLE void dataForwardReceived(QString json);
 
@@ -160,6 +162,7 @@ protected:
     int     m_cameraIndex;
     bool    m_localMirror;
     bool    m_localBlur = false;
+    bool    m_musicSharing = false;
     QString m_extraParams;
 
     bool    m_camCanZoom;
