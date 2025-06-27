@@ -3,6 +3,7 @@ set(TERACLIENT_RES_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "doc stri
 set(translations
     translations/openteraplus_en.ts
     translations/openteraplus_fr.ts
+    translations/openteraplus_es.ts
 )
 
 add_custom_target(translation_files SOURCES ${translations})

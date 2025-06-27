@@ -136,6 +136,7 @@ void EmailInviteDialog::initLanguages()
     ui->cmbLanguage->clear();
     ui->cmbLanguage->addItem(tr("Français"), "fr");
     ui->cmbLanguage->addItem(tr("Anglais"), "en");
+    ui->cmbLanguage->addItem(tr("Español"), "es");
 
     // Select language
     QString lang = m_comManager->getCurrentPreferences().getLanguage();
