@@ -398,6 +398,7 @@ QT6_WRAP_CPP(moc_srcs ${headers})
 set(translation_files_srcs
         ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_fr.ts
         ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_en.ts
+        ${TERACLIENT_RES_INCLUDES}/translations/openteraplus_es.ts
 )
 
 # #set qm files output directory

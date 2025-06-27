@@ -224,7 +224,7 @@ void ClientApp::processQueuedEvents()
 void ClientApp::setTranslation(QString language)
 {
     bool lang_changed = false;
-    QStringList supported_languages = {"fr", "en"};
+    QStringList supported_languages = {"fr", "en", "es"};
 
     if (language.isEmpty() || !supported_languages.contains(language.toLower())){
         //Set French as default
@@ -239,6 +239,11 @@ void ClientApp::setTranslation(QString language)
 
     if (language.toLower() == "fr" && m_currentLocale.language() != QLocale::French){
         m_currentLocale = QLocale(QLocale::French);
+        lang_changed = true;
+    }
+
+    if (language.toLower() == "es" && m_currentLocale.language() != QLocale::Spanish){
+        m_currentLocale = QLocale(QLocale::Spanish);
         lang_changed = true;
     }
 
