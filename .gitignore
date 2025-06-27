@@ -7,3 +7,7 @@ venv
 doctrees
 CMakeLists.txt.user
 .DS_Store
+
+# Build test directories
+build_test/
+
