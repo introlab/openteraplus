@@ -10,6 +10,7 @@
 #include "dialogs/PasswordStrengthDialog.h"
 
 #include "services/DanceService/DanceConfigWidget.h"
+#include "services/MOVEService/MOVEConfigWidget.h"
 
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -414,6 +415,13 @@ void ParticipantWidget::addServiceTab(const TeraData &service)
     // Dance Service
     if (service_key == "DanceService"){
         DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getUuid());
+        ui->tabServicesDetails->insertTab(0, wdg, QIcon("://icons/service.png"), service.getName());
+        m_services_tabs.insert(id_service, wdg);
+    }
+
+    // MOVE Service
+    if (service_key == "MOVEService"){
+        MOVEConfigWidget* wdg = new MOVEConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getUuid());
         ui->tabServicesDetails->insertTab(0, wdg, QIcon("://icons/service.png"), service.getName());
         m_services_tabs.insert(id_service, wdg);
     }
