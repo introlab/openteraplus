@@ -9,17 +9,16 @@ class MOVEComManager : public BaseServiceComManager
 {
     Q_OBJECT
 public:
-    explicit MOVEComManager(ComManager* comManager, QObject *parent = nullptr);
+    explicit MOVEComManager(ComManager *comManager, QObject *parent = nullptr);
     ~MOVEComManager();
+    void queryParticipantProfile(const QString &participant_uuid);
 
 private:
-    void postHandleData(const QList<QJsonObject>& items, const QString &reply_path, const QUrlQuery &reply_query) override;
+    void postHandleData(const QList<QJsonObject> &items, const QString &reply_path, const QUrlQuery &reply_query) override;
 
 signals:
 
-    void videosReceived(QList<QJsonObject> videos, QUrlQuery reply_query);
-    void playlistReceived(QList<QJsonObject> playlist, QUrlQuery reply_query);
-
+    void participantProfileReceived(QJsonObject user_profile, QUrlQuery reply_query);
 };
 
 #endif // MOVECOMMANAGER_H

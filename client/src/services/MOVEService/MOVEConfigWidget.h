@@ -9,8 +9,9 @@
 #include "managers/ComManager.h"
 #include "MOVEComManager.h"
 
-namespace Ui {
-class MOVEConfigWidget;
+namespace Ui
+{
+    class MOVEConfigWidget;
 }
 
 class MOVEConfigWidget : public QWidget
@@ -18,17 +19,21 @@ class MOVEConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit MOVEConfigWidget(ComManager* comManager, int projectId, QString participantUuid = QString(), QWidget *parent = nullptr);
+    explicit MOVEConfigWidget(ComManager *comManager, int projectId, QString participantUuid = QString(), QWidget *parent = nullptr);
     ~MOVEConfigWidget();
 
+public slots:
+
+    void participantProfileReceived(QJsonObject user_profile, QUrlQuery reply_query);
+    void serviceReadyChanged(bool ready);
+
 private:
-    Ui::MOVEConfigWidget   *ui;
+    Ui::MOVEConfigWidget *m_ui;
 
-
-    ComManager* m_comManager;
-    int         m_idProject;
-    QString     m_uuidParticipant;
-    MOVEComManager* m_MOVEComManager;
+    ComManager *m_comManager;
+    int m_idProject;
+    QString m_uuidParticipant;
+    MOVEComManager *m_MOVEComManager;
 
     void connectSignals();
 };
