@@ -15,23 +15,13 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: '6.9.1'
-        host: 'windows'
+	version: '6.9.1'
         target: 'desktop'
         arch: 'win64_msvc2022_64'
-        dir: 'C:\'
-        install-deps: 'true'
+        use-official: true
+        email: ${{ secrets.QT_EMAIL }}
+        pw: ${{ secrets.QT_PW }}
         modules: 'all'
-        #archives: 'qtbase qtsvg'
-        cache: 'false'
-        cache-key-prefix: 'install-qt-action'
-        setup-python: 'true'
-        tools: 'tools_ninja'
-        set-env: 'true'
-        tools-only: 'false'
-        aqtversion: '==3.2.*'
-        py7zrversion: '==1.0.*'
-        extra: '--external 7z'
         
     - name: Checkout files
       uses: actions/checkout@v4
