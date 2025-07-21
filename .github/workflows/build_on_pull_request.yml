@@ -17,6 +17,7 @@ jobs:
       with:
         version: '6.9.1'
         target: 'desktop'
+        host: 'windows'
         arch: 'win64_msvc2022_64'
         use-official: true
         email: ${{ secrets.QT_EMAIL }}
