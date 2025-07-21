@@ -25,7 +25,7 @@ jobs:
         #archives: 'qtbase qtsvg'
         cache: 'false'
         cache-key-prefix: 'install-qt-action'
-        setup-python: 'false'
+        setup-python: 'true'
         tools: 'tools_ninja'
         set-env: 'true'
         tools-only: 'false'
