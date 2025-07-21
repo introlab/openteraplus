@@ -29,12 +29,12 @@ jobs:
         tools: 'tools_ninja'
         set-env: 'true'
         tools-only: 'false'
-        aqtversion: '==3.1.*'
-        py7zrversion: '==0.20.*'
+        aqtversion: '==3.3.*'
+        py7zrversion: '==1.0.*'
         extra: '--external 7z'
         
     - name: Checkout files
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
     
