@@ -22,30 +22,8 @@ jobs:
         use-official: true
         email: ${{ secrets.QT_EMAIL }}
         pw: ${{ secrets.QT_PW }}
-        modules: |
-            qtwebengine 
-            qt3d 
-            qt5compat 
-            qtactiveqt 
-            qtcharts 
-            qtconnectivity 
-            qtdatavis3d 
-            qtgraphs 
-            qtimageformats
-            qtlocation 
-            qtmultimedia 
-            qtnetworkauth 
-            qtremoteobjects
-            qtscxml 
-            qtserialbus
-            qtserialport 
-            qtshadertools
-            qtvirtualkeyboard
-            qtwebchannel
-            qtwebsockets
-            qtwebview 
-            debug_info
-    
+        modules: 'qt3d qtactiveqt qtcharts qtconnectivity qtdatavis3d qtgraphs qtgrpc qthttpserver qtimageformats qtlanguageserver qtlocation qtlottie qtmultimedia qtnetworkauth qtpdf qtpositioning.debug_information qtpositioning qtquick3dphysics qtquickeffectmaker qtremoteobjects qtscxml qtsensors qtserialbus qtserialport qtspeech qtvirtualkeyboard qtwebchannel qtwebengine qtwebsockets qtwebview debug_info qt5compat qtquick3d qtquicktimeline qtshadertools'
+        
     - name: Checkout files
       uses: actions/checkout@v4
       with:
