@@ -41,7 +41,8 @@ private:
     ComManager *m_comManager;
     int m_idProject;
     QString m_uuidParticipant;
-    QString m_nameParticipant;
+    QString m_participantName;
+    QString m_participantLocation;
     MOVEComManager *m_MOVEComManager;
     QJsonObject m_participantProfile;
 
