@@ -103,6 +103,9 @@ set(headers
     services/EmailService/EmailComManager.h
     services/EmailService/EmailServiceWebAPI.h
     services/EmailService/EmailTemplateWidget.h
+    services/MOVEService/MOVEConfigWidget.h
+    services/MOVEService/MOVEWebAPI.h
+    services/MOVEService/MOVEComManager.h
     services/SurveyService/SurveyComManager.h
     services/SurveyService/SurveyEditorDialog.h
     services/SurveyService/SurveyServiceConfigWidget.h
@@ -242,6 +245,8 @@ set(srcs
     services/EmailService/EmailComManager.cpp
     services/EmailService/EmailServiceConfigWidget.cpp
     services/EmailService/EmailTemplateWidget.cpp
+    services/MOVEService/MOVEConfigWidget.cpp
+    services/MOVEService/MOVEComManager.cpp
     services/SurveyService/SurveyComManager.cpp
     services/SurveyService/SurveyEditorDialog.cpp
     services/SurveyService/SurveyServiceConfigWidget.cpp
@@ -351,6 +356,7 @@ SET(uis
 
     # Services
     services/DanceService/DanceConfigWidget.ui
+    services/MOVEService/MOVEConfigWidget.ui
     services/DashboardsService/DashboardsConfigWidget.ui
     services/EmailService/EmailServiceConfigWidget.ui
     services/EmailService/EmailTemplateWidget.ui

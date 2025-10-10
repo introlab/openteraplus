@@ -45,5 +45,9 @@
         <string>Microphone access</string>
         <key>LSMinimumSystemVersion</key>
         <string>10.13</string>
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>https</string>
+        </array>
 </dict>
 </plist>
