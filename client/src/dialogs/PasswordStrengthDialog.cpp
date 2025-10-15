@@ -50,7 +50,7 @@ void PasswordStrengthDialog::checkPasswordsMatch()
         ui->txtPasswordConf->setStyleSheet("background-color: #ffaaaa;");
         ui->btnOK->setEnabled(false);
     }else{
-        ui->txtPasswordConf->setStyleSheet("");
+        ui->txtPasswordConf->setStyleSheet(" ");
         ui->btnOK->setEnabled(m_errors.isEmpty());
     }
 }

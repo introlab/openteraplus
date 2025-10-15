@@ -1292,15 +1292,16 @@ bool TeraForm::validateWidget(QWidget *widget, bool include_hidden)
                 if (value.isNull() || !value.isValid() || value.toInt()==-1 || value.toString().isEmpty()){
                     rval = false;
                 }
+                //qDebug() << "Valid = " << rval;
             }
         }
     }
 
     if (rval){
         if (!dynamic_cast<QPushButton*>(widget)) // Ignore push button in validation
-            widget->setStyleSheet("");
+            widget->setStyleSheet(" ");
     }else{
-        widget->setStyleSheet("background-color: #ffaaaa;");
+        widget->setStyleSheet("background-color: #ffaaaa;color: black;");
         /*if (!dynamic_cast<QComboBox*>(widget)){
            widget->setStyleSheet("background-color: #ffaaaa;");
         }else{

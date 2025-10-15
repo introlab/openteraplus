@@ -383,7 +383,7 @@ void DashboardsConfigWidget::on_btnEdit_toggled(bool checked)
         ui->frameVersionsButtons->setVisible(checked);
         ui->txtDefinition->setReadOnly(!(checked && ui->cmbVersion->currentIndex() == ui->cmbVersion->count()-1));
         if (ui->txtDefinition->isReadOnly()){
-            ui->txtDefinition->setStyleSheet("");
+            ui->txtDefinition->setStyleSheet(" ");
         }else{
             ui->txtDefinition->setStyleSheet("background-color: rgba(255,255,255,50%); color: black;");
         }
@@ -510,7 +510,7 @@ void DashboardsConfigWidget::on_txtName_textChanged(const QString &arg1)
         if (ui->txtName->text().isEmpty()){
             ui->txtName->setStyleSheet("background-color: #ffaaaa; color:black;");
         }else{
-            ui->txtName->setStyleSheet("");
+            ui->txtName->setStyleSheet(" ");
         }
         validateDetails();
     }
@@ -522,7 +522,7 @@ void DashboardsConfigWidget::on_txtDefinition_textChanged()
         if (ui->txtDefinition->toPlainText().isEmpty()){
             ui->txtDefinition->setStyleSheet("background-color: #ffaaaa; color:black;");
         }else{
-            ui->txtDefinition->setStyleSheet("");
+            ui->txtDefinition->setStyleSheet(" ");
         }
         validateDetails();
     }

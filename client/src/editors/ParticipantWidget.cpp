@@ -1011,7 +1011,7 @@ void ParticipantWidget::on_txtUsername_textEdited(const QString &current)
     if (current.isEmpty()){
         ui->txtUsername->setStyleSheet("background-color: #ffaaaa;");
     }else{
-        ui->txtUsername->setStyleSheet("");
+        ui->txtUsername->setStyleSheet(" ");
     }
 }
 
@@ -1038,7 +1038,7 @@ void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
     if (!m_data->getFieldValue("participant_login_enabled").toBool() && ui->txtPassword->text().isEmpty()){
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
     }else{
-        ui->txtPassword->setStyleSheet("");
+        ui->txtPassword->setStyleSheet(" ");
     }
 
     /*QString confirm_pass = ui->txtPasswordConfirm->text();
@@ -1046,8 +1046,8 @@ void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
         ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
     }else{
-        ui->txtPassword->setStyleSheet("");
-        ui->txtPasswordConfirm->setStyleSheet("");
+        ui->txtPassword->setStyleSheet(" ");
+        ui->txtPasswordConfirm->setStyleSheet(" ");
     }*/
 }
 
