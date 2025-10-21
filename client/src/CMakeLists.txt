@@ -89,6 +89,9 @@ set(headers
     editors/UserWidget.h
 
     # Services
+    services/ActimetryService/ActimetryComManager.h
+    services/ActimetryService/ActimetryWebAPI.h
+    services/ActimetryService/ActimetryConfigWidget.h
     services/BaseServiceComManager.h
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
@@ -110,6 +113,7 @@ set(headers
     services/SurveyService/SurveyEditorDialog.h
     services/SurveyService/SurveyServiceConfigWidget.h
     services/SurveyService/SurveyServiceWebAPI.h
+
 
     # Widgets
     widgets/SessionInviteWidget.h
@@ -234,6 +238,8 @@ set(srcs
     editors/UserWidget.cpp
 
     # Services
+    services/ActimetryService/ActimetryComManager.cpp
+    services/ActimetryService/ActimetryConfigWidget.cpp
     services/BaseServiceComManager.cpp
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
@@ -355,6 +361,7 @@ SET(uis
     editors/UserWidget.ui
 
     # Services
+    services/ActimetryService/ActimetryConfigWidget.ui
     services/DanceService/DanceConfigWidget.ui
     services/MOVEService/MOVEConfigWidget.ui
     services/DashboardsService/DashboardsConfigWidget.ui

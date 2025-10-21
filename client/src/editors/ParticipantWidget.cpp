@@ -9,6 +9,7 @@
 #include "dialogs/GeneratePasswordDialog.h"
 #include "dialogs/PasswordStrengthDialog.h"
 
+#include "services/ActimetryService/ActimetryConfigWidget.h"
 #include "services/DanceService/DanceConfigWidget.h"
 #include "services/MOVEService/MOVEConfigWidget.h"
 
@@ -411,6 +412,13 @@ void ParticipantWidget::addServiceTab(const TeraData &service)
         return;
 
     QString service_key = service.getFieldValue("service_key").toString();
+
+    // Actimetry Service
+    if (service_key == "ActimetryService") {
+        ActimetryConfigWidget* wdg = new ActimetryConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getUuid(), m_data->getName());
+        ui->tabServicesDetails->insertTab(0, wdg, QIcon("://icons/service.png"), service.getName());
+        m_services_tabs.insert(id_service, wdg);
+    }
 
     // Dance Service
     if (service_key == "DanceService"){
