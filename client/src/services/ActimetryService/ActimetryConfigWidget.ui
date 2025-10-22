@@ -46,7 +46,7 @@
         <normaloff>:/icons/details.png</normaloff>:/icons/details.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>Contexte</string>
+       <string>Algorithmes</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
@@ -76,23 +76,60 @@
             <property name="frameShadow">
              <enum>QFrame::Shadow::Raised</enum>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <property name="leftMargin">
-              <number>4</number>
-             </property>
-             <property name="topMargin">
-              <number>4</number>
-             </property>
-             <property name="rightMargin">
-              <number>4</number>
-             </property>
-             <property name="bottomMargin">
-              <number>4</number>
-             </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
-              <widget class="QPushButton" name="btnSave">
+              <widget class="QLabel" name="lblSelectAlgorithm">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Sélectionnez un algorithme</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboAlgorithms">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>80</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lblDescription">
+               <property name="text">
+                <string>Description</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTextEdit" name="textEdit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="lblParameters">
+               <property name="text">
+                <string>Paramètres</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTextEdit" name="textEditParameters"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnRun">
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>3</verstretch>
+                </sizepolicy>
                </property>
                <property name="minimumSize">
                 <size>
@@ -104,11 +141,11 @@
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="text">
-                <string>Mettre à jour</string>
+                <string>Démarrer</string>
                </property>
                <property name="icon">
                 <iconset resource="../../../resources/TeraClient.qrc">
-                 <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+                 <normaloff>:/controls/branch_closed.png</normaloff>:/controls/branch_closed.png</iconset>
                </property>
                <property name="iconSize">
                 <size>

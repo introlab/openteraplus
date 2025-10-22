@@ -5,6 +5,8 @@
 #include <QInputDialog>
 #include <QListWidgetItem>
 #include <QStyledItemDelegate>
+#include <QMap>
+#include <QJsonObject>
 
 #include "managers/ComManager.h"
 #include "data/Message.h"
@@ -29,6 +31,10 @@ public slots:
 
     void serviceReadyChanged(bool ready);
     void nextMessageWasShown(Message current_message);
+    void availableAlgorithmsReceived(const QList<QJsonObject> &algorithms);
+    void algorithmInfoReceived(const QJsonObject &algorithmInfo);
+    void onComboBoxAlgorithmCurrentIndexChanged(int index);
+    void onRunButtonClicked();
 
 private:
 
@@ -38,10 +44,15 @@ private:
 
     ComManager *m_comManager;
     int m_idProject;
+    QString m_participantUuid;
+    QString m_participantName;
     ActimetryComManager *m_ActimetryComManager;
+
+    QMap<QString, QJsonObject> m_algorithmInformations;
 
 
     void connectSignals();
+    void setCurrentAlgorithmParametersInUI(const QString &algorithmKey);
 };
 
 #endif // ACTIMETRYCONFIGWIDGET_H
