@@ -11,6 +11,7 @@ ActimetryConfigWidget::ActimetryConfigWidget(ComManager *comManager, int project
     m_participantName(participantName)
 {
     m_ui->setupUi(this);
+    m_ui->comboAlgorithms->setItemDelegate(new QStyledItemDelegate(m_ui->comboAlgorithms));
 
     // NOTE At this state, comManager is not ready, will need to get service information before and then change state to ready.
     m_ActimetryComManager = new ActimetryComManager(comManager);
@@ -32,13 +33,15 @@ ActimetryConfigWidget::~ActimetryConfigWidget()
 void ActimetryConfigWidget::connectSignals()
 {
 
-    connect(m_ActimetryComManager, &ActimetryComManager::readyChanged, this, &ActimetryConfigWidget::serviceReadyChanged);
-    connect(m_ui->wdgMessages, &ResultMessageWidget::nextMessageShown, this, &ActimetryConfigWidget::nextMessageWasShown);
-    connect(m_ActimetryComManager, &ActimetryComManager::availableAlgorithmsReceived, this, &ActimetryConfigWidget::availableAlgorithmsReceived);
-    connect(m_ActimetryComManager, &ActimetryComManager::algorithmInfoReceived, this, &ActimetryConfigWidget::algorithmInfoReceived);
+    connect(m_ActimetryComManager,  &ActimetryComManager::readyChanged, this, &ActimetryConfigWidget::serviceReadyChanged);
+    connect(m_ui->wdgMessages,      &ResultMessageWidget::nextMessageShown, this, &ActimetryConfigWidget::nextMessageWasShown);
 
-    connect(m_ui->btnRun, &QPushButton::clicked, this, &ActimetryConfigWidget::onRunButtonClicked);
-    connect(m_ui->comboAlgorithms, &QComboBox::currentIndexChanged, this, &ActimetryConfigWidget::onComboBoxAlgorithmCurrentIndexChanged);
+    connect(m_ActimetryComManager,  &ActimetryComManager::availableAlgorithmsReceived, this, &ActimetryConfigWidget::availableAlgorithmsReceived);
+    connect(m_ActimetryComManager,  &ActimetryComManager::algorithmInfoReceived, this, &ActimetryConfigWidget::algorithmInfoReceived);
+    connect(m_ActimetryComManager,  &ActimetryComManager::networkError, this, &ActimetryConfigWidget::handleNetworkError);
+
+    connect(m_ui->btnRun,           &QPushButton::clicked, this, &ActimetryConfigWidget::onRunButtonClicked);
+    connect(m_ui->comboAlgorithms,  &QComboBox::currentIndexChanged, this, &ActimetryConfigWidget::onComboBoxAlgorithmCurrentIndexChanged);
 }
 
 void ActimetryConfigWidget::setCurrentAlgorithmParametersInUI(const QString &algorithmKey)
@@ -56,9 +59,7 @@ void ActimetryConfigWidget::setCurrentAlgorithmParametersInUI(const QString &alg
 
 
             QString infoText = QString("<b>Description:</b><br>%1<br><br><b>Author:</b> %2<br><br><b>Reference:</b><br>%3")
-                                   .arg(description)
-                                   .arg(author)
-                                   .arg(reference);
+                                   .arg(description, author, reference);
 
             m_ui->textEdit->setHtml(infoText);
 
@@ -82,6 +83,29 @@ void ActimetryConfigWidget::setCurrentAlgorithmParametersInUI(const QString &alg
 
         }
     }
+}
+
+void ActimetryConfigWidget::handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code)
+{
+
+    if (error_msg.endsWith('\n'))
+        error_msg = error_msg.left(error_msg.length()-1);
+
+    //error_msg = QTextDocumentFragment::fromHtml(error_msg).toPlainText();
+
+    QString error_str;
+
+    if (status_code > 0)
+        error_str = tr("Erreur HTTP ") + QString::number(status_code) + ": " + error_msg;
+    else
+        error_str = tr("Erreur ") + QString::number(error) + ": " + error_msg;
+
+    /*GlobalMessageBox msg;
+    msg.showError(tr("Télédanse - Erreur"), error_msg);*/
+    error_str = tr("Actimétrie") + ": " + error_str;
+    error_str = error_str.replace('\n', " - ");
+    error_str = error_str.replace('\r', "");
+    m_ui->wdgMessages->addMessage(Message(Message::MESSAGE_ERROR, error_str));
 }
 
 
