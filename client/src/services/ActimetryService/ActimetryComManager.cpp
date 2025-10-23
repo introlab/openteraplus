@@ -33,8 +33,7 @@ void ActimetryComManager::queryProcessing(const QString &algorithmKey, const QSt
 
 
     QJsonObject post_data;
-    //TODO Fix and remove toLower
-    post_data.insert("key", algorithmKey.toLower());
+    post_data.insert("key", algorithmKey);
     post_data.insert("participant_uuid", participant_uuid);
     post_data.insert("parameters", parameters);
 
@@ -52,12 +51,12 @@ void ActimetryComManager::postHandleData(const QList<QJsonObject> &items, const 
     {
         if (reply_query.hasQueryItem("list"))
         {
-            qDebug() << "Received items (list algorithms): " << items;
+            //qDebug() << "Received items (list algorithms): " << items;
             emit availableAlgorithmsReceived(items);
         }
         else if (reply_query.hasQueryItem("key"))
         {
-            qDebug() << "Received items (algorithm): " << items;
+            //qDebug() << "Received items (algorithm): " << items;
             emit algorithmInfoReceived(items.first());
         }
     }

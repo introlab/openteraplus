@@ -27,8 +27,6 @@ public:
     ~ActimetryConfigWidget();
 
 public slots:
-
-
     void serviceReadyChanged(bool ready);
     void nextMessageWasShown(Message current_message);
     void availableAlgorithmsReceived(const QList<QJsonObject> &algorithms);
@@ -37,9 +35,6 @@ public slots:
     void onRunButtonClicked();
 
 private:
-
-
-
     Ui::ActimetryConfigWidget *m_ui;
 
     ComManager *m_comManager;
@@ -53,6 +48,9 @@ private:
 
     void connectSignals();
     void setCurrentAlgorithmParametersInUI(const QString &algorithmKey);
+
+private slots:
+    void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
 };
 
 #endif // ACTIMETRYCONFIGWIDGET_H
