@@ -9,10 +9,12 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
 
     m_comAssetManager = nullptr;
     m_fileTransferServiceInfos = nullptr;
+    m_actimetryServiceInfos = nullptr;
     m_uploadDialog = nullptr;
     m_transferDialog = nullptr;
     m_idProject = -1;
     m_idSession = -1;
+    m_sessionTypeName = "";
     m_viewMode = VIEWMODE_UNKNOWN;
     setComManager(comMan);
 
@@ -51,6 +53,8 @@ AssetsWidget::~AssetsWidget()
         m_comAssetManager->deleteLater();
     if (m_fileTransferServiceInfos)
         delete m_fileTransferServiceInfos;
+    if (m_actimetryServiceInfos)
+        delete m_actimetryServiceInfos;
     qDeleteAll(m_assets);
 
     if (m_uploadDialog){
@@ -82,6 +86,7 @@ void AssetsWidget::setComManager(ComManager *comMan)
         connect(m_comAssetManager, &AssetComManager::postResultsOK, this, &AssetsWidget::assetComPostOK);
 
         connect(m_comAssetManager, &AssetComManager::assetsInfosReceived, this, &AssetsWidget::processAssetsInfos);
+        connect(m_comAssetManager, &AssetComManager::sessionInfosReceived, this, &AssetsWidget::processSessionInfos);
 
     }
 }
@@ -111,12 +116,18 @@ void AssetsWidget::enableNewAssets(const bool &enable)
 {
     if (enable && !m_fileTransferServiceInfos && m_idProject >= 0 && m_comManager){
         // Query FileTransferService infos
-        QUrlQuery query;
-        query.addQueryItem(WEB_QUERY_SERVICE_KEY, "FileTransferService");
-        m_comManager->doGet(WEB_SERVICEINFO_PATH, query);
+        QUrlQuery query1;
+        query1.addQueryItem(WEB_QUERY_SERVICE_KEY, "FileTransferService");
+        m_comManager->doGet(WEB_SERVICEINFO_PATH, query1);
+
+        // Query ActimetryService infos
+        QUrlQuery query2;
+        query2.addQueryItem(WEB_QUERY_SERVICE_KEY, "ActimetryService");
+        m_comManager->doGet(WEB_SERVICEINFO_PATH, query2);
+
         return;
     }
-    if (m_fileTransferServiceInfos && enable){
+    if ((m_fileTransferServiceInfos || m_actimetryServiceInfos) && enable){
         ui->btnNew->setVisible(true);
         return;
     }
@@ -138,6 +149,15 @@ void AssetsWidget::displayAssetsForSession(const int &id_session)
 
     setLoading(true, tr("Chargement des données en cours..."), true);
 
+
+    //Query session infos
+    QUrlQuery session_query;
+    session_query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
+    session_query.addQueryItem(WEB_QUERY_WITH_SESSIONTYPE, "true");
+    m_comAssetManager->doGet(WEB_SESSIONINFO_PATH, session_query);
+
+
+    //Query assets infos
     QUrlQuery query;
     query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
     m_dataQuery = query;
@@ -685,7 +705,25 @@ void AssetsWidget::processServicesReply(QList<TeraData> services, QUrlQuery repl
                            delete m_fileTransferServiceInfos;
                        m_fileTransferServiceInfos = new TeraData(service);
                        ui->btnNew->setVisible(true);
-                       break;
+                       continue;
+                   }
+               }
+           }
+       }
+
+       if (service.getFieldValue("service_key").toString() == "ActimetryService")
+       {
+           if (service.hasFieldName("service_projects")){
+               QVariantList projects = service.getFieldValue("service_projects").toList();
+               for (const QVariant &project:std::as_const(projects)){
+                   QVariantMap project_info = project.toMap();
+                   if (project_info["id_project"].toInt() == m_idProject){
+                       // Ok, we are allowed to use ActimetryService
+                       if (m_actimetryServiceInfos)
+                           delete m_actimetryServiceInfos;
+                       m_actimetryServiceInfos = new TeraData(service);
+                       ui->btnNew->setVisible(true);
+                       continue;
                    }
                }
            }
@@ -859,6 +897,14 @@ void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_
     setLoading(false);
 }
 
+void AssetsWidget::processSessionInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path)
+{
+    for (const QJsonObject &session_info:std::as_const(infos)){
+        //Updating session type name
+        m_sessionTypeName = session_info["session_type_name"].toString();
+    }
+}
+
 void AssetsWidget::refreshAccessToken()
 {
     if (!m_comManager)
@@ -932,7 +978,19 @@ void AssetsWidget::fileUploaderFinished(int result)
         if (!m_fileTransferServiceInfos)
             return; // Shouldn't happen.
 
-        QString path = m_fileTransferServiceInfos->getFieldValue("service_clientendpoint").toString() + "/api/assets";
+
+        QString path;
+        //Quick hack for actimetry service
+        //Check for session type if it is related to actimetry service
+
+        if (m_actimetryServiceInfos && m_sessionTypeName == "Actimetry")
+        {
+            path = m_actimetryServiceInfos->getFieldValue("service_clientendpoint").toString() + "/api/user/assets";
+        }
+        else
+        {
+            path = m_fileTransferServiceInfos->getFieldValue("service_clientendpoint").toString() + "/api/assets";
+        }
 
         for(int i=0; i<files.count(); i++){
             data_obj["asset_name"] = labels.at(i);

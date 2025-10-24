@@ -65,9 +65,11 @@ private:
 
     int                 m_idProject;
     int                 m_idSession;
+    QString             m_sessionTypeName;
     ViewMode            m_viewMode;
 
     TeraData*           m_fileTransferServiceInfos;
+    TeraData*           m_actimetryServiceInfos;
     QTimer              m_refreshTokenTimer;
     QUrlQuery           m_dataQuery;
 
@@ -121,6 +123,7 @@ private slots:
     void assetComPostOK(QString path);
 
     void processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
+    void processSessionInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
 
     void refreshAccessToken();
 

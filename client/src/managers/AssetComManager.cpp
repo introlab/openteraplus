@@ -98,6 +98,10 @@ bool AssetComManager::handleDataReply(const QString &reply_path, const QString &
         emit assetsInfosReceived(items, reply_query, reply_path);
     }
 
+    if (reply_path.endsWith("/sessions")){
+        emit sessionInfosReceived(items, reply_query, reply_path);
+    }
+
     // Always emit generic signal
     emit dataReceived(items, reply_query);
 
