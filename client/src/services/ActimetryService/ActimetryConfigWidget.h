@@ -7,6 +7,7 @@
 #include <QStyledItemDelegate>
 #include <QMap>
 #include <QJsonObject>
+#include <QShowEvent>
 
 #include "managers/ComManager.h"
 #include "data/Message.h"
@@ -23,16 +24,8 @@ class ActimetryConfigWidget : public QWidget
 
 public:
     explicit ActimetryConfigWidget(ComManager *comManager, int projectId, QString participantUuid = QString(),
-        QString participantName = QString(), QWidget *parent = nullptr);
+    QString participantName = QString(), QWidget *parent = nullptr);
     ~ActimetryConfigWidget();
-
-public slots:
-    void serviceReadyChanged(bool ready);
-    void nextMessageWasShown(Message current_message);
-    void availableAlgorithmsReceived(const QList<QJsonObject> &algorithms);
-    void algorithmInfoReceived(const QJsonObject &algorithmInfo);
-    void onComboBoxAlgorithmCurrentIndexChanged(int index);
-    void onRunButtonClicked();
 
 private:
     Ui::ActimetryConfigWidget *m_ui;
@@ -42,15 +35,29 @@ private:
     QString m_participantUuid;
     QString m_participantName;
     ActimetryComManager *m_ActimetryComManager;
+    QTimer m_refreshTimer;
 
     QMap<QString, QJsonObject> m_algorithmInformations;
-
 
     void connectSignals();
     void setCurrentAlgorithmParametersInUI(const QString &algorithmKey);
 
 private slots:
+    void serviceReadyChanged(bool ready);
+    void nextMessageWasShown(Message current_message);
+    void availableAlgorithmsReceived(const QList<QJsonObject> &algorithms);
+    void algorithmInfoReceived(const QJsonObject &algorithmInfo);
+    void onComboBoxAlgorithmCurrentIndexChanged(int index);
+    void onRunButtonClicked();
+
     void handleNetworkError(QNetworkReply::NetworkError error, QString error_msg, QNetworkAccessManager::Operation op, int status_code);
+    void processingInProgressReceived(const QList<QJsonObject>& workers);
+
+    void onRefreshTimerTimeout();
+
+    // QWidget interface
+protected:
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif // ACTIMETRYCONFIGWIDGET_H

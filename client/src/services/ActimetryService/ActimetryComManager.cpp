@@ -16,7 +16,7 @@ void ActimetryComManager::queryAvailableAlgorithms()
     QUrlQuery query_args;
     query_args.addQueryItem("list", "true");
     QString path = QString(ACTIMETRY_USER_ALGORITHMS_PATH);
-    doGet(path, query_args, true);
+    doGet(path, query_args);
 }
 
 void ActimetryComManager::queryAlgorithm(const QString &algorithmKey)
@@ -24,13 +24,12 @@ void ActimetryComManager::queryAlgorithm(const QString &algorithmKey)
     QUrlQuery query_args;
     query_args.addQueryItem("key", algorithmKey);
     QString path = QString(ACTIMETRY_USER_ALGORITHMS_PATH);
-    doGet(path, query_args, true);
+    doGet(path, query_args);
 }
 
-void ActimetryComManager::queryProcessing(const QString &algorithmKey, const QString &participant_uuid, const QString &parameters)
+void ActimetryComManager::doProcessing(const QString &algorithmKey, const QString &participant_uuid, const QString &parameters)
 {
     QString path = QString(ACTIMETRY_USER_PROCESSING_PATH);
-
 
     QJsonObject post_data;
     post_data.insert("key", algorithmKey);
@@ -42,6 +41,15 @@ void ActimetryComManager::queryProcessing(const QString &algorithmKey, const QSt
     worker_data.insert("worker", post_data);
 
     doPost(path, QJsonDocument(worker_data).toJson(QJsonDocument::JsonFormat::Compact), true);
+}
+
+void ActimetryComManager::queryInProgressProcessing(const QString &participant_uuid)
+{
+    QString path = QString(ACTIMETRY_USER_PROCESSING_PATH);
+    QUrlQuery query_args;
+    query_args.addQueryItem("participant_uuid", participant_uuid);
+    query_args.addQueryItem("in_progress", "true");
+    doGet(path, query_args);
 }
 
 void ActimetryComManager::postHandleData(const QList<QJsonObject> &items, const QString &reply_path, const QUrlQuery &reply_query)
@@ -64,17 +72,15 @@ void ActimetryComManager::postHandleData(const QList<QJsonObject> &items, const 
     {
         // Handle processing results if needed
         qDebug() << "Received items (processing): " << items;
+        emit processingInProgress(items);
     }
 
 }
-
 
 
 void ActimetryComManager::handleNetworkError(QNetworkReply::NetworkError error, QString error_str, QNetworkAccessManager::Operation op, int status_code, QString path, QUrlQuery url_query)
 {
     // Handle network errors specific to Actimetry service
     qDebug() << "ActimetryComManager::handleNetworkError - Error:" << error_str << "Status Code:" << status_code;
-
-
 
 }

@@ -1,7 +1,6 @@
 #include "ActimetryConfigWidget.h"
 #include "ui_ActimetryConfigWidget.h"
 
-
 ActimetryConfigWidget::ActimetryConfigWidget(ComManager *comManager, int projectId, QString participantUuid, QString participantName, QWidget *parent) :
     QWidget(parent),
     m_ui(new Ui::ActimetryConfigWidget),
@@ -17,11 +16,17 @@ ActimetryConfigWidget::ActimetryConfigWidget(ComManager *comManager, int project
     m_ActimetryComManager = new ActimetryComManager(comManager);
 
     m_ui->tabMain->setCurrentIndex(0);
+    m_ui->frameInProgress->hide();
     m_ui->lblWarning->hide();
     m_ui->wdgMessages->hide();
 
+    m_refreshTimer.setInterval(2000);
+    m_refreshTimer.setSingleShot(true);
 
     connectSignals();
+
+    // Check if we have any worker in progress
+    m_ActimetryComManager->queryInProgressProcessing(m_participantUuid);
 }
 
 ActimetryConfigWidget::~ActimetryConfigWidget()
@@ -38,10 +43,13 @@ void ActimetryConfigWidget::connectSignals()
 
     connect(m_ActimetryComManager,  &ActimetryComManager::availableAlgorithmsReceived, this, &ActimetryConfigWidget::availableAlgorithmsReceived);
     connect(m_ActimetryComManager,  &ActimetryComManager::algorithmInfoReceived, this, &ActimetryConfigWidget::algorithmInfoReceived);
+    connect(m_ActimetryComManager,  &ActimetryComManager::processingInProgress, this, &ActimetryConfigWidget::processingInProgressReceived);
     connect(m_ActimetryComManager,  &ActimetryComManager::networkError, this, &ActimetryConfigWidget::handleNetworkError);
 
     connect(m_ui->btnRun,           &QPushButton::clicked, this, &ActimetryConfigWidget::onRunButtonClicked);
     connect(m_ui->comboAlgorithms,  &QComboBox::currentIndexChanged, this, &ActimetryConfigWidget::onComboBoxAlgorithmCurrentIndexChanged);
+
+    connect(&m_refreshTimer,        &QTimer::timeout, this, &ActimetryConfigWidget::onRefreshTimerTimeout);
 }
 
 void ActimetryConfigWidget::setCurrentAlgorithmParametersInUI(const QString &algorithmKey)
@@ -106,6 +114,29 @@ void ActimetryConfigWidget::handleNetworkError(QNetworkReply::NetworkError error
     error_str = error_str.replace('\n', " - ");
     error_str = error_str.replace('\r', "");
     m_ui->wdgMessages->addMessage(Message(Message::MESSAGE_ERROR, error_str));
+}
+
+void ActimetryConfigWidget::processingInProgressReceived(const QList<QJsonObject> &workers)
+{
+    //qDebug() << "Active workers: " << workers;
+    m_ui->frameInProgress->setVisible(workers.count()>0);
+    m_ui->frameContextUpdater->setVisible(!m_ui->frameInProgress->isVisible());
+    if (workers.count()>0){
+        // Reprime refresh timer
+        m_refreshTimer.start();
+    }
+}
+
+void ActimetryConfigWidget::onRefreshTimerTimeout()
+{
+    m_ActimetryComManager->queryInProgressProcessing(m_participantUuid);
+}
+
+void ActimetryConfigWidget::showEvent(QShowEvent *event)
+{
+    // Query infos about workers
+    m_ActimetryComManager->queryInProgressProcessing(m_participantUuid);
+    QWidget::showEvent(event);
 }
 
 
@@ -203,5 +234,5 @@ void ActimetryConfigWidget::onRunButtonClicked()
     QString parametersText = m_ui->textEditParameters->toPlainText();
 
     //For now, just show a message
-    m_ActimetryComManager->queryProcessing(selectedAlgorithmKey, m_participantUuid, parametersText);
+    m_ActimetryComManager->doProcessing(selectedAlgorithmKey, m_participantUuid, parametersText);
 }

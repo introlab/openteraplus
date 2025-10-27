@@ -14,7 +14,8 @@ public:
 
     void queryAvailableAlgorithms();
     void queryAlgorithm(const QString &algorithmKey);
-    void queryProcessing(const QString &algorithmKey, const QString& participant_uuid, const QString &parameters);
+    void doProcessing(const QString &algorithmKey, const QString& participant_uuid, const QString &parameters);
+    void queryInProgressProcessing(const QString& participant_uuid);
 
 private:
     void postHandleData(const QList<QJsonObject> &items, const QString &reply_path, const QUrlQuery &reply_query) override;
@@ -23,6 +24,7 @@ private:
 signals:
     void availableAlgorithmsReceived(const QList<QJsonObject> &algorithms);
     void algorithmInfoReceived(const QJsonObject &algorithmInfo);
+    void processingInProgress(const QList<QJsonObject>& processingInfo);
 
 };
 
