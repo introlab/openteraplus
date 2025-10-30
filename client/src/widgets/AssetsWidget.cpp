@@ -1,4 +1,5 @@
 #include "AssetsWidget.h"
+#include "TeraSessionType.h"
 #include "ui_AssetsWidget.h"
 
 AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
@@ -8,13 +9,11 @@ AssetsWidget::AssetsWidget(ComManager *comMan, QWidget *parent) :
     ui->setupUi(this);
 
     m_comAssetManager = nullptr;
-    m_fileTransferServiceInfos = nullptr;
-    m_actimetryServiceInfos = nullptr;
+    m_transferServiceInfos = nullptr;
     m_uploadDialog = nullptr;
     m_transferDialog = nullptr;
     m_idProject = -1;
     m_idSession = -1;
-    m_sessionTypeName = "";
     m_viewMode = VIEWMODE_UNKNOWN;
     setComManager(comMan);
 
@@ -51,10 +50,8 @@ AssetsWidget::~AssetsWidget()
     delete ui;
     if (m_comAssetManager)
         m_comAssetManager->deleteLater();
-    if (m_fileTransferServiceInfos)
-        delete m_fileTransferServiceInfos;
-    if (m_actimetryServiceInfos)
-        delete m_actimetryServiceInfos;
+    if (m_transferServiceInfos)
+        delete m_transferServiceInfos;
     qDeleteAll(m_assets);
 
     if (m_uploadDialog){
@@ -73,6 +70,7 @@ void AssetsWidget::setComManager(ComManager *comMan)
     if (m_comManager){
         connect(m_comManager, &ComManager::assetsReceived, this, &AssetsWidget::processAssetsReply);
         connect(m_comManager, &ComManager::servicesReceived, this, &AssetsWidget::processServicesReply);
+        connect(m_comManager, &ComManager::sessionTypesReceived, this, &AssetsWidget::processSessionTypesReply);
 
         m_comAssetManager = new AssetComManager(m_comManager);
 
@@ -86,7 +84,6 @@ void AssetsWidget::setComManager(ComManager *comMan)
         connect(m_comAssetManager, &AssetComManager::postResultsOK, this, &AssetsWidget::assetComPostOK);
 
         connect(m_comAssetManager, &AssetComManager::assetsInfosReceived, this, &AssetsWidget::processAssetsInfos);
-        connect(m_comAssetManager, &AssetComManager::sessionInfosReceived, this, &AssetsWidget::processSessionInfos);
 
     }
 }
@@ -114,20 +111,13 @@ void AssetsWidget::clearAssets()
 
 void AssetsWidget::enableNewAssets(const bool &enable)
 {
-    if (enable && !m_fileTransferServiceInfos && m_idProject >= 0 && m_comManager){
-        // Query FileTransferService infos
-        QUrlQuery query1;
-        query1.addQueryItem(WEB_QUERY_SERVICE_KEY, "FileTransferService");
-        m_comManager->doGet(WEB_SERVICEINFO_PATH, query1);
-
-        // Query ActimetryService infos
-        QUrlQuery query2;
-        query2.addQueryItem(WEB_QUERY_SERVICE_KEY, "ActimetryService");
-        m_comManager->doGet(WEB_SERVICEINFO_PATH, query2);
-
+    if (enable && !m_transferServiceInfos && m_idProject > 0 && m_comManager){
+        /*QUrlQuery query;
+        query.addQueryItem(WEB_QUERY_ID_PROJECT, QString::number(m_idProject));
+        m_comManager->doGet(WEB_SERVICEINFO_PATH);*/
         return;
     }
-    if ((m_fileTransferServiceInfos || m_actimetryServiceInfos) && enable){
+    if (m_transferServiceInfos && enable){
         ui->btnNew->setVisible(true);
         return;
     }
@@ -135,7 +125,7 @@ void AssetsWidget::enableNewAssets(const bool &enable)
     ui->btnNew->setVisible(false);
 }
 
-void AssetsWidget::displayAssetsForSession(const int &id_session)
+void AssetsWidget::displayAssetsForSession(const TeraData* session)
 {
     if (!m_comManager)
         return;
@@ -149,24 +139,23 @@ void AssetsWidget::displayAssetsForSession(const int &id_session)
 
     setLoading(true, tr("Chargement des données en cours..."), true);
 
+    m_idSession = session->getId();
 
-    //Query session infos
-    QUrlQuery session_query;
-    session_query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
-    session_query.addQueryItem(WEB_QUERY_WITH_SESSIONTYPE, "true");
-    m_comAssetManager->doGet(WEB_SESSIONINFO_PATH, session_query);
-
-
-    //Query assets infos
+    // Query session type (to get related services)
     QUrlQuery query;
-    query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(id_session));
+    query.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(session->getFieldValue("id_session_type").toInt()));
+    m_comManager->doGet(WEB_SESSIONTYPE_PATH, query);
+
+    // Query assets infos
+    query.clear();
+    query.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_idSession));
     m_dataQuery = query;
 
     query.addQueryItem(WEB_QUERY_WITH_URLS, "1");
     query.addQueryItem(WEB_QUERY_FULL, "1"); // Include full information, including service name
     m_comManager->doGet(WEB_ASSETINFO_PATH, query);
 
-    m_idSession = id_session;
+
 }
 
 void AssetsWidget::displayAssetsForParticipant(const int &id_participant)
@@ -347,7 +336,11 @@ void AssetsWidget::updateAsset(const TeraData &asset, const int &id_participant,
 
         // Session name
         if (m_viewMode == VIEWMODE_PARTICIPANT || m_viewMode == VIEWMODE_PROJECT){
-            int id_session = asset.getFieldValue("id_session").toInt();
+            int id_session;
+            if (asset.hasFieldName("id_session"))
+                id_session = asset.getFieldValue("id_session").toInt();
+            if (asset.hasFieldName("id_collection"))
+                id_session = asset.getFieldValue("id_collection").toInt();
             QTreeWidgetItem* session_item;
             if (m_treeSessions.contains(id_session)){
                 session_item = m_treeSessions[id_session];
@@ -687,13 +680,20 @@ void AssetsWidget::processAssetsReply(QList<TeraData> assets, QUrlQuery reply_qu
         if (!m_refreshTokenTimer.isActive())
             m_refreshTokenTimer.start();
     }
-
 }
 
 void AssetsWidget::processServicesReply(QList<TeraData> services, QUrlQuery reply_query)
 {
     for(const TeraData &service:services){
-       if (service.getFieldValue("service_key").toString() == "FileTransferService"){
+        if (service.getFieldValue("service_has_assets").toBool()){
+            if (m_transferServiceInfos)
+                delete m_transferServiceInfos;
+            m_transferServiceInfos = new TeraData(service);
+            ui->btnNew->setVisible(true);
+            //qDebug() << "*** USING " << service.getName() << " FOR ASSETS TRANSFER";
+            return;
+        }
+       /*if (service.getFieldValue("service_key").toString() == "FileTransferService"){
            // Check if project is in service_fields
            if (service.hasFieldName("service_projects")){
                QVariantList projects = service.getFieldValue("service_projects").toList();
@@ -701,17 +701,17 @@ void AssetsWidget::processServicesReply(QList<TeraData> services, QUrlQuery repl
                    QVariantMap project_info = project.toMap();
                    if (project_info["id_project"].toInt() == m_idProject){
                        // Ok, we are allowed to use file transfer service
-                       if (m_fileTransferServiceInfos)
-                           delete m_fileTransferServiceInfos;
-                       m_fileTransferServiceInfos = new TeraData(service);
+                       if (m_transferServiceInfos)
+                           delete m_transferServiceInfos;
+                       m_transferServiceInfos = new TeraData(service);
                        ui->btnNew->setVisible(true);
                        continue;
                    }
                }
            }
-       }
+       }*/
 
-       if (service.getFieldValue("service_key").toString() == "ActimetryService")
+       /*if (service.getFieldValue("service_key").toString() == "ActimetryService")
        {
            if (service.hasFieldName("service_projects")){
                QVariantList projects = service.getFieldValue("service_projects").toList();
@@ -727,7 +727,26 @@ void AssetsWidget::processServicesReply(QList<TeraData> services, QUrlQuery repl
                    }
                }
            }
-       }
+       }*/
+    }
+}
+
+void AssetsWidget::processSessionTypesReply(QList<TeraData> session_types, QUrlQuery reply_query)
+{
+    QString related_service_uuid;
+    for(const TeraData &session_type:session_types){
+        // Try to find a related service with assets capabilities
+
+        // Check base service if present
+        const TeraSessionType* st = static_cast<const TeraSessionType*>(&session_type);
+        related_service_uuid = st->getAssetsRelatedServiceUuid();
+        if (!related_service_uuid.isEmpty())
+            break; // Found an asset service
+    }
+    if (!related_service_uuid.isEmpty()){
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_UUID, related_service_uuid);
+        m_comManager->doGet(WEB_SERVICEINFO_PATH, args);
     }
 }
 
@@ -897,14 +916,6 @@ void AssetsWidget::processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_
     setLoading(false);
 }
 
-void AssetsWidget::processSessionInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path)
-{
-    for (const QJsonObject &session_info:std::as_const(infos)){
-        //Updating session type name
-        m_sessionTypeName = session_info["session_type_name"].toString();
-    }
-}
-
 void AssetsWidget::refreshAccessToken()
 {
     if (!m_comManager)
@@ -936,7 +947,7 @@ void AssetsWidget::on_treeAssets_itemSelectionChanged()
 void AssetsWidget::on_btnNew_clicked()
 {
     // Upload a new asset to the FileTransfer service
-    if (!m_fileTransferServiceInfos || !m_comAssetManager || !m_comManager){
+    if (!m_transferServiceInfos || !m_comManager || !m_comAssetManager){
         return; // Should not happen at this point.
     }
 
@@ -975,7 +986,7 @@ void AssetsWidget::fileUploaderFinished(int result)
         data_obj["id_session"] = m_idSession;
 
         // Get path to upload to
-        if (!m_fileTransferServiceInfos)
+        if (!m_transferServiceInfos)
             return; // Shouldn't happen.
 
 
@@ -983,14 +994,15 @@ void AssetsWidget::fileUploaderFinished(int result)
         //Quick hack for actimetry service
         //Check for session type if it is related to actimetry service
 
-        if (m_actimetryServiceInfos && m_sessionTypeName == "Actimetry")
+        /*if (m_actimetryServiceInfos && m_sessionTypeName == "Actimetry")
         {
             path = m_actimetryServiceInfos->getFieldValue("service_clientendpoint").toString() + "/api/user/assets";
         }
         else
-        {
-            path = m_fileTransferServiceInfos->getFieldValue("service_clientendpoint").toString() + "/api/assets";
-        }
+        {*/
+        path = m_transferServiceInfos->getFieldValue("service_clientendpoint").toString() + "/api" +
+               m_transferServiceInfos->getFieldValue("service_endpoint_user").toString() + "/assets";
+        //}
 
         for(int i=0; i<files.count(); i++){
             data_obj["asset_name"] = labels.at(i);

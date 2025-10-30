@@ -155,10 +155,14 @@ void SessionWidget::setData(const TeraData *data)
         updateSessionUsers();
         updateSessionDevices();
 
-        // Query stats
+        // Query session type information (for services)
         QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getFieldValue("id_session_type").toInt()));
+        queryDataRequest(WEB_SESSIONTYPE_PATH, args);
+        // Query stats
+        /*QUrlQuery args;
         args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
-        queryDataRequest(WEB_STATS_PATH, args);
+        queryDataRequest(WEB_STATS_PATH, args);*/
 
     }
 }
@@ -469,11 +473,16 @@ void SessionWidget::processStatsReply(TeraData stats, QUrlQuery reply_query)
     ui->lblEvents->setText(stats.getFieldValue("events_total_count").toString() + tr(" Événements"));
     ui->lblTests->setText(stats.getFieldValue("tests_total_count").toString() + tr(" Évaluations"));
 
+    if (stats.getFieldValue("assets_total_count").toInt() == 0 && !m_alwaysShowAssets)
+        ui->tabNav->removeTab(ui->tabNav->indexOf(ui->tabAssets));
+    else{
+        if (ui->tabNav->indexOf(ui->tabAssets) < 0)
+            ui->tabNav->addTab(ui->tabAssets, QIcon(":/icons/data.png"), tr("Données"));
+    }
+
     // Hide unused sections
     for (int i=ui->tabNav->count()-1; i>=0; i--){
-        if (ui->tabNav->widget(i) == ui->tabAssets && stats.getFieldValue("assets_total_count").toInt() == 0 && !m_alwaysShowAssets){
-            ui->tabNav->removeTab(i);
-        }
+
         if (ui->tabNav->widget(i) == ui->tabEvents && stats.getFieldValue("events_total_count").toInt() == 0){
             ui->tabNav->removeTab(i);
         }
@@ -519,14 +528,47 @@ void SessionWidget::processUsersReply(QList<TeraData> users)
     }
 }
 
+void SessionWidget::processSessionTypesReply(QList<TeraData> sessions_types, QUrlQuery query)
+{
+    if (!query.hasQueryItem(WEB_QUERY_ID_SESSION_TYPE))
+        return; // Not for us
+
+    if (query.queryItemValue(WEB_QUERY_ID_SESSION_TYPE).toInt() != m_data->getFieldValue("id_session_type").toInt())
+        return; // Not for us
+
+    if (m_sessionType.getDataType() != TERADATA_NONE)
+        return; // Already received the info we needed
+
+    if (sessions_types.size() > 0){
+        m_sessionType = TeraSessionType(sessions_types.first());
+
+        // Check if session type has service with assets
+        alwaysShowAssets(!m_sessionType.getAssetsRelatedServiceUuid().isEmpty());
+        /*if (m_sessionType.getAssetsRelatedServiceUuid().isEmpty()){
+            // Override show assets
+            alwaysShowAssets(false);
+        }*/
+
+        // Query stats now
+        if (!m_data->isNew()){
+            QUrlQuery args;
+            args.addQueryItem(WEB_QUERY_ID_SESSION, QString::number(m_data->getId()));
+            queryDataRequest(WEB_STATS_PATH, args);
+        }
+    }
+}
+
 void SessionWidget::postResultReply(QString path)
 {
-    Q_UNUSED(path)
     // OK, data was saved!
-    /*if (path == WEB_SESSIONINFO_PATH){
-        if (parent())
-            emit closeRequest();
-    }*/
+    if (path == WEB_SESSIONINFO_PATH){
+        m_sessionType = TeraData(); // Clear session type and query it again
+        QUrlQuery args;
+        args.addQueryItem(WEB_QUERY_ID_SESSION_TYPE, QString::number(m_data->getFieldValue("id_session_type").toInt()));
+        queryDataRequest(WEB_SESSIONTYPE_PATH, args);
+        /*if (parent())
+            emit closeRequest();*/
+    }
 }
 
 void SessionWidget::deleteDataReply(QString path, int id)
@@ -626,6 +668,7 @@ void SessionWidget::connectSignals()
     connect(m_comManager, &ComManager::usersReceived, this, &SessionWidget::processUsersReply);
     connect(m_comManager, &ComManager::participantsReceived, this, &SessionWidget::processParticipantsReply);
     connect(m_comManager, &ComManager::devicesReceived, this, &SessionWidget::processDevicesReply);
+    connect(m_comManager, &ComManager::sessionTypesReceived, this, &SessionWidget::processSessionTypesReply);
 
     connect(m_comManager, &ComManager::deleteResultsOK, this, &SessionWidget::deleteDataReply);
 
@@ -709,8 +752,7 @@ void SessionWidget::on_tabNav_currentChanged(int index)
                 }
             }
             ui->tabAssets->enableNewAssets(enable_new_assets); // Enable creation of new assets, if possible.
-
-            ui->tabAssets->displayAssetsForSession(m_data->getId());           
+            ui->tabAssets->displayAssetsForSession(m_data);
         }
         /*if (m_listDeviceDatas.isEmpty()){
             // Query session device data

@@ -682,7 +682,15 @@ void DashboardWidget::on_tableUpcomingSessions_itemDoubleClicked(QTableWidgetIte
     QTableWidgetItem* base_item = ui->tableUpcomingSessions->item(current_row, 1);
     if (m_listSessions_items.contains(base_item)){
         int id_session = m_listSessions_items.value(base_item);
-        showSessionLobby(m_sessions[id_session]->getFieldValue("id_session_type").toInt(), id_session);
+        if (m_sessions.contains(id_session)){
+            const TeraData* session = m_sessions[id_session];
+            int id_session_type = session->getFieldValue("id_session_type").toInt();
+            if (m_session_types.contains(id_session_type)){
+                const TeraData* session_type = m_session_types[id_session_type];
+                if (session_type->isOnline())
+                    showSessionLobby(m_sessions[id_session]->getFieldValue("id_session_type").toInt(), id_session);
+            }
+        }
     }
 #endif
 }

@@ -34,7 +34,7 @@ public:
     void clearAssets();
     void enableNewAssets(const bool &enable);
 
-    void displayAssetsForSession(const int &id_session);
+    void displayAssetsForSession(const TeraData* session);
     void displayAssetsForParticipant(const int &id_participant);
 
 private:
@@ -65,11 +65,10 @@ private:
 
     int                 m_idProject;
     int                 m_idSession;
-    QString             m_sessionTypeName;
     ViewMode            m_viewMode;
 
-    TeraData*           m_fileTransferServiceInfos;
-    TeraData*           m_actimetryServiceInfos;
+    TeraData*           m_transferServiceInfos;
+
     QTimer              m_refreshTokenTimer;
     QUrlQuery           m_dataQuery;
 
@@ -105,6 +104,7 @@ private slots:
     void processAssetsReply(QList<TeraData> assets, QUrlQuery reply_query);
 
     void processServicesReply(QList<TeraData> services, QUrlQuery reply_query);
+    void processSessionTypesReply(QList<TeraData> session_types, QUrlQuery reply_query);
 
     void nextMessageWasShown(Message current_message);
     void fileUploaderFinished(int result);
@@ -123,7 +123,6 @@ private slots:
     void assetComPostOK(QString path);
 
     void processAssetsInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
-    void processSessionInfos(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
 
     void refreshAccessToken();
 
@@ -132,13 +131,9 @@ private slots:
     void on_btnDelete_clicked();
 
     void on_btnDownload_clicked();
-
     void on_btnDownloadAll_clicked();
-
     void on_treeAssets_itemExpanded(QTreeWidgetItem *item);
-
     void on_treeAssets_itemCollapsed(QTreeWidgetItem *item);
-
     void on_btnExpandAll_clicked();
 
 signals:
