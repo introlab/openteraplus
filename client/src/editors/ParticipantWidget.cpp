@@ -596,7 +596,7 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
     bool has_email_service = false;
     foreach(TeraData service, services){
         QString service_key = service.getFieldValue("service_key").toString();
-        if (service_key != "FileTransferService" && !service.getFieldValue("service_has_assets").toBool()){
+        if (service_key != "FileTransferService" && service.getFieldValue("service_has_assets").toBool()){
             m_services.append(service);
             ui->cmbServices->addItem(service.getName(), service_key);
         }else{
