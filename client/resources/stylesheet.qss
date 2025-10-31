@@ -488,6 +488,14 @@ QCheckBox::indicator {
      height: 32px;
  }
 
+QCheckBox:unchecked:!enabled{
+    color: #e47f7577;
+}
+
+QCheckBox:checked:!enabled{
+    color: rgba(0,255,0,50%);
+}
+
 QListView::indicator, QTreeWidget::indicator, QTableWidget::indicator {
      width: 20px;
      height: 20px;
