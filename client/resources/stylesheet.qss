@@ -291,6 +291,8 @@ QLineEdit, QSpinBox, QTextEdit, QDateTimeEdit, QTimeEdit, QDateEdit{
     color:black;
     min-height: 25px;
     padding-left: 5px;
+    selection-color: white;
+    selection-background-color: black;
 }
 
 QLineEdit:!enabled, QSpinBox:!enabled, QDateTimeEdit:!enabled, QTimeEdit:!enabled, QDateEdit:!enabled{
@@ -321,6 +323,8 @@ QDateTimeEdit::down-arrow:!enabled, QDateTimeEdit::up-arrow:!enabled, QDateEdit:
 QPlainTextEdit {
     background-color: rgba(255,255,255,70%);
     color: black;
+    selection-color: white;
+    selection-background-color: black;
 }
 
 QPlainTextEdit:!enabled{
@@ -483,6 +487,14 @@ QCheckBox::indicator {
      width: 32px;
      height: 32px;
  }
+
+QCheckBox:unchecked:!enabled{
+    color: #e47f7577;
+}
+
+QCheckBox:checked:!enabled{
+    color: rgba(0,255,0,50%);
+}
 
 QListView::indicator, QTreeWidget::indicator, QTableWidget::indicator {
      width: 20px;

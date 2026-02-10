@@ -89,6 +89,9 @@ set(headers
     editors/UserWidget.h
 
     # Services
+    services/ActimetryService/ActimetryComManager.h
+    services/ActimetryService/ActimetryWebAPI.h
+    services/ActimetryService/ActimetryConfigWidget.h
     services/BaseServiceComManager.h
     services/BaseServiceWidget.h
     services/BaseServiceToolsWidget.h
@@ -103,10 +106,14 @@ set(headers
     services/EmailService/EmailComManager.h
     services/EmailService/EmailServiceWebAPI.h
     services/EmailService/EmailTemplateWidget.h
+    services/MOVEService/MOVEConfigWidget.h
+    services/MOVEService/MOVEWebAPI.h
+    services/MOVEService/MOVEComManager.h
     services/SurveyService/SurveyComManager.h
     services/SurveyService/SurveyEditorDialog.h
     services/SurveyService/SurveyServiceConfigWidget.h
     services/SurveyService/SurveyServiceWebAPI.h
+
 
     # Widgets
     widgets/SessionInviteWidget.h
@@ -231,6 +238,8 @@ set(srcs
     editors/UserWidget.cpp
 
     # Services
+    services/ActimetryService/ActimetryComManager.cpp
+    services/ActimetryService/ActimetryConfigWidget.cpp
     services/BaseServiceComManager.cpp
     services/BaseServiceWidget.cpp
     services/BaseServiceToolsWidget.cpp
@@ -242,6 +251,8 @@ set(srcs
     services/EmailService/EmailComManager.cpp
     services/EmailService/EmailServiceConfigWidget.cpp
     services/EmailService/EmailTemplateWidget.cpp
+    services/MOVEService/MOVEConfigWidget.cpp
+    services/MOVEService/MOVEComManager.cpp
     services/SurveyService/SurveyComManager.cpp
     services/SurveyService/SurveyEditorDialog.cpp
     services/SurveyService/SurveyServiceConfigWidget.cpp
@@ -350,7 +361,9 @@ SET(uis
     editors/UserWidget.ui
 
     # Services
+    services/ActimetryService/ActimetryConfigWidget.ui
     services/DanceService/DanceConfigWidget.ui
+    services/MOVEService/MOVEConfigWidget.ui
     services/DashboardsService/DashboardsConfigWidget.ui
     services/EmailService/EmailServiceConfigWidget.ui
     services/EmailService/EmailTemplateWidget.ui

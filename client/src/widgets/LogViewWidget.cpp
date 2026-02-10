@@ -108,6 +108,8 @@ void LogViewWidget::setViewMode(const ViewMode &mode, const QString &uuid, const
         break;
     case VIEW_LOGS_ALL:
         ui->tableLogs->insertColumn(ui->tableLogs->columnCount());
+        ui->tableLogs->setHorizontalHeaderItem(ui->tableLogs->columnCount()-1, new QTableWidgetItem(tr("Contexte")));
+        ui->tableLogs->insertColumn(ui->tableLogs->columnCount());
         ui->tableLogs->setHorizontalHeaderItem(ui->tableLogs->columnCount()-1, new QTableWidgetItem(tr("Message")));
         break;
     default:
@@ -620,8 +622,12 @@ void LogViewWidget::processLogsLogs(QList<TeraData> logins, QUrlQuery reply_data
         ui->tableLogs->setItem(row, 2, item);
 
         item = new QTableWidgetItem();
-        item->setText(login.getFieldValue("message").toString());
+        item->setText(login.getFieldValue("sender").toString());
         ui->tableLogs->setItem(row, 3, item);
+
+        item = new QTableWidgetItem();
+        item->setText(login.getFieldValue("message").toString());
+        ui->tableLogs->setItem(row, 4, item);
         row++;
     }
 

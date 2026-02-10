@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTableWidgetItem>
 
+#include "TeraSessionType.h"
 #include "DataEditorWidget.h"
 
 namespace Ui {
@@ -40,6 +41,7 @@ private:
     //QMap<int, QTableWidgetItem*> m_listDeviceDatas;
     QMap<int, QTableWidgetItem*> m_listSessionEvents;
     QList<TeraData>*    m_testTypes = nullptr;
+    TeraSessionType     m_sessionType;
 
     void updateControlsState();
     void updateFieldsValue();
@@ -61,6 +63,7 @@ private slots:
     void processParticipantsReply(QList<TeraData> participants);
     void processDevicesReply(QList<TeraData> devices);
     void processUsersReply(QList<TeraData> users);
+    void processSessionTypesReply(QList<TeraData> sessions_types, QUrlQuery query);
     void postResultReply(QString path);
     void deleteDataReply(QString path, int id);
 

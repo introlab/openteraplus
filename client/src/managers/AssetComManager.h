@@ -37,6 +37,8 @@ private slots:
 signals:
     void dataReceived(QList<QJsonObject> items, QUrlQuery reply_query);
 
+    void sessionInfosReceived(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
+
     void assetsInfosReceived(QList<QJsonObject> infos, QUrlQuery reply_query, QString reply_path);
 
     void deleteUuidResultOK(QString path, QString uuid);

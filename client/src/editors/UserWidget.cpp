@@ -179,8 +179,10 @@ void UserWidget::updateControlsState(){
             if (has_site_admin_access){
                 ui->tabMain->addTab(ui->tabLogins, QIcon(":/icons/password.png"), tr("Journal d'accès"));
             }else{
-                ui->wdgUser->hideFields(QStringList() << "user_force_password_change" << "user_2fa_otp_enabled" << "user_2fa_email_enabled");
-                ui->wdgUser->setFieldEnabled("user_2fa_enabled", false);
+                if (!dataIsNew()){
+                    ui->wdgUser->hideFields(QStringList() << "user_force_password_change" << "user_2fa_otp_enabled" << "user_2fa_email_enabled");
+                    ui->wdgUser->setFieldEnabled("user_2fa_enabled", false);
+                }
             }
 
             if (m_data){

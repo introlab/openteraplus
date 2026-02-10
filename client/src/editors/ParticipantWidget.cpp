@@ -9,7 +9,9 @@
 #include "dialogs/GeneratePasswordDialog.h"
 #include "dialogs/PasswordStrengthDialog.h"
 
+#include "services/ActimetryService/ActimetryConfigWidget.h"
 #include "services/DanceService/DanceConfigWidget.h"
+#include "services/MOVEService/MOVEConfigWidget.h"
 
 ParticipantWidget::ParticipantWidget(ComManager *comMan, const TeraData *data, QWidget *parent) :
     DataEditorWidget(comMan, data, parent),
@@ -393,14 +395,13 @@ void ParticipantWidget::updateServiceTabs()
         addServiceTab(service);
     }
 
-    // Remove tabs not anymore present
-    /*for(QWidget* tab: std::as_const(m_services_tabs)){
-        if (!ids_service.contains(m_services_tabs.key(tab))){
-            ui->tabNav->removeTab(ui->tabNav->indexOf(tab));
-            tab->deleteLater();
-            m_services_tabs.remove(m_services_tabs.key(tab));
+    if (m_services_tabs.count() == 0){
+        // No config widget (maybe because no widget) - hide tab
+        int indexTabServices = ui->tabNav->indexOf(ui->tabServices);
+        if (ui->tabNav->isTabVisible(indexTabServices)){
+            ui->tabNav->setTabVisible(indexTabServices, false);
         }
-    }*/
+    }
 }
 
 void ParticipantWidget::addServiceTab(const TeraData &service)
@@ -411,9 +412,23 @@ void ParticipantWidget::addServiceTab(const TeraData &service)
 
     QString service_key = service.getFieldValue("service_key").toString();
 
+    // Actimetry Service
+    if (service_key == "ActimetryService") {
+        ActimetryConfigWidget* wdg = new ActimetryConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getUuid(), m_data->getName());
+        ui->tabServicesDetails->insertTab(0, wdg, QIcon("://icons/service.png"), service.getName());
+        m_services_tabs.insert(id_service, wdg);
+    }
+
     // Dance Service
     if (service_key == "DanceService"){
         DanceConfigWidget* wdg = new DanceConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getUuid());
+        ui->tabServicesDetails->insertTab(0, wdg, QIcon("://icons/service.png"), service.getName());
+        m_services_tabs.insert(id_service, wdg);
+    }
+
+    // MOVE Service
+    if (service_key == "MOVEService"){
+        MOVEConfigWidget* wdg = new MOVEConfigWidget(m_comManager, m_data->getFieldValue("id_project").toInt(), m_data->getUuid(), m_data->getName());
         ui->tabServicesDetails->insertTab(0, wdg, QIcon("://icons/service.png"), service.getName());
         m_services_tabs.insert(id_service, wdg);
     }
@@ -428,8 +443,19 @@ void ParticipantWidget::addServiceTab(const TeraData &service)
 
 void ParticipantWidget::refreshWebAccessUrl()
 {
-    int index = ui->cmbServices->currentIndex();
-    if (index >= m_services.count() || index <0 || dataIsNew())
+    if (dataIsNew())
+        return;
+
+    QString service_key = ui->cmbServices->currentData().toString();
+    int index = -1;
+    for (int i=0; i<m_services.count(); i++){
+        if (m_services.at(i).getFieldValue("service_key").toString() == service_key){
+            index = i;
+            break;
+        }
+    }
+
+    if (index < 0)
         return;
 
     QString service_url = TeraData::getServiceParticipantUrl(m_services[index],
@@ -488,6 +514,9 @@ void ParticipantWidget::processSessionTypesReply(QList<TeraData> session_types)
             }
         }
     }
+
+    if (ui->cmbSessionType->count() == 0)
+        ui->cmbSessionType->hide();
 
     // Query sessions for that participant
     if (!m_data->isNew()){
@@ -580,14 +609,22 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
     bool has_email_service = false;
     foreach(TeraData service, services){
         QString service_key = service.getFieldValue("service_key").toString();
-        if (service_key != "FileTransferService"){
-            m_services.append(service);
-            ui->cmbServices->addItem(service.getName(), service_key);
-        }else{
-            m_allowFileTransfers = true; // We have a file transfer service with that project - allow uploads!
-            ui->wdgSessions->enableFileTransfers(true);
+        m_services.append(service);
+
+        // Web access combo box
+        if (service.hasFieldName("service_endpoint_participant")){
+            if (!service.getFieldValue("service_endpoint_participant").isNull()){
+                // Ignore specific services...
+                if (service_key != "FileTransferService" && service_key != "ActimetryService" && service_key != "EmailService")
+                    ui->cmbServices->addItem(service.getName(), service_key);
+            }
         }
 
+        // Assets
+        m_allowFileTransfers = service.getFieldValue("service_has_assets").toBool(); // We have a file transfer service with that project - allow uploads!
+        ui->wdgSessions->enableFileTransfers(m_allowFileTransfers);
+
+        // Email
         if (service_key == "EmailService"){
             has_email_service = true;
         }
@@ -613,6 +650,8 @@ void ParticipantWidget::processServicesReply(QList<TeraData> services, QUrlQuery
     int default_index = ui->cmbServices->findData("VideoRehabService");
     if (default_index>=0)
         ui->cmbServices->setCurrentIndex(default_index);
+    ui->chkWebAccess->setEnabled(ui->cmbServices->count() > 0);
+    ui->chkLogin->setEnabled(ui->cmbServices->count() > 0);
 
     // Add specific services configuration tabs
     updateServiceTabs();
@@ -1003,7 +1042,7 @@ void ParticipantWidget::on_txtUsername_textEdited(const QString &current)
     if (current.isEmpty()){
         ui->txtUsername->setStyleSheet("background-color: #ffaaaa;");
     }else{
-        ui->txtUsername->setStyleSheet("");
+        ui->txtUsername->setStyleSheet(" ");
     }
 }
 
@@ -1030,7 +1069,7 @@ void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
     if (!m_data->getFieldValue("participant_login_enabled").toBool() && ui->txtPassword->text().isEmpty()){
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
     }else{
-        ui->txtPassword->setStyleSheet("");
+        ui->txtPassword->setStyleSheet(" ");
     }
 
     /*QString confirm_pass = ui->txtPasswordConfirm->text();
@@ -1038,8 +1077,8 @@ void ParticipantWidget::on_txtPassword_textEdited(const QString &current)
         ui->txtPassword->setStyleSheet("background-color: #ffaaaa;");
         ui->txtPasswordConfirm->setStyleSheet("background-color: #ffaaaa;");
     }else{
-        ui->txtPassword->setStyleSheet("");
-        ui->txtPasswordConfirm->setStyleSheet("");
+        ui->txtPassword->setStyleSheet(" ");
+        ui->txtPasswordConfirm->setStyleSheet(" ");
     }*/
 }
 
